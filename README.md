@@ -265,6 +265,8 @@ Alle Klassen in `helpers/typography.css`.
 | Klasse | Zweck |
 |---|---|
 | `.ncss-text-sm/base/md/lg/xl` | Schriftgröße |
+| `.ncss-text-lead` | Teaser-/Lead-Absatz (Artikel-Intro, Größe + gedämpfte Textfarbe in einer Klasse) |
+| `.ncss-eyebrow` | Kleines, versal gesetztes Label ÜBER einer Überschrift ("Kicker") - Größe, Gewicht, Laufweite, Markenfarbe in einer Klasse |
 | `.ncss-text-muted/brand/brand-2/neutral/success/warning/danger` | Textfarbe |
 | `.ncss-text-inherit` | `color: inherit` - für Text auf einer farbigen Fläche (z.B. `.ncss-surface--brand`) |
 | `.ncss-text-center/start/end` | `text-align` |
@@ -286,6 +288,11 @@ Alle Klassen in `helpers/typography.css`.
 
 Drop-Cap-Varianten sind Modifier, die zusätzlich zu `.ncss-drop-cap` gesetzt werden, z.B.
 `class="ncss-drop-cap ncss-drop-cap--sm ncss-drop-cap--light"`.
+
+Normales `<blockquote>` (dezente Zitat-Optik, kein `.ncss-pull-quote`) ist bereits in
+`base.css` gestylt, keine eigene Klasse nötig - `<footer>`/`<cite>` darin (Standard-HTML-
+Attributionsmuster) sind mitgestylt, der "—"-Trenner ist generierter Inhalt (`::before`),
+kein hart getipptes Zeichen im Markup: `<blockquote><p>Zitat.</p><footer><cite>Quelle</cite></footer></blockquote>`.
 
 ## Farben & Flächen
 
@@ -484,7 +491,7 @@ hier nur die Kurzreferenz.
 | `modal.css` | `.ncss-modal`, `-header`, `-footer` (+ `--fullscreen`, `--dark`, `--3d`) | Zentriertes Dialog-Modal; `--fullscreen`+`--dark` ergibt eine Lightbox, keine separate Komponente nötig. `--3d` (+ `--ncss-modal-3d-depth`) kippt beim Öffnen wie aus der Tiefe herein statt nur zu faden/skalieren - `perspective()` als Transform-Funktion in der eigenen `transform`-Kette, da `<dialog>` im Top Layer rendert und eine `perspective`-Eigenschaft auf einem Elternelement dort nicht zuverlässig wirkt |
 | `dialog-close.css` | `.ncss-dialog-close` | Geteilter Schließen-Button für Modal/Off-Canvas/Nav-Panel |
 | `disclosure.css` | `.ncss-disclosure` | FAQ-Box-Optik für `<details>`/`<summary>` |
-| `card.css` | `.ncss-card-container`, `.ncss-card`, `-media`, `-header`, `-body`, `-footer` (+ `--flush`, `--transparent`, `--linked`, `--horizontal`, `--horizontal-end`, `--brand/-brand-2/-neutral/-success/-warning/-danger`) | Karte. Rahmen/Ecken/Schatten NICHT eingebaut - siehe [Ecken, Rahmen, Schatten](#ecken-rahmen-schatten). `--flush` entfernt jedes Padding in Body/Header/Footer (auch block); `--transparent` entfernt zusätzlich den Hintergrund - beides zusammen macht `.ncss-card` zu einem unsichtbaren, aber weiter strukturell korrekten Wrapper (Footer bleibt unten, Body füllt den Rest). `--horizontal`/`--horizontal-end`: Media links/rechts nebeneinander mit Text (ab eigener Breite 24rem, `.ncss-card-container` als Wrapper nötig). Media OBEN ist einfach die Dokumentreihenfolge, Media UNTEN braucht nur `.ncss-card-media` als LETZTES Kind - keine eigene Klasse für beides. `.ncss-card-media` rundet selbst nie (`border-radius:0`) - verlässt sich auf `overflow: clip` der Karte, damit nur echte Kartenecken rund werden, nie eine Kante mittendrin. Footer/Body-Fläche bleibt bei unterschiedlich hohen Nachbarkarten automatisch unten ausgerichtet (`.ncss-card-body{flex:1 1 auto}` füllt den Rest) |
+| `card.css` | `.ncss-card-container`, `.ncss-card`, `-media`, `-header`, `-body`, `-footer` (+ `--flush`, `--transparent`, `--linked`, `--horizontal`, `--horizontal-end`, `--brand/-brand-2/-neutral/-success/-warning/-danger`) | Karte. Rahmen/Ecken/Schatten NICHT eingebaut - siehe [Ecken, Rahmen, Schatten](#ecken-rahmen-schatten). `--flush` entfernt jedes Padding in Body/Header/Footer (auch block); `--transparent` entfernt zusätzlich den Hintergrund - beides zusammen macht `.ncss-card` zu einem unsichtbaren, aber weiter strukturell korrekten Wrapper (Footer bleibt unten, Body füllt den Rest). `--horizontal`/`--horizontal-end`: Media links/rechts nebeneinander mit Text (ab eigener Breite 24rem, `.ncss-card-container` als Wrapper nötig). Media OBEN ist einfach die Dokumentreihenfolge, Media UNTEN braucht nur `.ncss-card-media` als LETZTES Kind - keine eigene Klasse für beides. `.ncss-card-media` rundet selbst nie (`border-radius:0`) - verlässt sich auf `overflow: clip` der Karte, damit nur echte Kartenecken rund werden, nie eine Kante mittendrin. Footer/Body-Fläche bleibt bei unterschiedlich hohen Nachbarkarten automatisch unten ausgerichtet (`.ncss-card-body{flex:1 1 auto}` füllt den Rest). Die `--brand/-brand-2/-neutral/-success/-warning/-danger`-Farbvarianten sind zugleich die Hinweis-/Callout-/"Note"-Box für Dokumentationstexte (Tipp/Warnung/Fehler) - keine eigene Callout-Komponente nötig, dieselben Klassen reichen, Demo: `demo/colors.html` |
 | `search.css` | `.ncss-search`, `.ncss-search-input` (+ `--ncss-search-expanded-width`) | Suchfeld, das schmal startet und beim Fokussieren/bei Eingabe per reiner `width`-Transition wächst - kein JS |
 | `badge.css` | `.ncss-badge` (+ `--brand-2/-neutral/-success/-warning/-danger`) | Kleine Status-/Kategorie-Chips |
 | `breadcrumb.css` | `.ncss-breadcrumb` | Natives `<nav><ol>`, `::before`-generierte Trenner |

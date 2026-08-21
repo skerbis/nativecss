@@ -30,10 +30,6 @@
   .demo-hero-image {
     border-radius: var(--ncss-radius-lg);
   }
-  .demo-lead {
-    font-size: var(--ncss-font-size-md);
-    color: var(--ncss-color-text-muted);
-  }
   .demo-float-image {
     width: 12rem;
     height: 12rem;
@@ -66,9 +62,6 @@
   .demo-fact-label {
     font-size: var(--ncss-font-size-sm);
     color: var(--ncss-color-text-muted);
-  }
-  .demo-eyebrow {
-    font-weight: 600;
   }
   .demo-tool-grid {
     --ncss-grid-min: 14rem;
@@ -137,9 +130,9 @@
   <article class="ncss-container demo-article ncss-stack">
 
     <header class="ncss-stack ncss-stack--tight">
-      <p class="ncss-text-sm ncss-text-brand demo-eyebrow">Typografie</p>
+      <p class="ncss-eyebrow">Typografie</p>
       <h1>Fließtext, der mitdenkt: Spalten, Drop Caps und Zitate ohne Breakpoints</h1>
-      <p class="demo-lead">
+      <p class="ncss-text-lead">
         Ein Blick auf NativeCSS' typografische Werkzeuge - mehrspaltiger Fließtext, Drop Caps,
         Pull-Quotes und Textumfluss. Alles fließend (<code>clamp()</code>), alles
         Container-bewusst, kein einziger fester Breakpoint nötig.
@@ -281,6 +274,23 @@
           <div class="demo-tool-card">
             <code class="demo-tool-label">.ncss-text-justify</code>
             <p class="ncss-text-justify ncss-hyphenate">Blocksatz richtet Text beidseitig bündig aus, am besten kombiniert mit Silbentrennung, damit schmale Zeilen nicht zu große Wortzwischenräume bekommen.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-text-sm ncss-text-muted">Eyebrow/Kicker (<code>.ncss-eyebrow</code>) und zitierte Aussage mit Quellenangabe (natives <code>&lt;blockquote&gt;</code> aus base.css, <code>&lt;footer&gt;</code>/<code>&lt;cite&gt;</code> jetzt mitgestylt - der "—"-Trenner ist generierter Inhalt, kein hart getipptes Zeichen im Markup):</p>
+        <div class="ncss-grid demo-tool-grid">
+          <div class="demo-tool-card">
+            <code class="demo-tool-label">.ncss-eyebrow</code>
+            <p class="ncss-eyebrow">Redaktion</p>
+          </div>
+          <div class="demo-tool-card">
+            <code class="demo-tool-label">&lt;blockquote&gt; + &lt;cite&gt;</code>
+            <blockquote>
+              <p>Container Queries sind der Moment, in dem CSS aufgehört hat, nur über den Viewport nachzudenken.</p>
+              <footer><cite>Aus dem Handbuch</cite></footer>
+            </blockquote>
           </div>
         </div>
       </div>

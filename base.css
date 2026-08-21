@@ -132,6 +132,24 @@ blockquote {
   padding-inline-start: var(--ncss-space-sm);
   color: var(--ncss-color-text-muted);
 }
+/* Attribution (<footer>/<cite> innerhalb <blockquote>, Standard-HTML-Muster laut MDN) -
+   bislang unstyled (Browser-Default: <cite> nur kursiv). Eigene Zeile, dezent kleiner/
+   heller als das Zitat selbst. "-"-Präfix per generiertem Inhalt (::before) statt hart im
+   Markup getippt - bleibt so für Screenreader unsichtbar (kein "Minus Quelle" vorgelesen),
+   optisch aber identisch.
+   Markup: <blockquote><p>Zitat.</p><footer><cite>Quelle</cite></footer></blockquote> */
+blockquote footer {
+  margin-block-start: var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+blockquote footer::before {
+  content: "\2014\00A0";
+}
+blockquote cite {
+  font-style: normal;
+  font-weight: var(--ncss-font-weight-semibold);
+}
 hr {
   border: none;
   border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);

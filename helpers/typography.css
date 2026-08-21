@@ -10,6 +10,16 @@
 .ncss-text-lg { font-size: var(--ncss-font-size-lg); }
 .ncss-text-xl { font-size: var(--ncss-font-size-xl); }
 
+/* Teaser-/Lead-Absatz (der erste, etwas größere Absatz unter einer Überschrift/einem
+   Artikel-Intro) - bislang in jeder Demo lokal neu erfunden (.demo-lead in magazine.html,
+   .landing-hero-lead in landing.html jeweils nur font-size/max-width, ohne die passende
+   Textfarbe) - jetzt eine Klasse, die beides zusammen richtig setzt. */
+.ncss-text-lead {
+  font-size: var(--ncss-font-size-md);
+  line-height: var(--ncss-line-height-base);
+  color: var(--ncss-color-text-muted);
+}
+
 .ncss-text-muted { color: var(--ncss-color-text-muted); }
 .ncss-text-brand { color: var(--ncss-color-brand); }
 .ncss-text-brand-2 { color: var(--ncss-color-brand-2); }
@@ -41,6 +51,19 @@
 .ncss-tracking-wide { letter-spacing: var(--ncss-tracking-wide); }
 .ncss-tracking-wider { letter-spacing: var(--ncss-tracking-wider); }
 .ncss-tracking-widest { letter-spacing: var(--ncss-tracking-widest); }
+
+/* Eyebrow/Kicker - das kleine, versal gesetzte Label ÜBER einer Überschrift ("Typografie"
+   über "Fließtext, der mitdenkt", siehe demo/magazine.html). War bislang nur eine
+   Kombination aus drei Klassen + einer lokalen font-weight-Regel pro Demo (.demo-eyebrow)
+   - hier als EINE Klasse, die für sich allein reicht. */
+.ncss-eyebrow {
+  display: block;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ncss-tracking-wider);
+  color: var(--ncss-color-brand);
+}
 
 .ncss-truncate {
   overflow: hidden;

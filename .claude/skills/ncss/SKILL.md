@@ -364,6 +364,14 @@ als mask-image data-URI nach demselben Muster ergänzen, kein großes Set vorsor
 4. Nach jeder nicht-trivialen Änderung: lokalen PHP-Server starten
    (`php -S 127.0.0.1:PORT -t public/ncss`), mit Playwright öffnen, Screenshot + computed
    styles prüfen - PFLICHT für alles, was Dark Mode oder Web Awesome betrifft.
+5. VOR einer neuen Komponente prüfen, ob eine bestehende das schon kann - Beispiel: eine
+   "Callout/Note"-Box war fast als eigene `components/callout.css` gebaut worden, bis sich
+   zeigte, dass `.ncss-card--brand/-success/-warning/-danger` (100-Fläche + farbiger Rand,
+   `components/card.css`) exakt dasselbe Ergebnis liefert - schon vorhanden, nur bislang
+   nicht als "Callout" beworben. Erst grep über bestehende Klassen/Kommentare, dann neu
+   bauen. `.ncss-text-lead`/`.ncss-eyebrow` (helpers/typography.css) sind das Gegenbeispiel
+   - beide waren als lokale Demo-Klasse (`.demo-lead`, `.demo-eyebrow`) mehrfach dupliziert,
+   also tatsächlich eine echte Lücke, jetzt als eine Klasse zentralisiert.
 
 ## Demo-Seiten (public/ncss/demo/)
 
