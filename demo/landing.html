@@ -61,17 +61,21 @@
 
 <a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
 
-<!-- .ncss-glass (components/effects.css) NICHT auf dieser Topbar - der Header enthält
-     ein <wa-dropdown> ("Mehr"-Menü) und war zeitweise mit einem Frosted-Glass-Hintergrund
-     versehen. Selbst nachdem backdrop-filter vom direkten Vorfahren des Dropdowns entfernt
-     wurde (siehe SKILL.md Punkt 21 für den vollen Verlauf), blieb ein echter Safari/
-     WebKit-Rendering-Bug bestehen (User-Report: Text/Dropdown "verdoppelte" sich beim
-     Scrollen wie ein Glitch - ein bekanntes Repaint-Artefakt von backdrop-filter in der
-     Nähe von sticky/fixed-Inhalt, kein spec-basiertes Problem, in Playwrights WebKit
-     nicht nachstellbar). Rein kosmetischer Effekt, kein Kernfeature - deshalb ganz
-     entfernt statt weiter an Mitigations zu basteln, die von hier aus nicht auf echtem
-     Safari verifizierbar sind. -->
+<!-- .ncss-glass (components/effects.css) macht aus der sticky Topbar einen Frosted-Glass-
+     Header - NICHT direkt auf <header> (das <wa-dropdown> weiter unten wäre dann ein
+     Nachfahre eines backdrop-filter-Elements, das per Spec einen neuen Containing Block
+     für dessen intern position:fixed-positioniertes Popup erzeugt). Stattdessen ein rein
+     dekoratives, leeres Element davor, absolut positioniert und mit negativem z-index
+     hinter .ncss-topbar-inner (siehe landing.css) - der Blur sitzt optisch identisch da,
+     ohne dass der eigentliche Nav-Inhalt ein Nachfahre des gefilterten Elements wäre.
+     War zwischenzeitlich ganz entfernt, weil ein Scroll-Glitch am Dropdown vermutet
+     wurde - der Glitch betraf aber nachweislich AUCH das Glocken-<wa-popover> (keine
+     Nähe zum Glass-Hintergrund), tatsächliche Ursache war Web Awesomes eigenes
+     Repositionierungsverhalten kombiniert mit einem iOS-Safari-Rendering-Bug (siehe
+     SKILL.md Punkt 21), jetzt behoben über components/wa-close-on-scroll.js - Glass
+     war nie die Ursache, kann also wieder bedenkenlos genutzt werden. -->
 <header class="ncss-topbar">
+  <div class="ncss-glass landing-topbar-backdrop" aria-hidden="true"></div>
   <div class="ncss-topbar-inner">
     <a class="ncss-topbar-brand" href="#main"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> NativeCSS</a>
     <nav class="ncss-nav">

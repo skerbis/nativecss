@@ -347,17 +347,18 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     ergibt das ein bekanntes, NICHT per eigenem CSS behebbares Rendering-Problem der
     Browser-Engine, kein ncss-Bug.
 
-    Zwei endgültige Fixes statt weiterer CSS-Mitigation:
-    1. `.ncss-glass` komplett von der Landingpage-Topbar entfernt (rein kosmetisch, kein
-       Kernfeature - nicht die Ursache, aber auch kein Grund, das spec-basierte Risiko
-       aus Punkt 21 oben weiter einzugehen).
-    2. `components/wa-close-on-scroll.js` (neu, opt-in wie `command-fallback.js`) -
-       schließt jedes offene `<wa-dropdown>`/`<wa-popover>` sobald gescrollt wird
-       (`el.open = false`, beide haben eine reflektierte `open`-Property). Kämpft nicht
-       gegen das Positionierungs-/Rendering-Problem an, sondern umgeht es komplett -
-       dasselbe verbreitete Muster wie bei den meisten Mega-/Dropdown-Menüs anderer
-       Sites. Eingebunden auf `demo/landing.html` und `demo/webawesome.html` (die
-       einzigen Seiten mit `<wa-dropdown>`/`<wa-popover>`).
+    Endgültiger Fix statt weiterer CSS-Mitigation: `components/wa-close-on-scroll.js`
+    (neu, opt-in wie `command-fallback.js`) - schließt jedes offene
+    `<wa-dropdown>`/`<wa-popover>` sobald gescrollt wird (`el.open = false`, beide haben
+    eine reflektierte `open`-Property). Kämpft nicht gegen das Positionierungs-/
+    Rendering-Problem an, sondern umgeht es komplett - dasselbe verbreitete Muster wie
+    bei den meisten Mega-/Dropdown-Menüs anderer Sites. Eingebunden auf
+    `demo/landing.html` und `demo/webawesome.html` (die einzigen Seiten mit
+    `<wa-dropdown>`/`<wa-popover>`). `.ncss-glass` auf der Landingpage-Topbar war
+    zwischenzeitlich probeweise entfernt worden, war aber nachweislich nie die
+    eigentliche Ursache (siehe oben) - mit `wa-close-on-scroll.js` als tatsächlichem Fix
+    wieder eingesetzt, im selben sicheren Muster wie zuvor (eigenes dekoratives
+    Element, kein direkter Vorfahre des Dropdowns, siehe Punkt 21 oben).
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
