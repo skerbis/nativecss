@@ -50,6 +50,11 @@
  *     <div class="ncss-stack-card" style="--ncss-stack-index: 3;">...</div>
  *   </div>
  * </div>
+ *
+ * Modifier .ncss-stack-section--horizontal auf der äußeren Sektion: dieselbe Bühne/
+ * Timeline-Mechanik, Fächer und Anfahrt laufen auf der X- statt der Y-Achse (seitlich
+ * gestaffelt, fährt von rechts herein, kippt um die Y- statt die X-Achse zurück) - siehe
+ * "Modifier: --horizontal" weiter unten.
  */
 
 .ncss-stack-section {
@@ -194,6 +199,65 @@
       scale(var(--ncss-stack-scale, 0.92))
       translateZ(var(--ncss-stack-depth, -80px))
       rotateX(var(--ncss-stack-tilt, 6deg));
+    filter: brightness(var(--ncss-stack-brightness, 0.75));
+  }
+}
+
+/* --- Modifier: --horizontal (Fächer/Anfahrt X statt Y) -----------------------------------
+   Dieselbe Bühne/Timeline/animation-range-Mechanik wie oben, nur die BEWEGUNGSACHSE
+   getauscht - Karten fächern sich seitlich statt nach unten, fahren von rechts statt von
+   unten herein, kippen beim Zurückweichen um die Y- statt die X-Achse (rotateY statt
+   rotateX - fühlt sich für eine seitliche Staffelung natürlicher an, wie umblätternde
+   Seiten statt nach hinten kippende Karten). Eigene Keyframes statt eines Achsen-
+   Multiplikator-Tricks in EINER gemeinsamen Formel - bewusst, bleibt so für beide Fälle
+   einzeln lesbar statt einer schwerer nachvollziehbaren generischen Formel. */
+.ncss-stack-section--horizontal .ncss-stack-card {
+  transform: translateX(calc(var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem)));
+}
+
+@supports (view-timeline-name: --ncss-stack-progress) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ncss-stack-section--horizontal .ncss-stack-card {
+      animation-name: ncss-stack-arrive-horizontal;
+    }
+    .ncss-stack-section--horizontal .ncss-stack-card:first-child {
+      animation-name: ncss-stack-settle-horizontal;
+    }
+  }
+}
+
+@keyframes ncss-stack-settle-horizontal {
+  0%, 50% {
+    transform: translateX(calc(var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem))) scale(1);
+    filter: brightness(1);
+  }
+  100% {
+    transform:
+      translateX(calc(var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem)))
+      scale(var(--ncss-stack-scale, 0.92))
+      translateZ(var(--ncss-stack-depth, -80px))
+      rotateY(var(--ncss-stack-tilt, 6deg));
+    filter: brightness(var(--ncss-stack-brightness, 0.75));
+  }
+}
+
+@keyframes ncss-stack-arrive-horizontal {
+  /* Off-Stage-Versatz relativ zur eigenen Kartenbreite (50vw + halbe Kartenbreite) -
+     dieselbe Rechnung wie bei ncss-stack-arrive, nur an der Bühnen-/Kartenbreite statt
+     -höhe gespiegelt. */
+  0% {
+    transform: translateX(calc(50vw + var(--ncss-stack-card-width, min(90vw, 40rem)) / 2 + var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem))) scale(0.92);
+  }
+  50% {
+    transform: translateX(calc(var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem))) scale(1);
+    filter: brightness(1);
+  }
+  100% {
+    transform:
+      translateX(calc(var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem)))
+      scale(var(--ncss-stack-scale, 0.92))
+      translateZ(var(--ncss-stack-depth, -80px))
+      rotateY(var(--ncss-stack-tilt, 6deg));
     filter: brightness(var(--ncss-stack-brightness, 0.75));
   }
 }
