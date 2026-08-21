@@ -294,6 +294,10 @@ Normales `<blockquote>` (dezente Zitat-Optik, kein `.ncss-pull-quote`) ist berei
 Attributionsmuster) sind mitgestylt, der "—"-Trenner ist generierter Inhalt (`::before`),
 kein hart getipptes Zeichen im Markup: `<blockquote><p>Zitat.</p><footer><cite>Quelle</cite></footer></blockquote>`.
 
+`::marker` (Aufzählungszeichen/Nummern bei `<ul>`/`<ol>`) nutzt `--ncss-color-text-muted`
+statt des vollen Textkontrasts - kein eigener Marker-Token, läuft automatisch über
+`theme.css` mit.
+
 ## Farben & Flächen
 
 `helpers/surfaces.css`: `.ncss-surface--brand` / `--brand-2` / `--neutral` - Hintergrund +

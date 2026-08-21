@@ -67,6 +67,14 @@ ul, ol {
 li > ul, li > ol {
   margin-block: var(--ncss-space-2xs);
 }
+/* Aufzählungszeichen/Nummern OHNE eigenen Marker-Token - bewusst derselbe
+   --ncss-color-text-muted wie gedämpfter Fließtext (auch von .ncss-text-lead genutzt),
+   kein zweiter, eigens für ::marker gepflegter Wert. Läuft dadurch automatisch über
+   theme.css mit, ganz ohne dass theme.css etwas Eigenes dafür bräuchte - reiner Browser-
+   Default (volle Textfarbe) sonst ungestylt, ohne diese Regel. */
+::marker {
+  color: var(--ncss-color-text-muted);
+}
 
 a {
   color: var(--ncss-color-brand);
