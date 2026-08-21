@@ -49,9 +49,15 @@
 <a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
 
 <!-- .ncss-glass (components/effects.css) macht aus der sticky Topbar einen Frosted-Glass-
-     Header - reine Zusatzklasse, überschreibt nur background-color/border, keine eigene
-     Positionierung. -->
-<header class="ncss-topbar ncss-glass">
+     Header - NICHT direkt auf <header> (das <wa-dropdown> weiter unten wäre dann ein
+     Nachfahre eines backdrop-filter-Elements, das per Spec einen neuen Containing Block
+     für dessen intern position:fixed-positioniertes Popup erzeugt - sichtbares Zucken
+     beim Scrollen bei geöffnetem Menü, per echtem Test gefunden). Stattdessen ein rein
+     dekoratives, leeres Element davor, absolut positioniert und mit negativem z-index
+     hinter .ncss-topbar-inner (siehe landing.css) - der Blur sitzt optisch identisch da,
+     ohne dass der eigentliche Nav-Inhalt ein Nachfahre des gefilterten Elements wäre. -->
+<header class="ncss-topbar">
+  <div class="ncss-glass landing-topbar-backdrop" aria-hidden="true"></div>
   <div class="ncss-topbar-inner">
     <a class="ncss-topbar-brand" href="#main"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> NativeCSS</a>
     <nav class="ncss-nav">

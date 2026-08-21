@@ -85,7 +85,19 @@
 /* Glassmorphism - halbtransparente Fläche + backdrop-filter (Unschärfe/Sättigung
    dahinter). -webkit-Präfix nötig (Safari verlangt ihn weiterhin, backdrop-filter selbst
    ist nicht Baseline "weit verfügbar" - @supports-Fallback: ohne Unterstützung bleibt es
-   eine normale halbtransparente Fläche ohne Unschärfe, kein Darstellungsfehler). */
+   eine normale halbtransparente Fläche ohne Unschärfe, kein Darstellungsfehler).
+
+   ACHTUNG - backdrop-filter (wie filter/transform/perspective/will-change) erzeugt per
+   Spec einen NEUEN CONTAINING BLOCK für position:fixed-Nachfahren. Auf einem Element mit
+   einem <wa-dropdown>/<wa-popover>/o.ä. darin (die intern typischerweise position:fixed
+   relativ zum VIEWPORT nutzen) verursacht das ein sichtbares Zucken beim Scrollen bei
+   geöffnetem Menü (per echtem Test an demo/landing.html gefunden - Web Awesomes
+   Popup-Neuberechnung bei jedem Scroll-Event geriet mit dem verschobenen Containing
+   Block in Konflikt). .ncss-glass NICHT direkt auf ein Element mit einer solchen
+   Floating-UI-Komponente als Nachfahre setzen - stattdessen als eigenes, rein
+   dekoratives Element davor/dahinter platzieren (siehe demo/landing.html: eigenes
+   `.landing-topbar-backdrop` VOR dem eigentlichen Nav-Inhalt, nicht der Nav-Inhalt
+   selbst mit .ncss-glass). */
 .ncss-glass {
   background: var(--ncss-glass-bg, light-dark(rgb(255 255 255 / 55%), rgb(20 20 30 / 45%)));
   border: 1px solid var(--ncss-glass-border, light-dark(rgb(255 255 255 / 65%), rgb(255 255 255 / 12%)));

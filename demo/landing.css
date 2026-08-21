@@ -6,6 +6,13 @@
  * Tokens (var(--ncss-*)), keine eigenen Magic Numbers für Farbe/Abstand/Radius.
  */
 
+/* --- Topbar-Glass-Hintergrund (siehe Kommentar in landing.html) -------------------- */
+.landing-topbar-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
 /* --- Hero -------------------------------------------------------------------------- */
 .landing-hero {
   /* brand-100/-300 sind bewusst NICHT light-dark()-gewrappt (siehe colors.css) - als

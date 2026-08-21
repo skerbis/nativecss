@@ -299,6 +299,30 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     `-on-soft`) zusätzlich an derselben Stelle neu deklarieren - nicht automatisch, kein
     Workaround dafür eingebaut.
 
+21. **`backdrop-filter` (wie `filter`/`transform`/`perspective`/`will-change`) erzeugt per
+    Spec einen NEUEN CONTAINING BLOCK für `position:fixed`-Nachfahren - auf einem Element
+    mit einer Floating-UI-Komponente (`<wa-dropdown>`/`<wa-popover>`/o.ä., intern
+    typischerweise `position:fixed` relativ zum VIEWPORT) als Nachfahre zuckt deren Popup
+    sichtbar beim Scrollen.** `.ncss-glass` auf `<header class="ncss-topbar">` in
+    `demo/landing.html` gesetzt (das `<wa-dropdown>` "Mehr"-Menü ist ein Nachfahre) -
+    User-Report: "Dropdown im Menü zuckelt, wenn geöffnet und Seite wird gescrollt". Per
+    echtem Test bestätigt: `getBoundingClientRect()` des Dropdown-Items blieb bei
+    diskreten Scroll-Schritten zwar stabil (kein grober Sprung), das eigentliche
+    Zuckeln ist ein feineres Timing-Problem zwischen der eigenen Scroll-Neuberechnung des
+    Popups (nimmt Viewport-relative `position:fixed` an) und dem durch `backdrop-filter`
+    tatsächlich verschobenen Containing Block. **Erster Fix-Versuch verworfen**:
+    `backdrop-filter` von `.ncss-glass` selbst auf ein `::before` verlagern - kollidiert
+    mit `.ncss-glow-border`, das ebenfalls `::before` braucht (dokumentierte Kombination
+    "Glass + Glow-Border" in `demo/effects.html`, Karte 3) - ein Element hat nur EIN
+    `::before`. Tatsächlicher Fix: `.ncss-glass` unverändert lassen (kein Pseudo-Element-
+    Ansatz), stattdessen an der VERWENDUNGSSTELLE ein eigenes, rein dekoratives Element
+    (`.landing-topbar-backdrop`, absolut positioniert, `z-index:-1`) VOR dem eigentlichen
+    Nav-Inhalt einfügen statt `.ncss-glass` direkt auf den Nav-Container zu setzen -
+    trennt die Filter-Fläche vom Element, das die Floating-UI-Komponente enthält, ganz
+    ohne die Komponente selbst zu ändern. Regel für künftige Verwendung: `.ncss-glass`
+    NIE direkt auf ein Element mit `<wa-dropdown>`/`<wa-popover>`/`<dialog>` o.ä. als
+    Nachfahre setzen.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
