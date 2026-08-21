@@ -454,6 +454,23 @@ eigene Höhe) - relativ zu `--ncss-stack-card-height` berechnet statt eines fixe
 funktioniert dadurch automatisch für JEDE Kartenhöhen-Konfiguration (auch die
 Vollbild-Variante mit 100vh) ohne zwei parallele Formeln pflegen zu müssen.
 
+Horizontal-Modifier `.ncss-stack-section--horizontal` später ergänzt (Fächer/Anfahrt auf
+X- statt Y-Achse, eigene `ncss-stack-arrive-horizontal`/`ncss-stack-settle-horizontal`-
+Keyframes statt eines Achsen-Multiplikator-Tricks in einer gemeinsamen Formel - bewusst,
+bleibt so für beide Fälle einzeln lesbar). User-Report danach: "doppelte Scrollbalken,
+Sections bleiben halb stehen" - gründlich geprüft (jedes Element auf aktive Scrollbars
+gescannt, alle drei gleichzeitig auf der Seite befindlichen `.ncss-stack-section`
+gleichzeitig auf Cross-Contamination der `animation-timeline` getestet, da alle
+DENSELBEN `view-timeline-name` tragen) - KEIN Bug in Chromium gefunden, jede Sektion
+löst ihre Karten unabhängig und korrekt auf. Trotzdem `demo/scroll-sections.html` (der
+ursprüngliche verschachtelte Scroll-Snap-Container) und die drei Stacked-Cards-Varianten
+auf eine EIGENE Seite (`demo/stacked-cards.html`) aufgeteilt, auf Wunsch des Users - eine
+Seite mit einem verschachtelten Scroll-Container UND mehreren `view-timeline`-Sektionen
+gleichzeitig ist unnötig komplex und erschwert das Eingrenzen von Browser-spezifischen
+Problemen (siehe das Muster bei Punkt 21: mehrere Bugs dieser Session waren nur auf
+echtem Safari reproduzierbar, nicht in Chromium/Playwright-WebKit) - weniger
+gleichzeitige Scroll-Mechanik pro Seite bleibt die robustere Grundregel.
+
 Drittes Beispiel für "erst prüfen, dann committen", diesmal auch ein Beispiel dafür, wie
 man einen verlinkten Artikel über eine ZUKÜNFTIGE, noch nicht implementierte Spec-Idee
 (`@location`/`@navigation`/`:nav-source`, per WebFetch geprüft - keine Browser-

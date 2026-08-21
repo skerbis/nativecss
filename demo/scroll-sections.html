@@ -27,18 +27,6 @@
   .demo-snap-section--c { background-color: var(--ncss-color-brand-2); color: #fff; }
   .demo-snap-section--d { background-color: var(--ncss-color-surface); }
 
-  .demo-stack-card {
-    box-shadow: var(--ncss-shadow-lg);
-  }
-  .demo-stack-card--wide {
-    border-radius: 0;
-    box-shadow: none;
-  }
-  .demo-stack-card--1 { background-color: var(--ncss-color-brand); color: var(--ncss-color-brand-contrast); }
-  .demo-stack-card--2 { background-color: var(--ncss-color-brand-2); color: #fff; }
-  .demo-stack-card--3 { background-color: var(--ncss-color-success); color: #fff; }
-  .demo-stack-card--4 { background-color: var(--ncss-color-surface); }
-
   .demo-h-track {
     display: flex;
     width: 100%;
@@ -98,6 +86,7 @@
                 <li><a href="magazine.html">Magazin</a></li>
                 <li><a href="colors.html">Farben</a></li>
                 <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="stacked-cards.html">Stacked Cards</a></li>
                 <li><a href="landing.html">Landingpage-Beispiel</a></li>
                 <li><a href="effects.html">Effekte</a></li>
                 <li><a href="theming.html">Theme anpassen</a></li>
@@ -142,86 +131,11 @@
     </section>
 
     <section class="ncss-snap-section demo-snap-section demo-snap-section--d">
-      <h2>Letzte Vollbild-Sektion</h2>
-      <p class="ncss-text-muted">Markup: <code>.ncss-snap-sections</code> außen, <code>.ncss-snap-section</code> je Bildschirm - siehe <code>helpers/scroll.css</code>.</p>
-      <p class="demo-scroll-hint">↓ danach geht's weiter mit Stacked Cards ↓</p>
+      <h2>Letzte Sektion</h2>
+      <p class="ncss-text-muted">Markup: <code>.ncss-snap-sections</code> außen, <code>.ncss-snap-section</code> je Bildschirm - siehe <code>helpers/scroll.css</code>. Für Karten, die sich beim Scrollen aufeinander stapeln statt Sektion für Sektion einzurasten, siehe stattdessen <a href="stacked-cards.html">Stacked Cards</a>.</p>
+      <p><a href="index.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
     </section>
 
-  </div>
-
-  <div class="ncss-container ncss-stack ncss-py-xl">
-    <h2>Stacked Cards</h2>
-    <p class="ncss-text-muted">EINE Vollbild-Sektion (<code>.ncss-stack-section</code>), in der Karten beim Scrollen INNERHALB dieser einen Sektion übereinander gleiten (<code>components/scroll-stack.css</code>) - anders als oben (Sektion für Sektion vollflächig einrasten, jede mit eigenem Scroll-Abschnitt) bleibt hier die Bühne (<code>.ncss-stack-stage</code>) die ganze Zeit ein einziges Vollbild, nur der Inhalt darin stapelt sich während man hindurchscrollt. Baseline ganz ohne Scroll-Animation: die Karten liegen von Anfang an fertig gefächert da. Mit <code>view-timeline</code>-Unterstützung (aktuell nicht Baseline) fährt jede Karte erst während des Scrollens durch ihren eigenen Abschnitt der Sektion herein.</p>
-  </div>
-
-  <div class="ncss-stack-section" style="--ncss-stack-count: 4;">
-    <div class="ncss-stack-stage">
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--1" style="--ncss-stack-index: 0;">
-        <h3>Karte 1</h3>
-        <p class="ncss-text-inherit">Schon da, wenn die Bühne ankommt.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--2" style="--ncss-stack-index: 1;">
-        <h3>Karte 2</h3>
-        <p class="ncss-text-inherit">Fährt beim Weiterscrollen über Karte 1.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--3" style="--ncss-stack-index: 2;">
-        <h3>Karte 3</h3>
-        <p class="ncss-text-inherit">Und so weiter, ganz ohne JavaScript.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--4" style="--ncss-stack-index: 3;">
-        <h3>Letzte Karte</h3>
-        <p class="ncss-text-inherit">Am Ende liegt der ganze Stapel gefächert da.</p>
-      </article>
-    </div>
-  </div>
-
-  <div class="ncss-container ncss-stack ncss-py-xl">
-    <h2>Stacked Cards, Vollbild</h2>
-    <p class="ncss-text-muted">Dieselbe Komponente, nur per Token-Override umkonfiguriert - keine eigene Modifier-Klasse nötig: <code>--ncss-stack-card-height: 100vh</code>/<code>--ncss-stack-card-width: 100%</code> (volle statt kompakte Größe), <code>--ncss-stack-fan: 0px</code> (kein Fächer-Versatz, jede Karte deckt die vorherige exakt deckungsgleich). Jede Karte bleibt scharf/unverzerrt, solange sie die aktuell sichtbare ist - erst während die nächste Karte sie bedeckt, kippt sie per 3D-Transform in die Tiefe zurück.</p>
-  </div>
-
-  <div class="ncss-stack-section" style="--ncss-stack-count: 3; --ncss-stack-card-width: 100%; --ncss-stack-card-height: 100vh; --ncss-stack-fan: 0px;">
-    <div class="ncss-stack-stage">
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--wide demo-stack-card--1" style="--ncss-stack-index: 0;">
-        <h3>Vollbild-Karte 1</h3>
-        <p class="ncss-text-inherit">Bleibt scharf, bis Karte 2 sie erreicht.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--wide demo-stack-card--2" style="--ncss-stack-index: 1;">
-        <h3>Vollbild-Karte 2</h3>
-        <p class="ncss-text-inherit">Deckt Karte 1 komplett zu, die dabei zurückweicht.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--wide demo-stack-card--3" style="--ncss-stack-index: 2;">
-        <h3>Vollbild-Karte 3</h3>
-        <p class="ncss-text-inherit">Letzte Karte.</p>
-      </article>
-    </div>
-  </div>
-
-  <div class="ncss-container ncss-stack ncss-py-xl">
-    <h2>Stacked Cards, horizontal</h2>
-    <p class="ncss-text-muted">Modifier <code>.ncss-stack-section--horizontal</code> - dieselbe Bühne/Timeline-Mechanik wie oben, nur auf der X- statt der Y-Achse: Karten fächern sich seitlich auf, fahren von rechts herein und kippen beim Zurückweichen um die Y-Achse (statt X) zurück.</p>
-  </div>
-
-  <div class="ncss-stack-section ncss-stack-section--horizontal" style="--ncss-stack-count: 4;">
-    <div class="ncss-stack-stage">
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--1" style="--ncss-stack-index: 0;">
-        <h3>Karte 1</h3>
-        <p class="ncss-text-inherit">Schon da, wenn die Bühne ankommt.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--2" style="--ncss-stack-index: 1;">
-        <h3>Karte 2</h3>
-        <p class="ncss-text-inherit">Fährt von rechts über Karte 1.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--3" style="--ncss-stack-index: 2;">
-        <h3>Karte 3</h3>
-        <p class="ncss-text-inherit">Und so weiter, ganz ohne JavaScript.</p>
-      </article>
-      <article class="ncss-stack-card demo-stack-card demo-stack-card--4" style="--ncss-stack-index: 3;">
-        <h3>Letzte Karte</h3>
-        <p class="ncss-text-inherit">Am Ende liegt der ganze Stapel seitlich gefächert da.</p>
-        <p><a href="index.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
-      </article>
-    </div>
   </div>
 
 </main>
