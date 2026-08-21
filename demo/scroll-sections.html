@@ -26,6 +26,16 @@
   .demo-snap-section--c { background-color: var(--ncss-color-brand-2); color: #fff; }
   .demo-snap-section--d { background-color: var(--ncss-color-surface); }
 
+  .demo-stack-card {
+    width: 100%;
+    border-radius: var(--ncss-radius-lg);
+    box-shadow: var(--ncss-shadow-lg);
+  }
+  .demo-stack-card--1 { background-color: var(--ncss-color-brand); color: var(--ncss-color-brand-contrast); }
+  .demo-stack-card--2 { background-color: var(--ncss-color-brand-2); color: #fff; }
+  .demo-stack-card--3 { background-color: var(--ncss-color-success); color: #fff; }
+  .demo-stack-card--4 { background-color: var(--ncss-color-surface); }
+
   .demo-h-track {
     display: flex;
     width: 100%;
@@ -134,6 +144,31 @@
       <p><a href="index.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
     </section>
 
+  </div>
+
+  <div class="ncss-container ncss-stack ncss-py-xl">
+    <h2>Stacked Cards</h2>
+    <p class="ncss-text-muted">Karten, die sich beim Scrollen aufeinander stapeln (<code>.ncss-stack-cards</code>/<code>.ncss-stack-card</code>, <code>components/scroll-stack.css</code>) - anders als oben (Sektion für Sektion einrasten) schiebt sich hier jede neue Karte ÜBER die vorherige. Baseline-Mechanismus ist reines <code>position:sticky</code> (funktioniert überall) - wo <code>animation-timeline: view()</code> unterstützt wird (aktuell nicht Baseline, Chromium-Familie), weicht die bedeckte Karte zusätzlich per 3D-Transform leicht in die Tiefe zurück.</p>
+  </div>
+
+  <div class="ncss-stack-cards">
+    <section class="ncss-stack-card demo-stack-card demo-stack-card--1">
+      <h3>Karte 1</h3>
+      <p class="ncss-text-inherit">Bleibt oben kleben, bis die nächste Karte sie erreicht.</p>
+    </section>
+    <section class="ncss-stack-card demo-stack-card demo-stack-card--2">
+      <h3>Karte 2</h3>
+      <p class="ncss-text-inherit">Schiebt sich über Karte 1.</p>
+    </section>
+    <section class="ncss-stack-card demo-stack-card demo-stack-card--3">
+      <h3>Karte 3</h3>
+      <p class="ncss-text-inherit">Und so weiter, ganz ohne JavaScript.</p>
+    </section>
+    <section class="ncss-stack-card demo-stack-card demo-stack-card--4">
+      <h3>Letzte Karte</h3>
+      <p class="ncss-text-inherit">Markup: <code>.ncss-stack-cards</code> außen, <code>.ncss-stack-card</code> je Karte.</p>
+      <p><a href="index.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
+    </section>
   </div>
 
 </main>

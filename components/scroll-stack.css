@@ -1,0 +1,77 @@
+/**
+ * ncss - Scroll-Stack-Komponente (Layer "components"): Karten/Sektionen, die sich beim
+ * Scrollen aufeinander STAPELN statt (wie .ncss-snap-sections, helpers/scroll.css) nur
+ * nacheinander einzurasten - jede neue Karte schiebt sich über die vorherige, die
+ * vorherige weicht optional per 3D-Transform ("rotateX" + Verkleinern) leicht in die
+ * Tiefe zurück.
+ *
+ * Baseline-Mechanismus (funktioniert überall, kein JS): NUR position:sticky + normale
+ * DOM-Reihenfolge. Jede .ncss-stack-card bleibt oben "kleben", bis die nächste Karte im
+ * Dokumentfluss sie erreicht und darüber schiebt - spätere Geschwister malen dank
+ * normaler Stacking-Reihenfolge (kein z-index nötig) automatisch ÜBER früheren. Das
+ * allein ergibt bereits den kompletten Stapel-Effekt, nur ohne die 3D-Rückweich-Optik.
+ *
+ * 3D-Rückweich-Optik (Progressive Enhancement, aktuell NICHT Baseline - per Recherche
+ * bestätigt, "view()" funktioniert nicht in allen wichtigen Browsern): animation-timeline:
+ * view() koppelt eine @keyframes-Animation an den Scroll-Fortschritt DIESES Elements durch
+ * den sichtbaren Bereich - kombiniert mit position:sticky ergibt das genau den "Karte
+ * weicht zurück, während die nächste sie bedeckt"-Fortschritt (etabliertes Muster für
+ * genau diesen Stapel-Effekt). @supports-gated: ohne Unterstützung bleibt der Baseline-
+ * Stapel-Effekt (siehe oben) unverändert bestehen, kein Darstellungsfehler.
+ *
+ * Markup:
+ * <div class="ncss-stack-cards">
+ *   <section class="ncss-stack-card">...</section>
+ *   <section class="ncss-stack-card">...</section>
+ *   <section class="ncss-stack-card">...</section>
+ * </div>
+ */
+
+.ncss-stack-cards {
+  /* perspective als eigene Eigenschaft (nicht als Transform-Funktion wie bei
+     .ncss-modal--3d) - reicht hier, weil .ncss-stack-card ganz normal im Fluss steht
+     (position:sticky bleibt im normalen Stacking-Kontext), anders als ein <dialog>, das
+     in den Top Layer rendert und dort den perspective-Elternbezug verliert. */
+  perspective: var(--ncss-stack-perspective, 1200px);
+}
+
+.ncss-stack-card {
+  position: sticky;
+  top: var(--ncss-stack-offset, 0px);
+  min-height: var(--ncss-stack-card-height, 100vh);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ncss-space-xl);
+  overflow: clip;
+}
+
+/* Eigenes @media (prefers-reduced-motion) hier, ZUSÄTZLICH zur globalen Regel in
+   reset.css: die globale Regel kappt animation-duration auf 0.01ms - sinnvoll für
+   zeitbasierte Animationen, aber eine scroll-timeline-gekoppelte Animation hat keine
+   echte "Dauer" (der Fortschritt kommt vom Scroll-Offset, nicht von Zeit), das Kappen
+   könnte sich deshalb unvorhersehbar verhalten statt die Animation sauber zu
+   deaktivieren. Hier stattdessen der ganze Mechanismus (animation-timeline selbst) unter
+   reduced-motion gar nicht erst aktiviert - der Baseline-Stapel-Effekt (position:sticky)
+   bleibt unberührt bestehen. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ncss-stack-card {
+      animation: ncss-stack-recede linear both;
+      animation-timeline: view();
+      animation-range: cover 20% cover 100%;
+      transform-style: preserve-3d;
+    }
+  }
+}
+
+@keyframes ncss-stack-recede {
+  to {
+    transform:
+      scale(var(--ncss-stack-scale, 0.88))
+      translateZ(var(--ncss-stack-depth, -120px))
+      rotateX(var(--ncss-stack-tilt, 8deg));
+    filter: brightness(var(--ncss-stack-brightness, 0.7));
+  }
+}

@@ -342,6 +342,19 @@ NICHT als Fallback ergänzt, weil zwei konkurrierende Hacks für eine reine Zusa
 mehr Wartungslast wären, als sie wert sind. Dasselbe Abwägen gilt für jede künftige
 ähnliche Situation: EINE saubere, gut-gegatete Lösung statt mehrerer sich überschneidender.
 
+Zweites Beispiel, mit funktionierendem `@supports`-Fallback statt "kein Fallback nötig":
+`.ncss-stack-cards`/`.ncss-stack-card` (components/scroll-stack.css) - gestapelte Karten
+beim Scrollen. Baseline-Teil ist reines `position:sticky` (funktioniert überall, ergibt
+schon den kompletten Stapel-Effekt). Die zusätzliche 3D-Rückweich-Optik nutzt
+`animation-timeline: view()` (per WebSearch bestätigt: aktuell NICHT Baseline, MDN nennt
+es explizit nicht in allen wichtigen Browsern unterstützt) - komplett hinter
+`@supports (animation-timeline: view())` UND zusätzlich `@media (prefers-reduced-motion:
+no-preference)` (eigenes Gate, nicht nur die globale reset.css-Regel - eine
+scroll-timeline-gekoppelte Animation hat keine echte Zeitdauer, das globale Kappen von
+animation-duration könnte sich unvorhersehbar verhalten statt sauber zu deaktivieren).
+Playwright-Test in Chromium UND WebKit bestätigt: beide rendern den 3D-Effekt korrekt,
+kein Darstellungsfehler in keinem der beiden.
+
 ## Icon-System (`helpers/icons.css`)
 
 Eigene SVG-Icons als CSS `mask-image` (erben `currentColor`, kein Markup-Inhalt nötig):
