@@ -112,6 +112,24 @@ Rest der Seite zu kreuzblenden. Eigene Dauer/Kurve für den Rest der Seite
 (`::view-transition-old/-new(root)`) über dieselben Motion-Tokens wie der Rest von
 NativeCSS (`--ncss-motion-duration-slow`, `--ncss-motion-easing`).
 
+**Mehrere Presets, nicht nur Kreuzblende**: Default ist die Kreuzblende, drei weitere
+Presets liegen bereits bei - `slide` (horizontal), `zoom` (Heran-/Wegzoomen), `wipe`
+(Kreis-Reveal von oben). Aktivieren pro Seite über den `types`-Deskriptor - dafür die
+GESAMTE `@view-transition`-Regel in einem eigenen `<style>` NACH `page-transitions.css`
+wiederholen (nicht nur `types` allein, siehe Kommentar in der Datei):
+
+```html
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition { navigation: auto; types: slide; }
+  }
+</style>
+```
+
+Eigenes Preset ergänzen: `html:active-view-transition-type(name) { &::view-transition-old(root){...} &::view-transition-new(root){...} }`
+nach demselben Muster wie die drei mitgelieferten - Namen sind frei wählbar, keine feste
+Liste in der Spec.
+
 ## Architektur
 
 Ladereihenfolge über eine einzige globale `@layer`-Deklaration in `ncss.css` (Layer-
@@ -549,6 +567,15 @@ gehostetes Web Awesome/Font Awesome liegt unter `vendor/`. Erfordert:
   nicht über `file://`).
 - `data-webawesome="<pfad>"` auf dem Loader-`<script>`, sonst verdoppelt sich der
   Basis-Pfad bei relativem `src`.
+
+**`components/wa-close-on-scroll.js`** (opt-in, nur auf Seiten mit `<wa-dropdown>`/
+`<wa-popover>` einbinden): Web Awesomes Popup-Baustein hält ein offenes Panel absichtlich
+während des Scrollens am Anker positioniert - sitzt der Anker in einer
+`position:sticky`-Kopfleiste, kann das sichtbar glitchen (u.a. ein lange dokumentierter
+iOS-Safari-Bug bei Z-Index-Reihenfolge rund um `position:fixed` beim Scrollen, keine
+per CSS behebbare Ursache). Das Script schließt jedes offene Panel, sobald gescrollt
+wird, statt gegen die Neupositionierung anzukämpfen - dasselbe Muster wie bei den
+meisten Mega-/Dropdown-Menüs anderer Sites.
 
 ## Demo-Seiten
 

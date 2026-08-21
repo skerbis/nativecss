@@ -6,6 +6,17 @@
 <title>NativeCSS - Magazin</title>
 <link rel="stylesheet" href="../ncss.css">
 <link rel="stylesheet" href="../page-transitions.css">
+<!-- Eigenes Übergangs-Preset für diese Seite - komplette @view-transition-Regel
+     wiederholt (siehe Kommentar in page-transitions.css, warum komplett statt nur
+     "types" allein). -->
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+      navigation: auto;
+      types: slide;
+    }
+  }
+</style>
 <script src="../components/command-fallback.js" defer></script>
 <script src="../components/nav.js" defer></script>
 <style>

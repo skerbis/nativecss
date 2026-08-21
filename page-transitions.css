@@ -10,8 +10,8 @@
  *
  * Reines CSS, kein JavaScript, kein document.startViewTransition() nötig - @view-
  * transition { navigation: auto } genügt, der Browser übernimmt Navigation-Erkennung
- * und Screenshot-Vorher/Nachher selbst. Aktuell NICHT Baseline (Chromium-Familie,
- * Firefox/Safari noch ohne Unterstützung, Stand dieser Recherche) - unbekannte @-Regeln
+ * und Screenshot-Vorher/Nachher selbst. Aktuell NICHT Baseline (Chromium-Familie und
+ * Safari 18.2+, Firefox noch in Arbeit, Stand dieser Recherche) - unbekannte @-Regeln
  * werden von Browsern OHNE Unterstützung per CSS-Grundprinzip einfach ignoriert, kein
  * @supports nötig, keine Auswirkung auf ältere Browser: die Navigation bleibt dort
  * schlicht der normale, sofortige Seitenwechsel von vorher, kein Darstellungsfehler.
@@ -20,6 +20,22 @@
  * Animationen hier (die global über reset.css gedrosselt werden) reagiert die View-
  * Transitions-API NICHT von selbst auf prefers-reduced-motion, das @media-Gate hier ist
  * deshalb nicht redundant, sondern notwendig.
+ *
+ * --- Mehrere Presets, nicht nur Kreuzblende --------------------------------------------
+ * Default (keine weitere Angabe) ist die Kreuzblende unten. Für ein anderes Preset auf
+ * einer bestimmten Seite den `types`-Deskriptor setzen - dafür die GESAMTE @view-
+ * transition-Regel (inkl. navigation: auto) in einem eigenen <style> NACH dieser Datei
+ * wiederholen, nicht nur `types` allein deklarieren (ob einzelne Deskriptoren über
+ * mehrere @view-transition-Regeln hinweg kaskadieren oder die ganze Regel ersetzt wird,
+ * ist nicht abschließend geklärt - die komplette Regel zu wiederholen ist in jedem Fall
+ * sicher, siehe demo/landing.html für ein Beispiel):
+ *   @media (prefers-reduced-motion: no-preference) {
+ *     @view-transition { navigation: auto; types: slide; }
+ *   }
+ * Verfügbare Presets: `slide` (horizontal, wie ein Vorwärtsblättern), `zoom` (sanftes
+ * Heran-/Wegzoomen), `wipe` (Kreis-Reveal von oben, clip-path). Eigenes Preset ergänzen:
+ * dieselbe Struktur wie unten (html:active-view-transition-type(name) { ... }) - Namen
+ * frei wählbar, keine feste Liste in der Spec.
  */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
@@ -50,4 +66,75 @@
    gemeinsamen (sichtbares Flackern/doppeltes Element). */
 .ncss-topbar {
   view-transition-name: ncss-page-topbar;
+}
+
+/* --- Preset: slide (horizontal, wie ein Vorwärtsblättern) --------------------------------
+   Kein Blend zwischen den beiden Bewegungsrichtungen - alt schiebt/faded nach links weg,
+   neu kommt von rechts. Nicht Scroll-Richtungs-bewusst (das bräuchte JS - die window/
+   navigation.activation-API zur Laufzeit auswerten, siehe Kommentar oben in der Recherche
+   - bewusst weggelassen, um diese Datei bei "reines CSS" zu halten). */
+html:active-view-transition-type(slide) {
+  &::view-transition-old(root) {
+    animation-name: ncss-page-slide-out;
+  }
+  &::view-transition-new(root) {
+    animation-name: ncss-page-slide-in;
+  }
+}
+@keyframes ncss-page-slide-out {
+  to {
+    transform: translateX(-6%);
+    opacity: 0;
+  }
+}
+@keyframes ncss-page-slide-in {
+  from {
+    transform: translateX(6%);
+    opacity: 0;
+  }
+}
+
+/* --- Preset: zoom (sanftes Heran-/Wegzoomen) ---------------------------------------------- */
+html:active-view-transition-type(zoom) {
+  &::view-transition-old(root) {
+    animation-name: ncss-page-zoom-out;
+  }
+  &::view-transition-new(root) {
+    animation-name: ncss-page-zoom-in;
+  }
+}
+@keyframes ncss-page-zoom-out {
+  to {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+}
+@keyframes ncss-page-zoom-in {
+  from {
+    transform: scale(1.06);
+    opacity: 0;
+  }
+}
+
+/* --- Preset: wipe (Kreis-Reveal von oben, clip-path) --------------------------------------
+   Die alte Seite bleibt bewusst STATISCH stehen (animation:none überschreibt die
+   geerbte Standard-Kreuzblende) - der Browser malt ::view-transition-new(root) per
+   Default bereits ÜBER ::view-transition-old(root), der wachsende Kreis der neuen Seite
+   legt sich dadurch sichtbar über die unverändert stehende alte Seite, statt dass beide
+   gleichzeitig faden. */
+html:active-view-transition-type(wipe) {
+  &::view-transition-old(root) {
+    animation: none;
+  }
+  &::view-transition-new(root) {
+    animation-name: ncss-page-wipe-in;
+  }
+}
+@keyframes ncss-page-wipe-in {
+  from {
+    clip-path: circle(0% at 50% 0%);
+  }
+  to {
+    clip-path: circle(150% at 50% 0%);
+  }
 }

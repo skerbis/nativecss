@@ -323,22 +323,41 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     NIE direkt auf ein Element mit `<wa-dropdown>`/`<wa-popover>`/`<dialog>` o.ä. als
     Nachfahre setzen.
 
-    **Nachtrag (User-Report nach dem Fix, eingegrenzt auf Safari/WebKit):** Der spec-
+    **Nachtrag 1 (User-Report nach dem Fix, eingegrenzt auf Safari/WebKit):** Der spec-
     basierte Containing-Block-Fix oben behebt das Zucken in Chromium UND Playwrights
     WebKit-Build nachweisbar (120 rAF-Positions-Samples + Video-Frame-Extraktion während
-    echtem Scroll, beides absolut stabil, keine Abweichung). Safari/WebKit hat aber
-    zusätzlich einen bekannten, rein ENGINE-seitigen Bug (nicht durch die Spec
-    vorgeschrieben): `backdrop-filter` in der Nähe von sticky/fixed-Inhalt kann beim
-    Scrollen Repaint-Artefakte an NACHBAR-Elementen verursachen, auch wenn diese keine
-    Nachfahren des gefilterten Elements sind. Mitigation: `transform: translateZ(0)` auf
-    `.landing-topbar-backdrop` selbst (nicht auf einen Dropdown-Nachfahren) erzwingt eine
-    eigene Compositor-Ebene - verbreiteter, dokumentierter Workaround für genau diese
-    Bug-Klasse. Playwrights WebKit-Build (Linux-kompatibler Compositor) bildet macOS/iOS
-    Safaris tatsächlichen GPU-Compositor NICHT ab - ein sauberer Test dort ist deshalb
-    KEIN Beweis, dass ein Safari-spezifischer Compositing-Bug nicht doch vorliegt, nur
-    dass der spec-basierte Containing-Block-Teil korrekt behoben ist. Falls das Problem
-    auf echtem Safari weiter auftritt: `.ncss-glass` von der Landingpage-Topbar entfernen
-    ist die letzte, garantiert sichere Option (rein kosmetisch, kein Kernfeature).
+    echtem Scroll, beides absolut stabil, keine Abweichung). Zwischenzeitliche Vermutung:
+    Safari/WebKit hat zusätzlich einen bekannten, rein ENGINE-seitigen Bug (`backdrop-
+    filter` in der Nähe von sticky/fixed-Inhalt verursacht Repaint-Artefakte an Nachbar-
+    Elementen) - `transform: translateZ(0)` auf `.landing-topbar-backdrop` als Mitigation
+    versucht (eigene Compositor-Ebene erzwingen).
+
+    **Nachtrag 2 (entscheidender Hinweis vom User): dasselbe Glitchen trat AUCH beim
+    Glocken-`<wa-popover>` auf** - einer völlig anderen Komponente, ohne jede Nähe zum
+    Glass-Hintergrund. Das widerlegt die backdrop-filter-Theorie als (alleinige) Ursache:
+    beide Floating-Komponenten sitzen im selben `position:sticky`-Header, das ist der
+    tatsächliche gemeinsame Nenner. Web Awesomes Popup-Baustein hält ein offenes Panel
+    ABSICHTLICH während des Scrollens am Anker positioniert (siehe vendor/webawesome/
+    dist-cdn/skills/webawesome/references/components/popup.md: "keep them positioned
+    together as the page scrolls") - kombiniert mit einem `position:sticky`-Anker (dessen
+    Bildschirmposition sich technisch nicht ändert, aber jeden Scroll-Tick trotzdem neu
+    berechnet wird) und dem lange dokumentierten iOS-Safari-Bug bei Z-Index-Reihenfolge
+    rund um `position:fixed`-Elemente beim Scrollen (User verlinkte
+    https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/)
+    ergibt das ein bekanntes, NICHT per eigenem CSS behebbares Rendering-Problem der
+    Browser-Engine, kein ncss-Bug.
+
+    Zwei endgültige Fixes statt weiterer CSS-Mitigation:
+    1. `.ncss-glass` komplett von der Landingpage-Topbar entfernt (rein kosmetisch, kein
+       Kernfeature - nicht die Ursache, aber auch kein Grund, das spec-basierte Risiko
+       aus Punkt 21 oben weiter einzugehen).
+    2. `components/wa-close-on-scroll.js` (neu, opt-in wie `command-fallback.js`) -
+       schließt jedes offene `<wa-dropdown>`/`<wa-popover>` sobald gescrollt wird
+       (`el.open = false`, beide haben eine reflektierte `open`-Property). Kämpft nicht
+       gegen das Positionierungs-/Rendering-Problem an, sondern umgeht es komplett -
+       dasselbe verbreitete Muster wie bei den meisten Mega-/Dropdown-Menüs anderer
+       Sites. Eingebunden auf `demo/landing.html` und `demo/webawesome.html` (die
+       einzigen Seiten mit `<wa-dropdown>`/`<wa-popover>`).
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
