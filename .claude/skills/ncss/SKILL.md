@@ -323,6 +323,23 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     NIE direkt auf ein Element mit `<wa-dropdown>`/`<wa-popover>`/`<dialog>` o.ä. als
     Nachfahre setzen.
 
+    **Nachtrag (User-Report nach dem Fix, eingegrenzt auf Safari/WebKit):** Der spec-
+    basierte Containing-Block-Fix oben behebt das Zucken in Chromium UND Playwrights
+    WebKit-Build nachweisbar (120 rAF-Positions-Samples + Video-Frame-Extraktion während
+    echtem Scroll, beides absolut stabil, keine Abweichung). Safari/WebKit hat aber
+    zusätzlich einen bekannten, rein ENGINE-seitigen Bug (nicht durch die Spec
+    vorgeschrieben): `backdrop-filter` in der Nähe von sticky/fixed-Inhalt kann beim
+    Scrollen Repaint-Artefakte an NACHBAR-Elementen verursachen, auch wenn diese keine
+    Nachfahren des gefilterten Elements sind. Mitigation: `transform: translateZ(0)` auf
+    `.landing-topbar-backdrop` selbst (nicht auf einen Dropdown-Nachfahren) erzwingt eine
+    eigene Compositor-Ebene - verbreiteter, dokumentierter Workaround für genau diese
+    Bug-Klasse. Playwrights WebKit-Build (Linux-kompatibler Compositor) bildet macOS/iOS
+    Safaris tatsächlichen GPU-Compositor NICHT ab - ein sauberer Test dort ist deshalb
+    KEIN Beweis, dass ein Safari-spezifischer Compositing-Bug nicht doch vorliegt, nur
+    dass der spec-basierte Containing-Block-Teil korrekt behoben ist. Falls das Problem
+    auf echtem Safari weiter auftritt: `.ncss-glass` von der Landingpage-Topbar entfernen
+    ist die letzte, garantiert sichere Option (rein kosmetisch, kein Kernfeature).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
