@@ -18,6 +18,7 @@ HTML/CSS allein nicht reicht (z.B. Toast, Carousel, Drawer) - siehe `demo/webawe
 
 - [Schnellstart](#schnellstart)
 - [Theme anpassen](#theme-anpassen)
+- [Seitenübergänge](#seitenübergänge)
 - [Architektur](#architektur)
 - [Grundprinzipien](#grundprinzipien)
 - [Design Tokens](#design-tokens)
@@ -82,6 +83,34 @@ ziehen nur Regeln mit, die den Seed direkt referenzieren (z.B. `.ncss-btn--prima
 `-on-soft`, u.a. von `.ncss-badge` genutzt) bleibt beim alten Wert, weil sie nur einmal
 auf `:root` berechnet und als fertiger Wert vererbt wird, siehe
 [Bekannte Grenzen](#bekannte-grenzen-bewusste-kompromisse) und `demo/theming.html`.
+
+## Seitenübergänge
+
+Weiche Übergänge zwischen Seiten-Navigationen - eigene, ebenfalls OPT-IN Datei wie
+`theme.css`: **`page-transitions.css`**. Auf JEDER Seite laden, zwischen der ein
+Übergang erscheinen soll (Cross-Document View Transitions brauchen die Zustimmung
+BEIDER Seiten - Quelle und Ziel der Navigation):
+
+```html
+<link rel="stylesheet" href="ncss.css">
+<link rel="stylesheet" href="page-transitions.css">
+```
+
+Reines CSS (`@view-transition { navigation: auto; }`), kein JavaScript nötig - der
+Browser übernimmt Navigations-Erkennung und Vorher-/Nachher-Screenshots selbst.
+Aktuell nicht Baseline (Chromium-Familie, Stand dieser Recherche) - **keine Auswirkung
+auf ältere Browser**: eine unbekannte `@`-Regel wird beim Parsen einfach ignoriert
+(CSS-Grundprinzip), die Navigation bleibt dort der normale, sofortige Seitenwechsel,
+kein `@supports` nötig. Nur unter `prefers-reduced-motion: no-preference` aktiv - anders
+als die meisten Animationen hier reagiert die View-Transitions-API NICHT von selbst auf
+diese Einstellung, das Gate ist deshalb notwendig, nicht redundant zur globalen
+reset.css-Regel.
+
+`.ncss-topbar` bekommt einen `view-transition-name` (`ncss-page-topbar`) - dieselbe
+Kopfleiste morpht dadurch beim Seitenwechsel nahtlos an Ort und Stelle, statt mit dem
+Rest der Seite zu kreuzblenden. Eigene Dauer/Kurve für den Rest der Seite
+(`::view-transition-old/-new(root)`) über dieselben Motion-Tokens wie der Rest von
+NativeCSS (`--ncss-motion-duration-slow`, `--ncss-motion-easing`).
 
 ## Architektur
 

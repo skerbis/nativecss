@@ -1,0 +1,53 @@
+/**
+ * NativeCSS - Seitenübergänge zwischen Navigationen (Cross-Document View Transitions).
+ * Eigene, OPT-IN Datei (wie theme.css) - NICHT Teil von ncss.css, weil das eine
+ * seitenweite Navigations-Entscheidung ist, kein wiederverwendbarer Baustein.
+ *
+ * Einbindung: auf JEDER Seite laden, zwischen der ein weicher Übergang erscheinen soll
+ * (Cross-Document View Transitions brauchen die Zustimmung BEIDER Seiten - Quelle UND
+ * Ziel der Navigation -, sonst bleibt es beim normalen, sofortigen Seitenwechsel):
+ *   <link rel="stylesheet" href="page-transitions.css">
+ *
+ * Reines CSS, kein JavaScript, kein document.startViewTransition() nötig - @view-
+ * transition { navigation: auto } genügt, der Browser übernimmt Navigation-Erkennung
+ * und Screenshot-Vorher/Nachher selbst. Aktuell NICHT Baseline (Chromium-Familie,
+ * Firefox/Safari noch ohne Unterstützung, Stand dieser Recherche) - unbekannte @-Regeln
+ * werden von Browsern OHNE Unterstützung per CSS-Grundprinzip einfach ignoriert, kein
+ * @supports nötig, keine Auswirkung auf ältere Browser: die Navigation bleibt dort
+ * schlicht der normale, sofortige Seitenwechsel von vorher, kein Darstellungsfehler.
+ *
+ * NUR unter prefers-reduced-motion:no-preference aktiv - anders als die meisten
+ * Animationen hier (die global über reset.css gedrosselt werden) reagiert die View-
+ * Transitions-API NICHT von selbst auf prefers-reduced-motion, das @media-Gate hier ist
+ * deshalb nicht redundant, sondern notwendig.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+/* Eigene Dauer/Kurve statt des Browser-Default (meist 0.25s ease) - dieselben Tokens wie
+   der Rest von NativeCSS, damit sich der Seitenübergang nicht wie ein Fremdkörper
+   anfühlt. ::view-transition-old/-new(root) sind die beiden "Fotos" (alte/neue Seite),
+   die der Browser automatisch erzeugt - hier nur Timing überschrieben, keine eigene
+   Crossfade-Logik nötig (Browser-Default dafür bereits gut). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--ncss-motion-duration-slow, 400ms);
+  animation-timing-function: var(--ncss-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Geteilte Elemente (gleicher view-transition-name auf Quell- UND Zielseite) morphen
+   nahtlos ineinander statt zu kreuzblenden - der Browser berechnet Position/Größe
+   automatisch zwischen beiden Zuständen ("early days nav matching"-Idee, hier mit der
+   tatsächlich schon verfügbaren Technik statt der in der Recherche gefundenen, noch
+   nicht implementierten @location/@navigation/:nav-source-Spec). .ncss-topbar auf jeder
+   Seite mit identischem view-transition-name sorgt dafür, dass die Kopfleiste beim
+   Seitenwechsel an Ort und Stelle bleibt, statt mit dem Rest der Seite zu kreuzblenden -
+   WICHTIG: der Name muss auf JEDER teilnehmenden Seite exakt gleich sein, sonst behandelt
+   der Browser es als zwei unabhängige, sich überschneidende Elemente statt eines
+   gemeinsamen (sichtbares Flackern/doppeltes Element). */
+.ncss-topbar {
+  view-transition-name: ncss-page-topbar;
+}

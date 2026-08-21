@@ -417,6 +417,23 @@ eigene Höhe) - relativ zu `--ncss-stack-card-height` berechnet statt eines fixe
 funktioniert dadurch automatisch für JEDE Kartenhöhen-Konfiguration (auch die
 Vollbild-Variante mit 100vh) ohne zwei parallele Formeln pflegen zu müssen.
 
+Drittes Beispiel für "erst prüfen, dann committen", diesmal auch ein Beispiel dafür, wie
+man einen verlinkten Artikel über eine ZUKÜNFTIGE, noch nicht implementierte Spec-Idee
+(`@location`/`@navigation`/`:nav-source`, per WebFetch geprüft - keine Browser-
+Unterstützung, reines Proposal) von der tatsächlich SCHON VERFÜGBAREN Technik für
+dasselbe Ziel unterscheidet: `page-transitions.css` (Repo-Root, opt-in wie `theme.css`)
+nutzt die bereits shippende Cross-Document-View-Transitions-API
+(`@view-transition { navigation: auto; }`), nicht die im Artikel beschriebene Spec-Idee.
+Keine `@supports`-Absicherung nötig für die Auswirkung auf ältere Browser: eine
+unbekannte `@`-Regel wird beim CSS-Parsen einfach ignoriert (Grundprinzip der Sprache),
+die Navigation bleibt dort einfach der normale, sofortige Seitenwechsel. Trotzdem ein
+eigenes `@media (prefers-reduced-motion: no-preference)`-Gate nötig (wie bei
+`scroll-stack.css`) - die View-Transitions-API respektiert `prefers-reduced-motion`
+NICHT von selbst. `view-transition-name` auf `.ncss-topbar` sorgt dafür, dass die
+Kopfleiste beim Seitenwechsel nahtlos an Ort und Stelle bleibt statt zu kreuzblenden -
+MUSS auf allen teilnehmenden Seiten exakt derselbe Name sein, sonst behandelt der
+Browser es als zwei unabhängige Elemente (sichtbares Flackern/doppeltes Element).
+
 ## Icon-System (`helpers/icons.css`)
 
 Eigene SVG-Icons als CSS `mask-image` (erben `currentColor`, kein Markup-Inhalt nötig):
