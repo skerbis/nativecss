@@ -20,6 +20,15 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   hanging-punctuation: first last;
+  /* Sanftes Scrollen SEITENWEIT (Anker-Klicks, .scrollIntoView() etc.), nicht nur in den
+     einzelnen Komponenten, die es schon länger selbst setzen (slideshow.css,
+     .ncss-scroll-snap-x/-y, .ncss-snap-sections - deren eigener overflow:auto-Container
+     braucht die Deklaration trotzdem WEITERHIN selbst, scroll-behavior gilt nur für die
+     eigene Scroll-Box eines Elements, vererbt sich nicht). Die globale
+     prefers-reduced-motion-Regel weiter unten setzt scroll-behavior bereits für ALLE
+     Elemente (der Universalselektor "*" schließt auch html mit ein) zurück auf "auto" -
+     kein zweites Gate hier nötig. */
+  scroll-behavior: smooth;
 }
 
 body {

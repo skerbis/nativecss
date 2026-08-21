@@ -488,6 +488,7 @@ ein eigenständiges (nicht gefloatetes) Bild, z.B. via `.ncss-figure`.
 
 | Klasse | Zweck |
 |---|---|
+| `html { scroll-behavior: smooth }` (reset.css) | Seitenweiter Default für Anker-Klicks/`.scrollIntoView()` - nicht nur in den einzelnen Komponenten unten, die es zusätzlich selbst auf ihrem eigenen `overflow:auto`-Container setzen (`scroll-behavior` gilt nur für die eigene Scroll-Box, vererbt sich nicht). Respektiert `prefers-reduced-motion` automatisch über die bereits bestehende globale Regel (`*` schließt `html` mit ein) |
 | `.ncss-sticky` / `--bottom` | `position: sticky` |
 | `.ncss-sticky-container` | Bezugsrahmen für ein Sticky-Element |
 | `.ncss-scroll-snap-x` / `-y` + `.ncss-scroll-snap-item` | CSS Scroll Snap |
