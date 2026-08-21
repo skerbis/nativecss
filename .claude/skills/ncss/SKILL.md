@@ -410,9 +410,10 @@ richtigen Kalibrierung brauchen kann: `.ncss-stack-section`/`.ncss-stack-stage`/
 beim Scrollen INNERHALB dieser einen Sektion übereinander gleiten (Nutzer-Anforderung
 nach mehreren Iterationen: erst unabhängig sticky Karten je eigenem Vollbild-Abschnitt,
 dann kompakt+gefächert am oberen Rand, dann in der Bildschirmmitte, am Ende explizit
-"eine Vollbild-Sektion, darin die stacked cards"). Baseline-Teil ist ein fixer
-`translateY`-Versatz pro Karte (kein JS, funktioniert überall, ergibt schon den
-gefächerten Stapel-Look). Die Scroll-Animation nutzt eine BENANNTE `view-timeline-name`
+"eine Vollbild-Sektion, darin die stacked cards"). Ein fixer `translateY`-Versatz pro
+Karte (`--ncss-stack-index * --ncss-stack-fan`) liefert die Ruheposition/den Endzustand
+der Scroll-Animation (NICHT der echte Fallback für Browser ohne `view-timeline` -
+dazu unten mehr, eigener Absatz). Die Scroll-Animation nutzt eine BENANNTE `view-timeline-name`
 (nicht die anonyme `view()`-Funktion wie im ersten Anlauf) auf der äußeren Sektion, jede
 Karte per `animation-range` auf ihre eigene Scheibe gemappt - zwei echte Kalibrierungs-
 Bugs dabei per `getComputedStyle().transform`-Auslese gefunden, nicht nur optisch:
@@ -470,6 +471,33 @@ gleichzeitig ist unnötig komplex und erschwert das Eingrenzen von Browser-spezi
 Problemen (siehe das Muster bei Punkt 21: mehrere Bugs dieser Session waren nur auf
 echtem Safari reproduzierbar, nicht in Chromium/Playwright-WebKit) - weniger
 gleichzeitige Scroll-Mechanik pro Seite bleibt die robustere Grundregel.
+
+WICHTIGER Landmine-Fund danach, echter Fallback-Bug statt nur Optik: der fixe
+`translateY`-Versatz (`--ncss-stack-index * --ncss-stack-fan`) ist KEIN ausreichender
+Fallback für Browser ohne `view-timeline`-Unterstützung, obwohl er zunächst genau danach
+aussah (in echtem Firefox getestet, alle Karten sichtbar gefächert) - dieser Test deckte
+nur Demos mit `--ncss-stack-fan` ungleich 0 ab. Bei der Vollbild-Variante
+(`--ncss-stack-card-height: 100vh`/`-card-width: 100%`/`-fan: 0px`, Karten sollen die
+GANZE Bühne füllen) ergibt derselbe Versatz für JEDE Karte exakt `translateY(0)` - ohne
+Scroll-Animation liegen alle Karten deckungsgleich übereinander, nur die letzte (oberste
+im DOM) bleibt sichtbar/erreichbar, der Rest ist komplett verdeckt und nicht anschaubar
+(User-Feedback, nachdem ich den Fallback fälschlich als "über alle Varianten verifiziert"
+gemeldet hatte, obwohl mein eigener Firefox-Testlauf die deckungsgleichen
+`matrix(1,0,0,1,0,0)`-Transforms für genau diese Sektion schon zeigte - ich hatte nur die
+Screenshots der anderen Varianten angesehen, nicht diese: "fallback darstellung fehlt
+noch für die nicht timeline browser .. die karten liegen halt übereinander und man kann
+sie sich nicht anschauen"). Lehre: ein Fallback, der von einem Custom-Property-Wert
+abhängt, den Demos bewusst auf 0 setzen dürfen, ist kein echter Fallback - er muss
+UNABHÄNGIG vom Wert dieser Property funktionieren. Fix: eigener
+`@supports not (view-timeline-name: --ncss-stack-progress)`-Block schaltet die komplette
+Pinning-/Absolut-Stapel-Mechanik ab (`.ncss-stack-section` height:auto, `.ncss-stack-stage`
+position:static/height:auto/overflow:visible, `.ncss-stack-card` position:relative +
+transform:none) - Karten laufen dann ganz normal im Flex-Fluss untereinander, garantiert
+einzeln sichtbar/scrollbar, unabhängig von `--ncss-stack-fan`/`-count` oder der
+`--horizontal`-Variante (dieselbe einfache vertikale Liste für beide, bewusst kein
+zweites Fallback-Layout). Re-verifiziert in echtem Firefox MIT expliziter Prüfung genau
+der Vollbild-Sektion (nicht nur "sieht insgesamt gut aus") sowie in Chromium, dass die
+`@supports`-Gate dort weiterhin die animierte Sticky-Variante unverändert lässt.
 
 Drittes Beispiel für "erst prüfen, dann committen", diesmal auch ein Beispiel dafür, wie
 man einen verlinkten Artikel über eine ZUKÜNFTIGE, noch nicht implementierte Spec-Idee

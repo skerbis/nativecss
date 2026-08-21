@@ -9,8 +9,24 @@
 <script src="../components/command-fallback.js" defer></script>
 <script src="../components/nav.js" defer></script>
 <style>
+  :root {
+    --demo-stack-nav-height: 3.5rem;
+  }
   .demo-footer-brand {
     color: var(--ncss-color-text);
+  }
+  /* Sticky statt normal im Fluss - sonst nach einem Sprung per Anker-Link in die
+     Sektion nicht mehr erreichbar, ohne komplett zurückzuscrollen (User-Report). Eigener
+     Hintergrund nötig, weil Inhalt sonst dahinter durchscrollt. */
+  .demo-stack-nav {
+    position: sticky;
+    top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+    z-index: 10;
+    height: var(--demo-stack-nav-height);
+    align-items: center;
+    background-color: var(--ncss-color-bg);
+    padding-inline: var(--ncss-space-md);
+    margin-block-end: var(--ncss-space-sm);
   }
   .demo-stack-card {
     box-shadow: var(--ncss-shadow-lg);
@@ -18,6 +34,11 @@
   .demo-stack-card--wide {
     border-radius: 0;
     box-shadow: none;
+  }
+  .demo-stack-anchor {
+    position: absolute;
+    inset-inline-start: 0;
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--demo-stack-nav-height) + var(--ncss-space-sm));
   }
   .demo-stack-card--1 { background-color: var(--ncss-color-brand); color: var(--ncss-color-brand-contrast); }
   .demo-stack-card--2 { background-color: var(--ncss-color-brand-2); color: #fff; }
@@ -135,8 +156,61 @@
       <article class="ncss-stack-card demo-stack-card demo-stack-card--4" style="--ncss-stack-index: 3;">
         <h3>Letzte Karte</h3>
         <p class="ncss-text-inherit">Am Ende liegt der ganze Stapel seitlich gefächert da.</p>
-        <p><a href="index.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
       </article>
+    </div>
+  </div>
+
+  <div class="ncss-container ncss-stack ncss-py-xl">
+    <h2>Stacked Cards, in einem normalen Container</h2>
+    <p class="ncss-text-muted">Dieselbe Komponente in einem gewöhnlichen, breitenbegrenzten <code>.ncss-container</code> statt vollflächig - <code>--ncss-stack-stage-height</code> (statt der Vollbild-100vh) und <code>--ncss-stack-stage-top</code> (klebt unter der Topbar statt an der Bildschirm-Oberkante) machen die Bühne beliebig klein. Dazu eine Sprungnavigation mit echten Anker-Links (<code>#stack-contained-N</code>) zu unsichtbaren Marker-Elementen an der jeweiligen Kartenposition innerhalb der Sektion - ungefähre statt pixelgenaue Navigation, reicht aber, um gezielt zu einer Karte zu springen statt nur durchzuscrollen. Die Navigation selbst ist <code>position:sticky</code> (klebt unter der Topbar) - sonst wäre sie nach einem Sprung in die Sektion nicht mehr erreichbar, ohne komplett zurückzuscrollen.</p>
+  </div>
+
+  <nav class="ncss-cluster demo-stack-nav" aria-label="Zu einer Karte springen">
+    <a href="#stack-contained-1" class="ncss-btn ncss-btn--secondary">Karte 1</a>
+    <a href="#stack-contained-2" class="ncss-btn ncss-btn--secondary">Karte 2</a>
+    <a href="#stack-contained-3" class="ncss-btn ncss-btn--secondary">Karte 3</a>
+    <a href="#stack-contained-4" class="ncss-btn ncss-btn--secondary">Karte 4</a>
+  </nav>
+
+  <div class="ncss-container">
+    <div
+      class="ncss-stack-section"
+      style="
+        --ncss-stack-count: 4;
+        --ncss-stack-stage-height: 22rem;
+        --ncss-stack-stage-top: calc(var(--ncss-topbar-height) + var(--demo-stack-nav-height) + var(--ncss-space-sm));
+        --ncss-stack-card-height: 16rem;
+        --ncss-stack-card-width: 100%;
+        --ncss-stack-fan: 1rem;
+      "
+    >
+      <!-- Unsichtbare Sprungmarken - eigene Kinder der Sektion (NICHT der Bühne, deren
+           overflow:clip sie sonst abschneiden würde), top:N% bezieht sich dadurch auf die
+           volle Sektionshöhe. scroll-margin-top sorgt dafür, dass ein Sprung hierher nicht
+           unter der sticky Topbar landet. -->
+      <span id="stack-contained-1" class="demo-stack-anchor" style="top: 0%;" aria-hidden="true"></span>
+      <span id="stack-contained-2" class="demo-stack-anchor" style="top: 25%;" aria-hidden="true"></span>
+      <span id="stack-contained-3" class="demo-stack-anchor" style="top: 50%;" aria-hidden="true"></span>
+      <span id="stack-contained-4" class="demo-stack-anchor" style="top: 75%;" aria-hidden="true"></span>
+      <div class="ncss-stack-stage">
+        <article class="ncss-stack-card demo-stack-card demo-stack-card--1" style="--ncss-stack-index: 0;">
+          <h3>Karte 1</h3>
+          <p class="ncss-text-inherit">Schon da, wenn die Bühne ankommt.</p>
+        </article>
+        <article class="ncss-stack-card demo-stack-card demo-stack-card--2" style="--ncss-stack-index: 1;">
+          <h3>Karte 2</h3>
+          <p class="ncss-text-inherit">Fährt beim Weiterscrollen über Karte 1.</p>
+        </article>
+        <article class="ncss-stack-card demo-stack-card demo-stack-card--3" style="--ncss-stack-index: 2;">
+          <h3>Karte 3</h3>
+          <p class="ncss-text-inherit">Und so weiter, ganz ohne JavaScript.</p>
+        </article>
+        <article class="ncss-stack-card demo-stack-card demo-stack-card--4" style="--ncss-stack-index: 3;">
+          <h3>Letzte Karte</h3>
+          <p class="ncss-text-inherit">Am Ende liegt der ganze Stapel gefächert da.</p>
+          <p><a href="index.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
+        </article>
+      </div>
     </div>
   </div>
 
