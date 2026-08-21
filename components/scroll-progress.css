@@ -1,0 +1,63 @@
+/**
+ * ncss - Scroll-Progress-Komponente (Layer "components"): ein einzelnes, vollständiges
+ * UI-Element (Leseanzeige-Balken) statt ein wiederverwendbarer Baustein - deshalb hier
+ * statt in helpers/scroll.css (das enthält nur allgemeine Scroll-MECHANIK wie Sticky/
+ * Scroll-Snap, aus denen man Verschiedenes baut).
+ *
+ * Reine CSS-Lösung über eine Scroll-Timeline auf dem Wurzel-Scroller - kein JS/Scroll-
+ * Event-Listener nötig. Markup: <div class="ncss-scroll-progress"></div> (leeres div
+ * reicht, wird per scale skaliert). Ohne Unterstützung bleibt es schlicht unsichtbar
+ * (scale bleibt bei 0) statt kaputt auszusehen.
+ *
+ * z-index bewusst sehr hoch (1000) - das ist als permanentes, page-weites UI-Element
+ * gedacht, das über allem anderen liegen soll, INKLUSIVE eigener Sticky-Header
+ * (.ncss-sticky, siehe helpers/scroll.css, Default z-index 10). Eigene Seiten-Header
+ * sollten trotzdem einen klar höheren z-index als 10 bekommen als Sticky-Inhalte
+ * innerhalb der Seite, damit es nicht zu Überlagerungen kommt (kein automatischer Schutz
+ * davor möglich - z-index-Koordination bleibt Aufgabe der jeweiligen Seite).
+ */
+@supports (animation-timeline: scroll()) {
+  .ncss-scroll-progress {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 0.25rem;
+    background-color: var(--ncss-color-brand);
+    transform-origin: left;
+    scale: 0 1;
+    animation: ncss-scroll-progress-fill linear;
+    animation-timeline: scroll(root);
+    z-index: 1000;
+  }
+}
+@keyframes ncss-scroll-progress-fill {
+  to { scale: 1 1; }
+}
+
+/* --- Varianten -----------------------------------------------------------------------
+   Farbe: KEINE eigene Klasse nötig - .ncss-gradient-brand/-subtle (helpers/surfaces.css)
+   lässt sich direkt dazu kombinieren (class="ncss-scroll-progress ncss-gradient-brand"),
+   background-image malt sich einfach über das background-color dieser Komponente. Genauso
+   für eine einfarbige Alternative .ncss-surface--brand-2/-neutral. Keine eigene
+   Farbvarianten-Matrix duplizieren.
+
+   Position: vertikal am Bildschirmrand statt horizontal oben - dieselbe scroll()-Timeline,
+   nur Achse und transform-origin gedreht. --start/--end folgen derselben logischen
+   Konvention wie .ncss-float-start/-end (links/rechts in LTR), Default (ohne --end) ist
+   die Start-Kante. */
+@supports (animation-timeline: scroll()) {
+  .ncss-scroll-progress--vertical {
+    inset-inline-end: auto;
+    inset-inline-start: 0;
+    inset-block: 0;
+    width: 0.25rem;
+    height: auto;
+    transform-origin: top;
+    scale: 1 0;
+
+    &.ncss-scroll-progress--end {
+      inset-inline-start: auto;
+      inset-inline-end: 0;
+    }
+  }
+}

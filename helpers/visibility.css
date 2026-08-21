@@ -1,0 +1,57 @@
+/**
+ * ncss - Sichtbarkeits-Helper (Layer "helpers"). Eigenständig statt in layout.css
+ * versteckt - das hier ist "zeig/verstecke dieses Element", kein Seiten-Layout. Für
+ * "für Screenreader unsichtbar, aber vorlesbar" siehe stattdessen helpers/a11y.css
+ * (.ncss-visually-hidden) - das ist konzeptionell etwas anderes als hier.
+ */
+
+.ncss-hidden {
+  display: none;
+}
+
+/* Nimmt weiterhin Platz im Layout ein (anders als .ncss-hidden) - für Fälle, in denen
+   Auf-/Zuklappen keinen Sprung im umgebenden Layout verursachen soll. */
+.ncss-invisible {
+  visibility: hidden;
+}
+
+/* Nur beim Drucken sichtbar/unsichtbar. Bewusst KEIN "display: revert/revert-layer" zum
+   Wiederherstellen (unvorhersehbarer UA-Display-Default je nach Elementtyp - dieselbe
+   Begründung wie beim Breakpoint-Escape-Hatch in helpers/layout.css). Stattdessen zwei
+   eigenständige, medienabhängige Regeln, die sich nie überschneiden. */
+.ncss-print-only {
+  display: none;
+}
+@media print {
+  /* display:block als Annahme - für ein Element, das inline/flex/grid sein soll, direkt
+     die passende .ncss-print-only-Instanz mit style="display: ..." überschreiben. */
+  .ncss-print-only {
+    display: block;
+  }
+  .ncss-screen-only {
+    display: none;
+  }
+}
+
+/* Nur bei :hover/:focus-within des Elternelements sichtbar (z.B. Card-Aktionen, die erst
+   bei Interaktion erscheinen) - opacity statt display, damit Transition + Tastatur-Fokus
+   (:focus-within statt nur :hover) funktionieren. */
+.ncss-reveal-on-hover {
+  opacity: 0;
+  transition: opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
+  pointer-events: none;
+}
+:hover > .ncss-reveal-on-hover,
+:focus-within > .ncss-reveal-on-hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Reine Hover-Geräte (Maus/Trackpad): bei Touch bliebe .ncss-reveal-on-hover sonst
+   dauerhaft unsichtbar, da es dort kein echtes :hover gibt - ohne diese Abfrage würde das
+   Element auf Touch-Geräten nie erreichbar. */
+@media (hover: none) {
+  .ncss-reveal-on-hover {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

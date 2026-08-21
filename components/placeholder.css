@@ -1,0 +1,28 @@
+/**
+ * ncss - Placeholder-Komponente (Layer "components"). Neutrale Flaeche fuer fehlende
+ * Bilder/Inhalte (Prototyping, "Bild folgt"-Zustand, Skeleton-artiger Platzhalter) - ein
+ * generisch nuetzlicher Baustein, kein Demo-only-Hilfsmittel.
+ *
+ * Kombinierbar mit den Aspect-Ratio-Helpers aus helpers/media.css statt eigene
+ * aspect-ratio-Werte mitzubringen:
+ *   <div class="ncss-placeholder ncss-ratio-video">...</div>
+ * und mit .ncss-card-media, wenn eine Card noch kein echtes Bild hat:
+ *   <div class="ncss-card-media ncss-placeholder"></div>
+ */
+.ncss-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ncss-color-bg-subtle);
+  border-radius: var(--ncss-radius-md);
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+  padding: var(--ncss-space-sm);
+}
+
+/* Variante fuer Kontexte, die selbst schon auf bg-subtle sitzen (z.B. innerhalb eines
+   .ncss-modal--dark) - etwas gegen den Umgebungshintergrund abgesetzt statt darin zu
+   verschwinden. */
+.ncss-placeholder--surface {
+  background-color: var(--ncss-color-surface);
+}

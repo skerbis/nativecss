@@ -1,0 +1,54 @@
+/**
+ * ncss - Breadcrumb-Komponente (Layer "components"). Natives <nav><ol>, keine Web-
+ * Awesome-Abhängigkeit (Vergleich: <wa-breadcrumb> in demo/webawesome.html).
+ *
+ * Markup:
+ *   <nav class="ncss-breadcrumb" aria-label="Breadcrumb">
+ *     <ol>
+ *       <li><a href="/">Start</a></li>
+ *       <li><a href="/kategorie">Kategorie</a></li>
+ *       <li aria-current="page">Aktuelle Seite</li>
+ *     </ol>
+ *   </nav>
+ * <ol>, nicht <ul>: die Reihenfolge ist inhaltlich bedeutsam (Pfad-Hierarchie), das ist
+ * genau der Fall, für den <ol> gedacht ist. Letztes Element ohne <a> + aria-current="page"
+ * statt eines Links auf die eigene Seite. aria-label="Breadcrumb" auf <nav>, da mehrere
+ * <nav>-Elemente pro Seite sonst nicht unterscheidbar sind (a11y-Pflicht, nicht optional).
+ */
+.ncss-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--ncss-font-size-sm);
+}
+
+.ncss-breadcrumb li {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+}
+
+/* Trenner per ::before statt Markup-Zeichen im HTML - für Screenreader ist ein per CSS
+   generierter Trenner unsichtbar/irrelevant (kein zusätzliches "Slash" in der Ansage). */
+.ncss-breadcrumb li + li::before {
+  content: "/";
+  color: var(--ncss-color-text-muted);
+}
+
+.ncss-breadcrumb a {
+  color: var(--ncss-color-text-muted);
+  text-decoration: none;
+}
+.ncss-breadcrumb a:hover {
+  color: var(--ncss-color-brand);
+  text-decoration: underline;
+}
+
+.ncss-breadcrumb [aria-current="page"] {
+  color: var(--ncss-color-text);
+  font-weight: var(--ncss-font-weight-semibold);
+}

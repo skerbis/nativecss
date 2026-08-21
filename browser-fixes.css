@@ -1,0 +1,32 @@
+/**
+ * ncss - Browser-spezifische Fixes (eigener Layer, ALLERLETZTE Priorität - siehe
+ * ncss.css/@layer-Reihenfolge). Eigene Datei statt verstreuter @supports/@-moz-/-webkit--
+ * Hacks in den Komponenten-Dateien: so bleibt sofort sichtbar, WAS ein Workaround für einen
+ * konkreten Browser-Bug ist (mit Quelle/Datum) und WANN er wieder entfernt werden kann,
+ * statt sich in normalem Komponenten-CSS zu verstecken.
+ *
+ * Jeder Eintrag hier braucht: den genauen Bug, die Quelle, und (wenn möglich) eine
+ * @supports/Feature-Query-Eingrenzung statt globalem Browser-Sniffing.
+ */
+
+/**
+ * --- WebKit/Safari: <dialog>-Dismiss verwechselt Slot-Ownership seitenweit ------------------
+ * Dokumentierter WebKit-Bug (github.com/shoelace-style/webawesome/issues/1771, per Recherche
+ * bestätigt, nicht angenommen): schließt sich IRGENDEIN <dialog> auf der Seite, kann Safari
+ * dabei Slot-Inhalte in ANDEREN offenen Shadow-DOM-Komponenten (z.B. Web Awesomes eigene
+ * <wa-drawer>/<wa-accordion-item>) kurzzeitig unstyled/leer rendern - genau das Symptom
+ * "Dropdown/Modal blinkt beim Schließen ungestaltet auf".
+ *
+ * WICHTIG: Per eigenem Test (Chromium + Playwright-WebKit, Video-Aufnahme framegenau
+ * ausgewertet) ließ sich das für ncss' EIGENE native <details>/<dialog> (kein Shadow DOM,
+ * keine <slot>-Elemente) NICHT reproduzieren - die betreffen laut Bug-Report spezifisch
+ * Shadow-DOM-Slots. Der offiziell von den Web-Awesome-Maintainern genannte Fix
+ * ("slot { display: inline; }" statt dem UA-Default "display: contents") lässt sich von
+ * AUSSEN nicht anwenden - Shadow-DOM-Kapselung verhindert, dass Seiten-CSS in eine fremde
+ * Komponente hineinstylt, das kann nur Web Awesome selbst in seinen eigenen Styles fixen.
+ *
+ * Wenn der Effekt weiterhin auftritt (z.B. auf einer Seite, die zusätzlich Web-Awesome-
+ * Komponenten lädt): bitte genaue Wiederholungsschritte + Safari-Version melden, damit
+ * gezielt nachgetestet werden kann statt weiter zu raten - siehe Kommentar in
+ * .claude/skills/ncss/SKILL.md, Fallstrick-Liste.
+ */

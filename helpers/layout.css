@@ -1,0 +1,375 @@
+/**
+ * ncss - Layout-Helper (Layer "helpers"): Grid/Flex/Container. Standardweg ist
+ * "breakpointless" - Grids passen ihre Spaltenzahl automatisch an verfügbaren Platz an
+ * (auto-fit/minmax), ohne eine einzige Media Query. Component-lokale Anpassung läuft über
+ * Container Queries (reagiert auf die Breite des ELTERN-Containers, nicht des Viewports -
+ * dieselbe .ncss-grid sieht in einer schmalen Sidebar automatisch anders aus als im breiten
+ * Hauptbereich). Klassische, feste Breakpoints (siehe tokens.css) nur als explizit
+ * benannter Escape Hatch ganz unten - sparsam einsetzen.
+ */
+
+.ncss-container {
+  width: 100%;
+  max-width: var(--ncss-container-max);
+  margin-inline: auto;
+  padding-inline: var(--ncss-space-sm);
+  /* Macht diesen Container zum Bezugsrahmen für @container-Abfragen in Kindelementen. */
+  container-type: inline-size;
+  container-name: ncss-container;
+}
+
+.ncss-container--narrow {
+  max-width: var(--ncss-container-max-narrow);
+}
+
+/* Durchbricht die Container-Breite, OHNE das Markup umzubauen - z.B. eine <section> mit
+   eigenem Hintergrund, obwohl sie strukturell in <main class="ncss-container"> verschachtelt
+   bleibt. Klassischer "Full Bleed"-Trick: negative Inline-Margins ziehen das Element auf
+   100vw, unabhängig davon, wie breit der umgebende Container gerade ist. Braucht KEINE
+   eigene Positionierung/JS-Messung.
+   Für "Hintergrund randlos, Inhalt bleibt in der normalen Spaltenbreite" (der häufigste
+   Fall) zusätzlich innen wieder mit .ncss-container einfassen:
+   <section class="ncss-full-bleed" style="background: ...;">
+     <div class="ncss-container">Inhalt bleibt normal breit</div>
+   </section>
+   Bekannter Kompromiss: 100vw schließt bei manchen Browsern die Breite der (falls
+   vorhandenen) Scrollbar mit ein, was einen minimalen horizontalen Scroll-Zeigerausschlag
+   verursachen kann - für die meisten Seiten in der Praxis vernachlässigbar.
+   WICHTIG - die calc(50% - 50vw)-Rechnung geht davon aus, dass JEDER Vorfahre bis zum
+   Viewport hoch selbst mittig sitzt (zentriert per margin-inline:auto, egal wie schmal).
+   .ncss-container--narrow ALLEIN (ohne die Basisklasse .ncss-container) hat kein eigenes
+   margin-inline:auto und klebt dadurch linksbündig statt zentriert - ein Full-Bleed-Kind
+   darin bricht dann sichtbar schief aus (rechts bleibt Leerraum, links wird der Inhalt über
+   den Bildschirmrand hinaus abgeschnitten, per echtem Test in demo/index.html gefunden).
+   .ncss-container--narrow deshalb IMMER zusammen mit .ncss-container einsetzen
+   (class="ncss-container ncss-container--narrow"), nie allein. */
+.ncss-full-bleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* --- Einseitiges Ausbrechen (Bleed) ------------------------------------------------------
+   Wie .ncss-full-bleed, aber nur auf EINER Seite bis zum Bildschirmrand - die andere Seite
+   bleibt normal in der Spalte. Für ein "Lesezeichen"/Ribbon-artiges Element (z.B. ein Zitat,
+   ein Badge, ein Bild), das bewusst nur nach rechts oder links aus dem Textfluss
+   herausragt, statt die ganze Breite zu beanspruchen. Padding auf der ausbrechenden Seite
+   verhindert, dass Inhalt direkt am Bildschirmrand klebt - auf der anderen (normalen) Seite
+   bleibt die eigene Container-Einfassung wirksam. Derselbe Zentrierungs-Vorbehalt wie bei
+   .ncss-full-bleed oben gilt hier genauso. */
+.ncss-bleed-start {
+  margin-inline-start: calc(50% - 50vw);
+  padding-inline-start: var(--ncss-space-md);
+}
+.ncss-bleed-end {
+  margin-inline-end: calc(50% - 50vw);
+  padding-inline-end: var(--ncss-space-md);
+}
+
+/* --- Halbes Ausbrechen ab der Mitte des Elternelements -----------------------------------
+   Anders als .ncss-bleed-start/-end oben (die volle Breite der Spalte bleibt erhalten, nur
+   EINE Kante wandert bis zum Bildschirmrand): hier beginnt die Box selbst schon in der
+   MITTE des Elternelements und reicht von dort bis zum Bildschirmrand - halb so breit wie
+   der Viewport. Rechnung (per echtem Test verifiziert): margin-inline-start:50% schiebt die
+   Start-Kante exakt auf die Mitte des Elternelements; margin-inline-end:calc(50% - 50vw)
+   ist derselbe Bildschirmrand-Trick wie bei .ncss-bleed-end. Zusammen ergibt das eine Box,
+   deren andere Kante exakt am Bildschirmrand liegt und deren errechnete Breite genau 50vw
+   ist - keine der beiden Deklarationen muss die Breite selbst kennen.
+   Derselbe Zentrierungs-Vorbehalt wie bei .ncss-full-bleed gilt auch hier (siehe oben). */
+.ncss-bleed-half-end {
+  margin-inline-start: 50%;
+  margin-inline-end: calc(50% - 50vw);
+}
+.ncss-bleed-half-start {
+  margin-inline-end: 50%;
+  margin-inline-start: calc(50% - 50vw);
+}
+
+/* --- Symmetrisches Ausbrechen aus der Mitte ----------------------------------------------
+   Anderer Mechanismus als .ncss-full-bleed/.ncss-bleed-start/-end oben: wächst gleichmäßig
+   auf BEIDEN Seiten um --ncss-bleed-amount, bleibt dabei aber auf der Mitte des EIGENEN
+   Elternelements zentriert (nicht des Viewports) - eine negative Margin relativ zur eigenen
+   Breite braucht KEINEN bis zum Viewport durchgehend zentrierten Vorfahren, funktioniert
+   also überall, auch verschachtelt in einem linksbündigen/schmalen Container. Reicht nicht
+   bis zum Bildschirmrand (dafür weiterhin .ncss-full-bleed), sondern um einen festen,
+   parametrisierbaren Betrag - Default 2rem pro Seite, pro Instanz überschreibbar:
+   style="--ncss-bleed-amount: 4rem". */
+.ncss-bleed-center {
+  width: calc(100% + 2 * var(--ncss-bleed-amount));
+  margin-inline: calc(-1 * var(--ncss-bleed-amount));
+}
+
+/* --- Seiten-Gerüst: Footer garantiert am unteren Bildschirmrand -------------------------
+   Klassisches "Sticky Footer"-Problem: bei kurzen Seiten soll der Footer trotzdem unten
+   kleben (nicht mitten auf der Seite hängen), bei langen Seiten normal nach unten
+   mitwandern. Lösung ohne JS/Höhenmessung: <body> (oder ein Wrapper) wird zur Flex-Spalte
+   mit Mindesthöhe = Viewport, der Hauptinhalt bekommt .ncss-stretch (füllt übrigen Platz),
+   der Footer bleibt dadurch automatisch am Ende - bei kurzem Inhalt am unteren
+   Bildschirmrand, bei langem Inhalt einfach nach dem Inhalt.
+   Markup: <body class="ncss-page-shell"><header>...</header>
+     <main class="ncss-stretch">...</main><footer>...</footer></body>
+   100svh (small viewport height) statt 100vh - berücksichtigt einblendbare mobile
+   Browser-UI-Leisten (Adressleiste etc.), vermeidet dort einen Layout-Sprung. */
+.ncss-page-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+.ncss-stretch {
+  flex: 1 1 auto;
+}
+
+/* --- Abstands-Utilities (Padding/Margin/Gap) --------------------------------------------
+   Bewusst klein gehalten: vier Stufen (sm/md/lg/xl) je Richtung, nicht die volle Skala ×
+   jede denkbare Richtung - das wäre wieder die Utility-Klassen-Explosion, die ausdrücklich
+   vermieden werden soll. Für eigene Seiten/Abschnitte reicht das i.d.R.; fehlt eine
+   Kombination wirklich, entweder gezielt nach demselben Muster ergänzen ODER (für einen
+   echten Einzelfall) direkt ein Token verwenden: style="padding-inline: var(--ncss-space-md)"
+   ist in Ordnung - "kein Inline-Style" heißt "keine Magic Number im style-Attribut", ein
+   Token-Wert dort ist keine Deko, siehe Handbuch/Anleitungen.
+
+   Nur margin-block-END (nie -start) - dieselbe Einzelrichtungs-Konvention wie base.css
+   (siehe dortiger Kommentar zum "Lobotomized Owl"-Bug). padding-inline (px) ergänzt
+   padding-block (py); ein generisches "p-*" (alle vier Seiten) bewusst NICHT angelegt -
+   block/inline getrennt zu setzen ist der Normalfall (z.B. nur seitlich, nicht oben/unten),
+   beide zusammen lassen sich einfach als zwei Klassen kombinieren (ncss-py-md ncss-px-md). */
+.ncss-py-sm { padding-block: var(--ncss-space-sm); }
+.ncss-py-md { padding-block: var(--ncss-space-md); }
+.ncss-py-lg { padding-block: var(--ncss-space-lg); }
+.ncss-py-xl { padding-block: var(--ncss-space-xl); }
+
+.ncss-px-sm { padding-inline: var(--ncss-space-sm); }
+.ncss-px-md { padding-inline: var(--ncss-space-md); }
+.ncss-px-lg { padding-inline: var(--ncss-space-lg); }
+.ncss-px-xl { padding-inline: var(--ncss-space-xl); }
+
+.ncss-mb-sm { margin-block-end: var(--ncss-space-sm); }
+.ncss-mb-md { margin-block-end: var(--ncss-space-md); }
+.ncss-mb-lg { margin-block-end: var(--ncss-space-lg); }
+.ncss-mb-xl { margin-block-end: var(--ncss-space-xl); }
+/* Zum gezielten Aufheben des Block-Rhythmus aus base.css (z.B. letztes Element einer
+   eigenen Gruppe, das nicht den üblichen Abstand zum NÄCHSTEN Element haben soll). */
+.ncss-mb-0 { margin-block-end: 0; }
+
+/* Für eigene Flex-/Grid-Container ohne .ncss-stack/-cluster/-grid (die ihren Gap schon
+   selbst mitbringen) - z.B. ein individuelles Grid mit eigener grid-template-columns. */
+.ncss-gap-sm { gap: var(--ncss-space-sm); }
+.ncss-gap-md { gap: var(--ncss-space-md); }
+.ncss-gap-lg { gap: var(--ncss-space-lg); }
+.ncss-gap-xl { gap: var(--ncss-space-xl); }
+
+/* --- Stack: vertikaler Rhythmus ohne einzelne Margins pro Element ---------------------- */
+.ncss-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-md);
+}
+.ncss-stack--tight { gap: var(--ncss-space-xs); }
+.ncss-stack--loose { gap: var(--ncss-space-lg); }
+
+/* --- Cluster: horizontal fließende Gruppe (Tags, Buttons, Breadcrumbs) ----------------- */
+.ncss-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+}
+
+/* --- Divider (<hr>) --------------------------------------------------------------------
+   Horizontal ist bereits der native <hr>-Default (siehe base.css) - .ncss-divider nur zur
+   expliziten Verwendung, falls eine Klasse statt der Tag-Semantik gebraucht wird. --vertical
+   dreht ihn für den Einsatz in einer Flex-Zeile (z.B. .ncss-cluster, Topbar-Actions) -
+   align-self:stretch übernimmt automatisch die Höhe der umgebenden Zeile.
+   Markup: <hr class="ncss-divider--vertical" aria-orientation="vertical"> - <hr> hat
+   bereits die passende role="separator", aria-orientation ergänzt nur die Richtung. */
+.ncss-divider {
+  border: none;
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.ncss-divider--vertical {
+  align-self: stretch;
+  width: auto;
+  height: auto;
+  border: none;
+  border-inline-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  margin-block-end: 0;
+  margin-inline: var(--ncss-space-xs);
+}
+
+/* --- Intrinsisches Grid: KEINE Breakpoints nötig ---------------------------------------
+   auto-fit + minmax() füllt verfügbare Breite mit so vielen Spalten wie passen; jede
+   Spalte ist mindestens --ncss-grid-min breit (Default per Custom Property überschreibbar,
+   z.B. style="--ncss-grid-min: 16rem" pro Instanz). Schrumpft der Container, wandern
+   Elemente automatisch in die nächste Zeile - fließend, nicht in festen Sprüngen.
+   Gleiche Zeilenhöhe (z.B. für Cards) passiert automatisch: CSS Grid streckt Items einer
+   Zeile per Default (align-items: stretch, initial) auf die höchste Zeilenhöhe - dafür
+   extra nötig ist nur .ncss-grid--align-start, falls das im Einzelfall NICHT gewünscht ist. */
+.ncss-grid {
+  display: grid;
+  /* minmax(MIN, MAX) pro Spalte: MIN verhindert zu schmale Spalten (bricht in die nächste
+     Zeile um statt zu quetschen), MAX begrenzt zusätzlich das Wachstum nach oben - Default
+     1fr (unbegrenzt, teilt sich den übrigen Platz), per --ncss-grid-max deckelbar, z.B.
+     style="--ncss-grid-min: 14rem; --ncss-grid-max: 20rem" gegen absurd breite Spalten bei
+     wenigen Elementen auf einem sehr breiten Bildschirm. */
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--ncss-grid-min, var(--ncss-grid-min-default)), 100%), var(--ncss-grid-max, 1fr)));
+  gap: var(--ncss-grid-gap, var(--ncss-space-md));
+}
+.ncss-grid--align-start {
+  align-items: start;
+}
+
+/* --- Feste Spaltenzahl (Escape Hatch) ---------------------------------------------------
+   .ncss-grid oben ist der empfohlene Standardweg (Spaltenzahl ergibt sich automatisch aus
+   der verfügbaren Breite) - hier der Escape Hatch für eine wirklich FESTE, redaktionell
+   gewählte Spaltenzahl (z.B. "immer genau 3 nebeneinander"). Bricht unterhalb der jeweiligen
+   Schwelle auf 1 Spalte um (schmale Sidebar/Mobile), sonst starr bei N Spalten - braucht
+   einen Vorfahren mit container-type:inline-size (z.B. .ncss-container/.ncss-card-container).
+   Für ungleich breite Kacheln (eine Karte 1/3, die nächste füllt den Rest) die Kinder
+   zusätzlich mit .ncss-col-span-2/-3 kombinieren, siehe unten. */
+.ncss-grid--cols-2,
+.ncss-grid--cols-3,
+.ncss-grid--cols-4,
+.ncss-grid--cols-6 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ncss-grid-gap, var(--ncss-space-md));
+}
+/* -- ncss container-query: grid-cols-2 (24rem) -- */
+@container ncss-container (min-width: 24rem) {
+  .ncss-grid--cols-2 { grid-template-columns: repeat(2, 1fr); }
+}
+/* -- ncss container-query: grid-cols-3 (36rem) -- */
+@container ncss-container (min-width: 36rem) {
+  .ncss-grid--cols-3 { grid-template-columns: repeat(3, 1fr); }
+}
+/* -- ncss container-query: grid-cols-4 (48rem) -- */
+@container ncss-container (min-width: 48rem) {
+  .ncss-grid--cols-4 { grid-template-columns: repeat(4, 1fr); }
+}
+/* -- ncss container-query: grid-cols-6 (56rem) -- */
+@container ncss-container (min-width: 56rem) {
+  .ncss-grid--cols-6 { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* --- Grid-Item-Spannweite -----------------------------------------------------------------
+   Auf ein Kind von .ncss-grid/.ncss-grid--cols-.../.ncss-bento gesetzt - lässt EIN Element
+   mehrere Spalten/Zeilen einnehmen statt nur einer. Kombinierbar: eine 1/3-Karte neben einer
+   2/3-Karte in einem .ncss-grid--cols-3 ist einfach eine normale Karte neben einer mit
+   .ncss-col-span-2. Wirkt erst, sobald der Grid-Kontext tatsächlich genug Spalten hat (auf
+   1 Spalte reduziert sich span automatisch auf die volle Breite). */
+.ncss-col-span-2 { grid-column: span 2; }
+.ncss-col-span-3 { grid-column: span 3; }
+.ncss-row-span-2 { grid-row: span 2; }
+.ncss-row-span-3 { grid-row: span 3; }
+
+/* --- Bento-Grid ---------------------------------------------------------------------------
+   Gemischte Kachelgrößen in einem Raster (z.B. eine "Feature"-Kachel doppelt so groß wie
+   ihre Nachbarn) - intrinsische Basis-Kachelgröße wie bei .ncss-grid (kein fester
+   Umschaltpunkt), einzelne Kacheln wachsen per .ncss-col-span-.../.ncss-row-span-... (siehe
+   oben). grid-auto-flow:dense füllt Lücken, die durch unterschiedlich große Kacheln
+   entstehen, automatisch mit nachfolgenden kleineren Kacheln auf - kein manuelles
+   Positionieren nötig. grid-auto-rows gibt allen Kacheln eine gemeinsame Basis-Zeilenhöhe,
+   damit .ncss-row-span-2 tatsächlich "doppelt so hoch" bedeutet statt einer beliebigen Höhe.
+   ACHTUNG a11y: dense ändert nur die VISUELLE Reihenfolge, nicht die DOM-/Tab-Reihenfolge -
+   bei sehr unterschiedlicher visueller vs. Lesereihenfolge im Zweifel eine ruhigere
+   Kachel-Anordnung (ohne dense oder mit wenigen Spans) wählen.
+   Markup:
+   <div class="ncss-bento">
+     <article class="ncss-card ncss-col-span-2 ncss-row-span-2">Große Kachel</article>
+     <article class="ncss-card">Normale Kachel</article>
+   </div> */
+.ncss-bento {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--ncss-bento-min), 100%), var(--ncss-bento-max, 1fr)));
+  grid-auto-rows: var(--ncss-bento-row-height);
+  grid-auto-flow: dense;
+  gap: var(--ncss-grid-gap, var(--ncss-space-md));
+}
+
+/* --- Masonry ----------------------------------------------------------------------------
+   WICHTIG - Fallback zuerst, Enhancement danach: der Block direkt unten (CSS columns)
+   läuft in JEDEM aktuellen Browser und ist die Grundlage, auf die sich jede Seite
+   verlassen kann. Erst danach, klar per @supports abgegrenzt, das progressive Enhancement
+   für Browser mit echtem display:grid-lanes - OHNE diese @supports-Abgrenzung würde jeder
+   Browser ohne Unterstützung (also fast alle, Stand jetzt) einfach GAR KEIN Masonry mehr
+   bekommen, statt des column-basierten Fallbacks. Nie die Reihenfolge vertauschen. */
+
+/* Fallback (Baseline, alle Browser): Elemente füllen Spalten von oben nach unten - visuell
+   sehr ähnlich zu "echtem" zeilenbasiertem Masonry, mit einem Kompromiss: Lesereihenfolge
+   ist spaltenweise (2. Element steht UNTER dem 1., nicht daneben) - für rein visuelle
+   Galerien (Bilder, Cards ohne feste Reihenfolge) unproblematisch, für Inhalte mit
+   wichtiger Reihenfolge eher .ncss-grid verwenden. */
+.ncss-masonry {
+  /* column-width statt fixem column-count: verhält sich wie .ncss-grid's auto-fit -
+     Spaltenzahl ergibt sich automatisch aus verfügbarer Breite, kein Breakpoint nötig.
+     Override pro Instanz z.B. via style="--ncss-masonry-column-min: 20rem". */
+  column-width: var(--ncss-masonry-column-min);
+  column-gap: var(--ncss-grid-gap, var(--ncss-space-md));
+}
+.ncss-masonry > * {
+  break-inside: avoid;
+  margin-block-end: var(--ncss-grid-gap, var(--ncss-space-md));
+}
+
+/* Enhancement: echtes Grid-basiertes Masonry (Safari 26.4+, andere Browser Stand jetzt
+   hinter Flag - Quelle: https://blakecrosley.com/blog/css-grid-lanes-2026, August 2026).
+   "Echt" heißt hier: Item-Reihenfolge bleibt zeilentreu (Lesereihenfolge), nicht
+   spaltenweise wie beim Fallback oben - deutlich besserer Ausgangspunkt. flow-tolerance
+   ist gezielt a11y-motiviert (siehe Quelle): verhindert Zickzack zwischen visueller und
+   Tab-Reihenfolge, wenn Elemente unterschiedlich hoch sind. */
+@supports (display: grid-lanes) {
+  .ncss-masonry {
+    display: grid-lanes;
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--ncss-masonry-column-min), 100%), 1fr));
+    gap: var(--ncss-grid-gap, var(--ncss-space-md));
+    flow-tolerance: 1em;
+    /* Fallback-Regeln oben (column-width etc.) werden von grid-lanes nicht gebraucht,
+       column-gap wirkt hier ohnehin nicht mehr - kein manuelles Zurücksetzen nötig. */
+  }
+  .ncss-masonry > * {
+    break-inside: auto;
+    margin-block-end: 0;
+  }
+}
+
+/* --- Flex-Helfer ------------------------------------------------------------------------ */
+.ncss-flex { display: flex; gap: var(--ncss-space-sm); }
+.ncss-flex--wrap { flex-wrap: wrap; }
+.ncss-flex--center { align-items: center; justify-content: center; }
+.ncss-flex--between { justify-content: space-between; align-items: center; }
+.ncss-flex--column { flex-direction: column; }
+
+.ncss-flex > .ncss-flex-1 { flex: 1 1 0%; }
+.ncss-flex > .ncss-flex-auto { flex: 0 0 auto; }
+
+/* --- Container Queries: component-lokale Responsivität statt Viewport-Breakpoints ------
+   Beispiel-Nutzung: eine Karte in .ncss-container zeigt Bild+Text nebeneinander, sobald
+   IHR Container (nicht der Viewport!) genug Platz hat - dieselbe Karte bleibt in einer
+   schmalen Sidebar automatisch gestapelt. */
+/* -- ncss container-query: card-row (32rem) -- */
+@container ncss-container (min-width: 32rem) {
+  .ncss-grid--card-row {
+    grid-auto-flow: column;
+  }
+}
+
+/**
+ * --- Klassischer Escape Hatch: feste Breakpoints (siehe tokens.css für die Werte) ------
+ * Nur benutzen, wenn ein echter, fester Sprung nötig ist (z.B. Navigation), nicht als
+ * Standardweg für responsive Layouts - dafür immer zuerst .ncss-grid/Container Queries
+ * oben erwägen.
+ */
+/* Bewusst KEIN "display: revert" zum Zurücksetzen (unterschiedliche UA-Display-Defaults
+   je Element, hier nicht vorhersehbar - siehe uikit_theme_builder diese Session, wo genau
+   das per echtem Playwright-Test als unsicher bestätigt wurde). Stattdessen zwei
+   eigenständige Klassen, je eine pro Richtung. */
+/* -- ncss breakpoint: md (768px) -- */
+@media (max-width: 767px) {
+  .ncss-hide-below-md {
+    display: none;
+  }
+}
+@media (min-width: 768px) {
+  .ncss-hide-from-md {
+    display: none;
+  }
+}

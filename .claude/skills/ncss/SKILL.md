@@ -1,0 +1,346 @@
+---
+name: ncss
+description: Arbeiten mit dem ncss Design System (public/ncss/) - natives CSS, kein Build-Schritt, Web-Awesome/Font-Awesome-Bridge. Beim Anlegen/Ändern von Tokens, Komponenten, Demo-Seiten oder der Web-Awesome-Bridge unter public/ncss/ verwenden.
+---
+
+# ncss Design System
+
+`public/ncss/` ist ein eigenständiges, natives CSS-Design-System - kein UIkit-Erbe, kein
+LESS/Sass, kein Build-Schritt. Web Awesome (Free) und Font Awesome (Free) sind selbst
+gehostet unter `public/ncss/vendor/` und über `webawesome-bridge.css` an ncss-Tokens
+gekoppelt. Das vollständige Handbuch (dogfooded, im Browser lesbar) liegt unter
+`public/ncss/demo/docs.html` - dieses Skill-Dokument ist die kondensierte Fassung für
+schnelle Arbeit plus die Fallstricke, die man sich sonst mühsam erneut erarbeiten müsste.
+
+## Grundprinzipien (nicht verhandelbar, außer der Nutzer sagt explizit etwas anderes)
+
+- **Native zuerst.** Cascade Layers statt Spezifitäts-Kämpfe/`!important`, Container Queries
+  statt Viewport-Breakpoints, `light-dark()` statt zweitem Dark-Stylesheet, natives
+  `<dialog>`/`<details>` statt JS-Nachbauten. Web Awesome nur, wo natives HTML/CSS nicht
+  reicht (z.B. Rating, Tree, Popover) - niemals für das strukturelle Seitengerüst (kein
+  `wa-page`), weil das die ganze Seite von ES-Modulen abhängig macht (siehe Fallstrick unten).
+- **Ein Token-System, eine Quelle der Wahrheit.** `tokens.css`/`colors.css` sind die einzige
+  Werteliste. Nichts, auch nicht die Web-Awesome-Bridge, dupliziert Werte - nur Übersetzung.
+- **Kein Build-Schritt.** Kein LESS/Sass/Bundler. `@import` + Cascade Layers regeln die
+  Reihenfolge. Vendor-Bibliotheken selbst gehostet, keine CDN-Abhängigkeit.
+- **Kein Utility-Klassen-Wildwuchs.** Kleine, kuratierte Utility-Sets statt Tailwind-artiger
+  Matrix. Neue Utility-Klasse nur bei echtem, wiederkehrendem Bedarf.
+- **Solides Grundgerüst, nicht übertreiben.** Basis (Tokens, Reset, Layout, Kernkomponenten)
+  ist bewusst vollständig/stabil. Individuelles kommt als eigene Komponente hinzu, wenn der
+  Bedarf konkret ist - nicht vorsorglich ein großes Set anlegen "für den Fall".
+- **Verifizieren, nicht annehmen.** Jede nicht-triviale CSS-Änderung mit Playwright im echten
+  Browser testen (Screenshot + computed styles), nicht nur lesend beurteilen. Für neue/seltene
+  CSS-Features vorher Support via WebSearch prüfen statt aus dem Training zu raten.
+- **Keine Inline-Styles**, außer `style="--ncss-grid-min: Xrem"` (Custom-Property-
+  Parametrisierung, keine Deko - eine Klasse pro Wert wäre die Utility-Matrix, die vermieden
+  werden soll).
+- **Natives CSS Nesting ist erlaubt, wo es Code spart UND nachvollziehbar bleibt** (Nutzer-
+  Vorgabe) - z.B. Pseudoklassen/-elemente einer Komponente (`&:hover`, `&::backdrop`),
+  echte Varianten-Blöcke, die denselben Elternselektor wiederholt hätten, oder ein
+  `@container`/`@media`-Block, der ohnehin nur eine einzige, klar zugehörige Regel enthält.
+  NICHT verschachteln, wenn es die Lesbarkeit verschlechtert (mehr als 2-3 Ebenen tief,
+  oder wenn getrennte Regeln mit eigenem Kommentar-Block klarer wären, wie es die
+  Container-Query-Konvention unten ohnehin schon vorsieht) - "Code sparen" ist kein
+  Selbstzweck, wenn es auf Kosten der Verständlichkeit ginge.
+- **`light-dark()` ist die alleinige Dark-Mode-Mechanik**, kein zweites Dark-Stylesheet -
+  siehe `colors.css` (64 Nutzungen: jedes Farbtoken + alle 100/300/700/900/on-soft-Stufen
+  aller 6 Familien).
+
+## Layer-Reihenfolge (in `ncss.css`)
+
+```
+wa-native..wa-theme-overrides (Web Awesomes eigene Layer, niedrigste Priorität)
+tokens < reset < base < helpers < components < webawesome-bridge (höchste Priorität)
+```
+
+Die `wa-*`-Layer werden HIER (nicht in Web Awesomes eigenen Dateien) deklariert, damit
+`webawesome-bridge.css` garantiert gegen Web Awesomes Default-Theme gewinnt - unabhängig
+von der `<link>`-Reihenfolge im HTML (Cascade-Layer-Order ist seitenweit global, nicht pro
+Stylesheet). Beim Hinzufügen einer neuen Web-Awesome-Ressource NICHT die Layer-Deklaration
+in `ncss.css` vergessen, falls sie neue `@layer`-Namen mitbringt.
+
+## Bekannte Fallstricke (per echtem Test gefunden - vor erneuter Recherche hier nachsehen)
+
+0. **Web Awesome liefert seine eigene, zur genau installierten Version passende Referenz-
+   Doku mit** - `vendor/webawesome/dist-cdn/skills/webawesome/references/components/*.md`,
+   ein `.md` pro Komponente. Das ist die verlässliche Quelle (per Test bestätigt korrekt für
+   Toast/Avatar/Drawer/Comparison/Dropdown/Accordion/Carousel/Breadcrumb) - IMMER zuerst hier
+   nachsehen, bevor `webawesome.com/docs` per WebFetch abgefragt wird. Der Fallstrick #1
+   unten (appearance-Verwirrung) entstand genau dadurch, dass die öffentliche Doku-Seite an
+   der Stelle falsch/widersprüchlich war und diese lokalen Referenzdateien zu dem Zeitpunkt
+   noch nicht geprüft wurden.
+
+1. **`appearance="filled"` bei `<wa-button>` ist die WEICHE Variante** (`fill-normal`/
+   `on-normal`), **`appearance="accent"` die KRÄFTIGE** (`fill-loud`/`on-loud`) - umgekehrt
+   von dem, was der Name vermuten lässt. Bei `<wa-tag>`/`<wa-badge>` ist die Zuordnung
+   NOCHMAL ANDERS (`filled` = `fill-quiet`). Am schnellsten verlässlich prüfbar über die
+   lokale Referenz-Doku (siehe Punkt 0) oder direkt im kompilierten Source:
+   `grep -rn "appearance=" vendor/webawesome/dist-cdn/chunks/*.js`.
+
+2. **Farbstufen `-100`/`-300` MÜSSEN `light-dark()`-gewrappt sein** (mischen im Dark Mode
+   gegen Schwarz statt Weiß, wie `-700`/`-900` es schon taten) - sonst sind z.B. gefüllte
+   Web-Awesome-Buttons oder `.ncss-badge` im Dark Mode unlesbar (heller/dunkler Text auf
+   gleich hellem/dunklem Chip). Die passende Textfarbe (`--ncss-color-{familie}-on-soft`,
+   in `colors.css` definiert) MUSS ebenfalls pro Modus wechseln (`light-dark(X-700, X)`),
+   nicht nur die Fläche - beide Enden des Paares invertieren, sonst bricht es nur anders.
+
+3. **Web Awesome ist komplett ES-Module-basiert - funktioniert NICHT über `file://`.**
+   Browser blockieren `type="module"`-Scripts/`import()` ohne echten Origin. Beim Testen/
+   Vorführen IMMER über einen lokalen Server (`php -S 127.0.0.1:PORT -t public/ncss`),
+   nie die Datei direkt doppelklicken. Kein Bug im Code - eine Browser-Sicherheitsgrenze.
+
+4. **Self-Hosting mit relativem Pfad braucht `data-webawesome="..."` auf dem Loader-
+   `<script>`.** Ohne das nutzt Web Awesomes eigene Basis-Pfad-Erkennung das rohe,
+   unaufgelöste `src`-Attribut und verdoppelt den Pfad - alle Komponenten-Chunks 404en mit
+   einem Pfad-Segment doppelt drin.
+
+5. **`:playing`/`:paused` CSS-Pseudoklassen sind (Stand jetzt) noch nicht Baseline**
+   (Interop-2026-Ziel) - nicht für Video-Play-Button-Overlays im Default verwenden, poster+
+   controls nativ deckt "Klick zum Abspielen" bereits vollständig ab.
+
+6. **Popover ≠ Dropdown.** Ein `<wa-popover>`, das an ein persistentes Chrome-Element
+   (Header-Icon) hängt, IST funktional ein Dropdown. Der eigentlich popover-typische Fall
+   ist ein Trigger MITTEN im Content (z.B. ein Info-Icon neben einem Listeneintrag), der
+   Zusatzinfo zu genau dieser Stelle zeigt. Beim Bauen neuer Popover-Beispiele diese
+   Unterscheidung im Kopf behalten.
+
+7. **`<wa-popover>`-Inhalt bleibt trotz Top-Layer-Darstellung ein DOM-Nachfahre** seines
+   Elternelements - ein zu allgemeiner Nachfahren-Selektor wie `.foo i { color: ... }`
+   trifft auch Icons INNERHALB eines darin verschachtelten Popovers. Selektoren für
+   Listen-Icons etc. auf direkte Kindschaft (`.foo > li > i`) beschränken, nicht auf
+   beliebige Tiefe.
+
+8. **`<video><source media="...">` ist KEIN cross-browser-taugliches Art-Direction-Feature**
+   (per WebSearch geprüft) - aus Spec und den meisten Browsern wieder entfernt, nur Safari/
+   WebKit unterstützt es noch als Altlast. Für Bilder ist `<picture><source media="...">`
+   dagegen die korrekte, voll unterstützte Lösung (siehe `helpers/media.css`,
+   `demo/media.html#art-direction`). Für Video ohne echte zweite Datei:
+   `.ncss-video--responsive-crop` (anderer Bildausschnitt derselben Datei per
+   `object-fit`+Breakpoint, kein JS). Echtes anderes Filmmaterial je Breakpoint bräuchte
+   kleines JS (`matchMedia` + `src`-Wechsel) - nicht in `video.css`, um es JS-frei zu halten.
+
+9. **`initial-letter` (Drop Cap) braucht in echtem Safari die `-webkit-`-Vorsilbe** -
+   `CSS.supports('initial-letter', '3')` liefert dort `false`, nur
+   `CSS.supports('-webkit-initial-letter', '3')` ist `true` (per Playwright-WebKit-Test
+   bestätigt). War fälschlich als "Baseline seit August 2026" dokumentiert (Firefox hat es
+   nie ausgeliefert, ist also nie Baseline gewesen) - IMMER beide Schreibweisen deklarieren
+   (`-webkit-initial-letter` UND `initial-letter`, MDNs eigenes Beispiel macht das genauso)
+   und `@supports (initial-letter: 3) or (-webkit-initial-letter: 3)` prüfen, sonst bleibt
+   echtes Safari fälschlich außen vor (siehe `helpers/typography.css`).
+
+10. **Relative `url()`-Werte INNERHALB einer CSS Custom Property lösen sich gegen die
+    Basis-URL des Stylesheets auf, das die Property per `var()` KONSUMIERT - nicht gegen die
+    Basis-URL der Seite/des Stylesheets, das die Property GESETZT hat.** Ein
+    `style="--x: url(bild.jpg)"` auf einer Demo-Seite, gelesen von `background-image:
+    var(--x)` in einer `components/*.css`-Datei, versucht das Bild relativ zu `components/`
+    zu laden - 404, kein offensichtlicher Fehler im Markup erkennbar (per echtem Test in
+    `components/hero.css` gefunden). Fix: `url()`-Werte NIE durch eine Custom Property
+    reichen, `background-image`/`src` immer direkt inline am verwendenden Element setzen.
+    Das ist die eine Ausnahme von der sonst geltenden Custom-Property-Parametrisierungs-
+    Konvention (`--ncss-grid-min` u.ä. sind reine Zahlen/Keywords, kein `url()`).
+
+11. **`.ncss-container--narrow` ALLEIN (ohne die Basisklasse `.ncss-container`) bricht
+    `.ncss-full-bleed`.** `--narrow` ist nur ein Modifier (setzt ausschließlich
+    `max-width`) - `width:100%`/`margin-inline:auto`/`padding-inline` kommen von der
+    Basisklasse. Fehlt sie, klebt der Narrow-Block linksbündig statt zentriert; ein darin
+    verschachteltes `.ncss-full-bleed`-Kind geht dann von einer falschen Bildschirmmitte
+    aus (`calc(50% - 50vw)` nimmt an, JEDER Vorfahre sei zentriert) - sichtbar als Leerraum
+    rechts + über den Bildschirmrand hinaus abgeschnittener Inhalt links (per echtem Test
+    in `demo/index.html` gefunden, User-Report: "Platz rechts" + "Text links
+    abgeschnitten"). Immer `class="ncss-container ncss-container--narrow"` zusammen
+    verwenden, nie `--narrow` solo.
+
+12. **Ein Kombi-Element wie `.ncss-card-media` + `.ncss-placeholder` erbt ALLE Eigenschaften
+    beider Klassen, auch ungewollte.** `.ncss-placeholder` bringt eine eigene
+    `border-radius: var(--ncss-radius-md)` mit (sinnvoll als eigenständiger Platzhalter) -
+    kombiniert mit `.ncss-card-media` rundete das ALLE vier Ecken der Media, nicht nur die,
+    die wirklich an eine Kartenecke stoßen (unten sichtbar falsch bei vertikalem Card-
+    Layout, rechts bei `.ncss-card--horizontal`, per User-Report gefunden). Fix:
+    `.ncss-card-media { border-radius: 0; }` explizit setzen - die eigentliche Rundung
+    übernimmt automatisch `overflow: clip` der Karte, für JEDES Layout korrekt, ohne
+    weitere layoutspezifische Regeln. Bei jeder neuen Komponenten-Kombination prüfen, ob
+    eine der beiden Klassen eine Eigenschaft mitbringt, die im jeweils anderen Kontext
+    falsch ist - nicht nur border-radius.
+
+13. **Rein gestalterische Eigenschaften (Rahmen/Ecken/Schatten) gehören NICHT als Default
+    oder Modifier in eine Komponente**, auch wenn das erstmal bequem wirkt (z.B. war
+    `.ncss-card--elevated` nur innerhalb von `.ncss-card` nutzbar). Stattdessen allgemeine,
+    komponentenunabhängige Utilities (`helpers/elevation.css`:
+    `.ncss-border`/`.ncss-radius-*`/`.ncss-shadow-*`/`.ncss-shadow-hover-*`), die auf
+    JEDEM Element funktionieren und frei kombinierbar bleiben - eine Komponente wie
+    `.ncss-card` bringt dann nur noch Struktur (Flex-Layout, `overflow: clip` als
+    Voraussetzung dafür, dass eine optionale Rundung auch greift) und Verhalten mit,
+    keine feste Optik.
+
+14. **`*/` als literale Zeichenfolge INNERHALB eines `/* ... */`-Kommentars beendet den
+    Kommentar sofort dort** - z.B. `.ncss-radius-*/.ncss-shadow-*` in einem Dokumentations-
+    Kommentar (Wildcard-Klassenname `-*` direkt gefolgt von `/`). Alles danach bis zum
+    NÄCHSTEN `*/` wird als echter CSS-Code geparst (kaputt), und diese "echte" `*/` beendet
+    dann selbst nichts mehr - der Browser verwirft beim Fehler-Recovery oft die
+    nachfolgende(n) Regel(n) komplett, OHNE Fehler in der Konsole (per echtem Test
+    gefunden: `.ncss-card-container { container-type: inline-size; ... }` verschwand
+    dadurch spurlos, `.ncss-card--horizontal` blieb wochenlang nur vermeintlich
+    funktionsfähig). Nie `-*/` (oder allgemein `*/` mitten im Satz) in einem CSS-Kommentar
+    schreiben - `-...` statt `-*` in Prosa verwenden, oder ein Leerzeichen einfügen. Nach
+    JEDER Kommentar-Änderung mit Wildcard-Klassennamen (`.ncss-x-*`) per
+    `grep -rn '\-\*/' *.css helpers/*.css components/*.css` prüfen, dass keine neue Instanz
+    entstanden ist - eine rein visuelle Kontrolle per Playwright-Screenshot reicht NICHT,
+    weil eine verschwundene Regel oft genau das ist, was man nicht sieht.
+
+15. **Flex-/Grid-Items werden per Spec automatisch "blockifiziert" - ein deklariertes
+    `display: inline`/`inline-block` auf einem DIREKTEN Kind von `display:flex`/`grid`
+    rechnet der Browser zu `display: block` um, unabhängig davon, was die eigene Regel
+    sagt.** Betraf `.ncss-text-boxed` (braucht `display:inline` für
+    `box-decoration-break: clone`) direkt als Kind von `.ncss-stack` (Flex) - die
+    Klonung griff nicht mehr sichtbar (eine durchgehende Box statt einer pro Zeile), OHNE
+    dass irgendeine Regel das `display:inline` sichtbar überschrieben hätte (per
+    `getComputedStyle` bestätigt: `display: block`, obwohl im CSSOM nur genau eine Regel
+    mit `display:inline` auf das Element passte - die Blockifizierung passiert NACH der
+    Kaskade, nicht durch eine konkurrierende Deklaration). Jede Komponente, die auf
+    `display:inline` angewiesen ist (`.ncss-text-boxed`, ggf. künftige ähnliche), NIE
+    direkt in `.ncss-stack`/`.ncss-cluster`/`.ncss-grid`/`.ncss-flex` verschachteln,
+    sondern in einen normalen `<div>`-Wrapper. Gilt genauso indirekt über eine
+    `.ncss-card-body`, die selbst `.ncss-stack`/`-cluster`/`-grid` trägt (verbreitetes
+    Card-Innenabstand-Muster), oder über `.ncss-card--horizontal`/`--horizontal-end`
+    (deren `.ncss-card-body` IMMER `display:flex` bekommt, siehe components/card.css) -
+    eine reine `.ncss-card-body` ohne diese Kombination ist dagegen ein normaler
+    Block-Container, kein Wrapper nötig. Recherchiert (User fragte danach): aktuell KEIN
+    CSSWG-Vorschlag für ein Opt-out bekannt - [w3c/csswg-drafts#4065](https://github.com/w3c/csswg-drafts/issues/4065)
+    hat die Blockifizierung nur präzisiert (Rechenwert statt generierter Box), nicht
+    entfernt. `display:contents` löst es NICHT (entfernt die eigene Box komplett,
+    `box-decoration-break` hat dann nichts zu klonen) - der `<div>`-Wrapper bleibt der
+    einzige Weg. Demo + Card-Beispiel: `demo/magazine.html`, Erklärung: README "Bekannte
+    Grenzen".
+
+16. **`:modal` hört SOFORT auf zu matchen, sobald `close()`/ESC/ein Close-Button feuert -
+    lange BEVOR die per `@starting-style`/`allow-discrete` verlängerte Fade-Transition
+    optisch fertig ist** (`display` bleibt dank dieser Mechanik extra lang "block", `:modal`
+    aber nicht). Jede Positionierung, die nur über das UA-Stylesheet an `:modal` hängt
+    (`dialog:modal { position:fixed; inset:0; margin:auto; }`, die native Zentrierung)
+    bricht dadurch MITTEN in der eigenen Schließen-Animation weg - `margin` fällt von
+    `auto` auf `0` zurück, der Dialog "fliegt" sichtbar nach oben links, während Opacity/
+    Scale/Transform noch normal weiterlaufen (per echtem Test an Position + `:modal` +
+    Zeitstempeln bestätigt, User-Report: "fliegt oben links raus", betraf `.ncss-modal`
+    UNABHÄNGIG von der `--3d`-Variante). Fix: Positionierung, die über die GESAMTE
+    Öffnen/Schließen-Animation stabil bleiben soll, immer UNBEDINGT deklarieren (nicht an
+    `:modal` gekoppelt) - `.ncss-modal` setzt `position:fixed; inset:0; margin:auto;`
+    jetzt selbst, statt sich auf das UA-Stylesheet zu verlassen. `.ncss-offcanvas` hatte
+    dasselbe Muster zufällig schon richtig (eigene unbedingte `position:fixed;
+    margin:0`), ursprünglich nur um die UA-Zentrierung zu überschreiben, nicht bewusst
+    wegen dieses Bugs - beim Prüfen künftiger `<dialog>`-Komponenten trotzdem immer
+    gezielt nachsehen, ob eine Positionierung an `:modal` hängt.
+
+17. **Ein Custom Property in `@keyframes` animiert nur diskret (kein Zwischenwert), solange
+    es NICHT über `@property` typisiert ist** - `.ncss-glow-border` (components/effects.css)
+    rotiert einen `conic-gradient()`-Ring per `to { --ncss-glow-angle: 360deg }`; ohne
+    `@property --ncss-glow-angle { syntax: "<angle>"; ... }` davor würde der Browser gar
+    nicht sauber von 0deg nach 360deg interpolieren. Baseline seit 2024 (Chrome/Edge/Safari
+    16.4+/Firefox 128+) - ohne Unterstützung bleibt der Ring einfach unbewegt stehen, kein
+    Darstellungsfehler, also kein `@supports`-Fallback nötig.
+
+18. **Ein `::before` mit negativem `z-index` malt NICHT hinter dem eigenen Hintergrund des
+    Elements** - erster Versuch für `.ncss-glow-border` war ein `::before` mit
+    `z-index: -1` als "Rahmen dahinter", das Element selbst sollte die Mitte mit seiner
+    eigenen `background-color` abdecken. Falsch: laut CSS-Stacking-Reihenfolge (Anhang E)
+    malt der eigene Hintergrund des Elements ALS ERSTES, negative z-index-Nachfahren malen
+    danach, also OBEN DRAUF - der "Rahmen" überdeckte die komplette Fläche statt nur den
+    Rand (per Screenshot-Review gefunden, sah aus wie ein voll gefülltes Rechteck statt
+    eines Rings). Fix: kein `z-index`-Trick, sondern ein echtes "Loch" in die `::before`-Box
+    maskieren - `padding: <dicke>` erzeugt die Ringstärke, `mask-composite: exclude`
+    (`-webkit-mask-composite: xor` für Safari, andere Wertsyntax) schneidet die
+    `content-box` aus der vollen Box heraus, übrig bleibt nur der Ring, die Mitte bleibt
+    vollständig transparent (kein Farbwert, der zufällig passen müsste).
+
+19. **Gefülltes Neumorphism (Schatten aus `color-mix()` der eigenen Hintergrundfarbe
+    abgeleitet) braucht eine MITTELTON-Basisfarbe und wird schnell zur "schwebenden Karte"
+    statt einer feinen Prägung** - `.ncss-stamped` ging zwei Anläufe: Anlauf 1 leitete
+    Schatten per `color-mix()` aus `--ncss-color-bg` (reines `#fff`) ab - von Weiß Richtung
+    Weiß gemischt gibt es keinen Spielraum mehr nach oben, der helle Anteil verschwand
+    komplett, übrig blieb nur ein normaler Drop-Shadow (User-Feedback: "muss ganz fein
+    sein, wie eine Prägung"). Anlauf 2 (großflächiger Blur, nur auf `--ncss-color-bg-subtle`
+    umgestellt) wirkte selbst mit Mittelton-Fläche und feinerem Blur noch zu sehr nach
+    "Karte", nicht nach graviertem Material (User: "Hintergrundfarbe weiß, nur der Rahmen
+    soll zu sehen sein"). Endgültiger Ansatz: KEINE gefüllte Fläche mehr, sondern dieselbe
+    Masken-Ring-Technik wie `.ncss-glow-border` (Punkt 18) - ein `::before` mit
+    `mask-composite: exclude` zeichnet nur einen hauchdünnen Rahmen, per
+    `linear-gradient(135deg, dunkel, transparent, hell)` diagonal von dunkel nach hell statt
+    eines rotierenden `conic-gradient()`. Funktioniert dadurch auf JEDER Hintergrundfarbe
+    inkl. reinem Weiß, weil keine Hintergrundfarbe mehr abgeglichen werden muss - die
+    Ring-Technik war die eigentlich richtige Lösung von Anfang an, nicht die
+    Neumorphism-Variante mit gefüllter Fläche.
+
+## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
+
+- **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
+  ODER Grid-Item schrumpft NICHT automatisch unter seine Inhaltsbreite, selbst mit
+  `flex-shrink`/einer `fr`-Spalte - der Default `min-width: auto` bedeutet "nie kleiner
+  als der eigene Inhalt", das Item sprengt dann den Container/Viewport. Zwei separate
+  Fundstellen, gleiche Ursache: `.ncss-nav-list` (Flex, mit `overflow-x` sollte greifen,
+  tat es aber nicht) UND `.docs-layout`/`.guides-sidebar` (Grid-Sidebar, sprengte bei
+  schmaler Fensterbreite den Viewport). Fix IMMER: `min-width: 0` explizit auf JEDEM
+  Flex-/Grid-Item in der Kette setzen, das schrumpfen soll - eine Ebene reicht oft nicht,
+  die ganze Kette prüfen (hier: `.ncss-topbar-inner > nav` UND `.ncss-nav-list`; bei
+  Grid-Layouts pragmatisch `.mein-grid > * { min-width: 0; }` auf alle Items).
+- **`overflow-x: auto` clippt auch die Y-Achse mit, wenn `overflow-y` nicht separat
+  gesetzt ist** (CSS-Overflow-Spec: ein Nicht-"visible"-Wert auf einer Achse zwingt die
+  andere Achse ebenfalls auf einen berechneten Wert ungleich "visible"). Ein `position:
+  absolute`-Kind, das über die Box hinausragen soll (z.B. ein Dropdown-Flyout unterhalb
+  einer Nav-Zeile), wird dadurch unsichtbar geclippt - `position:absolute` entkommt dem
+  Layout-Fluss, aber NICHT dem Clipping eines Vorfahren mit eigenem Overflow-Kontext.
+  Deshalb in nav.css NICHT `overflow-x:auto` für "zu viele Nav-Punkte" verwendet, sondern
+  `flex-wrap: wrap` (erzeugt gar keinen Clipping-Kontext) plus strukturell die bessere
+  Lösung: viele Punkte in ein Mega-/Dropdown-Menü bündeln statt einzeln aufzulisten.
+- **`position: fixed` mit nur EINER gesetzten inset-Kante schrumpft auf Inhaltsbreite.**
+  `.ncss-offcanvas--start { inset-inline-start: 0; inset-inline-end: auto; }` - nur eine
+  Kante gesetzt, keine zweite zum "Aufspannen". `max-width` allein deckelt das nur nach
+  oben, ERZWINGT die Breite aber nicht (shrink-to-fit bleibt möglich, Ergebnis oft deutlich
+  schmaler als beabsichtigt). Fix: zusätzlich eine explizite `width` setzen, nicht nur
+  `max-width`.
+
+## Bleeding-Edge-CSS: erst prüfen, dann committen (Muster, kein Einzelfall)
+
+Bei jeder noch nicht Baseline-weiten CSS-Funktion (Container-Query-Typen, neue
+Pseudoklassen, `animation-timeline` o.ä.): per WebSearch/WebFetch den AKTUELLEN Stand
+prüfen (nicht aus dem Training raten), dann per `@supports`-Gate einbauen - OHNE
+Unterstützung bleibt das Element im neutralen, nicht-kaputten Ausgangszustand (kein JS-
+Fallback nachbauen). Konkretes Beispiel: `.ncss-hide-on-scroll` (helpers/scroll.css) nutzt
+die neue `scroll-state`-Container-Query, um einen sticky Header beim Runterscrollen
+auszublenden/beim Hochscrollen wieder einzublenden - komplett ohne JS. Es gibt eine ÄLTERE
+Technik dafür (`@property` + `animation-timeline: scroll()`, 2024 verbreitet) mit einem
+bekannten Bug (schnelles Runter-dann-Hoch-Scrollen kann den Header hängen lassen) - bewusst
+NICHT als Fallback ergänzt, weil zwei konkurrierende Hacks für eine reine Zusatz-Politur
+mehr Wartungslast wären, als sie wert sind. Dasselbe Abwägen gilt für jede künftige
+ähnliche Situation: EINE saubere, gut-gegatete Lösung statt mehrerer sich überschneidender.
+
+## Icon-System (`helpers/icons.css`)
+
+Eigene SVG-Icons als CSS `mask-image` (erben `currentColor`, kein Markup-Inhalt nötig):
+`<span class="ncss-icon ncss-icon-close"></span>`. Komponenten wie `.ncss-dialog-close`
+stylen nur die Fläche, nicht das Icon - austauschbar gegen z.B. Font Awesome
+(`<i class="fa-solid fa-xmark">`), ohne die Komponente anzufassen. Neues Icon: eigenes SVG
+als mask-image data-URI nach demselben Muster ergänzen, kein großes Set vorsorglich anlegen.
+
+## Beim Erweitern
+
+1. Neuer Wert gebraucht? Erst prüfen, ob ein Token in `tokens.css`/`colors.css` fehlt -
+   dort ergänzen, nicht in der Komponente hart codieren, sobald ein zweiter Nutzungsort
+   absehbar ist (siehe `--ncss-color-overlay`, `--ncss-font-weight-*`,
+   `--ncss-focus-ring-width` als Beispiele für nachträglich zentralisierte Werte).
+2. Neue Komponente: eigene Datei unter `components/`, Import in `ncss.css` im Layer
+   `components`, ausschließlich `var(--ncss-*)`.
+3. Neue Web-Awesome-Komponente einbinden: zuerst im kompilierten Source nachsehen, welche
+   `--wa-color-*`/`--wa-*`-Variablen sie tatsächlich nutzt (nicht der Doku vertrauen, siehe
+   Fallstrick 1), dann in `webawesome-bridge.css` ergänzen.
+4. Nach jeder nicht-trivialen Änderung: lokalen PHP-Server starten
+   (`php -S 127.0.0.1:PORT -t public/ncss`), mit Playwright öffnen, Screenshot + computed
+   styles prüfen - PFLICHT für alles, was Dark Mode oder Web Awesome betrifft.
+
+## Demo-Seiten (public/ncss/demo/)
+
+`index.html` (Kitchen-Sink), `navigation.html` (Dropdowns/Mega-Menü/Tree), `forms.html`
+(Switch/Range), `media.html` (Video), `landing.html` (realistische Beispielseite, NativeCSS +
+Web Awesome + Font Awesome im Zusammenspiel, u.a. `<wa-dropdown>` als Menü statt nativem
+`<details>`), `effects.html` (Glow-Border/-Pulse, Glass), `docs.html` (dieses Handbuch,
+ausführlicher als dieses Skill-Dokument). Jede Seite bindet `../ncss.css` ein und trägt ihr eigenes,
+seitenspezifisches CSS in einem eigenen `<style>`-Block mit `demo-*`-Präfix - nie in den
+ncss-Dateien selbst.

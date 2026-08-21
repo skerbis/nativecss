@@ -1,0 +1,88 @@
+/**
+ * ncss - Select-Komponente (Layer "components").
+ *
+ * Fallback-first: das Basisstyling (Pfeil-Indikator per mask-image statt Hintergrundbild,
+ * damit die Farbe aus unseren Tokens statt einem fest codierten SVG-Wert kommt) läuft in
+ * JEDEM Browser. appearance: base-select wird nur ergänzt, wo unterstützt (siehe
+ * @supports unten) - "The Golden Rule of Customizable Select"
+ * (https://webkit.org/blog/18117/the-golden-rule-of-customizable-select/): natives
+ * <select> bleibt die funktionale Baseline, nie nur ein Enhancement-Layer ohne Fallback.
+ *
+ * Markup: <span class="ncss-select-wrapper"><select class="ncss-select">...</select></span>
+ * - der Wrapper trägt den Pfeil-Indikator (Formularelemente selbst unterstützen kein
+ * generiertes ::after-Content).
+ */
+
+.ncss-select-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.ncss-select-wrapper::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: var(--ncss-space-xs);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  width: var(--ncss-icon-size-sm);
+  height: var(--ncss-icon-size-sm);
+  background-color: var(--ncss-color-text-muted);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.ncss-select {
+  appearance: none;
+  padding-inline-end: var(--ncss-space-lg);
+  width: 100%;
+}
+
+/* Nur dort aktiv, wo appearance:base-select tatsächlich unterstützt wird (siehe
+   Browser-Stand: Chrome/Edge 135+, Safari 27+ - Firefox/ältere Browser bleiben beim
+   Fallback oben, voll funktionsfähig, nur schlichter gestylt). */
+@supports (appearance: base-select) {
+  .ncss-select {
+    appearance: base-select;
+  }
+
+  /* Eigener Pfeil überflüssig - base-select liefert eine eigene, per ::picker-icon
+     stylebare Anzeige; unser mask-Pfeil würde sich sonst doppeln. */
+  .ncss-select-wrapper::after {
+    display: none;
+  }
+
+  .ncss-select::picker-icon {
+    color: var(--ncss-color-text-muted);
+  }
+
+  /* Das Dropdown-Popup selbst - komplett eigenständig stylebar, läuft im Top-Layer
+     (wie <dialog>), braucht daher KEIN z-index-Gefrickel gegen anderen Seiteninhalt. */
+  .ncss-select::picker(select) {
+    appearance: base-select;
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    box-shadow: var(--ncss-shadow-md);
+    padding: var(--ncss-space-2xs);
+    margin-block-start: var(--ncss-space-2xs);
+  }
+
+  .ncss-select option {
+    border-radius: var(--ncss-radius-sm);
+    padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  }
+
+  .ncss-select option:hover,
+  .ncss-select option:focus-visible {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+
+  .ncss-select option:checked {
+    background-color: var(--ncss-color-brand);
+    color: var(--ncss-color-brand-contrast);
+  }
+}

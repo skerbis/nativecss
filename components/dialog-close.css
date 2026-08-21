@@ -1,0 +1,40 @@
+/**
+ * ncss - Dialog-Close-Button (Layer "components"): geteilte Schließen-Button-Optik für
+ * alle <dialog>-Komponenten (Modal, Off-Canvas) - eine Quelle statt mehrfach dupliziert.
+ *
+ * Modular per Absicht: diese Klasse stylt nur die BUTTON-FLÄCHE (Position, Größe, Form,
+ * Hover) - welches Icon darin sitzt, schreibt sie nicht vor. Default nutzt ncss' eigenes
+ * SVG-Icon (helpers/icons.css, .ncss-icon-close), lässt sich aber 1:1 z.B. gegen Font
+ * Awesome tauschen, ohne diese Datei anzufassen:
+ *
+ *   <button type="button" class="ncss-dialog-close" command="close" commandfor="..."
+ *           aria-label="Schließen">
+ *     <span class="ncss-icon ncss-icon-close" aria-hidden="true"></span>   <!-- Default -->
+ *     <i class="fa-solid fa-xmark" aria-hidden="true"></i>                 <!-- oder das -->
+ *   </button>
+ *
+ * Beides landet in derselben flex-zentrierten Fläche und übernimmt automatisch die
+ * Textfarbe (currentColor) - font-size hier steuert bei BEIDEN Varianten die Icon-Größe.
+ *
+ * Default-Position: innen oben rechts (passt zu Modal/Off-Canvas).
+ */
+.ncss-dialog-close {
+  position: absolute;
+  inset-block-start: var(--ncss-space-xs);
+  inset-inline-end: var(--ncss-space-xs);
+  width: var(--ncss-space-lg);
+  height: var(--ncss-space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ncss-radius-full);
+  border: none;
+  background-color: var(--ncss-color-bg-subtle);
+  color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-md);
+  line-height: 1;
+  cursor: pointer;
+}
+.ncss-dialog-close:hover {
+  background-color: var(--ncss-color-border);
+}

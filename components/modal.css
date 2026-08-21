@@ -1,0 +1,189 @@
+/**
+ * ncss - Modal-Komponente (Layer "components"): natives <dialog>, zentriert, als
+ * "Karte mit Schatten" - für Bestätigungen/Formulare/Hinweise. Für seitlich einschiebende
+ * Panels siehe stattdessen components/off-canvas.css - beide nutzen dasselbe native
+ * <dialog> + command/commandfor, aber mit bewusst UNTERSCHIEDLICHER Optik (deshalb keine
+ * Meinung dazu in base.css, siehe dort).
+ *
+ * KEINE eigene Lightbox-Komponente: eine Lightbox ist konzeptionell nur ein Modal mit
+ * anderer Darstellung (Vollbild, dunkel) - siehe .ncss-modal--fullscreen/--dark unten,
+ * statt eine zweite, fast identische <dialog>-Komponente zu pflegen.
+ *
+ * Markup (Standard):
+ * <button type="button" command="show-modal" commandfor="modal1">Öffnen</button>
+ * <dialog id="modal1" class="ncss-modal">
+ *   <button type="button" class="ncss-dialog-close" command="close" commandfor="modal1"
+ *           aria-label="Schließen">&times;</button>
+ *   <div class="ncss-modal-header"><h3>Titel</h3></div>
+ *   <div class="ncss-modal-body">Inhalt</div>
+ *   <div class="ncss-modal-footer">
+ *     <button type="button" class="ncss-btn ncss-btn--secondary" command="close"
+ *             commandfor="modal1">Abbrechen</button>
+ *     <button type="button" class="ncss-btn ncss-btn--primary">Bestätigen</button>
+ *   </div>
+ * </dialog>
+ *
+ * Markup (Lightbox-artig, Bild):
+ * <dialog id="modal2" class="ncss-modal ncss-modal--fullscreen ncss-modal--dark">
+ *   <button type="button" class="ncss-dialog-close" command="close" commandfor="modal2"
+ *           aria-label="Schließen">&times;</button>
+ *   <img src="full.jpg" alt="Beschreibung">
+ * </dialog>
+ */
+
+.ncss-modal {
+  /* position/inset/margin bewusst EXPLIZIT gesetzt, nicht dem UA-Stylesheet überlassen:
+     das native "dialog:modal { position:fixed; inset:0; margin:auto; }" ist an die
+     :modal-Pseudoklasse GEKOPPELT - und die hört per echtem Test SOFORT auf zu greifen,
+     sobald close() aufgerufen wird (noch bevor die Fade-Transition sichtbar fertig ist,
+     display bleibt dank @starting-style/allow-discrete extra lang "block"). Ohne eigene,
+     unbedingte Regel hier verliert der Dialog die Zentrierung MITTEN in der eigenen
+     Schließen-Animation - margin fällt von "auto" auf "0" zurück, inset:0 zieht die Box
+     dadurch sichtbar nach oben links, wie ein "Rausfliegen" in die Ecke (per echtem Test
+     an Position/:modal/Zeitstempeln bestätigt - betraf JEDES .ncss-modal, nicht nur
+     .ncss-modal--3d). Diese eigene Regel bleibt unabhängig von :modal bestehen, die
+     Zentrierung hält deshalb über die GESAMTE Schließen-Animation durch. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  border: none;
+  border-radius: var(--ncss-radius-lg);
+  box-shadow: var(--ncss-shadow-lg);
+  padding: var(--ncss-space-lg);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  max-width: min(var(--ncss-modal-max-width, var(--ncss-dialog-max-width)), calc(100vw - 2 * var(--ncss-space-md)));
+}
+
+.ncss-modal::backdrop {
+  background-color: var(--ncss-color-overlay);
+  backdrop-filter: blur(2px);
+}
+
+/* Close-Button: geteilte Basis in components/dialog-close.css, hier keine Ausnahme
+   nötig - Default-Position (innen oben rechts) passt bereits. */
+
+.ncss-modal-header {
+  margin-block-end: var(--ncss-space-sm);
+  padding-inline-end: var(--ncss-space-lg);
+}
+.ncss-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ncss-space-xs);
+  margin-block-start: var(--ncss-space-md);
+}
+
+/* Fade+Scale beim Öffnen/Schließen - identische @starting-style/allow-discrete-Mechanik
+   wie components/lightbox.css (siehe dort für die ausführliche Erklärung). */
+.ncss-modal,
+.ncss-modal::backdrop {
+  transition:
+    opacity var(--ncss-motion-duration) var(--ncss-motion-easing),
+    scale var(--ncss-motion-duration) var(--ncss-motion-easing),
+    display var(--ncss-motion-duration) allow-discrete,
+    overlay var(--ncss-motion-duration) allow-discrete;
+}
+.ncss-modal {
+  opacity: 1;
+  scale: 1;
+}
+.ncss-modal::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  .ncss-modal:modal {
+    opacity: 0;
+    scale: 0.95;
+  }
+  .ncss-modal:modal::backdrop {
+    opacity: 0;
+  }
+}
+.ncss-modal:not(:modal) {
+  opacity: 0;
+  scale: 0.95;
+}
+
+/* --- Varianten ---------------------------------------------------------------------- */
+
+/* Vollbild statt zentrierter Karte - der "Lightbox"-Fall (Bilder, Medien). Eigener Inhalt
+   wird zentriert statt wie im Standard-Modal linksbündig gestapelt.
+   "display: flex" GEZIELT auf :modal beschränkt, nicht auf .ncss-modal--fullscreen direkt:
+   ein geschlossener <dialog> hat UA-seitig "display: none" - eine unbedingte eigene
+   display-Deklaration hätte das überschrieben und den Dialog PERMANENT sichtbar gemacht,
+   unabhängig vom offen/geschlossen-Zustand (per echtem Test gefunden: der Dialog blockierte
+   danach seinen eigenen Öffnen-Button). Breite/Höhe/Radius sind zustandslos, dürfen normal
+   gesetzt werden - die wirken nur, wenn der Dialog ohnehin schon sichtbar ist. */
+.ncss-modal--fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  border-radius: 0;
+}
+.ncss-modal--fullscreen:modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ncss-modal--fullscreen img,
+.ncss-modal--fullscreen video {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 2 * var(--ncss-space-lg));
+  border-radius: var(--ncss-radius-md);
+}
+
+/* Dunkle Darstellung UNABHÄNGIG vom aktuellen Light/Dark-Theme der Seite - typisch für
+   Bild-/Medien-Betrachtung, wo ein heller Rahmen ums Bild stört. Setzt nur color-scheme;
+   alle ncss-Tokens im Inhalt (color/background/border via light-dark()) lösen dadurch
+   automatisch auf ihre Dark-Werte auf, ganz ohne diese Werte hier zu duplizieren. */
+.ncss-modal--dark {
+  color-scheme: dark;
+  background-color: #0a0a0a;
+  color: #f0f0f0;
+}
+.ncss-modal--dark::backdrop {
+  background-color: var(--ncss-color-overlay-strong);
+  backdrop-filter: blur(4px);
+}
+
+/* --- Variante: 3D-Tiefeneffekt beim Öffnen/Schließen --------------------------------------
+   Statt des Standard-Fade+Scale (oben) kippt das Modal wie aus der Tiefe nach vorne herein.
+   perspective() als TRANSFORM-FUNKTION direkt in der eigenen transform-Kette, NICHT die
+   separate perspective-Eigenschaft auf einem Elternelement: ein geöffneter <dialog>
+   rendert im "Top Layer" (eigene Stapel-Ebene außerhalb des normalen DOM-Renderbaums) -
+   eine auf einem DOM-Vorfahren gesetzte perspective-Eigenschaft würde dort nicht
+   zuverlässig respektiert, perspective() im eigenen transform dagegen schon (per echtem
+   Test bestätigt).
+   Überschreibt scale bewusst auf 1 (Basis-Regel oben nutzt es für den normalen Fade+Scale)
+   - die komplette Bewegung steckt hier stattdessen in EINER transform-Kette, zwei parallel
+   wirkende Eigenschaften (scale UND transform) würden sich nicht sauber kombinieren lassen.
+   --ncss-modal-3d-depth parametrisiert, wie weit "hinten" das Modal startet (negative
+   translateZ), pro Instanz überschreibbar: style="--ncss-modal-3d-depth: -40rem". */
+.ncss-modal--3d {
+  scale: 1;
+  transform: perspective(75rem) rotateX(0deg) translateZ(0);
+  transition:
+    opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+    transform var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+    display var(--ncss-motion-duration-slow) allow-discrete,
+    overlay var(--ncss-motion-duration-slow) allow-discrete;
+
+  &::backdrop {
+    transition: opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+  &:not(:modal) {
+    opacity: 0;
+    scale: 1;
+    transform: perspective(75rem) rotateX(12deg) translateZ(var(--ncss-modal-3d-depth));
+  }
+  @starting-style {
+    &:modal {
+      opacity: 0;
+      scale: 1;
+      transform: perspective(75rem) rotateX(12deg) translateZ(var(--ncss-modal-3d-depth));
+    }
+  }
+}

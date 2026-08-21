@@ -1,0 +1,302 @@
+/**
+ * ncss - Navigation-Komponente (Layer "components"). Zwei Varianten:
+ *
+ * 1. .ncss-nav (horizontal, Desktop) - kollabiert unterhalb der Breakpoint-Konvention
+ *    "nav-collapse" (64rem, siehe tokens.css) zu einem Hamburger-Button, der DASSELBE
+ *    Markup als Off-Canvas-Sidebar öffnet (components/off-canvas.css wird direkt
+ *    mitgenutzt, nicht dupliziert - .ncss-nav-panel trägt zusätzlich die off-canvas-
+ *    Klassen). "display: contents" lässt den Dialog-Wrapper auf Desktop optisch
+ *    verschwinden (kein Backdrop/Modal-Verhalten), ohne das Markup zu verdoppeln.
+ *
+ * 2. .ncss-nav--tree (vertikal, z.B. Docs-Sidebar) - immer sichtbar, kein Kollabieren
+ *    nötig, beliebig tief verschachtelbar.
+ *
+ * Untermenüs: <details>/<summary> statt Hover - funktioniert identisch per Klick/Touch/
+ * Tastatur (Enter/Space), kein separates :hover-vs-Touch-Problem. Bewusster Kompromiss:
+ * ein Elternpunkt mit Kindern ist NICHT gleichzeitig ein eigener Link (das "Elternlink UND
+ * Toggle zugleich"-Problem hat keine wirklich saubere Lösung) - stattdessen als erster
+ * Eintrag im Untermenü eine "Übersicht"-Seite verlinken (siehe Markup-Beispiel unten).
+ *
+ * Markup (horizontal, Desktop+Mobile in einem):
+ * <nav class="ncss-nav">
+ *   <button type="button" class="ncss-nav-toggle" command="show-modal"
+ *           commandfor="navPanel" aria-label="Menü öffnen">☰</button>
+ *   <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+ *     <button type="button" class="ncss-dialog-close" command="close"
+ *             commandfor="navPanel" aria-label="Menü schließen">&times;</button>
+ *     <ul class="ncss-nav-list">
+ *       <li class="ncss-nav-item"><a href="/">Home</a></li>
+ *       <li class="ncss-nav-item">
+ *         <details class="ncss-nav-dropdown">
+ *           <summary>Produkte</summary>
+ *           <ul class="ncss-nav-submenu">
+ *             <li><a href="/produkte">Übersicht</a></li>
+ *             <li><a href="/produkte/a">Produkt A</a></li>
+ *           </ul>
+ *         </details>
+ *       </li>
+ *     </ul>
+ *   </dialog>
+ * </nav>
+ */
+
+.ncss-nav {
+  display: flex;
+  align-items: center;
+}
+
+.ncss-nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--ncss-space-lg);
+  height: var(--ncss-space-lg);
+  border: none;
+  background: none;
+  color: var(--ncss-color-text);
+  cursor: pointer;
+  font-size: var(--ncss-font-size-md);
+}
+
+/* Desktop: der Dialog-Wrapper erzeugt gar keine eigene Box mehr - seine Kinder (die
+   Nav-Liste) rendern direkt an seiner Stelle, als wäre der Dialog nicht da. Kein
+   Backdrop, kein Modal-Zustand relevant (display:contents deaktiviert jede eigene
+   Darstellung, unabhängig vom [open]-Attribut). */
+.ncss-nav-panel {
+  display: contents;
+  /* Etwas breiter als der generische Off-Canvas-Default (20rem, siehe off-canvas.css) -
+     eine Nav mit mehreren Punkten (ggf. inkl. gestapeltem Mega-Menü) braucht mehr Raum als
+     eine kurze Aktions-Sidebar. Weiterhin bei 85vw gedeckelt (siehe off-canvas.css), bricht
+     also auch auf sehr schmalen Geräten nicht über den Viewport hinaus. */
+  --ncss-offcanvas-width: 24rem;
+}
+.ncss-nav-panel .ncss-dialog-close {
+  display: none;
+}
+
+/* Breakpointless: KEIN fester Punkt, an dem die horizontale Liste "umschaltet" - sie
+   versucht immer zuerst, in einer Zeile zu bleiben; passt sie nicht, umbricht sie
+   organisch in eine zweite Zeile (wie Fließtext), statt den Viewport zu sprengen.
+   Reagiert stufenlos auf JEDE Breite, nicht nur auf die eine dokumentierte
+   nav-collapse-Schwelle.
+   NICHT overflow-x:auto (frühere Version dieser Datei, per echtem Nutzertest verworfen):
+   overflow-x auf irgendeinem Nicht-"visible"-Wert zwingt laut Spec AUCH overflow-y auf
+   einen berechneten Wert ungleich "visible" (nicht mehr "sichtbar über den Rand hinaus")
+   - das hat die absolut positionierten Dropdown-/Mega-Menü-Panels (die bewusst UNTERHALB
+   der Nav-Zeile herausragen) unsichtbar geclippt, obwohl sie position:absolute sind
+   (position:absolute entkommt dem Fluss, aber NICHT dem Clipping eines Vorfahren mit
+   eigenem Overflow-Kontext). flex-wrap hat dieses Problem nicht - es erzeugt gar keinen
+   Clipping-Kontext. Für eine SEHR lange Nav-Liste ist ohnehin die bessere Lösung, die
+   wenigsten wichtigen Punkte oben zu zeigen und den Rest in einem Mega-Menü zu bündeln
+   (siehe demo/navigation.html bzw. dieser Seite eigene Topbar) statt alles einzeln
+   aufzulisten - das löst "zu viele Punkte" strukturell, nicht nur visuell. */
+.ncss-nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+/* base.css's generischer Block-Rhythmus (jedes <details> bekommt margin-block-end, wie
+   auch p/ul/blockquote/etc.) ist als STANDALONE-Block-Element sinnvoll, hier aber ein
+   Flex-Item in einer horizontalen Nav-Zeile - dort ist Margin-Reset normal/erwartet, kein
+   "gegen eine Komponenten-Meinung ankämpfen" (die eigentliche FAQ-Box-Optik von <details>
+   liegt seit dem Refactor sauber in components/disclosure.css, opt-in per Klasse - bare
+   <details>/<summary> in base.css ist jetzt neutral, nichts mehr wegzuresetten). */
+.ncss-nav-dropdown {
+  margin-block-end: 0;
+}
+
+.ncss-nav-item > a,
+.ncss-nav-dropdown > summary {
+  display: block;
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  border-radius: var(--ncss-radius-sm);
+  color: var(--ncss-color-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.ncss-nav-item > a:hover,
+.ncss-nav-item > a:focus-visible,
+.ncss-nav-dropdown > summary:hover,
+.ncss-nav-dropdown > summary:focus-visible {
+  background-color: var(--ncss-color-bg-subtle);
+}
+
+/* Native Summary-Markierung (Dreieck) entfernen, eigenen Chevron per ::after nachbauen -
+   funktioniert einheitlich über Browser hinweg (das native Dreieck unterscheidet sich
+   sonst zwischen Chrome/Firefox/Safari). */
+.ncss-nav-dropdown > summary {
+  list-style: none;
+}
+.ncss-nav-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+.ncss-nav-dropdown > summary::after {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  margin-inline-start: 0.4em;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  rotate: 45deg;
+  translate: 0 -0.15em;
+  transition: rotate var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-nav-dropdown[open] > summary::after {
+  rotate: 225deg;
+  translate: 0 0.15em;
+}
+
+.ncss-nav-submenu {
+  list-style: none;
+  margin: var(--ncss-space-2xs) 0 0;
+  padding: var(--ncss-space-2xs);
+}
+.ncss-nav-submenu li + li {
+  margin-block-start: var(--ncss-space-3xs);
+}
+.ncss-nav-submenu a {
+  display: block;
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  border-radius: var(--ncss-radius-sm);
+  color: var(--ncss-color-text);
+  text-decoration: none;
+}
+.ncss-nav-submenu a:hover,
+.ncss-nav-submenu a:focus-visible {
+  background-color: var(--ncss-color-bg-subtle);
+}
+
+/* Desktop: Untermenü schwebt als Panel unter dem Elternpunkt. */
+.ncss-nav-dropdown {
+  position: relative;
+}
+.ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
+  position: absolute;
+  inset-inline-start: 0;
+  min-width: 12rem;
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-md);
+  z-index: 20;
+}
+
+/* Verschachteltes Dropdown (Untermenü-in-Untermenü): schwebt zur SEITE statt darunter,
+   sonst würde es sich mit den eigenen Geschwister-Einträgen überlappen. .ncss-nav-dropdown
+   ist bereits position:relative (oben) - reicht als Bezugsrahmen, kein weiterer Wrapper
+   nötig. Opt-in per Klasse statt automatisch ab Verschachtelungstiefe 2, weil die
+   Top-Level-Positionierung (direkt oben) bewusst unverändert bleiben soll, wenn sie
+   tatsächlich gewünscht ist (z.B. eine sehr flache zweite Ebene). */
+.ncss-nav > .ncss-nav-panel .ncss-nav-dropdown--nested > .ncss-nav-submenu {
+  inset-inline-start: 100%;
+  inset-block-start: 0;
+}
+
+/* -- ncss breakpoint: nav-collapse (64rem) -- */
+@media (max-width: 63.99rem) {
+  .ncss-nav-toggle {
+    display: inline-flex;
+  }
+  .ncss-nav-panel {
+    /* display:contents zurücknehmen - jetzt greift components/off-canvas.css normal
+       (position:fixed, Slide-in-Animation, Backdrop). */
+    display: revert-layer;
+  }
+  .ncss-nav-panel .ncss-dialog-close {
+    display: block;
+  }
+  .ncss-nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ncss-space-2xs);
+    margin-block-start: var(--ncss-space-lg);
+  }
+  .ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    background: none;
+    padding-inline-start: var(--ncss-space-md);
+  }
+}
+
+/* --- Variante: Mega-Menü -----------------------------------------------------------------
+   Dieselbe <details>/<summary>-Mechanik wie ein normales Dropdown oben - nur der Inhalt ist
+   ein mehrspaltiges Grid statt einer einzelnen Liste. .ncss-nav-submenu bleibt die äußere
+   Klasse (liefert Position/Fläche/Schatten, siehe oben) - --mega schaltet nur Breite/Layout
+   um. .ncss-nav-mega-col ist bewusst ein einfacher <div>-Container: die eigentlichen Links
+   darin sind normale <ul><li><a>, die schon per ".ncss-nav-submenu a"-Nachfahren-Selektor
+   oben mitgestylt werden (kein Duplikat nötig).
+   Markup:
+   <details class="ncss-nav-dropdown">
+     <summary>Komponenten</summary>
+     <div class="ncss-nav-submenu ncss-nav-submenu--mega">
+       <div class="ncss-nav-mega-col">
+         <span class="ncss-nav-mega-heading">Layout</span>
+         <ul><li><a href="#">Grid</a></li><li><a href="#">Stack</a></li></ul>
+       </div>
+       <div class="ncss-nav-mega-col"> ... </div>
+     </div>
+   </details> */
+.ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--ncss-space-md);
+  width: max-content;
+  min-width: 28rem;
+  /* Bekannter Kompromiss: kein automatisches "an den Viewport-Rand andocken" ohne JS/CSS-
+     Anchor-Positioning (Stand jetzt noch nicht breit genug Baseline für einen verlässlichen
+     Default) - max-width verhindert wenigstens Überlaufen über den Viewport hinaus, an sehr
+     schmalen Fenstern kann der Trigger dann nicht mehr zentriert unter dem Menü liegen. */
+  max-width: min(48rem, calc(100vw - 2 * var(--ncss-space-md)));
+  padding: var(--ncss-space-sm);
+}
+.ncss-nav-mega-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ncss-nav-mega-heading {
+  display: block;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  color: var(--ncss-color-text-muted);
+  margin-block-end: var(--ncss-space-2xs);
+}
+/* -- ncss breakpoint: md (768px) -- */
+@media (max-width: 63.99rem) {
+  .ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-sm);
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding: 0;
+  }
+}
+
+/* --- Variante: vertikale Tree-Navigation (z.B. Docs-Sidebar) ---------------------------
+   Kein Kollabieren nötig (schon vertikal/schmal-freundlich), beliebig tief verschachtelbar
+   - einfach .ncss-nav-dropdown/.ncss-nav-submenu ineinander verschachteln.
+   Markup: <nav class="ncss-nav--tree"><ul class="ncss-nav-list">...</ul></nav> (ohne
+   Toggle-Button/Dialog-Panel - die ganze Struktur ist immer direkt sichtbar). */
+.ncss-nav--tree .ncss-nav-list {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--ncss-space-3xs);
+}
+.ncss-nav--tree .ncss-nav-submenu {
+  position: static;
+  box-shadow: none;
+  border: none;
+  background: none;
+  padding-inline-start: var(--ncss-space-md);
+}

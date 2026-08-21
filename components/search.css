@@ -1,0 +1,52 @@
+/**
+ * ncss - Erweiterbares Suchfeld (Layer "components"). Startet schmal (nur die Andeutung
+ * eines Icons), wächst beim Fokussieren auf volle Breite - klassisches "Icon wird zum
+ * Suchfeld"-Muster, komplett ohne JS über eine reine width-Transition auf dem Input selbst.
+ *
+ * Markup:
+ * <div class="ncss-search">
+ *   <span class="ncss-icon ncss-icon-search" aria-hidden="true"></span>
+ *   <input type="search" class="ncss-input ncss-search-input" placeholder="Suchen..." aria-label="Suchen">
+ * </div>
+ *
+ * Bewusst KEIN eigener Button fürs Icon: das <input> selbst ist schon die klickbare
+ * Fläche (auch im schmalen Zustand) - ein Klick auf den sichtbaren Icon-Bereich fokussiert
+ * direkt das Feld und löst die Erweiterung aus, ohne einen Zwischenschritt (Button ->
+ * dann erst Input fokussieren) zu brauchen. Das Icon selbst ist rein dekorativ
+ * (aria-hidden, pointer-events:none) - overlay per position:absolute, das Input trägt das
+ * nötige padding-inline-start, um nicht darunter zu verschwinden.
+ * :not(:placeholder-shown) hält das Feld zusätzlich breit, solange bereits Text
+ * eingegeben ist, auch nach dem Verlassen des Fokus - kollabiert erst wieder, wenn das
+ * Feld leer UND unfokussiert ist.
+ */
+
+.ncss-search {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ncss-search .ncss-icon {
+  position: absolute;
+  inset-inline-start: var(--ncss-space-xs);
+  color: var(--ncss-color-text-muted);
+  pointer-events: none;
+}
+
+.ncss-search-input {
+  width: 2.5rem;
+  padding-inline-start: 2.25rem;
+  border-radius: var(--ncss-radius-full);
+  transition: width var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+}
+.ncss-search-input:focus,
+.ncss-search-input:not(:placeholder-shown) {
+  width: var(--ncss-search-expanded-width);
+}
+
+/* Sicherheitsnetz: darf auf keiner Bildschirmbreite über den verfügbaren Platz
+   hinauswachsen (z.B. schmales Mobile-Toolbar-Icon mit sehr breitem
+   --ncss-search-expanded-width-Override). */
+.ncss-search-input {
+  max-width: 100%;
+}

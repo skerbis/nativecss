@@ -1,0 +1,81 @@
+/**
+ * ncss - Farbige Flächen (Layer "helpers"): Hintergrund + garantiert passende Textfarbe in
+ * einer Klasse, statt Inline-Style mit Hand-gepflegtem Kontrast (fehleranfällig, siehe
+ * dokumentierter Bug unten).
+ *
+ * BEWUSST NICHT --ncss-color-brand-contrast verwendet: der ist an color-scheme gekoppelt
+ * (light-dark()) und für die Kombination mit --ncss-color-brand (der SELBST mit dem Theme
+ * kippt) gedacht. Die 900er-Stufe der Skala bleibt dagegen IMMER dunkel, auch wenn die
+ * Seite gerade im Dark Mode ist (color-mix() Richtung Schwarz ist nicht theme-abhängig) -
+ * brand-contrast würde im Dark Mode fälschlich auf dunklen Text kippen, obwohl der
+ * Hintergrund weiterhin dunkel bleibt. Für feste Skalenstufen daher ein fest passender,
+ * nicht mitkippender Kontrastwert.
+ */
+
+.ncss-surface--brand {
+  background-color: var(--ncss-color-brand-900);
+  color: #fff;
+}
+.ncss-surface--brand-2 {
+  background-color: var(--ncss-color-brand-2-900);
+  color: #fff;
+}
+.ncss-surface--neutral {
+  background-color: var(--ncss-color-neutral-900);
+  color: #fff;
+}
+
+/* --- Verläufe (linear-gradient) ----------------------------------------------------------
+   Zwei kuratierte Verläufe statt einer beliebigen Farb-Kombinationsmatrix - Winkel per
+   Custom Property parametrisierbar (--ncss-gradient-angle in tokens.css, Default 135deg,
+   die klassische "oben-links nach unten-rechts"-Diagonale), pro Instanz überschreibbar:
+   style="--ncss-gradient-angle: 90deg". --brand geht von der Marken- zur Zweitfarbe (beide
+   bereits light-dark()-fähig, der Verlauf kippt also automatisch mit dem Theme mit),
+   --subtle ist ein dezenter Verlauf zwischen den beiden Hintergrund-Stufen - für ein Panel,
+   das sich leicht vom flachen Seitenhintergrund absetzen soll, ohne eine eigene Akzentfarbe
+   zu brauchen. */
+.ncss-gradient-brand {
+  background-image: linear-gradient(var(--ncss-gradient-angle), var(--ncss-color-brand), var(--ncss-color-brand-2));
+  color: #fff;
+}
+.ncss-gradient-subtle {
+  background-image: linear-gradient(var(--ncss-gradient-angle), var(--ncss-color-bg), var(--ncss-color-bg-subtle));
+}
+
+/* Verlauf ALS Textfarbe statt Hintergrund - background-clip:text schneidet den Hintergrund
+   auf die Buchstabenform zu, color:transparent macht die eigentliche Textfarbe durchsichtig,
+   sodass der Verlauf durchscheint. Nur für großen, auffälligen Text gedacht (Headline/
+   Eyebrow), nicht für Fließtext (Kontrast/Lesbarkeit eines Verlaufs ist pro Buchstabe
+   unterschiedlich, bei Fließtextgröße ermüdend). */
+.ncss-text-gradient-brand {
+  background-image: linear-gradient(var(--ncss-gradient-angle), var(--ncss-color-brand), var(--ncss-color-brand-2));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* --- Erzwungenes Farbschema pro Element ---------------------------------------------------
+   NICHT zu verwechseln mit dem seitenweiten "Manueller Theme-Override" in colors.css
+   ([data-theme] auf :root, z.B. ein Umschalter in der UI) - dasselbe color-scheme-Prinzip,
+   hier aber LOKAL auf ein einzelnes Element angewendet statt global auf :root. color-scheme
+   ist vererbbar - light-dark() löst innerhalb dieses Elements (und aller Nachfahren) auf
+   den hier erzwungenen Wert auf, unabhängig vom Theme der restlichen Seite.
+
+   color zusätzlich zu color-scheme NEU deklarieren, nicht nur color-scheme allein: color
+   wird an dieser Stelle sonst nur GEERBT, und eine Vererbung übernimmt den bereits FERTIG
+   AUFGELÖSTEN Wert vom Vorfahren (z.B. body, siehe base.css) - color-scheme wirkt sich nur
+   auf light-dark()-Aufrufe INNERHALB dieses Elements oder seiner Nachfahren aus, kann aber
+   einen von weiter oben schon aufgelösten, geerbten Wert nicht rückwirkend ändern (per
+   echtem Test gefunden: Karten ohne eigene color-Deklaration - .ncss-card setzt nur
+   background-color, nicht color - blieben dadurch bei dunklem Text auf jetzt dunklem
+   Hintergrund hängen). background-color ist davon NICHT betroffen, weil Komponenten wie
+   .ncss-card das selbst explizit deklarieren (nicht geerbt), das löst direkt am jeweiligen
+   Element frisch auf. */
+.ncss-scheme-dark {
+  color-scheme: dark;
+  color: var(--ncss-color-text);
+}
+.ncss-scheme-light {
+  color-scheme: light;
+  color: var(--ncss-color-text);
+}

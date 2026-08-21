@@ -1,0 +1,195 @@
+/**
+ * ncss - Animation-Helper (Layer "helpers"). Keyframes + Utility-Klassen, ausschließlich
+ * über --ncss-motion-duration/-slow und --ncss-motion-easing (tokens.css) getimt.
+ * prefers-reduced-motion wird bereits GLOBAL in reset.css respektiert (Dauer auf 0.01ms
+ * gekappt) - hier keine Einzelfall-Behandlung nötig, jede Animation unten erbt das.
+ */
+
+@keyframes ncss-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes ncss-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes ncss-slide-in-up {
+  from { opacity: 0; translate: 0 var(--ncss-space-sm); }
+}
+
+@keyframes ncss-slide-in-down {
+  from { opacity: 0; translate: 0 calc(-1 * var(--ncss-space-sm)); }
+}
+
+@keyframes ncss-slide-in-left {
+  from { opacity: 0; translate: calc(-1 * var(--ncss-space-sm)) 0; }
+}
+
+@keyframes ncss-slide-in-right {
+  from { opacity: 0; translate: var(--ncss-space-sm) 0; }
+}
+
+@keyframes ncss-scale-in {
+  from { opacity: 0; scale: 0.96; }
+}
+
+/* Für dialog/popover-Open-Transitions (siehe components/lightbox.css) - animiert vom
+   Top-Layer-Start weg, überbrückt zusammen mit @starting-style den Sprung zwischen
+   display:none und sichtbar. */
+@keyframes ncss-backdrop-fade-in {
+  from { opacity: 0; }
+}
+
+.ncss-animate-fade-in { animation: ncss-fade-in var(--ncss-motion-duration) var(--ncss-motion-easing) both; }
+.ncss-animate-fade-out { animation: ncss-fade-out var(--ncss-motion-duration) var(--ncss-motion-easing) both; }
+.ncss-animate-slide-in-up { animation: ncss-slide-in-up var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both; }
+.ncss-animate-slide-in-down { animation: ncss-slide-in-down var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both; }
+.ncss-animate-slide-in-left { animation: ncss-slide-in-left var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both; }
+.ncss-animate-slide-in-right { animation: ncss-slide-in-right var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both; }
+.ncss-animate-scale-in { animation: ncss-scale-in var(--ncss-motion-duration) var(--ncss-motion-easing) both; }
+
+/* --- Endlos-Animationen (Aufmerksamkeit/Ladezustand) --------------------------------------
+   animation-iteration-count wird unter prefers-reduced-motion GLOBAL auf 1 gekappt (siehe
+   reset.css) - eine Endlos-Animation läuft dort also nur einen einzigen, praktisch
+   unsichtbaren 0.01ms-Frame statt endlos zu blinken/rotieren. Kein Extra-Code nötig. */
+@keyframes ncss-spin {
+  to { rotate: 360deg; }
+}
+@keyframes ncss-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+@keyframes ncss-shake {
+  10%, 90% { translate: -0.1rem 0; }
+  20%, 80% { translate: 0.2rem 0; }
+  30%, 50%, 70% { translate: -0.3rem 0; }
+  40%, 60% { translate: 0.3rem 0; }
+}
+@keyframes ncss-shimmer {
+  to { background-position-x: -20%; }
+}
+
+.ncss-animate-spin { animation: ncss-spin 1s linear infinite; }
+.ncss-animate-pulse { animation: ncss-pulse 1.6s var(--ncss-motion-easing) infinite; }
+/* Einmalig statt Loop (z.B. bei ungültiger Formulareingabe per JS getriggert:
+   el.classList.add("ncss-animate-shake") und nach Ablauf wieder entfernen). */
+.ncss-animate-shake { animation: ncss-shake var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both; }
+
+/* --- Skeleton (Lade-Platzhalter) ------------------------------------------------------------
+   Ergänzt .ncss-placeholder (components/placeholder.css, "Inhalt fehlt") um den Fall
+   "Inhalt lädt noch" - derselbe Ausgangspunkt (dezente Fläche), zusätzlich ein wandernder
+   Schimmer per background-position-Animation (kein zusätzliches Markup/Pseudo-Element
+   nötig, ein Gradient reicht). */
+.ncss-skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--ncss-color-bg-subtle) 40%,
+    var(--ncss-color-border) 50%,
+    var(--ncss-color-bg-subtle) 60%
+  );
+  background-size: 200% 100%;
+  background-position-x: 100%;
+  border-radius: var(--ncss-radius-md);
+  animation: ncss-shimmer 1.6s linear infinite;
+}
+
+/* --- Mikro-Interaktionen (Hover/Press) -----------------------------------------------------
+   Transition-basiert statt Keyframes (Zustand, kein einmaliger Ablauf) - opt-in, nirgends
+   automatisch angewendet. transition-duration erbt denselben globalen reduced-motion-Cap. */
+.ncss-hover-lift {
+  transition: translate var(--ncss-motion-duration) var(--ncss-motion-easing),
+              box-shadow var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-hover-lift:hover {
+  translate: 0 -0.15rem;
+  box-shadow: var(--ncss-shadow-md);
+}
+
+.ncss-hover-grow {
+  transition: scale var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-hover-grow:hover {
+  scale: 1.03;
+}
+
+/* Taktiles "Drücken" für Buttons/Karten - :active statt :hover, funktioniert auch per
+   Touch (kein Hover-Zustand nötig). */
+.ncss-press {
+  transition: scale var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-press:active {
+  scale: 0.97;
+}
+
+/* --- GPU-Compositing-Hinweis (Opt-in) ------------------------------------------------------
+   translateZ(0) "hebt" ein Element auf eine eigene Compositor-Ebene - klassischer Trick
+   gegen Ruckeln bei häufig animierten/gescrollten Elementen mit teurem Repaint (z.B. ein
+   großes Bild). Nutzt die eigenständige transform-Eigenschaft, NICHT translate/scale/rotate
+   (siehe .ncss-hover-lift/-grow oben) - beide Eigenschaften komponieren automatisch
+   miteinander, .ncss-gpu-boost lässt sich also gefahrlos MIT .ncss-hover-lift/-grow/-press
+   kombinieren, ohne dass eine Deklaration die andere überschreibt.
+   BEWUSST NICHT automatisch auf irgendeine Komponente angewendet: jede zusätzliche
+   Compositor-Ebene kostet Grafikspeicher ("Layer-Explosion" bei zu freizügigem Einsatz ist
+   ein bekanntes eigenes Performance-Problem) - gezielt einsetzen bei sichtbarem Ruckeln,
+   nicht vorsorglich überall. Für ein Element, das SELBST schon transform nutzt (z.B. die
+   @keyframes von .ncss-hero--parallax), diese Klasse NICHT zusätzlich setzen (die beiden
+   transform-Deklarationen würden sich gegenseitig überschreiben statt zu kombinieren) -
+   dort stattdessen den --ncss-gpu-hint-Token direkt in der eigenen transform-Deklaration
+   verwenden (siehe tokens.css und components/hero.css). */
+.ncss-gpu-boost {
+  transform: translateZ(0);
+}
+
+/* Transition-Utilities für zustandsbasierte Übergänge (Hover, Klassenwechsel per JS) statt
+   Keyframes - dieselben Tokens, damit Timing überall konsistent bleibt. */
+.ncss-transition {
+  transition-duration: var(--ncss-motion-duration);
+  transition-timing-function: var(--ncss-motion-easing);
+}
+.ncss-transition-slow {
+  transition-duration: var(--ncss-motion-duration-slow);
+}
+.ncss-transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-duration: var(--ncss-motion-duration);
+  transition-timing-function: var(--ncss-motion-easing);
+}
+.ncss-transition-transform {
+  transition-property: translate, scale, rotate;
+  transition-duration: var(--ncss-motion-duration);
+  transition-timing-function: var(--ncss-motion-easing);
+}
+
+/* Scroll-getriebene Reveal-Animationen (IntersectionObserver-Ersatz, kein JS) - Element
+   animiert ein, sobald es in den Viewport scrollt. animation-timeline: view() (Chrome/Edge
+   115+, Safari 18+, Firefox hinter Flag - Stand August 2026, ~84% global) hängt den
+   Animations-Fortschritt an die Scroll-Position statt an Zeit. Ohne Unterstützung bleibt
+   das Element schlicht permanent sichtbar (kein "both"-Fill ohne aktive Timeline, daher
+   reicht der @supports-Block allein als Fallback, kein zusätzlicher Code nötig). */
+@supports (animation-timeline: view()) {
+  .ncss-animate-on-scroll {
+    animation: ncss-fade-in var(--ncss-motion-duration) linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+  .ncss-animate-on-scroll--slide-up {
+    animation: ncss-slide-in-up var(--ncss-motion-duration-slow) linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+  .ncss-animate-on-scroll--scale {
+    animation: ncss-scale-in var(--ncss-motion-duration) linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+  .ncss-animate-on-scroll--slide-left {
+    animation: ncss-slide-in-left var(--ncss-motion-duration-slow) linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+  .ncss-animate-on-scroll--slide-right {
+    animation: ncss-slide-in-right var(--ncss-motion-duration-slow) linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+}

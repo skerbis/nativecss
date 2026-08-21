@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Effekte</title>
+<link rel="stylesheet" href="../ncss.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+
+  /* Nur fürs Demo: dunkler, leicht gemusterter Hintergrund, damit der Glass-Effekt
+     (backdrop-filter) überhaupt etwas zum Durchscheinen hat. */
+  .demo-glass-stage {
+    padding: var(--ncss-space-xl);
+    border-radius: var(--ncss-radius-lg);
+    background-image:
+      radial-gradient(circle at 20% 20%, var(--ncss-color-brand-2) 0%, transparent 45%),
+      radial-gradient(circle at 80% 30%, var(--ncss-color-brand) 0%, transparent 45%),
+      radial-gradient(circle at 50% 90%, var(--ncss-color-success) 0%, transparent 40%);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .demo-glass-card {
+    padding: var(--ncss-space-lg);
+    border-radius: var(--ncss-radius-lg);
+  }
+
+  .demo-glow-card {
+    padding: var(--ncss-space-lg);
+    background-color: var(--ncss-color-surface);
+  }
+
+  .demo-siri-btn {
+    padding-inline: var(--ncss-space-lg);
+    padding-block: var(--ncss-space-sm);
+    border: none;
+    border-radius: 999px;
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-container ncss-stack ncss-py-xl">
+
+  <div class="ncss-stack ncss-stack--tight">
+    <h1>Effekte</h1>
+    <p class="ncss-text-lg ncss-text-muted">Rein dekorative, optionale Komponenten (Layer "components", <code>components/effects.css</code>) - animierter Verlaufsrahmen, pulsierendes Leuchten und Glassmorphism. Zum Zukombinieren, nicht Bestandteil von <code>.ncss-card</code>/<code>.ncss-btn</code>.</p>
+  </div>
+
+  <!-- Glow-Border -->
+  <section id="glow-border" class="ncss-stack">
+    <h2 class="demo-section-title">Glow-Border</h2>
+    <p class="ncss-text-muted">Rotierender <code>conic-gradient()</code>-Ring über einem <code>::before</code> - kein Wrapper-Element nötig, funktioniert auf jedem Element mit eigenem Hintergrund. Der Winkel läuft über eine per <code>@property</code> typisierte Custom Property (<code>--ncss-glow-angle</code>), damit der Browser sauber interpolieren kann.</p>
+
+    <div class="ncss-cluster">
+      <button type="button" class="demo-siri-btn ncss-glow-border">Ask AI</button>
+      <button type="button" class="demo-siri-btn ncss-glow-border" style="--ncss-glow-speed: 1.5s;">Schneller</button>
+      <button type="button" class="demo-siri-btn ncss-glow-border" style="--ncss-glow-colors: var(--ncss-color-success), var(--ncss-color-warning), var(--ncss-color-danger), var(--ncss-color-success);">Andere Farben</button>
+    </div>
+
+    <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+      <div class="ncss-glow-border demo-glow-card ncss-radius-lg">
+        <h3>Karte mit Rahmen</h3>
+        <p class="ncss-text-sm ncss-text-muted">Dieselbe Klasse funktioniert auch auf einer normalen <code>.ncss-card</code>-artigen Fläche, nicht nur auf Buttons.</p>
+      </div>
+      <div class="ncss-glow-border ncss-glow-pulse demo-glow-card ncss-radius-lg">
+        <h3>Rahmen + Pulse kombiniert</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-glow-border</code> und <code>.ncss-glow-pulse</code> nutzen unterschiedliche Animation-Properties (<code>background</code> vs. <code>box-shadow</code>) - beliebig kombinierbar.</p>
+      </div>
+    </div>
+
+    <pre><code>&lt;button class="ncss-glow-border"&gt;Ask AI&lt;/button&gt;
+
+&lt;!-- anpassen per Custom Property, pro Instanz --&gt;
+&lt;button class="ncss-glow-border" style="--ncss-glow-speed: 1.5s;"&gt;Schneller&lt;/button&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-glow-colors</code> (Default: Marken-/Zweitfarbe/Erfolgsfarbe), <code>--ncss-glow-speed</code> (Default 4s), <code>--ncss-glow-thickness</code> (Default 2px), <code>--ncss-glow-radius</code> (Default <code>--ncss-radius-lg</code>).</p>
+  </section>
+
+  <!-- Glow-Pulse -->
+  <section id="glow-pulse" class="ncss-stack">
+    <h2 class="demo-section-title">Glow-Pulse</h2>
+    <p class="ncss-text-muted">Pulsierender <code>box-shadow</code> - eigenständig einsetzbar, z.B. um einen einzelnen Call-to-Action hervorzuheben.</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary ncss-glow-pulse">Jetzt starten</button>
+      <span class="ncss-badge ncss-badge--success ncss-glow-pulse">Live</span>
+    </div>
+    <pre><code>&lt;button class="ncss-btn ncss-btn--primary ncss-glow-pulse"&gt;Jetzt starten&lt;/button&gt;</code></pre>
+  </section>
+
+  <!-- Glass -->
+  <section id="glass" class="ncss-stack">
+    <h2 class="demo-section-title">Glass (Glassmorphism)</h2>
+    <p class="ncss-text-muted">Halbtransparente Fläche + <code>backdrop-filter: blur() saturate()</code> - <code>@supports</code>-abgesichert, ohne Unterstützung bleibt eine normale halbtransparente Fläche ohne Unschärfe übrig.</p>
+    <div class="demo-glass-stage ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-glass demo-glass-card">
+        <h3>Karte 1</h3>
+        <p class="ncss-text-sm">Wirkt erst vor einem farbigen/unruhigen Hintergrund, siehe die Farbverläufe hinter diesen Karten.</p>
+      </div>
+      <div class="ncss-glass demo-glass-card">
+        <h3>Karte 2</h3>
+        <p class="ncss-text-sm">Kombinierbar mit <code>.ncss-glow-border</code> für einen zusätzlichen Rahmen-Akzent.</p>
+      </div>
+      <div class="ncss-glass ncss-glow-border demo-glass-card">
+        <h3>Karte 3</h3>
+        <p class="ncss-text-sm">Glass + Glow-Border zusammen.</p>
+      </div>
+    </div>
+    <pre><code>&lt;div class="ncss-glass"&gt;...&lt;/div&gt;
+
+&lt;!-- Unschärfe/Farbe anpassen --&gt;
+&lt;div class="ncss-glass" style="--ncss-glass-blur: 20px;"&gt;...&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-glass-bg</code>, <code>--ncss-glass-border</code>, <code>--ncss-glass-blur</code> (Default 12px).</p>
+  </section>
+
+  <!-- Stamped -->
+  <section id="stamped" class="ncss-stack">
+    <h2 class="demo-section-title">Stamped (gravierter Rahmen)</h2>
+    <p class="ncss-text-muted">Nur ein hauchdünner, zweifarbiger Rahmen (dunkel oben-links nach hell unten-rechts, wie eine ins Material gravierte Kante) - keine eigene Hintergrundfarbe, funktioniert deshalb auch auf reinem Weiß. <code>.ncss-stamped</code> allein hebt sich beim Hover an ("kommt nach vorne"); zusätzlich <code>.ncss-stamped--press</code> kehrt das um und sinkt beim Hover tiefer ein. Bei beiden sinkt <code>:active</code> (Klick/Touch gehalten) noch weiter ein.</p>
+    <div class="ncss-cluster" style="background-color: var(--ncss-color-bg); padding: var(--ncss-space-xl); border-radius: var(--ncss-radius-lg); border: 1px solid var(--ncss-color-border);">
+      <button type="button" class="ncss-stamped" style="padding-inline: var(--ncss-space-lg); padding-block: var(--ncss-space-sm); border: none; background: none; font-weight: 600;">Hebt sich (Hover)</button>
+      <button type="button" class="ncss-stamped ncss-stamped--press" style="padding-inline: var(--ncss-space-lg); padding-block: var(--ncss-space-sm); border: none; background: none; font-weight: 600;">Sinkt (Hover)</button>
+    </div>
+    <pre><code>&lt;button class="ncss-stamped"&gt;Hebt sich beim Hover&lt;/button&gt;
+&lt;button class="ncss-stamped ncss-stamped--press"&gt;Sinkt beim Hover&lt;/button&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-stamped-thickness</code> (Default 1px, Ringdicke), <code>--ncss-stamped-dark</code>/<code>--ncss-stamped-light</code> (Default <code>rgb(0 0 0 / 35%)</code>/<code>rgb(255 255 255 / 90%)</code>), <code>--ncss-stamped-lift</code> (Default 3px, Hub bei Hover/Active), <code>--ncss-stamped-radius</code> (Default <code>--ncss-radius-lg</code>).</p>
+  </section>
+
+  <!-- Grain -->
+  <section id="grain" class="ncss-stack">
+    <h2 class="demo-section-title">Grain (Korn-/Sandtextur)</h2>
+    <p class="ncss-text-muted">Feines Rauschen per SVG-<code>&lt;feTurbulence&gt;</code>-Filter als data-URI - kein Bild-Asset, kein Build-Schritt. Dezent über <code>--ncss-grain-opacity</code> einstellbar, für einen "Sand"-Charakter Blend-Modus/Deckkraft anpassen.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-grain ncss-radius-lg ncss-surface--brand" style="padding: var(--ncss-space-lg);">
+        <h3>Dezent (Default)</h3>
+        <p class="ncss-text-sm">--ncss-grain-opacity: 0.12 (Default)</p>
+      </div>
+      <div class="ncss-grain ncss-radius-lg ncss-surface--brand-2" style="padding: var(--ncss-space-lg); --ncss-grain-opacity: 0.3;">
+        <h3>Sandig</h3>
+        <p class="ncss-text-sm">--ncss-grain-opacity: 0.3</p>
+      </div>
+    </div>
+    <pre><code>&lt;div class="ncss-grain"&gt;...&lt;/div&gt;
+
+&lt;!-- stärker/anders einfärben --&gt;
+&lt;div class="ncss-grain" style="--ncss-grain-opacity: 0.3; --ncss-grain-blend: soft-light;"&gt;...&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-grain-opacity</code> (Default 0.12), <code>--ncss-grain-blend</code> (Default <code>overlay</code>).</p>
+  </section>
+
+  <!-- Erzwungenes Farbschema pro Element -->
+  <section id="scheme-override" class="ncss-stack">
+    <h2 class="demo-section-title">Erzwungenes Farbschema pro Element</h2>
+    <p class="ncss-text-muted">Nicht zu verwechseln mit dem seitenweiten Theme-Override über <code>[data-theme]</code> (<code>colors.css</code>, z.B. ein Umschalter in der UI) - dasselbe Prinzip (<code>color-scheme</code>), nur lokal auf ein einzelnes Element statt auf <code>:root</code> angewendet. <code>color-scheme</code> ist vererbbar - <code>.ncss-scheme-dark</code>/<code>.ncss-scheme-light</code> (<code>helpers/surfaces.css</code>) erzwingen ein Farbschema NUR für ein Element und seine Nachfahren, unabhängig vom Theme der restlichen Seite. Alle <code>light-dark()</code>-Tokens im Inhalt kippen dadurch automatisch, ganz ohne Werte zu duplizieren.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-scheme-dark ncss-card ncss-radius-lg ncss-border ncss-shadow-sm" style="padding: var(--ncss-space-lg);">
+        <h3>Immer dunkel</h3>
+        <p class="ncss-text-sm ncss-text-muted">.ncss-scheme-dark, unabhängig vom Seiten-Theme.</p>
+      </div>
+      <div class="ncss-scheme-light ncss-card ncss-radius-lg ncss-border ncss-shadow-sm" style="padding: var(--ncss-space-lg);">
+        <h3>Immer hell</h3>
+        <p class="ncss-text-sm ncss-text-muted">.ncss-scheme-light, unabhängig vom Seiten-Theme.</p>
+      </div>
+    </div>
+    <pre><code>&lt;div class="ncss-scheme-dark"&gt;...&lt;/div&gt;</code></pre>
+  </section>
+
+  <p class="ncss-text-sm ncss-text-muted">Bewegung respektiert <code>prefers-reduced-motion</code> automatisch (global in <code>reset.css</code>, nicht pro Komponente nachgerüstet) - bei aktivierter Einstellung läuft nur noch 1 Frame.</p>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="webawesome.html">Web Awesome</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

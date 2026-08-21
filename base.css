@@ -1,0 +1,195 @@
+/**
+ * ncss - Base (Layer "base"): alle gängigen HTML-Tags sauber gestylt, ausschließlich über
+ * die Tokens aus tokens.css. Kein Markup-spezifisches Klassen-Styling hier - das ist
+ * Aufgabe von helpers/ und components/. Logical Properties (margin-block/-inline statt
+ * -top/-left) durchgängig, damit RTL-Sprachen ohne Zusatzaufwand funktionieren.
+ */
+
+body {
+  font-family: var(--ncss-font-family-base);
+  font-size: var(--ncss-font-size-base);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-bg);
+  /* Passt Strichstärke/Proportionen automatisch an die aktuelle Schriftgröße an - nur
+     wirksam bei Schriften mit "optical size"-Achse (z.B. viele moderne Variable Fonts),
+     sonst folgenlos. Global sicher, da reine Verbesserung ohne Nachteil bei fehlender
+     Achse - siehe helpers/typography.css für den Variable-Font-Gewichts-Mechanismus. */
+  font-optical-sizing: auto;
+}
+
+/* --- Überschriften ------------------------------------------------------------------ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ncss-font-family-heading);
+  line-height: var(--ncss-line-height-tight);
+  font-weight: var(--ncss-font-weight-bold);
+  text-wrap: balance; /* verhindert hässliche Ein-Wort-Zeilenumbrüche in Überschriften */
+  margin-block-end: var(--ncss-space-2xs);
+  /* text-box-trim: schneidet den unsichtbaren Leerraum weg, den Schriften oberhalb der
+     Versalhöhe/unterhalb der Grundlinie mitbringen (Font-Metrik-Reserve für Akzente,
+     Unterlängen etc.) - das jahrelange "meine margin/padding stimmt optisch nie ganz"-
+     Problem bei Überschriften. "cap alphabetic" = oben bis Versalhöhe, unten bis
+     Grundlinie, der für Überschriften übliche Fall. Seit August 2026 in allen großen
+     Browsern (Chrome/Edge 133+, Safari 18.2+, Firefox 154+) - @supports trotzdem als
+     günstige Absicherung für ältere Firefox-Versionen im Feld. */
+}
+@supports (text-box-trim: trim-both) {
+  h1, h2, h3, h4, h5, h6 {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+}
+
+h1 { font-size: var(--ncss-font-size-2xl); }
+h2 { font-size: var(--ncss-font-size-xl); }
+h3 { font-size: var(--ncss-font-size-lg); }
+h4 { font-size: var(--ncss-font-size-md); }
+h5, h6 { font-size: var(--ncss-font-size-base); }
+
+/* --- Fließtext ------------------------------------------------------------------------ */
+p, ul, ol, dl, blockquote, figure, pre, table, hr, details {
+  margin-block-end: var(--ncss-space-md);
+}
+
+/* Einseitige Margin-Konvention: NUR margin-block-END, nie -START (klassisches "single
+   direction margin"-Prinzip). Frühere Version nutzte das "Lobotomized Owl"-Pattern
+   (Top-Margin auf nachfolgenden Geschwistern via "* + p" etc.) - das brach aber bei
+   gefloateten Elementen (siehe helpers/float.css): ein <p> nach einem Float bekam trotzdem
+   die geschwister-basierte Top-Margin, was sich mit dem Textumfluss nicht sauber vertrug
+   (per echtem Test/Beobachtung gefunden). Reines margin-bottom hat dieses Problem nicht -
+   und ergibt für normale, nicht gefloatete Inhalte dieselben Abstände, weil vertikale
+   Geschwister-Margins ohnehin kollabieren (der größere Wert gewinnt): der Abstand zwischen
+   zwei Elementen kommt jetzt einfach vom margin-bottom des VORANGEHENDEN Elements, kein
+   Zusammenspiel zweier Regeln mehr nötig. */
+
+ul, ol {
+  padding-inline-start: var(--ncss-space-md);
+}
+li > ul, li > ol {
+  margin-block: var(--ncss-space-2xs);
+}
+
+a {
+  color: var(--ncss-color-brand);
+  text-underline-offset: 0.15em;
+  /* Unterstreichung springt über Unterlängen (g, y, p, ...) statt sie zu durchqueren -
+     seit Langem UA-Default in den meisten Browsern, hier explizit statt implizit. */
+  text-decoration-skip-ink: auto;
+}
+a:hover {
+  text-decoration-thickness: 0.1em;
+}
+
+strong, b { font-weight: var(--ncss-font-weight-bold); }
+em, i { font-style: italic; }
+small { font-size: var(--ncss-font-size-sm); }
+mark {
+  background-color: color-mix(in srgb, var(--ncss-color-warning) 35%, transparent);
+  color: inherit;
+  border-radius: var(--ncss-radius-sm);
+  padding-inline: 0.2em;
+}
+abbr[title] {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+
+/* --- Code ------------------------------------------------------------------------------ */
+code, kbd, samp {
+  font-family: var(--ncss-font-family-mono);
+  font-size: 0.9em;
+  /* currentColor-relativ statt fixem --ncss-color-bg-subtle-Token: Inline-Code kann auf
+     JEDER Hintergrundfarbe landen (dunkle Sektion, farbiges Band, .ncss-modal--dark, ...),
+     nicht nur der normalen Seite - ein fest verdrahteter heller Ton bricht dort (per echtem
+     Test gefunden: kaum lesbar auf einem dunkelblauen .ncss-full-bleed-Band). Ein
+     transluzenter Tint relativ zur jeweils aktiven Textfarbe bleibt dagegen überall
+     kontrastreich, ganz ohne zu wissen, auf welchem Hintergrund er gerade sitzt. */
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+  border-radius: var(--ncss-radius-sm);
+  padding-inline: 0.35em;
+  padding-block: 0.1em;
+  /* Langer INLINE-Code (z.B. ein komplettes Markup-Beispiel in <code> statt <pre><code>)
+     hat sonst keine Umbruch-Gelegenheit und sprengt schmale Viewports - <pre> hat dafür
+     bereits eigenes overflow-x:auto, nacktes <code> nicht (per echtem Test bei 375px
+     gefunden). break-word statt dem älteren word-break:break-all: bricht nur, wenn ein
+     Wort wirklich nicht in eine eigene Zeile passt, nicht bei jeder Gelegenheit. */
+  overflow-wrap: break-word;
+}
+pre {
+  font-family: var(--ncss-font-family-mono);
+  background-color: var(--ncss-color-bg-subtle);
+  border-radius: var(--ncss-radius-md);
+  padding: var(--ncss-space-sm);
+  overflow-x: auto;
+}
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/* --- Zitate/Trenner --------------------------------------------------------------------- */
+blockquote {
+  border-inline-start: 0.25rem solid var(--ncss-color-border);
+  padding-inline-start: var(--ncss-space-sm);
+  color: var(--ncss-color-text-muted);
+}
+hr {
+  border: none;
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+figcaption {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+  margin-block-start: var(--ncss-space-2xs);
+}
+
+/* --- Tabellen -------------------------------------------------------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  text-align: start;
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+th {
+  font-weight: var(--ncss-font-weight-bold);
+}
+
+/* --- Native interaktive Elemente (bewusst nativ statt eigenem JS/CSS-Nachbau, siehe
+   ncss-Prinzip "was per HTML/CSS geht, geht ohne Web Awesome") ----------------------------
+   Bewusst NUR das absolut Neutrale hier (reset.css-Prinzip konsequent zu Ende gedacht: der
+   Reset bleibt "dumm", aber auch base.css darf für <details> keine Meinung erzwingen, die
+   andere Komponenten mit demselben nativen Element (z.B. components/nav.css' Dropdown)
+   erst wieder wegresetten müssten). Die "boxed FAQ"-Optik (Rahmen/Padding/fettes Summary)
+   ist stattdessen components/disclosure.css - explizit opt-in per .ncss-disclosure, statt
+   jedem <details> aufgezwungen. */
+details > summary {
+  cursor: pointer;
+}
+
+/* Bewusst NUR das absolut Neutrale/Korrigierende hier, keine "so soll ein Dialog
+   aussehen"-Meinung (dieselbe Überlegung wie bei <details> oben - Modal/Lightbox/
+   Off-Canvas wollen jeweils komplett unterschiedliches Aussehen, jedes hätte eine
+   base.css-Meinung erst wieder wegresetten müssen, wie es lightbox.css/off-canvas.css
+   bislang tatsächlich taten). Die "weiße Karte mit Schatten"-Optik ist jetzt explizit
+   components/modal.css (.ncss-modal). */
+/* Das UA-Stylesheet zentriert <dialog> im Modal-Zustand normalerweise per
+   "margin: auto" - reset.css' globales "* { margin: 0; }" schlägt das aber, da
+   Autor-Styles (auch layered) immer über dem UA-Stylesheet stehen. Ohne diese Regel
+   landet der Dialog oben links statt zentriert. Das ist eine KORREKTUR (native
+   Grundfunktion wiederherstellen), keine neue Meinung - bleibt daher hier, nicht in
+   modal.css (components/off-canvas.css setzt es für seinen Fall gezielt wieder zurück).
+   :modal trifft nur den Zustand nach showModal() (Top-Layer) - ein per [open]-Attribut
+   nur normal eingebettetes <dialog> bleibt bewusst im normalen Fluss, ohne erzwungene
+   Zentrierung. */
+dialog:modal {
+  margin: auto;
+}
+
+/* --- Selektion/Fokus-Feinschliff -------------------------------------------------------- */
+::selection {
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+}

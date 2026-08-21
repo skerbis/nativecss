@@ -1,0 +1,52 @@
+/**
+ * ncss - Footer-Komponente (Layer "components"). Nutzt dieselben Bausteine wie der Rest
+ * des Systems (Container, Grid, Stack) statt eigener Layout-Logik. Für "immer am unteren
+ * Bildschirmrand, auch bei kurzen Seiten" siehe .ncss-page-shell/.ncss-stretch in
+ * helpers/layout.css - das ist eine Seiten-Layout-Frage, keine Footer-Eigenschaft, deshalb
+ * dort statt hier.
+ *
+ * Markup:
+ * <footer class="ncss-footer">
+ *   <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+ *     <div class="ncss-stack ncss-stack--tight">
+ *       <strong>Marke</strong>
+ *       <p class="ncss-text-sm ncss-text-muted">Kurzbeschreibung.</p>
+ *     </div>
+ *     <nav class="ncss-nav ncss-nav--tree">
+ *       <ul class="ncss-nav-list"><li class="ncss-nav-item"><a href="#">Link</a></li></ul>
+ *     </nav>
+ *   </div>
+ *   <div class="ncss-footer-bottom">© 2026 Firma</div>
+ * </footer>
+ */
+
+.ncss-footer {
+  background-color: var(--ncss-color-bg-subtle);
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  padding-block: var(--ncss-space-lg);
+  color: var(--ncss-color-text-muted);
+}
+
+.ncss-footer-inner {
+  max-width: var(--ncss-container-max);
+  margin-inline: auto;
+  padding-inline: var(--ncss-space-sm);
+}
+
+.ncss-footer-bottom {
+  max-width: var(--ncss-container-max);
+  margin-inline: auto;
+  padding-inline: var(--ncss-space-sm);
+  margin-block-start: var(--ncss-space-lg);
+  padding-block-start: var(--ncss-space-sm);
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  font-size: var(--ncss-font-size-sm);
+  text-align: center;
+}
+
+.ncss-footer a {
+  color: var(--ncss-color-text-muted);
+}
+.ncss-footer a:hover {
+  color: var(--ncss-color-text);
+}

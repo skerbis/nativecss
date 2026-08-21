@@ -1,0 +1,68 @@
+/**
+ * ncss - Topbar-Komponente (Layer "components"): sticky Kopfleiste mit Brand-/Nav-/
+ * Actions-Bereich. Reines Layout - eine eingebettete .ncss-nav (components/nav.css)
+ * übernimmt die eigentliche Navigation.
+ *
+ * Markup:
+ * <header class="ncss-topbar">
+ *   <div class="ncss-topbar-inner">
+ *     <a class="ncss-topbar-brand" href="/">Marke</a>
+ *     <!-- optional: <nav class="ncss-nav">...</nav> -->
+ *     <div class="ncss-topbar-actions">...</div>
+ *   </div>
+ * </header>
+ */
+
+.ncss-topbar {
+  position: sticky;
+  inset-block-start: 0;
+  background-color: var(--ncss-color-surface);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  /* Deutlich höher als der .ncss-sticky-Default (10, siehe helpers/scroll.css) - die
+     Topbar ist page-weites Chrome und soll über allen weiter unten "klebenden" Elementen
+     liegen. Pro Instanz überschreibbar via style="--ncss-topbar-z: 30". */
+  z-index: var(--ncss-topbar-z);
+}
+
+.ncss-topbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-md);
+  max-width: var(--ncss-container-max);
+  margin-inline: auto;
+  padding-inline: var(--ncss-space-sm);
+  /* min-block-size statt fester block-size: wenn .ncss-nav-list bei vielen Punkten in eine
+     zweite Zeile umbricht (siehe nav.css), muss die Topbar mitwachsen können, statt den
+     Inhalt auf die feste Höhe zusammenzuquetschen. Im Normalfall (eine Zeile) identisch
+     zum bisherigen Verhalten. */
+  min-block-size: var(--ncss-topbar-height);
+  padding-block: var(--ncss-space-2xs);
+}
+
+.ncss-topbar-brand {
+  font-weight: 700;
+  color: var(--ncss-color-text);
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+
+/* Zwischen Brand und Actions - füllt den Platz, damit .ncss-nav (falls eingebettet) und
+   .ncss-topbar-actions an den Rändern bleiben. min-width:0 hebt Flexbox' Default
+   (min-width:auto = "nie kleiner als der Inhalt") auf - sonst kann die Nav trotz
+   flex-shrink NICHT unter ihre Inhaltsbreite schrumpfen und sprengt die Topbar/den
+   Viewport, statt dass die eigene overflow-x:auto-Scrollbarkeit greift (klassische
+   Flexbox-Falle, per echtem Test gefunden: Topbar lief bei vielen Nav-Punkten über den
+   Bildschirmrand hinaus). */
+.ncss-topbar-inner > nav {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ncss-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+}

@@ -1,0 +1,21 @@
+/**
+ * ncss - Disclosure-Komponente (Layer "components"): die "boxed FAQ"-Optik für natives
+ * <details> - Rahmen, Padding, fettes Summary, Abstand im offenen Zustand. Explizit
+ * opt-in per Klasse statt jedem <details> aufgezwungen (das würde andere Komponenten, die
+ * dasselbe native Element für etwas anderes nutzen - z.B. components/nav.css' Dropdown -
+ * zwingen, diese Meinung erst wieder wegzuresetten).
+ *
+ * Markup: <details class="ncss-disclosure"><summary>Frage</summary><p>Antwort</p></details>
+ */
+
+.ncss-disclosure {
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  padding: var(--ncss-space-xs) var(--ncss-space-sm);
+}
+.ncss-disclosure > summary {
+  font-weight: 600;
+}
+.ncss-disclosure[open] > summary {
+  margin-block-end: var(--ncss-space-xs);
+}

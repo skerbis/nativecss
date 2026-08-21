@@ -1,0 +1,89 @@
+/**
+ * ncss - Off-Canvas-Komponente (Layer "components"): natives <dialog> als seitlich
+ * einschiebende Sidebar statt zentriertem Modal. Gleiche command/commandfor-Mechanik wie
+ * components/lightbox.css (siehe dort für den Fallback-JS-Hinweis - lightbox.js deckt
+ * BEIDE Komponenten ab, kein zweites Script nötig).
+ *
+ * Markup:
+ * <button type="button" command="show-modal" commandfor="sidebar1">Menü öffnen</button>
+ * <dialog id="sidebar1" class="ncss-offcanvas ncss-offcanvas--start">
+ *   <button type="button" class="ncss-dialog-close" command="close"
+ *           commandfor="sidebar1" aria-label="Schließen">&times;</button>
+ *   <nav>...</nav>
+ * </dialog>
+ */
+
+.ncss-offcanvas {
+  position: fixed;
+  inset-block: 0;
+  /* Überschreibt base.css' "dialog:modal { margin: auto }" - funktioniert ohne
+     !important, weil die components-Layer in ncss.css NACH der base-Layer kommt (siehe
+     @layer-Reihenfolge dort) und damit automatisch gewinnt. */
+  margin: 0;
+  height: 100%;
+  max-height: 100vh;
+  /* Explizite width NÖTIG, nicht nur max-width: position:fixed mit nur EINER gesetzten
+     inset-inline-Kante (--start ODER --end, nie beide) schrumpft ohne width auf die
+     Inhaltsbreite (shrink-to-fit) statt zu strecken - max-width alleine deckelt das nur
+     nach oben, erzwingt die Breite aber nicht (per echtem Test gefunden: Panel blieb
+     spürbar schmaler als --ncss-offcanvas-width). */
+  width: min(85vw, var(--ncss-offcanvas-width));
+  border: none;
+  border-radius: 0;
+  padding: var(--ncss-space-md);
+  overflow-y: auto;
+  /* base.css stylt <dialog> bewusst neutral (siehe dort) - Farbe/Hintergrund also hier
+     explizit setzen, sonst zeigt der Browser sein eigenes UA-Default (Canvas/CanvasText). */
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  box-shadow: var(--ncss-shadow-lg);
+}
+.ncss-offcanvas--start {
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+}
+.ncss-offcanvas--end {
+  inset-inline-end: 0;
+  inset-inline-start: auto;
+}
+
+/* Close-Button: geteilte Basis in components/dialog-close.css, hier keine Ausnahme
+   nötig - Default-Position (innen oben rechts) passt bereits. */
+
+.ncss-offcanvas::backdrop {
+  background-color: var(--ncss-color-overlay);
+}
+
+/* Einschieben von der jeweiligen Kante statt Skalieren (siehe lightbox.css für dieselbe
+   @starting-style/allow-discrete-Mechanik, dort mit scale statt translate). */
+.ncss-offcanvas,
+.ncss-offcanvas::backdrop {
+  transition:
+    translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+    opacity var(--ncss-motion-duration) var(--ncss-motion-easing),
+    display var(--ncss-motion-duration-slow) allow-discrete,
+    overlay var(--ncss-motion-duration-slow) allow-discrete;
+}
+.ncss-offcanvas {
+  translate: 0 0;
+}
+.ncss-offcanvas::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  .ncss-offcanvas--start:modal {
+    translate: -100% 0;
+  }
+  .ncss-offcanvas--end:modal {
+    translate: 100% 0;
+  }
+  .ncss-offcanvas:modal::backdrop {
+    opacity: 0;
+  }
+}
+.ncss-offcanvas--start:not(:modal) {
+  translate: -100% 0;
+}
+.ncss-offcanvas--end:not(:modal) {
+  translate: 100% 0;
+}

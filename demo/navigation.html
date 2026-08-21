@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Navigation</title>
+<link rel="stylesheet" href="../ncss.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-resize-hint {
+    border: 1px dashed var(--ncss-color-border);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    resize: horizontal;
+    overflow: auto;
+    min-width: 16rem;
+    max-width: 100%;
+  }
+  .demo-tree-nav {
+    max-width: 16rem;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-hide-scroll-bar {
+    background-color: var(--ncss-color-brand);
+    color: var(--ncss-color-brand-contrast);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    text-align: center;
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+
+  <section class="ncss-stack">
+    <h1>Navigation</h1>
+    <p class="ncss-text-muted">
+      Alle Varianten nutzen dieselbe <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>-
+      Mechanik für Untermenüs (Klick/Tastatur, kein Hover-Problem) - siehe components/nav.css.
+    </p>
+  </section>
+
+  <!-- Verschachtelte Dropdowns -->
+  <section id="nested" class="ncss-stack">
+    <h2 class="demo-section-title">Verschachtelte Dropdowns (2 Ebenen)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Ein <code>.ncss-nav-dropdown</code> innerhalb eines <code>.ncss-nav-submenu</code> - beliebig tief möglich.</p>
+    <nav class="ncss-nav">
+      <div class="ncss-nav-panel">
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="#nested">Start</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Produkte</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="#nested">Übersicht</a></li>
+                <li>
+                  <details class="ncss-nav-dropdown ncss-nav-dropdown--nested">
+                    <summary>Komponenten</summary>
+                    <ul class="ncss-nav-submenu">
+                      <li><a href="#nested">Card</a></li>
+                      <li><a href="#nested">Modal</a></li>
+                      <li><a href="#nested">Off-Canvas</a></li>
+                    </ul>
+                  </details>
+                </li>
+                <li><a href="#nested">Preise</a></li>
+              </ul>
+            </details>
+          </li>
+          <li class="ncss-nav-item"><a href="#nested">Kontakt</a></li>
+        </ul>
+      </div>
+    </nav>
+  </section>
+
+  <!-- Mega-Menü -->
+  <section id="mega" class="ncss-stack">
+    <h2 class="demo-section-title">Mega-Menü</h2>
+    <p class="ncss-text-muted ncss-text-sm">Gleiche <code>.ncss-nav-submenu</code>-Klasse, zusätzlich <code>--mega</code>: mehrspaltiges Grid statt einfacher Liste.</p>
+    <nav class="ncss-nav">
+      <div class="ncss-nav-panel">
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="#mega">Start</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Komponenten</summary>
+              <div class="ncss-nav-submenu ncss-nav-submenu--mega">
+                <div class="ncss-nav-mega-col">
+                  <span class="ncss-nav-mega-heading">Layout</span>
+                  <ul>
+                    <li><a href="#mega">Grid</a></li>
+                    <li><a href="#mega">Stack</a></li>
+                    <li><a href="#mega">Cluster</a></li>
+                  </ul>
+                </div>
+                <div class="ncss-nav-mega-col">
+                  <span class="ncss-nav-mega-heading">Formulare</span>
+                  <ul>
+                    <li><a href="forms.html#switch">Switch</a></li>
+                    <li><a href="forms.html#range">Range</a></li>
+                    <li><a href="forms.html">Select</a></li>
+                  </ul>
+                </div>
+                <div class="ncss-nav-mega-col">
+                  <span class="ncss-nav-mega-heading">Medien</span>
+                  <ul>
+                    <li><a href="media.html">Bilder</a></li>
+                    <li><a href="media.html">Video</a></li>
+                    <li><a href="index.html#cards">Sparkline</a></li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </li>
+          <li class="ncss-nav-item"><a href="#mega">Preise</a></li>
+          <li class="ncss-nav-item"><a href="#mega">Kontakt</a></li>
+        </ul>
+      </div>
+    </nav>
+    <p class="ncss-text-sm ncss-text-muted">Fenster schmaler ziehen - unterhalb 64rem wird die Mega-Spalten-Ansicht automatisch zu einer gestapelten Liste (dieselbe nav-collapse-Konvention wie beim normalen Dropdown).</p>
+  </section>
+
+  <!-- Tree-Navigation -->
+  <section id="tree" class="ncss-stack">
+    <h2 class="demo-section-title">Tree-Navigation (Sidebar-Variante)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Kein Kollabieren nötig, beliebig tief verschachtelbar - typisch für Docs-Sidebars.</p>
+    <nav class="ncss-nav ncss-nav--tree demo-tree-nav">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#tree">Einführung</a></li>
+        <li class="ncss-nav-item">
+          <details class="ncss-nav-dropdown" open>
+            <summary>Komponenten</summary>
+            <ul class="ncss-nav-submenu">
+              <li><a href="#tree">Card</a></li>
+              <li><a href="#tree">Modal</a></li>
+              <li>
+                <details class="ncss-nav-dropdown" open>
+                  <summary>Formulare</summary>
+                  <ul class="ncss-nav-submenu">
+                    <li><a href="#tree">Switch</a></li>
+                    <li><a href="#tree">Range</a></li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </details>
+        </li>
+        <li class="ncss-nav-item"><a href="#tree">Changelog</a></li>
+      </ul>
+    </nav>
+  </section>
+
+  <!-- Off-Canvas -->
+  <section id="offcanvas" class="ncss-stack">
+    <h2 class="demo-section-title">Off-Canvas (mobile Kollaps)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Der Menü-Button oben rechts in der Topbar (Fenster schmaler als 64rem ziehen, oder direkt am Handy) öffnet dasselbe Panel als Off-Canvas-Sidebar - eine Nav-Struktur, zwei Darstellungen, siehe components/nav.css.</p>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="breadcrumb" class="ncss-stack">
+    <h2 class="demo-section-title">Breadcrumb</h2>
+    <p class="ncss-text-muted ncss-text-sm">Vergleich: <a href="webawesome.html#breadcrumb"><code>&lt;wa-breadcrumb&gt;</code></a> - hier die native Variante (<code>&lt;nav&gt;&lt;ol&gt;</code>), kein Web Awesome nötig.</p>
+    <nav class="ncss-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="index.html">NativeCSS</a></li>
+        <li><a href="navigation.html">Navigation</a></li>
+        <li aria-current="page">Breadcrumb</li>
+      </ol>
+    </nav>
+  </section>
+
+  <!-- Auto-Hide on Scroll -->
+  <section id="hide-on-scroll" class="ncss-stack">
+    <h2 class="demo-section-title">Leiste beim Scrollen aus-/einblenden</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Rein native CSS Scroll-State-Container-Query (<code>@container scroll-state(scrolled: block-end)</code>),
+      kein JS, kein Scroll-Event-Listener. Auf DIESER Seite (echtes Seiten-Scroll) runter-
+      scrollen - die Leiste unten blendet aus; wieder hochscrollen, sie kommt zurück. Noch
+      nicht in jedem Browser unterstützt (<code>@supports</code>-Gate) - ohne Unterstützung
+      bleibt sie einfach dauerhaft sichtbar, kein kaputtes Verhalten.
+    </p>
+    <div class="ncss-sticky ncss-hide-on-scroll demo-hide-scroll-bar" style="--ncss-sticky-z: 5;">
+      Diese Leiste reagiert auf die Scroll-Richtung
+    </div>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

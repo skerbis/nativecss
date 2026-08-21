@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Magazin</title>
+<link rel="stylesheet" href="../ncss.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-article {
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .demo-byline {
+    display: flex;
+    gap: var(--ncss-space-sm);
+    align-items: center;
+  }
+  .demo-hero-image {
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-lead {
+    font-size: var(--ncss-font-size-md);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-float-image {
+    width: 12rem;
+    height: 12rem;
+    margin-inline-end: var(--ncss-space-md);
+  }
+  /* Absätze mit gefloatetem Bild dürfen nicht mitten im Satz an einer Spaltengrenze
+     zerrissen werden - sonst fragmentiert der Float selbst mit (sichtbare Duplikate/
+     Artefakte in beiden Spalten). Bewusst gezielt auf DIESE Absätze beschränkt, nicht
+     global wie das schon einmal verworfene break-inside:avoid auf allen <p> (siehe
+     helpers/typography.css) - das war ein anderes Problem (Spaltenbalance), hier geht
+     es um eine Float-Fragmentierungs-Eigenheit von Multicol. */
+  .demo-float-paragraph {
+    break-inside: avoid-column;
+  }
+  .demo-facts {
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-md);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: var(--ncss-space-md);
+    text-align: center;
+  }
+  .demo-fact-number {
+    display: block;
+    font-size: var(--ncss-font-size-xl);
+    font-weight: 700;
+    color: var(--ncss-color-brand);
+  }
+  .demo-fact-label {
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-eyebrow {
+    font-weight: 600;
+  }
+  .demo-tool-grid {
+    --ncss-grid-min: 14rem;
+  }
+  .demo-tool-card {
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-tool-label {
+    display: block;
+    margin-block-end: var(--ncss-space-3xs);
+  }
+  /* .ncss-text-inherit zeigt sich erst auf einer farbigen Fläche - hier bewusst brand-2,
+     damit sichtbar wird, dass die Textfarbe der Umgebung folgt statt fest zu sein. */
+  .demo-tool-card--brand-2 {
+    background-color: var(--ncss-color-brand-2);
+    color: #fff;
+  }
+  .demo-boxed-headline {
+    font-size: var(--ncss-font-size-xl);
+    margin-block-end: var(--ncss-space-sm);
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item"><a href="magazine.html">Magazin</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-py-xl">
+
+  <article class="ncss-container demo-article ncss-stack">
+
+    <header class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-brand demo-eyebrow">Typografie</p>
+      <h1>Fließtext, der mitdenkt: Spalten, Drop Caps und Zitate ohne Breakpoints</h1>
+      <p class="demo-lead">
+        Ein Blick auf NativeCSS' typografische Werkzeuge - mehrspaltiger Fließtext, Drop Caps,
+        Pull-Quotes und Textumfluss. Alles fließend (<code>clamp()</code>), alles
+        Container-bewusst, kein einziger fester Breakpoint nötig.
+      </p>
+      <div class="demo-byline ncss-text-sm ncss-text-muted">
+        <span>ncss-Redaktion</span>
+        <span>&middot;</span>
+        <time datetime="2026-08-21">21. August 2026</time>
+        <span>&middot;</span>
+        <span class="ncss-nums-tabular">6 Min. Lesezeit</span>
+      </div>
+    </header>
+
+    <figure class="ncss-figure">
+      <img class="ncss-ratio-video ncss-img-cover demo-hero-image" src="assets/sample-poster.jpg" alt="Bunte Farbbalken eines Testbilds, als Platzhalter fürs Titelbild">
+      <figcaption>
+        Sichtbare Bildunterschrift über <code>&lt;figure&gt;</code>/<code>&lt;figcaption&gt;</code>
+        (<code>.ncss-figure</code>) - getrennt vom <code>alt</code>-Attribut, das die
+        unsichtbare a11y-Beschreibung fürs Bild selbst bleibt (für Screenreader oder falls das
+        Bild nicht lädt). Beides zusammen sinnvoll: <code>alt</code> beschreibt, figcaption
+        kommentiert/quellt.
+      </figcaption>
+    </figure>
+
+    <div class="demo-facts">
+      <div><span class="demo-fact-number ncss-nums-tabular">12</span><span class="demo-fact-label">Dateien in helpers/</span></div>
+      <div><span class="demo-fact-number ncss-nums-tabular">0</span><span class="demo-fact-label">Build-Schritte</span></div>
+      <div><span class="demo-fact-number ncss-nums-tabular">1</span><span class="demo-fact-label">Token-Quelle</span></div>
+      <div><span class="demo-fact-number ncss-nums-tabular">11</span><span class="demo-fact-label">Demo-Seiten</span></div>
+    </div>
+
+    <!-- Mehrspaltiger Fließtext: .ncss-columns nutzt column-width, keine feste column-count -
+         die Spaltenzahl ergibt sich automatisch aus der Breite von .demo-article (56rem),
+         nicht aus dem Viewport. Fenster schmaler ziehen, um zu sehen, wie es von selbst auf
+         eine Spalte zurückfällt, ganz ohne @media. -->
+    <div class="ncss-columns">
+      <p class="ncss-drop-cap ncss-hyphenate">
+        Container Queries haben die Art, wie NativeCSS über "responsiv" denkt, grundlegend
+        verändert. Statt eine Handvoll fester Viewport-Breiten zu bedienen, reagiert jede
+        Komponente auf ihre eigene, tatsächlich verfügbare Breite - eine Karte verhält sich
+        in einer schmalen Sidebar automatisch anders als im breiten Hauptbereich, ganz ohne
+        eine einzige Zeile JavaScript. Dieser Fließtext hier ist ein weiteres Beispiel:
+        <code>column-width</code> statt einer festen Spaltenzahl lässt den Browser selbst
+        entscheiden, wie viele Spalten in die verfügbare Breite passen.
+      </p>
+      <p class="ncss-hyphenate">
+        Der Drop Cap oben nutzt dieselbe Logik gleich zweifach: <code>initial-letter</code>
+        selbst ist bereits nativ (kein Padding-Gefrickel, keine Höhenberechnung von Hand),
+        und seine Größe wächst zusätzlich per Container Query, sobald der umgebende
+        <code>.ncss-container</code> breit genug für einen wirklich dramatischen Auftritt
+        ist - in einer schmalen Spalte bleibt er dagegen bewusst zurückhaltender.
+      </p>
+
+      <blockquote class="ncss-pull-quote">
+        "Breakpointless heißt nicht 'keine Sprünge', sondern 'die Fläche selbst entscheidet,
+        nicht eine geratene Pixelzahl.'"
+      </blockquote>
+
+      <p class="ncss-hyphenate demo-float-paragraph">
+        <img class="demo-float-image ncss-float-start ncss-float-shape-circle ncss-center-narrow ncss-ratio-square ncss-img-cover" src="assets/sample-poster.jpg" alt="Bunte Farbbalken eines Testbilds, kreisrund zugeschnitten">
+        Auch Textumfluss gehört zum Werkzeugkasten: <code>shape-outside</code> lässt den
+        Fließtext um die tatsächliche Kreisform herum laufen, nicht nur um die rechteckige
+        Bounding-Box (<code>.ncss-float-shape-circle</code> für die Form + <code>.ncss-img-
+        cover</code> fürs Zuschneiden auf ein Quadrat davor). Kombiniert mit Silbentrennung
+        (<code>.ncss-hyphenate</code>) bleiben auch schmale Spalten neben einem Bild gut
+        lesbar, statt in unschöne Lücken oder einzelne, sehr lange Wörter am Zeilenende zu
+        zerfallen. Donaudampfschifffahrts­gesellschaftskapitän ist ein beliebtes Test-Wort
+        dafür - ohne Silbentrennung sprengt es schmale Spalten zuverlässig, mit
+        Silbentrennung fügt es sich ein. Unterhalb von 28rem Containerbreite floatet dieses
+        Bild nicht mehr - dank <code>.ncss-center-narrow</code> steht es dann zentriert
+        statt linksbündig da. Bewusst OHNE sichtbare <code>&lt;figcaption&gt;</code> hier:
+        eine zweite Zeile Text unter dem Bild würde die Box höher als das Bild selbst
+        machen, <code>shape-outside: circle(50%)</code> bezieht sich aber auf die GESAMTE
+        Box - der Textfluss würde dann um eine Ellipse statt einen Kreis laufen. Die
+        Bildbeschreibung steckt hier stattdessen im <code>alt</code>-Attribut.
+      </p>
+      <p class="demo-float-paragraph">
+        <span class="demo-float-image ncss-float-end ncss-full-narrow ncss-ratio-square ncss-placeholder">Bild</span>
+        Textumfluss funktioniert natürlich auch nach rechts (<code>ncss-float-end</code>) und
+        ganz ohne <code>shape-outside</code> - für ein schlicht eckiges Bild reicht das
+        <code>float</code> allein, die rechteckige Bounding Box ist ja bereits die Zielform.
+        Tabellarische Ziffern (<span class="ncss-nums-tabular">1234567890</span>) sorgen
+        dafür, dass nebeneinander stehende Zahlen - wie die "Fakten"-Kacheln oben - nicht
+        "wackeln", weil jede Ziffer exakt gleich breit ist, unabhängig vom Wert. Dieses
+        zweite Bild trägt stattdessen <code>.ncss-full-narrow</code>: unterhalb von 28rem
+        Containerbreite wächst es auf die volle Breite, statt schmal und linksbündig zu
+        bleiben.
+      </p>
+      <p>
+        Am Ende bleibt der Punkt, um den es bei NativeCSS die ganze Zeit geht: möglichst viel
+        davon ist natives CSS, das der Browser ohnehin schon kann - Design-Arbeit besteht
+        dann vor allem darin, die richtigen Bausteine an der richtigen Stelle
+        zusammenzustecken, statt sie neu zu erfinden.
+      </p>
+    </div>
+
+    <section class="ncss-stack" id="weitere-werkzeuge">
+      <h2 class="demo-section-title">Weitere Textwerkzeuge</h2>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-text-sm ncss-text-muted">Laufweite (<code>.ncss-tracking-*</code>):</p>
+        <div class="ncss-grid demo-tool-grid">
+          <div class="demo-tool-card"><code class="demo-tool-label">--tight</code><span class="ncss-tracking-tight">Schmale Buchstaben</span></div>
+          <div class="demo-tool-card"><code class="demo-tool-label">--normal</code><span class="ncss-tracking-normal">Normale Buchstaben</span></div>
+          <div class="demo-tool-card"><code class="demo-tool-label">--wide</code><span class="ncss-tracking-wide">Weite Buchstaben</span></div>
+          <div class="demo-tool-card"><code class="demo-tool-label">--wider</code><span class="ncss-tracking-wider">Weitere Buchstaben</span></div>
+          <div class="demo-tool-card"><code class="demo-tool-label">--widest</code><span class="ncss-tracking-widest">Sehr weite Buchstaben</span></div>
+        </div>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-text-sm ncss-text-muted">Drop-Cap-Varianten (zusätzlich zu <code>.ncss-drop-cap</code>):</p>
+        <div class="ncss-grid demo-tool-grid">
+          <div class="demo-tool-card">
+            <code class="demo-tool-label">--sm</code>
+            <p class="ncss-drop-cap ncss-drop-cap--sm">Kleinere Sink-Höhe für einen zurückhaltenderen Auftritt.</p>
+          </div>
+          <div class="demo-tool-card">
+            <code class="demo-tool-label">--lg</code>
+            <p class="ncss-drop-cap ncss-drop-cap--lg">Größere Sink-Höhe für einen dramatischeren Auftritt.</p>
+          </div>
+          <div class="demo-tool-card">
+            <code class="demo-tool-label">--light</code>
+            <p class="ncss-drop-cap ncss-drop-cap--light">Dünnere Schriftstärke statt der fetten Standard-Initiale.</p>
+          </div>
+          <div class="demo-tool-card">
+            <code class="demo-tool-label">--brand</code>
+            <p class="ncss-drop-cap ncss-drop-cap--brand">Eingefärbte Initiale in der Markenfarbe.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-text-sm ncss-text-muted">Textfarben &amp; Ausrichtung:</p>
+        <div class="ncss-grid demo-tool-grid">
+          <div class="demo-tool-card"><code class="demo-tool-label">.ncss-text-brand-2</code><span class="ncss-text-brand-2">Zweitfarbe für Text</span></div>
+          <div class="demo-tool-card"><code class="demo-tool-label">.ncss-text-neutral</code><span class="ncss-text-neutral">Neutraler Ton für Text</span></div>
+          <div class="demo-tool-card demo-tool-card--brand-2"><code class="demo-tool-label">.ncss-text-inherit</code><span class="ncss-text-inherit">Übernimmt die Farbe der Umgebung</span></div>
+          <div class="demo-tool-card">
+            <code class="demo-tool-label">.ncss-text-justify</code>
+            <p class="ncss-text-justify ncss-hyphenate">Blocksatz richtet Text beidseitig bündig aus, am besten kombiniert mit Silbentrennung, damit schmale Zeilen nicht zu große Wortzwischenräume bekommen.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-text-sm ncss-text-muted">Geboxter Text (<code>.ncss-text-boxed</code>) - jede umgebrochene Zeile bekommt ihre eigene Hintergrund-Box, ganz ohne <code>&lt;span&gt;</code> pro Zeile (<code>box-decoration-break: clone</code>). Braucht einen NICHT-Flex/Grid-Wrapper (siehe Kommentar in typography.css):</p>
+        <div><h3 class="ncss-text-boxed demo-boxed-headline">Funktioniert auch<br>über mehrere<br>Zeilen hinweg!</h3></div>
+        <div><h3 class="ncss-text-boxed ncss-surface--brand demo-boxed-headline">Farbige Variante<br>via .ncss-surface--brand</h3></div>
+
+        <p class="ncss-text-sm ncss-text-muted">In einer Card kommt es auf die <code>.ncss-card-body</code> selbst an - trägt sie zusätzlich <code>.ncss-stack</code>/<code>-cluster</code>/<code>-grid</code> (verbreitetes Card-Muster für den inneren Abstand) oder ist die Card <code>--horizontal</code>/<code>--horizontal-end</code>, ist sie selbst ein Flex-Container und braucht denselben <code>&lt;div&gt;</code>-Wrapper. Eine reine <code>.ncss-card-body</code> ohne diese Kombination ist dagegen ein normaler Block-Container - kein Wrapper nötig:</p>
+        <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+          <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+            <div class="ncss-card-body">
+              <h3 class="ncss-text-boxed ncss-surface--brand-2 demo-boxed-headline">Direkt in<br>.ncss-card-body</h3>
+              <p class="ncss-text-sm ncss-text-muted">Ohne <code>.ncss-stack</code>/<code>-cluster</code>/<code>-grid</code> auf der Card-Body - kein Flex-Container, <code>.ncss-text-boxed</code> funktioniert direkt.</p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+            <div class="ncss-card-body ncss-stack ncss-stack--tight">
+              <div><h3 class="ncss-text-boxed ncss-surface--brand-2 demo-boxed-headline">Im &lt;div&gt;<br>innerhalb .ncss-stack</h3></div>
+              <p class="ncss-text-sm ncss-text-muted"><code>.ncss-card-body.ncss-stack</code> IST ein Flex-Container - der zusätzliche <code>&lt;div&gt;</code>-Wrapper um die Überschrift fängt die Blockifizierung ab.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-text-sm ncss-text-muted">Gefloatetes Bild, das zum Bildschirmrand ausbricht (<code>.ncss-float-bleed-start</code>/<code>-end</code>) - Text fließt normal daneben, das Bild reicht bis zum echten Bildschirmrand:</p>
+        <p class="ncss-hyphenate">
+          <img class="ncss-float-bleed-start ncss-ratio-square ncss-img-cover" src="assets/sample-poster.jpg" alt="Bunte Farbbalken eines Testbilds, bis zum linken Bildschirmrand ausbrechend">
+          Dieses Bild bricht nach links bis zum Bildschirmrand aus, während der Text ganz
+          normal daneben weiterläuft - eine Kombination aus Textumfluss
+          (<code>.ncss-float-start</code>) und Ausbrechen (<code>.ncss-bleed-start</code>),
+          die sich nicht einfach durch bloßes Kombinieren der beiden bestehenden Klassen
+          ergibt: ein Float mit <code>width:auto</code> schrumpft auf seinen Inhalt
+          ("shrink-to-fit") statt den verfügbaren Platz zu füllen, wie es der
+          Bleed-Breiten-Trick eigentlich braucht - deshalb eine eigene Klasse mit fester
+          Breite. Unterhalb von 28rem Containerbreite (<code>float-wrap</code>-Schwelle)
+          bleibt es ein normaler, nicht ausbrechender Block.
+        </p>
+      </div>
+    </section>
+
+  </article>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

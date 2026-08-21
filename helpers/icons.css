@@ -1,0 +1,61 @@
+/**
+ * ncss - Icon-Helper (Layer "helpers"). Eigene SVG-Icons als CSS mask-image statt Inline-
+ * SVG-Markup oder Icon-Font: erben currentColor (recolorbar ohne Markup-Änderung), skalieren
+ * mit font-size (1em), brauchen KEINEN Element-Inhalt - <span class="ncss-icon
+ * ncss-icon-close"></span> reicht.
+ *
+ * Austauschbarkeit ist der Punkt: jede Komponente, die ein Icon braucht (z.B.
+ * .ncss-dialog-close), schreibt nur die GRÖSSE/POSITION des Icon-Platzhalters vor, nicht
+ * die Icon-Quelle. Diese Default-Icons hier per Klasse einsetzen ODER einfach durch
+ * beliebiges anderes Markup ersetzen, z.B. Font Awesome:
+ *   <button class="ncss-dialog-close">
+ *     <span class="ncss-icon ncss-icon-close"></span>              <!-- Default -->
+ *     <i class="fa-solid fa-xmark" aria-hidden="true"></i>         <!-- oder Font Awesome -->
+ *   </button>
+ * Beide sitzen in derselben flex-zentrierten Fläche, keine Komponente muss dafür
+ * angepasst werden.
+ *
+ * Bewusst klein gehalten (nur was aktuell wirklich gebraucht wird - close/chevron/menu) -
+ * weitere Icons nach demselben Muster ergänzen (eigene SVG, als mask-image data-URI),
+ * statt vorsorglich ein großes Set anzulegen.
+ */
+
+.ncss-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  vertical-align: -0.15em;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+.ncss-icon-close {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E");
+}
+
+.ncss-icon-chevron-down {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.ncss-icon-menu {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3 6h18M3 12h18M3 18h18'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3 6h18M3 12h18M3 18h18'/%3E%3C/svg%3E");
+}
+
+.ncss-icon-play {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E");
+}
+
+.ncss-icon-search {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M20 20l-5.2-5.2'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M20 20l-5.2-5.2'/%3E%3C/svg%3E");
+}

@@ -1,0 +1,191 @@
+/**
+ * ncss - Card-Komponente (Layer "components"). Reines HTML/CSS, kein JS nötig.
+ * Markup: <article class="ncss-card"> mit optionalen .ncss-card-media/-body/-header/-footer.
+ *
+ * Rahmen/Ecken/Schatten sind ABSICHTLICH NICHT Teil von .ncss-card selbst - das ist eine
+ * gestalterische Entscheidung, keine Karten-Eigenschaft (siehe helpers/elevation.css für
+ * die allgemeinen .ncss-border/.ncss-radius-.../.ncss-shadow-...-Utilities, dieselben, die
+ * auch auf jedem anderen Element funktionieren). Beispiele:
+ *   <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md">
+ *     die "klassische" Karte: Rahmen, runde Ecken, dezenter Schatten, wächst beim Hover.
+ *   <article class="ncss-card">
+ *     komplett bare: kein Rahmen, keine Ecken, kein Schatten - nur Struktur/Hintergrund.
+ * .ncss-card--flush ergänzt das um randlose Body/Header/Footer (KEIN Padding mehr, auch
+ * nicht oben/unten) für eine Karte, deren Inhalt bis an den eigenen Rand reicht - z.B. für
+ * ein Bild, das den ganzen Body ausfüllt, oder eine Liste ohne Card-typischen Abstand.
+ *
+ * Für die Container-Query-Variante (.ncss-card--horizontal) die Karte zusätzlich in
+ * .ncss-card-container wrappen: <div class="ncss-card-container"><article class="ncss-card
+ * ncss-card--horizontal">...</article></div>. Ein Element kann per Spec NICHT seinen
+ * eigenen Container-Query-Kontext abfragen (nur Nachfahren können das) - container-type
+ * darf also nicht auf .ncss-card selbst sitzen, wenn genau diese Karte anhand ihrer
+ * eigenen Breite umschalten soll.
+ */
+
+.ncss-card-container {
+  container-type: inline-size;
+  container-name: ncss-card;
+}
+
+.ncss-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--ncss-color-surface);
+  /* overflow:clip bleibt Teil der Struktur (nicht der Deko) - sorgt dafür, dass Media/
+     Inhalt sauber innerhalb der Karte bleibt, UND dass eine optional per .ncss-radius-*
+     hinzugefügte Rundung tatsächlich alles greift (siehe .ncss-card-media unten), auch
+     wenn .ncss-card selbst keine eigene Rundung mitbringt. */
+  overflow: clip;
+}
+
+/* border-radius bewusst 0: rundet NICHT selbst, sondern verlässt sich auf das
+   overflow:clip + border-radius der Karte (.ncss-card) - das rundet automatisch nur dort,
+   wo die Media tatsächlich an eine echte Kartenecke stößt (oben bei vertikalem Layout,
+   links bei .ncss-card--horizontal), alle anderen Kanten bleiben eckig. Ohne dieses
+   Zurücksetzen "erbt" die Media bei Kombination mit .ncss-placeholder dessen eigene
+   border-radius (components/placeholder.css) und wirkt an ALLEN vier Ecken gerundet -
+   sichtbar falsch unten bei vertikalem Layout bzw. rechts bei --horizontal (per echtem
+   Test/User-Report gefunden). Da diese eine Regel sich automatisch an jedes Layout
+   anpasst (auch künftige Varianten/Breakpoints), sind keine weiteren, layoutspezifischen
+   Ecken-Regeln nötig. */
+.ncss-card-media {
+  aspect-ratio: var(--ncss-aspect-video);
+  overflow: hidden;
+  border-radius: 0;
+}
+.ncss-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* siehe --ncss-focus-point in tokens.css - Fokuspunkt pro Bild überschreibbar. */
+  object-position: var(--ncss-focus-point);
+}
+
+/* Padding skaliert mit der Breite des jeweiligen CONTAINERS (cqi = container query
+   inline-size), nicht mit dem Viewport wie unsere sonstigen Fluid-Werte (die nutzen vw,
+   siehe tokens.css) - passend für eine Komponente, die überall unterschiedlich groß
+   eingebettet sein kann (schmale Sidebar-Card vs. breite Grid-Card). Per echtem Test
+   verifiziert: 15rem-Container -> 14.56px Padding, 40rem-Container -> 30.56px - skaliert
+   sichtbar mit. clamp() als Sicherheitsnetz für den Fall .ncss-card OHNE umgebenden
+   Container-Kontext (nicht in .ncss-card-container/.ncss-container eingebettet): cqi
+   fällt dann spec-gemäß auf die Small-Viewport-Größe zurück (NICHT auf 0, wie man
+   vermuten könnte - im Test landete es nahe der oberen clamp()-Grenze), bleibt so oder so
+   innerhalb des sinnvollen xs-lg-Bereichs. */
+.ncss-card-header,
+.ncss-card-body,
+.ncss-card-footer {
+  padding: clamp(var(--ncss-space-xs), 4cqi + var(--ncss-space-3xs), var(--ncss-space-lg));
+}
+
+.ncss-card-header {
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  font-weight: var(--ncss-font-weight-bold);
+}
+
+.ncss-card-body {
+  flex: 1 1 auto;
+}
+/* Body-Kinder bekommen den üblichen Block-Rhythmus, ohne dass jede Card ihn manuell
+   nachbauen muss (dieselbe Lobotomized-Owl-Logik wie in base.css, hier lokal auf die
+   Card beschränkt). */
+.ncss-card-body > * + * {
+  margin-block-start: var(--ncss-space-xs);
+}
+
+.ncss-card-footer {
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  display: flex;
+  gap: var(--ncss-space-xs);
+  align-items: center;
+}
+
+/* --- Varianten -------------------------------------------------------------------- */
+
+/* Randlose Karte: kein Inline-Padding in Header/Body/Footer, Inhalt reicht bis an den
+   eigenen Kartenrand - kombinierbar mit ncss-border-none/ncss-shadow-none (siehe oben),
+   für eine Karte, die inhaltlich komplett mit ihrem Container verschmelzen soll. */
+.ncss-card--flush .ncss-card-header,
+.ncss-card--flush .ncss-card-body,
+.ncss-card--flush .ncss-card-footer {
+  padding: 0;
+}
+
+/* Entfernt die einzige verbliebene Deko, die .ncss-card selbst mitbringt
+   (background-color) - kombiniert mit --flush (kein Padding) und ohne
+   .ncss-border/.ncss-radius-.../.ncss-shadow-... wird die Karte damit optisch zu einem
+   unsichtbaren Wrapper. Trotzdem bewusst .ncss-card + diese Klassen statt eines rohen
+   <div>: die Flex-Column-Struktur (Footer bleibt unten, Body füllt den Rest, siehe
+   .ncss-card-body oben) bleibt so erhalten, ohne sie von Hand nachzubauen. */
+.ncss-card--transparent {
+  background-color: transparent;
+}
+
+/* Ganze Karte klickbar (z.B. Teaser) - a11y: der Link selbst bleibt der eigentliche
+   interaktive Fokuspunkt, per Stretched-Link-Pattern über die gesamte Card gelegt, statt
+   die ganze Card in <a> zu verpacken (Block-Elemente in <a> sind zwar technisch erlaubt,
+   verschlechtern aber die Screenreader-Ansage bei mehreren interaktiven Kindelementen). */
+.ncss-card--linked {
+  position: relative;
+}
+.ncss-card--linked .ncss-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* "Status"-Karte - dieselbe dezente 100-Fläche + -on-soft-Text, die auch .ncss-badge nutzt
+   (siehe colors.css), zusätzlich ein farbiger Rand als Akzent. Für Hinweis-/Status-Inhalte,
+   nicht als generelle "bunte Karte"-Deko gedacht. */
+.ncss-card--brand,
+.ncss-card--brand-2,
+.ncss-card--neutral,
+.ncss-card--success,
+.ncss-card--warning,
+.ncss-card--danger {
+  border-width: 0;
+  border-inline-start-width: calc(var(--ncss-border-width) * 3);
+  border-style: solid;
+}
+.ncss-card--brand { background-color: var(--ncss-color-brand-100); color: var(--ncss-color-brand-on-soft); border-color: var(--ncss-color-brand); }
+.ncss-card--brand-2 { background-color: var(--ncss-color-brand-2-100); color: var(--ncss-color-brand-2-on-soft); border-color: var(--ncss-color-brand-2); }
+.ncss-card--neutral { background-color: var(--ncss-color-neutral-100); color: var(--ncss-color-neutral-on-soft); border-color: var(--ncss-color-neutral); }
+.ncss-card--success { background-color: var(--ncss-color-success-100); color: var(--ncss-color-success-on-soft); border-color: var(--ncss-color-success); }
+.ncss-card--warning { background-color: var(--ncss-color-warning-100); color: var(--ncss-color-warning-on-soft); border-color: var(--ncss-color-warning); }
+.ncss-card--danger { background-color: var(--ncss-color-danger-100); color: var(--ncss-color-danger-on-soft); border-color: var(--ncss-color-danger); }
+
+/* --- Media-Position ----------------------------------------------------------------------
+   Media OBEN ist der Default - einfach die natürliche Dokumentreihenfolge (.ncss-card-media
+   als erstes Kind). Media UNTEN braucht ebenso KEINE eigene Klasse: .ncss-card-media
+   einfach als LETZTES Kind ins Markup setzen (nach .ncss-card-body) - .ncss-card ist ein
+   Flex-Column, die Media landet dadurch automatisch unten, und die Ecken-Regel oben rundet
+   dort automatisch die unteren beiden statt der oberen beiden Ecken, ganz ohne weitere CSS-
+   Regel. Media LINKS/RECHTS (nebeneinander mit Text) braucht dagegen wirklich eine eigene
+   Klasse, weil dafür die Flex-Richtung selbst wechseln muss - siehe --horizontal/
+   --horizontal-end unten.
+   Ab einer gewissen EIGENEN Breite (nicht Viewport!) Bild und Text nebeneinander statt
+   gestapelt - reagiert korrekt, egal wo die Card eingebettet wird. */
+/* -- ncss container-query: card-horizontal (24rem) -- */
+@container ncss-card (min-width: 24rem) {
+  .ncss-card--horizontal,
+  .ncss-card--horizontal-end {
+    flex-direction: row;
+  }
+  /* Media rechts statt links - dieselbe Schwelle/Größenregeln wie --horizontal, nur die
+     Flex-Richtung ist umgedreht (Media steht im Markup weiterhin zuerst, row-reverse
+     schiebt sie visuell ans Ende). */
+  .ncss-card--horizontal-end {
+    flex-direction: row-reverse;
+  }
+  .ncss-card--horizontal .ncss-card-media,
+  .ncss-card--horizontal-end .ncss-card-media {
+    aspect-ratio: var(--ncss-aspect-square);
+    width: var(--ncss-card-media-width-horizontal);
+    flex: 0 0 auto;
+  }
+  .ncss-card--horizontal .ncss-card-body,
+  .ncss-card--horizontal-end .ncss-card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

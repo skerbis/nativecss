@@ -1,0 +1,44 @@
+/**
+ * ncss - Ecken, Rahmen, Schatten (Layer "helpers"). Bewusst als eigenständige, allgemeine
+ * Utilities statt in Komponenten wie card.css eingebacken - ob etwas abgerundet ist,
+ * einen Rahmen hat, einen Schatten (und ob der beim Hover wächst), ist eine
+ * gestalterische Entscheidung, keine Eigenschaft, die eine Komponente für einen
+ * vorschreiben sollte. Frei kombinierbar auf JEDEM Element, nicht nur Cards - z.B. genauso
+ * auf einem Bild, einem eigenen Panel oder einer Media-Query-freien Sektion.
+ */
+
+/* --- Ecken --------------------------------------------------------------------------- */
+.ncss-radius-sm { border-radius: var(--ncss-radius-sm); }
+.ncss-radius-md { border-radius: var(--ncss-radius-md); }
+.ncss-radius-lg { border-radius: var(--ncss-radius-lg); }
+.ncss-radius-full { border-radius: var(--ncss-radius-full); }
+.ncss-radius-none { border-radius: 0; }
+
+/* --- Rahmen -------------------------------------------------------------------------- */
+.ncss-border {
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.ncss-border-none {
+  border: none;
+}
+
+/* --- Schatten ------------------------------------------------------------------------
+   Eigene Stufen statt an eine Komponente gebunden (z.B. war .ncss-card--elevated früher
+   nur innerhalb von card.css nutzbar) - .ncss-shadow-lg wirkt genauso auf einem Bild, einem
+   Popover-artigen eigenen Panel usw. */
+.ncss-shadow-sm { box-shadow: var(--ncss-shadow-sm); }
+.ncss-shadow-md { box-shadow: var(--ncss-shadow-md); }
+.ncss-shadow-lg { box-shadow: var(--ncss-shadow-lg); }
+.ncss-shadow-none { box-shadow: none; }
+
+/* Schatten wächst beim Hover (z.B. von sm auf md) - eigenständig von der Basis-Schatten-
+   Klasse, damit die Ausgangsstufe frei wählbar bleibt. Markup:
+   <div class="ncss-card ncss-shadow-sm ncss-shadow-hover-md">...</div> */
+.ncss-shadow-hover-sm,
+.ncss-shadow-hover-md,
+.ncss-shadow-hover-lg {
+  transition: box-shadow var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-shadow-hover-sm:hover { box-shadow: var(--ncss-shadow-sm); }
+.ncss-shadow-hover-md:hover { box-shadow: var(--ncss-shadow-md); }
+.ncss-shadow-hover-lg:hover { box-shadow: var(--ncss-shadow-lg); }

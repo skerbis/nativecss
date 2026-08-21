@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Formulare</title>
+<link rel="stylesheet" href="../ncss.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-narrow-form {
+    max-width: 28rem;
+  }
+  .demo-align-start {
+    align-self: start;
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+
+  <section class="ncss-stack">
+    <h1>Formulare</h1>
+    <p class="ncss-text-muted">Native Formularelemente, zu Ende gestylt (helpers/forms.css) - kein Web-Component-Ersatz nötig, wo HTML schon reicht.</p>
+  </section>
+
+  <section id="basis" class="ncss-stack">
+    <h2 class="demo-section-title">Basis-Felder</h2>
+    <form class="ncss-stack demo-narrow-form" novalidate>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demoName">Name</label>
+        <input class="ncss-input" type="text" id="demoName" required>
+        <span class="ncss-field-hint">Leer abschicken versuchen - erst nach Interaktion rot (:user-invalid).</span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoSelect">Auswahl</label>
+        <span class="ncss-select-wrapper">
+          <select class="ncss-select" id="demoSelect">
+            <option>Option A</option>
+            <option>Option B</option>
+          </select>
+        </span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoMessage">Nachricht</label>
+        <textarea class="ncss-textarea" id="demoMessage"></textarea>
+      </div>
+      <label class="ncss-choice"><input type="checkbox"> Checkbox-Option</label>
+      <label class="ncss-choice"><input type="radio" name="demoRadio"> Radio A</label>
+      <label class="ncss-choice"><input type="radio" name="demoRadio"> Radio B</label>
+      <button type="submit" class="ncss-btn ncss-btn--primary demo-align-start">Absenden</button>
+    </form>
+  </section>
+
+  <section id="switch" class="ncss-stack">
+    <h2 class="demo-section-title">Switch</h2>
+    <p class="ncss-text-muted ncss-text-sm">Natives <code>&lt;input type="checkbox"&gt;</code>, per <code>appearance:none</code> neu gezeichnet - kein JS, kein Web Component nötig.</p>
+    <div class="ncss-stack ncss-stack--tight">
+      <label class="ncss-switch"><input type="checkbox" role="switch"> Benachrichtigungen</label>
+      <label class="ncss-switch"><input type="checkbox" role="switch" checked> Dark Mode (vorausgewählt)</label>
+      <label class="ncss-switch"><input type="checkbox" role="switch" disabled> Deaktiviert</label>
+    </div>
+  </section>
+
+  <section id="range" class="ncss-stack">
+    <h2 class="demo-section-title">Range-Slider</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>accent-color</code> für die Grundfarbe (wie Checkbox/Radio), Track/Thumb zusätzlich vereinheitlicht.</p>
+    <div class="ncss-field demo-narrow-form">
+      <label class="ncss-label" for="demoRange">Lautstärke</label>
+      <input class="ncss-range" type="range" id="demoRange" min="0" max="100" value="60">
+    </div>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

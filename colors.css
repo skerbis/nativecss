@@ -1,0 +1,266 @@
+/**
+ * ncss - Farb-Tokens (reine CSS Custom Properties, kein Preprocessor).
+ *
+ * light-dark() (Baseline seit 2024) wählt automatisch anhand von color-scheme +
+ * prefers-color-scheme bzw. einem manuellen Override ([data-theme] unten) - ein
+ * Tokenwert deckt beide Modi ab, keine separate Dark-Datei.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  --ncss-color-brand: light-dark(#0057d8, #6ea8ff);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);
+
+  --ncss-color-bg: light-dark(#ffffff, #121212);
+  --ncss-color-bg-subtle: light-dark(#f4f5f7, #1c1c1e);
+  --ncss-color-surface: light-dark(#ffffff, #1e1e20);
+
+  --ncss-color-text: light-dark(#1a1a1a, #f0f0f0);
+  --ncss-color-text-muted: light-dark(#5a5f6a, #a3a7b0);
+
+  --ncss-color-border: light-dark(#dcdfe4, #33353a);
+  --ncss-color-focus-ring: light-dark(#0057d8, #6ea8ff);
+
+  /* Dialog-/Off-Canvas-Backdrop - bewusst NICHT light-dark(): ein Overlay verdunkelt
+     das, was DAHINTER liegt, unabhängig vom Seiten-Theme, macht also in beiden Modi als
+     fester Schwarz-Alpha-Wert Sinn. Bislang an drei Stellen (modal.css, off-canvas.css)
+     als "rgb(0 0 0 / 45%)" dupliziert - jetzt eine Quelle, auch für den Web-Awesome-
+     Bridge-Abgleich gebraucht (dessen eigene Dialog-/Drawer-Overlays sonst dunkler/heller
+     als unsere nativen <dialog>-Backdrops wirken würden). "-strong" ist die deutlich
+     dunklere Variante für die Vollbild/Dark-Lightbox-Variante (.ncss-modal--dark). */
+  --ncss-color-overlay: rgb(0 0 0 / 45%);
+  --ncss-color-overlay-strong: rgb(0 0 0 / 90%);
+
+  --ncss-color-success: light-dark(#1a7f37, #4ade80);
+  /* #b45309 (Tailwind amber-700) statt eines ins Bräunliche kippenden Tons - deutlich
+     als Orange/Amber lesbar, bleibt aber AA-kontrastreich auf weißem Hintergrund. */
+  --ncss-color-warning: light-dark(#b45309, #facc15);
+  --ncss-color-danger: light-dark(#c0322d, #f87171);
+
+  /* Zweite Markenfarbe (z.B. Akzent/Sekundär) - eigenständiger Wert, kein aus --ncss-color-
+     brand abgeleiteter Farbton, damit beide Marken unabhängig voneinander austauschbar
+     bleiben. Platzhalter-Werte hier, pro Projekt ersetzen. */
+  --ncss-color-brand-2: light-dark(#7c3aed, #b794f6);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #0a0a0a);
+
+  /* Neutral-Basis für die abgeleitete Graustufen-Skala unten - bewusst "meist weiß"
+     (siehe --ncss-color-neutral-100/300), die Basis selbst ist nur der Referenzpunkt für
+     die dunkleren Stufen (700/900), nicht das, was am häufigsten benutzt wird. */
+  --ncss-color-neutral: light-dark(#64748b, #94a3b8);
+
+  /**
+   * --- Abgestufte Farbskalen (color-mix() in oklch) --------------------------------
+   * Aus JEWEILS EINER Basisfarbe berechnet statt 5 Werten von Hand gepflegt. oklch statt
+   * srgb/hsl: perzeptuell gleichmäßigere Zwischenschritte (hsl() erzeugt bei gesättigten
+   * Farben oft ungleichmäßig wirkende, "schmutzige" Zwischentöne - bekanntes Problem,
+   * u.a. von Lea Verou/Kevin Powell dokumentiert).
+   *
+   * WICHTIG - anders als die semantischen Tokens oben (--ncss-color-bg etc.), 500 (Alias
+   * der Basisfarbe) NICHT separat in light-dark() gewrappt: die Basisfarbe (z.B.
+   * --ncss-color-brand) ist bereits light-dark()-fähig, color-mix() rechnet mit ihrem
+   * jeweils aktiven Wert - 500 passt sich also automatisch an, ohne das hier verdoppeln zu
+   * müssen. 100/300/700/900 dagegen MÜSSEN jeweils selbst light-dark() setzen (siehe
+   * 700/900-Kommentar unten für die Ursache) - "gegen weiß mischen" ergäbe im Dark Mode
+   * eine kaum sichtbare, fast weiße Fläche statt einer dezent getönten DUNKLEN Fläche
+   * (per echtem Test gefunden: <wa-button appearance="filled"> - nutzt Web Awesomes
+   * fill-normal/on-normal-Paar - landete mit ungewrapptem -300 auf einem hellgrauen Chip
+   * mit fast weißem Text, im Dark Mode praktisch unsichtbar). 100/300 mischen deshalb wie
+   * 700/900 gegen SCHWARZ, nur mit geringerem Farbanteil, damit sie "dezent" (quiet/
+   * normal) bleiben statt kräftig (loud) zu wirken.
+   *
+   * 500 = die Basisfarbe selbst (Alias, kein Mix) - 100/300 heller/dezenter (Richtung
+   * weiß im Light Mode, Richtung schwarz im Dark Mode), 700/900 dunkler/kräftiger
+   * (umgekehrt). Nur 5 Stufen angelegt (nicht Tailwinds volle 50-950-Leiter) - bei Bedarf
+   * nach demselben Muster weitere Stufen ergänzen.
+   */
+  --ncss-color-brand-100: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand) 15%, white),
+    color-mix(in oklch, var(--ncss-color-brand) 18%, black)
+  );
+  --ncss-color-brand-300: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand) 45%, white),
+    color-mix(in oklch, var(--ncss-color-brand) 35%, black)
+  );
+  --ncss-color-brand-500: var(--ncss-color-brand);
+  /*
+   * 700/900 NICHT als einzelner color-mix() mehr - gemessener Bug (echter Test, Canvas-
+   * Pixelwerte): --ncss-color-brand im Dark Mode ist selbst schon hell (light-dark() gibt
+   * dort die helle Variante zurück, gedacht für Akzente auf dunklem Grund). Derselbe
+   * Mix-Prozentsatz Richtung Schwarz reicht dann nicht mehr aus - brand-900 kam im Dark
+   * Mode HELLER heraus als die Seiten-Background selbst (Luminanz 0.31 vs. 0.07), die
+   * "900 = dunkelste Stufe"-Logik kippte komplett. Fix: pro Modus ein eigener
+   * Mix-Prozentsatz über ein äußeres light-dark() - der Light-Mode-Zweig verhält sich wie
+   * vorher, der Dark-Mode-Zweig mischt deutlich mehr Schwarz rein, um denselben "spürbar
+   * dunkler als die Seite"-Effekt zu erreichen. */
+  --ncss-color-brand-700: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand) 80%, black),
+    color-mix(in oklch, var(--ncss-color-brand) 45%, black)
+  );
+  /* Dark-Mode-Mix per echtem Pixel-Test (Canvas-getImageData, nicht nur CSS-String-
+     Vergleich) kalibriert: 22% ergab nur ~1.05:1 Kontrast gegen die Seiten-eigene
+     --ncss-color-bg (#121212) - eine .ncss-surface--brand-Fläche war im Dark Mode praktisch
+     ununterscheidbar von der Seite selbst (User-Report: "Hintergrundfarben zu dunkel im
+     Dark Theme"). 60% liegt bei ~2.4-3:1 gegen die Seite (deutlich erkennbar), while
+     weißer Text obendrauf bleibt komfortabel über AA (>=5.6:1 für alle sechs Farbfamilien,
+     geprüft). */
+  --ncss-color-brand-900: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand) 60%, black),
+    color-mix(in oklch, var(--ncss-color-brand) 60%, black)
+  );
+  /* Textfarbe für "soft"-Flächen (100/300-Hintergrund, z.B. .ncss-badge oder ein
+     Feature-Icon-Chip): NICHT einfach -700 verwenden - das bleibt bewusst in beiden
+     Modes dunkel (siehe oben), passt also nur im Light Mode zur jetzt (seit dem 100/300-
+     Fix) ebenfalls dunklen Dark-Mode-Fläche nicht mehr. Im Dark Mode reicht die
+     Basisfarbe selbst als Text, die dort schon hell/leuchtend ist - genau das Muster, das
+     auch webawesome-bridge.css für on-quiet/on-normal braucht (hier zentral einmal
+     definiert statt in jeder Datei erneut). */
+  --ncss-color-brand-on-soft: light-dark(var(--ncss-color-brand-700), var(--ncss-color-brand));
+
+  --ncss-color-brand-2-100: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand-2) 15%, white),
+    color-mix(in oklch, var(--ncss-color-brand-2) 18%, black)
+  );
+  --ncss-color-brand-2-300: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand-2) 45%, white),
+    color-mix(in oklch, var(--ncss-color-brand-2) 35%, black)
+  );
+  --ncss-color-brand-2-500: var(--ncss-color-brand-2);
+  /* Gleicher Fix wie bei brand-700/900 oben, dieselbe Ursache. */
+  --ncss-color-brand-2-700: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand-2) 80%, black),
+    color-mix(in oklch, var(--ncss-color-brand-2) 45%, black)
+  );
+  /* Gleiche Dark-Mode-Kalibrierung wie brand-900 oben (60% statt 22%), dieselbe Ursache. */
+  --ncss-color-brand-2-900: light-dark(
+    color-mix(in oklch, var(--ncss-color-brand-2) 60%, black),
+    color-mix(in oklch, var(--ncss-color-brand-2) 60%, black)
+  );
+  --ncss-color-brand-2-on-soft: light-dark(var(--ncss-color-brand-2-700), var(--ncss-color-brand-2));
+
+  --ncss-color-neutral-100: light-dark(
+    color-mix(in oklch, var(--ncss-color-neutral) 8%, white),
+    color-mix(in oklch, var(--ncss-color-neutral) 12%, black)
+  );
+  --ncss-color-neutral-300: light-dark(
+    color-mix(in oklch, var(--ncss-color-neutral) 30%, white),
+    color-mix(in oklch, var(--ncss-color-neutral) 28%, black)
+  );
+  --ncss-color-neutral-500: var(--ncss-color-neutral);
+  /* Gleicher Fix, --ncss-color-neutral ist ebenfalls light-dark()-basiert (heller Grauton
+     im Dark Mode). */
+  --ncss-color-neutral-700: light-dark(
+    color-mix(in oklch, var(--ncss-color-neutral) 80%, black),
+    color-mix(in oklch, var(--ncss-color-neutral) 40%, black)
+  );
+  /* Gleiche Dark-Mode-Kalibrierung wie brand-900 oben (60% statt 20%), dieselbe Ursache. */
+  --ncss-color-neutral-900: light-dark(
+    color-mix(in oklch, var(--ncss-color-neutral) 55%, black),
+    color-mix(in oklch, var(--ncss-color-neutral) 60%, black)
+  );
+  --ncss-color-neutral-on-soft: light-dark(var(--ncss-color-neutral-700), var(--ncss-color-neutral));
+
+  /* Dieselbe Ableitung auch für die Status-Farben - nicht nur brand/brand-2/neutral. Ein
+     wirklich farb-UNABHÄNGIGER Mechanismus (eine Formel, auf jede beliebige Farbe inkl.
+     frei gewählter anwendbar) geht in reinem CSS nicht: light-dark() ist nur für
+     <color>-Werte gültig, nicht für die reinen Prozentzahlen, die pro Modus variieren
+     müssten - die Formel lässt sich also nur pro konkreter Farbe duplizieren, nicht als
+     generisches "wende Stufe 900 auf X an"-Mixin bereitstellen. */
+  --ncss-color-success-100: light-dark(
+    color-mix(in oklch, var(--ncss-color-success) 15%, white),
+    color-mix(in oklch, var(--ncss-color-success) 18%, black)
+  );
+  --ncss-color-success-300: light-dark(
+    color-mix(in oklch, var(--ncss-color-success) 45%, white),
+    color-mix(in oklch, var(--ncss-color-success) 35%, black)
+  );
+  --ncss-color-success-700: light-dark(
+    color-mix(in oklch, var(--ncss-color-success) 80%, black),
+    color-mix(in oklch, var(--ncss-color-success) 45%, black)
+  );
+  /* Gleiche Dark-Mode-Kalibrierung wie brand-900 oben (60% statt 22%), dieselbe Ursache. */
+  --ncss-color-success-900: light-dark(
+    color-mix(in oklch, var(--ncss-color-success) 60%, black),
+    color-mix(in oklch, var(--ncss-color-success) 60%, black)
+  );
+  --ncss-color-success-on-soft: light-dark(var(--ncss-color-success-700), var(--ncss-color-success));
+
+  --ncss-color-warning-100: light-dark(
+    color-mix(in oklch, var(--ncss-color-warning) 15%, white),
+    color-mix(in oklch, var(--ncss-color-warning) 18%, black)
+  );
+  --ncss-color-warning-300: light-dark(
+    color-mix(in oklch, var(--ncss-color-warning) 45%, white),
+    color-mix(in oklch, var(--ncss-color-warning) 35%, black)
+  );
+  --ncss-color-warning-700: light-dark(
+    color-mix(in oklch, var(--ncss-color-warning) 80%, black),
+    color-mix(in oklch, var(--ncss-color-warning) 45%, black)
+  );
+  /* Gleiche Dark-Mode-Kalibrierung wie brand-900 oben (60% statt 22%), dieselbe Ursache. */
+  --ncss-color-warning-900: light-dark(
+    color-mix(in oklch, var(--ncss-color-warning) 60%, black),
+    color-mix(in oklch, var(--ncss-color-warning) 60%, black)
+  );
+  --ncss-color-warning-on-soft: light-dark(var(--ncss-color-warning-700), var(--ncss-color-warning));
+
+  --ncss-color-danger-100: light-dark(
+    color-mix(in oklch, var(--ncss-color-danger) 15%, white),
+    color-mix(in oklch, var(--ncss-color-danger) 18%, black)
+  );
+  --ncss-color-danger-300: light-dark(
+    color-mix(in oklch, var(--ncss-color-danger) 45%, white),
+    color-mix(in oklch, var(--ncss-color-danger) 35%, black)
+  );
+  --ncss-color-danger-700: light-dark(
+    color-mix(in oklch, var(--ncss-color-danger) 80%, black),
+    color-mix(in oklch, var(--ncss-color-danger) 45%, black)
+  );
+  /* Gleiche Dark-Mode-Kalibrierung wie brand-900 oben (60% statt 22%), dieselbe Ursache. */
+  --ncss-color-danger-900: light-dark(
+    color-mix(in oklch, var(--ncss-color-danger) 60%, black),
+    color-mix(in oklch, var(--ncss-color-danger) 60%, black)
+  );
+  --ncss-color-danger-on-soft: light-dark(var(--ncss-color-danger-700), var(--ncss-color-danger));
+}
+
+/* Manueller Theme-Override (z.B. ein Umschalter in der UI) gewinnt gegen die
+   Systemeinstellung - color-scheme hier erneut setzen, sonst bleibt light-dark() bei
+   der Systemwahl hängen, auch wenn [data-theme] gesetzt ist. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/**
+ * --- Farbpaletten (data-palette) ----------------------------------------------------
+ * Orthogonal zu [data-theme] (Hell/Dunkel) - eine ZWEITE, unabhängige Achse für die
+ * MARKENFARBEN selbst. Beide Attribute lassen sich frei kombinieren, z.B.
+ * <html data-theme="dark" data-palette="football">. Bewusst NUR --ncss-color-brand/
+ * -brand-2 (+ ihre -contrast-Partner) überschrieben, nicht die komplette Kaskade: alle
+ * abgeleiteten Stufen (-100/-300/-700/-900/-on-soft, siehe oben) sind per color-mix()
+ * aus GENAU diesen Basiswerten berechnet und passen sich automatisch an, ohne jede Stufe
+ * hier erneut auszuschreiben. --ncss-color-neutral/-success/-warning/-danger bleiben
+ * überall gleich (Status-Farben sind universell, nicht Teil der Markenidentität).
+ * Jede Basisfarbe bleibt light-dark()-gewrappt, damit [data-theme] innerhalb JEDER
+ * Palette weiter normal funktioniert - dieselbe "dunkel im Light Mode, hell im Dark
+ * Mode + passend dunkler/heller Kontrasttext" Konvention wie die Default-Palette oben.
+ */
+
+/* "Football": Grün + Schwarz. */
+:root[data-palette="football"] {
+  --ncss-color-brand: light-dark(#15803d, #34d399);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);
+  --ncss-color-brand-2: light-dark(#18181b, #d4d4d8);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #0a0a0a);
+}
+
+/* "Sunset": Orange + Grau. */
+:root[data-palette="sunset"] {
+  --ncss-color-brand: light-dark(#c2410c, #fb923c);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);
+  --ncss-color-brand-2: light-dark(#52525b, #a1a1aa);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #0a0a0a);
+}

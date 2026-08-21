@@ -1,0 +1,111 @@
+/**
+ * ncss - Slideshow-Komponente (Layer "components"). Kein JS, kein Framework.
+ *
+ * Läuft in JEDEM Browser über natives Scroll-Snapping - Pfeiltasten, Touch-Wischen,
+ * Trackpad, Maus-Scrollrad funktionieren automatisch, ganz ohne eigenen Code.
+ *
+ * Absichtlich OHNE ::scroll-button()/::scroll-marker-Erweiterung (Pfeil-Buttons/Punkte):
+ * ein erster Versuch damit wurde per echtem Browser-Test verworfen - die Pseudo-Elemente
+ * rendersten in diesem (sehr aktuellen, experimentellen) Chromium-Build nachweislich NICHT
+ * an der per CSS vorgegebenen Position (mit elementFromPoint() bestätigt: die "Buttons"
+ * tauchten an einer völlig anderen Stelle der Seite auf als die Slideshow selbst). Statt
+ * auf ungeprüftem Verhalten einer sich noch ändernden Spec weiterzubauen, bleibt es bei
+ * der soliden, überall funktionierenden Scroll-Snap-Basis - erneut aufgreifen, sobald sich
+ * das Verhalten in einer stabilen Browser-Version verifizieren lässt.
+ *
+ * Markup:
+ * <div class="ncss-slideshow">
+ *   <ul class="ncss-slideshow-track">
+ *     <li class="ncss-slideshow-item">...</li>
+ *     ...
+ *   </ul>
+ * </div>
+ */
+
+.ncss-slideshow {
+  position: relative;
+}
+
+.ncss-slideshow-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: var(--ncss-space-sm);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* Scrollbar bewusst NICHT versteckt (a11y/Auffindbarkeit) - wer sie optisch nicht will,
+     kann .ncss-slideshow-track--no-scrollbar zusätzlich setzen. */
+}
+.ncss-slideshow-track--no-scrollbar {
+  scrollbar-width: none;
+}
+.ncss-slideshow-track--no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.ncss-slideshow-item {
+  scroll-snap-align: start;
+  flex: 0 0 100%;
+  min-width: 0;
+}
+/* Mehrere Items gleichzeitig sichtbar (z.B. Karten-Karussell statt Vollbild-Slides) -
+   Breite pro Instanz überschreibbar: style="--ncss-slideshow-item-width: 60%". */
+.ncss-slideshow-item--peek {
+  flex-basis: var(--ncss-slideshow-item-width);
+}
+
+@supports selector(::scroll-marker) {
+  .ncss-slideshow-track {
+    scroll-marker-group: after;
+  }
+  .ncss-slideshow-track::scroll-marker-group {
+    display: flex;
+    justify-content: center;
+    gap: var(--ncss-space-2xs);
+    margin-block-start: var(--ncss-space-sm);
+  }
+  .ncss-slideshow-item::scroll-marker {
+    content: "";
+    width: var(--ncss-space-2xs);
+    height: var(--ncss-space-2xs);
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-border);
+  }
+  .ncss-slideshow-item::scroll-marker:target-current {
+    background-color: var(--ncss-color-brand);
+  }
+}
+
+@supports selector(::scroll-button(*)) {
+  .ncss-slideshow::scroll-button(left),
+  .ncss-slideshow::scroll-button(right) {
+    position: absolute;
+    inset-block-start: 50%;
+    translate: 0 -50%;
+    z-index: 1;
+    width: var(--ncss-space-lg);
+    height: var(--ncss-space-lg);
+    border-radius: var(--ncss-radius-full);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    cursor: pointer;
+  }
+  .ncss-slideshow::scroll-button(left) {
+    inset-inline-start: var(--ncss-space-2xs);
+    content: "‹";
+  }
+  .ncss-slideshow::scroll-button(right) {
+    inset-inline-end: var(--ncss-space-2xs);
+    content: "›";
+  }
+  /* Browser blendet den jeweiligen Button automatisch aus, wenn dort nichts mehr zu
+     scrollen ist (:disabled-Zustand) - hier nur die visuelle Ausprägung davon. */
+  .ncss-slideshow::scroll-button(left):disabled,
+  .ncss-slideshow::scroll-button(right):disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}

@@ -1,0 +1,97 @@
+/**
+ * ncss - Reset (Layer "reset", niedrigste Priorität nach den Tokens).
+ *
+ * Bewusst schlank: entfernt nur Browser-Inkonsistenzen und UA-Defaults, die sonst jede
+ * Komponente einzeln kontern müsste. Sinnvolle Standardwerte (Margins auf Überschriften,
+ * Listen, etc.) kommen erst in base.css - der Reset selbst bleibt "dumm".
+ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  /* Verhindert iOS' automatische Textvergrößerung bei Rotation, OHNE User-Zoom zu
+     blockieren (anders als "-webkit-text-size-adjust: none", was a11y-schädlich wäre). */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  hanging-punctuation: first last;
+}
+
+body {
+  min-height: 100svh;
+  line-height: var(--ncss-line-height-base, 1.6);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Medien standardmäßig responsiv und ohne Inline-Whitespace-Lücke (display:block
+   entfernt den kleinen Abstand unter <img> in der Inline-Standarddarstellung). */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Formularelemente übernehmen KEINE Schrift vom UA-Stylesheet, sondern von der Seite -
+   sonst wirken Buttons/Inputs typografisch wie Fremdkörper. */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: inherit;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Lange Wörter/URLs brechen kontrolliert um, statt Layout zu sprengen. */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* ul/ol OHNE role="list" bekommen in einigen Browser+Screenreader-Kombinationen (v.a.
+   Safari+VoiceOver) durch list-style:none ihre Listen-Semantik aberkannt - role="list"
+   stellt sie explizit wieder her. Diese Regel gilt nur für Listen, die list-style bereits
+   selbst zurückgesetzt haben (z.B. Navigations-/Karten-Listen in base.css/Komponenten),
+   NICHT pauschal für alle <ul>/<ol> - Inhalts-Listen behalten ihre normalen Bullets/Nummern
+   (siehe base.css). */
+[role="list"] {
+  list-style: none;
+}
+
+/* Root-Stacking-Context für z-index-basierte Komponenten (Modals, Dropdowns) - ohne das
+   können manche CSS-Isolationstricks von Drittkomponenten den Kontext durchbrechen. */
+#__redaxo, body {
+  isolation: isolate;
+}
+
+/* Bewegung nur, wenn die Systemeinstellung sie erlaubt - global, nicht pro Komponente
+   einzeln nachgerüstet. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Fokus-Ring NIE ersatzlos entfernen (a11y) - stattdessen einheitlich gestalten und nur
+   für Maus-/Touch-Interaktion ausblenden (:focus-visible unterscheidet das automatisch,
+   Tastatur-Fokus bleibt immer sichtbar). */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring, #0057d8);
+  outline-offset: 2px;
+}

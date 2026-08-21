@@ -1,0 +1,137 @@
+/**
+ * ncss - Scroll-Helper (Layer "helpers"): Sticky-Positionierung + allgemeine Scroll-
+ * Mechanik. Eigenständig statt in layout.css - das hier ist "wie verhält sich ein Element
+ * BEIM Scrollen", kein statisches Seiten-Layout. Scroll-GETRIEBENE Animationen (Ein-/
+ * Ausblenden je nach Scroll-Position) stehen dagegen in helpers/animations.css, das ist
+ * konzeptionell eine Animation, keine Scroll-Mechanik.
+ */
+
+/* --- Sticky --------------------------------------------------------------------------
+   position:sticky ist relativ zum NÄCHSTEN scrollenden Vorfahren (Viewport oder ein
+   Element mit overflow:auto/scroll) - funktioniert "out of the box", solange kein
+   Vorfahre overflow:hidden/clip auf der Kreuzachse hat (klassische Sticky-Falle, per CSS
+   nicht lösbar, nur im eigenen Markup vermeidbar). */
+/* z-index-Default bewusst niedrig (10) - ein page-weiter Haupt-Header sollte immer
+   deutlich höher liegen (z.B. 100+), damit ein Sticky-Element WEITER UNTEN auf der Seite
+   ihn beim gemeinsamen "Kleben" nicht überlagert. Pro Instanz überschreibbar via
+   style="--ncss-sticky-z: 1". */
+.ncss-sticky {
+  position: sticky;
+  inset-block-start: var(--ncss-sticky-offset);
+  z-index: var(--ncss-sticky-z);
+}
+.ncss-sticky--bottom {
+  position: sticky;
+  inset-block-end: var(--ncss-sticky-offset);
+  z-index: var(--ncss-sticky-z);
+}
+
+/* "Stick inside": ein eigener, INTERN scrollender Bereich (z.B. eine Sidebar mit
+   Deckenhöhe des Viewports), in dem ein Kindelement sticky bleiben soll - braucht
+   overflow-y auf DIESEM Container, sonst ist der Viewport der Scroll-Bezug, nicht dieser
+   Bereich. Markup: <div class="ncss-sticky-container"><div class="ncss-sticky">...</div>
+   ...langer Inhalt...</div> */
+.ncss-sticky-container {
+  overflow-y: auto;
+  max-height: var(--ncss-sticky-container-max-height);
+}
+
+/* --- Auto-Hide bei Scroll-Richtung (sticky Header ausblenden beim Runter-, wieder
+   einblenden beim Hochscrollen) ----------------------------------------------------------
+   Rein nativ über die neue "scroll-state" Container-Query (kein JS, kein Scroll-Event-
+   Listener) - der Browser meldet die Scroll-Richtung selbst, kein manuelles Tracking von
+   vorheriger/aktueller scrollY-Position nötig.
+
+   BEWUSST NICHT die ältere @property + animation-timeline: scroll()-Technik als Fallback
+   (verbreiteter Trick von 2024, funktioniert nur in Chromium und hat einen bekannten Bug:
+   schnelles Runter-dann-Hoch-Scrollen kann den Header dauerhaft ausgeblendet lassen,
+   per Recherche bestätigt) - zwei konkurrierende Hacks für eine reine Zusatz-Politur wären
+   mehr Wartungslast, als sie wert sind. Stattdessen sauberes @supports-Gate wie bei
+   text-box-trim: ohne Unterstützung bleibt der Header einfach dauerhaft sichtbar (klassisches
+   Sticky-Verhalten, keinesfalls "kaputt") statt mit einer fehleranfälligen zweiten Technik
+   nachzuhelfen. Setzt .ncss-sticky/.ncss-topbar o.ä. bereits vorausgesetzt - diese Klasse
+   ergänzt nur das Ein-/Ausblenden, OHNE selbst position/inset zu setzen (bleibt so mit
+   beliebigem bereits sticky/fixed positionierten Element kombinierbar):
+   <header class="ncss-topbar ncss-hide-on-scroll">. */
+@supports (container-type: scroll-state) {
+  :root {
+    /* Scroll-state-Container muss ein Vorfahre der zu versteckenden Elemente sein -
+       html/:root ist bei normalem Seiten-Scroll (kein eigener overflow:auto-Wrapper) der
+       richtige Bezugspunkt. Unbenannt, da für den Normalfall (ein page-weiter Header) keine
+       Mehrdeutigkeit zwischen mehreren verschachtelten scroll-state-Containern entsteht. */
+    container-type: scroll-state;
+  }
+  .ncss-hide-on-scroll {
+    translate: 0 0;
+    transition: translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+  @container scroll-state(scrolled: block-end) {
+    .ncss-hide-on-scroll {
+      translate: 0 -100%;
+    }
+  }
+}
+
+/* --- Scroll-Snap-Container (allgemein, nicht nur die Slideshow-Komponente) -------------
+   Für eigene Galerien/Listen ohne das volle Slideshow-Markup - gleiche Mechanik wie
+   components/slideshow.css, hier als eigenständige, kleinere Utility. */
+.ncss-scroll-snap-x {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: var(--ncss-space-sm);
+}
+.ncss-scroll-snap-y {
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+.ncss-scroll-snap-item {
+  scroll-snap-align: start;
+}
+
+/* --- Vollbild-Sektionen (Section-für-Section-Scrollen) ---------------------------------
+   Klassisches "eine Sektion = ein Bildschirm"-Muster (früher meist mit JS/fullpage.js
+   gelöst) - hier komplett nativ über CSS Scroll Snap, kein JS. Jede Sektion nimmt exakt
+   die sichtbare Fensterhöhe ein und "rastet" beim Scrollen ein.
+   dvh (nicht nur vh) berücksichtigt ein-/ausblendende mobile Browser-UI (Adressleiste etc.)
+   - vh bleibt als Fallback-Deklaration davor stehen für Browser ohne dvh-Support (einfache
+   Eigenschafts-Wiederholung, kein @supports nötig: ein unbekannter Wert wird von Browsern
+   ignoriert, die nachfolgende bekannte Deklaration gewinnt ohnehin per Kaskade).
+   scroll-snap-stop:always verhindert, dass ein schneller Scroll/Trackpad-Flick mehrere
+   Sektionen auf einmal überspringt - für dieses "eine Sektion pro Blick"-Muster Pflicht,
+   anders als bei .ncss-scroll-snap-x/-y oben (dort sind übersprungene Zwischenschritte
+   unproblematisch).
+   Markup:
+   <div class="ncss-snap-sections">
+     <section class="ncss-snap-section">...</section>
+     <section class="ncss-snap-section">
+       <div class="ncss-scroll-snap-x">... horizontale Unter-Sektionen, siehe oben ...</div>
+     </section>
+   </div> */
+.ncss-snap-sections {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+.ncss-snap-section {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ncss-space-xl);
+}
+/* Opt-in für eine Sektion mit MEHR Inhalt, als auf einen Bildschirm passt - erlaubt
+   internes vertikales Scrollen, ohne das äußere Sektions-Einrasten zu stören (ohne dieses
+   Modifier wäre Inhalt, der über die Sektionshöhe hinausragt, schlicht abgeschnitten). */
+.ncss-snap-section--scrollable {
+  overflow-y: auto;
+}

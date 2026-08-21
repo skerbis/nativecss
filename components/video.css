@@ -1,0 +1,65 @@
+/**
+ * ncss - Video-Komponente (Layer "components"). Lokales <video> soll genauso einfach zu
+ * handhaben sein wie <img> - reset.css setzt bereits display:block/max-width:100%/height:auto
+ * identisch für beide Elemente. Diese Datei ergänzt nur dieselbe optische Politur, die <img>
+ * bereits über helpers/media.css bekommt (Seitenverhältnis, abgerundete Ecken, Bildunterschrift).
+ *
+ * Einfachster Fall (reicht meistens schon, keine Klasse nötig):
+ *   <video src="clip.mp4" controls poster="poster.jpg"></video>
+ * poster+controls geben "Klick zum Abspielen" komplett nativ, ganz ohne eigenes JS.
+ *
+ * Mit festem Seitenverhältnis (z.B. Raster aus Vorschau-Videos mit unterschiedlichem
+ * Quellformat) - kombinierbar mit den Aspect-Ratio-Helpers aus helpers/media.css:
+ *   <div class="ncss-video ncss-ratio-video">
+ *     <video src="clip.mp4" controls poster="poster.jpg"></video>
+ *   </div>
+ *
+ * Mit Bildunterschrift (gleiches Muster wie .ncss-figure für <img>):
+ *   <figure class="ncss-video ncss-ratio-video">
+ *     <video src="clip.mp4" controls poster="poster.jpg"></video>
+ *     <figcaption>Bildunterschrift</figcaption>
+ *   </figure>
+ *   (figcaption-Optik kommt bereits aus base.css, gemeinsam mit <img> genutzt.)
+ *
+ * Absichtlich NICHT enthalten: ein eigener Play-Button-Overlay-Zustand über die CSS-
+ * Pseudoklassen :playing/:paused - die sind Stand jetzt (Interop-2026-Ziel) noch nicht
+ * Baseline/browserübergreifend verlässlich. Natives poster+controls deckt den "Klick zum
+ * Abspielen"-Fall schon vollständig ab; :playing/:paused später ergänzen, sobald
+ * Baseline (siehe dasselbe Vorgehen wie bei text-box-trim in base.css).
+ *
+ * --- Art Direction bei Video: bewusst KEIN <source media="..."> --------------------------
+ * Für <img> ist <picture><source media="..."></picture> die korrekte, voll unterstützte
+ * Lösung für "andere Bilddatei je nach Viewport" (siehe helpers/media.css/media.html-Demo).
+ * Für <video> gibt es das NICHT verlässlich: <source media="..."> wurde aus der Spec und
+ * den meisten Browsern wieder entfernt (per Recherche bestätigt, Stand August 2026) - nur
+ * Safari/WebKit unterstützt es noch als Altlast, kein cross-browser-taugliches Feature.
+ * Ohne JS bleibt als einzige verlässliche "Art Direction"-Annäherung: DASSELBE Video per
+ * object-fit:cover unterschiedlich zuschneiden (.ncss-video--responsive-crop unten) - kein
+ * anderes Filmmaterial je Breakpoint, aber ein anderer Bildausschnitt. Für echtes anderes
+ * Filmmaterial je Breakpoint bräuchte es kleines JS (matchMedia + src-Wechsel) - bewusst
+ * nicht Teil dieser Datei, um video.css JS-frei zu halten; bei Bedarf gezielt ergänzen.
+ */
+.ncss-video {
+  overflow: hidden;
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-bg-subtle);
+}
+.ncss-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* siehe --ncss-focus-point in tokens.css - Fokuspunkt pro Video überschreibbar. */
+  object-position: var(--ncss-focus-point);
+}
+
+/* Anderer Bildausschnitt (nicht andere Datei) je nach Viewport - z.B. hochkant auf dem
+   Handy, breit auf Desktop, ganz ohne JS oder zweite Video-Datei. */
+.ncss-video--responsive-crop {
+  aspect-ratio: var(--ncss-aspect-portrait);
+}
+/* -- ncss breakpoint: md (768px) -- */
+@media (min-width: 48rem) {
+  .ncss-video--responsive-crop {
+    aspect-ratio: var(--ncss-aspect-video);
+  }
+}

@@ -1,0 +1,155 @@
+/**
+ * ncss - Web Awesome Bridge (Layer "webawesome-bridge", höchste Priorität - siehe
+ * ncss.css für die Layer-Order, die das seitenweit garantiert, unabhängig von <link>-
+ * Reihenfolge im HTML).
+ *
+ * Zweck: Web Awesome NICHT mit eigenen, parallelen Farb-/Abstands-/Typografie-Werten
+ * laufen lassen - stattdessen werden Web Awesomes eigene CSS Custom Properties hier auf
+ * unsere ncss-Tokens gemappt. ncss-Tokens (tokens.css/colors.css) bleiben die EINZIGE
+ * Quelle der Wahrheit; diese Datei ist reine Übersetzung, keine zweite Werteliste.
+ *
+ * Web Awesomes Komponenten (Button, Badge, Input, Tooltip, Dialog, ...) beziehen ihre
+ * Farben/Radien/Schriften fast ausschließlich aus genau diesen globalen "semantischen"
+ * Tokens (--wa-color-{familie}-{fill|border|on}-{quiet|normal|loud}, --wa-font-*,
+ * --wa-space-*, --wa-border-radius-*) - siehe vendor/webawesome/dist-cdn/styles/themes/
+ * default.css. Kein Component-CSS selbst anfassen, kein ::part()-Gefrickel nötig, um den
+ * Look zu übernehmen - EIN Bridge-Layer auf :root reicht für die große Mehrheit der Fälle.
+ *
+ * Web Awesomes eigenes Theme schaltet Light/Dark über Klassen (.wa-light/.wa-dark) um -
+ * ncss dagegen über light-dark() + color-scheme (siehe colors.css). Statt beide Mechanismen
+ * synchron zu halten (fragil, zwei Zustände die auseinanderlaufen können), übersteuern wir
+ * hier direkt auf die FERTIGEN, bereits theme-fähigen ncss-Tokens - die WA-Klassen werden
+ * dadurch für die gemappten Werte irrelevant, ncss' color-scheme entscheidet.
+ *
+ * "quiet/normal/loud" ~ unsere 100/300/500(-900)-Farbskala: quiet = dezente Fläche
+ * (Badge-/Callout-Hintergrund), normal = etwas kräftiger (Rahmen/Hover/gefüllte Buttons je
+ * nach Komponente - Web Awesome nutzt "normal" z.B. für <wa-button appearance="filled">),
+ * loud = die volle Markenfarbe. "on-*" ist die dazu passende Textfarbe.
+ *
+ * WICHTIG (per echtem Dark-Mode-Screenshot als Bug gefunden, dann behoben): on-quiet/
+ * on-normal NICHT auf einen einzelnen fixen Wert wie X-700 mappen. X-100/-300 sind seit
+ * colors.css' Fix selbst light-dark()-gewrappt (dezent im Light Mode Richtung weiß, im
+ * Dark Mode Richtung schwarz gemischt) - ein Text, der im Light Mode auf der hellen
+ * X-100/300-Fläche funktioniert (dunkel, z.B. X-700), wäre im Dark Mode auf der jetzt
+ * DUNKLEN X-100/300-Fläche selbst wieder unlesbar. Beide brauchen daher das ebenfalls in
+ * colors.css zentral definierte --ncss-color-X-on-soft (selbst light-dark(X-700, X) -
+ * im Dark Mode reicht die Basisfarbe X als Text, die dort ohnehin schon hell/leuchtend
+ * ist). Gilt genauso für den Fall OHNE Füllung (appearance="outlined"/"plain", Text sitzt
+ * direkt auf Seite/Card statt auf einem Chip) - dieselbe Logik passt zufällig auch dort,
+ * weil beide Fälle "dunkler Text im Light Mode, heller Text im Dark Mode" wollen. Derselbe
+ * -on-soft-Token wird auch von components/badge.css und demo/landing.css verwendet -
+ * eine Definition statt der Formel an mehreren Stellen dupliziert.
+ */
+
+:root {
+  /* --- Oberflächen/Text/Rahmen ------------------------------------------------------ */
+  --wa-color-surface-default: var(--ncss-color-bg);
+  --wa-color-surface-raised: var(--ncss-color-surface);
+  --wa-color-surface-lowered: var(--ncss-color-bg-subtle);
+  --wa-color-surface-border: var(--ncss-color-border);
+
+  --wa-color-text-normal: var(--ncss-color-text);
+  --wa-color-text-quiet: var(--ncss-color-text-muted);
+  --wa-color-text-link: var(--ncss-color-brand);
+
+  --wa-color-focus: var(--ncss-color-focus-ring);
+  --wa-focus-ring: solid var(--ncss-focus-ring-width) var(--ncss-color-focus-ring);
+
+  /* Gleiches Token wie .ncss-modal::backdrop (components/modal.css, colors.css) - Web
+     Awesomes eigene Dialog-/Drawer-Overlays sollen optisch nicht von unseren nativen
+     <dialog>s abweichen. */
+  --wa-color-overlay-modal: var(--ncss-color-overlay);
+  --wa-color-overlay-inline: var(--ncss-color-overlay);
+  --wa-color-shadow: color-mix(in oklab, var(--ncss-color-text) 12%, transparent);
+
+  /* --- Brand ------------------------------------------------------------------------- */
+  --wa-color-brand-fill-quiet: var(--ncss-color-brand-100);
+  --wa-color-brand-fill-normal: var(--ncss-color-brand-300);
+  --wa-color-brand-fill-loud: var(--ncss-color-brand);
+  --wa-color-brand-border-quiet: var(--ncss-color-brand-100);
+  --wa-color-brand-border-normal: var(--ncss-color-brand-300);
+  --wa-color-brand-border-loud: var(--ncss-color-brand);
+  --wa-color-brand-on-quiet: var(--ncss-color-brand-on-soft);
+  --wa-color-brand-on-normal: var(--ncss-color-brand-on-soft);
+  --wa-color-brand-on-loud: var(--ncss-color-brand-contrast);
+
+  /* --- Neutral ------------------------------------------------------------------------ */
+  --wa-color-neutral-fill-quiet: var(--ncss-color-neutral-100);
+  --wa-color-neutral-fill-normal: var(--ncss-color-neutral-300);
+  --wa-color-neutral-fill-loud: var(--ncss-color-neutral-900);
+  --wa-color-neutral-border-quiet: var(--ncss-color-border);
+  --wa-color-neutral-border-normal: var(--ncss-color-neutral-300);
+  --wa-color-neutral-border-loud: var(--ncss-color-neutral-700);
+  --wa-color-neutral-on-quiet: var(--ncss-color-neutral-on-soft);
+  --wa-color-neutral-on-normal: var(--ncss-color-neutral-on-soft);
+  /* --ncss-color-brand-contrast trotz Namens bereits ncss' etablierte "lesbarer Text auf
+     lauter/gesättigter Füllung"-Konvention (siehe .ncss-btn--danger in helpers/forms.css,
+     das denselben Token für seinen roten Hintergrund wiederverwendet statt eigenem Wert). */
+  --wa-color-neutral-on-loud: var(--ncss-color-brand-contrast);
+
+  /* --- Success/Warning/Danger --------------------------------------------------------- */
+  --wa-color-success-fill-quiet: var(--ncss-color-success-100);
+  --wa-color-success-fill-normal: var(--ncss-color-success-300);
+  --wa-color-success-fill-loud: var(--ncss-color-success);
+  --wa-color-success-border-quiet: var(--ncss-color-success-100);
+  --wa-color-success-border-normal: var(--ncss-color-success-300);
+  --wa-color-success-border-loud: var(--ncss-color-success);
+  --wa-color-success-on-quiet: var(--ncss-color-success-on-soft);
+  --wa-color-success-on-normal: var(--ncss-color-success-on-soft);
+  --wa-color-success-on-loud: var(--ncss-color-brand-contrast);
+
+  --wa-color-warning-fill-quiet: var(--ncss-color-warning-100);
+  --wa-color-warning-fill-normal: var(--ncss-color-warning-300);
+  --wa-color-warning-fill-loud: var(--ncss-color-warning);
+  --wa-color-warning-border-quiet: var(--ncss-color-warning-100);
+  --wa-color-warning-border-normal: var(--ncss-color-warning-300);
+  --wa-color-warning-border-loud: var(--ncss-color-warning);
+  --wa-color-warning-on-quiet: var(--ncss-color-warning-on-soft);
+  --wa-color-warning-on-normal: var(--ncss-color-warning-on-soft);
+  --wa-color-warning-on-loud: var(--ncss-color-brand-contrast);
+
+  --wa-color-danger-fill-quiet: var(--ncss-color-danger-100);
+  --wa-color-danger-fill-normal: var(--ncss-color-danger-300);
+  --wa-color-danger-fill-loud: var(--ncss-color-danger);
+  --wa-color-danger-border-quiet: var(--ncss-color-danger-100);
+  --wa-color-danger-border-normal: var(--ncss-color-danger-300);
+  --wa-color-danger-border-loud: var(--ncss-color-danger);
+  --wa-color-danger-on-quiet: var(--ncss-color-danger-on-soft);
+  --wa-color-danger-on-normal: var(--ncss-color-danger-on-soft);
+  --wa-color-danger-on-loud: var(--ncss-color-brand-contrast);
+
+  /* --- Typografie ---------------------------------------------------------------------- */
+  --wa-font-family-body: var(--ncss-font-family-base);
+  --wa-font-family-heading: var(--ncss-font-family-heading);
+  --wa-font-family-code: var(--ncss-font-family-mono);
+  --wa-font-family-longform: var(--ncss-font-family-base);
+
+  --wa-font-size-m: var(--ncss-font-size-base);
+
+  --wa-font-weight-normal: var(--ncss-font-weight-normal);
+  --wa-font-weight-semibold: var(--ncss-font-weight-semibold);
+  --wa-font-weight-bold: var(--ncss-font-weight-bold);
+  --wa-font-weight-heading: var(--ncss-font-weight-bold);
+
+  /* --- Abstände/Radien ------------------------------------------------------------------ */
+  --wa-space-xs: var(--ncss-space-2xs);
+  --wa-space-s: var(--ncss-space-xs);
+  --wa-space-m: var(--ncss-space-sm);
+  --wa-space-l: var(--ncss-space-md);
+  --wa-space-xl: var(--ncss-space-lg);
+
+  --wa-border-radius-s: var(--ncss-radius-sm);
+  --wa-border-radius-m: var(--ncss-radius-md);
+  --wa-border-radius-l: var(--ncss-radius-lg);
+  --wa-border-radius-pill: var(--ncss-radius-full);
+}
+
+/* Web Awesomes eigene .wa-dark/.wa-light-Klasse existiert weiter (einzelne Komponenten
+   fragen sie u.U. intern ab) - color-scheme hier zusätzlich synchron halten, damit z.B.
+   natives Formular-Chrome INNERHALB eines Web-Awesome-Inputs (Shadow-DOM-<input>) im Dark
+   Mode nicht hell aufblitzt. */
+:root {
+  color-scheme: light dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }

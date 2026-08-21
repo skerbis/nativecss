@@ -1,0 +1,235 @@
+/**
+ * ncss - Typografie-Helper (Layer "helpers"). Ergänzt base.css um Klassen für Fälle, in
+ * denen ein Tag allein nicht reicht (z.B. Text in einer Komponente, der wie h3 aussehen
+ * soll, ohne semantisch eine Überschrift zu sein).
+ */
+
+.ncss-text-sm { font-size: var(--ncss-font-size-sm); }
+.ncss-text-base { font-size: var(--ncss-font-size-base); }
+.ncss-text-md { font-size: var(--ncss-font-size-md); }
+.ncss-text-lg { font-size: var(--ncss-font-size-lg); }
+.ncss-text-xl { font-size: var(--ncss-font-size-xl); }
+
+.ncss-text-muted { color: var(--ncss-color-text-muted); }
+.ncss-text-brand { color: var(--ncss-color-brand); }
+.ncss-text-brand-2 { color: var(--ncss-color-brand-2); }
+.ncss-text-neutral { color: var(--ncss-color-neutral); }
+.ncss-text-success { color: var(--ncss-color-success); }
+.ncss-text-warning { color: var(--ncss-color-warning); }
+.ncss-text-danger { color: var(--ncss-color-danger); }
+/* Für Text auf einer farbigen Fläche (z.B. .ncss-surface--brand) - übernimmt die dort
+   bereits passend gesetzte Kontrastfarbe, statt sie ein zweites Mal zu benennen. */
+.ncss-text-inherit { color: inherit; }
+
+.ncss-text-center { text-align: center; }
+.ncss-text-start { text-align: start; }
+.ncss-text-end { text-align: end; }
+/* Blocksatz - in der Praxis fast immer mit .ncss-hyphenate kombinieren, sonst reißt
+   Justify-Text in schmalen Spalten hässliche Wortzwischenräume auf. */
+.ncss-text-justify { text-align: justify; }
+
+.ncss-text-balance { text-wrap: balance; }
+.ncss-text-pretty { text-wrap: pretty; }
+
+/* --- Laufweite (letter-spacing, "tracking") ----------------------------------------------
+   em-basierte Tokens (tokens.css) statt fixer px-Werte - skaliert automatisch mit der
+   jeweiligen Schriftgröße statt bei großen Überschriften zu eng oder bei kleinem Text zu
+   weit zu wirken. -tight eignet sich meist nur für große, fette Headlines (in Fließtext auf
+   Kosten der Lesbarkeit), -wide/-wider klassisch für SCHMALE VERSALIEN-Kapitälchen/Eyebrows. */
+.ncss-tracking-tight { letter-spacing: var(--ncss-tracking-tight); }
+.ncss-tracking-normal { letter-spacing: var(--ncss-tracking-normal); }
+.ncss-tracking-wide { letter-spacing: var(--ncss-tracking-wide); }
+.ncss-tracking-wider { letter-spacing: var(--ncss-tracking-wider); }
+.ncss-tracking-widest { letter-spacing: var(--ncss-tracking-widest); }
+
+.ncss-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mehrzeiliges Abschneiden - modernes CSS statt JS-Line-Clamping. */
+.ncss-clamp-lines {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--ncss-clamp-lines, 3);
+  overflow: hidden;
+}
+
+/* --- Silbentrennung ---------------------------------------------------------------------
+   Braucht ein korrektes lang-Attribut (z.B. <html lang="de">) - der Browser wählt danach
+   das passende Trennwörterbuch. Bewusst opt-in statt globaler Default: sinnvoll für
+   schmale Spalten/Justify-Text, in normal breitem Fließtext meist unnötig/störend. */
+.ncss-hyphenate {
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+/* --- Ziffern-Varianten (font-variant-numeric) --------------------------------------------
+   Wirkt nur, wenn die aktive Schrift die jeweilige OpenType-Feature unterstützt (tabular
+   figures / oldstyle figures) - sonst folgenlos, kein Fallback nötig. tabular-nums lohnt
+   sich für nebeneinander stehende Zahlen (Tabellen, Kennzahlen-Vergleiche), die sonst je
+   nach Ziffer unterschiedlich breit sind und "wackeln". */
+.ncss-nums-tabular { font-variant-numeric: tabular-nums; }
+.ncss-nums-oldstyle { font-variant-numeric: oldstyle-nums; }
+
+/* --- Drop Cap (initial-letter) ------------------------------------------------------------
+   NICHT Baseline - Firefox hat es (Stand 2026) nie ausgeliefert (nur ein offenes
+   Implementation-Ticket). Chrome/Edge unterstützen die unpräfixte Eigenschaft seit 110,
+   Safari dagegen historisch nur -webkit-initial-letter - MDNs eigenes Beispiel deklariert
+   deshalb bewusst BEIDE Schreibweisen nebeneinander, das übernehmen wir hier genauso.
+   @supports prüft ebenfalls beide Varianten, sonst bliebe echtes Safari (das nur die
+   präfixte Eigenschaft kennt) fälschlich außen vor. Ohne jede Unterstützung (Firefox)
+   bleibt der erste Buchstabe schlicht normal groß, keine kaputte Darstellung, daher kein
+   extra Fallback-Code nötig. */
+@supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+  .ncss-drop-cap::first-letter {
+    -webkit-initial-letter: 3;
+    initial-letter: 3;
+    font-weight: 700;
+    margin-inline-end: 0.1em;
+  }
+  /* Container-Intelligenz statt fixer Größe: in einem breiten Magazin-Layout darf der
+     Drop Cap deutlich größer/dramatischer wirken, in einer schmalen Sidebar/einem Embed
+     bleibt er zurückhaltender - reagiert auf den ELTERN-Container (nicht den Viewport,
+     dieselbe Konvention wie überall sonst in ncss), also auch korrekt in einer schmalen
+     Spalte innerhalb eines an sich breiten Viewports. */
+  /* -- ncss container-query: drop-cap-large (40rem) -- */
+  @container ncss-container (min-width: 40rem) {
+    .ncss-drop-cap::first-letter {
+      -webkit-initial-letter: 4;
+      initial-letter: 4;
+    }
+  }
+
+  /* --- Drop-Cap-Varianten ----------------------------------------------------------------
+     Zusätzlich zu .ncss-drop-cap, nicht statt dessen - z.B.
+     class="ncss-drop-cap ncss-drop-cap--sm ncss-drop-cap--light". Gleiche Selektor-
+     Spezifität wie die Basisregel, gewinnt also rein durch Deklarationsreihenfolge (steht
+     im Quelltext danach) - Kombinationsklassen statt eigenständiger Ersatzklassen, damit
+     Größe, Schnitt und Farbe unabhängig voneinander mischbar bleiben. */
+  .ncss-drop-cap--sm::first-letter {
+    -webkit-initial-letter: 2;
+    initial-letter: 2;
+  }
+  @container ncss-container (min-width: 40rem) {
+    .ncss-drop-cap--sm::first-letter {
+      -webkit-initial-letter: 3;
+      initial-letter: 3;
+    }
+  }
+  .ncss-drop-cap--lg::first-letter {
+    -webkit-initial-letter: 4;
+    initial-letter: 4;
+  }
+  @container ncss-container (min-width: 40rem) {
+    .ncss-drop-cap--lg::first-letter {
+      -webkit-initial-letter: 5;
+      initial-letter: 5;
+    }
+  }
+  /* Dünnere Schrift statt der fetten Standard-Initiale - z.B. für ein zurückhaltenderes,
+     eher serifenlos-elegantes statt plakatives Magazin-Layout. */
+  .ncss-drop-cap--light::first-letter {
+    font-weight: var(--ncss-font-weight-normal);
+  }
+  .ncss-drop-cap--brand::first-letter {
+    color: var(--ncss-color-brand);
+  }
+}
+
+/* --- Mehrspaltiger Fließtext (CSS Multicol) ------------------------------------------------
+   column-width statt fixer column-count - dieselbe "breakpointless"-Idee wie .ncss-masonry
+   (helpers/layout.css): die Spaltenzahl ergibt sich automatisch aus der verfügbaren Breite
+   DES ELEMENTS (nicht des Viewports - Multicol war schon immer "container-aware", ganz ohne
+   @container nötig), kein fester Umschaltpunkt. Override pro Instanz z.B. via
+   style="--ncss-columns-width: 16rem" für schmalere/mehr Spalten.
+   Markup: <div class="ncss-columns"><p>...</p><p>...</p></div> */
+.ncss-columns {
+  column-width: var(--ncss-columns-width);
+  column-gap: var(--ncss-space-xl);
+  column-rule: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+/* Überschriften/Pull-Quotes sollen über die volle Breite reichen, nicht in eine einzelne
+   schmale Spalte gequetscht werden - column-span:all ist dafür extra vorgesehen. */
+.ncss-columns > h2,
+.ncss-columns > h3,
+.ncss-columns > .ncss-pull-quote {
+  column-span: all;
+}
+/* BEWUSST KEIN break-inside:avoid auf <p> - das war eine erste Fassung dieser Regel, per
+   echtem Screenshot als Fehler entlarvt: erzwingt es, dass ein Absatz NIE zwischen zwei
+   Spalten zerrissen wird, findet der Balance-Algorithmus oft keine gleich hohen Spalten
+   mehr (ein Absatz, der nicht mehr in den Rest einer Spalte passt, rutscht komplett in die
+   nächste - sichtbare Lücke am Ende der vorherigen Spalte, genau das Gegenteil von
+   "sauber"). Echte Zeitungs-/Magazin-Typografie lässt Absätze im Gegenteil ganz normal
+   über die Spaltengrenze laufen - vermieden wird dort nur eine einzelne verwaiste Zeile
+   (Schusterjunge/Hurenkind), nicht der Absatzbruch an sich. Das übernehmen `orphans`/
+   `widows` (Browser-Default meist bereits 2) von selbst, ohne dass wir hier eingreifen
+   müssen. */
+
+/* --- Pull-Quote (auffällig hervorgehobenes Zitat, "Magazin"-Stil) --------------------------
+   Eigenständig nutzbar (nicht nur innerhalb .ncss-columns) - dort zusätzlich column-span:all
+   (siehe oben). Nutzt denselben Fließtext-Fluss wie <blockquote> in base.css, hier bewusst
+   deutlich größer/prominenter statt der dezenten Standard-Zitat-Optik. */
+.ncss-pull-quote {
+  font-family: var(--ncss-font-family-heading);
+  font-size: var(--ncss-font-size-lg);
+  font-weight: 700;
+  line-height: var(--ncss-line-height-tight);
+  text-wrap: balance;
+  border-inline-start: none;
+  border-block: var(--ncss-border-width) solid var(--ncss-color-border);
+  padding-block: var(--ncss-space-sm);
+  margin-block: var(--ncss-space-md);
+  color: var(--ncss-color-text);
+}
+
+/* --- Variable Fonts -----------------------------------------------------------------------
+   ncss lädt standardmäßig KEINEN Variable Font (system-ui-Stack, siehe tokens.css) - dieser
+   Mechanismus ist die Vorbereitung für den Moment, wo pro Projekt einer eingebunden wird:
+   eine Custom Property statt einer festen font-weight-Zahl erlaubt Zwischenwerte (z.B. 550)
+   UND animierbare Gewichts-Übergänge (z.B. bei :hover) - mit normalem "font-weight" ist
+   Interpolation zwischen zwei Gewichten nicht möglich, mit font-variation-settings schon. */
+.ncss-font-variable {
+  font-variation-settings: "wght" var(--ncss-font-weight-variable);
+}
+
+/* --- Geboxter Text (box-decoration-break) --------------------------------------------------
+   "Textmarker"-Optik über mehrere Zeilen hinweg, OHNE einen <span> pro Zeile - box-
+   decoration-break:clone lässt jede umgebrochene Zeile ihre EIGENE Hintergrund/Radius/
+   Padding-Box bekommen, statt einer einzigen Box um den ganzen (mehrzeiligen) Textblock.
+   Braucht display:inline (das Element muss selbst umbrechen können wie ein <span> in
+   Fließtext, nicht als eigener Block) - direkt auf eine Überschrift gesetzt reicht, kein
+   zusätzlicher Wrapper nötig, auch nicht pro Zeile.
+   NICHT Baseline: Safari unterstützt box-decoration-break für INLINE-Elemente (genau der
+   hier gebrauchte Fall) zuverlässig, aber nur mit der -webkit-Vorsilbe (per Recherche
+   geprüft, Chrome/Firefox unpräfixt) - deshalb beide Schreibweisen. Ohne jede Unterstützung
+   bleibt der Text normal lesbar, nur als EINE durchgehende Box statt einer Box pro Zeile -
+   kein kaputter Zustand.
+   line-height bewusst UNITLESS (nicht in rem/px) - skaliert automatisch mit der jeweiligen
+   Schriftgröße mit, bleibt so auch mit ncss' fluiden clamp()-Schriftgrößen korrekt (ein
+   fixer rem-Wert wäre nur für genau eine Schriftgröße richtig bemessen).
+   Default-Optik bewusst dunkel/theme-unabhängig (wie eine feste Marker-Farbe, ähnlich
+   .ncss-modal--dark) - für eine farbige Variante stattdessen mit .ncss-surface--brand/
+   -brand-2/-neutral kombinieren (überschreibt nur background-color/color, keine eigene
+   Farbvarianten-Matrix nötig).
+   ACHTUNG - NICHT als direktes Kind eines Flex-/Grid-Containers (z.B. .ncss-stack/
+   .ncss-cluster/.ncss-grid) einsetzen: Flex-/Grid-Items werden per Spec automatisch
+   "blockifiziert" - ein deklariertes display:inline wird dort zu display:block
+   umgerechnet (unabhängig von dieser Regel hier), box-decoration-break greift dann nicht
+   mehr sichtbar (eine einzige durchgehende Box statt einer pro Zeile, per echtem Test
+   bestätigt). In einem eigenen, nicht-flex/grid Wrapper (z.B. <div>) oder direkt in
+   normalem Fließtext-Kontext verwenden.
+   Markup: <div><h2 class="ncss-text-boxed">Zeile eins<br>Zeile zwei</h2></div> */
+.ncss-text-boxed {
+  display: inline;
+  margin: 0;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0.15em 0.4em;
+  border-radius: var(--ncss-radius-sm);
+  line-height: 1.4;
+  background-color: rgb(0 0 0 / 75%);
+  color: #fff;
+}

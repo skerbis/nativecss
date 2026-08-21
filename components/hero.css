@@ -1,0 +1,110 @@
+/**
+ * ncss - Hero-Sektion (Layer "components"): Bild-Hintergrund, auf dem andere Elemente
+ * (Überschrift, Text, Buttons) platziert werden - klassisches Seiten-Intro. Zwei
+ * unabhängige Achsen zum Kombinieren:
+ *   1. Inhalts-Panel: .ncss-hero-content--transparent (Standard, Text direkt auf dem Bild,
+ *      mit Verlaufs-Scrim für Lesbarkeit) oder --filled (blickdichte Karte obenauf).
+ *   2. Bewegung: normal (statisch) oder .ncss-hero--parallax (Bild bewegt sich beim Scrollen
+ *      langsamer als der Inhalt).
+ *
+ * Markup:
+ *   <section class="ncss-hero">
+ *     <div class="ncss-hero-media" style="background-image: url(bild.jpg)"></div>
+ *     <div class="ncss-hero-content ncss-hero-content--filled">
+ *       <h2>Überschrift</h2>
+ *       <p>Text...</p>
+ *     </div>
+ *   </section>
+ *
+ * Bewusst per CSS background-image auf .ncss-hero-media statt <img> - das Bild ist hier rein
+ * dekorativ (die eigentliche Aussage steckt im überlagerten Text), ein <img> bräuchte sonst
+ * ein leeres/redundantes alt="". Trägt der Hero-Inhalt selbst Informationswert als Bild
+ * (Foto mit Nachrichtenwert etc.), lieber ein echtes <img> mit alt-Text in .ncss-hero-media
+ * einsetzen statt background-image.
+ *
+ * WICHTIG - background-image bewusst NICHT über eine Custom Property gereicht (anders als
+ * z.B. --ncss-grid-min/--ncss-focus-point): relative url()-Werte INNERHALB einer Custom
+ * Property lösen sich gegen die Basis-URL des Stylesheets auf, das die Property per var()
+ * KONSUMIERT (hier: diese Datei, components/hero.css) - nicht gegen die HTML-Seite, die die
+ * Property gesetzt hat. Ein style="--ncss-hero-image: url(bild.jpg)" auf der Seite hätte
+ * also fälschlich versucht, das Bild relativ zu components/ zu laden (per echtem Test als
+ * 404 entlarvt). background-image direkt inline auf .ncss-hero-media gesetzt umgeht das,
+ * weil ein inline style="..." ganz normal gegen die HTML-Seite selbst auflöst.
+ */
+
+.ncss-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  display: flex;
+  min-height: 22rem;
+  color: #fff;
+}
+
+/* Eigene Ebene für Hintergrundbild + Scrim - getrennt vom Content, damit .ncss-hero--
+   parallax NUR das Bild bewegen kann, ohne den Text mitzuverschieben. */
+.ncss-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-size: cover;
+  background-position: var(--ncss-focus-point);
+  background-repeat: no-repeat;
+}
+/* Lesbarkeits-Verlauf: dunkelt den unteren Bildbereich ab, unabhängig vom Motiv - trägt vor
+   allem die --transparent-Inhaltsvariante (dort direkt auf dem Bild liegender Text), stört
+   bei --filled (Text sitzt ohnehin auf blickdichter Fläche) nicht weiter. */
+.ncss-hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 60%), rgb(0 0 0 / 0%) 65%);
+}
+
+.ncss-hero-content {
+  position: relative;
+  margin-block-start: auto;
+  padding: var(--ncss-space-lg);
+}
+.ncss-hero-content--transparent {
+  /* Entspricht dem Default (Text direkt auf Bild + Scrim) - als eigene Klasse trotzdem
+     verfügbar, um Absicht im Markup sichtbar zu machen und gezielt von --filled
+     zurückwechseln zu können. */
+}
+.ncss-hero-content--filled {
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  border-radius: var(--ncss-radius-lg);
+  box-shadow: var(--ncss-shadow-lg);
+  margin: var(--ncss-space-lg);
+  max-width: 28rem;
+}
+
+/* --- Parallax (Opt-in) --------------------------------------------------------------------
+   Bewusst NICHT background-attachment:fixed - auf iOS Safari seit jeher absichtlich
+   deaktiviert (Apple: Performance-Grund, GPU-Compositing eines fixierten Layers beim
+   Scrollen), kein Bug, wird sich nicht ändern. Stattdessen scroll-gebundene Transform-
+   Animation der .ncss-hero-media-Ebene (animation-timeline: view()) - Chrome/Edge, Firefox
+   132+ und Safari 18+ unterstützen das (Stand 2026 keine Baseline, aber breite Unterstützung
+   in aktuellen Versionen). @supports + prefers-reduced-motion als Absicherung: ohne
+   Unterstützung oder bei reduzierter Bewegung bleibt es einfach ein normales, statisches
+   Hero-Bild - das ist ohnehin die Nicht-Parallax-Variante, kein kaputter Zustand.
+   scale(1.15) macht die Medien-Ebene bewusst größer als ihren Container, damit die
+   Vertikal-Verschiebung keine leeren Ränder freilegt. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .ncss-hero--parallax .ncss-hero-media {
+      animation: ncss-hero-parallax linear;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+/* var(--ncss-gpu-hint, ) hängt sich optional ans Ende der ohnehin schon transform-
+   animierten Kette an (leerer Fallback = keine Änderung, wenn der Token nicht gesetzt ist)
+   - siehe tokens.css für die Begründung, warum dieser Token bewusst keinen globalen
+   Default-Wert hat. */
+@keyframes ncss-hero-parallax {
+  from { transform: scale(1.15) translateY(-8%) var(--ncss-gpu-hint, ); }
+  to { transform: scale(1.15) translateY(8%) var(--ncss-gpu-hint, ); }
+}

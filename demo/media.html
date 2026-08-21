@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Medien</title>
+<link rel="stylesheet" href="../ncss.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-video-single {
+    /* min(), nicht nur 32rem: sonst überschreibt diese Regel reset.css' max-width:100%
+       auf sehr schmalen Viewports (per echtem Test bei 375px gefunden) - eine
+       Seiten-eigene Klasse soll die Sicherheitsgrenze verengen dürfen, nie aufheben. */
+    max-width: min(32rem, 100%);
+  }
+  .demo-video-grid {
+    --ncss-grid-min: 14rem;
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+
+  <section class="ncss-stack">
+    <h1>Medien</h1>
+    <p class="ncss-text-muted">Bilder und lokale Videos sollen gleich einfach zu handhaben sein - reset.css behandelt beide identisch (<code>display:block; max-width:100%; height:auto</code>).</p>
+  </section>
+
+  <section id="video" class="ncss-stack">
+    <h2 class="demo-section-title">Video</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Einfachster Fall - keine Klasse nötig, <code>poster</code> + <code>controls</code>
+      geben "Klick zum Abspielen" komplett nativ:
+    </p>
+    <video src="assets/sample-clip.mp4" poster="assets/sample-poster.jpg" controls class="demo-video-single"></video>
+
+    <p class="ncss-text-muted ncss-text-sm">Mit festem Seitenverhältnis (<code>.ncss-video</code> + <code>.ncss-ratio-video</code>, z.B. für ein Raster):</p>
+    <div class="ncss-grid demo-video-grid">
+      <div class="ncss-video ncss-ratio-video">
+        <video src="assets/sample-clip.mp4" poster="assets/sample-poster.jpg" controls></video>
+      </div>
+      <figure class="ncss-video ncss-ratio-video">
+        <video src="assets/sample-clip.mp4" poster="assets/sample-poster.jpg" controls></video>
+        <figcaption>Mit Bildunterschrift (figcaption, wie bei &lt;img&gt;)</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="video-art-direction" class="ncss-stack">
+    <h2 class="demo-section-title">Video: Bildausschnitt je Bildschirmgröße</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Für <code>&lt;video&gt;</code> gibt es (anders als bei <code>&lt;picture&gt;</code> für
+      Bilder) KEIN verlässliches natives "andere Datei je Breakpoint" -
+      <code>&lt;source media="..."&gt;</code> wurde aus der Spec/den meisten Browsern wieder
+      entfernt (nur Safari unterstützt es noch als Altlast). <code>.ncss-video--responsive-crop</code>
+      schneidet stattdessen DASSELBE Video per <code>object-fit</code> unterschiedlich zu -
+      Fenster schmaler ziehen, der Ausschnitt wird hochkant.
+    </p>
+    <div class="ncss-video ncss-video--responsive-crop demo-video-single">
+      <video src="assets/sample-clip.mp4" poster="assets/sample-poster.jpg" controls></video>
+    </div>
+  </section>
+
+  <section id="art-direction" class="ncss-stack">
+    <h2 class="demo-section-title">Bilder: Art Direction (&lt;picture&gt;)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Bei Bildern IST das nativ und zuverlässig möglich - <code>&lt;picture&gt;</code> mit
+      mehreren <code>&lt;source media="..."&gt;</code> lädt eine andere Bilddatei (nicht nur
+      einen anderen Ausschnitt derselben Datei) abhängig vom Viewport. Fenster schmaler als
+      48rem ziehen, um die andere Datei zu sehen (orange statt Farbbalken):
+    </p>
+    <picture>
+      <source media="(max-width: 47.99rem)" srcset="assets/art-direction-mobile.jpg">
+      <img src="assets/art-direction-desktop.jpg" alt="Beispielbild für Art Direction" class="demo-video-single">
+    </picture>
+  </section>
+
+  <section id="bilder" class="ncss-stack">
+    <h2 class="demo-section-title">Bilder (aspect-ratio, Fokuspunkt)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>--ncss-focus-point</code> (tokens.css) steuert <code>object-position</code> -
+      Default <code>center</code>, pro Bild überschreibbar
+      (<code>style="--ncss-focus-point: 20% 80%"</code>), wenn das Motiv beim Zuschneiden
+      nicht mittig sitzen soll. Beide Kacheln unten zeigen dasselbe Bild, nur mit anderem
+      Fokuspunkt:
+    </p>
+    <div class="ncss-grid demo-video-grid">
+      <div class="ncss-ratio-square"><img src="assets/art-direction-desktop.jpg" alt=""></div>
+      <div class="ncss-ratio-square" style="--ncss-focus-point: 100% 50%;"><img src="assets/art-direction-desktop.jpg" alt=""></div>
+    </div>
+    <p class="ncss-text-muted ncss-text-sm">Platzhalter-Kacheln (ohne echtes Bild):</p>
+    <div class="ncss-grid demo-video-grid">
+      <div class="ncss-ratio-video ncss-placeholder"></div>
+      <div class="ncss-ratio-square ncss-placeholder"></div>
+      <div class="ncss-ratio-portrait ncss-placeholder"></div>
+    </div>
+  </section>
+
+  <section id="hero" class="ncss-stack">
+    <h2 class="demo-section-title">Hero-Sektion (Bild-Hintergrund + Inhalt obenauf)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-hero</code> legt Inhalt über ein Hintergrundbild - zwei unabhängige
+      Optionen: das Inhalts-Panel <code>--transparent</code> (Text direkt auf dem Bild, mit
+      Verlaufs-Scrim) oder <code>--filled</code> (blickdichte Karte), und optional
+      <code>.ncss-hero--parallax</code> (Bild scrollt langsamer als der Inhalt - zum Testen
+      die Seite scrollen).
+    </p>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>1.</strong> Transparent - Text direkt auf dem Bild</p>
+    <section class="ncss-hero">
+      <div class="ncss-hero-media" style="background-image: url(assets/art-direction-desktop.jpg);"></div>
+      <div class="ncss-hero-content ncss-hero-content--transparent">
+        <h3 class="ncss-text-inherit">Text direkt aufs Bild</h3>
+        <p class="ncss-text-inherit">Ein Verlaufs-Scrim (<code>.ncss-hero-media::after</code>) sorgt für Lesbarkeit, egal welches Motiv darunterliegt.</p>
+      </div>
+    </section>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>2.</strong> Filled - blickdichte Karte obenauf</p>
+    <section class="ncss-hero">
+      <div class="ncss-hero-media" style="background-image: url(assets/art-direction-desktop.jpg);"></div>
+      <div class="ncss-hero-content ncss-hero-content--filled">
+        <h3>Karte obenauf</h3>
+        <p>Das Bild bleibt sichtbar, der Text sitzt aber auf einer eigenen, blickdichten Fläche (<code>--ncss-color-surface</code>) statt direkt auf dem Motiv.</p>
+      </div>
+    </section>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>3.</strong> Parallax (<code>.ncss-hero--parallax</code>) - beim Scrollen beobachten</p>
+    <section class="ncss-hero ncss-hero--parallax">
+      <div class="ncss-hero-media" style="background-image: url(assets/art-direction-desktop.jpg);"></div>
+      <div class="ncss-hero-content ncss-hero-content--transparent">
+        <h3 class="ncss-text-inherit">Parallax-Hero</h3>
+        <p class="ncss-text-inherit">
+          Läuft rein über <code>animation-timeline: view()</code> - kein JS, kein
+          <code>background-attachment: fixed</code> (auf iOS Safari absichtlich nie
+          unterstützt). Ohne Unterstützung oder bei reduzierter Bewegung bleibt es einfach
+          ein statisches Hero-Bild wie oben.
+        </p>
+      </div>
+    </section>
+  </section>
+
+  <section id="audio" class="ncss-stack">
+    <h2 class="demo-section-title">Audio</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Natives <code>&lt;audio controls&gt;</code> lässt sich kaum umgestalten (Browser-eigene
+      Bedienelemente) - <code>.ncss-audio</code> sorgt nur für konsistente Breite,
+      <code>.ncss-audio-card</code> ergänzt optional einen Titel.
+    </p>
+    <audio src="assets/sample-audio.m4a" controls class="ncss-audio"></audio>
+    <figure class="ncss-audio-card">
+      <figcaption>Beispiel-Ton (Sinuswelle, 6s)</figcaption>
+      <audio src="assets/sample-audio.m4a" controls class="ncss-audio"></audio>
+    </figure>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

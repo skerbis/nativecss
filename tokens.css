@@ -1,0 +1,189 @@
+/**
+ * ncss - Design Tokens (reine CSS Custom Properties, kein Preprocessor, kein Compile-Schritt).
+ * Farb-Tokens sitzen separat in colors.css (eigenes Thema, eigene Datei) - hier alles
+ * andere: Typografie, Abstand, Radius/Schatten, Bewegung, Komponenten-Defaults.
+ *
+ * Skalen sind standardmäßig FLIESSEND (clamp()-basiert, "breakpointless") - Typografie und
+ * Abstände passen sich stufenlos zwischen einer Mindest- und Maximal-Viewportbreite an, ganz
+ * ohne Media Queries. Das ist der empfohlene Standardweg.
+ *
+ * "Klassische" feste Breakpoints bleiben trotzdem verfügbar (siehe Abschnitt unten) - für
+ * Fälle, in denen ein echter Sprung gebraucht wird (z.B. Navigation klappt bei einer festen
+ * Breite von Hamburger auf Vollmenü um), nicht nur ein Fließen. WICHTIG: CSS Custom Properties
+ * funktionieren aktuell in KEINEM Browser innerhalb von @media-Bedingungen
+ * ("@media (min-width: var(--x))" ist ungültig/wirkungslos) - die Breakpoint-Werte unten sind
+ * daher als feste, dokumentierte Konvention gedacht, die in @media-Regeln direkt eingetragen
+ * wird, nicht als var()-Referenz. Für component-lokale Responsivität immer zuerst Container
+ * Queries erwägen (siehe helpers/layout.css) statt Viewport-Breakpoints.
+ */
+
+:root {
+  /* --- Fließende Typografie (clamp(min, bevorzugt, max)) ------------------------- */
+  /* Bevorzugter Wert in Viewport-Einheiten (vw) sorgt fürs Fließen zwischen min/max -
+     bewusst mit einem festen rem-Anteil gemischt (clamp() Formel), damit Nutzer-Zoom
+     (Textgröße im Browser) weiter funktioniert (reines vw ignoriert Zoom, das wäre ein
+     a11y-Verstoß - WCAG 1.4.4 Resize Text). */
+  --ncss-font-size-sm: clamp(0.8rem, 0.77rem + 0.15vw, 0.89rem);
+  --ncss-font-size-base: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+  --ncss-font-size-md: clamp(1.13rem, 1.06rem + 0.35vw, 1.35rem);
+  --ncss-font-size-lg: clamp(1.35rem, 1.2rem + 0.75vw, 1.8rem);
+  --ncss-font-size-xl: clamp(1.8rem, 1.5rem + 1.5vw, 2.6rem);
+  --ncss-font-size-2xl: clamp(2.3rem, 1.8rem + 2.5vw, 3.6rem);
+
+  --ncss-line-height-tight: 1.1;
+  --ncss-line-height-base: 1.6;
+
+  --ncss-font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ncss-font-family-heading: var(--ncss-font-family-base);
+  --ncss-font-family-mono: ui-monospace, "SF Mono", Consolas, monospace;
+
+  /* Bislang an mehreren Stellen (base.css h1-h6/strong/th) als nacktes "700" dupliziert -
+     jetzt eine Quelle, auch für den Web-Awesome-Bridge-Abgleich (webawesome-bridge.css)
+     gebraucht, damit fette Web-Awesome-Texte exakt dasselbe Gewicht wie unsere eigenen
+     Überschriften/strong-Texte haben statt einen eigenen Wert mitzubringen. */
+  --ncss-font-weight-normal: 400;
+  --ncss-font-weight-medium: 500;
+  --ncss-font-weight-semibold: 600;
+  --ncss-font-weight-bold: 700;
+
+  /* --- Laufweite (letter-spacing) -------------------------------------------------
+     em-basiert statt px/rem: dieselbe Laufweite soll bei einer 3rem-Überschrift breiter
+     wirken als bei 0.8rem Fließtext, in einer fixen absoluten Einheit bliebe sie dagegen
+     immer gleich - em skaliert automatisch mit der jeweiligen Schriftgröße mit. */
+  --ncss-tracking-tight: -0.02em;
+  --ncss-tracking-normal: normal;
+  --ncss-tracking-wide: 0.03em;
+  --ncss-tracking-wider: 0.08em;
+  --ncss-tracking-widest: 0.16em;
+
+  /* --- Fließender Abstand (dieselbe clamp()-Idee wie Typografie) ----------------- */
+  --ncss-space-3xs: clamp(0.25rem, 0.24rem + 0.1vw, 0.31rem);
+  --ncss-space-2xs: clamp(0.5rem, 0.47rem + 0.15vw, 0.63rem);
+  --ncss-space-xs: clamp(0.75rem, 0.71rem + 0.2vw, 0.88rem);
+  --ncss-space-sm: clamp(1rem, 0.94rem + 0.3vw, 1.25rem);
+  --ncss-space-md: clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem);
+  --ncss-space-lg: clamp(2rem, 1.85rem + 0.75vw, 2.5rem);
+  --ncss-space-xl: clamp(3rem, 2.7rem + 1.5vw, 4rem);
+  --ncss-space-2xl: clamp(4.5rem, 4rem + 2.5vw, 6.5rem);
+
+  /* --- Sonstiges ------------------------------------------------------------------ */
+  --ncss-radius-sm: 0.25rem;
+  --ncss-radius-md: 0.5rem;
+  --ncss-radius-lg: 1rem;
+  --ncss-radius-full: 999px;
+
+  --ncss-shadow-sm: 0 1px 2px rgb(0 0 0 / 8%);
+  --ncss-shadow-md: 0 4px 12px rgb(0 0 0 / 10%);
+  --ncss-shadow-lg: 0 12px 32px rgb(0 0 0 / 14%);
+
+  --ncss-container-max: 75rem;
+  --ncss-container-max-narrow: 45rem;
+
+  /* Bislang als nacktes "2px" in reset.css dupliziert - jetzt eine Quelle, auch für den
+     Web-Awesome-Bridge-Abgleich gebraucht (--wa-focus-ring). */
+  --ncss-focus-ring-width: 2px;
+
+  /* Bewegung: an prefers-reduced-motion gekoppelt statt hart auf "0" - siehe base.css,
+     das @media (prefers-reduced-motion: reduce) global respektiert. Hier nur die
+     "normale" Dauer definieren. */
+  --ncss-motion-duration: 200ms;
+  --ncss-motion-duration-slow: 400ms;
+  --ncss-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* GPU-Compositing-Hinweis (translateZ(0)) - bewusst OHNE Default-Wert hier definiert,
+     anders als jeder andere Token in diesem Block. Ein zusätzlicher Compositor-Layer kostet
+     Grafikspeicher ("Layer-Explosion" ist ein bekanntes eigenes Performance-Problem) - die
+     sinnvolle globale Vorgabe ist deshalb "keiner", nicht irgendein Wert. Gezielt PRO
+     INSTANZ setzen, nur bei sichtbarem Ruckeln einer bereits transform-/translate-
+     animierten Komponente (z.B. .ncss-hero--parallax bei sehr komplexem Hintergrundbild):
+     style="--ncss-gpu-hint: translateZ(0)". Für den allgemeinen Fall (irgendein Element,
+     das noch keine eigene transform-Nutzung hat) einfacher direkt .ncss-gpu-boost
+     verwenden (helpers/animations.css) statt diesen Token manuell zu setzen. */
+
+  /* Winkel für die Verlauf-Utilities (.ncss-gradient-*, helpers/surfaces.css) - Default die
+     klassische Diagonale, pro Instanz überschreibbar: style="--ncss-gradient-angle: 90deg". */
+  --ncss-gradient-angle: 135deg;
+
+  /* --- Seitenverhältnisse (aspect-ratio) - eine Quelle für Card-Media, .ncss-ratio-*
+     und Slideshow/Lightbox, statt an jeder Stelle eigene Zahlen. --------------------- */
+  --ncss-aspect-video: 16 / 9;
+  --ncss-aspect-square: 1 / 1;
+  --ncss-aspect-portrait: 3 / 4;
+
+  /* --- Komponenten-Standardwerte (überschreibbar über dieselbe Custom Property lokal
+     auf einer Instanz, z.B. style="--ncss-grid-min: 20rem") --------------------------
+     Jeder hier zentral definierte Wert war vorher als "versteckter" var(--x, LITERAL)-
+     Fallback in der jeweiligen Komponenten-Datei vergraben - nur dort auffindbar, nicht
+     an der einen Stelle, an der man ALLE überschreibbaren Defaults erwartet. Per echtem
+     Audit (grep über alle var(--ncss-*, ...)-Fallbacks) hierher konsolidiert, damit
+     "was kann ich wo überschreiben" eine einzige Antwort hat. Die Komponenten selbst
+     nutzen jetzt nur noch var(--ncss-x) ohne eigenen Literal-Fallback - EINE Quelle der
+     Wahrheit pro Wert, kein Risiko, dass zwei Stellen auseinanderdriften. */
+  --ncss-grid-min-default: 14rem;
+  --ncss-card-media-width-horizontal: 40%;
+  --ncss-masonry-column-min: 16rem;
+  --ncss-border-width: 1px;
+  --ncss-textarea-min-height: 6rem;
+  --ncss-choice-size: 1.1em;
+  --ncss-icon-size-sm: 0.8em;
+  --ncss-dialog-max-width: 32rem;
+  --ncss-columns-width: 20rem;
+  --ncss-float-max-width: 16rem;
+  --ncss-search-expanded-width: 16rem;
+  --ncss-offcanvas-width: 20rem;
+  --ncss-sticky-offset: 0;
+  --ncss-sticky-z: 10;
+  --ncss-sticky-container-max-height: 100vh;
+  --ncss-topbar-height: 3.5rem;
+  --ncss-topbar-z: 50;
+  --ncss-slideshow-item-width: 85%;
+  --ncss-bleed-amount: 2rem;
+  --ncss-bento-min: 12rem;
+  --ncss-bento-row-height: 12rem;
+  --ncss-modal-3d-depth: -24rem;
+  /* Passt zu --ncss-font-weight-normal (beide 400) - der Startwert für ein künftig
+     eingebundenes Variable Font, siehe .ncss-font-variable in helpers/typography.css. */
+  --ncss-font-weight-variable: 400;
+
+  /* Fokuspunkt für zugeschnittene Medien (object-fit:cover) - Default "center" wie der
+     Browser es ohnehin täte. Pro Bild/Video gezielt überschreiben, wenn das Motiv nicht
+     mittig sitzt: style="--ncss-focus-point: 20% 80%" (derselbe Custom-Property-
+     Parametrisierungs-Fall wie --ncss-grid-min, siehe helpers/layout.css). */
+  --ncss-focus-point: center;
+}
+
+/**
+ * "Klassische" Breakpoints - feste Werte, NICHT als var() in @media verwendbar (siehe
+ * Erklärung oben). Als Zahlenwerte hier dokumentiert, damit alle Stellen im Code dieselbe
+ * Konvention nutzen, statt eigene Zahlen zu erfinden:
+ *
+ *   sm:  480px   - großes Phone / Phone quer
+ *   md:  768px   - Tablet
+ *   lg:  1024px  - kleiner Desktop / Tablet quer
+ *   xl:  1280px  - Desktop
+ *   2xl: 1536px  - großer Desktop
+ *
+ * Verwendung direkt im Code: @media (min-width: 768px) { ... } - mit einem Kommentar
+ * "-- ncss breakpoint: md --" davor, damit klar bleibt, dass es der Konvention folgt.
+ * Nur einsetzen, wenn ein echter Sprung nötig ist - Standardweg bleibt fluid (clamp())
+ * oder Container Queries.
+ */
+
+/**
+ * Container-Query-Schwellen - dieselbe var()-Einschränkung gilt auch für @container
+ * (aktuell in keinem Browser als var() im Bedingungsteil nutzbar), daher ebenfalls als
+ * dokumentierte, feste Konvention statt Custom Property:
+ *
+ *   card-horizontal: 24rem  - .ncss-card--horizontal (components/card.css)
+ *   card-row:        32rem  - .ncss-grid--card-row (helpers/layout.css)
+ *   table-stacked:   36rem  - .ncss-table-stacked (helpers/tables.css)
+ *   nav-collapse:    64rem  - .ncss-nav (components/nav.css)
+ *   float-wrap:      28rem  - .ncss-float-start/-end (helpers/float.css)
+ *   drop-cap-large:  40rem  - .ncss-drop-cap (helpers/typography.css)
+ *   grid-cols-2:     24rem  - .ncss-grid--cols-2 (helpers/layout.css)
+ *   grid-cols-3:     36rem  - .ncss-grid--cols-3 (helpers/layout.css)
+ *   grid-cols-4:     48rem  - .ncss-grid--cols-4 (helpers/layout.css)
+ *   grid-cols-6:     56rem  - .ncss-grid--cols-6 (helpers/layout.css)
+ *
+ * Jede Verwendungsstelle im Code trägt einen Kommentar "-- ncss container-query: NAME --".
+ */

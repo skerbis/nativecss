@@ -1,0 +1,78 @@
+/**
+ * ncss (native css) - eigenständiges Design System, kein UIkit-Erbe.
+ *
+ * Aufbau (in genau dieser Reihenfolge geladen und in Cascade Layers dieser Priorität,
+ * niedrig -> hoch): tokens < reset < base < helpers < components < webawesome-bridge <
+ * browser-fixes.
+ *
+ * @layer regelt die Priorität EXPLIZIT statt über Selektor-Spezifität/!important zu
+ * kämpfen (siehe uikit_theme_builder diese Session: genau das war die Ursache mehrerer
+ * Bugs - Bridge-CSS vs. info_center, revert-Hacks etc.). Eine spätere Layer-Regel
+ * gewinnt immer gegen eine frühere, unabhängig von Selektor-Spezifität. Unlayered CSS
+ * (z.B. Inline-Styles, ein <style> ohne @layer) schlägt IMMER jede Layer-Regel - das
+ * ist Absicht der Spec und praktisch: Utility-Overrides im Markup funktionieren immer.
+ *
+ * Die wa-*-Namen vorne (wa-native, wa-base, ...) sind Web Awesomes EIGENE Layer (siehe
+ * vendor/webawesome/dist-cdn/styles/layers.css) - hier mit aufgeführt und vor unsere
+ * eigenen Layer gesetzt, damit die Priorität GARANTIERT unabhängig von der <link>-
+ * Reihenfolge im HTML ist (die Layer-Order ist seitenweit global, nicht pro Stylesheet -
+ * ohne diese Zeile würde gewinnen, welche Bibliothek zufällig zuerst geladen wird). So
+ * schlägt components/webawesome-bridge.css IMMER Web Awesomes eigenes Default-Theme,
+ * ganz ohne !important.
+ */
+
+@layer wa-native, wa-base, wa-utilities, wa-color-palette, wa-color-variant, wa-theme, wa-theme-dimension, wa-theme-overrides,
+  tokens, reset, base, helpers, components, webawesome-bridge, browser-fixes;
+
+@import url("colors.css") layer(tokens);
+@import url("tokens.css") layer(tokens);
+@import url("reset.css") layer(reset);
+@import url("base.css") layer(base);
+
+@import url("helpers/icons.css") layer(helpers);
+@import url("helpers/layout.css") layer(helpers);
+@import url("helpers/typography.css") layer(helpers);
+@import url("helpers/a11y.css") layer(helpers);
+@import url("helpers/visibility.css") layer(helpers);
+@import url("helpers/forms.css") layer(helpers);
+@import url("helpers/tables.css") layer(helpers);
+@import url("helpers/media.css") layer(helpers);
+@import url("helpers/scroll.css") layer(helpers);
+@import url("helpers/surfaces.css") layer(helpers);
+@import url("helpers/float.css") layer(helpers);
+@import url("helpers/animations.css") layer(helpers);
+@import url("helpers/elevation.css") layer(helpers);
+
+@import url("components/hero.css") layer(components);
+@import url("components/search.css") layer(components);
+@import url("components/select.css") layer(components);
+@import url("components/placeholder.css") layer(components);
+@import url("components/sparkline.css") layer(components);
+@import url("components/video.css") layer(components);
+@import url("components/audio.css") layer(components);
+@import url("components/card.css") layer(components);
+@import url("components/slideshow.css") layer(components);
+@import url("components/dialog-close.css") layer(components);
+@import url("components/modal.css") layer(components);
+@import url("components/scroll-progress.css") layer(components);
+@import url("components/topbar.css") layer(components);
+@import url("components/off-canvas.css") layer(components);
+@import url("components/nav.css") layer(components);
+@import url("components/disclosure.css") layer(components);
+@import url("components/badge.css") layer(components);
+@import url("components/breadcrumb.css") layer(components);
+@import url("components/footer.css") layer(components);
+@import url("components/effects.css") layer(components);
+/* Weitere Komponenten (Tabs, Accordion, ...) folgen hier, je eine Datei.
+   components/command-fallback.js separat einbinden
+   (<script src="ncss/components/command-fallback.js">) - generischer Fallback für
+   command/commandfor (Modal/Off-Canvas/Nav), nur nötig für Browser ohne native
+   Unterstützung, siehe die Datei selbst. */
+
+/* Nur einbinden, wenn Web Awesome auf der Seite tatsächlich geladen wird - siehe
+   webawesome-bridge.css für das Token-Mapping. */
+@import url("webawesome-bridge.css") layer(webawesome-bridge);
+
+/* Browser-spezifische Workarounds, immer zuletzt geladen (höchste Priorität) - siehe
+   browser-fixes.css für die Begründung, warum das eine eigene Datei ist. */
+@import url("browser-fixes.css") layer(browser-fixes);

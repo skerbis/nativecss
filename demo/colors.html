@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Farben</title>
+<link rel="stylesheet" href="../ncss.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-swatch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-3xs);
+  }
+  .demo-swatch-color {
+    height: 3.5rem;
+    border-radius: var(--ncss-radius-md);
+    border: 1px solid var(--ncss-color-border);
+  }
+  .demo-swatch-color--bg { background-color: var(--ncss-color-bg); }
+  .demo-swatch-color--bg-subtle { background-color: var(--ncss-color-bg-subtle); }
+  .demo-swatch-color--surface { background-color: var(--ncss-color-surface); }
+  .demo-swatch-color--text { background-color: var(--ncss-color-text); }
+  .demo-swatch-color--text-muted { background-color: var(--ncss-color-text-muted); }
+  .demo-swatch-color--border { background-color: var(--ncss-color-border); }
+  .demo-swatch-color--focus-ring { background-color: var(--ncss-color-focus-ring); }
+  .demo-swatch-color--overlay { background-color: var(--ncss-color-overlay); }
+
+  .demo-swatch-color--brand-100 { background-color: var(--ncss-color-brand-100); }
+  .demo-swatch-color--brand-300 { background-color: var(--ncss-color-brand-300); }
+  .demo-swatch-color--brand-500 { background-color: var(--ncss-color-brand-500); }
+  .demo-swatch-color--brand-700 { background-color: var(--ncss-color-brand-700); }
+  .demo-swatch-color--brand-900 { background-color: var(--ncss-color-brand-900); }
+
+  .demo-swatch-color--brand-2-100 { background-color: var(--ncss-color-brand-2-100); }
+  .demo-swatch-color--brand-2-300 { background-color: var(--ncss-color-brand-2-300); }
+  .demo-swatch-color--brand-2-500 { background-color: var(--ncss-color-brand-2-500); }
+  .demo-swatch-color--brand-2-700 { background-color: var(--ncss-color-brand-2-700); }
+  .demo-swatch-color--brand-2-900 { background-color: var(--ncss-color-brand-2-900); }
+
+  .demo-swatch-color--neutral-100 { background-color: var(--ncss-color-neutral-100); }
+  .demo-swatch-color--neutral-300 { background-color: var(--ncss-color-neutral-300); }
+  .demo-swatch-color--neutral-500 { background-color: var(--ncss-color-neutral-500); }
+  .demo-swatch-color--neutral-700 { background-color: var(--ncss-color-neutral-700); }
+  .demo-swatch-color--neutral-900 { background-color: var(--ncss-color-neutral-900); }
+
+  .demo-swatch-color--success-100 { background-color: var(--ncss-color-success-100); }
+  .demo-swatch-color--success-300 { background-color: var(--ncss-color-success-300); }
+  .demo-swatch-color--success-500 { background-color: var(--ncss-color-success); }
+  .demo-swatch-color--success-700 { background-color: var(--ncss-color-success-700); }
+  .demo-swatch-color--success-900 { background-color: var(--ncss-color-success-900); }
+
+  .demo-swatch-color--warning-100 { background-color: var(--ncss-color-warning-100); }
+  .demo-swatch-color--warning-300 { background-color: var(--ncss-color-warning-300); }
+  .demo-swatch-color--warning-500 { background-color: var(--ncss-color-warning); }
+  .demo-swatch-color--warning-700 { background-color: var(--ncss-color-warning-700); }
+  .demo-swatch-color--warning-900 { background-color: var(--ncss-color-warning-900); }
+
+  .demo-swatch-color--danger-100 { background-color: var(--ncss-color-danger-100); }
+  .demo-swatch-color--danger-300 { background-color: var(--ncss-color-danger-300); }
+  .demo-swatch-color--danger-500 { background-color: var(--ncss-color-danger); }
+  .demo-swatch-color--danger-700 { background-color: var(--ncss-color-danger-700); }
+  .demo-swatch-color--danger-900 { background-color: var(--ncss-color-danger-900); }
+
+  .demo-scale-grid {
+    --ncss-grid-min: 6rem;
+  }
+  .demo-card-grid {
+    --ncss-grid-min: 14rem;
+  }
+  .demo-gradient-text-size {
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: 700;
+    margin-block-start: var(--ncss-space-md);
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+    <div class="ncss-topbar-actions">
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="paletteToggle">
+        Palette: <span id="paletteLabel">Standard</span>
+      </button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="themeToggle">
+        Theme: <span id="themeLabel">System</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+
+  <section class="ncss-stack">
+    <h1>Farben</h1>
+    <p class="ncss-text-muted">Alle Farb-Tokens aus einer Basisfarbe pro Familie berechnet (<code>color-mix()</code> in oklch, siehe colors.css) - Theme-Button oben rechts nutzen, um jede Fläche in Light/Dark zu vergleichen.</p>
+  </section>
+
+  <section id="semantisch" class="ncss-stack">
+    <h2 class="demo-section-title">Semantische Tokens</h2>
+    <div class="ncss-grid demo-scale-grid">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--bg"></div><span class="ncss-text-sm">bg</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--bg-subtle"></div><span class="ncss-text-sm">bg-subtle</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--surface"></div><span class="ncss-text-sm">surface</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--text"></div><span class="ncss-text-sm">text</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--text-muted"></div><span class="ncss-text-sm">text-muted</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--border"></div><span class="ncss-text-sm">border</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--focus-ring"></div><span class="ncss-text-sm">focus-ring</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--overlay"></div><span class="ncss-text-sm">overlay</span></div>
+    </div>
+  </section>
+
+  <section id="skalen" class="ncss-stack">
+    <h2 class="demo-section-title">Abgestufte Skalen (100-900)</h2>
+    <p class="ncss-text-muted ncss-text-sm">500 = Basisfarbe. 100/300 und 700/900 sind jeweils <code>light-dark()</code>-gewrappt - im Dark Mode mischen 100/300 gegen Schwarz statt Weiß, damit sie dezent bleiben statt zu grell zu wirken.</p>
+
+    <h3>brand</h3>
+    <div class="ncss-grid demo-scale-grid">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-100"></div><span class="ncss-text-sm">100</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-300"></div><span class="ncss-text-sm">300</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-500"></div><span class="ncss-text-sm">500</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-700"></div><span class="ncss-text-sm">700</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-900"></div><span class="ncss-text-sm">900</span></div>
+    </div>
+
+    <h3>brand-2</h3>
+    <div class="ncss-grid demo-scale-grid">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-100"></div><span class="ncss-text-sm">100</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-300"></div><span class="ncss-text-sm">300</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-500"></div><span class="ncss-text-sm">500</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-700"></div><span class="ncss-text-sm">700</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-900"></div><span class="ncss-text-sm">900</span></div>
+    </div>
+
+    <h3>neutral</h3>
+    <div class="ncss-grid demo-scale-grid">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-100"></div><span class="ncss-text-sm">100</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-300"></div><span class="ncss-text-sm">300</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-500"></div><span class="ncss-text-sm">500</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-700"></div><span class="ncss-text-sm">700</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-900"></div><span class="ncss-text-sm">900</span></div>
+    </div>
+
+    <h3>success</h3>
+    <div class="ncss-grid demo-scale-grid">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--success-100"></div><span class="ncss-text-sm">100</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--success-300"></div><span class="ncss-text-sm">300</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--success-500"></div><span class="ncss-text-sm">500</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--success-700"></div><span class="ncss-text-sm">700</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--success-900"></div><span class="ncss-text-sm">900</span></div>
+    </div>
+
+    <h3>warning</h3>
+    <div class="ncss-grid demo-scale-grid">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--warning-100"></div><span class="ncss-text-sm">100</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--warning-300"></div><span class="ncss-text-sm">300</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--warning-500"></div><span class="ncss-text-sm">500</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--warning-700"></div><span class="ncss-text-sm">700</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--warning-900"></div><span class="ncss-text-sm">900</span></div>
+    </div>
+
+    <h3>danger</h3>
+    <div class="ncss-grid demo-scale-grid">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--danger-100"></div><span class="ncss-text-sm">100</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--danger-300"></div><span class="ncss-text-sm">300</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--danger-500"></div><span class="ncss-text-sm">500</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--danger-700"></div><span class="ncss-text-sm">700</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--danger-900"></div><span class="ncss-text-sm">900</span></div>
+    </div>
+  </section>
+
+  <section id="cards" class="ncss-stack">
+    <h2 class="demo-section-title">Cards in verschiedenen Farben</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-card--brand/-brand-2/-neutral/-success/-warning/-danger</code> - 100-Fläche + <code>-on-soft</code>-Text (dieselbe Paarung wie bei Badges), plus farbiger Rand als Akzent.</p>
+    <div class="ncss-grid demo-card-grid">
+      <article class="ncss-card ncss-card--brand ncss-radius-lg ncss-shadow-sm"><div class="ncss-card-body"><h3>Brand</h3><p class="ncss-text-sm">Standard-Markenfarbe für allgemeine Hinweise.</p></div></article>
+      <article class="ncss-card ncss-card--brand-2 ncss-radius-lg ncss-shadow-sm"><div class="ncss-card-body"><h3>Brand-2</h3><p class="ncss-text-sm">Zweitfarbe für Akzente/Kampagnen.</p></div></article>
+      <article class="ncss-card ncss-card--neutral ncss-radius-lg ncss-shadow-sm"><div class="ncss-card-body"><h3>Neutral</h3><p class="ncss-text-sm">Neutrale Info ohne Wertung.</p></div></article>
+      <article class="ncss-card ncss-card--success ncss-radius-lg ncss-shadow-sm"><div class="ncss-card-body"><h3>Success</h3><p class="ncss-text-sm">Erfolgreich gespeichert/abgeschlossen.</p></div></article>
+      <article class="ncss-card ncss-card--warning ncss-radius-lg ncss-shadow-sm"><div class="ncss-card-body"><h3>Warning</h3><p class="ncss-text-sm">Achtung, noch nicht veröffentlicht.</p></div></article>
+      <article class="ncss-card ncss-card--danger ncss-radius-lg ncss-shadow-sm"><div class="ncss-card-body"><h3>Danger</h3><p class="ncss-text-sm">Fehler, Aktion erforderlich.</p></div></article>
+    </div>
+  </section>
+
+  <section id="badges" class="ncss-stack">
+    <h2 class="demo-section-title">Badges</h2>
+    <div class="ncss-cluster">
+      <span class="ncss-badge">Brand</span>
+      <span class="ncss-badge ncss-badge--brand-2">Brand-2</span>
+      <span class="ncss-badge ncss-badge--neutral">Neutral</span>
+      <span class="ncss-badge ncss-badge--success">Success</span>
+      <span class="ncss-badge ncss-badge--warning">Warning</span>
+      <span class="ncss-badge ncss-badge--danger">Danger</span>
+    </div>
+  </section>
+
+  <section id="buttons" class="ncss-stack">
+    <h2 class="demo-section-title">Buttons</h2>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary">Primary</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary">Secondary</button>
+      <button type="button" class="ncss-btn ncss-btn--danger">Danger</button>
+    </div>
+  </section>
+
+  <section id="full-bleed-farben" class="ncss-stack">
+    <h2 class="demo-section-title">Vollflächige Marken-Farbe</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-surface--brand/-brand-2/-neutral</code> (helpers/surfaces.css) - nutzt die 900-Stufe als Hintergrund, feste weiße Textfarbe (bewusst nicht die theme-abhängige Kontrastfarbe, siehe Kommentar in surfaces.css).</p>
+    <div class="ncss-grid demo-card-grid">
+      <div class="ncss-surface--brand ncss-py-md ncss-container--narrow">Brand-Fläche</div>
+      <div class="ncss-surface--brand-2 ncss-py-md ncss-container--narrow">Brand-2-Fläche</div>
+      <div class="ncss-surface--neutral ncss-py-md ncss-container--narrow">Neutral-Fläche</div>
+    </div>
+  </section>
+
+  <section id="gradienten" class="ncss-stack">
+    <h2 class="demo-section-title">Verläufe (linear-gradient)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Winkel per <code>--ncss-gradient-angle</code> parametrisierbar (Default 135deg), pro
+      Instanz überschreibbar: <code>style="--ncss-gradient-angle: 90deg"</code>.
+    </p>
+    <div class="ncss-grid demo-card-grid">
+      <div class="ncss-gradient-brand ncss-radius-lg ncss-py-md ncss-container--narrow"><code>.ncss-gradient-brand</code></div>
+      <div class="ncss-gradient-subtle ncss-border ncss-radius-lg ncss-py-md ncss-container--narrow"><code>.ncss-gradient-subtle</code></div>
+      <div class="ncss-gradient-brand ncss-radius-lg ncss-py-md ncss-container--narrow" style="--ncss-gradient-angle: 90deg;"><code>--ncss-gradient-angle: 90deg</code></div>
+    </div>
+    <p class="ncss-text-gradient-brand demo-gradient-text-size">Verlauf als Textfarbe</p>
+    <p class="ncss-text-sm ncss-text-muted"><code>.ncss-text-gradient-brand</code> - nur für große, auffällige Überschriften gedacht, nicht für Fließtext.</p>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="webawesome.html">Web Awesome</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  var toggle = document.getElementById("themeToggle");
+  var label = document.getElementById("themeLabel");
+  var order = ["system", "light", "dark"];
+  var labels = { system: "System", light: "Hell", dark: "Dunkel" };
+  var current = "system";
+
+  toggle.addEventListener("click", function () {
+    current = order[(order.indexOf(current) + 1) % order.length];
+    if (current === "system") {
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", current);
+    }
+    label.textContent = labels[current];
+  });
+
+  var paletteToggle = document.getElementById("paletteToggle");
+  var paletteLabel = document.getElementById("paletteLabel");
+  var paletteOrder = ["standard", "football", "sunset"];
+  var paletteLabels = { standard: "Standard", football: "Football", sunset: "Sunset" };
+  var currentPalette = "standard";
+
+  paletteToggle.addEventListener("click", function () {
+    currentPalette = paletteOrder[(paletteOrder.indexOf(currentPalette) + 1) % paletteOrder.length];
+    if (currentPalette === "standard") {
+      document.documentElement.removeAttribute("data-palette");
+    } else {
+      document.documentElement.setAttribute("data-palette", currentPalette);
+    }
+    paletteLabel.textContent = paletteLabels[currentPalette];
+  });
+</script>
+
+</body>
+</html>

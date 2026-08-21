@@ -1,0 +1,207 @@
+/**
+ * ncss - Seiten-eigenes CSS NUR für demo/landing.html (Layout dieser konkreten Landingpage:
+ * Hero, Pricing-Grid, Testimonial-Grid, Newsletter-Formular). Kein Teil von ncss selbst -
+ * genau wie demo/index.html's eigener <style>-Block, hier als Datei statt Inline-<style>,
+ * weil diese Seite deutlich mehr seiteneigenes CSS braucht. Nutzt ausschließlich ncss-
+ * Tokens (var(--ncss-*)), keine eigenen Magic Numbers für Farbe/Abstand/Radius.
+ */
+
+/* --- Hero -------------------------------------------------------------------------- */
+.landing-hero {
+  /* brand-100/-300 sind bewusst NICHT light-dark()-gewrappt (siehe colors.css) - als
+     Badge-/Swatch-Hintergrund auf einer bereits themen-korrekten Fläche unproblematisch,
+     als GANZFLÄCHIGER Verlaufshintergrund im Dark Mode aber ein zu heller Fleck (per
+     Screenshot-Test gefunden). Hier deshalb selbst light-dark() setzen statt brand-100
+     direkt zu verwenden - brand-900 steht im Dark Mode für denselben "dezent
+     markenfarben getönt" Effekt wie brand-100 im Light Mode. */
+  background: linear-gradient(
+    160deg,
+    light-dark(var(--ncss-color-brand-100), var(--ncss-color-brand-900)),
+    var(--ncss-color-bg) 65%
+  );
+  padding-block: var(--ncss-space-2xl) var(--ncss-space-xl);
+}
+.landing-hero-inner {
+  text-align: center;
+  align-items: center;
+}
+.landing-hero-lead {
+  max-width: 40rem;
+}
+
+/* --- Abschnitts-Überschriften -------------------------------------------------------- */
+.landing-section-head {
+  max-width: 40rem;
+}
+
+/* --- Features ------------------------------------------------------------------------ */
+.landing-feature-grid {
+  --ncss-grid-min: 16rem;
+}
+.landing-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: var(--ncss-font-size-md);
+}
+
+/* --- Komponenten-Übersicht (wa-tree) ---------------------------------------------------- */
+.landing-tree {
+  max-width: 40rem;
+}
+
+/* --- Zahlen (Sparklines) ----------------------------------------------------------------- */
+.landing-stats-grid {
+  --ncss-grid-min: 14rem;
+}
+.landing-stat-number {
+  font-size: var(--ncss-font-size-xl);
+  font-weight: var(--ncss-font-weight-bold);
+}
+
+/* --- Popovers --------------------------------------------------------------------------
+   Zwei bewusst unterschiedliche Anwendungsfälle für <wa-popover>: der Glocken-Trigger in
+   der Topbar (persistentes Chrome-Element, funktional ein Benachrichtigungs-Dropdown) und
+   der Info-Button HIER, mitten in einem Pricing-Feature-Listeneintrag - liefert
+   Zusatzinfo zu genau DIESER Stelle im Content, nicht zu einem globalen Menü. Letzteres
+   ist der eigentlich popover-typische Fall (vs. ein reines Dropdown). */
+.landing-info-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ncss-color-text-muted);
+  cursor: pointer;
+  vertical-align: -0.15em;
+}
+.landing-info-trigger:hover {
+  color: var(--ncss-color-brand);
+}
+
+/* --- Changelog-Popover (Topbar) ------------------------------------------------------------ */
+.landing-popover-title {
+  margin-block-end: var(--ncss-space-2xs);
+}
+.landing-popover-list {
+  list-style: none;
+  padding-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-xs);
+  max-width: 18rem;
+  font-size: var(--ncss-font-size-sm);
+}
+.landing-popover-list i {
+  color: var(--ncss-color-brand);
+  margin-inline-end: var(--ncss-space-3xs);
+}
+
+/* --- Pricing --------------------------------------------------------------------------- */
+.landing-billing-toggle {
+  display: inline-flex;
+}
+.landing-pricing-grid {
+  --ncss-grid-min: 15rem;
+  align-items: stretch;
+}
+.landing-price {
+  font-size: var(--ncss-font-size-xl);
+  font-weight: var(--ncss-font-weight-bold);
+}
+.landing-price-period {
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-normal);
+  color: var(--ncss-color-text-muted);
+}
+/* Reines CSS-Umschalten über ein Attribut auf dem Grid-Container (per JS von <wa-switch>
+   gesetzt, siehe demo/landing.html) statt die Preise per JS neu zu rendern. */
+.landing-pricing-grid .price-yearly {
+  display: none;
+}
+.landing-pricing-grid[data-billing="yearly"] .price-monthly {
+  display: none;
+}
+.landing-pricing-grid[data-billing="yearly"] .price-yearly {
+  display: inline;
+}
+.landing-feature-list {
+  list-style: none;
+  padding-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-2xs);
+}
+/* Direkter Nachfahre (> li > i), NICHT der allgemeine Nachfahren-Kombinator "i" - sonst
+   würde diese Regel auch die Icons INNERHALB des verschachtelten <wa-popover> aus dem
+   "Alle Komponenten + Web Awesome Bridge"-Listeneintrag treffen (dessen Inhalt bleibt
+   trotz Top-Layer-Darstellung ein DOM-Nachfahre dieser Liste - CSS-Selektoren sehen den
+   DOM-Baum, nicht die Paint-Reihenfolge). Per echtem Test gefunden: die Popover-Icons
+   waren grün statt markenfarben, weil diese Regel (gleiche Spezifität wie
+   .landing-popover-list i) je nach Quellreihenfolge gewann. */
+.landing-feature-list > li > i {
+  color: var(--ncss-color-success);
+  margin-inline-end: var(--ncss-space-3xs);
+}
+
+/* --- Testimonials ------------------------------------------------------------------------ */
+.landing-testimonial-grid {
+  --ncss-grid-min: 16rem;
+}
+.landing-testimonial-author {
+  align-items: center;
+}
+.landing-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand-300);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+}
+
+/* --- Newsletter/CTA -------------------------------------------------------------------- */
+.landing-newsletter {
+  text-align: center;
+  align-items: center;
+}
+/* Full-Bleed-Sektion nutzt .ncss-surface--brand (helpers/surfaces.css) als Hintergrund -
+   Überschrift/Text sollen exakt deren Kontrastfarbe erben statt ncss' normale Text-Tokens,
+   sonst dunkler Text auf dunklem Marken-Hintergrund. */
+.landing-heading-inherit {
+  color: inherit;
+}
+.landing-newsletter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-xs);
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 28rem;
+}
+.landing-newsletter-form wa-input {
+  flex: 1 1 14rem;
+}
+.landing-newsletter-status {
+  min-height: 1.5em;
+  color: inherit;
+}
+
+/* --- Footer ------------------------------------------------------------------------------ */
+.landing-footer-brand {
+  color: var(--ncss-color-text);
+}

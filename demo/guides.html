@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Anleitungen</title>
+<link rel="stylesheet" href="../ncss.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .guides-layout {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: var(--ncss-space-xl);
+    align-items: start;
+  }
+  /* Grid-Items haben denselben min-width:auto-Default wie Flex-Items (siehe
+     components/nav.css/topbar.css für dieselbe Falle) - ohne das hier schrumpfen sie
+     nicht unter ihre Inhaltsbreite, sprengen die eigene Spalte/den Viewport. */
+  .guides-layout > * {
+    min-width: 0;
+  }
+  .guides-sidebar {
+    position: sticky;
+    top: calc(var(--ncss-topbar-height) + var(--ncss-space-md));
+  }
+  @media (max-width: 47.99rem) {
+    .guides-layout {
+      grid-template-columns: 1fr;
+    }
+    .guides-sidebar {
+      position: static;
+    }
+  }
+  .guide-result {
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm);
+  }
+  .guide-resize {
+    resize: horizontal;
+    overflow: auto;
+    min-width: 14rem;
+    max-width: 100%;
+  }
+  .guide-demo-box {
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-sm);
+    padding: var(--ncss-space-xs);
+    text-align: center;
+    font-size: var(--ncss-font-size-sm);
+  }
+  .guide-breakpoint-demo {
+    background-color: var(--ncss-color-danger-100);
+    color: var(--ncss-color-danger-on-soft);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    text-align: center;
+  }
+  /* -- ncss breakpoint: md (768px) -- */
+  @media (min-width: 48rem) {
+    .guide-breakpoint-demo {
+      background-color: var(--ncss-color-success-100);
+      color: var(--ncss-color-success-on-soft);
+    }
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-container ncss-py-xl">
+  <div class="guides-layout">
+
+    <nav class="ncss-nav--tree guides-sidebar" aria-label="Anleitungen-Inhalt">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#abschnitt">Eigenen Abschnitt bauen</a></li>
+        <li class="ncss-nav-item"><a href="#abstaende">Abstände: drei Ebenen</a></li>
+        <li class="ncss-nav-item"><a href="#grid">Responsives Grid ohne Breakpoints</a></li>
+        <li class="ncss-nav-item"><a href="#breakpoint">Wenn ein echter Sprung nötig ist</a></li>
+        <li class="ncss-nav-item"><a href="#fokuspunkt">Fokuspunkt bei Bildern</a></li>
+        <li class="ncss-nav-item"><a href="#komponente">Eigene Komponente anlegen</a></li>
+        <li class="ncss-nav-item"><a href="#wa-erweitern">Web-Awesome-Komponente einbinden</a></li>
+      </ul>
+    </nav>
+
+    <div class="ncss-stack ncss-stack--loose">
+
+      <section class="ncss-stack">
+        <h1>Anleitungen</h1>
+        <p class="ncss-text-lg ncss-text-muted">Aufgabenbezogene Schritt-für-Schritt-Beispiele, alle live auf dieser Seite nachvollziehbar. Für die reine Token-/Klassen-Referenz siehe <a href="docs.html">das Handbuch</a>.</p>
+      </section>
+
+      <section id="abschnitt" class="ncss-stack">
+        <h2 class="demo-section-title">1. Eigenen Abschnitt bauen</h2>
+        <p>Für eigene Seiten reichen meist drei Bausteine: ein <code>.ncss-container</code> für die Spaltenbreite, <code>.ncss-stack</code> für vertikalen Rhythmus zwischen den Kindern, und bei Bedarf eine <code>.ncss-py-*</code>-Klasse für zusätzliches Innen-Padding oben/unten.</p>
+        <pre><code>&lt;section class="ncss-container ncss-stack ncss-py-lg"&gt;
+  &lt;h2&gt;Titel&lt;/h2&gt;
+  &lt;p&gt;Text ...&lt;/p&gt;
+  &lt;button class="ncss-btn ncss-btn--primary"&gt;Aktion&lt;/button&gt;
+&lt;/section&gt;</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+        <section class="ncss-container ncss-stack ncss-py-lg guide-result">
+          <h3>Titel</h3>
+          <p>Text ...</p>
+          <button type="button" class="ncss-btn ncss-btn--primary">Aktion</button>
+        </section>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-stack</code> setzt <code>gap: var(--ncss-space-md)</code> zwischen ALLEN direkten Kindern - kein manuelles Margin pro Element nötig. Für engeren/weiteren Abstand <code>.ncss-stack--tight</code>/<code>--loose</code> statt einer neuen Zahl zu erfinden.</p>
+      </section>
+
+      <section id="abstaende" class="ncss-stack">
+        <h2 class="demo-section-title">2. Abstände: drei Ebenen, je nach Bedarf</h2>
+        <p>Bevor eine neue Utility-Klasse oder gar eine Magic Number infrage kommt, in dieser Reihenfolge prüfen:</p>
+        <ol>
+          <li><strong>Nichts tun.</strong> base.css gibt Absätzen/Überschriften/Listen etc. bereits einen sinnvollen <code>margin-block-end</code> - der Normalfall braucht gar keine Klasse.</li>
+          <li><strong>Utility-Klasse.</strong> <code>.ncss-py-*</code>/<code>.ncss-px-*</code>/<code>.ncss-mb-*</code>/<code>.ncss-gap-*</code> (helpers/layout.css, je vier Stufen sm/md/lg/xl) decken die meisten Fälle ab.</li>
+          <li><strong>Token direkt, als letzter Ausweg.</strong> Für eine Kombination, die es als Klasse nicht gibt: <code>style="padding-inline-start: var(--ncss-space-2xl)"</code> ist in Ordnung - es ist ein TOKEN, keine Magic Number. Was NICHT in Ordnung ist: <code>style="padding: 17px"</code>.</li>
+        </ol>
+        <p>Alle drei Ebenen nutzen dieselben <code>--ncss-space-*</code>-Tokens - die sind bereits fließend (<code>clamp()</code>), also automatisch "responsiv" ohne Breakpoints: derselbe Abstand skaliert stufenlos zwischen einer Mindest- und einer Maximal-Viewportbreite. Fenster ziehen, um es zu sehen:</p>
+        <div class="guide-demo-box guide-resize ncss-py-lg ncss-px-lg">.ncss-py-lg .ncss-px-lg - Box schmaler ziehen</div>
+      </section>
+
+      <section id="grid" class="ncss-stack">
+        <h2 class="demo-section-title">3. Responsives Grid ohne Breakpoints</h2>
+        <p><code>.ncss-grid</code> ist ein intrinsisches Grid (<code>repeat(auto-fit, minmax(var(--ncss-grid-min), 1fr))</code>) - es zählt Spalten anhand der verfügbaren Breite, nicht anhand fester Breakpoints. Reagiert automatisch auf den CONTAINER (nicht nur den Viewport), funktioniert also auch in einer schmalen Sidebar korrekt.</p>
+        <pre><code>&lt;div class="ncss-grid" style="--ncss-grid-min: 10rem;"&gt;
+  &lt;div&gt;Karte 1&lt;/div&gt;
+  &lt;div&gt;Karte 2&lt;/div&gt;
+  &lt;div&gt;Karte 3&lt;/div&gt;
+  &lt;div&gt;Karte 4&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Live - Box unten rechts in der Breite ziehen, keine Media Query im Spiel:</p>
+        <div class="guide-resize guide-result">
+          <div class="ncss-grid" style="--ncss-grid-min: 10rem;">
+            <div class="guide-demo-box">Karte 1</div>
+            <div class="guide-demo-box">Karte 2</div>
+            <div class="guide-demo-box">Karte 3</div>
+            <div class="guide-demo-box">Karte 4</div>
+          </div>
+        </div>
+        <p class="ncss-text-sm ncss-text-muted"><code>--ncss-grid-min</code> ist eine Custom-Property-Parametrisierung, kein Deko-Inline-Style (siehe Konventionen im Handbuch) - je höher der Wert, desto früher fällt eine Spalte weg.</p>
+      </section>
+
+      <section id="breakpoint" class="ncss-stack">
+        <h2 class="demo-section-title">4. Wenn wirklich ein Breakpoint-Sprung nötig ist</h2>
+        <p>Nicht jeder Fall ist ein Fließen - manchmal soll sich an einer FESTEN Breite etwas grundsätzlich ändern (z.B. Navigation klappt von Hamburger auf Vollmenü um). Dafür die dokumentierte Breakpoint-Konvention aus tokens.css nutzen, in einer eigenen <code>@media</code>-Regel:</p>
+        <pre><code>.mein-element {
+  background-color: var(--ncss-color-danger-100);
+}
+/* -- ncss breakpoint: md (768px) -- */
+@media (min-width: 48rem) {
+  .mein-element {
+    background-color: var(--ncss-color-success-100);
+  }
+}</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Live - das BROWSERFENSTER schmaler/breiter als 768px ziehen (echte Media Query, keine Container Query, deshalb reagiert eine Innenbox hier nicht):</p>
+        <div class="guide-breakpoint-demo">Rot unter 768px, grün ab 768px</div>
+        <p class="ncss-text-sm ncss-text-muted">Wichtig: <code>var()</code> funktioniert aktuell in KEINEM Browser innerhalb der <code>@media</code>-Bedingung selbst (<code>@media (min-width: var(--x))</code> ist ungültig) - die Zahl (<code>48rem</code>) muss dort direkt stehen. Der Kommentar <code>-- ncss breakpoint: md --</code> davor hält fest, dass sie der dokumentierten Konvention folgt, statt eine neue Zahl zu erfinden.</p>
+      </section>
+
+      <section id="fokuspunkt" class="ncss-stack">
+        <h2 class="demo-section-title">5. Fokuspunkt bei zugeschnittenen Bildern setzen</h2>
+        <p>Überall wo NativeCSS <code>object-fit: cover</code> nutzt (Ratio-Helpers, Card-Media, Video), steuert <code>--ncss-focus-point</code> (Default <code>center</code>) den Bildausschnitt:</p>
+        <pre><code>&lt;div class="ncss-ratio-square" style="--ncss-focus-point: 20% 80%;"&gt;
+  &lt;img src="foto.jpg" alt="..."&gt;
+&lt;/div&gt;</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Ausführliches, live vergleichbares Beispiel: <a href="media.html#bilder">media.html#bilder</a>.</p>
+      </section>
+
+      <section id="komponente" class="ncss-stack">
+        <h2 class="demo-section-title">6. Eigene Komponente anlegen</h2>
+        <ol>
+          <li>Neue Datei unter <code>components/</code>, z.B. <code>components/meine-komponente.css</code>.</li>
+          <li>Ausschließlich <code>var(--ncss-*)</code> verwenden - kein hartcodierter Wert. Fehlt ein Token, erst in <code>tokens.css</code>/<code>colors.css</code> ergänzen.</li>
+          <li>In <code>ncss.css</code> importieren, im Layer <code>components</code>: <code>@import url("components/meine-komponente.css") layer(components);</code></li>
+          <li>Mit Playwright im echten Browser verifizieren - insbesondere Dark Mode (Kontrast!).</li>
+        </ol>
+        <p class="ncss-text-sm ncss-text-muted">Reales Beispiel zum Nachlesen: <code>components/sparkline.css</code> (klein, in sich abgeschlossen, gute Vorlage für den Umfang, den eine einzelne Komponente haben sollte).</p>
+      </section>
+
+      <section id="wa-erweitern" class="ncss-stack">
+        <h2 class="demo-section-title">7. Neue Web-Awesome-Komponente farblich einbinden</h2>
+        <ol>
+          <li>Lokale Referenz-Doku ZUERST lesen: <code>vendor/webawesome/dist-cdn/skills/webawesome/references/components/&lt;name&gt;.md</code> - zuverlässiger als die öffentliche Doku-Seite (siehe Handbuch, Fallstrick 0).</li>
+          <li>Prüfen, welche <code>--wa-color-*</code>/<code>--wa-*</code>-Variablen die Komponente tatsächlich nutzt.</li>
+          <li>In <code>webawesome-bridge.css</code> ergänzen, ausschließlich auf ncss-Tokens verweisend - keine eigenen Werte.</li>
+          <li>Component-Tag einmal ins Markup setzen, Autoloader lädt den Rest automatisch nach - kein manueller Import nötig.</li>
+          <li>In BEIDEN Themes mit Playwright verifizieren (siehe Handbuch, Fallstrick 2 - die häufigste Bridge-Fehlerquelle ist Dark-Mode-Kontrast).</li>
+        </ol>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

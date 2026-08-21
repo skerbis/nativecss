@@ -1,0 +1,35 @@
+/**
+ * ncss - Audio-Komponente (Layer "components"). Natives <audio controls> lässt sich per CSS
+ * kaum umgestalten (die Bedienelemente sind Browser-UI, kein stylebares Markup wie bei
+ * <video>+poster) - diese Datei deckt deshalb nur das ab, was tatsächlich geht: konsistente
+ * Breite/Abstand und ein optionaler Card-artiger Rahmen mit Titel, damit ein nacktes
+ * <audio>-Element nicht wie ein Fremdkörper auf der Seite wirkt.
+ *
+ * Einfachster Fall:
+ *   <audio src="clip.mp3" controls class="ncss-audio"></audio>
+ *
+ * Mit Titel/Beschreibung (z.B. Podcast-Folge, Sprachnotiz):
+ *   <figure class="ncss-audio-card">
+ *     <figcaption>Folge 12 - Cascade Layers</figcaption>
+ *     <audio src="clip.mp3" controls class="ncss-audio"></audio>
+ *   </figure>
+ */
+.ncss-audio {
+  display: block;
+  width: 100%;
+}
+
+.ncss-audio-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-2xs);
+  padding: var(--ncss-space-sm);
+  background-color: var(--ncss-color-bg-subtle);
+  border-radius: var(--ncss-radius-md);
+}
+.ncss-audio-card figcaption {
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  color: var(--ncss-color-text);
+  margin: 0;
+}

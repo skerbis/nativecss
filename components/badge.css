@@ -1,0 +1,39 @@
+/**
+ * ncss - Badge/Tag-Komponente (Layer "components"). Zeigt exemplarisch, wie die
+ * abgestuften Farbskalen aus tokens.css genutzt werden (100 als Hintergrund, -on-soft als
+ * Text - klassisches "soft badge"-Muster, bleibt in BEIDEN Themes kontrastreich: -on-soft
+ * ist selbst light-dark()-gewrappt, siehe colors.css - eine feste Stufe wie -700 allein
+ * würde im Dark Mode auf der dort ebenfalls dunklen -100-Fläche zu dunkel/kaum lesbar).
+ */
+
+.ncss-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  padding: 0.15em 0.65em;
+  border-radius: var(--ncss-radius-full);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 600;
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+}
+.ncss-badge--brand-2 {
+  background-color: var(--ncss-color-brand-2-100);
+  color: var(--ncss-color-brand-2-on-soft);
+}
+.ncss-badge--neutral {
+  background-color: var(--ncss-color-neutral-100);
+  color: var(--ncss-color-neutral-on-soft);
+}
+.ncss-badge--success {
+  background-color: var(--ncss-color-success-100);
+  color: var(--ncss-color-success-on-soft);
+}
+.ncss-badge--warning {
+  background-color: var(--ncss-color-warning-100);
+  color: var(--ncss-color-warning-on-soft);
+}
+.ncss-badge--danger {
+  background-color: var(--ncss-color-danger-100);
+  color: var(--ncss-color-danger-on-soft);
+}

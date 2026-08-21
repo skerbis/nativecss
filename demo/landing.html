@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Landingpage (Web Awesome + Font Awesome Bridge)</title>
+
+<!-- Font Awesome Free, selbst gehostet unter vendor/fontawesome (kein CDN/Kit-Account
+     nötig) - liefert sowohl die <i class="fa-solid ..."> Webfont-Icons hier direkt im
+     Markup als auch die SVGs, auf die unten <wa-icon> zeigt (setIconPath). -->
+<link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+
+<!-- Web Awesome Free, selbst gehostet unter vendor/webawesome (npm-Paket @awesome.me/
+     webawesome, dist-cdn). Nur das Default-Theme (Komponenten-Grundgerüst) laden - Farben/
+     Radien/Schriften kommen aus unserer eigenen Bridge (siehe webawesome-bridge.css, Layer
+     "webawesome-bridge", höchste Priorität), nicht aus Web Awesomes eigenem Theme-Layer.
+     styles/native.css (WAs eigener Reset) und styles/utilities.css bewusst NICHT geladen -
+     NativeCSS hat bereits reset.css/base.css/helpers/, ein zweites Reset-System würde nur
+     konkurrieren statt ergänzen. -->
+<link rel="stylesheet" href="../vendor/webawesome/dist-cdn/styles/themes/default.css">
+
+<link rel="stylesheet" href="../ncss.css">
+<link rel="stylesheet" href="landing.css">
+
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+
+<!-- setIconPath() MUSS laufen, bevor <wa-icon> zum ersten Mal verbunden wird (siehe
+     Kommentar in vendor/webawesome/dist-cdn/utilities/base-path.d.ts) - deshalb ein
+     eigenes, kleines Modul-Script VOR dem Autoloader, das nur diese eine Utility-Funktion
+     importiert (nicht das komplette webawesome.js-Bundle). Zeigt auf dieselben, bereits
+     für die Webfont-Icons oben genutzten SVGs - ein Font-Awesome-Download deckt beide
+     Nutzungsarten ab. -->
+<script type="module">
+  import { setIconPath } from "../vendor/webawesome/dist-cdn/utilities/base-path.js";
+  setIconPath("../vendor/fontawesome/svgs");
+</script>
+<!-- data-webawesome ist NICHT optional beim Self-Hosting mit relativem Pfad: Web Awesomes
+     eigene Basis-Pfad-Erkennung (vendor/webawesome/dist-cdn/utilities/base-path.js) nimmt
+     bei fehlendem data-webawesome sonst das rohe, unaufgelöste src-Attribut dieses
+     <script>-Tags und schneidet nur den Dateinamen ab - bei einem RELATIVEN src (".."-Pfad
+     statt absolutem Pfad) ergibt das keinen gültigen Basis-Pfad und alle Komponenten-Chunks
+     404en mit einem verdoppelten Pfad-Segment (per echtem Test gefunden). data-webawesome
+     wird dagegen korrekt über new URL(...) gegen die Seiten-URL aufgelöst. -->
+<script type="module" src="../vendor/webawesome/dist-cdn/webawesome.loader.js" data-webawesome="../vendor/webawesome/dist-cdn"></script>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<!-- .ncss-glass (components/effects.css) macht aus der sticky Topbar einen Frosted-Glass-
+     Header - reine Zusatzklasse, überschreibt nur background-color/border, keine eigene
+     Positionierung. -->
+<header class="ncss-topbar ncss-glass">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="#main"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="#features">Funktionen</a></li>
+          <li class="ncss-nav-item"><a href="#komponenten">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="#pricing">Preise</a></li>
+          <li class="ncss-nav-item"><a href="#stimmen">Stimmen</a></li>
+          <li class="ncss-nav-item">
+            <!-- Web-Awesome-Menü statt natives <details> - <wa-dropdown-item> hat bewusst
+                 KEIN href (siehe vendor/webawesome/dist-cdn/skills/webawesome/references/
+                 components/dropdown-item.md), Navigation läuft über den wa-select-Handler
+                 unten im <script>. -->
+            <wa-dropdown id="moreNavDropdown">
+              <wa-button slot="trigger" appearance="plain" size="s" with-caret>Mehr</wa-button>
+              <wa-dropdown-item value="index.html">Komponenten-Demo</wa-dropdown-item>
+              <wa-dropdown-item value="navigation.html">Navigation</wa-dropdown-item>
+              <wa-dropdown-item value="webawesome.html">Web Awesome</wa-dropdown-item>
+              <wa-dropdown-item value="magazine.html">Magazin</wa-dropdown-item>
+              <wa-dropdown-item value="effects.html">Effekte</wa-dropdown-item>
+              <wa-dropdown-item value="scroll-sections.html">Vollbild-Sektionen</wa-dropdown-item>
+              <wa-dropdown-item value="colors.html">Farben</wa-dropdown-item>
+              <wa-dropdown-item value="docs.html">Handbuch</wa-dropdown-item>
+              <wa-dropdown-item value="guides.html">Anleitungen</wa-dropdown-item>
+            </wa-dropdown>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+    <div class="ncss-topbar-actions">
+      <wa-button id="changelogTrigger" variant="neutral" appearance="plain" size="s" aria-label="Changelog anzeigen">
+        <i class="fa-solid fa-bell" aria-hidden="true"></i>
+      </wa-button>
+      <wa-popover for="changelogTrigger" placement="bottom" class="landing-popover">
+        <h4 class="landing-popover-title">Zuletzt aktualisiert</h4>
+        <ul class="landing-popover-list">
+          <li><i class="fa-solid fa-plus" aria-hidden="true"></i> <code>.ncss-placeholder</code> Komponente ergänzt</li>
+          <li><i class="fa-solid fa-plus" aria-hidden="true"></i> Web-Awesome-/Font-Awesome-Bridge</li>
+          <li><i class="fa-solid fa-bug" aria-hidden="true"></i> Dark-Mode-Kontrast bei -100/-300 Farbstufen behoben</li>
+        </ul>
+      </wa-popover>
+      <wa-button class="ncss-glow-border" style="--ncss-glow-radius: 999px;" variant="brand" appearance="accent" size="s" data-dialog="open contactDialog">
+        Demo anfragen
+      </wa-button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch">
+
+  <!-- Hero -->
+  <section class="landing-hero">
+    <div class="ncss-container ncss-container--narrow ncss-stack landing-hero-inner">
+      <wa-badge variant="brand" appearance="outlined" pill>v1.0 · Reines CSS, kein Build-Schritt</wa-badge>
+      <h1>Ein Design System, das nicht im Weg steht.</h1>
+      <p class="ncss-text-lg landing-hero-lead">
+        NativeCSS verbindet natives CSS (Cascade Layers, Container Queries, <code>light-dark()</code>)
+        mit Web Awesome und Font Awesome - ohne LESS, ohne Compile-Schritt, ohne
+        Utility-Klassen-Wildwuchs. Diese Seite ist selbst das Beispiel.
+      </p>
+      <div class="ncss-cluster">
+        <wa-button variant="brand" appearance="accent" size="l" href="#pricing">
+          Preise ansehen
+          <wa-icon slot="end" name="arrow-right"></wa-icon>
+        </wa-button>
+        <wa-button variant="neutral" appearance="outlined" size="l" data-dialog="open contactDialog">
+          Demo anfragen
+        </wa-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="ncss-container ncss-stack ncss-py-xl">
+    <div class="ncss-stack ncss-stack--tight landing-section-head">
+      <h2>Alles, was ein Design System heute braucht</h2>
+      <p class="ncss-text-muted">Native Browser-Mechanismen zuerst - Web Awesome ergänzt gezielt dort, wo ein fertiges Komponenten-Verhalten schneller zum Ziel führt.</p>
+    </div>
+    <div class="ncss-grid landing-feature-grid">
+      <article class="ncss-card ncss-animate-on-scroll ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-feature-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
+          <h3>Zero Build</h3>
+          <p class="ncss-text-sm ncss-text-muted">Kein LESS, kein Sass, kein Bundler. <code>@import</code> und Cascade Layers regeln die Reihenfolge.</p>
+          <div class="ncss-cluster">
+            <wa-tag size="s" pill>CSS only</wa-tag>
+            <wa-tag size="s" pill>@layer</wa-tag>
+          </div>
+        </div>
+      </article>
+      <article class="ncss-card ncss-animate-on-scroll ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-feature-icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+          <h3>Fließend & responsiv</h3>
+          <p class="ncss-text-sm ncss-text-muted">
+            Fließende <code>clamp()</code>-Skalen als Standard, Container Queries statt
+            Viewport-Breakpoints
+            <wa-tooltip for="cq-info">Reagiert auf die Breite des umgebenden Containers, nicht die des Viewports - dieselbe Karte bleibt in einer schmalen Sidebar automatisch gestapelt.</wa-tooltip>
+            <i id="cq-info" class="fa-regular fa-circle-question" aria-hidden="true"></i>.
+          </p>
+          <div class="ncss-cluster">
+            <wa-tag size="s" pill>clamp()</wa-tag>
+            <wa-tag size="s" pill>@container</wa-tag>
+          </div>
+        </div>
+      </article>
+      <article class="ncss-card ncss-animate-on-scroll ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-feature-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+          <h3>Barrierefrei per Default</h3>
+          <p class="ncss-text-sm ncss-text-muted">Native <code>&lt;dialog&gt;</code>/<code>&lt;details&gt;</code>, Fokus-Trap, <code>:focus-visible</code> - Tastatur und Screenreader ab Werk statt nachgerüstet.</p>
+          <div class="ncss-cluster">
+            <wa-tag size="s" pill>a11y</wa-tag>
+            <wa-tag size="s" pill>native HTML</wa-tag>
+          </div>
+        </div>
+      </article>
+      <article class="ncss-card ncss-animate-on-scroll ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-feature-icon"><i class="fa-solid fa-palette" aria-hidden="true"></i></span>
+          <h3>Ein Token-System, zwei Bibliotheken</h3>
+          <p class="ncss-text-sm ncss-text-muted">Web Awesome übernimmt ncss-Farben/-Radien/-Schriften über eine einzige Bridge-Datei - keine zweite, konkurrierende Werteliste.</p>
+          <div class="ncss-cluster">
+            <wa-tag size="s" pill>Design Tokens</wa-tag>
+            <wa-tag size="s" pill>Web Awesome</wa-tag>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Komponenten-Übersicht (wa-tree) -->
+  <section id="komponenten" class="ncss-container ncss-stack ncss-py-xl">
+    <div class="ncss-stack ncss-stack--tight landing-section-head">
+      <h2>Was ist enthalten</h2>
+      <p class="ncss-text-muted">Kompletter Aufbau als <code>&lt;wa-tree&gt;</code> - klappt per Klick/Tastatur auf, ohne eigenes JS.</p>
+    </div>
+    <wa-tree class="landing-tree" selection="leaf">
+      <wa-tree-item expanded>
+        Layout &amp; Helpers
+        <wa-tree-item>Container, Grid, Stack, Cluster</wa-tree-item>
+        <wa-tree-item>Typografie (Drop Cap, Silbentrennung, tabellarische Ziffern)</wa-tree-item>
+        <wa-tree-item>Textumfluss (float + shape-outside)</wa-tree-item>
+        <wa-tree-item>Sichtbarkeit &amp; Breakpoint-Escape-Hatch</wa-tree-item>
+      </wa-tree-item>
+      <wa-tree-item expanded>
+        Komponenten
+        <wa-tree-item>Card, Placeholder, Badge, Sparkline</wa-tree-item>
+        <wa-tree-item>Modal, Off-Canvas, Nav (native &lt;dialog&gt;)</wa-tree-item>
+        <wa-tree-item>Slideshow, Disclosure, Select</wa-tree-item>
+      </wa-tree-item>
+      <wa-tree-item>
+        Web-Awesome-Bridge
+        <wa-tree-item>Farb-Tokens (fill/border/on × quiet/normal/loud)</wa-tree-item>
+        <wa-tree-item>Typografie- &amp; Radius-Tokens</wa-tree-item>
+        <wa-tree-item>Font Awesome Icons (selbst gehostet)</wa-tree-item>
+      </wa-tree-item>
+    </wa-tree>
+  </section>
+
+  <!-- Beispiel-Dashboard (native SVG-Sparklines, keine Chart-Bibliothek) -->
+  <section id="zahlen" class="ncss-container ncss-stack ncss-py-xl">
+    <div class="ncss-stack ncss-stack--tight landing-section-head">
+      <h2>So könnte ein Kennzahlen-Dashboard aussehen</h2>
+      <p class="ncss-text-muted">Frei erfundene Platzhalterzahlen eines fiktiven Online-Shops - reine Beispieldaten, keine echten Werte zu NativeCSS selbst. Die Linien sind reines <code>&lt;svg&gt;</code> + CSS (<code>.ncss-sparkline</code>), keine Chart-Bibliothek.</p>
+    </div>
+    <div class="ncss-grid landing-stats-grid">
+      <article class="ncss-card ncss-animate-on-scroll--slide-up ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="ncss-text-sm ncss-text-muted">Bestellungen / Monat</span>
+          <strong class="landing-stat-number">1.842</strong>
+          <svg class="ncss-sparkline" viewBox="0 0 200 60" preserveAspectRatio="none">
+            <path class="ncss-sparkline-area" d="M0,50 L30,45 L60,40 L90,30 L120,32 L150,18 L200,5 L200,60 L0,60 Z" />
+            <polyline points="0,50 30,45 60,40 90,30 120,32 150,18 200,5" />
+            <circle class="ncss-sparkline-dot" cx="200" cy="5" r="3" />
+          </svg>
+        </div>
+      </article>
+      <article class="ncss-card ncss-animate-on-scroll--slide-up ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="ncss-text-sm ncss-text-muted">Ladezeit (Median)</span>
+          <strong class="landing-stat-number">1,2s</strong>
+          <svg class="ncss-sparkline ncss-sparkline--success" viewBox="0 0 200 60" preserveAspectRatio="none">
+            <path class="ncss-sparkline-area" d="M0,10 L30,15 L60,20 L90,28 L120,35 L150,45 L200,52 L200,60 L0,60 Z" />
+            <polyline points="0,10 30,15 60,20 90,28 120,35 150,45 200,52" />
+            <circle class="ncss-sparkline-dot" cx="200" cy="52" r="3" />
+          </svg>
+        </div>
+      </article>
+      <article class="ncss-card ncss-animate-on-scroll--slide-up ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="ncss-text-sm ncss-text-muted">Absprungrate</span>
+          <strong class="landing-stat-number">34%</strong>
+          <svg class="ncss-sparkline ncss-sparkline--success" viewBox="0 0 200 60" preserveAspectRatio="none">
+            <path class="ncss-sparkline-area" d="M0,15 L30,20 L60,25 L90,32 L120,38 L150,45 L200,50 L200,60 L0,60 Z" />
+            <polyline points="0,15 30,20 60,25 90,32 120,38 150,45 200,50" />
+            <circle class="ncss-sparkline-dot" cx="200" cy="50" r="3" />
+          </svg>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Pricing-Beispiel: bewusst NICHT NativeCSS' eigene Preise (das Projekt ist frei/quelloffen) -
+       stattdessen die Preistabelle eines rein fiktiven Beispielprodukts ("Bloomtask"), nur um
+       das UI-Muster (wa-switch, Popover, Karten) zu zeigen. -->
+  <section id="pricing" class="ncss-container ncss-stack ncss-py-xl">
+    <div class="ncss-stack ncss-stack--tight landing-section-head">
+      <h2>Preisbeispiel: „Bloomtask“ (fiktives Beispielprodukt)</h2>
+      <p class="ncss-text-muted">Frei erfundenes Beispielprodukt, keine NativeCSS-Preise - NativeCSS selbst ist quelloffen und kostenlos. Diese Tabelle zeigt nur das UI-Muster: <code>&lt;wa-switch&gt;</code>, gekoppelt an reines CSS (<code>[data-billing]</code>-Attribut, kein Re-Render).</p>
+    </div>
+    <label class="landing-billing-toggle">
+      <wa-switch id="billingSwitch">Jährlich abrechnen <span class="ncss-badge ncss-badge--success">-20%</span></wa-switch>
+    </label>
+    <div class="ncss-grid landing-pricing-grid" id="pricingGrid">
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <h3>Solo</h3>
+          <p class="landing-price"><span class="price-monthly">0&nbsp;€</span><span class="price-yearly">0&nbsp;€</span><span class="landing-price-period">/Monat</span></p>
+          <p class="ncss-text-sm ncss-text-muted">Für Einzelpersonen und zum Ausprobieren.</p>
+          <ul class="landing-feature-list">
+            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Bis zu 3 Projekte</li>
+            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Community-Support</li>
+          </ul>
+          <wa-button variant="neutral" appearance="outlined">Auswählen</wa-button>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-shadow-lg">
+        <div class="ncss-card-header">
+          <wa-badge variant="brand" pill>Beliebt</wa-badge>
+        </div>
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <h3>Team</h3>
+          <p class="landing-price"><span class="price-monthly">19&nbsp;€</span><span class="price-yearly">15&nbsp;€</span><span class="landing-price-period">/Monat</span></p>
+          <p class="ncss-text-sm ncss-text-muted">Für Teams, die gemeinsam an Projekten arbeiten.</p>
+          <ul class="landing-feature-list">
+            <li>
+              <i class="fa-solid fa-check" aria-hidden="true"></i> Unbegrenzte Projekte
+              <button type="button" id="bridgeInfoTrigger" class="landing-info-trigger" aria-label="Was im Team-Plan enthalten ist">
+                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+              </button>
+              <wa-popover for="bridgeInfoTrigger" placement="top" class="landing-popover">
+                <h4 class="landing-popover-title">Enthalten im Team-Plan</h4>
+                <ul class="landing-popover-list">
+                  <li><i class="fa-solid fa-users" aria-hidden="true"></i> Bis zu 10 Mitglieder</li>
+                  <li><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> 90 Tage Versionshistorie</li>
+                  <li><i class="fa-solid fa-plug" aria-hidden="true"></i> Kalender- &amp; Chat-Integrationen</li>
+                </ul>
+              </wa-popover>
+            </li>
+            <li><i class="fa-solid fa-check" aria-hidden="true"></i> E-Mail-Support</li>
+            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Priorisierte Updates</li>
+          </ul>
+          <wa-button variant="brand" appearance="accent">Auswählen</wa-button>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <h3>Unternehmen</h3>
+          <p class="landing-price"><span class="price-monthly">49&nbsp;€</span><span class="price-yearly">39&nbsp;€</span><span class="landing-price-period">/Monat</span></p>
+          <p class="ncss-text-sm ncss-text-muted">Für mehrere Abteilungen und größere Organisationen.</p>
+          <ul class="landing-feature-list">
+            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Alles aus Team</li>
+            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Single Sign-On</li>
+          </ul>
+          <wa-button variant="neutral" appearance="outlined">Auswählen</wa-button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section id="stimmen" class="ncss-container ncss-stack ncss-py-xl">
+    <div class="ncss-stack ncss-stack--tight landing-section-head">
+      <h2>Was Nutzer sagen</h2>
+      <p class="ncss-text-muted">Fiktive Beispiel-Stimmen - zeigt <code>&lt;wa-rating&gt;</code> im Zusammenspiel mit einer normalen <code>.ncss-card</code>.</p>
+    </div>
+    <div class="ncss-grid landing-testimonial-grid">
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <wa-rating label="Bewertung" readonly value="5" max="5"></wa-rating>
+          <p>„Endlich ein Design System ohne Utility-Klassen-Explosion. Die Container-Query-Cards haben uns zwei Media-Query-Baustellen gespart.“</p>
+          <div class="ncss-cluster landing-testimonial-author">
+            <span class="landing-avatar">AK</span>
+            <span class="ncss-stack ncss-stack--tight">
+              <strong>Anna K.</strong>
+              <span class="ncss-text-sm ncss-text-muted">Frontend-Entwicklerin</span>
+            </span>
+          </div>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <wa-rating label="Bewertung" readonly value="4.5" precision="0.5" max="5"></wa-rating>
+          <p>„Die Web-Awesome-Bridge war in einer Datei erledigt. Buttons, Badges und Tooltips sehen aus, als wären sie von Anfang an Teil von NativeCSS gewesen.“</p>
+          <div class="ncss-cluster landing-testimonial-author">
+            <span class="landing-avatar">MT</span>
+            <span class="ncss-stack ncss-stack--tight">
+              <strong>Martin T.</strong>
+              <span class="ncss-text-sm ncss-text-muted">Tech Lead</span>
+            </span>
+          </div>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <wa-rating label="Bewertung" readonly value="5" max="5"></wa-rating>
+          <p>„Dark Mode funktioniert einfach - auch für die Web-Awesome-Komponenten, ganz ohne zusätzliche Klasse zum Umschalten.“</p>
+          <div class="ncss-cluster landing-testimonial-author">
+            <span class="landing-avatar">SR</span>
+            <span class="ncss-stack ncss-stack--tight">
+              <strong>Sophie R.</strong>
+              <span class="ncss-text-sm ncss-text-muted">Product Designerin</span>
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Newsletter / CTA -->
+  <section class="ncss-full-bleed ncss-surface--brand ncss-py-xl">
+    <div class="ncss-container ncss-container--narrow ncss-stack landing-newsletter">
+      <h2 class="landing-heading-inherit">Auf dem Laufenden bleiben</h2>
+      <p class="landing-heading-inherit">Kein Spam, nur neue Komponenten und Tokens - unregelmäßig, wenn es etwas zu zeigen gibt.</p>
+      <form class="landing-newsletter-form" id="newsletterForm">
+        <wa-input type="email" name="email" label="E-Mail-Adresse" placeholder="du@example.com" required with-clear>
+          <wa-icon slot="start" name="envelope"></wa-icon>
+        </wa-input>
+        <wa-button type="submit" variant="neutral" appearance="filled">Anmelden</wa-button>
+      </form>
+      <p class="ncss-text-sm landing-newsletter-status" id="newsletterStatus" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="landing-footer-brand"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#features">Funktionen</a></li>
+        <li class="ncss-nav-item"><a href="#pricing">Preise</a></li>
+        <li class="ncss-nav-item"><a href="index.html">Komponenten-Demo</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="ncss-footer-bottom">
+    Diese Seite kombiniert NativeCSS (nativ), Web Awesome Free (Web Components) und Font Awesome Free (Icons) über <code>webawesome-bridge.css</code>.
+  </div>
+</footer>
+
+<!-- Kontakt-Dialog: <wa-dialog>, nicht NativeCSS' natives .ncss-modal - zeigt bewusst beide
+     Wege nebeneinander (native <dialog> siehe demo/index.html, hier Web Awesomes eigene
+     Komponente mit identischer Optik dank Bridge). -->
+<wa-dialog id="contactDialog" label="Demo anfragen">
+  <form class="ncss-stack" id="contactForm">
+    <wa-input name="name" label="Name" required></wa-input>
+    <wa-input type="email" name="email" label="E-Mail" required></wa-input>
+    <wa-textarea name="message" label="Nachricht" rows="3"></wa-textarea>
+  </form>
+  <wa-button slot="footer" variant="neutral" appearance="plain" data-dialog="close">Abbrechen</wa-button>
+  <wa-button slot="footer" variant="brand" appearance="accent" id="contactSubmit">Absenden</wa-button>
+</wa-dialog>
+
+<script>
+  var moreNavDropdown = document.getElementById("moreNavDropdown");
+  moreNavDropdown.addEventListener("wa-select", function (e) {
+    window.location.href = e.detail.item.value;
+  });
+
+  var billingSwitch = document.getElementById("billingSwitch");
+  var pricingGrid = document.getElementById("pricingGrid");
+  billingSwitch.addEventListener("change", function (e) {
+    pricingGrid.dataset.billing = e.target.checked ? "yearly" : "monthly";
+  });
+
+  var newsletterForm = document.getElementById("newsletterForm");
+  var newsletterStatus = document.getElementById("newsletterStatus");
+  newsletterForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    newsletterStatus.textContent = "Danke! (Demo - es wurde nichts wirklich verschickt.)";
+    newsletterForm.reset();
+  });
+
+  var contactDialog = document.getElementById("contactDialog");
+  var contactForm = document.getElementById("contactForm");
+  document.getElementById("contactSubmit").addEventListener("click", function () {
+    if (contactForm.reportValidity()) {
+      contactDialog.open = false;
+      contactForm.reset();
+    }
+  });
+</script>
+
+</body>
+</html>

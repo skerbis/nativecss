@@ -1,0 +1,44 @@
+/**
+ * ncss - Medien-Helper (Layer "helpers"): Bilder, Video, Aspect Ratios. base.css setzt
+ * bereits sinnvolle Defaults (display:block, max-width:100%) - hier nur zusätzliche,
+ * gezielt einsetzbare Klassen.
+ */
+
+/* aspect-ratio statt alter "Padding-Hack"-Technik (padding-top: 56.25% etc.) - natives
+   CSS, kein Wrapper-Element nötig. */
+.ncss-ratio-video { aspect-ratio: var(--ncss-aspect-video); }
+.ncss-ratio-square { aspect-ratio: var(--ncss-aspect-square); }
+.ncss-ratio-portrait { aspect-ratio: var(--ncss-aspect-portrait); }
+
+/* object-position statt der Default-"center": erlaubt einen Fokuspunkt pro Bild, wenn das
+   Motiv beim Zuschneiden nicht mittig sitzen soll - siehe --ncss-focus-point in tokens.css. */
+.ncss-ratio-video img,
+.ncss-ratio-square img,
+.ncss-ratio-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--ncss-focus-point);
+}
+
+.ncss-img-cover { object-fit: cover; object-position: var(--ncss-focus-point); }
+.ncss-img-contain { object-fit: contain; }
+
+.ncss-img-rounded { border-radius: var(--ncss-radius-md); }
+.ncss-img-circle { border-radius: var(--ncss-radius-full); aspect-ratio: var(--ncss-aspect-square); object-fit: cover; object-position: var(--ncss-focus-point); }
+
+/* Reagiert auf Systemeinstellung ohne JS - z.B. für Icons/Illustrationen mit hartem
+   Hintergrund, die im Dark Mode sonst wie ein weißes Loch wirken. */
+@media (prefers-color-scheme: dark) {
+  .ncss-img-dim-in-dark {
+    filter: brightness(0.85);
+  }
+}
+
+/* Figure mit Bildunterschrift - figcaption-Styling sitzt bereits in base.css, hier nur
+   das Layout drumherum. */
+.ncss-figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-2xs);
+}

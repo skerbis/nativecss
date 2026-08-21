@@ -1,0 +1,50 @@
+/**
+ * ncss - Sparkline/Linien-Chart-Komponente (Layer "components"). Reines SVG + CSS, keine
+ * Chart-Bibliothek: ein <svg class="ncss-sparkline"> mit einer <polyline> (Linie) und
+ * optional einem <path class="ncss-sparkline-area"> (Flächenfüllung darunter) skaliert
+ * responsiv über viewBox, ganz ohne JS. Datenpunkte kommen aus dem Markup (points="...");
+ * für dynamische Daten reicht serverseitiges Rendern der points-Liste.
+ *
+ * Markup:
+ *   <svg class="ncss-sparkline" viewBox="0 0 200 60" preserveAspectRatio="none">
+ *     <path class="ncss-sparkline-area" d="M0,50 L40,42 L80,35 L120,20 L160,15 L200,5 L200,60 L0,60 Z" />
+ *     <polyline points="0,50 40,42 80,35 120,20 160,15 200,5" />
+ *     <circle class="ncss-sparkline-dot" cx="200" cy="5" r="3" />
+ *   </svg>
+ * Farbvarianten wie bei Badge/Tag über Modifier-Klassen auf dem <svg> selbst.
+ */
+
+.ncss-sparkline {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ncss-sparkline polyline {
+  fill: none;
+  stroke: var(--ncss-color-brand);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ncss-sparkline-area {
+  fill: var(--ncss-color-brand);
+  opacity: 0.12;
+  stroke: none;
+}
+
+.ncss-sparkline-dot {
+  fill: var(--ncss-color-brand);
+}
+
+/* --- Varianten (dieselbe Farbfamilie wie .ncss-badge/-tag) -------------------------- */
+.ncss-sparkline--success polyline { stroke: var(--ncss-color-success); }
+.ncss-sparkline--success .ncss-sparkline-dot { fill: var(--ncss-color-success); }
+.ncss-sparkline--success .ncss-sparkline-area { fill: var(--ncss-color-success); }
+
+.ncss-sparkline--danger polyline { stroke: var(--ncss-color-danger); }
+.ncss-sparkline--danger .ncss-sparkline-dot { fill: var(--ncss-color-danger); }
+.ncss-sparkline--danger .ncss-sparkline-area { fill: var(--ncss-color-danger); }

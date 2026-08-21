@@ -1,0 +1,115 @@
+/**
+ * ncss - Textumfluss (Layer "helpers"): Text soll um ein Element (typischerweise ein Bild)
+ * herumfließen. Es gibt dafür KEINEN moderneren Ersatz - Grid/Flexbox positionieren
+ * Elemente NEBENEINANDER, lassen Text aber nicht dynamisch um eine Form herumfließen. Der
+ * vermeintliche Nachfolger (CSS Exclusions, wrap-flow/wrap-through) ist nie in Browsern
+ * gelandet (nur ein toter Adobe/Microsoft-Prototyp von ~2012, MDN hat dafür keine Seite).
+ * float bleibt also der richtige, nicht "veraltete" Werkzeug für GENAU diesen Zweck - die
+ * "float ist schlecht"-Kritik gilt für Seiten-LAYOUT (dafür Grid/Flexbox nutzen), nicht für
+ * Textumfluss.
+ *
+ * Responsive über Container Queries statt Viewport-Breakpoint: erst ab einer gewissen
+ * Breite des UMGEBENDEN Containers wird tatsächlich gefloatet - bei schmalem Container
+ * (z.B. eine Sidebar) bleibt das Bild ein normaler Block, Text quetscht sich sonst in eine
+ * unlesbar schmale Restspalte. Braucht einen Vorfahren mit container-type: inline-size
+ * (z.B. .ncss-container aus helpers/layout.css).
+ *
+ * Markup: <img class="ncss-float-start" src="..." alt="...">Text fließt drumherum...
+ */
+
+.ncss-float-start,
+.ncss-float-end {
+  max-width: var(--ncss-float-max-width);
+  margin-block-end: var(--ncss-space-sm);
+}
+
+/* -- ncss container-query: float-wrap (28rem) -- */
+@container ncss-container (min-width: 28rem) {
+  .ncss-float-start {
+    float: inline-start;
+    margin-inline-end: var(--ncss-space-md);
+  }
+  .ncss-float-end {
+    float: inline-end;
+    margin-inline-start: var(--ncss-space-md);
+  }
+}
+
+.ncss-clear {
+  clear: both;
+}
+
+/* --- Gefloatetes Element, das zu EINER Seite bis zum Bildschirmrand ausbricht -----------
+   Kombiniert Textumfluss (oben) mit dem Bleed-Trick aus helpers/layout.css
+   (.ncss-bleed-start/-end) - beide EINZELN lassen sich NICHT einfach kombinieren (per
+   echtem Test geprüft): .ncss-bleed-*'s Breiten-Rechnung setzt voraus, dass das Element im
+   normalen Fluss mit width:auto "den verfügbaren Platz füllt" - ein Float mit width:auto
+   verhält sich stattdessen "shrink-to-fit" (schrumpft auf den Inhalt), die Box kollabierte
+   im Test auf 0 Breite. Deshalb eine eigene, dedizierte Klasse mit EXPLIZITER width statt
+   der impliziten Breiten-Berechnung.
+   shape-outside NICHT nötig: ein rechteckiger Float wickelt Text per Spezifikation bereits
+   um seine eigene Margin-Box - der Bleed-Rand (negative Margin auf der Außenseite) wird
+   dadurch automatisch mitberücksichtigt, ganz ohne zusätzliche Deklaration (per echtem Test
+   bestätigt: Ergebnis identisch mit/ohne shape-outside:margin-box).
+   Dieselbe float-wrap-Schwelle (28rem) wie .ncss-float-start/-end: auf schmalem Container
+   ein normaler, nicht ausbrechender Block statt eines kaputt wirkenden Bleeds.
+   Markup: <img class="ncss-float-bleed-start" src="..." alt="...">Text fließt drumherum,
+   das Bild bricht nach links bis zum Bildschirmrand aus. */
+.ncss-float-bleed-start,
+.ncss-float-bleed-end {
+  width: var(--ncss-float-max-width);
+  margin-block-end: var(--ncss-space-sm);
+}
+/* -- ncss container-query: float-wrap (28rem) -- */
+@container ncss-container (min-width: 28rem) {
+  .ncss-float-bleed-start {
+    float: inline-start;
+    margin-inline-end: var(--ncss-space-md);
+    margin-inline-start: calc(50% - 50vw);
+  }
+  .ncss-float-bleed-end {
+    float: inline-end;
+    margin-inline-start: var(--ncss-space-md);
+    margin-inline-end: calc(50% - 50vw);
+  }
+}
+
+/* Nicht-rechteckiges Umfließen: Text folgt der tatsächlichen Form statt der rechteckigen
+   Bounding Box. shape-outside wirkt NUR auf gefloateten Elementen (siehe oben) - hier
+   zusätzlich clip-path, damit das Bild auch VISUELL rund ist, nicht nur der Textfluss
+   (sonst würde Text um einen unsichtbaren Kreis fließen, während das Bild weiter eckig
+   aussieht). */
+.ncss-float-shape-circle {
+  shape-outside: circle(50%);
+  clip-path: circle(50%);
+}
+
+/* --- Verhalten bei schmalem Container ("wird zum Block") --------------------------------
+   Unterhalb der float-wrap-Schwelle (28rem) floatet .ncss-float-start/-end nicht mehr,
+   sondern wird ein normaler Block - per Default LINKSBÜNDIG (einfach die normale
+   Flussrichtung, keine eigene Regel nötig). Das ist nicht immer richtig: manchmal soll das
+   Bild in diesem schmalen Zustand zentriert wirken, manchmal die volle Breite ausfüllen.
+   Bewusst NICHT auf .ncss-float-* beschränkt - dieselben zwei Modifier funktionieren an
+   JEDEM Element, das unterhalb einer schmalen Container-Breite anders ausgerichtet werden
+   soll, auch ganz ohne Float (z.B. ein eigenständiges Bild in einer Sidebar-Karte).
+   Markup: <img class="ncss-float-start ncss-center-narrow" ...> oder eigenständig
+   <img class="ncss-full-narrow" ...> */
+.ncss-center-narrow {
+  margin-inline: auto;
+}
+.ncss-full-narrow {
+  width: 100%;
+  max-width: none;
+}
+/* -- ncss container-query: float-wrap (28rem) -- */
+@container ncss-container (min-width: 28rem) {
+  /* Ab hier übernimmt (bei .ncss-float-start/-end) wieder der Float die Breite/
+     Ausrichtung - die beiden Modifier oben gelten bewusst nur unterhalb der Schwelle. */
+  .ncss-center-narrow {
+    margin-inline: 0;
+  }
+  .ncss-full-narrow {
+    width: auto;
+    max-width: var(--ncss-float-max-width);
+  }
+}

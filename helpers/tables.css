@@ -1,0 +1,70 @@
+/**
+ * ncss - Responsive Tabellen (Layer "helpers"). base.css stylt <table> bereits als
+ * normale, semantische Tabelle - hier zwei Strategien für "passt nicht auf schmale
+ * Screens", mit klarem a11y-Hinweis zur Wahl.
+ */
+
+/* --- Strategie 1 (Standard-Empfehlung): horizontales Scrollen -------------------------
+   Bewahrt die volle native Tabellen-Semantik (Screenreader können Zeilen/Spalten weiter
+   korrekt ansagen) - keine Umbaumaßnahme am DOM/CSS-Display-Typ der Tabelle nötig.
+   Markup: <div class="ncss-table-scroll"><table>...</table></div> */
+.ncss-table-scroll {
+  overflow-x: auto;
+  /* role="region" + aria-label/tabindex="0" gehören ins Markup (nicht per CSS lösbar) -
+     macht den Scroll-Container selbst per Tastatur fokussierbar/scrollbar, WCAG 1.4.10. */
+}
+.ncss-table-scroll table {
+  min-width: max-content;
+}
+
+/* --- Strategie 2 (Opt-in, NUR wenn Strategie 1 wirklich nicht passt): Karten-Stapel ----
+   ACHTUNG a11y: display:block auf table/tr/td bricht die programmatische Tabellen-
+   Semantik für Screenreader (Zeile/Spalte wird nicht mehr korrekt angesagt) - das ist ein
+   bekannter, unvermeidbarer Kompromiss dieser Technik, kein ncss-Bug. Nur einsetzen, wenn
+   die Tabelle inhaltlich wirklich wie eine Liste von "Datensatz-Karten" gelesen werden
+   soll (z.B. Bestellungen, Kontakte) - für tabellarische Daten mit echtem Zeilen/Spalten-
+   Bezug (Kennzahlen-Vergleiche etc.) immer Strategie 1 verwenden.
+   Markup: jede <td> braucht zusätzlich data-label="Spaltenname" (::before liest das per
+   attr() aus - der einzige CSS-Property-Kontext, in dem attr() zuverlässig funktioniert). */
+.ncss-table-stacked {
+  container-type: inline-size;
+  container-name: ncss-table;
+}
+
+/* -- ncss container-query: table-stacked (36rem) -- */
+@container ncss-table (max-width: 36rem) {
+  .ncss-table-stacked table,
+  .ncss-table-stacked thead,
+  .ncss-table-stacked tbody,
+  .ncss-table-stacked tr,
+  .ncss-table-stacked th,
+  .ncss-table-stacked td {
+    display: block;
+  }
+  .ncss-table-stacked thead {
+    /* Kopfzeile bleibt semantisch vorhanden (Screenreader-Ansage über data-label statt),
+       optisch aber ausgeblendet statt entfernt. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .ncss-table-stacked tr {
+    margin-block-end: var(--ncss-space-sm);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-xs);
+  }
+  .ncss-table-stacked td {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--ncss-space-sm);
+    border: none;
+    padding-block: var(--ncss-space-3xs);
+  }
+  .ncss-table-stacked td::before {
+    content: attr(data-label);
+    font-weight: 600;
+  }
+}
