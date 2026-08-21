@@ -342,18 +342,56 @@ NICHT als Fallback ergänzt, weil zwei konkurrierende Hacks für eine reine Zusa
 mehr Wartungslast wären, als sie wert sind. Dasselbe Abwägen gilt für jede künftige
 ähnliche Situation: EINE saubere, gut-gegatete Lösung statt mehrerer sich überschneidender.
 
-Zweites Beispiel, mit funktionierendem `@supports`-Fallback statt "kein Fallback nötig":
-`.ncss-stack-cards`/`.ncss-stack-card` (components/scroll-stack.css) - gestapelte Karten
-beim Scrollen. Baseline-Teil ist reines `position:sticky` (funktioniert überall, ergibt
-schon den kompletten Stapel-Effekt). Die zusätzliche 3D-Rückweich-Optik nutzt
-`animation-timeline: view()` (per WebSearch bestätigt: aktuell NICHT Baseline, MDN nennt
-es explizit nicht in allen wichtigen Browsern unterstützt) - komplett hinter
-`@supports (animation-timeline: view())` UND zusätzlich `@media (prefers-reduced-motion:
-no-preference)` (eigenes Gate, nicht nur die globale reset.css-Regel - eine
-scroll-timeline-gekoppelte Animation hat keine echte Zeitdauer, das globale Kappen von
-animation-duration könnte sich unvorhersehbar verhalten statt sauber zu deaktivieren).
-Playwright-Test in Chromium UND WebKit bestätigt: beide rendern den 3D-Effekt korrekt,
-kein Darstellungsfehler in keinem der beiden.
+Zweites Beispiel, mit funktionierendem `@supports`-Fallback statt "kein Fallback nötig",
+UND ein Lehrstück darin, wie viele Anläufe ein scroll-getriebenes Feature bis zur
+richtigen Kalibrierung brauchen kann: `.ncss-stack-section`/`.ncss-stack-stage`/
+`.ncss-stack-card` (components/scroll-stack.css) - EINE Vollbild-Sektion, in der Karten
+beim Scrollen INNERHALB dieser einen Sektion übereinander gleiten (Nutzer-Anforderung
+nach mehreren Iterationen: erst unabhängig sticky Karten je eigenem Vollbild-Abschnitt,
+dann kompakt+gefächert am oberen Rand, dann in der Bildschirmmitte, am Ende explizit
+"eine Vollbild-Sektion, darin die stacked cards"). Baseline-Teil ist ein fixer
+`translateY`-Versatz pro Karte (kein JS, funktioniert überall, ergibt schon den
+gefächerten Stapel-Look). Die Scroll-Animation nutzt eine BENANNTE `view-timeline-name`
+(nicht die anonyme `view()`-Funktion wie im ersten Anlauf) auf der äußeren Sektion, jede
+Karte per `animation-range` auf ihre eigene Scheibe gemappt - zwei echte Kalibrierungs-
+Bugs dabei per `getComputedStyle().transform`-Auslese gefunden, nicht nur optisch:
+1) Die DEFAULT-"cover"-Reichweite von `view-timeline` misst vom ersten bis zum letzten
+   sichtbaren Pixel des Subjekt-Elements - bei einem Element, das viele Bildschirmhöhen
+   groß ist, schließt das eine ganze Bildschirmhöhe Entry- UND Exit-Polsterung VOR/NACH
+   der eigentlich gepinnten Phase mit ein. `view-timeline-inset: 100vh` (= die
+   Bühnenhöhe) beschneidet genau diese Polsterung, erst danach fallen 0%/100% der
+   Timeline exakt mit "Bühne wird gepinnt"/"Bühne löst sich" zusammen.
+2) Ein `animation-range` ZENTRIERT um den eigenen Karten-Index (index-1 bis index+1)
+   ließ eine Karte schon MITTEN in ihrer eigenen, noch aktiven Anzeige-Phase zurück-
+   weichen (User-Feedback: "müsste erst kippen, wenn man vom Vollbild wegscrollt") - der
+   Bereich muss stattdessen AN der eigenen Scheibe BEGINNEN (index bis index+2), damit
+   die erste Hälfte (0%-50%) exakt die eigene Anzeige-Phase abdeckt und erst die zweite
+   Hälfte (50%-100%, deckungsgleich mit der Scheibe der NÄCHSTEN Karte) zurückweicht.
+   Karte 0 (keine "eigene Ankunft" nötig, schon da beim Erscheinen der Bühne) bekommt
+   dafür einen eigenen, kürzeren Satz Keyframes (`ncss-stack-settle`, nur "flach → zurück-
+   weichend") statt der Ankunfts-Keyframes der übrigen Karten (`ncss-stack-arrive`,
+   "andockend → flach → zurückweichend") - dieselbe `animation-range`-Formel gilt für
+   beide gleich, nur der Keyframe-Name unterscheidet sich.
+Zusätzlich: KEIN `opacity`-Fade beim Andocken - eine bereits blickdichte Karte, die
+zusätzlich einblendet, ließ die darunterliegende währenddessen unschön durchscheinen
+(matschige Doppelbelichtung, per Screenshot-Review gefunden), reines `transform` (Karte
+malt dank normaler DOM-Reihenfolge ohnehin über die vorherige) reicht. Das gesamte
+Enhancement komplett hinter `@supports (view-timeline-name: --x)` UND zusätzlich
+`@media (prefers-reduced-motion: no-preference)` (eigenes Gate, nicht nur die globale
+reset.css-Regel - eine scroll-timeline-gekoppelte Animation hat keine echte Zeitdauer,
+das globale Kappen von animation-duration könnte sich unvorhersehbar verhalten statt
+sauber zu deaktivieren).
+
+Dritter Kalibrierungs-Bug, ebenfalls per echtem Test (nicht nur Augenschein) gefunden:
+der Off-Stage-`translateY`-Wert für die Anfahrt-Phase war anfangs ein fixer `60vh` -
+reichte bei einer per `flex` ZENTRIERTEN, `--ncss-stack-card-height: 60vh` hohen Karte
+in einer 100vh-Bühne NICHT aus, um sie vollständig unter die Bühnen-Unterkante zu
+schieben (User-Report: "der grüne ist initial über der Karte 1 sichtbar" - ein
+sichtbarer Streifen blieb am unteren Bühnenrand stehen). Richtige Formel:
+`50vh + Kartenhöhe/2` (halbe Bühnenhöhe, weil die Karte mittig sitzt, PLUS die halbe
+eigene Höhe) - relativ zu `--ncss-stack-card-height` berechnet statt eines fixen Werts,
+funktioniert dadurch automatisch für JEDE Kartenhöhen-Konfiguration (auch die
+Vollbild-Variante mit 100vh) ohne zwei parallele Formeln pflegen zu müssen.
 
 ## Icon-System (`helpers/icons.css`)
 
