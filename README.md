@@ -17,6 +17,7 @@ HTML/CSS allein nicht reicht (z.B. Toast, Carousel, Drawer) - siehe `demo/webawe
 ## Inhalt
 
 - [Schnellstart](#schnellstart)
+- [Theme anpassen](#theme-anpassen)
 - [Architektur](#architektur)
 - [Grundprinzipien](#grundprinzipien)
 - [Design Tokens](#design-tokens)
@@ -45,6 +46,42 @@ HTML/CSS allein nicht reicht (z.B. Toast, Carousel, Drawer) - siehe `demo/webawe
 
 `ncss.css` importiert alles Weitere selbst (Tokens, Reset, Helpers, Komponenten) in der
 richtigen Layer-Reihenfolge. Kein Build-Schritt nötig - die Datei direkt einbinden.
+
+## Theme anpassen
+
+Eine Datei für alle wichtigen Werte - **`theme.css`**. Nach `ncss.css` laden, direkt die
+Werte darin überschreiben, keine andere Datei anfassen:
+
+```html
+<link rel="stylesheet" href="ncss.css">
+<link rel="stylesheet" href="theme.css">
+```
+
+Funktioniert ohne `@layer`/`!important`: `theme.css` ist bewusst UNLAYERED (kein eigenes
+`@layer`), und unlayered CSS gewinnt in der Spec immer gegen jede Layer-Regel (siehe
+[Architektur](#architektur)) - ein einfaches `:root { --ncss-color-brand: ... }` reicht.
+
+`theme.css` enthält nur die BASIS-/SEED-Werte (Markenfarben, Grundflächen, Schriften,
+Radien, Schatten, Bewegung), nicht die daraus abgeleiteten Farbskalen. Farben wie
+`--ncss-color-brand-100`/`-300`/`-700`/`-900` (siehe [Design Tokens](#design-tokens))
+werden aus GENAU EINEM Basiswert per `color-mix()` automatisch berechnet - die
+Markenfarbe in `theme.css` ändern genügt, die ganze Skala (helle/dunkle Stufen,
+"on-soft"-Textfarbe, Web-Awesome-Bridge) zieht automatisch mit.
+
+Mehrere Themes parallel bereithalten: denselben Aufbau in einer weiteren Datei
+wiederholen (z.B. `theme-sunset.css`) und je nach Bedarf statt `theme.css` laden - oder
+die `[data-palette]`-Konvention in `colors.css` nutzen für einen rein attributgesteuerten
+Wechsel ganz ohne zweite Datei (`<html data-palette="sunset">`, zwei Beispiel-Paletten
+schon vorhanden).
+
+**Nur auf `:root` angewendet funktioniert die automatische Ableitung wie oben
+beschrieben.** Wird derselbe Seed-Wert stattdessen NUR lokal auf ein einzelnes Element
+überschrieben (nicht `:root`, z.B. ein Panel mit eigenem Theme innerhalb der Seite),
+ziehen nur Regeln mit, die den Seed direkt referenzieren (z.B. `.ncss-btn--primary` über
+`var(--ncss-color-brand)`) - die abgeleitete Skala (`-100`/`-300`/`-700`/`-900`/
+`-on-soft`, u.a. von `.ncss-badge` genutzt) bleibt beim alten Wert, weil sie nur einmal
+auf `:root` berechnet und als fertiger Wert vererbt wird, siehe
+[Bekannte Grenzen](#bekannte-grenzen-bewusste-kompromisse) und `demo/theming.html`.
 
 ## Architektur
 
@@ -490,10 +527,22 @@ mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
 | `landing.html` | Realistische Beispielseite (NativeCSS + Web Awesome + Font Awesome) |
 | `docs.html` | Ausführliches Handbuch mit Anleitungen (mehr Tiefe als dieses README) |
 | `guides.html` | Nummerierte, aufgabenorientierte Anleitungen mit Live-Beispielen |
-| `effects.html` | Glow-Border, Glow-Pulse, Glass - die optionalen Effekt-Komponenten aus `effects.css` |
+| `effects.html` | Glow-Border, Glow-Pulse, Glass, Stamped, Grain - die optionalen Effekt-Komponenten aus `effects.css` |
+| `theming.html` | Wie `theme.css` funktioniert, live am Beispiel (eigenes Beispiel-Theme, andere Markenfarben/Radien/Schrift) |
 
 ## Bekannte Grenzen (bewusste Kompromisse)
 
+- **Eine per `color-mix()` abgeleitete Custom Property (z.B. `--ncss-color-brand-100`)
+  wird nur EINMAL berechnet - dort, wo sie deklariert ist (`:root`, siehe `colors.css`) -
+  und dann als fertiger Wert vererbt.** Ein tiefer im Baum lokal überschriebener Seed-Wert
+  (`--ncss-color-brand`) lässt eine bereits vererbte Ableitung NICHT neu rechnen. Betrifft
+  nur ein LOKAL (nicht auf `:root`) angewendetes Theme: Komponenten, die den Seed direkt
+  nutzen (`.ncss-btn--primary`), reagieren korrekt; Komponenten, die die abgeleitete Skala
+  nutzen (`.ncss-badge` über `-100`/`-on-soft`), bleiben bei der alten Farbe. Ein echtes
+  `theme.css` auf `:root` (siehe [Theme anpassen](#theme-anpassen)) hat dieses Problem
+  nicht - dort wird die ganze Skala frisch berechnet, weil `:root` die Deklarationsstelle
+  selbst ist. Live demonstriert (inkl. der optisch sichtbaren Abweichung) in
+  `demo/theming.html`.
 - **`:modal` hört sofort auf zu matchen, sobald ein Dialog geschlossen wird - lange bevor
   die Fade-Transition optisch fertig ist.** Positionierung, die nur über das UA-
   Stylesheet an `:modal` hängt (native Zentrierung via `margin:auto`), bricht dadurch

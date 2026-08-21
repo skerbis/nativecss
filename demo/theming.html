@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Theme anpassen</title>
+<link rel="stylesheet" href="../ncss.css">
+<link rel="stylesheet" href="theming-example.css">
+<script src="../components/command-fallback.js" defer></script>
+<script src="../components/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .theming-demo-panel {
+    padding: var(--ncss-space-lg);
+    border-radius: var(--ncss-radius-lg);
+    border: 1px solid var(--ncss-color-border);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="docs.html">Handbuch</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-container ncss-stack ncss-py-xl">
+
+  <div class="ncss-stack ncss-stack--tight">
+    <h1>Theme anpassen</h1>
+    <p class="ncss-text-lg ncss-text-muted">Eine Datei für alle wichtigen Werte - <code>theme.css</code> (Repo-Root). Nach <code>ncss.css</code> laden, direkt die Werte darin überschreiben, keine andere Datei anfassen.</p>
+  </div>
+
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Wie es funktioniert</h2>
+    <p class="ncss-text-muted"><code>theme.css</code> ist bewusst UNLAYERED (kein eigenes <code>@layer</code>) - und unlayered CSS gewinnt in der Spec immer gegen jede Layer-Regel aus <code>ncss.css</code> (Layer <code>tokens</code>), unabhängig von Selektor-Spezifität. Ein einfaches <code>:root { --ncss-color-brand: ... }</code> reicht, kein <code>!important</code> nötig.</p>
+    <pre><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+&lt;link rel="stylesheet" href="theme.css"&gt;</code></pre>
+    <p class="ncss-text-muted">Nur die BASIS-/SEED-Werte gehören dort hinein (Markenfarben, Grundflächen, Schriften, Radien, Schatten, Bewegung) - die daraus abgeleiteten Farbskalen (<code>--ncss-color-brand-100</code>/<code>-300</code>/<code>-700</code>/<code>-900</code>/<code>-on-soft</code>) werden per <code>color-mix()</code> aus GENAU EINEM Basiswert berechnet und ziehen automatisch mit.</p>
+  </section>
+
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Live-Beispiel</h2>
+    <p class="ncss-text-muted">Dieser Kasten lädt zusätzlich <code>theming-example.css</code> - dieselbe Handvoll Seed-Werte wie eine echte <code>theme.css</code>, hier nur lokal auf diesen Bereich statt auf <code>:root</code> gesetzt (eine Theme-Datei kann genauso gut nur einen Seitenbereich statt der ganzen Seite umfärben). Button, Card-Rahmen/-Radius und Fokus-Ring reagieren automatisch, ohne eigene Regeln für dieses Theme.</p>
+    <p class="ncss-text-sm ncss-text-muted"><strong>Zwei Fallen, NUR bei lokaler Anwendung relevant</strong> (ein echtes <code>theme.css</code> auf <code>:root</code> betrifft beide NICHT):</p>
+    <ul class="ncss-text-sm ncss-text-muted">
+      <li><code>font-family</code> ist eine vererbte Eigenschaft, <code>.ncss-btn</code> deklariert sie selbst nicht, sondern erbt den bereits fertig aufgelösten Wert von <code>body</code> weiter oben im Baum - <code>--ncss-font-family-base</code> hier nur als Custom Property zu setzen reicht deshalb nicht, <code>font-family: var(--ncss-font-family-base)</code> muss an dieser Stelle zusätzlich neu deklariert werden (Zeile unten). Dieselbe Falle wie bei <code>.ncss-scheme-dark</code>/<code>-light</code>, siehe <code>helpers/surfaces.css</code>.</li>
+      <li>Die Badges unten bleiben ABSICHTLICH bei der Standardfarbe (blau/lila) - keine Fehldarstellung, sondern eine echte Grenze: <code>.ncss-badge</code> nutzt <code>--ncss-color-brand-100</code>/<code>-on-soft</code> (die per <code>color-mix()</code> ABGELEITETE Skala aus <code>colors.css</code>), und die wird nur EINMAL am <code>:root</code> berechnet, dann als fertiger Wert vererbt. Ein tiefer im Baum überschriebenes <code>--ncss-color-brand</code> lässt diese bereits berechnete, geerbte Ableitung NICHT neu rechnen - nur Regeln, die <code>var(--ncss-color-brand)</code> (den Seed selbst) direkt verwenden, wie <code>.ncss-btn--primary</code>, reagieren auf eine lokale Überschreibung. Ein echtes <code>theme.css</code> auf <code>:root</code> hat dieses Problem nicht: dort WIRD die ganze Skala frisch berechnet.</li>
+    </ul>
+    <div class="theming-demo-panel ncss-stack">
+      <div class="ncss-cluster">
+        <button type="button" class="ncss-btn ncss-btn--primary">Primär-Button</button>
+        <button type="button" class="ncss-btn ncss-btn--secondary">Sekundär-Button</button>
+        <span class="ncss-badge">Badge (bleibt Standard, siehe oben)</span>
+      </div>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <h3>Card im Beispiel-Theme</h3>
+          <p class="ncss-text-sm ncss-text-muted">Andere Markenfarbe, andere Radien, andere Schriftfamilie - alles über sieben Zeilen in <code>theming-example.css</code>.</p>
+          <a class="ncss-btn ncss-btn--primary" href="#main">Fokussierbar (Tab-Taste testen)</a>
+        </div>
+      </article>
+    </div>
+    <pre><code>.theming-demo-panel {
+  --ncss-color-brand: light-dark(#b45309, #fb923c);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #1a1204);
+  --ncss-color-brand-2: light-dark(#166534, #4ade80);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #06210f);
+  --ncss-color-focus-ring: light-dark(#b45309, #fb923c);
+  --ncss-radius-sm: 0.1rem;
+  --ncss-radius-md: 0.2rem;
+  --ncss-radius-lg: 0.3rem;
+  --ncss-font-family-base: Georgia, "Times New Roman", serif;
+
+  /* nur bei lokaler Anwendung nötig, siehe Text oben */
+  font-family: var(--ncss-font-family-base);
+}</code></pre>
+  </section>
+
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Mehrere Themes</h2>
+    <p class="ncss-text-muted">Denselben Aufbau in einer weiteren Datei wiederholen (z.B. <code>theme-sunset.css</code>) und je nach Projekt/Domain statt <code>theme.css</code> laden - oder die <code>[data-palette]</code>-Konvention in <code>colors.css</code> nutzen für einen rein attributgesteuerten Wechsel ganz ohne zweite Datei: <code>&lt;html data-palette="sunset"&gt;</code>, siehe <a href="colors.html">Farben</a>-Demo.</p>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

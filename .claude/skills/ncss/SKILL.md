@@ -59,6 +59,14 @@ von der `<link>`-Reihenfolge im HTML (Cascade-Layer-Order ist seitenweit global,
 Stylesheet). Beim Hinzufügen einer neuen Web-Awesome-Ressource NICHT die Layer-Deklaration
 in `ncss.css` vergessen, falls sie neue `@layer`-Namen mitbringt.
 
+**Theme-Anpassung läuft über `theme.css`** (Repo-Root, NACH `ncss.css` laden) - eine
+einzige, bewusst UNLAYERED Datei mit allen wichtigen Seed-Werten (Markenfarben,
+Grundflächen, Schriften, Radien, Schatten, Bewegung). Unlayered CSS gewinnt immer gegen
+jede Layer-Regel (siehe oben), kein `!important` nötig. Bei neuen Tokens in
+`tokens.css`/`colors.css` prüfen, ob es ein SEED-Wert ist (gehört dann auch in
+`theme.css`) oder ein daraus ABGELEITETER Wert (color-mix()-Skalenstufe o.ä. - gehört
+NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
+
 ## Bekannte Fallstricke (per echtem Test gefunden - vor erneuter Recherche hier nachsehen)
 
 0. **Web Awesome liefert seine eigene, zur genau installierten Version passende Referenz-
@@ -269,6 +277,28 @@ in `ncss.css` vergessen, falls sie neue `@layer`-Namen mitbringt.
     Ring-Technik war die eigentlich richtige Lösung von Anfang an, nicht die
     Neumorphism-Variante mit gefüllter Fläche.
 
+20. **Eine per `color-mix()` aus einem Seed-Wert ABGELEITETE Custom Property wird nur EINMAL
+    berechnet (dort, wo sie deklariert ist), dann als fertiger Wert vererbt - ein tiefer im
+    Baum überschriebener Seed-Wert lässt eine bereits vererbte Ableitung NICHT neu
+    rechnen.** Bei `theme.css` (siehe README "Theme anpassen") lokal auf ein Element statt
+    auf `:root` angewendet (Demo: `demo/theming.html`) reagierte `.ncss-btn--primary`
+    korrekt auf ein überschriebenes `--ncss-color-brand` (nutzt den Seed-Wert direkt), aber
+    `.ncss-badge` blieb bei der alten Farbe (nutzt `--ncss-color-brand-100`/`-on-soft`, die
+    per `color-mix()` aus `--ncss-color-brand` ABGELEITETE Skala aus `colors.css`) - per
+    `getComputedStyle` bestätigt: der geerbte Wert von `--ncss-color-brand-100` enthielt
+    noch immer den ALTEN, globalen `--ncss-color-brand`-Wert fest eingebacken (als String
+    sichtbar: `color-mix(in oklch, light-dark(#0057d8, ...) ...)`), obwohl der Seed selbst
+    lokal auf einen anderen Wert überschrieben war. Ursache: `--ncss-color-brand-100` ist
+    nur EIN EINZIGES MAL deklariert (auf `:root`) - jedes Element, das sie nicht selbst neu
+    deklariert, erbt genau DIESEN einen, am `:root` berechneten Wert, unabhängig davon, was
+    weiter unten im Baum mit `--ncss-color-brand` passiert. Betrifft NUR lokal/nicht-`:root`
+    angewendete Theme-Overrides - ein echtes `theme.css` auf `:root` hat dieses Problem
+    nicht (dort WIRD die ganze abgeleitete Skala frisch berechnet, weil `:root` die
+    Deklarationsstelle selbst ist). Für ein lokal begrenztes Theme, das auch abgeleitete
+    Farben treffen soll, bräuchte man die komplette Skala (`-100`/`-300`/`-700`/`-900`/
+    `-on-soft`) zusätzlich an derselben Stelle neu deklarieren - nicht automatisch, kein
+    Workaround dafür eingebaut.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
@@ -340,7 +370,8 @@ als mask-image data-URI nach demselben Muster ergänzen, kein großes Set vorsor
 `index.html` (Kitchen-Sink), `navigation.html` (Dropdowns/Mega-Menü/Tree), `forms.html`
 (Switch/Range), `media.html` (Video), `landing.html` (realistische Beispielseite, NativeCSS +
 Web Awesome + Font Awesome im Zusammenspiel, u.a. `<wa-dropdown>` als Menü statt nativem
-`<details>`), `effects.html` (Glow-Border/-Pulse, Glass), `docs.html` (dieses Handbuch,
+`<details>`), `effects.html` (Glow-Border/-Pulse, Glass, Stamped, Grain), `theming.html`
+(`theme.css` live am Beispiel), `docs.html` (dieses Handbuch,
 ausführlicher als dieses Skill-Dokument). Jede Seite bindet `../ncss.css` ein und trägt ihr eigenes,
 seitenspezifisches CSS in einem eigenen `<style>`-Block mit `demo-*`-Präfix - nie in den
 ncss-Dateien selbst.

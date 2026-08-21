@@ -1,0 +1,86 @@
+/**
+ * NativeCSS - Theme-Datei: die EINE Stelle, an der ein Projekt seine wichtigen Werte
+ * setzt, ohne irgendeine Datei in ncss.css/tokens.css/colors.css anzufassen.
+ *
+ * Einbindung: NACH ncss.css laden, nichts weiter nötig.
+ *   <link rel="stylesheet" href="ncss.css">
+ *   <link rel="stylesheet" href="theme.css">
+ *
+ * Warum das funktioniert, ohne @layer/!important: alle Werte in ncss.css liegen in
+ * benannten Cascade Layers (tokens/reset/base/helpers/components/...). Diese Datei hier
+ * ist ABSICHTLICH UNLAYERED (kein eigenes @layer) - und unlayered CSS gewinnt in der
+ * Spec IMMER gegen jede Layer-Regel, unabhängig von Selektor-Spezifität oder
+ * Lade-Reihenfolge. Ein einfaches ":root { --ncss-color-brand: ... }" hier reicht also,
+ * kein !important, kein höher-spezifischer Selektor nötig.
+ *
+ * Enthält nur die BASIS-/SEED-Werte, nicht die daraus abgeleiteten Skalen. Farben wie
+ * --ncss-color-brand-100/-300/-700/-900 (siehe colors.css) werden aus GENAU EINEM
+ * Basiswert (--ncss-color-brand) per color-mix() automatisch berechnet - ändere die
+ * Basisfarbe unten, die ganze Skala (helle/dunkle Stufen, "on-soft"-Textfarbe, Web-
+ * Awesome-Bridge) zieht automatisch mit, ohne dass hier 40+ Einzelwerte gepflegt werden
+ * müssten. Alle Werte unten sind an ihrem aktuellen Default gesetzt - einfach direkt
+ * überschreiben, kein Auskommentieren nötig.
+ *
+ * Mehrere Themes gleichzeitig? Denselben Aufbau in weiteren Dateien wiederholen (z.B.
+ * theme-sunset.css) und wahlweise laden, oder siehe die [data-palette]-Konvention in
+ * colors.css für einen rein attributgesteuerten Wechsel ohne zweite Datei.
+ */
+
+:root {
+  /* --- Markenfarben (Seed-Werte, alle abgeleiteten Stufen folgen automatisch) -------
+     light-dark(HELL, DUNKEL) - EIN Wert deckt beide Modi ab, kein zweiter Dark-Block
+     nötig. Reine Hex-Farbe statt light-dark() ist auch gültig, wenn ein Projekt gar
+     keinen Dark Mode will. */
+  --ncss-color-brand: light-dark(#0057d8, #6ea8ff);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);
+  --ncss-color-brand-2: light-dark(#7c3aed, #b794f6);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #0a0a0a);
+  --ncss-color-neutral: light-dark(#64748b, #94a3b8);
+
+  /* --- Statusfarben (Erfolg/Warnung/Fehler) ----------------------------------------- */
+  --ncss-color-success: light-dark(#1a7f37, #4ade80);
+  --ncss-color-warning: light-dark(#b45309, #facc15);
+  --ncss-color-danger: light-dark(#c0322d, #f87171);
+
+  /* --- Grundflächen & Text ----------------------------------------------------------- */
+  --ncss-color-bg: light-dark(#ffffff, #121212);
+  --ncss-color-bg-subtle: light-dark(#f4f5f7, #1c1c1e);
+  --ncss-color-surface: light-dark(#ffffff, #1e1e20);
+  --ncss-color-text: light-dark(#1a1a1a, #f0f0f0);
+  --ncss-color-text-muted: light-dark(#5a5f6a, #a3a7b0);
+  --ncss-color-border: light-dark(#dcdfe4, #33353a);
+  --ncss-color-focus-ring: light-dark(#0057d8, #6ea8ff);
+
+  /* --- Typografie --------------------------------------------------------------------
+     Schriftfamilien sind der häufigste Änderungswunsch - system-ui als Default braucht
+     keine Web-Font-Ladezeit, ein eigenes Projekt-Font trägt man hier ein. Die
+     Größen-Skala selbst ist fluid (clamp()) - --ncss-font-size-base unten anzupassen
+     verschiebt die GESAMTE Skala nicht automatisch mit, jede Stufe einzeln überschreiben
+     bei Bedarf (siehe tokens.css für alle sechs Stufen sm...2xl). */
+  --ncss-font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ncss-font-family-heading: var(--ncss-font-family-base);
+  --ncss-font-family-mono: ui-monospace, "SF Mono", Consolas, monospace;
+  --ncss-font-size-base: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+
+  /* --- Radien, Schatten -------------------------------------------------------------- */
+  --ncss-radius-sm: 0.25rem;
+  --ncss-radius-md: 0.5rem;
+  --ncss-radius-lg: 1rem;
+  --ncss-radius-full: 999px;
+  --ncss-shadow-sm: 0 1px 2px rgb(0 0 0 / 8%);
+  --ncss-shadow-md: 0 4px 12px rgb(0 0 0 / 10%);
+  --ncss-shadow-lg: 0 12px 32px rgb(0 0 0 / 14%);
+
+  /* --- Bewegung ------------------------------------------------------------------------
+     prefers-reduced-motion wird bereits GLOBAL respektiert (reset.css) - hier nur die
+     "normale" Dauer/Kurve. */
+  --ncss-motion-duration: 200ms;
+  --ncss-motion-duration-slow: 400ms;
+  --ncss-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* --- Layout ------------------------------------------------------------------------- */
+  --ncss-container-max: 75rem;
+  --ncss-container-max-narrow: 45rem;
+  --ncss-focus-ring-width: 2px;
+  --ncss-gradient-angle: 135deg;
+}

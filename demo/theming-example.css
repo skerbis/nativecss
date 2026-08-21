@@ -1,0 +1,28 @@
+/**
+ * Nur für diese Demo-Seite: ein Beispiel-Theme nach demselben Muster wie das echte
+ * theme.css im Repo-Root - zeigt, dass das Ändern weniger Seed-Werte hier reicht, um
+ * Buttons/Badges/Cards/Fokus-Ring/Radien auf der ganzen Seite konsistent umzufärben,
+ * ohne irgendeine ncss-Datei anzufassen. Bewusst UNLAYERED (kein @layer), genau wie
+ * theme.css - gewinnt dadurch automatisch gegen die Layer-Defaults aus ncss.css.
+ */
+.theming-demo-panel {
+  --ncss-color-brand: light-dark(#b45309, #fb923c);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #1a1204);
+  --ncss-color-brand-2: light-dark(#166534, #4ade80);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #06210f);
+  --ncss-color-focus-ring: light-dark(#b45309, #fb923c);
+  --ncss-radius-sm: 0.1rem;
+  --ncss-radius-md: 0.2rem;
+  --ncss-radius-lg: 0.3rem;
+  --ncss-font-family-base: Georgia, "Times New Roman", serif;
+
+  /* font-family MUSS hier zusätzlich zur Custom Property neu deklariert werden, nicht
+     nur --ncss-font-family-base setzen - font-family ist eine VERERBTE Eigenschaft,
+     .ncss-btn deklariert sie selbst nicht (nur body tut das, einmal, weiter oben im
+     Baum), Nachfahren erben von body also den dort schon FERTIG AUFGELÖSTEN Wert.
+     Dieselbe Falle wie bei .ncss-scheme-dark/-light (siehe helpers/surfaces.css) - nur
+     relevant, wenn ein Theme wie hier auf einen TEIL der Seite statt auf :root
+     angewendet wird. Ein echtes theme.css auf :root betrifft das nicht (dort gibt es
+     nichts, von dem geerbt werden könnte). */
+  font-family: var(--ncss-font-family-base);
+}
