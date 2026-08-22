@@ -360,6 +360,48 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     wieder eingesetzt, im selben sicheren Muster wie zuvor (eigenes dekoratives
     Element, kein direkter Vorfahre des Dropdowns, siehe Punkt 21 oben).
 
+22. **`getComputedStyle(el).getPropertyValue("--x")` liefert bei einem CUSTOM PROPERTY nur
+    den roh gespeicherten Token-Text zurück, KEINE aufgelöste Farbe** - anders als beim
+    Lesen einer echten Farb-Eigenschaft (`color`/`background-color`/...), die `var()` UND
+    Funktionen wie `light-dark()` bereits fertig auflöst. Bei `--ncss-color-brand: light-
+    dark(#0057d8, #6ea8ff)` lieferte `getPropertyValue("--ncss-color-brand")` buchstäblich
+    den String `"light-dark(#0057d8, #6ea8ff)"` zurück - ein direkt darauf angewendeter
+    `rgb(...)`-zu-Hex-Regex (für die Vorbelegung eines `<input type="color">`-Reglers im
+    Live-Farbeditor, `demo/colors.html`) extrahierte daraus wahllose Ziffernfolgen und
+    ergab einen bedeutungslosen Hex-Wert (`#390806` statt des tatsächlichen `#0057d8`) -
+    kein Fehler/keine Exception, nur ein falscher, aber gültig aussehender Hex-String, per
+    echtem Test (Screenshot des Reglers) gefunden. Fix: ein unsichtbares Sonden-Element
+    (`display:none`, einmalig erzeugt und wiederverwendet) mit `el.style.color =
+    "var(--x)"`, danach `getComputedStyle(el).color` lesen - das ZWINGT die tatsächliche
+    Auflösung (inklusive `light-dark()`, abhängig vom aktuell aktiven `[data-theme]`/
+    `prefers-color-scheme`), liefert ein echtes `rgb(...)`. Gilt für JEDE Custom Property,
+    die eine Farbfunktion (`light-dark()`, `color-mix()`, o.ä.) enthält - ein einfacher
+    Hex-Literal-Wert als Custom Property würde dagegen wortwörtlich unverändert
+    zurückkommen und bräuchte diesen Umweg nicht, aber das im Vorfeld zu unterscheiden ist
+    unnötiger Aufwand - die Sonden-Technik funktioniert für beide Fälle gleichermaßen.
+
+23. **`flex-wrap: wrap` auf den KINDERN eines flex-Containers reicht nicht, wenn der
+    CONTAINER SELBST wiederum ein `flex: 0 0 auto`-Kind eines äußeren Flex-Layouts ist** -
+    `.ncss-topbar-actions` (components/topbar.css) ist bewusst `flex: 0 0 auto` (schrumpft
+    nie), reichte bei zwei Buttons auf `demo/colors.html` bislang aus. Ein dritter Button
+    (Live-Farbeditor-Trigger) ließ die Topbar bei 375px Breite um 188px überlaufen -
+    `flex-wrap: wrap` NUR auf `.ncss-topbar-actions` selbst gesetzt (ohne eigene
+    `flex-basis`) änderte am Overflow NICHTS, per echtem Regressions-Test bestätigt
+    (exakt derselbe 188px-Wert vor und nach dem Versuch). Ursache: ein flex-Item mit
+    `flex: 0 0 auto` bemisst seine eigene Breite am MAX-CONTENT (so breit, wie alle
+    eigenen Kinder NEBENEINANDER bräuchten) - das interne `flex-wrap` der Kinder wird nur
+    ausgelöst, wenn der Container selbst schon auf eine BEGRENZTE Breite gezwungen ist,
+    was `flex:0 0 auto` gerade verhindert (das ist ja sein ganzer Zweck: nie schrumpfen).
+    Fix (nur lokal auf `demo/colors.html` per `@media (max-width: 30rem)`, NICHT die
+    geteilte Komponente global geändert): zusätzlich `flex: 1 1 100%` auf
+    `.ncss-topbar-actions` - zwingt die Breite auf die volle verfügbare Zeile (die selbst
+    dank `.ncss-topbar-inner`s eigenem `flex-wrap:wrap` umbrechen darf), erst INNERHALB
+    dieses dadurch begrenzten Rahmens greift das `flex-wrap` der drei Buttons. Lehre: bei
+    einer verschachtelten Flex-Struktur IMMER prüfen, auf welcher EBENE `flex-wrap`
+    tatsächlich etwas bewirken kann - es wirkt nur auf einen Container, dessen eigene
+    Breite bereits begrenzt ist, nicht automatisch auf jeden beliebigen Vorfahren mit
+    `display:flex`.
+
 Viertes Beispiel, diesmal EIN Feature (`animation-timeline: view()`), aber DREI getrennte
 Kalibrierungs-Bugs, alle erst durch echten Test bzw. echtes User-Feedback gefunden, nicht
 beim Schreiben selbst sichtbar - und ein Lehrstück darin, wie zwei oberflächlich ähnlich

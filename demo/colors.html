@@ -19,6 +19,48 @@
   .demo-footer-brand {
     color: var(--ncss-color-text);
   }
+  /* Drei Topbar-Action-Buttons (Farb-Editor + Palette + Theme) passen bei sehr schmaler
+     Breite nicht mehr nebeneinander - .ncss-topbar-actions ist bewusst flex:0 0 auto
+     (siehe components/topbar.css, kein Schrumpfen), reicht bei nur zwei Buttons auf
+     dieser Seite bislang aus. Statt die geteilte Komponente global anzufassen, hier nur
+     lokal für diese Demo-Seite: bei schmaler Breite zweizeilig umbrechen lassen statt den
+     Viewport zu sprengen (per echtem Test bei 375px gefunden, Overflow 188px). */
+  @media (max-width: 30rem) {
+    .ncss-topbar-inner .ncss-topbar-actions {
+      /* flex-wrap allein auf den Kindern reicht NICHT: .ncss-topbar-actions ist selbst
+         ein flex:0 0 auto-Kind von .ncss-topbar-inner (siehe topbar.css) - ohne
+         eigene flex-basis bemisst sich seine Breite am max-content (so breit wie ALLE
+         drei Buttons NEBENEINANDER bräuchten), unabhängig vom tatsächlich verfügbaren
+         Platz, wodurch das interne Umbrechen nie ausgelöst wird (per echtem Test
+         bestätigt: flex-wrap allein änderte den 188px-Overflow bei 375px NICHT). Mit
+         flex-basis:100% wird die Breite stattdessen an die volle verfügbare Zeile
+         gebunden (Zeile selbst darf dank flex-wrap auf .ncss-topbar-inner umbrechen) -
+         genau in DIESEM begrenzten Rahmen greift das flex-wrap auf den Buttons dann. */
+      flex: 1 1 100%;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      row-gap: var(--ncss-space-2xs);
+    }
+  }
+  .demo-color-editor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--ncss-space-sm);
+  }
+  .demo-color-field {
+    display: flex;
+    align-items: center;
+    gap: var(--ncss-space-2xs);
+  }
+  .demo-color-field input[type="color"] {
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    padding: 0;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    background: none;
+    cursor: pointer;
+  }
   .demo-swatch {
     display: flex;
     flex-direction: column;
@@ -125,6 +167,9 @@
       </dialog>
     </nav>
     <div class="ncss-topbar-actions">
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="colorEditorOpen" command="show-modal" commandfor="colorEditorModal">
+        Farben live anpassen
+      </button>
       <button type="button" class="ncss-btn ncss-btn--secondary" id="paletteToggle">
         Palette: <span id="paletteLabel">Standard</span>
       </button>
@@ -134,6 +179,52 @@
     </div>
   </div>
 </header>
+
+<dialog id="colorEditorModal" class="ncss-modal">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="colorEditorModal" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+  <div class="ncss-modal-header"><h3>Farben live anpassen</h3></div>
+  <div class="ncss-modal-body ncss-stack">
+    <p class="ncss-text-sm ncss-text-muted">Setzt jede Basisfarbe direkt als CSS Custom Property auf <code>&lt;html&gt;</code> - alle abgeleiteten Stufen (100/300/700/900, Badges, Buttons, Cards ...) ziehen automatisch mit, weil sie per <code>color-mix()</code> aus genau diesen Werten berechnet werden. Überschreibt Light UND Dark mit derselben Farbe, solange die Anpassung aktiv ist (ersetzt das <code>light-dark()</code>-Paar durch einen festen Wert) - Theme-/Palette-Button bleiben klickbar, wirken sich auf die hier geänderten Farben aber nicht mehr aus, bis "Zurücksetzen" gedrückt wird.</p>
+    <div class="demo-color-editor-grid" id="colorEditorFields">
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-brand" data-token="--ncss-color-brand">
+        <label class="ncss-label" for="colorEdit-brand">Brand</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-brand-2" data-token="--ncss-color-brand-2">
+        <label class="ncss-label" for="colorEdit-brand-2">Brand-2</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-neutral" data-token="--ncss-color-neutral">
+        <label class="ncss-label" for="colorEdit-neutral">Neutral</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-success" data-token="--ncss-color-success">
+        <label class="ncss-label" for="colorEdit-success">Success</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-warning" data-token="--ncss-color-warning">
+        <label class="ncss-label" for="colorEdit-warning">Warning</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-danger" data-token="--ncss-color-danger">
+        <label class="ncss-label" for="colorEdit-danger">Danger</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-bg" data-token="--ncss-color-bg">
+        <label class="ncss-label" for="colorEdit-bg">Hintergrund</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-text" data-token="--ncss-color-text">
+        <label class="ncss-label" for="colorEdit-text">Text</label>
+      </div>
+    </div>
+  </div>
+  <div class="ncss-modal-footer">
+    <button type="button" class="ncss-btn ncss-btn--secondary" id="colorEditorReset">Zurücksetzen</button>
+    <button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="colorEditorModal">Fertig</button>
+  </div>
+</dialog>
 
 <main id="main" class="ncss-stretch ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
 
@@ -323,6 +414,61 @@
       document.documentElement.setAttribute("data-palette", currentPalette);
     }
     paletteLabel.textContent = paletteLabels[currentPalette];
+  });
+
+  // Live-Farbeditor: setzt jede Basisfarbe als Inline-Style auf <html> - gewinnt dadurch
+  // automatisch gegen JEDE Stylesheet-Regel (auch [data-palette]/[data-theme]), keine
+  // eigene Spezifitäts-Behandlung nötig. Die abgeleiteten Skalen (color-mix() in
+  // colors.css) lesen denselben Custom-Property-Namen und rechnen bei jeder Änderung
+  // automatisch neu - siehe README "Theme anpassen"/demo/theming.html für die Erklärung,
+  // warum das NUR auf :root zuverlässig funktioniert (eine lokal auf einem Nachfahren
+  // gesetzte Überschreibung würde die bereits vererbten, fertig berechneten Ableitungen
+  // NICHT neu auflösen).
+  var colorEditorFields = document.querySelectorAll("#colorEditorFields input[type=color]");
+
+  function rgbStringToHex(rgbString) {
+    var match = rgbString.match(/\d+/g);
+    if (!match) return "#000000";
+    return "#" + match.slice(0, 3).map(function (n) {
+      return Number(n).toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  // getComputedStyle(...).getPropertyValue("--x") liefert bei einem Custom Property NUR
+  // den roh gespeicherten Token-Text zurück (z.B. das UNAUFGELÖSTE "light-dark(#0057d8,
+  // #6ea8ff)"), keine fertig berechnete Farbe - light-dark() wird erst aufgelöst, wenn
+  // der Wert tatsächlich an einer echten Farb-Eigenschaft (color/background-color/...)
+  // verwendet wird. Ein unsichtbares Sonden-Element mit "color: var(--token)" zwingt genau
+  // diese Auflösung, danach liefert getComputedStyle(...).color den echten, aktuell
+  // aktiven (Light- ODER Dark-Anteil, je nach [data-theme]/prefers-color-scheme) Farbwert.
+  var colorProbe = document.createElement("span");
+  colorProbe.style.display = "none";
+  document.body.appendChild(colorProbe);
+
+  function resolveTokenHex(token) {
+    colorProbe.style.color = "var(" + token + ")";
+    return rgbStringToHex(getComputedStyle(colorProbe).color);
+  }
+
+  function syncColorEditorFields() {
+    colorEditorFields.forEach(function (input) {
+      input.value = resolveTokenHex(input.dataset.token);
+    });
+  }
+
+  document.getElementById("colorEditorOpen").addEventListener("click", syncColorEditorFields);
+
+  colorEditorFields.forEach(function (input) {
+    input.addEventListener("input", function () {
+      document.documentElement.style.setProperty(input.dataset.token, input.value);
+    });
+  });
+
+  document.getElementById("colorEditorReset").addEventListener("click", function () {
+    colorEditorFields.forEach(function (input) {
+      document.documentElement.style.removeProperty(input.dataset.token);
+    });
+    syncColorEditorFields();
   });
 </script>
 

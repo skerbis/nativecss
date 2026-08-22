@@ -254,6 +254,21 @@ diesen Basiswerten kommen. Frei mit `[data-theme]` kombinierbar, z.B.
 Weitere Paletten nach demselben Muster in `colors.css` ergänzen - nur die beiden
 Basisfarben + Kontrastfarben definieren, `light-dark()`-gewrappt.
 
+**Live-Farbeditor** (`demo/colors.html`, Button "Farben live anpassen"): freie
+`<input type="color">`-Regler für die acht wichtigsten Seed-Tokens (`brand`/`brand-2`/
+`neutral`/`success`/`warning`/`danger`/`bg`/`text`), setzt jeden Wert per
+`documentElement.style.setProperty()` direkt auf `<html>` - dieselbe Voraussetzung wie bei
+`theme.css` (siehe oben "Theme anpassen"): NUR auf `:root` gesetzt rechnen sich alle
+abgeleiteten Skalen (100/300/700/900, `-on-soft`, Badges/Buttons/Cards) automatisch mit,
+weil sie per `color-mix()` aus genau diesen Werten kommen. Ersetzt dabei das
+`light-dark()`-Paar durch einen einzelnen festen Wert (Light/Dark zeigen währenddessen
+dieselbe Farbe) - "Zurücksetzen" entfernt die Inline-Styles wieder vollständig. Beim
+Öffnen werden die Regler auf die AKTUELL resultierende Farbe vorbelegt: `getComputedStyle
+(...).getPropertyValue("--x")` liefert bei einem Custom Property nur den unaufgelösten
+`light-dark(...)`-Text zurück, kein fertiges RGB - ein unsichtbares Sonden-Element mit
+`color: var(--x)` zwingt die tatsächliche Auflösung (abhängig vom aktuell aktiven
+Theme), erst dessen `getComputedStyle(...).color` ist die reale Farbe.
+
 ### Breakpoints & Container-Query-Schwellen (feste Konvention, nicht als `var()` nutzbar)
 
 CSS Custom Properties funktionieren aktuell in keinem Browser innerhalb von
@@ -593,7 +608,7 @@ mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
 | `magazine.html` | Typografie-Showcase: Drop Cap, mehrspaltiger Text, Pull-Quote, Textumfluss |
 | `scroll-sections.html` | Vollbild-Sektionen (section-für-section, "fullpage"-Muster), inkl. verschachteltem horizontalem Scroll-Snap |
 | `stacked-cards.html` | Karten, die sich beim Scrollen INNERHALB einer einzigen gepinnten Vollbild-Sektion stapeln (kompakt gefächert, kinoartig Vollbild, horizontal) |
-| `colors.html` | Alle Farbtokens, Karten-/Badge-/Button-Farbvarianten, Theme-Umschalter |
+| `colors.html` | Alle Farbtokens, Karten-/Badge-/Button-Farbvarianten, Theme-/Paletten-Umschalter, Live-Farbeditor (freie `<input type="color">`-Regler statt fester Paletten) |
 | `webawesome.html` | Web-Awesome-Komponenten im Zusammenspiel mit NativeCSS |
 | `landing.html` | Realistische Beispielseite (NativeCSS + Web Awesome + Font Awesome) |
 | `docs.html` | Ausführliches Handbuch mit Anleitungen (mehr Tiefe als dieses README) |
