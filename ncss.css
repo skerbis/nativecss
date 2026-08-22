@@ -56,6 +56,7 @@
 @import url("components/modal.css") layer(components);
 @import url("components/scroll-progress.css") layer(components);
 @import url("components/scroll-stack.css") layer(components);
+@import url("components/roadmap.css") layer(components);
 @import url("components/topbar.css") layer(components);
 @import url("components/off-canvas.css") layer(components);
 @import url("components/nav.css") layer(components);

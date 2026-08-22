@@ -360,6 +360,97 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     wieder eingesetzt, im selben sicheren Muster wie zuvor (eigenes dekoratives
     Element, kein direkter Vorfahre des Dropdowns, siehe Punkt 21 oben).
 
+Viertes Beispiel, diesmal EIN Feature (`animation-timeline: view()`), aber DREI getrennte
+Kalibrierungs-Bugs, alle erst durch echten Test bzw. echtes User-Feedback gefunden, nicht
+beim Schreiben selbst sichtbar - und ein Lehrstück darin, wie zwei oberflächlich ähnlich
+klingende User-Reports ("Linie nicht durchgezogen") tatsächlich VÖLLIG verschiedene
+Ursachen hatten, die NACHEINANDER, nicht gleichzeitig gefunden wurden (voreiliges
+"dieselbe Ursache"-Schließen beim ersten Report war ein eigener Fehler, siehe Punkt 3):
+`.ncss-roadmap` (components/roadmap.css) - eine
+Meilenstein-Liste, verbunden durch EINE durchgehende SVG-Linie, die sich beim Scrollen
+selbst "nachzeichnet" (`stroke-dasharray`/`-dashoffset`, `pathLength="1"` auf dem
+`<line>`-Element normiert die Pfadlänge unabhängig von der viewBox auf 0..1). Anders als
+`scroll-stack.css` KEIN Pinning - die Meilensteine laufen ganz normal im Fluss, nur die
+Linie selbst bekommt eine eigene, ANONYME `view()`-Timeline (kein benannter
+`view-timeline-name` nötig, da kein gepinntes Element mit künstlicher Extra-Scrollhöhe
+existiert - der natürliche Ein-/Austritts-Scrollweg der Linie IST bereits genau der
+gewünschte Zeichenweg).
+1) **Falscher `animation-range`-Default für ein Element nahe dem Seitenende**: Der
+   Default-Bereich "cover" (0% = erster sichtbarer Pixel, 100% = Element VOLLSTÄNDIG aus
+   dem Viewport verschwunden) verlangt für 100%, dass die Linie komplett über den oberen
+   Bildschirmrand hinauswandert - das braucht rechnerisch ungefähr Linienhöhe +
+   Viewporthöhe an Scrollweg NACH Erscheinen der Linie. Steht die Roadmap (wie in der
+   Praxis üblich für ein Meilenstein-Element) kurz vor dem Footer, ohne große Pufferzone
+   danach, reicht der tatsächlich vorhandene Rest-Scrollweg der Seite dafür NICHT aus -
+   `document.body.scrollHeight` gibt die tatsächliche Grenze vor, unabhängig davon, was
+   die Timeline-Berechnung bräuchte. Per echtem Test bestätigt (Scroll bis
+   `document.body.scrollHeight`, `getComputedStyle().strokeDashoffset` ausgelesen): blieb
+   bei `cover` dauerhaft auf ca. 0.27 statt 0 stehen, sichtbar als abgeschnittene Linie
+   kurz vor dem letzten Punkt, obwohl die letzte Karte längst voll sichtbar war
+   (Screenshot bestätigte die Lücke). Mehrere benannte Bereiche systematisch per Playwright
+   durchgetestet (`cover`, `contain`, `entry`, verschiedene explizite Prozent-Kombinationen)
+   statt eine Vermutung zu übernehmen - `contain` traf exakt: fertig gezeichnet, sobald die
+   letzte Karte gerade voll sichtbar wird, unabhängig vom Rest-Scrollweg danach. Lehre:
+   der "cover"-Default ist nur dann die richtige Wahl, wenn tatsächlich genug Scrollweg
+   existiert, damit das Element vollständig austritt (z.B. mitten auf einer langen Seite)
+   - für ein Element nahe dem Seitenende (sehr verbreitet bei Roadmap-/Timeline-Mustern)
+   IMMER zuerst per echtem Scroll-bis-zum-Ende-Test prüfen, nicht annehmen.
+2) **`ul`/`ol` bekommen per `base.css`-Default ein eigenes `padding-inline-start`** (Listen-
+   Einzug, `ul, ol { padding-inline-start: var(--ncss-space-md); }`) - `.ncss-roadmap-list`
+   ist ein `<ol>` und erbte diesen Einzug zusätzlich zum eigenen, komponenteneigenen
+   `--ncss-roadmap-gutter`-Versatz auf `.ncss-roadmap-item`. Die Linie selbst (`position:
+   absolute` relativ zu `.ncss-roadmap`, dem ÄUSSEREN Container, NICHT zur Liste) blieb an
+   ihrer korrekt berechneten Stelle stehen, während jedes Listenelement (und damit sein
+   `.ncss-roadmap-dot`, positioniert relativ zum eigenen `<li>`) durch den zusätzlichen
+   Listen-Einzug nach rechts verschoben war - Punkte lagen sichtbar NEBEN statt AUF der
+   Linie (User-Report: "Punkte liegen nicht auf den Linien"). Per `getBoundingClientRect()`
+   beider Elemente bestätigt: Punkt-Mittelpunkt und Linien-X-Position stimmten nach dem Fix
+   exakt überein (`78.875px` bei beiden). Lehre: bei JEDER neuen Komponente, die
+   `<ul>`/`<ol>` für eigenes, freies Positionieren (nicht als normale Aufzählung)
+   verwendet, explizit `padding-inline-start: 0` setzen - der globale Listen-Einzug aus
+   base.css gilt sonst automatisch mit, auch wenn die Komponente ihn nie selbst
+   referenziert.
+3) **VOREILIGER Fehlschluss, dann die eigentliche Ursache**: Dasselbe erste User-Feedback
+   nannte ZUSÄTZLICH "Linien sind nicht durchgezogen" - fälschlich als bloßen optischen
+   Nebeneffekt derselben Punkt-Verschiebung (Punkt 2) eingeordnet, statt es separat zu
+   verifizieren. Nach dem Push meldete der User erneut "roadmap linien sind immer noch
+   unterbrochen" UND "die Linien zeichnen sich aber sie verbinden sich nie" - stellte sich
+   als eigenständiger, dritter Bug heraus: `vector-effect: non-scaling-stroke` auf dem
+   `<line>`-Element (ursprünglich gedacht, um die Strichbreite gegen die durch
+   `preserveAspectRatio="none"` nicht-uniform gestreckte viewBox konstant zu halten) UND
+   `pathLength="1"` (normiert die Pfadlänge für `stroke-dasharray`/`-dashoffset` auf 0..1)
+   vertragen sich NICHT: `non-scaling-stroke` berechnet laut Spec das gesamte
+   Stroke-Rendering - INKLUSIVE des Dash-Musters - in einem von der viewBox-Streckung
+   ENTKOPPELTEN Koordinatensystem, wodurch das per `pathLength` normierte
+   `stroke-dasharray:1` nicht als "gesamte Pfadlänge" interpretiert wurde, sondern als ein
+   viel kleinerer, sich ständig WIEDERHOLENDER Strich-Lücke-Zyklus (~180px-Periode über
+   die gesamte Linie verteilt) - sichtbar als klar erkennbares Muster aus kurzem
+   sichtbaren Stück, Lücke, sichtbarem Stück, Lücke... statt EINER durchgehenden Linie.
+   Gefunden per systematischem Pixel-Scan (Screenshot einer festen Spalte an der
+   Linien-X-Position, Farbübergänge Y-Position für Y-Position ausgelesen) bei MEHREREN
+   statischen `stroke-dashoffset`-Werten UND bei ausgeschalteter Animation - das
+   Wiederholungsmuster blieb bei JEDEM Wert identisch (bewies: kein Animations-/
+   Timing-Bug, ein rein strukturelles Rendering-Problem). Fix: `vector-effect:
+   non-scaling-stroke` komplett entfernt - für eine rein VERTIKALE Linie (x1=x2) ist die
+   Strichbreite ohnehin entlang der X-Achse gemessen, und GENAU die X-Achse wird von
+   `preserveAspectRatio="none"` gar nicht gestreckt (nur die Y-Achse) - die Eigenschaft war
+   also nicht einmal für ihren ursprünglichen Zweck nötig, geschweige denn ihren
+   tatsächlichen Nebeneffekt wert. Nach Entfernen: derselbe Pixel-Scan zeigt EINEN
+   durchgehenden Lauf pro Kartenabstand (nur die kleinen, gewollten ~20px-Lücken exakt an
+   den Punkt-Positionen durch deren `box-shadow`-Ring), in Chromium UND Playwright-WebKit
+   gegengeprüft. Lehre: bei JEDER Kombination aus `pathLength` (Pfadlängen-Normierung) und
+   `vector-effect: non-scaling-stroke` (eigenes, entkoppeltes Koordinatensystem für den
+   Strich) auf ein-und-demselben Element besonders misstrauisch sein - beide wollen
+   bestimmen, in welchem Koordinatensystem strichbezogene Längen (Breite UND Dash-Muster)
+   berechnet werden, und sind nicht für die Kombination miteinander gedacht. Und generell:
+   ein erster, naheliegend klingender Erklärungsversuch für ein User-Feedback ("ist sicher
+   dieselbe Ursache wie X") ersetzt NICHT die eigene Verifikation - hier hätte ein einziger
+   Pixel-Scan schon beim ersten Report die zweite, echte Ursache sofort sichtbar gemacht,
+   statt sie erst nach einer weiteren Push-Runde vom User erneut gemeldet zu bekommen. Auch
+   via `file://` (nicht nur über den lokalen PHP-Server) nachverifiziert, dass die Linie
+   korrekt rendert (reines CSS/SVG, keine ES-Module wie Web Awesome betroffen - Fallstrick
+   3 unten gilt nur für JS-Module, nicht für CSS/SVG).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
