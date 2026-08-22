@@ -153,3 +153,43 @@
 }
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] { color-scheme: dark; }
+
+/* --- Formular-Text auf farbigen Flächen (.ncss-surface--... / .ncss-gradient-brand,
+   helpers/surfaces.css) --------------------------------------------------------------------
+   Diese Klassen setzen color:#fff, damit NORMALER (Light-DOM-)Text auf der markenfarbenen
+   Fläche lesbar bleibt. Ein <wa-input>/<wa-textarea>/<wa-select>/<wa-checkbox>/<wa-radio>/
+   <wa-switch> darin ignoriert das aber komplett, weil sein Label/Hinweistext/Eingabewert im
+   SHADOW DOM gerendert wird - color:#fff auf einem Light-DOM-Vorfahren erreicht das nicht
+   (color:inherit durchquert Shadow-DOM-Grenzen nicht, siehe .landing-heading-inherit-Muster
+   in demo/landing.css für den Light-DOM-Fall). Per echtem Test gefunden, User-Report:
+   "E-Mail-Adresse schwarz auf blau" in der Newsletter-Sektion von demo/landing.html.
+
+   Der naheliegende Fix wäre, NUR die Basis-Bridge-Tokens oben (--wa-color-text-normal/
+   -quiet) auf dieser Fläche auf currentColor umzubiegen, in der Annahme, Web Awesomes
+   eigene --wa-form-control-label-color/-value-color/-hint-color (vendor/webawesome/
+   dist-cdn/styles/themes/default.css, "Form Controls") würden das als var()-Kette live
+   nachziehen. Per echtem Test WIDERLEGT: Custom Properties lösen var()-Referenzen INNERHALB
+   ihres eigenen Werts am Ort ihrer eigenen Deklaration auf (hier: einmalig an :root, wo Web
+   Awesomes Theme sie setzt) - das Ergebnis ist ein FERTIGER, eingefrorener Wert, der ab da
+   nur noch unverändert weitervererbt wird. Ein --wa-color-text-normal, das auf einem
+   Nachfahren (dieser Fläche) NEU gesetzt wird, kommt für diese bereits eingefrorenen
+   abgeleiteten Tokens zu spät - nur EIGENE, direkte Neu-Deklarationen genau dieser
+   abgeleiteten Tokens (wie hier) wirken noch. Direkte Verwendungen von
+   --wa-color-text-normal selbst (nicht über eine solche Zwischenstufe) sind von diesem
+   Effekt NICHT betroffen - die oben stehende :root-Bridge bleibt für den Normalfall richtig
+   und ausreichend, das hier ist die dokumentierte Ausnahme.
+
+   .ncss-text-light/-dark (helpers/typography.css) NUR als Basis-Klasse mit aufgenommen,
+   nicht deren -100/-300/-700/-900-Zwischenstufen - die markieren einzelne Textspannen,
+   keine ganzen Formular-Wrapper, eine Bridge-Regel dafür wäre totes Gewicht. */
+.ncss-surface--brand,
+.ncss-surface--brand-2,
+.ncss-surface--neutral,
+.ncss-gradient-brand,
+.ncss-text-light,
+.ncss-text-dark {
+  --wa-form-control-label-color: currentColor;
+  --wa-form-control-value-color: currentColor;
+  --wa-form-control-hint-color: currentColor;
+  --wa-form-control-required-content-color: currentColor;
+}

@@ -97,6 +97,20 @@
     font-size: var(--ncss-font-size-xl);
     margin-block-end: var(--ncss-space-sm);
   }
+  /* .ncss-text-light/-dark sind für Flächen gedacht, deren Farbe NICHT über ncss-Tokens
+     läuft - ein Foto ist der klassische Fall, hier dasselbe Bild wie beim Float-Bleed-
+     Beispiel weiter unten. Der Verlauf sorgt dafür, dass auch die -100-Stufe (sehr
+     dezent) noch lesbar bleibt, ohne das Bild selbst abzudunkeln. */
+  .demo-tool-card--photo {
+    background-image: linear-gradient(rgba(10, 20, 40, 0.25), rgba(10, 20, 40, 0.65)), url("assets/sample-poster.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+  /* Bewusst KEIN ncss-Token (kein --ncss-color-bg-subtle) - ein fester, willkürlicher
+     Papierton demonstriert genau den Fall, für den .ncss-text-dark gedacht ist. */
+  .demo-tool-card--paper {
+    background-color: #f3e9d2;
+  }
 </style>
 </head>
 <body class="ncss-page-shell">
@@ -345,6 +359,48 @@
           Breite. Unterhalb von 28rem Containerbreite (<code>float-wrap</code>-Schwelle)
           bleibt es ein normaler, nicht ausbrechender Block.
         </p>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-text-sm ncss-text-muted">
+          Erzwungener heller/dunkler Text (<code>.ncss-text-light</code>/<code>-dark</code>,
+          UIkit <code>uk-light</code>-Pendant) - für Flächen, deren Farbe NICHT über
+          ncss-Tokens läuft (Foto, ein fester Marken-Ton außerhalb der Skala), unabhängig
+          vom aktuellen Theme. Vier Deckkraft-Stufen (<code>-100/-300/-700/-900</code>,
+          <code>-900</code> == die Basis-Klasse ohne Zahl):
+        </p>
+        <div class="ncss-grid demo-tool-grid">
+          <div class="demo-tool-card demo-tool-card--photo">
+            <p class="ncss-text-light">.ncss-text-light (voll)</p>
+            <p class="ncss-text-light-700">.ncss-text-light-700</p>
+            <p class="ncss-text-light-300">.ncss-text-light-300</p>
+            <p class="ncss-text-light-100">.ncss-text-light-100</p>
+          </div>
+          <div class="demo-tool-card demo-tool-card--paper">
+            <p class="ncss-text-dark">.ncss-text-dark (voll)</p>
+            <p class="ncss-text-dark-700">.ncss-text-dark-700</p>
+            <p class="ncss-text-dark-300">.ncss-text-dark-300</p>
+            <p class="ncss-text-dark-100">.ncss-text-dark-100</p>
+          </div>
+        </div>
+
+        <p class="ncss-text-sm ncss-text-muted">
+          Kombinierbar mit <code>.ncss-scheme-dark</code>/<code>-light</code>
+          (helpers/surfaces.css) ohne Konflikt - <code>color-scheme</code> (schaltet die
+          light-dark()-Tokens des Elements um) und diese feste Textfarbe sind zwei
+          unabhängige Mechanismen, unabhängig davon, ob die Seite selbst gerade im
+          Light- oder Dark-Mode ist:
+        </p>
+        <div class="ncss-grid demo-tool-grid">
+          <div class="demo-tool-card ncss-scheme-dark">
+            <code class="demo-tool-label">.ncss-scheme-dark + .ncss-text-light-700</code>
+            <p class="ncss-text-light-700 ncss-text-sm">Erzwungen dunkles Schema (der Karten-eigene Hintergrund kippt mit), zusätzlich fest heller Text.</p>
+          </div>
+          <div class="demo-tool-card ncss-scheme-light">
+            <code class="demo-tool-label">.ncss-scheme-light + .ncss-text-dark-700</code>
+            <p class="ncss-text-dark-700 ncss-text-sm">Erzwungen helles Schema, zusätzlich fest dunkler Text - unabhängig vom Theme der restlichen Seite.</p>
+          </div>
+        </div>
       </div>
     </section>
 

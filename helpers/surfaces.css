@@ -12,6 +12,12 @@
  * nicht mitkippender Kontrastwert.
  */
 
+/* Web Awesome auf diesen Flächen (z.B. ein <wa-input> in einer .ncss-surface--brand-Sektion)
+   braucht eine EIGENE Bridge-Ergänzung - siehe webawesome-bridge.css, Abschnitt "Formular-
+   Text auf farbigen Flächen" - reines color:#fff hier erreicht Web Awesomes Shadow DOM
+   nicht. Bewusst nicht hier in surfaces.css miterledigt: diese Datei kennt nur die Fläche
+   selbst, die WA-spezifische Umleitung gehört an den einen Ort, der ALLE WA-Custom-
+   Properties kennt. */
 .ncss-surface--brand {
   background-color: var(--ncss-color-brand-900);
   color: #fff;

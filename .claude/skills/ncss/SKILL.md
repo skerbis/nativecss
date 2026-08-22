@@ -697,6 +697,66 @@ gewünschte Zeichenweg).
    erweitert den Referenz-Rahmen VOR `contain`s eigenem 0%-Punkt, statt einen zweiten,
    fremden Bereich hereinzumischen) - noch nicht umgesetzt/getestet.
 
+27. **Web Awesome auf farbigen Flächen (`.ncss-surface--brand/-brand-2/-neutral`,
+    `.ncss-gradient-brand`): `color:#fff` auf dem Light-DOM-Vorfahren reicht nicht, ein
+    `<wa-input>`/`<wa-textarea>`/`<wa-select>`/`<wa-checkbox>`/`<wa-radio>`/`<wa-switch>`
+    zeigt Label/Wert/Hinweistext trotzdem in Web Awesomes eigenem Standard-Textton.**
+    User-Report: "landing.html Auf dem Laufenden bleiben, label nicht sichtbar:
+    E-Mail-Adresse schwarz auf blau - sowas darf nicht passieren" (Newsletter-Sektion,
+    `demo/landing.html`, `<wa-input label="E-Mail-Adresse">` auf `.ncss-surface--brand`).
+    Ursache: Label/Wert/Hinweistext werden im SHADOW DOM der Komponente gerendert -
+    `color:inherit` durchquert Shadow-DOM-Grenzen nicht (anders als Custom Properties, die
+    normal weitervererben). Naheliegender erster Fix-Versuch: NUR die Basis-Bridge-Tokens
+    `--wa-color-text-normal`/`-quiet` (webawesome-bridge.css, `:root`) auf der farbigen
+    Fläche zusätzlich auf `currentColor` umbiegen, in der Annahme, Web Awesomes eigene
+    `--wa-form-control-label-color`/`-value-color`/`-hint-color` (vendor/webawesome/
+    dist-cdn/styles/themes/default.css, "Form Controls", jeweils `var(--wa-color-text-
+    normal)`) würden das als lebende `var()`-Kette bei jedem Verwendungsort neu auflösen.
+    Per echtem `CSS.getMatchedStylesForNode`(CDP)/`getComputedStyle`-Test WIDERLEGT: eine
+    Custom Property löst `var()`-Referenzen INNERHALB ihres eigenen Werts am Ort ihrer
+    EIGENEN Deklaration auf (hier: einmalig an `:root`, wo Web Awesomes Theme sie setzt) -
+    das Ergebnis ist ein FERTIGER, eingefrorener Wert (`light-dark(#1a1a1a, #f0f0f0)`), der
+    ab da nur noch unverändert weitervererbt wird. Ein `--wa-color-text-normal`, das auf
+    einem Nachfahren NEU gesetzt wird, kommt für diese bereits eingefrorenen abgeleiteten
+    Tokens zu spät - nur EIGENE, direkte Neu-Deklarationen GENAU dieser abgeleiteten Tokens
+    wirken noch. Direkte Verwendungen von `--wa-color-text-normal` selbst (nicht über eine
+    solche Zwischenstufe, z.B. `segmented-field.styles.ts`) sind von diesem Effekt NICHT
+    betroffen - die einmalige `:root`-Bridge bleibt für den Normalfall richtig und
+    ausreichend, das hier ist die dokumentierte Ausnahme. Echter Fix (webawesome-bridge.css):
+    `--wa-form-control-label-color`/`-value-color`/`-hint-color`/`-required-content-color`
+    DIREKT auf `.ncss-surface--brand/-brand-2/-neutral`, `.ncss-gradient-brand` (und den neu
+    gebauten `.ncss-text-light`/`.ncss-text-dark`, siehe unten) als `currentColor`
+    deklarieren - kein `::part()`-Gefrickel pro Seite nötig (das wäre wieder eine
+    Seiten-lokale Erfindung gewesen, siehe Fallstrick 25 zur Glaubwürdigkeits-Anforderung).
+
+    **Nachtrag, eigener Fehler beim Schreiben des Fixes**: die erste Fassung dieser Regel
+    landete in einem Kommentar mit `.ncss-surface--*/.ncss-gradient-brand` als Wildcard-
+    Aufzählung - exakt Fallstrick 14 (`*/` mitten im Kommentar beendet ihn sofort, alles
+    danach bis zum NÄCHSTEN `*/` wird als echtes CSS geparst und die eigentliche Regel
+    verschwindet spurlos, ohne Konsolenfehler). Erst per `grep -c '/\*'` gegen `grep -c
+    '\*/'` (ungleiche Anzahl entlarvt das) UND per direktem `getComputedStyle`-Vergleich
+    (Wert blieb trotz "fertigem" Fix unverändert) gefunden - wieder ein Beleg, warum dieser
+    Grep-Check nach JEDER Kommentar-Änderung mit `-`/`*`/`/` in Klassennamen-Aufzählungen
+    Pflicht bleibt, auch wenn man die Regel selbst kennt.
+
+    **Neue Utility als Nebenprodukt (User-Wunsch, UIkit-`uk-light`/`uk-dark` als Vorbild,
+    "mit weiteren Variationen auch dark oder soft oder light-10 -100 oder so")**:
+    `.ncss-text-light`/`.ncss-text-dark` (+ `-100/-300/-700/-900` als Deckkraft-Stufen,
+    `-900` == Basis-Klasse ohne Zahl) in `helpers/typography.css` - fest auf Weiß/Schwarz,
+    UNABHÄNGIG vom Theme, für Flächen, deren Farbe nicht über ncss-Tokens läuft (Foto, ein
+    fester Marken-Ton außerhalb der Skala). Bewusst NICHT wie die Marken-Farbskala
+    (Farbton-Mischung per `color-mix()` gegen Weiß/Schwarz) umgesetzt, sondern als reine
+    Deckkraft-Stufen VON Weiß/Schwarz (`color-mix(in srgb, #fff/#000 X%, transparent)`) -
+    Weiß/Schwarz selbst sind bereits die hellst-/dunkelstmögliche Stufe, ein "helleres
+    Weiß" gibt es nicht. Per echtem Cross-Engine-Test (Chromium/WebKit/Firefox, je
+    Light-/Dark-Mode-Seite) bestätigt: vollständig theme-unabhängig, identisches Ergebnis
+    in allen sechs Kombinationen. Auf User-Wunsch ausdrücklich auch INNERHALB von
+    `.ncss-scheme-dark`/`-light` getestet (Kombination `.ncss-scheme-dark` +
+    `.ncss-text-light-700` auf derselben Karte, demo/magazine.html) - keine Konflikte, weil
+    beide Mechanismen unabhängig sind (`color-scheme` steuert nur, wie `light-dark()`-
+    Tokens INNERHALB des Elements auflösen, `.ncss-text-light` überschreibt `color` direkt
+    mit einem festen, nicht von `light-dark()` abhängigen Wert). Demo: `demo/magazine.html`.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

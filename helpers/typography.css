@@ -43,6 +43,54 @@
    bereits passend gesetzte Kontrastfarbe, statt sie ein zweites Mal zu benennen. */
 .ncss-text-inherit { color: inherit; }
 
+/* --- Erzwungener heller/dunkler Text (UIkit uk-light/uk-dark-Pendant) ----------------------
+   Für Text auf einer Fläche, deren Farbe NICHT über ncss' Theme-Tokens läuft (Foto,
+   Video-Poster, ein beliebiger fester Hintergrund) - anders als .ncss-scheme-dark/-light
+   (helpers/surfaces.css), die das GESAMTE light-dark()-Tokensystem für einen Teilbaum
+   umschalten (color-scheme + alle davon abhängigen Tokens), setzt diese Familie NUR die
+   Textfarbe fest auf Weiß/Schwarz, unabhängig vom Theme der restlichen Seite.
+
+   -100/-300/-700/-900 folgen derselben Richtung wie die Farbskala in colors.css (100 =
+   dezent, 900 = kräftig) - hier als Deckkraft-Stufen von Weiß/Schwarz statt als Farbton-
+   Mischung, weil Weiß/Schwarz selbst schon die hellst-/dunkelstmögliche Stufe sind (kein
+   "helleres Weiß" denkbar, wie es color-mix() gegen weiß bei den Marken-Skalen erreicht).
+   Bare .ncss-text-light/-dark (ohne Zahl) = die volle, deckende Stufe (== -900) - der
+   Alltagsfall, keine Zahl nötig.
+
+   .ncss-text-light/-dark (NUR die beiden Basis-Klassen, nicht die Zwischenstufen - die
+   umschließen in der Praxis keine ganzen Formulare) sind zusätzlich an
+   webawesome-bridge.css angebunden ("Formular-Text auf farbigen Flächen") - ein
+   <wa-input> INNERHALB eines .ncss-text-light-Elements zeigt Label/Wert/Hinweistext
+   ebenfalls korrekt hell, nicht nur gewöhnlicher Light-DOM-Text (Shadow DOM erbt
+   color:#fff sonst nicht, siehe Bridge-Kommentar für die Details). */
+.ncss-text-light,
+.ncss-text-light-900 {
+  color: #fff;
+}
+.ncss-text-light-700 {
+  color: color-mix(in srgb, #fff 85%, transparent);
+}
+.ncss-text-light-300 {
+  color: color-mix(in srgb, #fff 60%, transparent);
+}
+.ncss-text-light-100 {
+  color: color-mix(in srgb, #fff 35%, transparent);
+}
+
+.ncss-text-dark,
+.ncss-text-dark-900 {
+  color: #000;
+}
+.ncss-text-dark-700 {
+  color: color-mix(in srgb, #000 85%, transparent);
+}
+.ncss-text-dark-300 {
+  color: color-mix(in srgb, #000 60%, transparent);
+}
+.ncss-text-dark-100 {
+  color: color-mix(in srgb, #000 35%, transparent);
+}
+
 .ncss-text-center { text-align: center; }
 .ncss-text-start { text-align: start; }
 .ncss-text-end { text-align: end; }

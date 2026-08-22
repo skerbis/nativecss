@@ -336,6 +336,7 @@ Alle Klassen in `helpers/typography.css`.
 | `.ncss-eyebrow` | Kleines, versal gesetztes Label ÜBER einer Überschrift ("Kicker") - Größe, Gewicht, Laufweite, Markenfarbe in einer Klasse |
 | `.ncss-text-muted/brand/brand-2/neutral/success/warning/danger` | Textfarbe |
 | `.ncss-text-inherit` | `color: inherit` - für Text auf einer farbigen Fläche (z.B. `.ncss-surface--brand`) |
+| `.ncss-text-light` / `.ncss-text-dark` (+ `-100/-300/-700/-900`) | Erzwungener heller/dunkler Text (UIkit `uk-light`/`uk-dark`-Pendant) - fest auf Weiß/Schwarz, UNABHÄNGIG vom Theme. Für Flächen, deren Farbe nicht über ncss-Tokens läuft (Foto, Video-Poster, ein fester Marken-Ton außerhalb der Skala) - anders als `.ncss-scheme-dark/-light` (die das ganze `light-dark()`-Tokensystem umschalten), setzt diese Familie NUR die Textfarbe. `-100/-300/-700/-900` sind Deckkraft-Stufen (100 = sehr dezent, 900 = voll deckend, `-900` == die Basis-Klasse ohne Zahl), gleiche Richtung wie die Farbskala in `colors.css`. Bridgt zusätzlich Web-Awesome-Formulare (siehe [Web Awesome Bridge](#web-awesome-bridge)) - ein `<wa-input>` innerhalb von `.ncss-text-light` zeigt Label/Wert/Hinweistext ebenfalls korrekt hell, nicht nur normaler Light-DOM-Text. Demo: `demo/magazine.html` |
 | `.ncss-text-center/start/end` | `text-align` |
 | `.ncss-text-justify` | Blocksatz - in der Praxis meist mit `.ncss-hyphenate` kombinieren |
 | `.ncss-text-balance` / `.ncss-text-pretty` | `text-wrap: balance/pretty` |
@@ -589,6 +590,26 @@ gehostetes Web Awesome/Font Awesome liegt unter `vendor/`. Erfordert:
   nicht über `file://`).
 - `data-webawesome="<pfad>"` auf dem Loader-`<script>`, sonst verdoppelt sich der
   Basis-Pfad bei relativem `src`.
+
+**Formular-Text auf farbigen Flächen** (`.ncss-surface--brand/-brand-2/-neutral`,
+`.ncss-gradient-brand`, `.ncss-text-light`/`-dark`): Ein `<wa-input>`/`<wa-textarea>`/
+`<wa-select>`/`<wa-checkbox>`/`<wa-radio>`/`<wa-switch>` rendert Label/Wert/Hinweistext im
+eigenen SHADOW DOM - `color:#fff` auf einem Light-DOM-Vorfahren erreicht das nicht (Bug per
+echtem Test gefunden, User-Report: "E-Mail-Adresse schwarz auf blau" in der Newsletter-
+Sektion von `demo/landing.html`). Der naheliegende Fix (nur die Basis-Bridge-Tokens
+`--wa-color-text-normal`/`-quiet` oben auf `currentColor` umbiegen) greift NICHT: Web
+Awesomes eigene `--wa-form-control-label-color`/`-value-color`/`-hint-color` (siehe
+`vendor/webawesome/dist-cdn/styles/themes/default.css`, "Form Controls") sind selbst
+`var(--wa-color-text-normal)` - aber Custom Properties lösen `var()`-Referenzen INNERHALB
+ihres eigenen Werts am Ort ihrer EIGENEN Deklaration auf (hier: einmalig an `:root`), nicht
+erneut an jedem Verwendungsort. Das Ergebnis ist ein fertiger, eingefrorener Wert, der ab da
+nur noch unverändert weitervererbt wird - ein `--wa-color-text-normal`, das auf einem
+Nachfahren neu gesetzt wird, kommt für diese bereits eingefrorenen Tokens zu spät. Der echte
+Fix (in `webawesome-bridge.css`) deklariert `--wa-form-control-label-color`/`-value-color`/
+`-hint-color`/`-required-content-color` DIREKT auf `.ncss-surface--brand/-brand-2/-neutral`,
+`.ncss-gradient-brand`, `.ncss-text-light`, `.ncss-text-dark` als `currentColor` - direkte
+Verwendungen von `--wa-color-text-normal` selbst (nicht über eine solche Zwischenstufe) sind
+von diesem Effekt nicht betroffen, die einmalige `:root`-Bridge bleibt dafür ausreichend.
 
 **`components/wa-close-on-scroll.js`** (opt-in, nur auf Seiten mit `<wa-dropdown>`/
 `<wa-popover>` einbinden): Web Awesomes Popup-Baustein hält ein offenes Panel absichtlich
