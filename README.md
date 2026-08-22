@@ -255,8 +255,10 @@ Weitere Paletten nach demselben Muster in `colors.css` ergänzen - nur die beide
 Basisfarben + Kontrastfarben definieren, `light-dark()`-gewrappt.
 
 **Live-Farbeditor** (`demo/colors.html`, Button "Farben live anpassen"): freie
-`<input type="color">`-Regler für die acht wichtigsten Seed-Tokens (`brand`/`brand-2`/
-`neutral`/`success`/`warning`/`danger`/`bg`/`text`), setzt jeden Wert per
+`<input type="color">`-Regler für ALLE Semantischen Tokens + Markenfarben aus der Demo
+darüber (`brand`/`brand-2`/`neutral`/`success`/`warning`/`danger`/`bg`/`bg-subtle`/
+`surface`/`text`/`text-muted`/`border`/`focus-ring` - 13 Regler, deckungsgleich mit den
+Swatches im Abschnitt "Semantische Tokens" außer `overlay`, siehe unten), setzt jeden Wert per
 `documentElement.style.setProperty()` direkt auf `<html>` - dieselbe Voraussetzung wie bei
 `theme.css` (siehe oben "Theme anpassen"): NUR auf `:root` gesetzt rechnen sich alle
 abgeleiteten Skalen (100/300/700/900, `-on-soft`, Badges/Buttons/Cards) automatisch mit,
@@ -267,7 +269,10 @@ dieselbe Farbe) - "Zurücksetzen" entfernt die Inline-Styles wieder vollständig
 (...).getPropertyValue("--x")` liefert bei einem Custom Property nur den unaufgelösten
 `light-dark(...)`-Text zurück, kein fertiges RGB - ein unsichtbares Sonden-Element mit
 `color: var(--x)` zwingt die tatsächliche Auflösung (abhängig vom aktuell aktiven
-Theme), erst dessen `getComputedStyle(...).color` ist die reale Farbe.
+Theme), erst dessen `getComputedStyle(...).color` ist die reale Farbe. `--ncss-color-
+overlay` bleibt bewusst OHNE Regler - ein transparenter `rgb(0 0 0 / 45%)`-Wert, `<input
+type="color">` kann keine Transparenz abbilden und würde die Deckkraft beim Übernehmen
+stillschweigend auf 100% setzen.
 
 ### Breakpoints & Container-Query-Schwellen (feste Konvention, nicht als `var()` nutzbar)
 

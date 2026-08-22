@@ -217,10 +217,31 @@
         <label class="ncss-label" for="colorEdit-bg">Hintergrund</label>
       </div>
       <div class="demo-color-field">
+        <input type="color" id="colorEdit-bg-subtle" data-token="--ncss-color-bg-subtle">
+        <label class="ncss-label" for="colorEdit-bg-subtle">Hintergrund (subtil)</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-surface" data-token="--ncss-color-surface">
+        <label class="ncss-label" for="colorEdit-surface">Fläche</label>
+      </div>
+      <div class="demo-color-field">
         <input type="color" id="colorEdit-text" data-token="--ncss-color-text">
         <label class="ncss-label" for="colorEdit-text">Text</label>
       </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-text-muted" data-token="--ncss-color-text-muted">
+        <label class="ncss-label" for="colorEdit-text-muted">Text (gedämpft)</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-border" data-token="--ncss-color-border">
+        <label class="ncss-label" for="colorEdit-border">Rahmen</label>
+      </div>
+      <div class="demo-color-field">
+        <input type="color" id="colorEdit-focus-ring" data-token="--ncss-color-focus-ring">
+        <label class="ncss-label" for="colorEdit-focus-ring">Fokus-Ring</label>
+      </div>
     </div>
+    <p class="ncss-text-sm ncss-text-muted"><code>--ncss-color-overlay</code> bleibt bewusst ohne Regler - ein transparenter <code>rgb(0 0 0 / 45%)</code>-Wert, <code>&lt;input type="color"&gt;</code> kann keine Transparenz abbilden und würde die Deckkraft beim Übernehmen stillschweigend auf 100% setzen.</p>
   </div>
   <div class="ncss-modal-footer">
     <button type="button" class="ncss-btn ncss-btn--secondary" id="colorEditorReset">Zurücksetzen</button>
