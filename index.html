@@ -49,6 +49,19 @@
        tatsächlich eine .ncss-text-boxed-Hervorhebung mitten in einer Überschrift sitzt. */
     line-height: 1.4;
   }
+  /* box-decoration-break:clone (Teil von .ncss-text-boxed) erzeugt PRO Zeile, auf die der
+     Text umbricht, eine EIGENE geklonte Box - bricht die Phrase selbst intern um (z.B.
+     "Volle" auf einer Zeile, "Kontrolle." auf der nächsten), entstehen zwei separate
+     Boxen, die je nach Zeilenabstand ÜBEREINANDER liegen können. Per echtem Test in
+     Playwright-WebKit gefunden: Chromiums system-ui-Fallback lässt "Volle Kontrolle."
+     bei 1280px als EINE Zeile umbrechen, WebKits abweichende Font-Metriken brechen
+     dieselbe Phrase in ZWEI Zeilen - zwei überlappende geklonte Boxen statt einer
+     sauberen (User-Report: "balken überlappen noch"). white-space:nowrap verhindert das
+     interne Umbrechen zuverlässig, unabhängig von Font-Metriken/Engine - die Phrase ist
+     kurz genug, um auch auf schmalen Viewports als eigene Zeile zu funktionieren. */
+  .landing-hero h1 .ncss-text-boxed {
+    white-space: nowrap;
+  }
   .landing-hero-lead {
     max-width: 38rem;
     margin-inline: auto;
