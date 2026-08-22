@@ -39,6 +39,12 @@
 .ncss-shadow-hover-lg {
   transition: box-shadow var(--ncss-motion-duration) var(--ncss-motion-easing);
 }
-.ncss-shadow-hover-sm:hover { box-shadow: var(--ncss-shadow-sm); }
-.ncss-shadow-hover-md:hover { box-shadow: var(--ncss-shadow-md); }
-.ncss-shadow-hover-lg:hover { box-shadow: var(--ncss-shadow-lg); }
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". Rein dekorativ (Schatten-Vertiefung), kein Touch-Äquivalent nötig - eine
+   :active-Variante würde nur beim Loslassen wieder verschwinden, ohne echten Zweck auf
+   einer nicht-klickbaren Karte. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-shadow-hover-sm:hover { box-shadow: var(--ncss-shadow-sm); }
+  .ncss-shadow-hover-md:hover { box-shadow: var(--ncss-shadow-md); }
+  .ncss-shadow-hover-lg:hover { box-shadow: var(--ncss-shadow-lg); }
+}

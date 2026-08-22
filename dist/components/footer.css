@@ -47,6 +47,10 @@
 .ncss-footer a {
   color: var(--ncss-color-text-muted);
 }
-.ncss-footer a:hover {
-  color: var(--ncss-color-text);
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-footer a:hover {
+    color: var(--ncss-color-text);
+  }
 }

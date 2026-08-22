@@ -35,6 +35,10 @@
   line-height: 1;
   cursor: pointer;
 }
-.ncss-dialog-close:hover {
-  background-color: var(--ncss-color-border);
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-dialog-close:hover {
+    background-color: var(--ncss-color-border);
+  }
 }

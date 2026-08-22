@@ -33,6 +33,7 @@ HTML/CSS allein nicht reicht (z.B. Toast, Carousel, Drawer) - siehe `demo/webawe
 - [Scroll & Sichtbarkeit](#scroll--sichtbarkeit)
 - [Animationen](#animationen)
 - [Barrierefreiheit (a11y)](#barrierefreiheit-a11y)
+- [Touch-Geräte & mobile Viewports](#touch-geräte--mobile-viewports)
 - [Icons](#icons)
 - [Komponenten](#komponenten)
 - [Web Awesome Bridge](#web-awesome-bridge)
@@ -562,6 +563,40 @@ sonst gegenseitig überschreiben statt zu kombinieren.
 
 `helpers/a11y.css`: `.ncss-visually-hidden` (+ `-focusable`), `.ncss-skip-link`.
 
+## Touch-Geräte & mobile Viewports
+
+**Touch-Geräte haben kein `:hover`.** Ein Tap auf iPhone/Android löst `:hover`-Regeln
+NICHT zuverlässig aus (per echtem Test mit iPhone-Emulation bestätigt, User-Report: "hover
+und click effekte haben auf dem iPhone keine Auswirkung") - ein Button, dessen einzige
+optische Rückmeldung ein `:hover`-Zustand ist, wirkt auf Touch dadurch komplett tot.
+Jede visuell bedeutsame `:hover`-Regel in ncss steht deshalb in
+`@media (hover: hover) and (pointer: fine)` (nur Geräte mit echtem Zeigegerät - Maus/
+Trackpad), NIE unbedingt. `:focus-visible` (Tastatur-Fokus) bleibt davon immer
+UNGATED - wo beide bisher in einem gemeinsamen Selektor standen (z.B.
+`a:hover, a:focus-visible { ... }`), sind sie jetzt getrennt.
+
+Für die taktile Rückmeldung auf Touch selbst gilt stattdessen `:active` (gilt für JEDES
+Zeigegerät inkl. Touch, kein Gate nötig) - `.ncss-btn` bekam dafür einen eigenen,
+komponentenweiten `:active`-Zustand (`scale: 0.97`, unabhängig von der Farb-Variante,
+vorher hatte `.ncss-btn` GAR KEINE Tap-Rückmeldung). Wer eine ähnliche taktile
+Rückmeldung für ein eigenes Element will: `.ncss-press` (`helpers/animations.css`, ebenfalls
+`:active`-basiert, kombinierbar mit jedem Element).
+
+**Volle Bildschirmhöhe auf Mobilgeräten**: `100vh`/`height: 100%` entsprechen auf Mobil-
+Browsern der GRÖSSTEN möglichen Höhe (Adressleiste ausgeblendet) - ist die Adressleiste
+gerade sichtbar, ragt ein `100vh`-Element über den tatsächlich sichtbaren Bereich hinaus
+(abgeschnittener Inhalt, ungewollter zusätzlicher Scroll). ncss nutzt für Elemente, die
+GARANTIERT ohne Scrollen komplett sichtbar bleiben müssen (Modal/Off-Canvas/`.ncss-sticky-
+container`), stattdessen `svh` ("small viewport height", kleinstmöglicher Wert - passt
+immer, unabhängig vom Adressleisten-Zustand), jeweils mit `vh` als Fallback für ältere
+Browser (`height: 100vh; height: 100svh;` - zweite, gültige Deklaration gewinnt, kein
+`@supports` nötig). Für scroll-gekoppelte Animationen (`components/scroll-stack.css`)
+dagegen bewusst `lvh` ("large viewport height", identisches Verhalten zum klassischen
+`vh` - stabil, ändert sich NICHT während des Scrollens) statt `dvh` ("dynamic viewport
+height") - `dvh` würde sich mitten im Scrollen neu berechnen, sobald die Adressleiste ein-/
+ausblendet, und genau das mit der Scroll-Distanz der Animation direkt verknüpfte Timing
+durcheinanderbringen (bekanntes reales Ruckel-Verhalten von `dvh` in mobilem Safari).
+
 ## Icons
 
 `helpers/icons.css`: eigene SVGs als CSS `mask-image` (`currentColor`-fähig, skaliert mit
@@ -661,7 +696,10 @@ deployed, siehe [Architektur](#architektur) für den GitHub-Actions-Rewrite-Mech
 dogfooded mit
 NativeCSS selbst: Hero, Vorteils-Karten, eine Vollbild-`.ncss-stack-section` als
 Feature-Showcase (5 Karten), vollständige Feature-Übersicht, Code-Beispiele, Tailwind-/
-UIkit3-Vergleichstabellen, CTA. Nutzt `theme.css` (siehe oben) mit einer eigenen Marke
+UIkit3-Vergleichstabellen, ein "Kompatibilität"-Abschnitt (welche Features `@supports`-
+Fallbacks bzw. opt-in JS-Fallbacks haben, welche drei Engines während der Entwicklung
+getestet werden - siehe [Touch-Geräte & mobile Viewports](#touch-geräte--mobile-viewports)
+für dasselbe Prinzip im Detail), CTA. Nutzt `theme.css` (siehe oben) mit einer eigenen Marke
 (gedämpftes Grau `#6f6f6e` als `--ncss-color-brand`, dunkles Navy `#314164` als
 `--ncss-color-brand-2`, kräftiges Blau `#3399ff` als `--ncss-color-bg` - bewusst KEINE
 fast-weiße Fläche, sondern eine "farbige Leinwand + weiße Inhalts-Karten"-Optik). Topbar

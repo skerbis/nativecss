@@ -120,11 +120,17 @@
   text-decoration: none;
   cursor: pointer;
 }
-.ncss-nav-item > a:hover,
 .ncss-nav-item > a:focus-visible,
-.ncss-nav-dropdown > summary:hover,
 .ncss-nav-dropdown > summary:focus-visible {
   background-color: var(--ncss-color-bg-subtle);
+}
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". :focus-visible oben (Tastatur-Fokus) bleibt bewusst UNGATED. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-nav-item > a:hover,
+  .ncss-nav-dropdown > summary:hover {
+    background-color: var(--ncss-color-bg-subtle);
+  }
 }
 
 /* Native Summary-Markierung (Dreieck) entfernen, eigenen Chevron per ::after nachbauen -
@@ -168,9 +174,13 @@
   color: var(--ncss-color-text);
   text-decoration: none;
 }
-.ncss-nav-submenu a:hover,
 .ncss-nav-submenu a:focus-visible {
   background-color: var(--ncss-color-bg-subtle);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-nav-submenu a:hover {
+    background-color: var(--ncss-color-bg-subtle);
+  }
 }
 
 /* Desktop: Untermenü schwebt als Panel unter dem Elternpunkt. */

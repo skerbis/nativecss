@@ -21,7 +21,10 @@
      @layer-Reihenfolge dort) und damit automatisch gewinnt. */
   margin: 0;
   height: 100%;
+  /* 100vh als Fallback, 100svh überschreibt direkt danach - siehe tokens.css'
+     --ncss-sticky-container-max-height für die Begründung (mobiles Browser-Chrome). */
   max-height: 100vh;
+  max-height: 100svh;
   /* Explizite width NÖTIG, nicht nur max-width: position:fixed mit nur EINER gesetzten
      inset-inline-Kante (--start ODER --end, nie beide) schrumpft ohne width auf die
      Inhaltsbreite (shrink-to-fit) statt zu strecken - max-width alleine deckelt das nur

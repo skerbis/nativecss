@@ -100,16 +100,20 @@
   transition: translate var(--ncss-motion-duration) var(--ncss-motion-easing),
               box-shadow var(--ncss-motion-duration) var(--ncss-motion-easing);
 }
-.ncss-hover-lift:hover {
-  translate: 0 -0.15rem;
-  box-shadow: var(--ncss-shadow-md);
-}
-
 .ncss-hover-grow {
   transition: scale var(--ncss-motion-duration) var(--ncss-motion-easing);
 }
-.ncss-hover-grow:hover {
-  scale: 1.03;
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". Für Touch stattdessen .ncss-press (unten, :active statt :hover)
+   kombinieren, falls auch dort eine taktile Rückmeldung gewünscht ist. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-hover-lift:hover {
+    translate: 0 -0.15rem;
+    box-shadow: var(--ncss-shadow-md);
+  }
+  .ncss-hover-grow:hover {
+    scale: 1.03;
+  }
 }
 
 /* Taktiles "Drücken" für Buttons/Karten - :active statt :hover, funktioniert auch per

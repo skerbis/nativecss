@@ -43,9 +43,13 @@
   color: var(--ncss-color-text-muted);
   text-decoration: none;
 }
-.ncss-breadcrumb a:hover {
-  color: var(--ncss-color-brand);
-  text-decoration: underline;
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-breadcrumb a:hover {
+    color: var(--ncss-color-brand);
+    text-decoration: underline;
+  }
 }
 
 .ncss-breadcrumb [aria-current="page"] {

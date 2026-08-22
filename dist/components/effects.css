@@ -172,20 +172,26 @@
     mask-composite: exclude;
   }
 
-  &:hover {
-    box-shadow: 0 4px 10px rgb(0 0 0 / 12%);
-    transform: translateY(calc(-1 * var(--ncss-stamped-lift, 3px)));
-  }
-
   &:active {
     box-shadow: inset 0 2px 4px var(--ncss-stamped-shadow-dark);
     transform: translateY(var(--ncss-stamped-lift, 3px));
   }
 }
 
-.ncss-stamped--press:hover {
-  box-shadow: inset 0 2px 4px var(--ncss-stamped-shadow-dark);
-  transform: translateY(var(--ncss-stamped-lift, 3px));
+/* :hover-Effekte NUR für Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README
+   "Touch-Geräte haben kein :hover" für die projektweite Begründung dieses Musters.
+   .ncss-stamped bleibt auf Touch trotzdem voll funktionsfähig: :active (das "Einsinken")
+   gilt unverändert für JEDES Zeigegerät inkl. Touch - nur das zusätzliche "Abheben" beim
+   Hover ist rein für Maus/Trackpad gedacht und auf Touch ohnehin bedeutungslos. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-stamped:hover {
+    box-shadow: 0 4px 10px rgb(0 0 0 / 12%);
+    transform: translateY(calc(-1 * var(--ncss-stamped-lift, 3px)));
+  }
+  .ncss-stamped--press:hover {
+    box-shadow: inset 0 2px 4px var(--ncss-stamped-shadow-dark);
+    transform: translateY(var(--ncss-stamped-lift, 3px));
+  }
 }
 .ncss-stamped--press:active {
   box-shadow: inset 0 3px 6px var(--ncss-stamped-shadow-dark);

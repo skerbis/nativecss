@@ -845,6 +845,83 @@ gewünschte Zeichenweg).
     Standardabweichung eines textfreien Ausschnitts) macht "unsichtbar" vs. "schwach aber
     vorhanden" eindeutig messbar, statt sich auf den Bildschirm-Eindruck zu verlassen.
 
+29. **Touch-Geräte (iPhone etc.) lösen `:hover` nicht zuverlässig per Tap aus - ein
+    Button/eine Karte, deren einzige optische Rückmeldung ein `:hover`-Zustand ist, wirkt
+    auf Touch komplett tot.** User-Report: "unsere hover und click effekte haben auf dem
+    iPhone keine Auswirkung ... z.b card hover oder auch bei Stamped". Per echtem Test mit
+    Playwright-iPhone-Emulation (Chromium UND WebKit) bestätigt: `transform`/`box-shadow`
+    aus `:hover`-Regeln bleiben nach einem simulierten Tap komplett unverändert, `matchMedia
+    ('(hover: hover) and (pointer: fine)')` liefert dort `false` (Desktop: `true`) - exakt
+    das Signal, das das Fix-Muster braucht. Betraf projektweit 27 `:hover`-Regeln über 11
+    Dateien (`.ncss-stamped`, `.ncss-shadow-hover-*`, `.ncss-hover-lift/-grow`,
+    `.ncss-btn--primary/-secondary`, Formular-Rahmen, Breadcrumb/Footer/Dialog-Close-Links,
+    Nav-Items) - JEDE davon jetzt in `@media (hover: hover) and (pointer: fine) { ... }`
+    gewrappt. Zwei Fallstricke beim Umsetzen selbst:
+    - Mehrere Regeln standen als GEMEINSAMER Selektor mit `:focus-visible` zusammen (z.B.
+      `a:hover, a:focus-visible { ... }`, `components/nav.css`) - ein blindes Wrappen der
+      GANZEN Regel hätte `:focus-visible` (Tastatur-Fokus, gilt unabhängig vom Zeigegerät)
+      versehentlich mit-gated und Tastatur-Nutzer auf Touch-Geräten mit Tastatur (z.B.
+      Touchscreen-Notebook) benachteiligt. Fix: Selektoren AUFGETEILT, `:focus-visible`
+      bleibt unbedingt, nur `:hover` wandert in die Media Query.
+    - `.ncss-btn` hatte VOR diesem Fix gar keinen `:active`-Zustand - auf Touch also
+      buchstäblich NULL Rückmeldung beim Tippen (nicht nur "kein Hover", sondern "keine
+      Reaktion überhaupt"). Ergänzt: `.ncss-btn:active:not(:disabled) { scale: 0.97; }`
+      auf der BASIS-Klasse (nicht pro Variante), damit auch `.ncss-btn--danger` (hatte
+      nie einen eigenen `:hover`) jetzt eine Rückmeldung bekommt. `scale` (eigenständige
+      Property, nicht `transform: scale()`) gewählt, damit es sich mit `.ncss-stamped`s
+      `transform: translateY(...)` überlagert statt es zu überschreiben (einzelne
+      Transform-Properties komponieren automatisch mit der `transform`-Shorthand, keine
+      Kaskaden-Konkurrenz). `:active`-Auslösung selbst ließ sich per synthetischem
+      `TouchEvent`/CDP-`Input.dispatchTouchEvent` NICHT zuverlässig automatisiert
+      reproduzieren (bekannte Grenze von Browser-Automatisierung, nicht der CSS-Regel -
+      per echtem `mouse.down()` bestätigt, dass die Regel selbst korrekt matcht/skaliert).
+      `.ncss-press` (`helpers/animations.css`) existierte bereits als DASSELBE Muster für
+      eigene Elemente (`:active` statt `:hover`, "funktioniert auch per Touch") - die
+      Lehre war schon im Projekt vorhanden, nur nicht überall angewendet.
+    `helpers/visibility.css`s `.ncss-reveal-on-hover` brauchte KEINE Änderung - hatte
+    bereits ein korrektes `@media (hover: none) { ... opacity: 1 ... }` (immer sichtbar auf
+    reinen Touch-Geräten), von Anfang an mit Touch im Kopf gebaut. README-Abschnitt "Touch-
+    Geräte & mobile Viewports" neu, zentrale Referenz für alle `siehe README`-Kommentare
+    an den 27 Fundstellen.
+
+30. **`100vh`/`height: 100%` entsprechen auf Mobil-Browsern der GRÖSSTEN möglichen Höhe
+    (Adressleiste ausgeblendet) - ist die Adressleiste sichtbar, ragt ein 100vh-Element
+    über den tatsächlich sichtbaren Bereich hinaus.** User-Hinweis: "Full height auf
+    Smartphones vh oder 100% sind dort nicht die beste Wahl". Betraf `dist/tokens.css`
+    (`--ncss-sticky-container-max-height`), `dist/components/modal.css`
+    (`.ncss-modal--fullscreen`), `dist/components/off-canvas.css`, `dist/components/
+    scroll-stack.css`. `dist/reset.css`/`dist/helpers/layout.css` hatten das Problem
+    bereits VORHER korrekt gelöst (`100svh`, mit eigenem erklärendem Kommentar) - das
+    richtige Muster existierte im Projekt schon, nur nicht überall konsequent angewendet
+    (derselbe Lehre-Typ wie Punkt 29 oben mit `.ncss-press`).
+    Drei verschiedene moderne Viewport-Einheiten für DREI verschiedene Situationen, NICHT
+    austauschbar:
+    - `svh` ("small viewport height", kleinstmöglicher Wert) für alles, was GARANTIERT
+      ohne Scrollen komplett sichtbar bleiben muss (Modal, Off-Canvas, `.ncss-sticky-
+      container`) - mit `vh` als Fallback-Deklaration davor für ältere Browser (`height:
+      100vh; height: 100svh;` - zweite gültige Deklaration gewinnt, kein `@supports`
+      nötig, dasselbe Muster wie `helpers/scroll.css`s bereits vorhandenes `vh`/`dvh`-Paar).
+    - `dvh` ("dynamic viewport height", lebt live mit dem Adressleisten-Zustand mit) - NUR
+      dort, wo bereits vorhanden (`helpers/scroll.css`, `demo/scroll-sections.html`),
+      NICHT neu für `scroll-stack.css` übernommen (siehe nächster Punkt).
+    - `lvh` ("large viewport height", identisch zum klassischen `vh`-Verhalten - stabil,
+      ändert sich NICHT während des Scrollens) für `components/scroll-stack.css`s
+      `--ncss-stack-stage-height`-Default, BEWUSST nicht `dvh`: die Bühnenhöhe fließt
+      direkt in `view-timeline-inset` und die Off-Stage-Position der Karten
+      (`@keyframes ncss-stack-arrive`) ein - eine mitten im Scrollen wachsende/
+      schrumpfende Bühnenhöhe (genau das, was `dvh` tun würde, sobald die Adressleiste
+      ein-/ausblendet) hätte das bereits fein kalibrierte Timing dieser Datei
+      durcheinandergebracht (bekanntes reales `dvh`-Ruckel-Verhalten in mobilem Safari,
+      plus diese Datei hatte bereits ZWEI dokumentierte echte Bugs aus genau dieser Art
+      Berechnung, siehe die `view-timeline-inset`- und `ncss-stack-arrive`-Kommentare in
+      der Datei selbst - ein drittes, neues Risiko hier bewusst vermieden statt
+      ungetestet einzuführen). `lvh` behält exakt das alte, bereits funktionierende
+      Verhalten, nur unter einem modernen, ABSICHTLICHEN statt zufälligen Namen.
+    Demo-Seiten (`demo/product.html`, `demo/stacked-cards.html`), die `--ncss-stack-card-
+    height: 100vh` als Inline-Override zeigten, auf `100lvh` mitgezogen - sonst DEFAULT
+    und demonstrierter Override-Wert inkonsistent (einer lvh, einer vh, ohne erkennbaren
+    Unterschied im Ergebnis, aber verwirrend beim Lesen).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

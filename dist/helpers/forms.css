@@ -34,10 +34,15 @@
   transition: border-color var(--ncss-motion-duration) var(--ncss-motion-easing);
 }
 
-.ncss-input:hover,
-.ncss-select:hover,
-.ncss-textarea:hover {
-  border-color: var(--ncss-color-text-muted);
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". :focus-visible unten (Tastatur-Fokus) bleibt bewusst UNGATED - gilt
+   unabhängig vom Zeigegerät. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-input:hover,
+  .ncss-select:hover,
+  .ncss-textarea:hover {
+    border-color: var(--ncss-color-text-muted);
+  }
 }
 
 .ncss-input:focus-visible,
@@ -202,19 +207,25 @@
   border: var(--ncss-border-width) solid transparent;
   cursor: pointer;
   transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing),
-              border-color var(--ncss-motion-duration) var(--ncss-motion-easing);
+              border-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              scale var(--ncss-motion-duration) var(--ncss-motion-easing);
 }
 .ncss-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
+/* :active statt :hover für die taktile Rückmeldung selbst - gilt für JEDES Zeigegerät
+   inkl. Touch (siehe README "Touch-Geräte haben kein :hover"), anders als die
+   farblichen :hover-Zustände der Varianten unten. Auf dem BASIS-.ncss-btn statt pro
+   Variante, damit auch .ncss-btn--danger (aktuell ohne eigenen :hover) eine Rückmeldung
+   bekommt. */
+.ncss-btn:active:not(:disabled) {
+  scale: 0.97;
+}
 
 .ncss-btn--primary {
   background-color: var(--ncss-color-brand);
   color: var(--ncss-color-brand-contrast);
-}
-.ncss-btn--primary:hover:not(:disabled) {
-  background-color: color-mix(in srgb, var(--ncss-color-brand) 85%, black);
 }
 
 .ncss-btn--secondary {
@@ -222,8 +233,16 @@
   border-color: var(--ncss-color-border);
   color: var(--ncss-color-text);
 }
-.ncss-btn--secondary:hover:not(:disabled) {
-  background-color: var(--ncss-color-bg-subtle);
+
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". Die :active-Rückmeldung oben bleibt für ALLE Zeigegeräte bestehen. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-btn--primary:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--ncss-color-brand) 85%, black);
+  }
+  .ncss-btn--secondary:hover:not(:disabled) {
+    background-color: var(--ncss-color-bg-subtle);
+  }
 }
 
 .ncss-btn--danger {

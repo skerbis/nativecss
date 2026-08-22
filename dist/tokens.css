@@ -133,7 +133,14 @@
   --ncss-offcanvas-width: 20rem;
   --ncss-sticky-offset: 0;
   --ncss-sticky-z: 10;
+  /* 100vh als Fallback (ältere Browser ohne svh-Unterstützung), 100svh überschreibt direkt
+     danach - "small viewport height" bleibt IMMER innerhalb des tatsächlich sichtbaren
+     Bereichs, auch wenn mobiles Browser-Chrome (Adressleiste) gerade eingeblendet ist.
+     100vh entspricht auf Mobilgeräten der GRÖSSTEN möglichen Höhe (Chrome ausgeblendet) -
+     ein Container, der bis zum eigenen internen Scrollbereich reicht, würde damit am
+     unteren Rand über den sichtbaren Bereich hinausragen. */
   --ncss-sticky-container-max-height: 100vh;
+  --ncss-sticky-container-max-height: 100svh;
   --ncss-topbar-height: 3.5rem;
   --ncss-topbar-z: 50;
   --ncss-slideshow-item-width: 85%;

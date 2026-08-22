@@ -9,11 +9,11 @@
  *
  * Struktur - drei Ebenen, jede mit eigener Aufgabe:
  * .ncss-stack-section (außen)  - reine Scroll-DISTANZ, sonst unsichtbar. Höhe =
- *                                 Kartenanzahl × 100vh (--ncss-stack-count MUSS von Hand
+ *                                 Kartenanzahl × 100lvh (--ncss-stack-count MUSS von Hand
  *                                 gesetzt werden - sibling-count() ist aktuell noch
  *                                 weniger verbreitet unterstützt als selbst
  *                                 animation-timeline, also kein Auto-Zählen).
- * .ncss-stack-stage (Bühne)    - position:sticky; top:0; height:100vh - bleibt exakt EIN
+ * .ncss-stack-stage (Bühne)    - position:sticky; top:0; height:100lvh - bleibt exakt EIN
  *                                 Vollbild lang oben "kleben", während die Zusatzhöhe der
  *                                 Sektion darum herum vorbeiscrollt. overflow:clip
  *                                 verhindert, dass ankommende Karten (die von unten
@@ -56,7 +56,7 @@
  * gestaffelt, fährt von rechts herein, kippt um die Y- statt die X-Achse zurück) - siehe
  * "Modifier: --horizontal" weiter unten.
  *
- * --ncss-stack-stage-height (Default 100vh) und --ncss-stack-stage-top (Default 0px)
+ * --ncss-stack-stage-height (Default 100lvh) und --ncss-stack-stage-top (Default 0px)
  * machen die Bühne beliebig klein/verschoben statt zwingend vollbildgroß - z.B. eine
  * Bühne in einem gewöhnlichen .ncss-container statt vollflächig (Demo:
  * "Stacked Cards, in einem normalen Container" in demo/stacked-cards.html).
@@ -73,17 +73,31 @@
  * Karten laufen stattdessen ganz normal im Fluss untereinander (position:static, keine
  * Transforms) - garantiert jede Karte einzeln sichtbar/scrollbar, unabhängig von
  * --ncss-stack-fan, --ncss-stack-count oder der horizontal-Variante.
+ *
+ * --ncss-stack-stage-height nutzt 100lvh als Default, bewusst NICHT 100dvh: "large
+ * viewport height" verhält sich wie das klassische 100vh (rechnet mit vollständig
+ * eingeklapptem mobilem Browser-Chrome, ändert sich NICHT während des Scrollens) -
+ * "dynamic viewport height" dagegen würde sich live mit ein-/ausblendender Adressleiste
+ * MITTEN im Scrollen neu berechnen. Genau das ist hier riskant: die Bühnenhöhe fließt
+ * direkt in die Scroll-Distanz der Sektion (Zeile unten), das view-timeline-inset UND die
+ * Off-Stage-Position der Karten (siehe @keyframes ncss-stack-arrive weiter unten) ein -
+ * eine mitten im Scrollen wachsende/schrumpfende Bühnenhöhe würde alle drei Berechnungen
+ * gleichzeitig verschieben, während der Nutzer noch scrollt (bekanntes reales
+ * dvh-Ruckel-Verhalten in mobilem Safari). lvh bleibt stattdessen stabil über die gesamte
+ * Geste - genau das bereits fein kalibrierte Timing (siehe die dokumentierten Bugs oben
+ * und bei @keyframes ncss-stack-arrive) bleibt dadurch unangetastet, nur der veraltete
+ * Name wird durch die modernere, absichtliche Variante ersetzt.
  */
 
 .ncss-stack-section {
   position: relative;
-  height: calc(var(--ncss-stack-count, 4) * var(--ncss-stack-stage-height, 100vh));
+  height: calc(var(--ncss-stack-count, 4) * var(--ncss-stack-stage-height, 100lvh));
 }
 
 .ncss-stack-stage {
   position: sticky;
   top: var(--ncss-stack-stage-top, 0px);
-  height: var(--ncss-stack-stage-height, 100vh);
+  height: var(--ncss-stack-stage-height, 100lvh);
   overflow: clip;
   display: flex;
   align-items: center;
@@ -126,14 +140,14 @@
        "Zurückweichen"-Phase statt flach zu bleiben - die 0%/100%-Marken der Timeline
        lagen NICHT bei Sektionsanfang/-ende, sondern jeweils eine Bildschirmhöhe davor/
        danach. Die beiden Inset-Werte sind NICHT symmetrisch, auch wenn das beim
-       100vh-Vollbild-Default zufällig gleich aussieht: der STARTwert muss immer die
+       100lvh-Vollbild-Default zufällig gleich aussieht: der STARTwert muss immer die
        tatsächliche VIEWPORT-Höhe sein (0% soll bei "Sektions-Oberkante erreicht
        Viewport-Oberkante" liegen, unabhängig von der Bühnengröße), der ENDwert dagegen
        die BÜHNENHÖHE selbst (100% soll bei "Bühne löst sich wieder", also
        Sektions-Restlänge = Bühnenhöhe, liegen) - bei --ncss-stack-stage-height kleiner
-       als 100vh (z.B. eine Bühne in einem normalen Container statt Vollbild) MÜSSEN
+       als 100lvh (z.B. eine Bühne in einem normalen Container statt Vollbild) MÜSSEN
        beide Werte deshalb unterschiedlich sein, sonst verschiebt sich die 100%-Marke. */
-    view-timeline-inset: 100vh var(--ncss-stack-stage-height, 100vh);
+    view-timeline-inset: 100lvh var(--ncss-stack-stage-height, 100lvh);
   }
 
   /* Eigenes @media (prefers-reduced-motion) hier, ZUSÄTZLICH zur globalen Regel in
@@ -207,11 +221,11 @@
      unteren Rand der Bühne sichtbar, per Screenshot-Review gefunden (User: "der grüne
      ist initial über der Karte 1 sichtbar"). Ursprünglich fix "50vh" statt der halben
      BÜHNENHÖHE angenommen (galt nur, solange --ncss-stack-stage-height sein Default
-     100vh hatte) - bei einer kleineren Bühne (z.B. in einem normalen Container statt
+     100lvh hatte) - bei einer kleineren Bühne (z.B. in einem normalen Container statt
      Vollbild) war das zu wenig Versatz, Karten kamen schon halb sichtbar an. Mit dem
      Bühnenhöhe-Token funktioniert es automatisch für jede --ncss-stack-stage-height. */
   0% {
-    transform: translateY(calc(var(--ncss-stack-stage-height, 100vh) / 2 + var(--ncss-stack-card-height, 60vh) / 2 + var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem))) scale(0.92);
+    transform: translateY(calc(var(--ncss-stack-stage-height, 100lvh) / 2 + var(--ncss-stack-card-height, 60vh) / 2 + var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem))) scale(0.92);
   }
   50% {
     transform: translateY(calc(var(--ncss-stack-index, 0) * var(--ncss-stack-fan, 1.25rem))) scale(1);

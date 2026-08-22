@@ -84,9 +84,14 @@
     color: #fff;
     border-color: rgb(255 255 255 / 55%);
   }
-  .landing-hero .ncss-btn--secondary:hover:not(:disabled),
-  .landing-cta .ncss-btn--secondary:hover:not(:disabled) {
-    background-color: rgb(255 255 255 / 15%);
+  /* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe dist/helpers/forms.css für
+     dasselbe Muster am eigentlichen .ncss-btn--secondary:hover. Die :active-Rückmeldung
+     (scale, dist/helpers/forms.css) gilt unverändert für jedes Zeigegerät inkl. Touch. */
+  @media (hover: hover) and (pointer: fine) {
+    .landing-hero .ncss-btn--secondary:hover:not(:disabled),
+    .landing-cta .ncss-btn--secondary:hover:not(:disabled) {
+      background-color: rgb(255 255 255 / 15%);
+    }
   }
   .landing-hero-code {
     max-width: 34rem;
@@ -137,12 +142,17 @@
        color-bg-subtle) (heller Tint, hier sehr helles Blau) - der weiße Text blieb darauf
        praktisch unsichtbar (User-Report + Screenshot: "Features" beim Hover kaum lesbar).
        Eigener, zur dunklen Glass-Topbar passender Hover-Hintergrund statt des hellen
-       Defaults. */
-    .landing-topbar .ncss-nav-item > a:hover,
+       Defaults. :focus-visible (Tastatur-Fokus) bleibt bewusst UNGATED von der
+       hover-Media-Query unten - gilt unabhängig vom Zeigegerät. */
     .landing-topbar .ncss-nav-item > a:focus-visible,
-    .landing-topbar .ncss-nav-dropdown > summary:hover,
     .landing-topbar .ncss-nav-dropdown > summary:focus-visible {
       background-color: rgb(255 255 255 / 15%);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .landing-topbar .ncss-nav-item > a:hover,
+      .landing-topbar .ncss-nav-dropdown > summary:hover {
+        background-color: rgb(255 255 255 / 15%);
+      }
     }
   }
 
@@ -183,7 +193,7 @@
   }
 
   /* --- Stacked-Cards Feature-Showcase (Vollbild) -----------------------------------------
-     --ncss-stack-card-height:100vh/-card-width:100%/-fan:0px = die "Vollbild"-Variante von
+     --ncss-stack-card-height:100lvh/-card-width:100%/-fan:0px = die "Vollbild"-Variante von
      scroll-stack.css (siehe demo/stacked-cards.html) - jede Karte nimmt die GANZE Bühne
      ein statt nur einen Ausschnitt. */
   .landing-stack-card {
@@ -283,6 +293,7 @@
           <li class="ncss-nav-item"><a href="#features">Features</a></li>
           <li class="ncss-nav-item"><a href="#vergleich">Vergleich</a></li>
           <li class="ncss-nav-item"><a href="#code">Code</a></li>
+          <li class="ncss-nav-item"><a href="#kompatibilitaet">Kompatibilität</a></li>
           <li class="ncss-nav-item"><a href="index.html">Demo</a></li>
           <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
           <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> GitHub</a></li>
@@ -374,7 +385,7 @@
       <h2>Fünf Bausteine, die NativeCSS ausmachen</h2>
       <p class="ncss-text-lead ncss-text-muted ncss-lead-quote">Diese Sektion ist selbst ein NativeCSS-Feature: <code>.ncss-stack-section</code> (components/scroll-stack.css) - Karten stapeln sich beim Scrollen, komplett ohne JavaScript, mit einem funktionierenden Fallback für Browser ohne <code>view()</code>-Unterstützung.</p>
     </div>
-    <div class="ncss-stack-section" style="--ncss-stack-count: 5; --ncss-stack-card-height: 100vh; --ncss-stack-card-width: 100%; --ncss-stack-fan: 0px;">
+    <div class="ncss-stack-section" style="--ncss-stack-count: 5; --ncss-stack-card-height: 100lvh; --ncss-stack-card-width: 100%; --ncss-stack-fan: 0px;">
         <div class="ncss-stack-stage">
           <article class="ncss-stack-card landing-stack-card landing-stack-card--1" style="--ncss-stack-index: 0;">
             <span class="landing-stack-num">01</span>
@@ -589,6 +600,51 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kompatibilitaet" class="landing-on-bg ncss-py-xl">
+    <div class="ncss-container ncss-stack ncss-stack--loose">
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-eyebrow">Ehrlich bleiben</p>
+        <h2>Nicht jedes Feature läuft überall gleich - das ist Absicht, kein Versteckspiel</h2>
+        <p class="ncss-text-lead ncss-text-muted ncss-lead-quote">NativeCSS nutzt bewusst auch Features, die noch nicht in JEDEM Browser Baseline sind (z.B. <code>animation-timeline</code> oder <code>container-type: scroll-state</code>). Das ist kein Widerspruch zu "kein Build-Schritt, kein JS" - es bedeutet nur, dass jedes dieser Features per <code>@supports</code>-Feature-Detection ODER einer kleinen, opt-in JS-Datei abgesichert ist, die sich SELBST abschaltet, sobald der Browser die native Technik ohnehin schon beherrscht.</p>
+      </div>
+
+      <div class="ncss-grid" style="--ncss-grid-min: 15rem;">
+        <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+          <div class="ncss-card-body">
+            <span class="ncss-badge-icon"><i class="fa-solid fa-code-branch" aria-hidden="true"></i></span>
+            <h3>CSS-Fallback per Feature-Detection</h3>
+            <p class="ncss-text-sm ncss-text-muted"><code>@supports</code> prüft, ob eine Technik verfügbar ist, und liefert bei Bedarf eine einfachere, aber funktionale Alternative - z.B. <code>animation-timeline: view()</code> (Scroll-Reveal, gestapelte Karten): ohne Unterstützung erscheint der Inhalt einfach normal, ganz ohne Animation, kein Fehlerzustand. Genauso <code>backdrop-filter</code> (<code>.ncss-glass</code>) und <code>initial-letter</code> (Drop Caps, inkl. <code>-webkit-</code>-Präfix für Safari).</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+          <div class="ncss-card-body">
+            <span class="ncss-badge-icon"><i class="fa-solid fa-plug" aria-hidden="true"></i></span>
+            <h3>Opt-in JS-Fallback, nur wenn nötig</h3>
+            <p class="ncss-text-sm ncss-text-muted">Für die seltenen Fälle, wo CSS allein nicht reicht: eine winzige, eigenständige JS-Datei, NUR auf Seiten eingebunden, die sie brauchen. Sie prüft selbst per <code>CSS.supports(...)</code>, ob die native Technik bereits greift, und tut in dem Fall schlicht nichts. Beispiel: <code>hide-on-scroll-fallback.js</code> für <code>.ncss-hide-on-scroll</code> (nativ nur in Chromium via <code>container-type: scroll-state</code>) oder <code>command-fallback.js</code> für <code>command</code>/<code>commandfor</code>.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <h3>Getestete Engines</h3>
+        <p class="ncss-text-muted">Jede nicht-triviale Änderung wird während der Entwicklung in allen drei Rendering-Engines geprüft - Screenshot und berechnete Stile, nicht nur Doku-Annahmen:</p>
+        <div class="ncss-table-scroll">
+          <table class="landing-compare-table">
+            <thead>
+              <tr><th scope="col">Engine</th><th scope="col">Repräsentiert</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Chromium</td><td>Chrome, Edge, Brave, Opera u.a.</td></tr>
+              <tr><td>WebKit</td><td>Safari (macOS/iOS)</td></tr>
+              <tr><td>Firefox</td><td>Firefox (Gecko)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="ncss-text-sm ncss-text-muted">Kein Ersatz für echte Geräte-Tests vor einem Produktiv-Einsatz, aber die drei Engines decken die überwiegende Mehrheit real genutzter Browser ab.</p>
       </div>
     </div>
   </section>
