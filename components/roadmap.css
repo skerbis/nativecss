@@ -2,25 +2,22 @@
  * ncss - Roadmap/Timeline-Komponente (Layer "components"): eine vertikale Liste von
  * Meilensteinen, verbunden durch eine ZWEIFARBIGE Linie - ein statischer, gedämpfter
  * "Track" (immer voll sichtbar, die ganze Höhe) UND eine markenfarbene "Progress"-Linie
- * darüber, die sich beim Scrollen selbst nachzeichnet (Baseline: Progress-Linie ist
+ * darüber, die sich beim Scrollen selbst "nachzeichnet" (Baseline: Progress-Linie ist
  * einfach von Anfang an fertig gezeichnet, deckt den Track komplett ab - kein
  * Fehlerzustand). Absichtlich ZWEI Linien statt einer: eine einzige, einfarbige Linie
  * (erster Anlauf) macht den Zeichen-Effekt kaum sichtbar - der "noch nicht gezeichnete"
- * Teil ist unsichtbar (Lücke im Dash-Muster) und verschmilzt optisch mit dem
- * Seitenhintergrund, der bereits gezeichnete Teil sieht dabei genauso aus wie eine ganz
- * gewöhnliche, immer schon fertige Linie - der Fortschritt selbst bleibt dadurch praktisch
- * unsichtbar (User-Feedback: "das stimmt nicht und ist eigentlich sinnfrei ... jetzt ist
- * sie einfach durchgezogen"). Der Track macht den JEWEILIGEN Fortschritt dagegen als
- * klaren Farbkontrast sichtbar (klassisches Fortschrittsbalken-Muster, nur vertikal) -
- * genau das macht die Roadmap-Metapher überhaupt erst sinnvoll ("hier bist du gerade in
- * der Zeitleiste").
+ * Teil ist unsichtbar und verschmilzt optisch mit dem Seitenhintergrund, der Fortschritt
+ * selbst blieb dadurch praktisch unbemerkbar (User-Feedback: "das stimmt nicht und ist
+ * eigentlich sinnfrei ... jetzt ist sie einfach durchgezogen"). Der Track macht den
+ * JEWEILIGEN Fortschritt dagegen als klaren Farbkontrast sichtbar (klassisches
+ * Fortschrittsbalken-Muster, nur vertikal).
  *
  * Markup:
  * <div class="ncss-roadmap">
- *   <svg class="ncss-roadmap-line" viewBox="0 0 2 100" preserveAspectRatio="none" aria-hidden="true">
- *     <line class="ncss-roadmap-line-track" x1="1" y1="0" x2="1" y2="100" />
- *     <line class="ncss-roadmap-line-progress" x1="1" y1="0" x2="1" y2="100" pathLength="1" />
- *   </svg>
+ *   <div class="ncss-roadmap-line">
+ *     <div class="ncss-roadmap-line-track"></div>
+ *     <div class="ncss-roadmap-line-progress"></div>
+ *   </div>
  *   <ol class="ncss-roadmap-list" role="list">
  *     <li class="ncss-roadmap-item">
  *       <span class="ncss-roadmap-dot"></span>
@@ -30,29 +27,24 @@
  *   </ol>
  * </div>
  *
- * Die Linien: EIN <svg>, das die volle Höhe der gesamten Liste überspannt (position:
- * absolute, height:100%), `preserveAspectRatio="none"` lässt es unabhängig vom
- * viewBox-Seitenverhältnis auf die tatsächliche Höhe strecken. `pathLength="1"` NUR auf
- * der Progress-Linie normiert deren Pfadlänge unabhängig vom Koordinatensystem auf genau
- * 1 - `stroke-dasharray`/`-dashoffset` rechnen dadurch einfach mit 0..1 statt mit
- * krummen, von der viewBox abhängigen Pixelwerten. Die Track-Linie braucht KEIN
- * pathLength (keine Dash-Animation, einfach immer voll gezeichnet).
- *
- * Scroll-Animation (Progressive Enhancement, `animation-timeline: view()` aktuell NICHT
- * Baseline): Die Progress-Linie bekommt eine EIGENE, anonyme `view()`-Timeline (kein
- * benannter `view-timeline-name` wie bei scroll-stack.css nötig - hier gibt es keine
- * Bühne, die gepinnt bleibt, sondern ein ganz normales Element im Fluss, dessen
- * NATÜRLICHER Eintritts-/Austritts-Scrollweg exakt der gewünschten Zeichendauer
- * entspricht). Der DEFAULT-Bereich ("cover", 0% bis 100%) misst dabei genau von "Element
- * beginnt am unteren Bildschirmrand einzutreten" bis "Element verlässt vollständig den
- * oberen Bildschirmrand" - anders als bei der gepinnten Bühne in scroll-stack.css (wo
- * genau diese Standard-Polsterung ein `view-timeline-inset` nötig machte) ist das hier
- * exakt der gewünschte Effekt, kein Inset nötig.
- *
- * Zusätzlich bekommt jede Karte per EIGENER `view()`-Timeline + `animation-range: entry`
- * (nur die Eintritts-Phase, nicht der gesamte Cover-Bereich) eine dezente Fade/Slide-
- * Enthüllung, während sie von unten ins Bild kommt - rein optische Zugabe, Baseline
- * (ohne Unterstützung) zeigt die Karte einfach direkt vollständig sichtbar an.
+ * ZWEITER ANLAUF - kein SVG mehr, reine `<div>`s mit `scale` statt
+ * `stroke-dasharray`/`-dashoffset`: der erste Anlauf (ein `<svg>` mit zwei `<line>`s,
+ * Zeichnen per animiertem `stroke-dashoffset`) sah in Chromium UND Playwright-WebKit
+ * korrekt aus, blieb aber in ECHTEM Safari 26 als reine statische Linie stehen, keine
+ * sichtbare Fortschritts-Animation (User-Report: "in chrome geht es" / "jetzt is es nur
+ * ne blaue linie" in Safari - per Playwright-WebKit NICHT reproduzierbar, siehe erneut
+ * das wiederkehrende Muster "nur in echtem Safari", Punkt 21 weiter unten). `stroke-
+ * dashoffset` ist eine PAINT-Eigenschaft (erzwingt bei jeder Änderung ein echtes
+ * Neuzeichnen der SVG-Geometrie) - anders als `transform`/`opacity`, die der Compositor
+ * ohne Repaint pro Frame interpolieren kann. Scroll-getriebene Animationen laufen
+ * technisch am ehesten zuverlässig über GENAU diese compositor-freundlichen
+ * Eigenschaften; eine über eine `view()`-Timeline angesteuerte Paint-Eigenschaft ist ein
+ * bekannt riskanteres Pflaster, das Chromium zwar unterstützt, aber nicht jede Engine
+ * gleich zuverlässig pro Scroll-Frame nachzieht. Fix: dieselbe, bereits in
+ * `scroll-progress.css` bewährte Technik (dort horizontal, hier vertikal) - zwei simple
+ * `<div>`s statt `<svg>`/`<line>`, die Progress-"Linie" per `scale` (Y-Achse) von 0 auf 1
+ * gezogen, `transform-origin: top`. Kein SVG, kein `pathLength`, kein `vector-effect`
+ * mehr nötig - insgesamt auch einfacher als der SVG-Anlauf.
  */
 
 .ncss-roadmap {
@@ -65,32 +57,21 @@
   top: 0;
   width: var(--ncss-roadmap-line-width, 2px);
   height: 100%;
-  overflow: visible;
 }
 
-/* KEIN vector-effect:non-scaling-stroke auf beiden Linien - für eine rein VERTIKALE
-   Linie (x1=x2) ist die Strichbreite ohnehin entlang der X-Achse gemessen, und die
-   X-Achse wird durch preserveAspectRatio="none" NICHT gestreckt (viewBox-Breite 2 =
-   tatsächliche Breite 2px, 1:1) - nur die Y-Achse wird stark gestreckt (viewBox-Höhe 100
-   auf oft >1000px tatsächliche Höhe). non-scaling-stroke war deshalb unnötig UND aktiv
-   schädlich: es berechnet laut Spec das gesamte Stroke-Rendering (inklusive
-   stroke-dasharray/-dashoffset) in einem von der viewBox-Streckung ENTKOPPELTEN
-   Koordinatensystem - kombiniert mit pathLength="1" führte das zu einem falsch
-   skalierten, sich wiederholenden Strich-Muster (ein kurzes sichtbares Stück, dann eine
-   Lücke, dann wieder ein Stück, in ca. 180px-Zyklen über die GESAMTE Linie verteilt)
-   statt EINES durchgehenden Strichs - sichtbar als "die Linie verbindet sich nie"
-   (User-Report). Per echtem Pixel-Scan bestätigt: exakt dasselbe periodische Muster bei
-   jedem stroke-dashoffset-Wert (auch bei ausgeschalteter Animation), verschwand komplett,
-   sobald vector-effect entfernt wurde - kein Restproblem der Animation selbst, rein die
-   Kombination aus non-scaling-stroke + pathLength-Normierung. */
+.ncss-roadmap-line-track,
+.ncss-roadmap-line-progress {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+}
+
 .ncss-roadmap-line-track {
-  stroke: var(--ncss-roadmap-track-color, var(--ncss-color-border));
-  stroke-width: var(--ncss-roadmap-line-width, 2px);
+  background-color: var(--ncss-roadmap-track-color, var(--ncss-color-border));
 }
 
 .ncss-roadmap-line-progress {
-  stroke: var(--ncss-roadmap-line-color, var(--ncss-color-brand));
-  stroke-width: var(--ncss-roadmap-line-width, 2px);
+  background-color: var(--ncss-roadmap-line-color, var(--ncss-color-brand));
 }
 
 .ncss-roadmap-list {
@@ -133,25 +114,36 @@
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .ncss-roadmap-line-progress {
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
+      transform-origin: top;
+      scale: 1 0;
       animation: ncss-roadmap-draw linear both;
       animation-timeline: view(block);
-      /* NICHT den Default-Bereich "cover" (0%=erster sichtbarer Pixel, 100%=Element
-         VOLLSTÄNDIG aus dem Viewport verschwunden) verwenden - bei einer Linie, die die
-         GESAMTE (meist sehr lange) Liste überspannt, verlangt "100% erreicht" genug
-         Restscroll-Weg NACH der Liste, dass sie komplett über den oberen Bildschirmrand
-         hinausgewandert ist. Steht die Roadmap wie üblich kurz vor dem Footer (kein
-         zusätzlicher Puffer danach), reicht der tatsächlich vorhandene Rest-Scrollweg der
-         Seite dafür NICHT aus - die Linie bleibt dauerhaft kurz vor dem letzten Punkt
-         unfertig hängen, obwohl die letzte Karte längst voll sichtbar ist (per Test mit
-         echtem `document.body.scrollHeight` gefunden: bei "cover" blieb dashoffset bei
-         maximal möglichem Scroll auf ~0.27 stehen statt 0 zu erreichen). "contain" braucht
-         dagegen nur, dass die Linie den Viewport einmal complet ausfüllt/erreicht - bei
-         Testreihe an mehreren Scroll-Bruchteilen bestätigt: Linie ist exakt fertig
-         gezeichnet, sobald die letzte Karte voll sichtbar wird (nicht früher, nicht
-         später), unabhängig vom verfügbaren Rest-Scrollweg danach. */
-      animation-range: contain;
+      /* Startpunkt "cover 0%" (erster sichtbarer Pixel), NICHT "contain 0%" (erst wenn
+         die Linie den Viewport einmal komplett ausfüllt - bei einer langen Liste deutlich
+         SPÄTER als ihr erstes Erscheinen). Mit "contain" pur blieb der Fortschritt bis
+         ca. 35% Scroll-Fortschritt der Seite bei 0 stehen, zog dann aber SEHR steil auf
+         100% hoch (nur ca. 40% der Gesamt-Scrollstrecke für die komplette Animation) und
+         blieb danach nochmal ca. 25% lang bei "fertig" stehen - fühlte sich dadurch an,
+         als würde die Linie hastig durchgezeichnet statt sich gleichmäßig aufzubauen
+         (User-Feedback: "geht zu schnell ans ende"). "cover 0%" als Start zieht denselben
+         Fortschritt stattdessen über die GESAMTE Scrollstrecke bis zum Erreichen von
+         "contain 100%" (siehe unten), spürbar gleichmäßiger (per Testreihe an mehreren
+         Scroll-Bruchteilen bestätigt: die Animation deckt jetzt ca. 75% statt nur 40% der
+         Gesamt-Scrollstrecke ab).
+         Endpunkt "contain 100%" (NICHT der Default-Endpunkt "cover 100%" = Element
+         VOLLSTÄNDIG aus dem Viewport verschwunden) - bei einer Linie, die die GESAMTE
+         (meist sehr lange) Liste überspannt, verlangt "cover 100%" genug Restscroll-Weg
+         NACH der Liste, dass sie komplett über den oberen Bildschirmrand hinauswandert.
+         Steht die Roadmap wie üblich kurz vor dem Footer (kein zusätzlicher Puffer
+         danach), reicht der tatsächlich vorhandene Rest-Scrollweg der Seite dafür NICHT
+         aus - die Linie bliebe dauerhaft kurz vor dem letzten Punkt unfertig hängen (per
+         Test mit echtem `document.body.scrollHeight` gefunden: bei "cover" blieb der
+         Fortschritt bei maximal möglichem Scroll auf ca. 73% stehen statt 100% zu
+         erreichen). "contain 100%" braucht dagegen nur, dass die Linie den Viewport
+         einmal komplett ausfüllt/erreicht - Linie ist exakt fertig gezeichnet, sobald die
+         letzte Karte voll sichtbar wird, unabhängig vom verfügbaren Rest-Scrollweg
+         danach. */
+      animation-range: cover 0% contain 100%;
     }
 
     .ncss-roadmap-card {
@@ -164,7 +156,7 @@
 
 @keyframes ncss-roadmap-draw {
   to {
-    stroke-dashoffset: 0;
+    scale: 1 1;
   }
 }
 

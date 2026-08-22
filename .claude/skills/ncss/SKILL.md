@@ -471,6 +471,46 @@ gewünschte Zeichenweg).
    profitiert nebenbei: die Progress-Linie ist dort einfach von Anfang an voll gezeichnet
    und deckt den Track komplett ab, ergibt eine durchgehend markenfarbene (statt zuvor
    grauen) Linie - eine optische Verbesserung, kein reiner Kompromiss.
+5) **NUR in echtem Safari reproduzierbar (wieder das Muster aus Punkt 21 weiter unten) -
+   die Zwei-Linien-Lösung aus Punkt 4 sah in Chromium UND Playwright-WebKit einwandfrei
+   aus (per Pixel-Scan bestätigt), User meldete danach trotzdem "in chrome geht es"
+   (impliziert: woanders nicht) und schließlich "jetzt is es nur ne blaue linie" -
+   nachgefragt per AskUserQuestion, welcher Browser betroffen ist: Safari 26.5.2. Laut
+   WebSearch unterstützt Safari `animation-timeline: view()` erst seit Version 26 - 26.5.2
+   MÜSSTE es also eigentlich unterstützen (kein reiner Baseline-Fallback-Fall), User
+   bestätigte zusätzlich "in chrome geht es" (per direktem Vergleich). Ursache (nicht in
+   echtem Safari nachvollzogen, da nicht verfügbar - per Fachwissen zu Paint- vs.
+   Compositor-Eigenschaften hergeleitet UND durch die anschließende Lösung indirekt
+   bestätigt, da das Problem danach verschwand): `stroke-dashoffset` ist eine
+   PAINT-Eigenschaft - jede Wertänderung erzwingt ein echtes Neuzeichnen der
+   SVG-Geometrie, anders als `transform`/`opacity`/`scale` (COMPOSITOR-Eigenschaften, ohne
+   Repaint pro Frame interpolierbar). Scroll-getriebene Animationen sind technisch am
+   zuverlässigsten über GENAU diese Compositor-Eigenschaften - eine über `view()`
+   angesteuerte Paint-Eigenschaft ist ein bekannt riskanteres Pflaster, das nicht jede
+   Engine gleich zuverlässig pro Scroll-Frame nachzieht (Chromium tut es hier
+   offensichtlich, Safari 26.5.2 laut User-Report nicht spürbar). Fix: komplette
+   Umstellung von SVG (`<line>` + `stroke-dasharray`/`-dashoffset` + `pathLength`) auf
+   zwei einfache `<div>`s + `scale` (Y-Achse, `transform-origin: top`) - exakt dieselbe,
+   bereits in `scroll-progress.css` bewährte Technik (dort horizontal), nur vertikal
+   gespiegelt. Kein SVG, kein `pathLength`, kein `vector-effect` mehr nötig - dadurch auch
+   strukturell einfacher als der SVG-Anlauf, nicht nur robuster. Lehre: bei
+   scroll-getriebenen Animationen IMMER zuerst prüfen, ob sich der Effekt über
+   `transform`/`opacity`/`scale`/`filter` erreichen lässt, bevor eine Paint-Eigenschaft
+   (Farben, `stroke-*`, `width`/`height`, `clip-path` mit komplexen Formen o.ä.) animiert
+   wird - insbesondere wenn der Ziel-Effekt (hier: "eine Linie zeichnet sich") sich
+   genauso gut über eine geometrisch simple, compositor-freundliche Alternative bauen
+   lässt (ein rechteckiger Balken mit `scale` statt einer SVG-Linie mit Dash-Muster).
+   Danach EIN letztes Feintuning per User-Feedback ("geht jetzt aber ich finde es geht zu
+   schnell ans ende"): reines `animation-range: contain` blieb bis ca. 35%
+   Scroll-Fortschritt bei 0 stehen, zog dann sehr steil auf 100% hoch (nur ca. 40% der
+   Gesamt-Scrollstrecke) und blieb danach nochmal ca. 25% lang bei "fertig" stehen -
+   fühlte sich dadurch hastig durchgezogen an statt gleichmäßig aufgebaut. Fix:
+   `animation-range: cover 0% contain 100%` - `cover 0%` als (viel früherer) Startpunkt
+   statt `contain 0%` zieht denselben Fortschritt über ca. 75% statt nur 40% der
+   Gesamt-Scrollstrecke, der Endpunkt (`contain 100%`, aus Punkt 4/oben unverändert
+   wichtig für Robustheit nahe dem Seitenende) bleibt gleich. Per Testreihe an mehreren
+   Scroll-Bruchteilen in Chromium UND Playwright-WebKit bestätigt: deutlich gleichmäßigere
+   Werteverteilung über die Scrollstrecke statt eines kurzen, steilen Sprungs.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
