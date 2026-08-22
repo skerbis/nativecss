@@ -402,6 +402,44 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     Breite bereits begrenzt ist, nicht automatisch auf jeden beliebigen Vorfahren mit
     `display:flex`.
 
+24. **Eine ECHTE Produktseite (`index.html`, Repo-Root) mit eigener, kräftiger Marken-
+    farbe als `--ncss-color-bg` (nicht die übliche fast-weiße Fläche) deckte gleich
+    mehrere Landminen auf einmal auf, die eine gewöhnliche Demo-Seite nie berührt -
+    volle Details in README "Produktseite (index.html)", hier nur die übertragbaren
+    Lehren:
+    - Farb-Kontrast-Fixes NICHT stärker als nötig ausfallen lassen: ein erster Versuch
+      dunkelte den Hero/CTA-Hintergrund per Scrim/Verlauf ab, um von 2.94:1 auf AA-Niveau
+      zu kommen - der User wollte lieber die REINE angefragte Farbe behalten, auch mit
+      knapperer Marge. Kontrast-Fixes sind ein Trade-off, keine automatische Pflicht -
+      im Zweifel den User entscheiden lassen, welche Seite der Abwägung er will.
+    - Eine Komponente mit EIGENEM, undurchsichtigem `background-color` (hier
+      `.ncss-topbar`, siehe topbar.css) macht einen Glass-Backdrop-Trick dahinter
+      wirkungslos, selbst wenn die z-index-Mechanik selbst korrekt sitzt (Fallstrick 18)
+      - die Eigenfläche der Komponente muss zusätzlich explizit transparent gesetzt
+      werden, nicht nur ein Backdrop-Element davor/dahinter platziert.
+    - Ein Element, das für ZWEI verschiedene Kontexte wiederverwendet wird (hier
+      `.ncss-nav-list`: Desktop-Inline via `display:contents` am `<dialog>`-Wrapper
+      versus echtes Mobile-Off-Canvas-Panel darunter, siehe nav.css), braucht Farb-
+      Overrides GENAU in derselben Breakpoint-Grenze wie die Komponente selbst - ein
+      pauschaler Override ohne Media Query trifft zwangsläufig auch den Kontext, für den
+      er nie gedacht war (hier: weißer Text im weißen Off-Canvas-Panel).
+    - `:hover`/`:focus-visible`-Zustände einer Komponente SEPARAT gegen den jeweiligen
+      Hintergrund prüfen, nicht nur den Ruhezustand - eine Komponente ändert im Hover oft
+      ihre eigene Hintergrundfarbe (hier: `.ncss-nav-item > a:hover` setzt `--ncss-color-
+      bg-subtle`), wodurch ein für den Ruhezustand korrekter Text-Override im Hover
+      plötzlich wieder unlesbar wird.
+    - Ein `<ul>` mit eigenem `::before`-Aufzählungspunkt braucht trotzdem explizit
+      `list-style:none` - base.css setzt das nur für `role="list"`, ohne das zeigt der
+      Browser seinen NATIVEN Bullet zusätzlich zum eigenen an (zwei Punkte nebeneinander).
+    Übergreifende Lehre aus der ganzen Serie: bei einer NEUEN, farblich kräftigen Marke
+    reicht es nicht, nur die offensichtlichen Textblöcke zu prüfen - JEDE Kombination aus
+    Text-Rolle (Überschrift/Eyebrow/Muted/Button/Nav/Hover) und JEDEM Hintergrund, auf dem
+    sie tatsächlich landet (inkl. Zustands-Wechsel wie Hover und unterschiedlicher
+    Layout-Kontexte wie Mobile-Off-Canvas), einzeln durchgehen - genau das hat der User
+    wiederholt eingefordert ("gehe bitte noch mal alles durch, stile müssen immer auf ihre
+    hintergründe passen") und war nötig, weil jede einzelne Kombination ihre EIGENE,
+    unabhängige Bruchstelle haben kann.
+
 Viertes Beispiel, diesmal EIN Feature (`animation-timeline: view()`), aber DREI getrennte
 Kalibrierungs-Bugs, alle erst durch echten Test bzw. echtes User-Feedback gefunden, nicht
 beim Schreiben selbst sichtbar - und ein Lehrstück darin, wie zwei oberflächlich ähnlich

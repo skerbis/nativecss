@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Natives CSS Design System ohne Build-Schritt</title>
+<meta name="description" content="NativeCSS: ein CSS-Design-System auf Cascade Layers, Container Queries, light-dark() und nativem HTML - kein Sass, kein Bundler, kein Build-Schritt.">
+<link rel="stylesheet" href="ncss.css">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="page-transitions.css">
+<link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+<script src="components/command-fallback.js" defer></script>
+<script src="components/nav.js" defer></script>
+<style>
+  /* --- Hero -------------------------------------------------------------------------- */
+  .landing-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding-block: calc(var(--ncss-topbar-height) + var(--ncss-space-2xl)) var(--ncss-space-2xl);
+    color: #fff;
+    text-align: center;
+  }
+  /* Bewusst KEIN abdunkelnder Verlauf mehr - ein erster Versuch (25-30% Schwarz-Verlauf,
+     um Weiß-auf-#3399ff von 2.94:1 auf AA-Fließtext-Niveau zu heben) verwässerte die
+     gewünschte reine Hintergrundfarbe zu stark (User-Feedback: "nutzt nicht meine
+     Farben ... vor allem den Hintergrund"). Der Hintergrund bleibt jetzt exakt
+     --ncss-color-bg (#3399ff) - die etwas knappere Kontrastsituation bei der
+     Fließtext-Zeile ist eine bewusste, vom User bestätigte Priorität (reine Markenfarbe
+     vor strikter Kontrast-Marge). */
+  .landing-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ncss-space-3xs);
+    padding: var(--ncss-space-3xs) var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-full);
+    background-color: rgb(255 255 255 / 15%);
+    border: 1px solid rgb(255 255 255 / 30%);
+    font-size: var(--ncss-font-size-sm);
+    font-weight: var(--ncss-font-weight-bold);
+  }
+  .landing-hero h1 {
+    margin-block: var(--ncss-space-md) var(--ncss-space-sm);
+    max-width: 44rem;
+    margin-inline: auto;
+  }
+  .landing-hero-lead {
+    max-width: 38rem;
+    margin-inline: auto;
+    color: rgb(255 255 255 / 92%);
+    font-size: var(--ncss-font-size-lg);
+  }
+  .landing-hero-actions {
+    justify-content: center;
+    margin-block-start: var(--ncss-space-lg);
+  }
+  /* .ncss-btn--secondary ist für Text auf normaler --ncss-color-bg kalibriert
+     (color:var(--ncss-color-text), transparenter Hintergrund) - auf den beiden farbigen
+     Flächen dieser Seite (Hero direkt auf #3399ff, CTA-Verlauf bis ins dunkle Navy) blieb
+     der dunkle Default-Text praktisch unlesbar (User-Report: "handbuch lesen button text
+     kann man nicht lesen"). Beide Stellen explizit auf helle Variante umgestellt, statt
+     nur eine der beiden zu flicken - "damit es allgemein immer passt". */
+  .landing-hero .ncss-btn--secondary,
+  .landing-cta .ncss-btn--secondary {
+    color: #fff;
+    border-color: rgb(255 255 255 / 55%);
+  }
+  .landing-hero .ncss-btn--secondary:hover:not(:disabled),
+  .landing-cta .ncss-btn--secondary:hover:not(:disabled) {
+    background-color: rgb(255 255 255 / 15%);
+  }
+  .landing-hero-code {
+    max-width: 34rem;
+    margin: var(--ncss-space-xl) auto 0;
+    text-align: start;
+    background-color: rgb(0 0 0 / 35%);
+    border: 1px solid rgb(255 255 255 / 20%);
+    color: #f4f7ff;
+  }
+  .landing-hero-code code { background: none; color: inherit; padding: 0; }
+
+  /* --- Topbar direkt auf dem Hero - Glass + helle Textfarbe ----------------------------
+     .ncss-topbar bringt selbst ein UNDURCHSICHTIGES background-color:var(--ncss-color-
+     surface) mit (components/topbar.css, normale sticky Kopfleiste) - die geplante
+     Glass-Optik (per separatem .landing-topbar-backdrop-Element, NICHT direkt auf
+     .ncss-topbar-inner - siehe SKILL.md Fallstrick 21, .ncss-glass nie direkt auf ein
+     Element mit <dialog>-Nachfahre wie unser Off-Canvas-Nav-Panel) blieb dadurch
+     unsichtbar: die weiße Eigenfläche der Topbar malt unter allen Kindern, das Backdrop-
+     Element (z-index:-1) malt zwar korrekt DARÜBER (Punkt 18 der SKILL.md - negative
+     z-index-Nachfahren malen NACH dem eigenen Hintergrund, nicht davor), aber eben nur
+     über eine bereits WEISSE Fläche - weißer Nav-Text auf weißem Grund blieb praktisch
+     unsichtbar (User-Report: "navigationspunkte sieht man nicht"). Fix: die
+     Eigenfläche der Topbar selbst hier transparent setzen, NICHT den Trick aufgeben. */
+  .landing-topbar {
+    background-color: transparent;
+    border-block-end: none;
+  }
+  .landing-topbar-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Die Topbar ist position:sticky - beim Scrollen liegt sie mal über dem kräftigen
+       Hero-Blau, mal über einer hellen Fläche weiter unten (Vergleichstabelle, Footer-
+       nahe Bereiche). .ncss-glass' DEFAULT-Transparenz (--ncss-glass-bg, ca. 55%
+       Deckkraft) ist für einen bekannten, GLEICHBLEIBENDEN Hintergrund kalibriert - über
+       einer hellen Fläche schimmerte dadurch zu viel Content durch, der feste weiße
+       Nav-Text wurde praktisch unlesbar (User-Report: "navigationspunkte sieht man
+       nicht"). Eigener, deutlich blickdichterer Farbwert (Marken-Navy, 88% Deckkraft statt
+       55%) - bleibt unabhängig davon, was gerade darunter liegt, konstant kontrastreich
+       für den weißen Text, behält per .ncss-glass weiterhin den Blur/Saturate-Touch. */
+    --ncss-glass-bg: rgb(49 65 100 / 88%);
+  }
+  .landing-topbar .ncss-topbar-brand,
+  .landing-topbar .ncss-nav-toggle {
+    color: #fff;
+  }
+  /* .ncss-nav-list ist EIN Element für Desktop UND Mobile (nav.css: display:contents am
+     <dialog>-Wrapper oberhalb 64rem lässt die Liste direkt auf der Glass-Topbar rendern;
+     darunter wird derselbe <dialog> zum echten Off-Canvas-Panel mit eigener WEISSER
+     Fläche, siehe off-canvas.css). Weißer Text nur oberhalb dieser Schwelle erzwingen
+     (exakt nav.css' eigene @media (max-width: 63.99rem)-Grenze gespiegelt) - sonst war
+     derselbe weiße Text im Off-Canvas-Panel auf dessen eigenem weißen Grund unsichtbar
+     (User-Report: leeres weißes Mobil-Menü ohne erkennbare Punkte). */
+  @media (min-width: 64rem) {
+    .landing-topbar .ncss-nav-item > a,
+    .landing-topbar .ncss-nav-dropdown > summary {
+      color: #fff;
+    }
+    /* nav.css' eigener :hover/:focus-visible-Zustand setzt background-color:var(--ncss-
+       color-bg-subtle) (heller Tint, hier sehr helles Blau) - der weiße Text blieb darauf
+       praktisch unsichtbar (User-Report + Screenshot: "Features" beim Hover kaum lesbar).
+       Eigener, zur dunklen Glass-Topbar passender Hover-Hintergrund statt des hellen
+       Defaults. */
+    .landing-topbar .ncss-nav-item > a:hover,
+    .landing-topbar .ncss-nav-item > a:focus-visible,
+    .landing-topbar .ncss-nav-dropdown > summary:hover,
+    .landing-topbar .ncss-nav-dropdown > summary:focus-visible {
+      background-color: rgb(255 255 255 / 15%);
+    }
+  }
+
+  /* --- Allgemeine Sektionen ------------------------------------------------------------ */
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .landing-section--tinted {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  /* Dieselbe visuelle Sprache wie base.css' <blockquote> (linker Akzent-Rahmen + Einzug,
+     siehe dort) für die Lead-Absätze jeder Sektion - kein echtes Zitat, nur der Look, den
+     der User als "ideal" für diese Textrolle vorschlug. Border-Farbe folgt currentColor
+     statt einem fixen Token, damit sie auf JEDER Sektion automatisch zur jeweils aktiven
+     Textfarbe passt (weiß im Hero, dunkles Navy in den .landing-on-bg-Sektionen, normaler
+     --ncss-color-border in den hellen/getönten Abschnitten). */
+  .landing-lead-quote {
+    border-inline-start: 0.25rem solid color-mix(in srgb, currentColor 55%, transparent);
+    padding-inline-start: var(--ncss-space-sm);
+  }
+  /* .ncss-eyebrow (Default: var(--ncss-color-brand), unser gedämpftes Grau #6f6f6e) und
+     .ncss-text-muted (Default #5a5f6a) sind für Text auf WEISSEN Karten/Flächen
+     kalibriert - direkt auf der kräftigen #3399ff-Seitenfläche (Sektionen zwischen den
+     Karten, nicht die Karten selbst) fallen beide unter 2:1 Kontrast, per WCAG-Rechnung
+     bestätigt (1.71:1 bzw. 2.18:1 - weit unter der 4.5:1-Mindestgrenze für Fließtext).
+     Reines Schwarz/Weiß wäre zwar tauglich, verwässert aber die Farbunterscheidung
+     zwischen Überschrift und Eyebrow/Kicker - stattdessen zwei dunkle Navytöne AUS DER
+     BRAND-2-FAMILIE, beide individuell nachgerechnet bis sie AA-Fließtext-Kontrast
+     erreichen (nicht einfach angenommen). Nur auf Sektionen angewendet, die DIREKT auf
+     --ncss-color-bg liegen - .landing-section--tinted (helle bg-subtle-Fläche) und Karten
+     brauchen das nicht, dort ist der System-Default längst kontrastreich genug. */
+  .landing-on-bg .ncss-eyebrow { color: light-dark(#1b2740, #9fc4f2); }
+  .landing-on-bg .ncss-text-muted { color: light-dark(#1e2c40, #8fa3c2); }
+  .landing-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-brand-100);
+    color: var(--ncss-color-brand-on-soft);
+    font-size: 1.1rem;
+    margin-block-end: var(--ncss-space-2xs);
+  }
+  .landing-icon--lg {
+    inline-size: 5rem;
+    block-size: 5rem;
+    border-radius: var(--ncss-radius-full);
+    font-size: 2rem;
+    margin-block-end: var(--ncss-space-md);
+  }
+
+  /* --- Stacked-Cards Feature-Showcase (Vollbild) -----------------------------------------
+     --ncss-stack-card-height:100vh/-card-width:100%/-fan:0px = die "Vollbild"-Variante von
+     scroll-stack.css (siehe demo/stacked-cards.html) - jede Karte nimmt die GANZE Bühne
+     ein statt nur einen Ausschnitt. */
+  .landing-stack-card {
+    color: #fff;
+    flex-direction: column;
+    text-align: center;
+    padding: var(--ncss-space-xl);
+  }
+  .landing-stack-num {
+    position: absolute;
+    top: var(--ncss-space-lg);
+    inset-inline-end: var(--ncss-space-lg);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: var(--ncss-font-weight-bold);
+    color: rgb(255 255 255 / 14%);
+    line-height: 1;
+  }
+  .landing-stack-card h2 {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin-block-end: var(--ncss-space-sm);
+  }
+  .landing-stack-card p {
+    max-width: 34rem;
+    font-size: var(--ncss-font-size-lg);
+    color: rgb(255 255 255 / 92%);
+  }
+  .landing-stack-card .landing-icon--lg {
+    background-color: rgb(255 255 255 / 16%);
+    color: #fff;
+  }
+  .landing-stack-card code {
+    background-color: rgb(0 0 0 / 25%);
+    color: #f4f7ff;
+  }
+  /* FESTE Verlaufsfarben, NICHT die light-dark()-Seed-Tokens direkt (--ncss-color-brand/
+     -brand-2/-success) - die sind für TEXT auf weißer Fläche kalibriert und werden im
+     Dark Mode bewusst HELLER (z.B. brand-2 #314164 -> #8ea3cf) für Kontrast gegen dunkle
+     Karten. Als KARTEN-Hintergrund mit fest-weißem Text gedacht, würde ein im Dark Mode
+     aufgehellter Ton den Text unlesbar machen (per echtem Screenshot-Vergleich Light/Dark
+     gefunden - Karte 1 im Dark Mode praktisch unlesbar, da --ncss-color-brand-2 dort hell
+     statt dunkel ist). Jeder Verlauf (beide Endpunkte, nicht nur der dunklere) einzeln
+     per WCAG-Kontrastrechnung mit Weiß geprüft (≥4.5:1), bleiben deshalb in JEDEM Modus
+     gleich dunkel/gesättigt genug. */
+  .landing-stack-card--1 { background: linear-gradient(135deg, #314164, #4f5d7b); }
+  .landing-stack-card--2 { background: linear-gradient(135deg, #215a94, #4272a4); }
+  .landing-stack-card--3 { background: linear-gradient(135deg, #12692f, #357f4e); }
+  .landing-stack-card--4 { background: linear-gradient(135deg, #52525b, #6b6b73); }
+  .landing-stack-card--5 { background: linear-gradient(135deg, #6b21a8, #8142b5); }
+
+  /* --- Feature-Übersicht ---------------------------------------------------------------- */
+  .landing-feature-group h3 {
+    color: var(--ncss-color-brand-2);
+    margin-block-end: var(--ncss-space-2xs);
+  }
+  .landing-feature-list {
+    /* base.css setzt list-style:none NUR für role="list" (Safari+VoiceOver-Konvention,
+     * siehe base.css) - ohne eigenes list-style:none hier zeigte der Browser zusätzlich
+     * zum eigenen ::before-Punkt (li::before unten) noch seinen nativen Listenpunkt an,
+     * sichtbar als zwei Punkte nebeneinander (User-Report). padding-inline-start:0
+     * ersetzt zusätzlich den Default-Listeneinzug aus base.css (ul,ol{padding-inline-
+     * start:var(--ncss-space-md)}) - der eigene Einzug kommt hier bewusst von der
+     * einzelnen <li> selbst (Platz für den ::before-Punkt), nicht von der Liste. */
+    list-style: none;
+    padding-inline-start: 0;
+    display: grid;
+    gap: var(--ncss-space-2xs);
+  }
+  .landing-feature-list li {
+    padding-inline-start: var(--ncss-space-sm);
+    position: relative;
+  }
+  .landing-feature-list li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.6em;
+    inline-size: 0.4rem;
+    block-size: 0.4rem;
+    border-radius: 50%;
+    background-color: var(--ncss-color-brand);
+  }
+
+  /* --- Vergleichstabellen ---------------------------------------------------------------- */
+  .landing-compare-table th:first-child,
+  .landing-compare-table td:first-child {
+    font-weight: var(--ncss-font-weight-bold);
+    white-space: nowrap;
+  }
+  .landing-compare-yes { color: var(--ncss-color-success); }
+  .landing-compare-no { color: var(--ncss-color-danger); }
+
+  /* --- Finaler CTA ------------------------------------------------------------------------
+     Verlauf bis zum reinen --ncss-color-bg (#3399ff) - ein erster Versuch dunkelte das
+     Blau-Ende zusätzlich ab (#1c548c statt #3399ff) für mehr Kontrastmarge, verwässerte
+     damit aber dieselbe gewünschte reine Markenfarbe wie der Hero-Scrim (User-Feedback:
+     "nutzt nicht meine Farben ... vor allem den Hintergrund") - jetzt konsequent überall
+     dieselbe reine Farbe. */
+  .landing-cta {
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(135deg, var(--ncss-color-brand-2), var(--ncss-color-bg));
+  }
+  .landing-cta h2 { color: #fff; }
+  .landing-cta p { color: rgb(255 255 255 / 90%); max-width: 34rem; margin-inline: auto; }
+  .landing-cta .ncss-cluster { justify-content: center; margin-block-start: var(--ncss-space-md); }
+
+  .demo-footer-brand { color: var(--ncss-color-text); }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar landing-topbar ncss-hide-on-scroll">
+  <div class="landing-topbar-backdrop ncss-glass"></div>
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="#warum">Warum NativeCSS</a></li>
+          <li class="ncss-nav-item"><a href="#features">Features</a></li>
+          <li class="ncss-nav-item"><a href="#vergleich">Vergleich</a></li>
+          <li class="ncss-nav-item"><a href="#code">Code</a></li>
+          <li class="ncss-nav-item"><a href="demo/index.html">Demo</a></li>
+          <li class="ncss-nav-item"><a href="demo/docs.html">Handbuch</a></li>
+          <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> GitHub</a></li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="landing-hero">
+    <div class="ncss-container">
+      <span class="landing-hero-badge"><i class="fa-solid fa-code" aria-hidden="true"></i> Kein Sass. Kein Bundler. Kein Build-Schritt.</span>
+      <h1>Natives CSS. Volle Kontrolle.</h1>
+      <p class="landing-hero-lead">NativeCSS ist ein Design-System, das komplett auf bereits verschiffte Browser-Features setzt - Cascade Layers, Container Queries, <code>light-dark()</code>, natives <code>&lt;dialog&gt;</code>, scroll-getriebene Animationen. Kein Preprocessor, kein Kompilierschritt, kein Framework-Lock-in.</p>
+      <div class="ncss-cluster landing-hero-actions">
+        <a class="ncss-btn ncss-btn--primary" href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> Auf GitHub ansehen</a>
+        <a class="ncss-btn ncss-btn--secondary" href="demo/index.html">Demo entdecken</a>
+      </div>
+      <pre class="ncss-radius-lg landing-hero-code"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+&lt;link rel="stylesheet" href="theme.css"&gt;
+&lt;!-- fertig. kein npm install, kein Build. --&gt;</code></pre>
+    </div>
+  </section>
+
+  <section id="warum" class="landing-on-bg ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-eyebrow">Warum natives CSS</p>
+      <h2>Was seit 2024/2025 in jedem aktuellen Browser steckt - und kaum genutzt wird</h2>
+      <p class="ncss-text-lead ncss-text-muted landing-lead-quote">Die letzten Jahre haben CSS mehr echte Sprachfeatures gebracht als das letzte Jahrzehnt Tooling. NativeCSS baut ausschließlich darauf auf, statt sie hinter einem Preprocessor zu verstecken.</p>
+    </div>
+    <div class="ncss-grid" style="--ncss-grid-min: 15rem;">
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body">
+          <span class="landing-icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+          <h3>Cascade Layers</h3>
+          <p class="ncss-text-sm ncss-text-muted">Reihenfolge statt Spezifitäts-Kämpfe - <code>tokens &lt; reset &lt; base &lt; helpers &lt; components</code>. Kein <code>!important</code>, keine ID-Selektoren als Notbremse.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body">
+          <span class="landing-icon"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></span>
+          <h3>light-dark()</h3>
+          <p class="ncss-text-sm ncss-text-muted">EIN Wert pro Token deckt Hell und Dunkel ab - kein zweites Dark-Stylesheet, keine <code>.dark</code>-Klasse, die durch jede Komponente gereicht werden muss.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body">
+          <span class="landing-icon"><i class="fa-solid fa-expand" aria-hidden="true"></i></span>
+          <h3>Container Queries</h3>
+          <p class="ncss-text-sm ncss-text-muted">Komponenten reagieren auf ihren eigenen Platz, nicht auf den Viewport - eine Karte in der Sidebar verhält sich anders als dieselbe Karte im Hauptbereich, automatisch.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body">
+          <span class="landing-icon"><i class="fa-solid fa-window-restore" aria-hidden="true"></i></span>
+          <h3>Natives HTML</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>&lt;dialog&gt;</code> und <code>&lt;details&gt;</code> statt JS-Nachbauten für Modal/Dropdown/Off-Canvas - Fokus-Handling, ESC-Taste und <code>::backdrop</code> kommen kostenlos vom Browser.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body">
+          <span class="landing-icon"><i class="fa-solid fa-arrows-up-down" aria-hidden="true"></i></span>
+          <h3>Scroll-getriebene Animationen</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>animation-timeline: view()</code>/<code>scroll()</code> - Lesefortschritt, Scroll-Reveal, gestapelte Karten, alles ganz ohne <code>IntersectionObserver</code> oder Scroll-Event-Listener.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body">
+          <span class="landing-icon"><i class="fa-solid fa-swatchbook" aria-hidden="true"></i></span>
+          <h3>Eine Quelle der Wahrheit</h3>
+          <p class="ncss-text-sm ncss-text-muted">Ganze Farbskalen (100-900, <code>-on-soft</code>) per <code>color-mix()</code> aus EINEM Basiswert berechnet - eine Marke in <code>theme.css</code> ändern, die ganze Skala zieht automatisch mit.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body">
+          <span class="landing-icon"><i class="fa-solid fa-hand-pointer" aria-hidden="true"></i></span>
+          <h3>Cherry-Picking statt Alles-oder-nichts</h3>
+          <p class="ncss-text-sm ncss-text-muted">Jede Komponente eine eigene, kleine Datei (<code>components/card.css</code>, <code>components/modal.css</code>, ...) - nur einbinden, was gebraucht wird. Kein Bundler, der ungenutztes CSS erst per Purge wieder herausschneiden muss.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="features" class="landing-on-bg ncss-py-xl">
+    <div class="ncss-container ncss-stack ncss-stack--tight" style="margin-block-end: var(--ncss-space-lg);">
+      <p class="ncss-eyebrow">Features im Scrollverlauf</p>
+      <h2>Fünf Bausteine, die NativeCSS ausmachen</h2>
+      <p class="ncss-text-lead ncss-text-muted landing-lead-quote">Diese Sektion ist selbst ein NativeCSS-Feature: <code>.ncss-stack-section</code> (components/scroll-stack.css) - Karten stapeln sich beim Scrollen, komplett ohne JavaScript, mit einem funktionierenden Fallback für Browser ohne <code>view()</code>-Unterstützung.</p>
+    </div>
+    <div class="ncss-stack-section" style="--ncss-stack-count: 5; --ncss-stack-card-height: 100vh; --ncss-stack-card-width: 100%; --ncss-stack-fan: 0px;">
+        <div class="ncss-stack-stage">
+          <article class="ncss-stack-card landing-stack-card landing-stack-card--1" style="--ncss-stack-index: 0;">
+            <span class="landing-stack-num">01</span>
+            <span class="landing-icon landing-icon--lg ncss-glow-pulse"><i class="fa-solid fa-swatchbook" aria-hidden="true"></i></span>
+            <h2>Design-Tokens & Theming</h2>
+            <p>Eine einzige <code>theme.css</code> - Markenfarben, Radien, Schriften, Bewegung. Kein <code>!important</code>, kein zweiter Ort, an dem Werte gepflegt werden müssen.</p>
+          </article>
+          <article class="ncss-stack-card landing-stack-card landing-stack-card--2" style="--ncss-stack-index: 1;">
+            <span class="landing-stack-num">02</span>
+            <span class="landing-icon landing-icon--lg ncss-glow-pulse"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+            <h2>Cascade Layers</h2>
+            <p>Jede Datei liegt in einem benannten Layer. Reihenfolge entscheidet, nicht Spezifität - Web-Awesome-Bridge gewinnt garantiert gegen Web Awesomes eigenes Theme.</p>
+          </article>
+          <article class="ncss-stack-card landing-stack-card landing-stack-card--3" style="--ncss-stack-index: 2;">
+            <span class="landing-stack-num">03</span>
+            <span class="landing-icon landing-icon--lg ncss-glow-pulse"><i class="fa-solid fa-arrows-up-down" aria-hidden="true"></i></span>
+            <h2>Scroll-getriebene Animationen</h2>
+            <p>Lesefortschritt, Vollbild-Sektionen, diese Stapel-Karten hier, eine sich selbst zeichnende Roadmap-Linie - alles <code>animation-timeline</code>, kein JS.</p>
+          </article>
+          <article class="ncss-stack-card landing-stack-card landing-stack-card--4" style="--ncss-stack-index: 3;">
+            <span class="landing-stack-num">04</span>
+            <span class="landing-icon landing-icon--lg ncss-glow-pulse"><i class="fa-solid fa-puzzle-piece" aria-hidden="true"></i></span>
+            <h2>Web Awesome nur wo nötig</h2>
+            <p>Selbst gehostete Web Awesome + Font Awesome Komponenten (Rating, Tree, Popover) - niemals fürs Seitengerüst, damit die Seite nicht von ES-Modulen abhängt.</p>
+          </article>
+          <article class="ncss-stack-card landing-stack-card landing-stack-card--5" style="--ncss-stack-index: 4;">
+            <span class="landing-stack-num">05</span>
+            <span class="landing-icon landing-icon--lg ncss-glow-pulse"><i class="fa-solid fa-universal-access" aria-hidden="true"></i></span>
+            <h2>Barrierefreiheit eingebaut</h2>
+            <p><code>prefers-reduced-motion</code> global respektiert, <code>:focus-visible</code>-Ringe, WCAG-geprüfte Kontraste - kein nachträgliches a11y-Audit nötig.</p>
+          </article>
+        </div>
+    </div>
+  </section>
+
+  <section class="landing-section--tinted ncss-py-xl">
+    <div class="ncss-container ncss-stack ncss-stack--loose">
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-eyebrow">Alle Features im Überblick</p>
+        <h2>Ein solides Grundgerüst - kein Wildwuchs</h2>
+      </div>
+      <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+        <div class="landing-feature-group">
+          <h3>Tokens & Theming</h3>
+          <ul class="landing-feature-list ncss-text-sm">
+            <li>Fluid Typografie/Spacing (<code>clamp()</code>)</li>
+            <li>Farbskalen per <code>color-mix()</code></li>
+            <li><code>light-dark()</code>, keine zweite Datei</li>
+            <li>Farbpaletten per <code>[data-palette]</code></li>
+            <li>Eine <code>theme.css</code> für alles</li>
+          </ul>
+        </div>
+        <div class="landing-feature-group">
+          <h3>Layout & Helfer</h3>
+          <ul class="landing-feature-list ncss-text-sm">
+            <li>Grid/Stack/Cluster-Utilities</li>
+            <li>Container Queries statt Breakpoints</li>
+            <li>Responsive Tabellen (2 Strategien)</li>
+            <li>Elevation (Rahmen/Schatten/Radien)</li>
+            <li>Sticky, Scroll-Snap, Vollbild-Sektionen</li>
+          </ul>
+        </div>
+        <div class="landing-feature-group">
+          <h3>Komponenten</h3>
+          <ul class="landing-feature-list ncss-text-sm">
+            <li>Card, Modal, Off-Canvas, Dialog</li>
+            <li>Topbar, Nav (Mega-Menü, Dropdown, Tree)</li>
+            <li>Badge, Breadcrumb, Disclosure, Suche</li>
+            <li>Select, Slideshow, Sparkline</li>
+            <li>Audio/Video, Hero, Footer</li>
+          </ul>
+        </div>
+        <div class="landing-feature-group">
+          <h3>Scroll & Bewegung</h3>
+          <ul class="landing-feature-list ncss-text-sm">
+            <li>Scroll-Progress-Balken</li>
+            <li>Auto-Hide Topbar (wie hier oben)</li>
+            <li>Stacked Cards (vertikal/horizontal)</li>
+            <li>Sich selbst zeichnende Roadmap-Linie</li>
+            <li>Cross-Document View-Transitions</li>
+            <li>Glow/Glass/Stamped-Effekte</li>
+          </ul>
+        </div>
+        <div class="landing-feature-group">
+          <h3>Web-Awesome-Integration</h3>
+          <ul class="landing-feature-list ncss-text-sm">
+            <li>Selbst gehostet, kein CDN</li>
+            <li>Bridge an ncss-Tokens gekoppelt</li>
+            <li>Font Awesome Icons inklusive</li>
+            <li>Nur ergänzend, nie fürs Grundgerüst</li>
+            <li>Eigene lokale Referenz-Doku pro Version</li>
+          </ul>
+        </div>
+        <div class="landing-feature-group">
+          <h3>Qualität</h3>
+          <ul class="landing-feature-list ncss-text-sm">
+            <li>Kein Build-Schritt, kein <code>node_modules</code></li>
+            <li><code>@supports</code>-Fallbacks für neue CSS-Features</li>
+            <li>WCAG-Kontrastprüfung eingebaut</li>
+            <li><code>prefers-reduced-motion</code> global</li>
+            <li>In echten Browsern getestet, nicht nur angenommen</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="code" class="landing-on-bg ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-eyebrow">Code-Beispiele</p>
+      <h2>So sieht es in der Praxis aus</h2>
+    </div>
+    <div class="ncss-grid" style="--ncss-grid-min: 22rem;">
+      <div class="ncss-stack ncss-stack--tight">
+        <h3 class="ncss-text-sm ncss-text-muted">Karte + Button, automatisch dark-mode-fähig</h3>
+        <pre class="ncss-radius-lg ncss-border"><code>&lt;article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Titel&lt;/h3&gt;
+    &lt;p&gt;Text ...&lt;/p&gt;
+    &lt;button class="ncss-btn ncss-btn--primary"&gt;
+      Aktion
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+      </div>
+      <div class="ncss-stack ncss-stack--tight">
+        <h3 class="ncss-text-sm ncss-text-muted">Eigene Marke - <code>theme.css</code></h3>
+        <pre class="ncss-radius-lg ncss-border"><code>:root {
+  --ncss-color-brand:
+    light-dark(#6f6f6e, #b7b7b6);
+  --ncss-color-bg:
+    light-dark(#3399ff, #0b1c33);
+}
+/* Skalen (100-900), Badges, Buttons,
+   Cards ziehen automatisch mit. */</code></pre>
+      </div>
+      <div class="ncss-stack ncss-stack--tight">
+        <h3 class="ncss-text-sm ncss-text-muted">Gestapelte Karten (wie oben)</h3>
+        <pre class="ncss-radius-lg ncss-border"><code>&lt;div class="ncss-stack-section"
+     style="--ncss-stack-count: 4;"&gt;
+  &lt;div class="ncss-stack-stage"&gt;
+    &lt;article class="ncss-stack-card"
+      style="--ncss-stack-index: 0"&gt;
+      ...
+    &lt;/article&gt;
+    &lt;!-- ... --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+      <div class="ncss-stack ncss-stack--tight">
+        <h3 class="ncss-text-sm ncss-text-muted">Modal - natives <code>&lt;dialog&gt;</code></h3>
+        <pre class="ncss-radius-lg ncss-border"><code>&lt;button command="show-modal"
+        commandfor="d"&gt;Öffnen&lt;/button&gt;
+&lt;dialog id="d" class="ncss-modal"&gt;
+  &lt;div class="ncss-modal-body"&gt;
+    Kein JS-Framework nötig.
+  &lt;/div&gt;
+&lt;/dialog&gt;</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="vergleich" class="landing-section--tinted ncss-py-xl">
+    <div class="ncss-container ncss-stack ncss-stack--loose">
+      <div class="ncss-stack ncss-stack--tight">
+        <p class="ncss-eyebrow">Vergleich</p>
+        <h2>Wie ordnet sich NativeCSS ein?</h2>
+        <p class="ncss-text-lead ncss-text-muted landing-lead-quote">Kein Framework ist per se "falsch" - hier die ehrliche Gegenüberstellung, wofür NativeCSS eine andere Wahl trifft.</p>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <h3>Tailwind CSS vs. NativeCSS</h3>
+        <div class="ncss-table-scroll">
+          <table class="landing-compare-table">
+            <thead>
+              <tr><th scope="col">Kriterium</th><th scope="col">Tailwind CSS</th><th scope="col">NativeCSS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Build-Schritt</td><td>Ja, PostCSS-Pipeline + Purge nötig</td><td class="landing-compare-yes">Nein - <code>&lt;link&gt;</code> reicht</td></tr>
+              <tr><td>Ansatz</td><td>Utility-Klassen im Markup</td><td>Kuratierte Komponenten + kleine Utility-Sets</td></tr>
+              <tr><td>Theming</td><td>Config-Datei, eigenes Build nötig</td><td class="landing-compare-yes">EINE <code>theme.css</code>, kein Build</td></tr>
+              <tr><td>Dark Mode</td><td><code>dark:</code>-Präfix auf jeder Klasse</td><td class="landing-compare-yes"><code>light-dark()</code>, ein Wert pro Token</td></tr>
+              <tr><td>Markup-Lesbarkeit</td><td>Viele Klassen pro Element</td><td class="landing-compare-yes">Wenige, sprechende Klassennamen</td></tr>
+              <tr><td>Bundle/Dateigröße</td><td>Abhängig vom Purge-Ergebnis</td><td>Statisches CSS, kein Purge nötig</td></tr>
+              <tr><td>Lernkurve</td><td>Eigene Utility-Namenskonvention</td><td>Normales CSS + Custom Properties</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="ncss-stack ncss-stack--tight">
+        <h3>UIkit 3 vs. NativeCSS</h3>
+        <div class="ncss-table-scroll">
+          <table class="landing-compare-table">
+            <thead>
+              <tr><th scope="col">Kriterium</th><th scope="col">UIkit 3</th><th scope="col">NativeCSS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Preprocessor</td><td>LESS, Build zum Anpassen nötig</td><td class="landing-compare-yes">Keiner - reines CSS</td></tr>
+              <tr><td>JS-Abhängigkeit</td><td>Eigenes JS für Modal/Dropdown/Off-Canvas</td><td class="landing-compare-yes">Natives <code>&lt;dialog&gt;</code>/<code>&lt;details&gt;</code></td></tr>
+              <tr><td>Theming-Mechanik</td><td>LESS-Variablen, neu kompilieren</td><td class="landing-compare-yes">CSS Custom Properties, live</td></tr>
+              <tr><td>Responsive</td><td>Viewport-Breakpoints</td><td class="landing-compare-yes">Container Queries pro Komponente</td></tr>
+              <tr><td>Dark Mode</td><td>Separates Theme/Klasse</td><td class="landing-compare-yes"><code>light-dark()</code> eingebaut</td></tr>
+              <tr><td>Web-Component-Ergänzung</td><td>Nein</td><td>Web Awesome optional, nur wo nötig</td></tr>
+              <tr><td>Cascade-Kontrolle</td><td>Spezifität/Reihenfolge im LESS</td><td class="landing-compare-yes">Cascade Layers, explizite Reihenfolge</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-cta ncss-py-xl">
+    <div class="ncss-container">
+      <h2>Selbst ausprobieren</h2>
+      <p>Kein Signup, kein Build. Repo klonen, <code>ncss.css</code> einbinden, loslegen.</p>
+      <div class="ncss-cluster">
+        <a class="ncss-btn ncss-btn--primary" href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> Repository auf GitHub</a>
+        <a class="ncss-btn ncss-btn--secondary" href="demo/docs.html">Handbuch lesen</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="demo/index.html">Demo</a></li>
+        <li class="ncss-nav-item"><a href="demo/docs.html">Handbuch</a></li>
+        <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">GitHub</a></li>
+        <li class="ncss-nav-item"><a href="LICENSE">Lizenz</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

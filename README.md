@@ -599,6 +599,48 @@ per CSS behebbare Ursache). Das Script schließt jedes offene Panel, sobald gesc
 wird, statt gegen die Neupositionierung anzukämpfen - dasselbe Muster wie bei den
 meisten Mega-/Dropdown-Menüs anderer Sites.
 
+## Produktseite (`index.html`, Repo-Root)
+
+Die eigentliche NativeCSS-Seite (nicht Teil der `demo/`-Sammlung) - dogfooded mit
+NativeCSS selbst: Hero, Vorteils-Karten, eine Vollbild-`.ncss-stack-section` als
+Feature-Showcase (5 Karten), vollständige Feature-Übersicht, Code-Beispiele, Tailwind-/
+UIkit3-Vergleichstabellen, CTA. Nutzt `theme.css` (siehe oben) mit einer eigenen Marke
+(gedämpftes Grau `#6f6f6e` als `--ncss-color-brand`, dunkles Navy `#314164` als
+`--ncss-color-brand-2`, kräftiges Blau `#3399ff` als `--ncss-color-bg` - bewusst KEINE
+fast-weiße Fläche, sondern eine "farbige Leinwand + weiße Inhalts-Karten"-Optik). Topbar
+nutzt `.ncss-hide-on-scroll` (blendet beim Runterscrollen aus, beim Hochscrollen wieder
+ein) UND `.ncss-glass` (als separates Backdrop-Element, nicht direkt auf dem Nav-
+Container - Fallstrick 21).
+
+**Landmine-Serie beim Bauen dieser Seite** (mehrere Runden echten User-Feedbacks, jede
+einzeln per Screenshot/Playwright verifiziert, nicht nur angenommen):
+- Weiß auf reinem `#3399ff` liegt bei 2.94:1 (unter der 3:1-Mindestgrenze) - trotzdem auf
+  Wunsch des Users NICHT künstlich verwässert (kein Scrim/keine Abdunklung mehr), Priorität
+  liegt auf der reinen Markenfarbe statt einer Kontrast-Sicherheitsmarge.
+- `.ncss-eyebrow`/`.ncss-text-muted` sind für Text auf weißen Karten kalibriert (1.71:1
+  bzw. 2.18:1 direkt auf `#3399ff`, weit unter 4.5:1) - eigene, einzeln WCAG-geprüfte
+  dunkle Navytöne für Sektionen, die direkt auf der Markenfarbe liegen.
+- `.ncss-topbar` selbst bringt ein UNDURCHSICHTIGES `background-color:var(--ncss-color-
+  surface)` mit - ein Glass-Backdrop-Element dahinter (per Fallstrick-18-Technik korrekt
+  ÜBER der eigenen Elementfläche gemalt) blieb trotzdem unsichtbar, weil es nur über einer
+  bereits weißen Fläche lag. Fix: die Eigenfläche der Topbar selbst transparent setzen.
+- `.ncss-nav-list` ist EIN Element für Desktop-Inline-Nav UND Mobile-Off-Canvas-Panel
+  (`display:contents` am `<dialog>`-Wrapper oberhalb 64rem lässt es direkt rendern,
+  darunter wird derselbe `<dialog>` zum echten Off-Canvas mit eigener weißer Fläche) - ein
+  pauschal erzwungener weißer Text traf BEIDE Fälle, im Off-Canvas-Panel dadurch weißer
+  Text auf weißem Grund. Fix: die Farb-Erzwingung in dieselbe `@media (min-width: 64rem)`-
+  Schwelle gepackt, die nav.css selbst für den Umschaltpunkt nutzt.
+  `:hover`/`:focus-visible` GESONDERT geprüft und gefixt - nav.css setzt dort einen hellen
+  `background-color:var(--ncss-color-bg-subtle)`, der mit demselben weißen Text erneut
+  unlesbar wurde (eigener Fund, nicht durch den Basis-Fix automatisch mit erledigt).
+- `.ncss-btn--secondary` (`color:var(--ncss-color-text)`, transparenter Hintergrund) ist
+  für Text auf normaler Seitenfläche kalibriert - auf den farbigen Flächen dieser Seite
+  blieb der dunkle Default-Text unlesbar, eigene helle Variante für Hero UND CTA-Sektion
+  (nicht nur eine der beiden Stellen).
+- `<ul>`-Listen ohne eigenes `list-style:none` zeigen ZUSÄTZLICH zu einem eigenen
+  `::before`-Aufzählungspunkt weiterhin den nativen Browser-Bullet - sichtbar als zwei
+  Punkte nebeneinander (base.css setzt `list-style:none` nur für `role="list"`).
+
 ## Demo-Seiten
 
 Alle unter `demo/`, jede bindet `../ncss.css` ein und trägt eigenes, seitenspezifisches CSS

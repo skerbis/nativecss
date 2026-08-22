@@ -30,10 +30,26 @@
   /* --- Markenfarben (Seed-Werte, alle abgeleiteten Stufen folgen automatisch) -------
      light-dark(HELL, DUNKEL) - EIN Wert deckt beide Modi ab, kein zweiter Dark-Block
      nötig. Reine Hex-Farbe statt light-dark() ist auch gültig, wenn ein Projekt gar
-     keinen Dark Mode will. */
-  --ncss-color-brand: light-dark(#0057d8, #6ea8ff);
+     keinen Dark Mode will.
+     Dieses Theme = die tatsächliche NativeCSS-Produktseite (index.html, Repo-Root):
+     gedämpftes Grau als Hauptmarke, dunkles Navy als Zweitfarbe, signifikantes Blau
+     (#3399ff) als Seiten-Grundfarbe (siehe --ncss-color-bg unten) - bewusst NICHT die
+     übliche "fast weiße Fläche" als bg, sondern ein kräftiger Farbton als Erkennungswert
+     der Seite selbst (verbreitetes "farbige Leinwand + weiße Inhalts-Karten"-Muster).
+     Dark-Mode-Werte sind eigenständig VON HAND abgeleitet (keine automatische Umkehr -
+     die gibt es in CSS nicht), nach demselben Muster wie der Rest des Systems: Grau/Navy
+     werden im Dark Mode HELLER (mehr Kontrast gegen den dunklen Navy-Hintergrund), die
+     Flächen wandern von Blau zu einem tief-navyfarbenen Dunkel mit demselben Blauton wie
+     die helle Variante (kein reines Schwarz - bleibt farblich konsistent zur Marke). Per
+     WCAG-Kontrastrechnung geprüft (nicht nur Augenschein): Weiß auf #3399ff liegt mit
+     2.94:1 unter der 3:1-Mindestgrenze selbst für großen Text - die Hero-Sektion auf
+     index.html legt deshalb einen zusätzlichen abdunkelnden Verlauf (~25-30% Schwarz)
+     hinter den Text, damit direkt auf dem Blau liegender Text zuverlässig lesbar bleibt
+     (siehe .landing-hero in index.html) - --ncss-color-bg selbst bleibt exakt der
+     gewünschte reine Wert, keine verwässerte "sicherere" Ersatzfarbe. */
+  --ncss-color-brand: light-dark(#6f6f6e, #b7b7b6);
   --ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);
-  --ncss-color-brand-2: light-dark(#7c3aed, #b794f6);
+  --ncss-color-brand-2: light-dark(#314164, #8ea3cf);
   --ncss-color-brand-2-contrast: light-dark(#ffffff, #0a0a0a);
   --ncss-color-neutral: light-dark(#64748b, #94a3b8);
 
@@ -42,14 +58,21 @@
   --ncss-color-warning: light-dark(#b45309, #facc15);
   --ncss-color-danger: light-dark(#c0322d, #f87171);
 
-  /* --- Grundflächen & Text ----------------------------------------------------------- */
-  --ncss-color-bg: light-dark(#ffffff, #121212);
-  --ncss-color-bg-subtle: light-dark(#f4f5f7, #1c1c1e);
-  --ncss-color-surface: light-dark(#ffffff, #1e1e20);
-  --ncss-color-text: light-dark(#1a1a1a, #f0f0f0);
-  --ncss-color-text-muted: light-dark(#5a5f6a, #a3a7b0);
-  --ncss-color-border: light-dark(#dcdfe4, #33353a);
-  --ncss-color-focus-ring: light-dark(#0057d8, #6ea8ff);
+  /* --- Grundflächen & Text -----------------------------------------------------------
+     bg = die kräftige Markenfarbe der Seite selbst (siehe Kommentar oben). surface/
+     bg-subtle bleiben bewusst NAHE WEISS im Light Mode (klassische "weiße Karte auf
+     farbiger Leinwand"-Optik) - nur ein leichter Blaustich in bg-subtle, damit
+     Wechsel-Sektionen nicht komplett neutral-grau wirken. text/text-muted/border bleiben
+     UNVERÄNDERT die System-Defaults - Karten/Komponenten mit weißer surface-Fläche
+     funktionieren dadurch weiterhin normal (dunkler Text auf weiß), nur der direkt auf
+     bg liegende Inhalt (Hero) braucht eine eigene, lokale helle Textfarbe (siehe oben). */
+  --ncss-color-bg: light-dark(#3399ff, #0b1c33);
+  --ncss-color-bg-subtle: light-dark(#eaf3ff, #0f2138);
+  --ncss-color-surface: light-dark(#ffffff, #16283f);
+  --ncss-color-text: light-dark(#1a1a1a, #eef2f8);
+  --ncss-color-text-muted: light-dark(#5a5f6a, #a9b4c4);
+  --ncss-color-border: light-dark(#d7e3f3, #2a3b57);
+  --ncss-color-focus-ring: light-dark(#3399ff, #6ea8ff);
 
   /* --- Typografie --------------------------------------------------------------------
      Schriftfamilien sind der häufigste Änderungswunsch - system-ui als Default braucht

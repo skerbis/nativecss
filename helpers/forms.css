@@ -190,6 +190,13 @@
   gap: var(--ncss-space-2xs);
   font: inherit;
   font-weight: 600;
+  /* .ncss-btn läuft genauso oft auf einem <a> (Link, der wie ein Button aussehen soll)
+     wie auf einem <button> - base.css lässt die Standard-Unterstreichung von <a> bewusst
+     bestehen (guter Default für Fließtext-Links), ein Button-artiges Element soll aber
+     NIE unterstrichen wirken, unabhängig vom zugrundeliegenden Tag. Ohne diese Zeile
+     erbte ein <a class="ncss-btn"> die Unterstreichung trotzdem (per echtem Test
+     gefunden - .ncss-btn selbst setzte text-decoration nie zurück). */
+  text-decoration: none;
   border-radius: var(--ncss-radius-sm);
   padding: var(--ncss-space-2xs) var(--ncss-space-sm);
   border: var(--ncss-border-width) solid transparent;
