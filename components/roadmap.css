@@ -118,32 +118,33 @@
       scale: 1 0;
       animation: ncss-roadmap-draw linear both;
       animation-timeline: view(block);
-      /* Startpunkt "cover 0%" (erster sichtbarer Pixel), NICHT "contain 0%" (erst wenn
-         die Linie den Viewport einmal komplett ausfüllt - bei einer langen Liste deutlich
-         SPÄTER als ihr erstes Erscheinen). Mit "contain" pur blieb der Fortschritt bis
-         ca. 35% Scroll-Fortschritt der Seite bei 0 stehen, zog dann aber SEHR steil auf
-         100% hoch (nur ca. 40% der Gesamt-Scrollstrecke für die komplette Animation) und
-         blieb danach nochmal ca. 25% lang bei "fertig" stehen - fühlte sich dadurch an,
-         als würde die Linie hastig durchgezeichnet statt sich gleichmäßig aufzubauen
-         (User-Feedback: "geht zu schnell ans ende"). "cover 0%" als Start zieht denselben
-         Fortschritt stattdessen über die GESAMTE Scrollstrecke bis zum Erreichen von
-         "contain 100%" (siehe unten), spürbar gleichmäßiger (per Testreihe an mehreren
-         Scroll-Bruchteilen bestätigt: die Animation deckt jetzt ca. 75% statt nur 40% der
-         Gesamt-Scrollstrecke ab).
-         Endpunkt "contain 100%" (NICHT der Default-Endpunkt "cover 100%" = Element
-         VOLLSTÄNDIG aus dem Viewport verschwunden) - bei einer Linie, die die GESAMTE
-         (meist sehr lange) Liste überspannt, verlangt "cover 100%" genug Restscroll-Weg
-         NACH der Liste, dass sie komplett über den oberen Bildschirmrand hinauswandert.
-         Steht die Roadmap wie üblich kurz vor dem Footer (kein zusätzlicher Puffer
-         danach), reicht der tatsächlich vorhandene Rest-Scrollweg der Seite dafür NICHT
-         aus - die Linie bliebe dauerhaft kurz vor dem letzten Punkt unfertig hängen (per
-         Test mit echtem `document.body.scrollHeight` gefunden: bei "cover" blieb der
-         Fortschritt bei maximal möglichem Scroll auf ca. 73% stehen statt 100% zu
-         erreichen). "contain 100%" braucht dagegen nur, dass die Linie den Viewport
-         einmal komplett ausfüllt/erreicht - Linie ist exakt fertig gezeichnet, sobald die
-         letzte Karte voll sichtbar wird, unabhängig vom verfügbaren Rest-Scrollweg
-         danach. */
-      animation-range: cover 0% contain 100%;
+      /* NICHT den Default-Bereich "cover" (0%=erster sichtbarer Pixel, 100%=Element
+         VOLLSTÄNDIG aus dem Viewport verschwunden) verwenden - bei einer Linie, die die
+         GESAMTE (meist sehr lange) Liste überspannt, verlangt "100% erreicht" genug
+         Restscroll-Weg NACH der Liste, dass sie komplett über den oberen Bildschirmrand
+         hinausgewandert ist. Steht die Roadmap wie üblich kurz vor dem Footer (kein
+         zusätzlicher Puffer danach), reicht der tatsächlich vorhandene Rest-Scrollweg der
+         Seite dafür NICHT aus - die Linie bleibt dauerhaft kurz vor dem letzten Punkt
+         unfertig hängen (per Test mit echtem `document.body.scrollHeight` gefunden: bei
+         "cover" blieb der Fortschritt bei maximal möglichem Scroll auf ca. 73% stehen
+         statt 100% zu erreichen). "contain" braucht dagegen nur, dass die Linie den
+         Viewport einmal komplett ausfüllt/erreicht - Linie ist exakt fertig gezeichnet,
+         sobald die letzte Karte voll sichtbar wird, unabhängig vom verfügbaren
+         Rest-Scrollweg danach.
+         EIN Versuch, den Start früher zu ziehen ("cover 0% contain 100%" statt reinem
+         "contain", um das "geht zu schnell ans ende"-Gefühl zu mildern) wurde WIEDER
+         VERWORFEN: bei UNTERSCHIEDLICHEN Viewport-Höhen/-Breiten landete der Fortschritt
+         bei Seitenaufruf (scrollY 0) schon zwischen 17% und 65% "vorgezeichnet" (statt
+         konstant 0%, je nach Verhältnis von Roadmap- zu Viewport-Höhe stark schwankend) -
+         das mischen zweier VERSCHIEDENER benannter Bereiche ("cover" und "contain" haben
+         unterschiedliche Referenz-Rahmen) ist nicht robust über unterschiedliche
+         Geometrien hinweg. User-Report danach: "in beiden browsern nur eine
+         durchgezogene linie" (kein sichtbarer Fortschritt mehr) - reines "contain" (VOR
+         diesem Versuch bereits bestätigt funktionierend, nur mit spürbarem Rausch-Gefühl
+         am Ende) ist deshalb wieder die Baseline. Ein Pacing-Fix müsste stattdessen
+         INNERHALB desselben benannten Bereichs bleiben (z.B. `contain -X% contain 100%`),
+         nicht zwei verschiedene Bereiche kombinieren - noch nicht umgesetzt. */
+      animation-range: contain;
     }
 
     .ncss-roadmap-card {

@@ -504,13 +504,29 @@ gewünschte Zeichenweg).
    schnell ans ende"): reines `animation-range: contain` blieb bis ca. 35%
    Scroll-Fortschritt bei 0 stehen, zog dann sehr steil auf 100% hoch (nur ca. 40% der
    Gesamt-Scrollstrecke) und blieb danach nochmal ca. 25% lang bei "fertig" stehen -
-   fühlte sich dadurch hastig durchgezogen an statt gleichmäßig aufgebaut. Fix:
-   `animation-range: cover 0% contain 100%` - `cover 0%` als (viel früherer) Startpunkt
-   statt `contain 0%` zieht denselben Fortschritt über ca. 75% statt nur 40% der
-   Gesamt-Scrollstrecke, der Endpunkt (`contain 100%`, aus Punkt 4/oben unverändert
-   wichtig für Robustheit nahe dem Seitenende) bleibt gleich. Per Testreihe an mehreren
-   Scroll-Bruchteilen in Chromium UND Playwright-WebKit bestätigt: deutlich gleichmäßigere
-   Werteverteilung über die Scrollstrecke statt eines kurzen, steilen Sprungs.
+   fühlte sich dadurch hastig durchgezogen an statt gleichmäßig aufgebaut. Erster
+   Fix-Versuch: `animation-range: cover 0% contain 100%` - `cover 0%` als (viel früherer)
+   Startpunkt statt `contain 0%`, Endpunkt `contain 100%` unverändert. In EINER
+   Viewport-Größe (1280×900) per Testreihe bestätigt gleichmäßiger - aber NICHT bei
+   anderen Viewport-Größen gegengeprüft, bevor ausgeliefert. **Dieser Fix wurde wieder
+   verworfen**: User-Report kurz danach "jetzt geht es weder in chrome noch safari" /
+   "in beiden browsern nur eine durchgezogene linie" - per Testreihe über mehrere
+   Viewport-Größen (1280×900 bis 375×812) nachträglich bestätigt: der Fortschritt bei
+   Seitenaufruf (scrollY 0) lag je nach Verhältnis von Roadmap- zu Viewport-Höhe zwischen
+   17% und 65% VORGEZEICHNET statt konstant bei 0% - `cover` und `contain` haben
+   unterschiedliche, geometrieabhängige Referenz-Rahmen, das Mischen zweier verschiedener
+   benannter Bereiche ist NICHT robust über unterschiedliche Seiten-/Viewport-Geometrien
+   hinweg (anders als ein einzelner benannter Bereich wie `contain` allein, der bei JEDER
+   getesteten Viewport-Größe konstant `0` bei Aufruf und `1` bei maximalem Scroll ergab).
+   Zurückgerollt auf reines `contain` (wieder nur mit dem ursprünglichen, akzeptierten
+   Pacing-Problem, aber verlässlich funktionierend). Lehre: eine Testreihe nur bei EINER
+   Viewport-Größe reicht nicht, um eine `animation-range`-Änderung als sicher zu
+   bezeichnen - IMMER mehrere Viewport-Größen (mind. Desktop breit/schmal + Mobile) prüfen,
+   bevor eine Range-Anpassung ausgeliefert wird, besonders wenn zwei verschiedene benannte
+   Bereiche kombiniert werden. Ein besserer Pacing-Fix müsste INNERHALB desselben
+   benannten Bereichs bleiben (z.B. `contain -X% contain 100%`, negativer Prozentwert
+   erweitert den Referenz-Rahmen VOR `contain`s eigenem 0%-Punkt, statt einen zweiten,
+   fremden Bereich hereinzumischen) - noch nicht umgesetzt/getestet.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
