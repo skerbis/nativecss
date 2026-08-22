@@ -271,11 +271,54 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     soll zu sehen sein"). Endgültiger Ansatz: KEINE gefüllte Fläche mehr, sondern dieselbe
     Masken-Ring-Technik wie `.ncss-glow-border` (Punkt 18) - ein `::before` mit
     `mask-composite: exclude` zeichnet nur einen hauchdünnen Rahmen, per
-    `linear-gradient(135deg, dunkel, transparent, hell)` diagonal von dunkel nach hell statt
-    eines rotierenden `conic-gradient()`. Funktioniert dadurch auf JEDER Hintergrundfarbe
-    inkl. reinem Weiß, weil keine Hintergrundfarbe mehr abgeglichen werden muss - die
-    Ring-Technik war die eigentlich richtige Lösung von Anfang an, nicht die
-    Neumorphism-Variante mit gefüllter Fläche.
+    `linear-gradient(135deg, dunkel, hell)` diagonal von dunkel nach hell statt eines
+    rotierenden `conic-gradient()`. Funktioniert dadurch auf JEDER Hintergrundfarbe inkl.
+    reinem Weiß, weil keine Hintergrundfarbe mehr abgeglichen werden muss - die Ring-Technik
+    war die eigentlich richtige Lösung von Anfang an, nicht die Neumorphism-Variante mit
+    gefüllter Fläche.
+
+    **Nachtrag, echter Bug in genau diesem Gradient gefunden**: die allererste Fassung
+    hatte einen DRITTEN, mittigen Farbstopp - `linear-gradient(135deg, dunkel 0%,
+    transparent 50%, hell 100%)`, in der Annahme, das ergäbe ein sanftes Verblassen in der
+    Mitte. Per Screenshot bestätigt: bei nur 1px Ringdicke (`--ncss-stamped-thickness`)
+    reißt der Übergang durch `transparent` den Rahmen stattdessen sichtbar AUF - über
+    einen guten Teil des Rings (etwa die rechte/untere Seite) war GAR KEIN Rahmen mehr zu
+    sehen, kein sanftes Verblassen, sondern eine echte Lücke (User-Report: "Rahmen laufen
+    aus... sieht cool als eigener Stil, ist aber nicht was gedacht war" - ein Vorher-
+    Nachher-Screenshot-Vergleich hätte den Bug schon beim ursprünglichen Bauen gezeigt, es
+    wurde offenbar nur der obere linke Teil des Rings geprüft). Fix: der mittlere
+    `transparent`-Stopp ENTFERNT, nur noch zwei Stopps (dunkel 0%, hell 100%) - der Ring
+    bleibt dadurch DURCHGEHEND sichtbar und blendet in der Mitte zu einem Grauton aus
+    beiden Farben, statt irgendwo unsichtbar zu werden. Lehre: bei einem so schmalen
+    Element (1px Ringdicke) reicht ein Blick auf EINE Ecke nicht, um "sieht gut aus" zu
+    bestätigen - den ganzen Ring rundherum prüfen, besonders wenn ein Gradient-Stopp auf
+    `transparent` zeigt (der einzige Farbwert, bei dem "Zwischenfarbe" und "kein Rahmen
+    mehr da" optisch identisch aussehen können).
+
+    **Nachtrag, User-Frage danach ("geht es auch in Kombi mit den normalen Button-Stilen?
+    also dass die Farben übernommen werden?")**: `.ncss-stamped` zusammen mit
+    `.ncss-btn`/`--primary`/`--secondary`/`--danger` getestet. Die RINGFARBE übernimmt die
+    Button-Farbe automatisch, OHNE jede Anpassung - `--ncss-stamped-shadow-dark`/`-light`
+    sind bereits halbtransparent (`rgb(0 0 0 / 35%)`/`rgb(255 255 255 / 90%)`), Alpha-
+    Compositing blendet sie beim Zeichnen mit JEDER darunterliegenden Fläche, auch einer
+    satten Markenfarbe. Die ECKENFORM übernimmt `.ncss-stamped` dagegen NICHT automatisch:
+    sein eigener Default `border-radius: var(--ncss-stamped-radius, var(--ncss-radius-lg))`
+    lebt im `components`-Layer, `.ncss-btn`s eigene `border-radius` (`--ncss-radius-sm`) im
+    `helpers`-Layer - components schlägt helpers immer, der Button bekommt beim reinen
+    Kombinieren sichtbar zu runde Ecken (per `getComputedStyle` bestätigt: 16px statt der
+    Button-eigenen 4px). Ein automatischer Cross-Layer-Fallback wurde geprüft
+    (`border-radius: var(--ncss-stamped-radius, revert-layer)`, per echtem Test in allen
+    drei Engines bestätigt technisch funktionsfähig: `revert-layer` fällt korrekt auf den
+    Wert einer Regel in einem NIEDRIGEREN Layer zurück, wenn eine existiert, sonst weiter
+    auf `unset`/`0`) - dafür hätte aber der Ambient-Default (`--ncss-radius-lg` als Fallback
+    für den Alleingang-Fall) selbst im `helpers`-Layer liegen müssen, weil `revert-layer`
+    NUR bereits vorhandene Deklarationen in niedrigeren Layern findet, keine eigene neue
+    Fallback-Ebene erzeugt - das hätte `.ncss-stamped`s Definition über zwei Dateien/Layer
+    verstreut (Radius-Default in `helpers/forms.css`, Rest in `components/effects.css`),
+    schlechter für Auffindbarkeit als die bewusst einfache Lösung: beim Kombinieren
+    `--ncss-stamped-radius` explizit auf den Wert der anderen Komponente setzen (siehe
+    `demo/effects.html`, `style="--ncss-stamped-radius: var(--ncss-radius-sm);"`) - der
+    Override-Token existierte dafür bereits, nur ungenutzt/undokumentiert für diesen Fall.
 
 20. **Eine per `color-mix()` aus einem Seed-Wert ABGELEITETE Custom Property wird nur EINMAL
     berechnet (dort, wo sie deklariert ist), dann als fertiger Wert vererbt - ein tiefer im
@@ -756,6 +799,30 @@ gewünschte Zeichenweg).
     beide Mechanismen unabhängig sind (`color-scheme` steuert nur, wie `light-dark()`-
     Tokens INNERHALB des Elements auflösen, `.ncss-text-light` überschreibt `color` direkt
     mit einem festen, nicht von `light-dark()` abhängigen Wert). Demo: `demo/magazine.html`.
+
+28. **`mix-blend-mode: overlay` (Default von `.ncss-grain`) verhält sich wie `multiply` auf
+    dunklen und wie `screen` auf hellen Flächen - auf einer SEHR dunklen/gesättigten Fläche
+    bleibt die Standard-Deckkraft (`--ncss-grain-opacity: 0.12`) dadurch praktisch
+    unsichtbar, unabhängig davon, ob die Textur selbst korrekt rendert.** User-Report:
+    "Grain... Körnung ist bei den gewählten Hintergrundfarben nicht zu erkennen" -
+    `demo/effects.html` zeigte beide Grain-Karten auf `.ncss-surface--brand`/`-brand-2`
+    (900er-Stufe, sehr dunkel/gesättigt). Per Pixel-Stichprobe quantifiziert (Standard-
+    abweichung eines Bildausschnitts ohne Text, kein bloßes Augenmaß): auf dieser
+    Hintergrundfarbe bei Default-Werten stddev ≈ 0.33 (praktisch eine Fläche, keine
+    Textur), auf einer MITTELHELLEN Fläche (`--ncss-color-neutral`, `#64748b`) bei
+    IDENTISCHEN Default-Werten stddev ≈ 1.0-1.75 (deutlich sichtbares Korn) - das Feature
+    selbst war nie kaputt, nur die DEMO-Hintergrundfarbe war der ungünstigste denkbare Fall
+    für den Default-Blend-Modus. Fix (nur `demo/effects.html`, keine Komponenten-Änderung
+    nötig - `mix-blend-mode: overlay` verhält sich exakt spezifikationsgemäß, kein Bug im
+    CSS selbst): "Dezent (Default)"-Karte auf eine mittelhelle Fläche umgestellt (zeigt den
+    ECHTEN Default ehrlich), "Sandig"-Karte bleibt auf `.ncss-surface--brand-2`, aber mit
+    `--ncss-grain-opacity: 0.4` + `--ncss-grain-blend: soft-light` (auf sehr dunklen
+    Flächen zuverlässiger sichtbar als höhere `overlay`-Werte, per Test verglichen).
+    Zusätzlich Erklärtext ergänzt, warum das passiert, statt nur die Werte stillschweigend
+    zu ändern. Lehre: bei einem Screenshot-Vergleich für "ist ein Effekt sichtbar?" reicht
+    Augenmaß bei geringem Kontrast nicht zuverlässig - eine Pixel-Stichprobe (Mittelwert/
+    Standardabweichung eines textfreien Ausschnitts) macht "unsichtbar" vs. "schwach aber
+    vorhanden" eindeutig messbar, statt sich auf den Bildschirm-Eindruck zu verlassen.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

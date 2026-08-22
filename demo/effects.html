@@ -175,26 +175,37 @@
     <pre><code>&lt;button class="ncss-stamped"&gt;Hebt sich beim Hover&lt;/button&gt;
 &lt;button class="ncss-stamped ncss-stamped--press"&gt;Sinkt beim Hover&lt;/button&gt;</code></pre>
     <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-stamped-thickness</code> (Default 1px, Ringdicke), <code>--ncss-stamped-dark</code>/<code>--ncss-stamped-light</code> (Default <code>rgb(0 0 0 / 35%)</code>/<code>rgb(255 255 255 / 90%)</code>), <code>--ncss-stamped-lift</code> (Default 3px, Hub bei Hover/Active), <code>--ncss-stamped-radius</code> (Default <code>--ncss-radius-lg</code>).</p>
+
+    <p class="ncss-text-muted">Kombiniert mit <code>.ncss-btn</code>-Varianten: der Ring ist halbtransparentes Schwarz/Weiß (<code>rgb(0 0 0 / 35%)</code>/<code>rgb(255 255 255 / 90%)</code>) statt einer festen Farbe - er blendet sich beim Zeichnen automatisch mit der jeweiligen Button-Hintergrundfarbe (Alpha-Compositing), OHNE dass <code>.ncss-stamped</code> selbst irgendetwas über Markenfarbe/Variante wissen müsste. Nur die Eckenform übernimmt <code>.ncss-stamped</code> NICHT automatisch (eigener Default <code>--ncss-radius-lg</code>, größer als <code>.ncss-btn</code>s <code>--ncss-radius-sm</code>) - dafür <code>--ncss-stamped-radius</code> explizit auf den passenden Wert setzen:</p>
+    <div class="ncss-cluster" style="background-color: var(--ncss-color-bg); padding: var(--ncss-space-xl); border-radius: var(--ncss-radius-lg); border: 1px solid var(--ncss-color-border);">
+      <button type="button" class="ncss-btn ncss-btn--primary ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Primary + Stamped</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Secondary + Stamped</button>
+      <button type="button" class="ncss-btn ncss-btn--danger ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Danger + Stamped</button>
+    </div>
+    <pre><code>&lt;button class="ncss-btn ncss-btn--primary ncss-stamped"
+        style="--ncss-stamped-radius: var(--ncss-radius-sm);"&gt;
+  Primary + Stamped
+&lt;/button&gt;</code></pre>
   </section>
 
   <!-- Grain -->
   <section id="grain" class="ncss-stack">
     <h2 class="demo-section-title">Grain (Korn-/Sandtextur)</h2>
-    <p class="ncss-text-muted">Feines Rauschen per SVG-<code>&lt;feTurbulence&gt;</code>-Filter als data-URI - kein Bild-Asset, kein Build-Schritt. Dezent über <code>--ncss-grain-opacity</code> einstellbar, für einen "Sand"-Charakter Blend-Modus/Deckkraft anpassen.</p>
+    <p class="ncss-text-muted">Feines Rauschen per SVG-<code>&lt;feTurbulence&gt;</code>-Filter als data-URI - kein Bild-Asset, kein Build-Schritt. Dezent über <code>--ncss-grain-opacity</code> einstellbar, für einen "Sand"-Charakter Blend-Modus/Deckkraft anpassen. Der Default-Blend-Modus <code>overlay</code> verhält sich wie <code>multiply</code> auf dunklen und wie <code>screen</code> auf hellen Flächen - auf einer SEHR dunklen/gesättigten Fläche (z.B. <code>.ncss-surface--brand-2</code>) bleibt die Standard-Deckkraft dadurch praktisch unsichtbar, auf einer mittelhellen Fläche (links) zeigt sich derselbe Default deutlich. Für dunkle/gesättigte Marken-Flächen entweder die Deckkraft deutlich erhöhen oder auf <code>--ncss-grain-blend: soft-light</code> wechseln (rechts).</p>
     <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
-      <div class="ncss-grain ncss-radius-lg ncss-surface--brand" style="padding: var(--ncss-space-lg);">
+      <div class="ncss-grain ncss-radius-lg" style="padding: var(--ncss-space-lg); background-color: #64748b; color: #fff;">
         <h3>Dezent (Default)</h3>
-        <p class="ncss-text-sm">--ncss-grain-opacity: 0.12 (Default)</p>
+        <p class="ncss-text-sm">--ncss-grain-opacity: 0.12 (Default) auf mittelheller Fläche</p>
       </div>
-      <div class="ncss-grain ncss-radius-lg ncss-surface--brand-2" style="padding: var(--ncss-space-lg); --ncss-grain-opacity: 0.3;">
+      <div class="ncss-grain ncss-radius-lg ncss-surface--brand-2" style="padding: var(--ncss-space-lg); --ncss-grain-opacity: 0.4; --ncss-grain-blend: soft-light;">
         <h3>Sandig</h3>
-        <p class="ncss-text-sm">--ncss-grain-opacity: 0.3</p>
+        <p class="ncss-text-sm">--ncss-grain-opacity: 0.4, --ncss-grain-blend: soft-light</p>
       </div>
     </div>
     <pre><code>&lt;div class="ncss-grain"&gt;...&lt;/div&gt;
 
-&lt;!-- stärker/anders einfärben --&gt;
-&lt;div class="ncss-grain" style="--ncss-grain-opacity: 0.3; --ncss-grain-blend: soft-light;"&gt;...&lt;/div&gt;</code></pre>
+&lt;!-- stärker/anders einfärben, für dunkle/gesättigte Flächen --&gt;
+&lt;div class="ncss-grain" style="--ncss-grain-opacity: 0.4; --ncss-grain-blend: soft-light;"&gt;...&lt;/div&gt;</code></pre>
     <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-grain-opacity</code> (Default 0.12), <code>--ncss-grain-blend</code> (Default <code>overlay</code>).</p>
   </section>
 

@@ -121,6 +121,15 @@
    Bewusst KEINE eigene background-color: funktioniert dadurch auf JEDER Fläche inkl.
    reinem Weiß, ohne dass eine Hintergrundfarbe abgeglichen werden müsste.
 
+   Der Gradient hat NUR zwei Farbstopps (dunkel 0%, hell 100%) - ein dritter, mittiger
+   `transparent`-Stopp (erster Versuch) lässt die Ringdicke dort komplett verschwinden statt
+   weich zwischen den beiden Farben zu blenden: bei nur 1px Ringdicke ist der Übergang durch
+   `transparent` in der Mitte breit genug, um wie eine echte Lücke im Rahmen auszusehen statt
+   wie ein sanftes Verblassen (per echtem Screenshot als Bug gefunden, User-Report: "die
+   Rahmen laufen aus... sieht cool als eigener Stil, ist aber nicht was gedacht war"). Zwei
+   Stopps lassen den Ring stattdessen DURCHGEHEND sichtbar bleiben und in der Mitte einfach
+   zu einem Grauton aus beiden Farben überblenden - die tatsächlich gravierte Kante.
+
    .ncss-stamped: Ruhezustand = flacher, gravierter Rahmen. :hover hebt das Element an
    ("kommt nach vorne", translateY nach oben + Drop-Shadow). :active drückt tiefer als der
    Ruhezustand ein - JEDES Sinken (egal ob :active oder .ncss-stamped--press) bekommt
@@ -135,6 +144,16 @@
   --ncss-stamped-shadow-dark: var(--ncss-stamped-dark, rgb(0 0 0 / 35%));
   --ncss-stamped-shadow-light: var(--ncss-stamped-light, rgb(255 255 255 / 90%));
   position: relative;
+  /* Eigene border-radius nötig für den Alleingang-Fall (Demo: .ncss-stamped ohne jede
+     andere Komponente) - kombiniert mit einer Komponente, die SELBST schon eine radius
+     mitbringt (z.B. .ncss-btn, --ncss-radius-sm), gewinnt diese hier immer (components-
+     Layer schlägt helpers), der Button bekäme also sichtbar zu runde --ncss-radius-lg-
+     Ecken statt seiner eigenen Form. Kein automatischer Cross-Layer-Fallback dafür gebaut
+     (ein `revert-layer`-Trick funktioniert nur, wenn der Ambient-Default TATSÄCHLICH im
+     helpers-Layer selbst liegt - das würde .ncss-stamped über zwei Dateien/Layer
+     verstreuen, schlechter für Wartbarkeit als die einfache, bewusste Lösung: beim
+     Kombinieren --ncss-stamped-radius explizit auf den Wert der anderen Komponente
+     setzen, siehe demo/effects.html). */
   border-radius: var(--ncss-stamped-radius, var(--ncss-radius-lg));
   transition: transform var(--ncss-motion-duration) var(--ncss-motion-easing), box-shadow var(--ncss-motion-duration) var(--ncss-motion-easing);
 
@@ -144,7 +163,7 @@
     inset: 0;
     border-radius: inherit;
     padding: var(--ncss-stamped-thickness, 1px);
-    background: linear-gradient(135deg, var(--ncss-stamped-shadow-dark) 0%, transparent 50%, var(--ncss-stamped-shadow-light) 100%);
+    background: linear-gradient(135deg, var(--ncss-stamped-shadow-dark) 0%, var(--ncss-stamped-shadow-light) 100%);
     pointer-events: none;
 
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
