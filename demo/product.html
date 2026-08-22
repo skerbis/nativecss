@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NativeCSS - Natives CSS Design System ohne Build-Schritt</title>
 <meta name="description" content="NativeCSS: ein CSS-Design-System auf Cascade Layers, Container Queries, light-dark() und nativem HTML - kein Sass, kein Bundler, kein Build-Schritt.">
-<link rel="stylesheet" href="ncss.css">
-<link rel="stylesheet" href="theme.css">
-<link rel="stylesheet" href="page-transitions.css">
-<link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
-<script src="components/command-fallback.js" defer></script>
-<script src="components/nav.js" defer></script>
-<script src="components/hide-on-scroll-fallback.js" defer></script>
+<link rel="stylesheet" href="../dist/ncss.css">
+<link rel="stylesheet" href="../dist/theme.css">
+<link rel="stylesheet" href="../dist/page-transitions.css">
+<link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+<script src="../dist/components/command-fallback.js" defer></script>
+<script src="../dist/components/nav.js" defer></script>
+<script src="../dist/components/hide-on-scroll-fallback.js" defer></script>
 <style>
   /* --- Hero -------------------------------------------------------------------------- */
   .landing-hero {
@@ -273,7 +273,7 @@
 <header class="ncss-topbar ncss-topbar--transparent landing-topbar ncss-hide-on-scroll">
   <div class="landing-topbar-backdrop ncss-glass"></div>
   <div class="ncss-topbar-inner">
-    <a class="ncss-topbar-brand" href="index.html">NativeCSS</a>
+    <a class="ncss-topbar-brand" href="product.html">NativeCSS</a>
     <nav class="ncss-nav">
       <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
       <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
@@ -283,8 +283,8 @@
           <li class="ncss-nav-item"><a href="#features">Features</a></li>
           <li class="ncss-nav-item"><a href="#vergleich">Vergleich</a></li>
           <li class="ncss-nav-item"><a href="#code">Code</a></li>
-          <li class="ncss-nav-item"><a href="demo/index.html">Demo</a></li>
-          <li class="ncss-nav-item"><a href="demo/docs.html">Handbuch</a></li>
+          <li class="ncss-nav-item"><a href="index.html">Demo</a></li>
+          <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
           <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> GitHub</a></li>
         </ul>
       </dialog>
@@ -301,7 +301,7 @@
       <p class="landing-hero-lead">NativeCSS ist ein Design-System, das komplett auf bereits verschiffte Browser-Features setzt - Cascade Layers, Container Queries, <code>light-dark()</code>, natives <code>&lt;dialog&gt;</code>, scroll-getriebene Animationen. Kein Preprocessor, kein Kompilierschritt, kein Framework-Lock-in.</p>
       <div class="ncss-cluster landing-hero-actions">
         <a class="ncss-btn ncss-btn--primary" href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> Auf GitHub ansehen</a>
-        <a class="ncss-btn ncss-btn--secondary" href="demo/index.html">Demo entdecken</a>
+        <a class="ncss-btn ncss-btn--secondary" href="index.html">Demo entdecken</a>
       </div>
       <pre class="ncss-radius-lg landing-hero-code"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
 &lt;link rel="stylesheet" href="theme.css"&gt;
@@ -599,7 +599,7 @@
       <p>Kein Signup, kein Build. Repo klonen, <code>ncss.css</code> einbinden, loslegen.</p>
       <div class="ncss-cluster">
         <a class="ncss-btn ncss-btn--primary" href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> Repository auf GitHub</a>
-        <a class="ncss-btn ncss-btn--secondary" href="demo/docs.html">Handbuch lesen</a>
+        <a class="ncss-btn ncss-btn--secondary" href="docs.html">Handbuch lesen</a>
       </div>
     </div>
   </section>
@@ -614,10 +614,10 @@
     </div>
     <nav class="ncss-nav ncss-nav--tree">
       <ul class="ncss-nav-list">
-        <li class="ncss-nav-item"><a href="demo/index.html">Demo</a></li>
-        <li class="ncss-nav-item"><a href="demo/docs.html">Handbuch</a></li>
+        <li class="ncss-nav-item"><a href="index.html">Demo</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
         <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">GitHub</a></li>
-        <li class="ncss-nav-item"><a href="LICENSE">Lizenz</a></li>
+        <li class="ncss-nav-item"><a href="../LICENSE">Lizenz</a></li>
       </ul>
     </nav>
   </div>

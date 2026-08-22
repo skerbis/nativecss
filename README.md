@@ -144,21 +144,40 @@ webawesome-bridge,                        ← überschreibt Web Awesomes Default
 browser-fixes                             ← isolierte Browser-/Engine-Workarounds, zuletzt
 ```
 
-Dateistruktur:
+Repo-Struktur (Ordner, nicht zu verwechseln mit den `<link>`-Pfaden oben - **die
+Schnellstart-Beispiele gelten für EUER Projekt**, wo `ncss.css`/`theme.css` einfach
+nebeneinander liegen dürfen, egal wie dieses Repo intern organisiert ist):
 
 ```
-ncss.css                  Import-Manifest (Layer-Reihenfolge + alle @import)
-tokens.css                Design Tokens: Typografie, Abstand, Radius, Schatten, Bewegung
-colors.css                Farb-Tokens (light-dark(), abgestufte Skalen)
-reset.css                 Minimal-Reset
-base.css                  Ungestylte native Elemente bekommen sinnvolle Defaults
-browser-fixes.css         Isolierte Browser-/Engine-spezifische Workarounds
-webawesome-bridge.css     Mappt ncss-Tokens auf Web Awesomes --wa-*-Variablen
-helpers/                  Utility-Klassen (Layout, Typografie, Formulare, Medien, ...)
-components/               Fertige Komponenten (Nav, Card, Modal, Badge, ...)
-demo/                     Je eine Demo-Seite pro Themenbereich, siehe unten
-vendor/                   Selbst gehostetes Web Awesome + Font Awesome (optional)
+dist/                     Die eigentliche Bibliothek - unverändert in ein Projekt kopierbar
+  ncss.css                  Import-Manifest (Layer-Reihenfolge + alle @import)
+  tokens.css                Design Tokens: Typografie, Abstand, Radius, Schatten, Bewegung
+  colors.css                Farb-Tokens (light-dark(), abgestufte Skalen)
+  reset.css                 Minimal-Reset
+  base.css                  Ungestylte native Elemente bekommen sinnvolle Defaults
+  browser-fixes.css         Isolierte Browser-/Engine-spezifische Workarounds
+  webawesome-bridge.css     Mappt ncss-Tokens auf Web Awesomes --wa-*-Variablen
+  theme.css                 Mitgeliefertes Beispiel-Theme (siehe "Theme anpassen")
+  page-transitions.css      Opt-in Seitenübergänge (siehe "Seitenübergänge")
+  helpers/                  Utility-Klassen (Layout, Typografie, Formulare, Medien, ...)
+  components/                Fertige Komponenten (Nav, Card, Modal, Badge, ...) + kleine
+                              opt-in JS-Fallback-Dateien (siehe jeweilige Abschnitte unten)
+demo/                     Alle Demo-/Dokumentationsseiten, siehe unten - inkl.
+                            product.html (die Produkt-/Marketingseite dieses Projekts,
+                            demonstriert das System an sich selbst) und index.html (die
+                            Demo-Übersicht/Startseite der Demo-Sammlung)
+vendor/                   Selbst gehostetes Web Awesome + Font Awesome (optionale
+                            Drittanbieter-Abhängigkeit, bewusst NICHT Teil von dist/ -
+                            ncss.css funktioniert vollständig ohne sie)
 ```
+
+`https://skerbis.github.io/nativecss/` (Site-Wurzel) zeigt `demo/product.html` - ein
+GitHub-Actions-Workflow (`.github/workflows/pages.yml`) erzeugt beim Deploy eine
+angepasste Kopie als echte `index.html` an der Site-Wurzel (Pfade um eine Ebene
+zurückgerechnet, siehe `.github/scripts/build-root-index.mjs`), kein sichtbarer
+Redirect. Im Repo selbst liegt KEINE index.html im Hauptordner - lokal die jeweilige
+Datei direkt unter `demo/` öffnen (`demo/product.html` für die Produktseite,
+`demo/index.html` für die Demo-Übersicht).
 
 ## Grundprinzipien
 
@@ -558,7 +577,7 @@ hier nur die Kurzreferenz.
 
 | Datei | Klassen | Kurzbeschreibung |
 |---|---|---|
-| `topbar.css` | `.ncss-topbar`, `-inner`, `-brand`, `-actions` (+ `--transparent`) | Kopfleiste, wächst statt zu überlaufen, wenn die Navigation umbricht. `--transparent` entfernt die sonst undurchsichtige Eigenfläche + den Rahmen - für eine Topbar über einem Hero/farbigen Hintergrund, meist mit `.ncss-glass` (components/effects.css) als eigenem, SEPARATEM Hintergrund-Element kombiniert (nicht `.ncss-glass` direkt auf `.ncss-topbar-inner` - bricht bei einem enthaltenen Off-Canvas-Nav-Panel, siehe Fallstrick 21). Textfarbe bleibt bewusst außerhalb des Modifiers (hängt von der jeweiligen Marke/dem Hintergrund ab), siehe `index.html` für ein vollständiges Beispiel inkl. Breakpoint-scoped Textfarbe fürs Off-Canvas-Panel |
+| `topbar.css` | `.ncss-topbar`, `-inner`, `-brand`, `-actions` (+ `--transparent`) | Kopfleiste, wächst statt zu überlaufen, wenn die Navigation umbricht. `--transparent` entfernt die sonst undurchsichtige Eigenfläche + den Rahmen - für eine Topbar über einem Hero/farbigen Hintergrund, meist mit `.ncss-glass` (components/effects.css) als eigenem, SEPARATEM Hintergrund-Element kombiniert (nicht `.ncss-glass` direkt auf `.ncss-topbar-inner` - bricht bei einem enthaltenen Off-Canvas-Nav-Panel, siehe Fallstrick 21). Textfarbe bleibt bewusst außerhalb des Modifiers (hängt von der jeweiligen Marke/dem Hintergrund ab), siehe `demo/product.html` für ein vollständiges Beispiel inkl. Breakpoint-scoped Textfarbe fürs Off-Canvas-Panel |
 | `nav.css` | `.ncss-nav`, `-toggle`, `-panel`, `-list`, `-item`, `-dropdown` (+ `--nested`), `-submenu` (+ `--mega`), `-mega-col`, `-mega-heading`, `--tree` | Horizontale Nav (kollabiert ab 64rem zu Off-Canvas) + vertikale Tree-Variante; Dropdowns/Mega-Menü über `<details>`/`<summary>`, kein Hover-Bug auf Touch |
 | `off-canvas.css` | `.ncss-offcanvas` (+ `--start`/`--end`) | Seitlich einschiebendes Panel, natives `<dialog>` |
 | `modal.css` | `.ncss-modal`, `-header`, `-footer` (+ `--fullscreen`, `--dark`, `--3d`) | Zentriertes Dialog-Modal; `--fullscreen`+`--dark` ergibt eine Lightbox, keine separate Komponente nötig. `--3d` (+ `--ncss-modal-3d-depth`) kippt beim Öffnen wie aus der Tiefe herein statt nur zu faden/skalieren - `perspective()` als Transform-Funktion in der eigenen `transform`-Kette, da `<dialog>` im Top Layer rendert und eine `perspective`-Eigenschaft auf einem Elternelement dort nicht zuverlässig wirkt |
@@ -635,9 +654,11 @@ setzt, die auch die CSS-Variante nutzt (eine gemeinsame `transition` in helpers/
 sorgt für dieselbe weiche Animation, unabhängig vom Auslöser). Über mehrere Runter-/
 Hoch-Scroll-Zyklen in echtem Chromium/WebKit/Firefox verifiziert, kein Hängenbleiben.
 
-## Produktseite (`index.html`, Repo-Root)
+## Produktseite (`demo/product.html`)
 
-Die eigentliche NativeCSS-Seite (nicht Teil der `demo/`-Sammlung) - dogfooded mit
+Die eigentliche NativeCSS-Seite (an https://skerbis.github.io/nativecss/ als Site-Wurzel
+deployed, siehe [Architektur](#architektur) für den GitHub-Actions-Rewrite-Mechanismus) -
+dogfooded mit
 NativeCSS selbst: Hero, Vorteils-Karten, eine Vollbild-`.ncss-stack-section` als
 Feature-Showcase (5 Karten), vollständige Feature-Übersicht, Code-Beispiele, Tailwind-/
 UIkit3-Vergleichstabellen, CTA. Nutzt `theme.css` (siehe oben) mit einer eigenen Marke
@@ -679,12 +700,13 @@ einzeln per Screenshot/Playwright verifiziert, nicht nur angenommen):
 
 ## Demo-Seiten
 
-Alle unter `demo/`, jede bindet `../ncss.css` ein und trägt eigenes, seitenspezifisches CSS
-mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
+Alle unter `demo/`, jede bindet `../dist/ncss.css` ein und trägt eigenes,
+seitenspezifisches CSS mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
 
 | Seite | Inhalt |
 |---|---|
 | `index.html` | Kitchen-Sink: die meisten Komponenten auf einer Seite |
+| `product.html` | Produkt-/Marketingseite (an der Site-Wurzel deployed, siehe [Architektur](#architektur)) |
 | `navigation.html` | Dropdown, verschachteltes Dropdown, Mega-Menü, Tree-Nav, Off-Canvas, Breadcrumb, Hide-on-Scroll |
 | `forms.html` | Felder, Switch, Range |
 | `media.html` | Video, Art Direction, Bilder, Hero-Sektion, Audio |

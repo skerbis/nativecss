@@ -12,6 +12,27 @@ gekoppelt. Das vollständige Handbuch (dogfooded, im Browser lesbar) liegt unter
 `public/ncss/demo/docs.html` - dieses Skill-Dokument ist die kondensierte Fassung für
 schnelle Arbeit plus die Fallstricke, die man sich sonst mühsam erneut erarbeiten müsste.
 
+**Repo-Struktur (seit dem Aufräumen des Hauptordners)**: die eigentliche Bibliothek
+(`ncss.css` + alles, was sie importiert - `tokens.css`/`colors.css`/`reset.css`/
+`base.css`/`webawesome-bridge.css`/`browser-fixes.css`, plus `helpers/`, `components/`,
+plus die opt-in `theme.css`/`page-transitions.css`) liegt unter `public/ncss/dist/`, NICHT
+mehr direkt unter `public/ncss/`. `demo/*.html` bindet sie entsprechend über
+`../dist/ncss.css` (statt vorher `../ncss.css`) ein. `vendor/` bleibt bewusst EIN eigener
+Ordner auf oberster Ebene (reiner Drittanbieter-Code, kein Teil von `dist/` - `ncss.css`
+funktioniert vollständig ohne Web Awesome). Die frühere `index.html` (Repo-Root,
+Produkt-/Marketingseite) ist umgezogen nach `demo/product.html` - `demo/index.html`
+selbst ist eine ANDERE, schon vorher existierende Datei (die Demo-Übersicht/Kitchen-Sink,
+von 14+ anderen Demo-Seiten als Nav-Link referenziert - deshalb der andere Dateiname für
+die einziehende Seite, keine Umbenennung der bestehenden Demo-Übersicht). Site-Wurzel
+(`https://skerbis.github.io/nativecss/`) zeigt weiterhin `demo/product.html` - ein
+GitHub-Actions-Workflow (`.github/workflows/pages.yml` + `.github/scripts/
+build-root-index.mjs`) erzeugt beim Deploy eine pfad-angepasste Kopie als echte
+`index.html` an der Site-Wurzel, kein sichtbarer Redirect, kein Root-Stub im Git-Tree
+selbst. HISTORISCHE Fallstricke unten (z.B. Punkt 24-27), die noch `index.html`/
+Repo-Root erwähnen, beziehen sich auf den Stand VOR diesem Umzug - der Pfad in der
+jeweiligen Beschreibung ist dadurch nicht mehr aktuell, der beschriebene Bug/Fund selbst
+bleibt gültig.
+
 ## Grundprinzipien (nicht verhandelbar, außer der Nutzer sagt explizit etwas anderes)
 
 - **Native zuerst.** Cascade Layers statt Spezifitäts-Kämpfe/`!important`, Container Queries
@@ -59,7 +80,7 @@ von der `<link>`-Reihenfolge im HTML (Cascade-Layer-Order ist seitenweit global,
 Stylesheet). Beim Hinzufügen einer neuen Web-Awesome-Ressource NICHT die Layer-Deklaration
 in `ncss.css` vergessen, falls sie neue `@layer`-Namen mitbringt.
 
-**Theme-Anpassung läuft über `theme.css`** (Repo-Root, NACH `ncss.css` laden) - eine
+**Theme-Anpassung läuft über `theme.css`** (`dist/theme.css`, NACH `ncss.css` laden) - eine
 einzige, bewusst UNLAYERED Datei mit allen wichtigen Seed-Werten (Markenfarben,
 Grundflächen, Schriften, Radien, Schatten, Bewegung). Unlayered CSS gewinnt immer gegen
 jede Layer-Regel (siehe oben), kein `!important` nötig. Bei neuen Tokens in
