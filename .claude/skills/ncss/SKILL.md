@@ -450,6 +450,27 @@ gewünschte Zeichenweg).
    via `file://` (nicht nur über den lokalen PHP-Server) nachverifiziert, dass die Linie
    korrekt rendert (reines CSS/SVG, keine ES-Module wie Web Awesome betroffen - Fallstrick
    3 unten gilt nur für JS-Module, nicht für CSS/SVG).
+4) **Funktional korrekt, aber optisch bedeutungslos**: Nach Fix von Punkt 3 zeichnete sich
+   die Linie technisch einwandfrei nach - trotzdem User-Feedback: "das stimmt nicht und
+   ist eigentlich sinnfrei ... jetzt ist sie einfach durchgezogen". Ursache: EINE
+   einfarbige Linie (gedämpftes Grau, `--ncss-color-border`) macht den Zeichen-Effekt kaum
+   wahrnehmbar - der "noch nicht gezeichnete" Teil ist per Dash-Lücke unsichtbar und
+   verschmilzt optisch mit dem ohnehin weißen Seitenhintergrund, der bereits gezeichnete
+   Teil sieht dabei genauso aus wie eine ganz gewöhnliche, längst fertige graue Linie -
+   fürs Auge ändert sich beim Scrollen praktisch nichts Erkennbares. Lehre: bei einem
+   "Reveal on scroll"-Effekt reicht es NICHT, dass der Übergang technisch (Dashoffset)
+   korrekt animiert - der VERBORGENE Zustand muss sich auch farblich/optisch klar vom
+   ENTHÜLLTEN Zustand unterscheiden, sonst ist der Fortschritt unsichtbar. Fix (User-Idee):
+   ZWEI `<line>`-Elemente statt einer - ein statischer, immer voll sichtbarer `-track` in
+   gedämpftem Grau UND eine markenfarbene `-progress`-Linie exakt darüber, die weiterhin
+   per `stroke-dasharray`/`-dashoffset` + `pathLength="1"` nachgezeichnet wird (NUR die
+   Progress-Linie braucht `pathLength`, der Track hat keine Dash-Animation). Ergebnis: ein
+   klassisches (nur vertikales) Fortschrittsbalken-Muster - der Farbkontrast macht
+   sichtbar, wie weit der markenfarbene Teil beim Scrollen "vorankommt", während der graue
+   Rest als Vorschau auf noch Kommendes sichtbar bleibt. Baseline (kein `view()`-Support)
+   profitiert nebenbei: die Progress-Linie ist dort einfach von Anfang an voll gezeichnet
+   und deckt den Track komplett ab, ergibt eine durchgehend markenfarbene (statt zuvor
+   grauen) Linie - eine optische Verbesserung, kein reiner Kompromiss.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

@@ -1,16 +1,25 @@
 /**
  * ncss - Roadmap/Timeline-Komponente (Layer "components"): eine vertikale Liste von
- * Meilensteinen, verbunden durch eine einzige durchgehende Linie, die sich beim
- * Scrollen selbst "nachzeichnet" (Baseline: Linie ist einfach von Anfang an fertig
- * gezeichnet da, kein Fehlerzustand). Anders als scroll-stack.css KEIN Pinning - die
- * Meilensteine laufen ganz normal im Fluss untereinander, nur die Linie (und optional
- * jede Karte selbst) reagiert per `animation-timeline: view()` auf die eigene
- * Scroll-Position.
+ * Meilensteinen, verbunden durch eine ZWEIFARBIGE Linie - ein statischer, gedämpfter
+ * "Track" (immer voll sichtbar, die ganze Höhe) UND eine markenfarbene "Progress"-Linie
+ * darüber, die sich beim Scrollen selbst nachzeichnet (Baseline: Progress-Linie ist
+ * einfach von Anfang an fertig gezeichnet, deckt den Track komplett ab - kein
+ * Fehlerzustand). Absichtlich ZWEI Linien statt einer: eine einzige, einfarbige Linie
+ * (erster Anlauf) macht den Zeichen-Effekt kaum sichtbar - der "noch nicht gezeichnete"
+ * Teil ist unsichtbar (Lücke im Dash-Muster) und verschmilzt optisch mit dem
+ * Seitenhintergrund, der bereits gezeichnete Teil sieht dabei genauso aus wie eine ganz
+ * gewöhnliche, immer schon fertige Linie - der Fortschritt selbst bleibt dadurch praktisch
+ * unsichtbar (User-Feedback: "das stimmt nicht und ist eigentlich sinnfrei ... jetzt ist
+ * sie einfach durchgezogen"). Der Track macht den JEWEILIGEN Fortschritt dagegen als
+ * klaren Farbkontrast sichtbar (klassisches Fortschrittsbalken-Muster, nur vertikal) -
+ * genau das macht die Roadmap-Metapher überhaupt erst sinnvoll ("hier bist du gerade in
+ * der Zeitleiste").
  *
  * Markup:
  * <div class="ncss-roadmap">
  *   <svg class="ncss-roadmap-line" viewBox="0 0 2 100" preserveAspectRatio="none" aria-hidden="true">
- *     <line x1="1" y1="0" x2="1" y2="100" pathLength="1" />
+ *     <line class="ncss-roadmap-line-track" x1="1" y1="0" x2="1" y2="100" />
+ *     <line class="ncss-roadmap-line-progress" x1="1" y1="0" x2="1" y2="100" pathLength="1" />
  *   </svg>
  *   <ol class="ncss-roadmap-list" role="list">
  *     <li class="ncss-roadmap-item">
@@ -21,23 +30,24 @@
  *   </ol>
  * </div>
  *
- * Die Linie: EIN <svg>, das die volle Höhe der gesamten Liste überspannt (position:
+ * Die Linien: EIN <svg>, das die volle Höhe der gesamten Liste überspannt (position:
  * absolute, height:100%), `preserveAspectRatio="none"` lässt es unabhängig vom
- * viewBox-Seitenverhältnis auf die tatsächliche Höhe strecken. `pathLength="1"` auf dem
- * <line>-Element normiert die Pfadlänge unabhängig vom Koordinatensystem auf genau 1 -
- * `stroke-dasharray`/`-dashoffset` rechnen dadurch einfach mit 0..1 statt mit krummen,
- * von der viewBox abhängigen Pixelwerten.
+ * viewBox-Seitenverhältnis auf die tatsächliche Höhe strecken. `pathLength="1"` NUR auf
+ * der Progress-Linie normiert deren Pfadlänge unabhängig vom Koordinatensystem auf genau
+ * 1 - `stroke-dasharray`/`-dashoffset` rechnen dadurch einfach mit 0..1 statt mit
+ * krummen, von der viewBox abhängigen Pixelwerten. Die Track-Linie braucht KEIN
+ * pathLength (keine Dash-Animation, einfach immer voll gezeichnet).
  *
  * Scroll-Animation (Progressive Enhancement, `animation-timeline: view()` aktuell NICHT
- * Baseline): Die Linie bekommt eine EIGENE, anonyme `view()`-Timeline (kein benannter
- * `view-timeline-name` wie bei scroll-stack.css nötig - hier gibt es keine Bühne, die
- * gepinnt bleibt, sondern ein ganz normales Element im Fluss, dessen NATÜRLICHER
- * Eintritts-/Austritts-Scrollweg exakt der gewünschten Zeichendauer entspricht). Der
- * DEFAULT-Bereich ("cover", 0% bis 100%) misst dabei genau von "Element beginnt am
- * unteren Bildschirmrand einzutreten" bis "Element verlässt vollständig den oberen
- * Bildschirmrand" - anders als bei der gepinnten Bühne in scroll-stack.css (wo genau
- * diese Standard-Polsterung ein `view-timeline-inset` nötig machte) ist das hier exakt
- * der gewünschte Effekt, kein Inset nötig.
+ * Baseline): Die Progress-Linie bekommt eine EIGENE, anonyme `view()`-Timeline (kein
+ * benannter `view-timeline-name` wie bei scroll-stack.css nötig - hier gibt es keine
+ * Bühne, die gepinnt bleibt, sondern ein ganz normales Element im Fluss, dessen
+ * NATÜRLICHER Eintritts-/Austritts-Scrollweg exakt der gewünschten Zeichendauer
+ * entspricht). Der DEFAULT-Bereich ("cover", 0% bis 100%) misst dabei genau von "Element
+ * beginnt am unteren Bildschirmrand einzutreten" bis "Element verlässt vollständig den
+ * oberen Bildschirmrand" - anders als bei der gepinnten Bühne in scroll-stack.css (wo
+ * genau diese Standard-Polsterung ein `view-timeline-inset` nötig machte) ist das hier
+ * exakt der gewünschte Effekt, kein Inset nötig.
  *
  * Zusätzlich bekommt jede Karte per EIGENER `view()`-Timeline + `animation-range: entry`
  * (nur die Eintritts-Phase, nicht der gesamte Cover-Bereich) eine dezente Fade/Slide-
@@ -58,24 +68,29 @@
   overflow: visible;
 }
 
-.ncss-roadmap-line line {
-  stroke: var(--ncss-roadmap-line-color, var(--ncss-color-border));
+/* KEIN vector-effect:non-scaling-stroke auf beiden Linien - für eine rein VERTIKALE
+   Linie (x1=x2) ist die Strichbreite ohnehin entlang der X-Achse gemessen, und die
+   X-Achse wird durch preserveAspectRatio="none" NICHT gestreckt (viewBox-Breite 2 =
+   tatsächliche Breite 2px, 1:1) - nur die Y-Achse wird stark gestreckt (viewBox-Höhe 100
+   auf oft >1000px tatsächliche Höhe). non-scaling-stroke war deshalb unnötig UND aktiv
+   schädlich: es berechnet laut Spec das gesamte Stroke-Rendering (inklusive
+   stroke-dasharray/-dashoffset) in einem von der viewBox-Streckung ENTKOPPELTEN
+   Koordinatensystem - kombiniert mit pathLength="1" führte das zu einem falsch
+   skalierten, sich wiederholenden Strich-Muster (ein kurzes sichtbares Stück, dann eine
+   Lücke, dann wieder ein Stück, in ca. 180px-Zyklen über die GESAMTE Linie verteilt)
+   statt EINES durchgehenden Strichs - sichtbar als "die Linie verbindet sich nie"
+   (User-Report). Per echtem Pixel-Scan bestätigt: exakt dasselbe periodische Muster bei
+   jedem stroke-dashoffset-Wert (auch bei ausgeschalteter Animation), verschwand komplett,
+   sobald vector-effect entfernt wurde - kein Restproblem der Animation selbst, rein die
+   Kombination aus non-scaling-stroke + pathLength-Normierung. */
+.ncss-roadmap-line-track {
+  stroke: var(--ncss-roadmap-track-color, var(--ncss-color-border));
   stroke-width: var(--ncss-roadmap-line-width, 2px);
-  /* KEIN vector-effect:non-scaling-stroke - für eine rein VERTIKALE Linie (x1=x2) ist die
-     Strichbreite ohnehin entlang der X-Achse gemessen, und die X-Achse wird durch
-     preserveAspectRatio="none" NICHT gestreckt (viewBox-Breite 2 = tatsächliche
-     Breite 2px, 1:1) - nur die Y-Achse wird stark gestreckt (viewBox-Höhe 100 auf oft
-     >1000px tatsächliche Höhe). non-scaling-stroke war deshalb unnötig UND aktiv
-     schädlich: es berechnet laut Spec das gesamte Stroke-Rendering (inklusive
-     stroke-dasharray/-dashoffset) in einem von der viewBox-Streckung ENTKOPPELTEN
-     Koordinatensystem - kombiniert mit pathLength="1" (siehe unten) führte das zu einem
-     falsch skalierten, sich wiederholenden Strich-Muster (ein kurzes sichtbares Stück,
-     dann eine Lücke, dann wieder ein Stück, in ca. 180px-Zyklen über die GESAMTE Linie
-     verteilt) statt EINES durchgehenden Strichs - sichtbar als "die Linie verbindet sich
-     nie" (User-Report). Per echtem Pixel-Scan bestätigt: exakt dasselbe periodische
-     Muster bei jedem stroke-dashoffset-Wert (auch bei ausgeschalteter Animation), verschwand
-     komplett, sobald vector-effect entfernt wurde - kein Restproblem der Animation selbst,
-     rein die Kombination aus non-scaling-stroke + pathLength-Normierung. */
+}
+
+.ncss-roadmap-line-progress {
+  stroke: var(--ncss-roadmap-line-color, var(--ncss-color-brand));
+  stroke-width: var(--ncss-roadmap-line-width, 2px);
 }
 
 .ncss-roadmap-list {
@@ -117,7 +132,7 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .ncss-roadmap-line line {
+    .ncss-roadmap-line-progress {
       stroke-dasharray: 1;
       stroke-dashoffset: 1;
       animation: ncss-roadmap-draw linear both;
