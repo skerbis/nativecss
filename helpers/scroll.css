@@ -65,19 +65,32 @@
    zu setzen (bleibt so mit beliebigem bereits sticky/fixed positionierten Element
    kombinierbar): <header class="ncss-topbar ncss-hide-on-scroll">. Ohne Unterstützung
    bleibt der Header einfach dauerhaft sichtbar (klassisches Sticky-Verhalten, kein
-   Fehlerzustand) - siehe SKILL.md für das vollständige Diagnose-Protokoll. */
+   Fehlerzustand) - siehe SKILL.md für das vollständige Diagnose-Protokoll.
+
+   Für Firefox/Safari gibt es trotzdem einen Weg, nur eben nicht CSS-only: das optionale,
+   separat einzubindende components/hide-on-scroll-fallback.js - derselbe "kleine, opt-in
+   JS-Datei nur für Seiten, die es brauchen"-Ansatz wie components/wa-close-on-scroll.js
+   (dort: Web-Awesome-Popup-Positionierungsbug) und components/command-fallback.js (dort:
+   Invoker-Commands-API). Das Skript prüft selbst per CSS.supports(), ob die native
+   scroll-state-Technik bereits greift, und tut in dem Fall NICHTS (kein doppelt
+   arbeitender Mechanismus, kein Konflikt) - deshalb reicht EIN gemeinsames translate/
+   transition-Paar unten für BEIDE Auslöser (native @container-Regel oder JS), keine
+   Diskussion über @supports-Gates nötig. */
+:root {
+  /* Scroll-state-Container muss ein Vorfahre der zu versteckenden Elemente sein - html/
+     :root ist bei normalem Seiten-Scroll (kein eigener overflow:auto-Wrapper) der
+     richtige Bezugspunkt. Unbenannt, da für den Normalfall (ein page-weiter Header) keine
+     Mehrdeutigkeit zwischen mehreren verschachtelten scroll-state-Containern entsteht.
+     Wirkungslos (nicht schädlich), wo container-type:scroll-state nicht unterstützt wird -
+     dort übernimmt bei Bedarf hide-on-scroll-fallback.js das Ein-/Ausblenden per Inline-
+     style="translate", die Übergangs-Animation unten greift für beide Auslöser gleich. */
+  container-type: scroll-state;
+}
+.ncss-hide-on-scroll {
+  translate: 0 0;
+  transition: translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+}
 @supports (container-type: scroll-state) {
-  :root {
-    /* Scroll-state-Container muss ein Vorfahre der zu versteckenden Elemente sein -
-       html/:root ist bei normalem Seiten-Scroll (kein eigener overflow:auto-Wrapper) der
-       richtige Bezugspunkt. Unbenannt, da für den Normalfall (ein page-weiter Header) keine
-       Mehrdeutigkeit zwischen mehreren verschachtelten scroll-state-Containern entsteht. */
-    container-type: scroll-state;
-  }
-  .ncss-hide-on-scroll {
-    translate: 0 0;
-    transition: translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
-  }
   @container scroll-state(scrolled: block-end) {
     .ncss-hide-on-scroll {
       translate: 0 -100%;

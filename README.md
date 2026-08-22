@@ -599,6 +599,21 @@ per CSS behebbare Ursache). Das Script schließt jedes offene Panel, sobald gesc
 wird, statt gegen die Neupositionierung anzukämpfen - dasselbe Muster wie bei den
 meisten Mega-/Dropdown-Menüs anderer Sites.
 
+**`components/hide-on-scroll-fallback.js`** (opt-in, nur auf Seiten mit
+`.ncss-hide-on-scroll` einbinden, die auch in Firefox/Safari funktionieren sollen):
+`.ncss-hide-on-scroll` (helpers/scroll.css) ist rein CSS-basiert nur in Chromium aktiv
+(`container-type: scroll-state`, Stand August 2026 kein Firefox-/Safari-Termin bekannt).
+Ein CSS-only-Fallback wurde gebaut UND getestet, hatte aber einen echten, per
+Playwright-WebKit reproduzierten Bug (SKILL.md Landmine 26: eine typisierte `calc()`-Kette
+löste sich in WebKit falsch auf, der Header blieb nach Hochscrollen dauerhaft versteckt).
+Dieses Script ist die klassische, zuverlässige Alternative: prüft selbst per
+`CSS.supports("container-type", "scroll-state")`, ob die native Technik bereits greift
+(dann tut es NICHTS, kein doppelt arbeitender Mechanismus), sonst ein einfacher,
+`requestAnimationFrame`-gedrosselter Scroll-Listener, der dieselbe `translate`-Eigenschaft
+setzt, die auch die CSS-Variante nutzt (eine gemeinsame `transition` in helpers/scroll.css
+sorgt für dieselbe weiche Animation, unabhängig vom Auslöser). Über mehrere Runter-/
+Hoch-Scroll-Zyklen in echtem Chromium/WebKit/Firefox verifiziert, kein Hängenbleiben.
+
 ## Produktseite (`index.html`, Repo-Root)
 
 Die eigentliche NativeCSS-Seite (nicht Teil der `demo/`-Sammlung) - dogfooded mit

@@ -509,6 +509,26 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     vorsichtig gewesen, ganz OHNE echten Test übernehmen wäre fahrlässig gewesen - der
     Mittelweg (bauen, ECHT testen, bei echtem Scheitern wieder verwerfen) war hier richtig.
 
+    **Nachtrag (User-Frage danach: "das müsste per JS dann ggf. gefixt werden oder?")**:
+    Ja - genau dafür gibt es im Projekt bereits das etablierte Muster "kleine, OPT-IN
+    JS-Datei nur für Seiten, die es brauchen" (`components/wa-close-on-scroll.js`,
+    `components/command-fallback.js`). `components/hide-on-scroll-fallback.js` neu gebaut:
+    prüft sich selbst per `CSS.supports("container-type", "scroll-state")` und tut NICHTS,
+    wenn die native Technik bereits greift (kein doppelt arbeitender Mechanismus, kein
+    Konflikt) - sonst ein einfacher `requestAnimationFrame`-gedrosselter Scroll-Listener,
+    der dieselbe `translate`-Eigenschaft setzt wie die CSS-Variante. Dafür musste
+    `.ncss-hide-on-scroll { translate:0 0; transition: translate ...; }` aus dem
+    `@supports (container-type: scroll-state)`-Block HERAUSgezogen werden (jetzt
+    unbedingt) - sonst hätte das Skript zwar den `translate`-Wert gesetzt, aber ohne die
+    weiche Übergangs-Animation, die vorher nur INNERHALB des Supports-Blocks existierte.
+    Über mehrere vollständige Runter-/Hoch-Scroll-Zyklen (nicht nur einen) in echtem
+    Chromium, WebKit UND Firefox verifiziert - kein Hängenbleiben, anders als der
+    CSS-only-Versuch oben. Lehre: "kein CSS-only-Fallback möglich" ist nicht dasselbe wie
+    "keine Lösung möglich" - das Projekt lehnt JS nicht grundsätzlich ab (siehe Fallstrick
+    0/"Native zuerst"-Prinzip: "Web Awesome nur, wo natives HTML/CSS nicht reicht"), eine
+    kleine, opt-in, sich selbst wegschaltende JS-Datei ist für einen echten
+    Cross-Browser-Gap wie diesen der richtige, bereits etablierte Kompromiss.
+
 Viertes Beispiel, diesmal EIN Feature (`animation-timeline: view()`), aber DREI getrennte
 Kalibrierungs-Bugs, alle erst durch echten Test bzw. echtes User-Feedback gefunden, nicht
 beim Schreiben selbst sichtbar - und ein Lehrstück darin, wie zwei oberflächlich ähnlich
