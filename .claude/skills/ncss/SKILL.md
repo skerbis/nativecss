@@ -440,6 +440,75 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     hintergründe passen") und war nötig, weil jede einzelne Kombination ihre EIGENE,
     unabhängige Bruchstelle haben kann.
 
+25. **Seiteneigene "landing-*"-Klassen, die eigentlich allgemein nützlich sind, gehören
+    ins geteilte System, nicht in die Produktseite** - User-Feedback nach dem ersten
+    Durchlauf von index.html: "die Seite darf nur Stile und Effekte nutzen, die auch
+    integriert sind, sonst ist sie nicht glaubwürdig". Beim Durchgehen stellte sich
+    heraus: mehrere page-lokale Klassen dupliziert bereits vorhandene ODER waren
+    generalisierbar genug, um sie zu verschieben - erst geprüft, ob etwas Passendes
+    SCHON existiert (`.ncss-badge` für die Hero-Pille statt einer eigenen Pillen-Klasse,
+    `.ncss-text-success`/`-danger` für Vergleichstabellen-Zellen statt eigener
+    `.landing-compare-yes/-no`), dann fehlende, aber klar wiederverwendbare Muster als
+    ECHTE Klassen ergänzt:
+    - `.ncss-badge-icon` (+ `--lg`) in components/badge.css - Icon-in-Kreis/Quadrat,
+      dieselbe 100-Fläche/-on-soft-Logik wie `.ncss-badge`.
+    - `.ncss-topbar--transparent` in components/topbar.css - macht die sonst
+      undurchsichtige Eigenfläche transparent (siehe Punkt 24, Fallstrick "Glass-Backdrop
+      hinter einer opaken Komponente bleibt wirkungslos") + entfernt den Rahmen.
+    - `.ncss-lead-quote` in helpers/typography.css - derselbe linke Akzent-Rahmen wie
+      `<blockquote>` (base.css), als zusätzliche Klasse statt eigenem Element für einen
+      Lead-Absatz, der wie ein Zitat aussehen soll, aber keins ist (semantisch falsch als
+      echtes `<blockquote>`). `border-color` folgt `currentColor` statt einem festen
+      Token, passt sich dadurch automatisch an jede Textfarbe an.
+    - `.ncss-list--dot` in helpers/typography.css - der "zwei Punkte nebeneinander"-Fund
+      aus Punkt 24 selbst, jetzt mit korrektem `list-style:none` als wiederverwendbare
+      Klasse statt eines Bugs, der pro Projekt neu gemacht werden müsste.
+    Nach der Promotion: page-lokale CSS-Duplikate der jetzt geteilten Regeln vollständig
+    ENTFERNT (nicht nur die Klassennamen umbenannt) - ein Duplikat, das zufällig identisch
+    aussieht, ist trotzdem ein zweiter Ort, der bei der nächsten Änderung auseinanderlaufen
+    kann. Lehre: bei JEDER neuen Demo-/Produktseite prüfen, ob eine gerade erfundene
+    `demo-*`/`landing-*`-Klasse eigentlich ein fehlendes, allgemein nützliches System-
+    Teil ist - eine "echte" Seite, die das eigene Design-System bewirbt, verliert an
+    Glaubwürdigkeit, wenn sie selbst nicht nur aus dessen echten Bausteinen besteht.
+
+26. **Ein VERIFIZIERTER, aber gescheiterter Fallback-Versuch: `.ncss-hide-on-scroll`
+    (helpers/scroll.css) sollte auf expliziten User-Wunsch ("fallback ja, auf Funktion
+    prüfen ob verfügbar") um den älteren `@property` + `animation-timeline: scroll()`-
+    Trick (nach bram.us) für Browser ohne `container-type: scroll-state` erweitert
+    werden.** Support-Recherche vorab ergab: Safari unterstützt `animation-timeline:
+    scroll()` bereits (seit Version 26), Firefox nicht - ein Fallback hätte also
+    zumindest Safari echten Mehrwert gebracht, anders als beim ersten (2024) Versuch, wo
+    beide Techniken gleichermaßen nur Chromium betrafen. Vollständig implementiert
+    (`--ncss-scroll-pos`/`-delayed` per `scroll(root)`-Timeline, `--ncss-scroll-direction`
+    per `calc()`-Vorzeichen-Kette, `@container style()` für das eigentliche Ein-/
+    Ausblenden) UND in ECHTEM Playwright-WebKit getestet, nicht nur für "unterstützt"
+    gehalten. Ergebnis: Scroll-RUNTER funktionierte korrekt (Header versteckte sich),
+    Scroll-HOCH funktionierte NIE - der Header blieb dauerhaft versteckt, unabhängig
+    davon, wie lange/wie oft nach oben gescrollt wurde. Ursache per gezieltem Diagnose-
+    Skript eingegrenzt (nicht nur vermutet): `getComputedStyle().getPropertyValue()` auf
+    `--ncss-scroll-direction` lieferte korrekt den Text "-1", aber ein Sonden-Element mit
+    `width: calc(1px * var(--ncss-scroll-direction, 0))` löste in WebKit zu `0px` auf
+    statt `-1px` - die per `@property`-typisierte, mehrfach verschachtelte `calc()`-Kette
+    (Direction = calc(Velocity/Speed), Velocity/Speed selbst schon `calc()`/`max()`-
+    Ausdrücke) verhält sich in WebKit also wie "0" SOBALD sie in einem WEITEREN `calc()`
+    konsumiert wird, obwohl ihr Text-Wert korrekt "-1" zeigt - ein WebKit-Bug in der
+    Auswertung tief verschachtelter typisierter Custom-Property-Ketten, keine eigene
+    Fehlformel. Fix: der komplette Fallback-Block wieder ENTFERNT (nicht nur deaktiviert)
+    - ein Header, der sich beim Scrollen nach unten korrekt versteckt, aber durch Hoch-
+    Scrollen NIE WIEDER erreichbar wird, ist ein SCHLECHTERES Ergebnis als der 2024 schon
+    bekannte, mildere Bug ("schnelles Runter-dann-Hoch kann kurz hängen bleiben") - hier
+    wäre die komplette Navigation in Safari dauerhaft blockiert gewesen. Lehre: "auf
+    Funktion prüfen" heißt nicht nur "unterstützt der Browser die einzelnen Features"
+    (bestätigt: `scroll()`, `@property`, `@container style()` UNTERSTÜTZT alle einzeln in
+    WebKit), sondern "funktioniert die TATSÄCHLICHE ZUSAMMENSETZUNG end-to-end" - isolierte
+    Feature-Detection reicht nicht, wenn mehrere fortgeschrittene Features TIEF
+    ineinander verschachtelt zusammenspielen müssen; nur ein echter, mehrstufiger
+    Interaktionstest (kontinuierliches Scrollen simuliert, nicht nur ein einzelner
+    `wheel()`-Aufruf, PLUS Diagnose der rohen Zwischenwerte statt nur des Endergebnisses)
+    deckte den Bug auf. Ganz verworfen statt "nur für Chromium aktiv lassen" wäre zu
+    vorsichtig gewesen, ganz OHNE echten Test übernehmen wäre fahrlässig gewesen - der
+    Mittelweg (bauen, ECHT testen, bei echtem Scheitern wieder verwerfen) war hier richtig.
+
 Viertes Beispiel, diesmal EIN Feature (`animation-timeline: view()`), aber DREI getrennte
 Kalibrierungs-Bugs, alle erst durch echten Test bzw. echtes User-Feedback gefunden, nicht
 beim Schreiben selbst sichtbar - und ein Lehrstück darin, wie zwei oberflächlich ähnlich

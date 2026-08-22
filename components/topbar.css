@@ -24,6 +24,23 @@
   z-index: var(--ncss-topbar-z);
 }
 
+/* Modifier für eine Topbar über einem Hero/farbigen Hintergrund statt der normalen
+   Seitenfläche (siehe index.html) - typischerweise mit .ncss-glass (components/
+   effects.css) als eigenem, separatem Hintergrund-Element kombiniert (NICHT .ncss-glass
+   direkt auf .ncss-topbar-inner setzen, siehe Fallstrick 21 im Skill-Dokument: bricht bei
+   einer enthaltenen Floating-UI-Komponente wie dem Off-Canvas-Nav-Panel).
+   .ncss-topbar bringt sonst ein UNDURCHSICHTIGES background-color mit - ein Glass-/
+   Blur-Element dahinter bleibt dadurch wirkungslos, selbst wenn die z-index-Reihenfolge
+   selbst korrekt sitzt (die Eigenfläche der Topbar malt darunter, siehe Fallstrick 18).
+   Textfarbe bleibt bewusst NICHT Teil dieses Modifiers - die hängt vom tatsächlichen
+   Hintergrund/der Marke der jeweiligen Seite ab, dafür direkt am Seiten-Markup/-CSS
+   überschreiben (siehe index.html: eigene helle Textfarbe NUR oberhalb der nav.css-
+   Umschalt-Schwelle, damit das Off-Canvas-Panel darunter seine normale Optik behält). */
+.ncss-topbar--transparent {
+  background-color: transparent;
+  border-block-end: none;
+}
+
 .ncss-topbar-inner {
   display: flex;
   flex-wrap: wrap;

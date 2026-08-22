@@ -20,6 +20,18 @@
   color: var(--ncss-color-text-muted);
 }
 
+/* Derselbe linke Akzent-Rahmen + Einzug wie <blockquote> (base.css), als ZUSÄTZLICHE
+   Klasse statt eigenem Element - für einen Lead-Absatz, der optisch wie ein Zitat wirken
+   soll, aber KEIN echtes Zitat ist (ein <blockquote> wäre hier semantisch falsch, siehe
+   MDN). Rahmenfarbe folgt currentColor statt einem festen Token, passt sich dadurch
+   automatisch an jede Textfarbe an, in der sie gerade verwendet wird (auch auf farbigen
+   Flächen, siehe index.html). Meist mit .ncss-text-lead kombiniert: class="ncss-text-lead
+   ncss-lead-quote". */
+.ncss-lead-quote {
+  border-inline-start: 0.25rem solid color-mix(in srgb, currentColor 55%, transparent);
+  padding-inline-start: var(--ncss-space-sm);
+}
+
 .ncss-text-muted { color: var(--ncss-color-text-muted); }
 .ncss-text-brand { color: var(--ncss-color-brand); }
 .ncss-text-brand-2 { color: var(--ncss-color-brand-2); }
@@ -255,4 +267,34 @@
   line-height: 1.4;
   background-color: rgb(0 0 0 / 75%);
   color: #fff;
+}
+
+/* --- Punkt-Liste (eigener ::before-Marker statt nativem Bullet) -----------------------
+   base.css setzt list-style:none NUR für [role="list"] (siehe dort, Safari+VoiceOver-
+   Konvention) - eine Liste mit eigenem ::before-Punkt braucht IMMER zusätzlich ihr
+   eigenes list-style:none, sonst zeigt der Browser seinen nativen Bullet ZUSÄTZLICH zum
+   eigenen an (zwei Punkte nebeneinander, per echtem Test in index.html gefunden).
+   padding-inline-start:0 auf der Liste selbst (der Einzug kommt von der einzelnen <li>,
+   Platz für den Punkt) statt des base.css-Listen-Defaults (ul,ol{padding-inline-start:
+   var(--ncss-space-md)}). Punktfarbe folgt --ncss-color-brand, kein eigener Token nötig.
+   Markup: <ul class="ncss-list--dot" role="list"><li>Punkt eins</li>...</ul> */
+.ncss-list--dot {
+  list-style: none;
+  padding-inline-start: 0;
+  display: grid;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-list--dot li {
+  position: relative;
+  padding-inline-start: var(--ncss-space-sm);
+}
+.ncss-list--dot li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.6em;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background-color: var(--ncss-color-brand);
 }

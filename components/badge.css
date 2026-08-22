@@ -37,3 +37,30 @@
   background-color: var(--ncss-color-danger-100);
   color: var(--ncss-color-danger-on-soft);
 }
+
+/* --- Icon-Badge ------------------------------------------------------------------------
+ * Dieselbe "100-Fläche + -on-soft-Text"-Logik wie .ncss-badge oben, nur als Kreis/Quadrat
+ * um ein einzelnes Icon statt als Text-Pille - klassisches "Icon in einer farbigen
+ * Kachel"-Muster für Feature-Listen/Karten (siehe demo/docs.html, index.html). Erwartet
+ * ein Icon-Kind (<i class="fa-solid ...">, .ncss-icon-* oder <svg>) - selbst kein Icon-
+ * System, nur der Rahmen darum.
+ * Markup: <span class="ncss-badge-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
+ * Farbvarianten identisch zu .ncss-badge (--brand-2/--neutral/--success/--warning/--danger),
+ * dieselben Klassen wiederverwendet statt einer zweiten Farb-Matrix. */
+.ncss-badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: 1.1rem;
+}
+.ncss-badge-icon--lg {
+  inline-size: 5rem;
+  block-size: 5rem;
+  border-radius: var(--ncss-radius-full);
+  font-size: 2rem;
+}

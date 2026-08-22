@@ -42,17 +42,30 @@
    Listener) - der Browser meldet die Scroll-Richtung selbst, kein manuelles Tracking von
    vorheriger/aktueller scrollY-Position nötig.
 
-   BEWUSST NICHT die ältere @property + animation-timeline: scroll()-Technik als Fallback
-   (verbreiteter Trick von 2024, funktioniert nur in Chromium und hat einen bekannten Bug:
-   schnelles Runter-dann-Hoch-Scrollen kann den Header dauerhaft ausgeblendet lassen,
-   per Recherche bestätigt) - zwei konkurrierende Hacks für eine reine Zusatz-Politur wären
-   mehr Wartungslast, als sie wert sind. Stattdessen sauberes @supports-Gate wie bei
-   text-box-trim: ohne Unterstützung bleibt der Header einfach dauerhaft sichtbar (klassisches
-   Sticky-Verhalten, keinesfalls "kaputt") statt mit einer fehleranfälligen zweiten Technik
-   nachzuhelfen. Setzt .ncss-sticky/.ncss-topbar o.ä. bereits vorausgesetzt - diese Klasse
-   ergänzt nur das Ein-/Ausblenden, OHNE selbst position/inset zu setzen (bleibt so mit
-   beliebigem bereits sticky/fixed positionierten Element kombinierbar):
-   <header class="ncss-topbar ncss-hide-on-scroll">. */
+   Nur Chromium (Stand August 2026, per WebSearch bestätigt, kein Firefox-/Safari-Termin
+   bekannt). Ein FALLBACK wurde tatsächlich gebaut und in echtem Playwright-WebKit
+   getestet (auf expliziten User-Wunsch: "fallback ja, auf Funktion prüfen ob verfügbar")
+   - der ältere @property + animation-timeline: scroll()-Trick nach bram.us
+   (https://www.bram.us/2024/09/29/ + https://www.bram.us/2023/10/23/css-scroll-detection/,
+   --scroll-pos/-delayed laufen per scroll(root)-Timeline auseinander, ihr Vorzeichen per
+   calc()-Kette ergibt die Richtung, @container style() setzt darauf das Ein-/Ausblenden).
+   ERGEBNIS, per echtem Test (nicht nur angenommen): funktionierte NUR für die Richtung
+   "runter" (Header versteckt sich korrekt) - "hoch" blieb dauerhaft hängen, der Header
+   kam nie wieder zurück. Ursache eingegrenzt (nicht nur vermutet): die per calc()-Kette
+   berechnete --scroll-direction lieferte über getComputedStyle().getPropertyValue()
+   korrekt "-1" als Text, verhielt sich aber INNERHALB eines weiteren calc() (z.B. in der
+   @container style(--scroll-direction: -1)-Bedingung) wie 0 statt -1 - ein WebKit-Bug in
+   der Auswertung tief verschachtelter, per @property typisierter calc()-Ketten, kein
+   Tippfehler in der eigenen Implementierung. Das ist ein SCHLECHTERES Ergebnis als der
+   ursprünglich dokumentierte Bug ("schnelles Runter-dann-Hoch kann hängen bleiben") - hier
+   blieb JEDE Aufwärts-Bewegung wirkungslos, die Navigation wäre in Safari dauerhaft
+   unerreichbar geworden. Deshalb wieder verworfen, nicht nur aus Vorsicht, sondern nach
+   echtem, reproduziertem Scheitern. Setzt .ncss-sticky/.ncss-topbar o.ä. bereits
+   vorausgesetzt - diese Klasse ergänzt nur das Ein-/Ausblenden, OHNE selbst position/inset
+   zu setzen (bleibt so mit beliebigem bereits sticky/fixed positionierten Element
+   kombinierbar): <header class="ncss-topbar ncss-hide-on-scroll">. Ohne Unterstützung
+   bleibt der Header einfach dauerhaft sichtbar (klassisches Sticky-Verhalten, kein
+   Fehlerzustand) - siehe SKILL.md für das vollständige Diagnose-Protokoll. */
 @supports (container-type: scroll-state) {
   :root {
     /* Scroll-state-Container muss ein Vorfahre der zu versteckenden Elemente sein -
