@@ -47,6 +47,7 @@
 @import url("components/search.css") layer(components);
 @import url("components/select.css") layer(components);
 @import url("components/input-group.css") layer(components);
+@import url("components/combobox.css") layer(components);
 @import url("components/placeholder.css") layer(components);
 @import url("components/sparkline.css") layer(components);
 @import url("components/video.css") layer(components);

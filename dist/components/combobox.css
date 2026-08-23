@@ -1,0 +1,103 @@
+/**
+ * ncss - Combobox (Layer "components"): opt-in JS-Enhancement für zwei native Muster,
+ * deren POPUP selbst in keinem Browser per CSS stylebar ist:
+ *
+ * 1. `<input list="...">` + `<datalist>` (editierbares Feld MIT Auswahlliste) - die
+ *    Vorschlagsliste ist reine Browser-UI, ohne Ausnahme (per echtem Test + Recherche
+ *    bestätigt, Stand 2026).
+ * 2. `<select>` auf Browsern OHNE `appearance: base-select`-Unterstützung (Firefox,
+ *    ältere Safari-Versionen) - dort bleibt das Options-Popup ebenfalls unstylebares
+ *    natives UI (mit `base-select` dagegen bereits über `.ncss-select::picker(select)`
+ *    gelöst, siehe select.css - diese Datei greift dort NICHT ein).
+ *
+ * Beide brauchen zwingend JS für ein wirklich gestyltes Popup - reines CSS kann diese
+ * Lücke nicht schließen. `components/combobox.js` baut in beiden Fällen dieselbe custom
+ * Dropdown-Liste (hier gestylt), original-Markup bleibt unverändert (data-src bei input,
+ * <option>-Kinder bei select) - ohne das Script bleibt die native, voll funktionsfähige
+ * Basisversion bestehen (progressive enhancement, kein Funktionsverlust ohne JS).
+ */
+
+.ncss-combobox {
+  position: relative;
+  display: block;
+}
+.ncss-combobox > .ncss-input,
+.ncss-combobox > .ncss-combobox-trigger {
+  padding-inline-end: var(--ncss-space-lg);
+  width: 100%;
+}
+.ncss-combobox-chevron {
+  position: absolute;
+  inset-inline-end: var(--ncss-space-xs);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  width: var(--ncss-icon-size-sm);
+  height: var(--ncss-icon-size-sm);
+  background-color: var(--ncss-color-text-muted);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.ncss-combobox-list {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  inset-block-start: 100%;
+  margin-block-start: var(--ncss-space-2xs);
+  z-index: 20;
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-md);
+  padding: var(--ncss-space-2xs);
+  margin: var(--ncss-space-2xs) 0 0;
+  list-style: none;
+  max-height: 16rem;
+  overflow-y: auto;
+}
+.ncss-combobox-list:not([data-open]) {
+  display: none;
+}
+
+/* display:flex trägt denselben reichen Options-Inhalt (Icon+Label statt nur Text), den
+   select.css für appearance:base-select vorsieht - combobox.js klont die <option>-
+   Kind-Elemente 1:1 hierher, damit Firefox/ältere Safari optisch dasselbe Ergebnis
+   zeigen wie Browser mit nativer Unterstützung. */
+.ncss-combobox-option,
+.ncss-combobox-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-2xs);
+  text-align: start;
+  cursor: pointer;
+}
+.ncss-combobox-option > img,
+.ncss-combobox-option > svg,
+.ncss-combobox-trigger > img,
+.ncss-combobox-trigger > svg {
+  width: var(--ncss-icon-size-sm);
+  height: var(--ncss-icon-size-sm);
+  flex: 0 0 auto;
+}
+
+.ncss-combobox-option {
+  border-radius: var(--ncss-radius-sm);
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  cursor: pointer;
+}
+.ncss-combobox-option[data-active] {
+  background-color: var(--ncss-color-bg-subtle);
+}
+.ncss-combobox-option[aria-selected="true"] {
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+}
+.ncss-combobox-empty {
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  color: var(--ncss-color-text-muted);
+}

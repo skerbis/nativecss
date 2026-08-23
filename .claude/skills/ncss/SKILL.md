@@ -808,6 +808,63 @@ umgestellt:
     bräuchte eigene Verschachtelungsregeln) - kein konkreter Bedarf dafür in den beiden
     vom User genannten Fällen, bei Bedarf ergänzen statt vorsorglich mitbauen.
 
+41. **`components/combobox.js`/`.css` - `<datalist>`- und `<select>`-Popups sind in
+    keinem Browser per CSS stylebar (per WebSearch bestätigt, Stand 2026), reines CSS
+    kann diese Lücke strukturell nicht schließen.** Für `<select>` gibt es inzwischen
+    `appearance: base-select` (Chrome/Edge 135+, Safari 26+, bereits in `select.css`
+    genutzt), für `<datalist>` keinen CSS-Weg. Ein einziges opt-in Script deckt beide
+    Fälle über dieselbe Dropdown-/Tastatur-Mechanik ab (gemeinsame `createDropdown()`-
+    Hilfsfunktion, nur Optionsquelle und Select-Callback unterscheiden sich):
+    - **`<input list>` + `<datalist>`**: `list`-Attribut wird per JS entfernt (verhindert
+      ein doppeltes - natives UND custom - Popup gleichzeitig), Optionen aus dem
+      `<datalist>` in eine eigene, gestylte `<ul role="listbox">` gerendert, gefiltert
+      per Tippen. Ohne JS bleibt die native Basisversion (Attribut unangetastet) voll
+      funktionsfähig - reine progressive Enhancement.
+    - **`<select>`**: NUR aktiv, wenn `CSS.supports("appearance", "base-select")` false
+      ist (sonst liefert die native Technik bereits ein gestyltes Popup - kein doppelt
+      arbeitender Mechanismus, dasselbe Prinzip wie bei allen anderen opt-in Fallback-
+      Scripts in diesem Projekt). Natives `<select>` bleibt als Werthalter im DOM
+      (`aria-hidden="true"`, unsichtbar per Position/Opacity/1px-Größe statt `display:
+      none` - verhindert, dass der Browser es aus dem Fokus-Handling wirft), ein neuer
+      `<button role="combobox">` übernimmt Anzeige/Fokus/Tastatur, synct seinen Text UND
+      den `.value` des echten `<select>` bei jeder Auswahl zurück (WAI-ARIA "Select-Only
+      Combobox"-Muster). Per echtem Test in Playwright-Firefox bestätigt (dort KEIN
+      `base-select`): Enhancement greift, Dropdown zeigt alle Optionen inkl.
+      `aria-selected`-Hervorhebung, Klick- UND Tastaturauswahl synct den echten
+      `<select>`-Wert korrekt zurück. Per echtem Test in Chromium/WebKit bestätigt (dort
+      IST `base-select` verfügbar): Enhancement bleibt korrekt INAKTIV, `data-ncss-
+      combobox` wird nicht gesetzt - kein Doppel-Popup, kein Konflikt mit der bereits
+      funktionierenden nativen Lösung.
+    - Erster ArrowDown bei geschlossenem Dropdown ÖFFNET nur (bewegt noch keinen
+      aktiven Eintrag) - Standard-Combobox-Konvention, kein Bug (beim eigenen Testen
+      zunächst fälschlich als Fehler eingeordnet, bis der zweite ArrowDown + Enter im
+      selben Testlauf die Auswahl korrekt bestätigte).
+
+42. **`<option>` darf mit `appearance: base-select` beliebige Kind-Elemente enthalten
+    (Icon+Label, nicht nur Text)** - per WebSearch + WebKit-Blogpost ("The Golden Rule
+    of Customizable Select") verifiziert statt aus dem Training geraten, da neu/selten
+    genug für eine echte Wissenslücke. Ein optionaler `<button><selectedcontent>
+    </selectedcontent></button>` als erstes Kind von `<select>` steuert zusätzlich, wie
+    die Auswahl im GESCHLOSSENEN Zustand angezeigt wird - ohne dieses Markup rendert der
+    Browser selbst einen passenden Text-Button (bereits vorher funktionierend, kein
+    Bruch). Golden Rule: Text bleibt PFLICHT (sichtbar oder `.ncss-visually-hidden`),
+    Icons sind eine Ergänzung, nie ein Ersatz - sonst fehlt der Wert in der
+    Barrierefreiheits-Struktur.
+    - **Der JS-Fallback (`combobox.js`, Fallstrick 41) hätte reiche Options-Inhalte
+      ohne Nacharbeit zu einem einzigen zusammengequetschten Text-String verflacht**
+      (`opt.textContent.trim()` fasst ALLE Text-Knoten JEDER Tiefe zusammen, z.B.
+      `<option><span>🍎</span><span>Apfel</span></option>` → `"🍎Apfel"` als eine
+      Zeichenkette statt zwei separat gestylter Elemente) - erst durch expliziten
+      User-Hinweis entdeckt ("für browser die es nicht können fallback anbieten"),
+      nicht selbst beim Bauen der Rich-Content-Unterstützung mitbedacht. Fix: `render()`
+      und `syncTrigger()` in `combobox.js` klonen jetzt die ECHTEN Kind-Elemente der
+      `<option>` (`item.node.childNodes[i].cloneNode(true)`) in die custom `<li>`/den
+      Trigger-Button, statt nur `label` (reiner Text) zu verwenden - reine Text-Optionen
+      (unverändert die Mehrheit) fallen weiterhin auf `textContent` zurück. Lehre: eine
+      neue Fähigkeit, die auf ZWEI Pfaden ausgeliefert wird (hier: nativ per CSS UND
+      JS-Fallback für Browser ohne Unterstützung), muss auf BEIDEN Pfaden dieselbe
+      Fähigkeit tragen - sonst ist der Fallback nur scheinbar gleichwertig.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

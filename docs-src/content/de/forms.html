@@ -30,7 +30,7 @@
         <tr><td><code>type="date/time/datetime-local/month/week"</code></td><td>Kalender-/Uhr-Icon folgt automatisch dem Theme (<code>color-scheme</code>), keine eigene Anpassung nötig</td></tr>
         <tr><td><code>type="search"</code></td><td><code>appearance: none</code> nötig, sonst rundet Safari das Feld eigenständig komplett ab</td></tr>
         <tr><td><code>type="number"</code></td><td>Native Spinner-Pfeile bewusst NICHT entfernt - echte Funktionalität, kein Grund sie zu kappen</td></tr>
-        <tr><td><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code></td><td>Nativer Combobox - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel (generisch auf jedes <code>&lt;input&gt;</code>). Die Vorschlagsliste selbst ist reine Browser-UI, in keinem Browser per CSS stylebar</td></tr>
+        <tr><td><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code></td><td>Nativer Combobox - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel (generisch auf jedes <code>&lt;input&gt;</code>)</td></tr>
       </tbody>
     </table>
   </div>
@@ -39,6 +39,24 @@
   &lt;option value="Berlin"&gt;&lt;/option&gt;
   &lt;option value="Hamburg"&gt;&lt;/option&gt;
 &lt;/datalist&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="combobox-js">
+  <h2 class="demo-section-title">Gestylte Dropdowns (opt-in)</h2>
+  <p class="ncss-text-muted ncss-text-sm">Die native Vorschlagsliste eines <code>&lt;datalist&gt;</code> UND das Options-Popup eines <code>&lt;select&gt;</code> sind in keinem Browser per CSS stylebar (Stand 2026, geprüft) - für <code>&lt;select&gt;</code> gibt es mit <code>appearance: base-select</code> mittlerweile einen CSS-Weg (Chrome/Edge 135+, Safari 26+, siehe <a href="components.html">Komponenten-Referenz</a>), für <code>&lt;datalist&gt;</code> nicht.</p>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/combobox.js</code> (opt-in) ersetzt in beiden Fällen die native Popup-Optik durch eine echte, gestylte Dropdown-Liste - Original-Markup unverändert (<code>&lt;input list&gt;</code>/<code>&lt;datalist&gt;</code> bzw. <code>&lt;select&gt;</code>/<code>&lt;option&gt;</code>), volle native Funktion bleibt ohne JS bestehen (progressive enhancement, kein Funktionsverlust). Bei <code>&lt;select&gt;</code> greift es NUR dort, wo <code>appearance: base-select</code> fehlt (z.B. Firefox) - wo die native Technik bereits ein gestyltes Popup liefert, tut das Script nichts.</p>
+  <pre><code class="language-html">&lt;script src="components/combobox.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Reicher <code>&lt;option&gt;</code>-Inhalt</strong> (nur mit <code>appearance: base-select</code>): <code>&lt;option&gt;</code> darf seit der "Customizable Select"-Erweiterung beliebige Kind-Elemente enthalten (Icon+Label statt nur Text), ein optionaler <code>&lt;button&gt;&lt;selectedcontent&gt;</code> als erstes Kind von <code>&lt;select&gt;</code> steuert die Anzeige im geschlossenen Zustand. "The Golden Rule of Customizable Select": Text bleibt Pflicht (sichtbar oder per <code>.ncss-visually-hidden</code>), Icons sind eine Ergänzung, nie ein Ersatz.</p>
+  <pre><code class="language-html">&lt;select class="ncss-select"&gt;
+  &lt;button type="button"&gt;
+    &lt;selectedcontent&gt;&lt;/selectedcontent&gt;
+  &lt;/button&gt;
+  &lt;option value="apfel"&gt;
+    &lt;span aria-hidden="true"&gt;🍎&lt;/span&gt;
+    &lt;span&gt;Apfel&lt;/span&gt;
+  &lt;/option&gt;
+&lt;/select&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/combobox.js</code> repliziert denselben reichen Inhalt für den JS-Fallback-Pfad (Browser ohne <code>base-select</code>) - <code>&lt;option&gt;</code>-Kind-Elemente werden 1:1 in die custom Dropdown-Liste geklont statt nur der zusammengequetschte Text. Optisch identisches Ergebnis, per echtem Test in Chromium (nativ) UND Firefox (JS-Fallback) bestätigt.</p>
 </section>
 
 <section class="ncss-stack" id="checkbox-radio">

@@ -71,7 +71,17 @@
     margin-block-start: var(--ncss-space-2xs);
   }
 
+  /* display:flex erlaubt REICHE Inhalte pro <option> (nicht nur Text) - <img>/<span> als
+     Icon+Label nebeneinander, siehe "The Golden Rule of Customizable Select"
+     (https://webkit.org/blog/18117/the-golden-rule-of-customizable-select/): Text bleibt
+     PFLICHT (sichtbar oder per .ncss-visually-hidden), Icons sind eine Ergänzung, nie ein
+     Ersatz - sonst fehlt der Wert in der Barrierefreiheits-Struktur. Plain-Text-Options
+     (die überwiegende Mehrheit bestehender <select>-Nutzung) rendern unverändert, da ein
+     einzelner Text-Knoten als Flex-Item keine sichtbare Änderung bewirkt. */
   .ncss-select option {
+    display: flex;
+    align-items: center;
+    gap: var(--ncss-space-2xs);
     border-radius: var(--ncss-radius-sm);
     padding: var(--ncss-space-2xs) var(--ncss-space-xs);
   }
@@ -84,5 +94,38 @@
   .ncss-select option:checked {
     background-color: var(--ncss-color-brand);
     color: var(--ncss-color-brand-contrast);
+  }
+
+  /* Häkchen bei der aktuell gewählten Option, ans Ende der Zeile geschoben (order+
+     margin-inline-start:auto, nicht text-align, damit es bei mehrzeiligem/mehrteiligem
+     Options-Inhalt zuverlässig rechtsbündig bleibt statt mit dem Text zu verrutschen). */
+  .ncss-select option::checkmark {
+    order: 1;
+    margin-inline-start: auto;
+    color: currentColor;
+  }
+
+  /* Optionaler <button><selectedcontent></selectedcontent></button> als erstes Kind von
+     <select> - steuert, WIE die aktuelle Auswahl im GESCHLOSSENEN Zustand angezeigt wird
+     (z.B. inkl. Icon). Ohne dieses Markup rendert der Browser selbst einen passenden
+     Default-Button (reiner Text) - beides funktioniert, dieser Block greift nur, wenn das
+     optionale Markup vorhanden ist. */
+  .ncss-select selectedcontent {
+    display: flex;
+    align-items: center;
+    gap: var(--ncss-space-2xs);
+  }
+
+  /* Konsistente Icon-Größe für <img>/<svg> direkt in <option>/<selectedcontent> -
+     verhindert, dass eine beliebig große Bilddatei die Zeilenhöhe sprengt. Nur direkte
+     Kinder, damit ein Bild TIEFER im Options-Inhalt (eigentlicher Sonderfall) unberührt
+     bleibt. */
+  .ncss-select option > img,
+  .ncss-select option > svg,
+  .ncss-select selectedcontent > img,
+  .ncss-select selectedcontent > svg {
+    width: var(--ncss-icon-size-sm);
+    height: var(--ncss-icon-size-sm);
+    flex: 0 0 auto;
   }
 }

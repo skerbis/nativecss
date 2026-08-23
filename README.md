@@ -452,7 +452,7 @@ JS-Nachbauten.
 | `.ncss-input[type="color"]` | Swatch-Fläche über `::-webkit-color-swatch(-wrapper)`/`::-moz-color-swatch` an ncss-Radius angeglichen - der native Picker-Dialog selbst bleibt Browser-UI |
 | `.ncss-input[type="date"/"time"/"datetime-local"/"month"/"week"]` | Kalender-/Uhr-Icon (`::-webkit-calendar-picker-indicator`) folgt automatisch dem Theme, keine eigene Anpassung nötig - `color-scheme: light dark` (`colors.css`, `:root`) sorgt bereits für die passende Icon-Farbe in Chromium/Safari |
 | `.ncss-input[type="search"]` | `appearance: none` nötig, sonst rundet Safari das Feld auf eigene Faust komplett ab (ignoriert `border-radius`). Natives "×"-Lösch-Icon bleibt unangetastet |
-| `<input list>` + `<datalist>` | Nativer Combobox - editierbares Textfeld MIT Auswahlliste (anders als `<select>`, das nur Auswahl ohne freie Eingabe erlaubt). `.ncss-input` greift ohne Sonderregel (generisch auf jedes `<input>`), per echtem Test in Chromium/WebKit/Firefox identisch bestätigt. Die Vorschlagsliste selbst ist reine Browser-UI, in keinem Browser per CSS stylebar |
+| `<input list>` + `<datalist>` | Nativer Combobox - editierbares Textfeld MIT Auswahlliste (anders als `<select>`, das nur Auswahl ohne freie Eingabe erlaubt). `.ncss-input` greift ohne Sonderregel (generisch auf jedes `<input>`), per echtem Test in Chromium/WebKit/Firefox identisch bestätigt. Native Vorschlagsliste ist reine Browser-UI (nicht per CSS stylebar) - opt-in gestylte Variante über `components/combobox.js`, siehe unten |
 | `fieldset` / `legend` | Ohne eigene Klasse zu Ende gestylt (wie `<blockquote>` in `base.css`) - ersetzt den nativen 3D-"groove"-Rahmen durch die flache ncss-Optik |
 | `progress` / `meter` | `accent-color` für die Grundfarbe. `<meter>` bleibt bewusst bei seiner eigenen Grün/Gelb/Rot-Bewertungslogik (sobald `optimum`/`low`/`high` gesetzt sind) statt zur Markenfarbe gezwungen zu werden - das ist seine eigentliche Funktion, `<progress>` für reine Markenfarbe ohne Wertung |
 | `output` | Hervorgehobene Darstellung für ein berechnetes Formular-Ergebnis |
@@ -475,6 +475,54 @@ Bewusst NICHT "Form-Group" genannt - das wäre mit der bereits bestehenden
 zu verwechseln, obwohl es ein anderes Konzept ist (rein visuelle Verschmelzung, keine
 Semantik). Deckt aktuell `.ncss-input`/`-textarea`/`.ncss-btn` als direkte Kinder ab -
 `.ncss-select-wrapper` (noch) nicht, siehe Datei-Kommentar für den Grund.
+
+**Gestylte Dropdowns, opt-in** (`components/combobox.js` + `combobox.css`): die native
+Vorschlagsliste eines `<datalist>` UND das Options-Popup eines `<select>` sind in keinem
+Browser per CSS stylebar (Stand 2026, geprüft) - für `<select>` gibt es mit `appearance:
+base-select` mittlerweile einen CSS-Weg (Chrome/Edge 135+, Safari 26+, siehe
+`select.css`), für `<datalist>` nicht. `components/combobox.js` (opt-in) ersetzt in
+beiden Fällen die native Popup-Optik durch eine echte, gestylte Dropdown-Liste -
+Original-Markup unverändert, volle native Funktion bleibt ohne JS bestehen (progressive
+enhancement). Bei `<select>` greift es NUR dort, wo `appearance: base-select` fehlt
+(z.B. Firefox) - per `CSS.supports("appearance", "base-select")` selbst geprüft, tut
+nichts, wo die native Technik bereits ein gestyltes Popup liefert. Tastatur (Pfeiltasten/
+Enter/Escape) und ARIA (`role="combobox"`/`"listbox"`/`"option"`, `aria-expanded`,
+`aria-activedescendant`) nach dem WAI-ARIA-Combobox-Muster, per echtem Test in
+Chromium/WebKit/Firefox bestätigt (inkl. Tippen+Filtern, Klick- und Tastaturauswahl,
+korrekter Wertübernahme in das native `<select>`/`<input>`).
+
+```html
+<script src="components/combobox.js" defer></script>
+```
+
+**Reicher `<option>`-Inhalt** (nur mit `appearance: base-select`, siehe `select.css`):
+seit der "Customizable Select"-Erweiterung darf `<option>` beliebige Kind-Elemente
+enthalten (Icon+Label statt nur Text), und ein optionaler `<button><selectedcontent>`
+als erstes Kind von `<select>` steuert, wie die aktuelle Auswahl im GESCHLOSSENEN
+Zustand angezeigt wird ("The Golden Rule of Customizable Select": Text bleibt Pflicht,
+sichtbar oder per `.ncss-visually-hidden` - Icons sind eine Ergänzung, nie ein Ersatz).
+
+```html
+<select class="ncss-select">
+  <button type="button">
+    <selectedcontent></selectedcontent>
+  </button>
+  <option value="apfel">
+    <span aria-hidden="true">🍎</span>
+    <span>Apfel</span>
+  </option>
+  <option value="orange">
+    <span aria-hidden="true">🍊</span>
+    <span>Orange</span>
+  </option>
+</select>
+```
+
+`components/combobox.js` repliziert denselben reichen Inhalt für den JS-Fallback-Pfad
+(Browser ohne `base-select`) - die `<option>`-Kind-Elemente werden 1:1 in die custom
+Dropdown-Liste geklont, statt nur den zusammengequetschten Text zu übernehmen. Optisch
+identisches Ergebnis unabhängig davon, ob der native oder der JS-Pfad greift, per echtem
+Test in Chromium (nativ) UND Firefox (JS-Fallback) bestätigt.
 
 ## Tabellen
 
@@ -667,8 +715,9 @@ hier nur die Kurzreferenz.
 | `search.css` | `.ncss-search`, `.ncss-search-input` (+ `--ncss-search-expanded-width`) | Suchfeld, das schmal startet und beim Fokussieren/bei Eingabe per reiner `width`-Transition wächst - kein JS |
 | `badge.css` | `.ncss-badge` (+ `--brand-2/-neutral/-success/-warning/-danger`), `.ncss-badge-icon` (+ `--lg`) | Kleine Status-/Kategorie-Chips. `.ncss-badge-icon` ist dieselbe "100-Fläche + -on-soft-Text"-Logik als Kreis/Quadrat um ein einzelnes Icon statt als Text-Pille (Feature-Listen/-Karten) - erwartet ein Icon-Kind (`<i class="fa-solid ...">`, `.ncss-icon-*` oder `<svg>`), `--lg` für die größere Variante (z.B. auf Vollbild-Stacked-Cards) |
 | `breadcrumb.css` | `.ncss-breadcrumb` | Natives `<nav><ol>`, `::before`-generierte Trenner |
-| `select.css` | `.ncss-select-wrapper`, `.ncss-select` | Gestyltes natives `<select>` inkl. eigenem Chevron |
+| `select.css` | `.ncss-select-wrapper`, `.ncss-select` | Gestyltes natives `<select>` inkl. eigenem Chevron. Mit `appearance: base-select` (Chrome/Edge 135+, Safari 26+) zusätzlich: reicher `<option>`-Inhalt (Icon+Label statt nur Text), `::checkmark`, optionaler `<button><selectedcontent>` für die Anzeige im geschlossenen Zustand - siehe [Formulare](#formulare) |
 | `input-group.css` | `.ncss-input-group` | Formular-Steuerelemente visuell zu einer Einheit verschmolzen (Feld+Button, Felder nebeneinander) - siehe [Formulare](#formulare) |
+| `combobox.css` | `.ncss-combobox`, `-chevron`, `-list`, `-option`, `-trigger` | Gestylte Dropdown-Liste für `components/combobox.js` (opt-in JS, `<datalist>`/`<select>`-Fallback) - siehe [Formulare](#formulare) |
 | `slideshow.css` | `.ncss-slideshow`, `-track` (+ `--no-scrollbar`), `-item` (+ `--peek`) | Scroll-Snap-Karussell, kein JS nötig |
 | `sparkline.css` | `.ncss-sparkline`, `-area`, `-dot` (+ `--success`/`--danger`) | Kleine Inline-Datenlinie |
 | `scroll-progress.css` | `.ncss-scroll-progress` (+ `--vertical`, `--end`) | Lesefortschrittsbalken, `animation-timeline: scroll()`. Farbe/Verlauf brauchen keine eigene Klasse - `.ncss-gradient-brand`/`-subtle` oder `.ncss-surface--brand-2`/`-neutral` direkt dazu kombinieren (`background-image` malt sich über das eigene `background-color`). `--vertical` (+ optional `--end` für die rechte statt linke Kante) für einen seitlichen statt oberen Balken |

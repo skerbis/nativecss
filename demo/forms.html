@@ -13,6 +13,7 @@
 <script src="../vendor/prismjs/prism-clike.min.js"></script>
 <script src="../vendor/prismjs/prism-javascript.min.js"></script>
 <script src="../dist/components/code-block.js" defer></script>
+<script src="../dist/components/combobox.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -105,6 +106,30 @@
             <option>Option B</option>
           </select>
         </span>
+        <span class="ncss-field-hint">Popup gestylt via <code>appearance: base-select</code> (Chrome/Edge/Safari) - auf Browsern ohne diese Unterstützung (z.B. Firefox) übernimmt automatisch <code>components/combobox.js</code>.</span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoSelectRich">Lieblingsobst (reicher Options-Inhalt)</label>
+        <span class="ncss-select-wrapper">
+          <select class="ncss-select" id="demoSelectRich">
+            <button type="button">
+              <selectedcontent></selectedcontent>
+            </button>
+            <option value="apfel">
+              <span aria-hidden="true">🍎</span>
+              <span>Apfel</span>
+            </option>
+            <option value="orange">
+              <span aria-hidden="true">🍊</span>
+              <span>Orange</span>
+            </option>
+            <option value="zitrone">
+              <span aria-hidden="true">🍋</span>
+              <span>Zitrone</span>
+            </option>
+          </select>
+        </span>
+        <span class="ncss-field-hint"><code>&lt;option&gt;</code> darf mit <code>appearance: base-select</code> beliebige Kind-Elemente enthalten (nicht nur Text) - hier Icon + Label. <code>&lt;button&gt;&lt;selectedcontent&gt;</code> steuert optional die Anzeige im geschlossenen Zustand.</span>
       </div>
       <div class="ncss-field">
         <label class="ncss-label" for="demoMessage">Nachricht</label>
@@ -206,7 +231,7 @@
         </datalist>
       </div>
     </div>
-    <p class="ncss-text-muted ncss-text-sm"><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code> - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel, da es generisch auf jedes <code>&lt;input&gt;</code> zutrifft. Die Vorschlagsliste selbst ist reine Browser-UI (wie beim nativen <code>&lt;select&gt;</code>-Popup) - nicht per CSS stylebar, in keinem Browser.</p>
+    <p class="ncss-text-muted ncss-text-sm"><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code> - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel, da es generisch auf jedes <code>&lt;input&gt;</code> zutrifft. Die native Vorschlagsliste selbst ist reine Browser-UI - in keinem Browser per CSS stylebar. Mit dem opt-in <code>components/combobox.js</code> (hier eingebunden) wird sie durch eine echte, gestylte Dropdown-Liste ersetzt (Original-Markup unverändert, volle native Funktion bleibt ohne JS erhalten).</p>
   </section>
 
   <section id="fieldset" class="ncss-stack">
