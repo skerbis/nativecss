@@ -6,6 +6,13 @@
 <title>NativeCSS - Handbuch</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -213,9 +220,9 @@
       <section id="icons" class="ncss-stack">
         <h2 class="demo-section-title">Icon-System</h2>
         <p>Eigene SVG-Icons als CSS <code>mask-image</code> (<code>helpers/icons.css</code>) - erben <code>currentColor</code>, skalieren mit <code>font-size</code>, brauchen keinen Markup-Inhalt:</p>
-        <pre><code>&lt;span class="ncss-icon ncss-icon-close"&gt;&lt;/span&gt;</code></pre>
+        <pre><code class="language-html">&lt;span class="ncss-icon ncss-icon-close"&gt;&lt;/span&gt;</code></pre>
         <p><strong>Modular per Absicht:</strong> Komponenten wie <code>.ncss-dialog-close</code> stylen nur die Fläche (Position/Größe/Form), nicht das Icon selbst. Das Default-Icon lässt sich 1:1 austauschen, z.B. gegen Font Awesome:</p>
-        <pre><code>&lt;button class="ncss-dialog-close" command="close" commandfor="..." aria-label="Schließen"&gt;
+        <pre><code class="language-html">&lt;button class="ncss-dialog-close" command="close" commandfor="..." aria-label="Schließen"&gt;
   &lt;i class="fa-solid fa-xmark" aria-hidden="true"&gt;&lt;/i&gt;
 &lt;/button&gt;</code></pre>
         <p class="ncss-text-sm ncss-text-muted">Aktuell enthalten: <code>.ncss-icon-close</code>, <code>.ncss-icon-chevron-down</code>, <code>.ncss-icon-menu</code>, <code>.ncss-icon-play</code>. Weitere nach demselben Muster ergänzen (eigenes SVG als mask-image data-URI) statt vorsorglich ein großes Set anzulegen.</p>

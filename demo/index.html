@@ -6,6 +6,13 @@
 <title>NativeCSS - Demo</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -275,7 +282,7 @@
       Ein Blockzitat mit etwas längerem Text, um zu zeigen, wie der Zeilenumbruch und der
       linke Rand wirken.
     </blockquote>
-    <pre><code>function hello() {
+    <pre><code class="language-javascript">function hello() {
   return "ncss";
 }</code></pre>
     <ul>

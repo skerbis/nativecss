@@ -6,6 +6,13 @@
 <title>NativeCSS - Anleitungen</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -143,7 +150,7 @@
       <section id="abschnitt" class="ncss-stack">
         <h2 class="demo-section-title">1. Eigenen Abschnitt bauen</h2>
         <p>Für eigene Seiten reichen meist drei Bausteine: ein <code>.ncss-container</code> für die Spaltenbreite, <code>.ncss-stack</code> für vertikalen Rhythmus zwischen den Kindern, und bei Bedarf eine <code>.ncss-py-*</code>-Klasse für zusätzliches Innen-Padding oben/unten.</p>
-        <pre><code>&lt;section class="ncss-container ncss-stack ncss-py-lg"&gt;
+        <pre><code class="language-html">&lt;section class="ncss-container ncss-stack ncss-py-lg"&gt;
   &lt;h2&gt;Titel&lt;/h2&gt;
   &lt;p&gt;Text ...&lt;/p&gt;
   &lt;button class="ncss-btn ncss-btn--primary"&gt;Aktion&lt;/button&gt;
@@ -172,7 +179,7 @@
       <section id="grid" class="ncss-stack">
         <h2 class="demo-section-title">3. Responsives Grid ohne Breakpoints</h2>
         <p><code>.ncss-grid</code> ist ein intrinsisches Grid (<code>repeat(auto-fit, minmax(var(--ncss-grid-min), 1fr))</code>) - es zählt Spalten anhand der verfügbaren Breite, nicht anhand fester Breakpoints. Reagiert automatisch auf den CONTAINER (nicht nur den Viewport), funktioniert also auch in einer schmalen Sidebar korrekt.</p>
-        <pre><code>&lt;div class="ncss-grid" style="--ncss-grid-min: 10rem;"&gt;
+        <pre><code class="language-html">&lt;div class="ncss-grid" style="--ncss-grid-min: 10rem;"&gt;
   &lt;div&gt;Karte 1&lt;/div&gt;
   &lt;div&gt;Karte 2&lt;/div&gt;
   &lt;div&gt;Karte 3&lt;/div&gt;
@@ -193,7 +200,7 @@
       <section id="breakpoint" class="ncss-stack">
         <h2 class="demo-section-title">4. Wenn wirklich ein Breakpoint-Sprung nötig ist</h2>
         <p>Nicht jeder Fall ist ein Fließen - manchmal soll sich an einer FESTEN Breite etwas grundsätzlich ändern (z.B. Navigation klappt von Hamburger auf Vollmenü um). Dafür die dokumentierte Breakpoint-Konvention aus tokens.css nutzen, in einer eigenen <code>@media</code>-Regel:</p>
-        <pre><code>.mein-element {
+        <pre><code class="language-css">.mein-element {
   background-color: var(--ncss-color-danger-100);
 }
 /* -- ncss breakpoint: md (768px) -- */
@@ -210,7 +217,7 @@
       <section id="fokuspunkt" class="ncss-stack">
         <h2 class="demo-section-title">5. Fokuspunkt bei zugeschnittenen Bildern setzen</h2>
         <p>Überall wo NativeCSS <code>object-fit: cover</code> nutzt (Ratio-Helpers, Card-Media, Video), steuert <code>--ncss-focus-point</code> (Default <code>center</code>) den Bildausschnitt:</p>
-        <pre><code>&lt;div class="ncss-ratio-square" style="--ncss-focus-point: 20% 80%;"&gt;
+        <pre><code class="language-html">&lt;div class="ncss-ratio-square" style="--ncss-focus-point: 20% 80%;"&gt;
   &lt;img src="foto.jpg" alt="..."&gt;
 &lt;/div&gt;</code></pre>
         <p class="ncss-text-sm ncss-text-muted">Ausführliches, live vergleichbares Beispiel: <a href="media.html#bilder">media.html#bilder</a>.</p>

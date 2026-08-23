@@ -1,0 +1,119 @@
+/**
+ * ncss - Code-Block-Komponente (Layer "components"): Syntax-Highlighting + Copy-to-
+ * Clipboard für <pre><code>-Beispiele. Nutzt selbst gehostetes Prism.js (vendor/prismjs/,
+ * keine CDN-Abhängigkeit, siehe SKILL.md) - diese Datei bridged NUR Prisms
+ * Token-Klassen auf dieselben ncss-Farbtokens, die auch Buttons/Badges nutzen (kein
+ * zweites, eigenständiges Highlighting-Theme), und stylt den Copy-Button. `pre`/`code`
+ * selbst (Hintergrund, Radius, Padding) kommen bereits aus base.css - hier NICHT
+ * dupliziert.
+ *
+ * Einbindung (opt-in, nur auf Seiten mit Code-Beispielen):
+ *   <script>window.Prism = { manual: true };</script>
+ *   <script src="vendor/prismjs/prism-core.min.js"></script>
+ *   <script src="vendor/prismjs/prism-markup.min.js"></script>
+ *   <script src="vendor/prismjs/prism-css.min.js"></script>
+ *   <script src="vendor/prismjs/prism-clike.min.js"></script>
+ *   <script src="vendor/prismjs/prism-javascript.min.js"></script>
+ *   <script src="dist/components/code-block.js" defer></script>
+ *   <link rel="stylesheet" href="dist/components/code-block.css">
+ * Markup bleibt natives HTML, nur die Sprache als Klasse am <code>:
+ *   <pre><code class="language-html">&lt;div class="ncss-card"&gt;...&lt;/div&gt;</code></pre>
+ * code-block.js ruft Prism.highlightAll() selbst auf UND injiziert den Copy-Button -
+ * kein manuelles Wrapping im Markup nötig. `window.Prism = { manual: true }` VOR dem
+ * Laden von prism-core setzen, sonst highlightet Prism beim DOMContentLoaded selbst
+ * schon einmal (unkontrolliert, ohne Copy-Button) und code-block.js findet keine rohen
+ * <code>-Blöcke mehr vor.
+ */
+
+pre:has(> code[class*="language-"]) {
+  position: relative;
+}
+
+.ncss-code-copy {
+  position: absolute;
+  inset-block-start: var(--ncss-space-2xs);
+  inset-inline-end: var(--ncss-space-2xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ncss-space-md);
+  height: var(--ncss-space-md);
+  border: 1px solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-bg);
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--ncss-motion-duration), background-color var(--ncss-motion-duration);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-code-copy:hover {
+    color: var(--ncss-color-text);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+.ncss-code-copy:active {
+  scale: 0.92;
+  transition-duration: var(--ncss-motion-duration-fast);
+}
+.ncss-code-copy[data-copied="true"] {
+  color: var(--ncss-color-success);
+  border-color: var(--ncss-color-success);
+}
+
+/* --- Prism-Token-Bridge: auf dieselben ncss-Farbtokens gemappt, die auch Komponenten
+   nutzen - zieht automatisch mit theme.css um, kein eigenes Highlighting-Farbschema. */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--ncss-color-text-muted);
+  font-style: italic;
+}
+.token.punctuation {
+  color: var(--ncss-color-text-muted);
+}
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: var(--ncss-color-danger);
+}
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: var(--ncss-color-success);
+}
+.token.operator,
+.token.entity,
+.token.url,
+.token.atrule,
+.token.attr-value {
+  color: var(--ncss-color-brand-2);
+}
+.token.keyword {
+  color: var(--ncss-color-brand);
+}
+.token.function,
+.token.class-name {
+  color: var(--ncss-color-warning);
+}
+.token.regex,
+.token.important,
+.token.variable {
+  color: var(--ncss-color-brand-2);
+}
+.token.important,
+.token.bold {
+  font-weight: 700;
+}
+.token.italic {
+  font-style: italic;
+}

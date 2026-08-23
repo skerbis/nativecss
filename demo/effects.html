@@ -6,6 +6,13 @@
 <title>NativeCSS - Effekte</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -123,7 +130,7 @@
       </div>
     </div>
 
-    <pre><code>&lt;button class="ncss-glow-border"&gt;Ask AI&lt;/button&gt;
+    <pre><code class="language-html">&lt;button class="ncss-glow-border"&gt;Ask AI&lt;/button&gt;
 
 &lt;!-- anpassen per Custom Property, pro Instanz --&gt;
 &lt;button class="ncss-glow-border" style="--ncss-glow-speed: 1.5s;"&gt;Schneller&lt;/button&gt;</code></pre>
@@ -138,7 +145,7 @@
       <button type="button" class="ncss-btn ncss-btn--primary ncss-glow-pulse">Jetzt starten</button>
       <span class="ncss-badge ncss-badge--success ncss-glow-pulse">Live</span>
     </div>
-    <pre><code>&lt;button class="ncss-btn ncss-btn--primary ncss-glow-pulse"&gt;Jetzt starten&lt;/button&gt;</code></pre>
+    <pre><code class="language-html">&lt;button class="ncss-btn ncss-btn--primary ncss-glow-pulse"&gt;Jetzt starten&lt;/button&gt;</code></pre>
   </section>
 
   <!-- Glass -->
@@ -159,7 +166,7 @@
         <p class="ncss-text-sm">Glass + Glow-Border zusammen.</p>
       </div>
     </div>
-    <pre><code>&lt;div class="ncss-glass"&gt;...&lt;/div&gt;
+    <pre><code class="language-html">&lt;div class="ncss-glass"&gt;...&lt;/div&gt;
 
 &lt;!-- Unschärfe/Farbe anpassen --&gt;
 &lt;div class="ncss-glass" style="--ncss-glass-blur: 20px;"&gt;...&lt;/div&gt;</code></pre>
@@ -174,7 +181,7 @@
       <button type="button" class="ncss-stamped" style="padding-inline: var(--ncss-space-lg); padding-block: var(--ncss-space-sm); border: none; background: none; font-weight: 600;">Hebt sich (Hover)</button>
       <button type="button" class="ncss-stamped ncss-stamped--press" style="padding-inline: var(--ncss-space-lg); padding-block: var(--ncss-space-sm); border: none; background: none; font-weight: 600;">Sinkt (Hover)</button>
     </div>
-    <pre><code>&lt;button class="ncss-stamped"&gt;Hebt sich beim Hover&lt;/button&gt;
+    <pre><code class="language-html">&lt;button class="ncss-stamped"&gt;Hebt sich beim Hover&lt;/button&gt;
 &lt;button class="ncss-stamped ncss-stamped--press"&gt;Sinkt beim Hover&lt;/button&gt;</code></pre>
     <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-stamped-thickness</code> (Default 1px, Ringdicke), <code>--ncss-stamped-dark</code>/<code>--ncss-stamped-light</code> (Default <code>rgb(0 0 0 / 35%)</code>/<code>rgb(255 255 255 / 90%)</code>), <code>--ncss-stamped-lift</code> (Default 3px, Hub bei Hover/Active), <code>--ncss-stamped-radius</code> (Default <code>--ncss-radius-lg</code>).</p>
 
@@ -184,7 +191,7 @@
       <button type="button" class="ncss-btn ncss-btn--secondary ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Secondary + Stamped</button>
       <button type="button" class="ncss-btn ncss-btn--danger ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Danger + Stamped</button>
     </div>
-    <pre><code>&lt;button class="ncss-btn ncss-btn--primary ncss-stamped"
+    <pre><code class="language-html">&lt;button class="ncss-btn ncss-btn--primary ncss-stamped"
         style="--ncss-stamped-radius: var(--ncss-radius-sm);"&gt;
   Primary + Stamped
 &lt;/button&gt;</code></pre>
@@ -204,7 +211,7 @@
         <p class="ncss-text-sm">--ncss-grain-opacity: 0.4, --ncss-grain-blend: soft-light</p>
       </div>
     </div>
-    <pre><code>&lt;div class="ncss-grain"&gt;...&lt;/div&gt;
+    <pre><code class="language-html">&lt;div class="ncss-grain"&gt;...&lt;/div&gt;
 
 &lt;!-- stärker/anders einfärben, für dunkle/gesättigte Flächen --&gt;
 &lt;div class="ncss-grain" style="--ncss-grain-opacity: 0.4; --ncss-grain-blend: soft-light;"&gt;...&lt;/div&gt;</code></pre>
@@ -225,7 +232,7 @@
         <p class="ncss-text-sm ncss-text-muted">.ncss-scheme-light, unabhängig vom Seiten-Theme.</p>
       </div>
     </div>
-    <pre><code>&lt;div class="ncss-scheme-dark"&gt;...&lt;/div&gt;</code></pre>
+    <pre><code class="language-html">&lt;div class="ncss-scheme-dark"&gt;...&lt;/div&gt;</code></pre>
   </section>
 
   <p class="ncss-text-sm ncss-text-muted">Bewegung respektiert <code>prefers-reduced-motion</code> automatisch (global in <code>reset.css</code>, nicht pro Komponente nachgerüstet) - bei aktivierter Einstellung läuft nur noch 1 Frame.</p>

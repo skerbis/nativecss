@@ -65,6 +65,7 @@
 @import url("components/breadcrumb.css") layer(components);
 @import url("components/footer.css") layer(components);
 @import url("components/effects.css") layer(components);
+@import url("components/code-block.css") layer(components);
 /* Weitere Komponenten (Tabs, Accordion, ...) folgen hier, je eine Datei.
    components/command-fallback.js separat einbinden
    (<script src="ncss/components/command-fallback.js">) - generischer Fallback für

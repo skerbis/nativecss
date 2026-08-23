@@ -1142,6 +1142,27 @@ gewünschte Zeichenweg).
       Mehrdateien-Lauf immer per Dry-Run-Skript an einer echten Datei verifizieren, nicht nur
       am Muster ablesen.
 
+36. **Code-Block-Syntax-Highlighting (`components/code-block.css`/`.js`, User-Anstoß:
+    "Hast du an Code highlighting und copy to clipboard gedacht? Für die docs. Ready to
+    use Beispiele").** Selbst gehostetes Prism.js (`vendor/prismjs/`, per `curl` von
+    cdnjs geladen, ~23KB minified für core+markup+css+clike+javascript+bash) statt eines
+    eigenen Tokenizers - User-Entscheidung explizit abgefragt (Custom-Mini-Tokenizer vs.
+    Prism), Prism gewählt für Robustheit. WICHTIG: Prisms EIGENER `DOMContentLoaded`-
+    Autostart muss VOR dem Laden von `prism-core.min.js` unterdrückt werden
+    (`window.Prism = { manual: true }` als eigenes `<script>` DAVOR) - sonst highlightet
+    Prism unkontrolliert selbst schon, BEVOR `code-block.js` seinen Copy-Button einfügen
+    kann, und der eigene `Prism.highlightAll()`-Aufruf in `code-block.js` findet keine
+    rohen `<code>`-Blöcke mehr vor (Timing-Falle, nicht offensichtlich aus der Prism-
+    Doku allein). KEIN Stock-Prism-Theme (Tomorrow/Twilight/o.ä.) verwendet - stattdessen
+    Prisms `.token.*`-Klassen direkt auf ncss-Farbtokens gebridged
+    (`--ncss-color-brand/-brand-2/-success/-warning/-danger`, dieselbe Bridging-Technik
+    wie `webawesome-bridge.css`) - Highlighting zieht dadurch automatisch mit
+    `theme.css` um, kein zweites, unabhängiges Farbschema zu pflegen. Copy-Button kopiert
+    `codeEl.textContent` (den ROHEN Text vor Prisms Span-Einfügung wäre gleichwertig,
+    `textContent` NACH dem Highlighten funktioniert genauso, weil `textContent` über
+    Element-Grenzen hinweg immer nur den reinen Text liefert, keine `<span>`-Tags) - nicht
+    `innerHTML`, das würde Prisms Highlighting-Markup mitkopieren.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
