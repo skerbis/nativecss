@@ -1,0 +1,179 @@
+<!--DESC: Building a card step by step - base structure, styling utilities, media, variants, and the adaptive radius trick for mobile.-->
+<section class="ncss-stack">
+  <h1>Cards</h1>
+  <p class="ncss-text-lg ncss-text-muted">The <a href="components.html#karten">Component Reference</a> only lists class names - this page walks through HOW a card is actually assembled from those building blocks, step by step, live on this page.</p>
+</section>
+
+<section class="ncss-stack" id="grundstruktur">
+  <h2 class="demo-section-title">1. Base structure</h2>
+  <p><code>.ncss-card</code> is deliberately structure-only: a flex column with <code>overflow: clip</code>, no styling of its own. <code>.ncss-card-body</code> is the only required building block - header/footer/media are optional.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Title&lt;/h3&gt;
+    &lt;p&gt;Text ...&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card">
+      <div class="ncss-card-body">
+        <h3>Title</h3>
+        <p>Text ...</p>
+      </div>
+    </article>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">On its own the card is barely visible - no border, no rounding, no shadow. That's intentional, not a missing step: the styling comes next.</p>
+</section>
+
+<section class="ncss-stack" id="optik">
+  <h2 class="demo-section-title">2. Styling: border, corners, shadow</h2>
+  <p>Border/corners/shadow are deliberately NOT part of <code>.ncss-card</code> itself - that's a design decision, not a card property. Instead use the general-purpose utilities from <a href="components.html#elevation">helpers/elevation.css</a>, which work identically on any other element:</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Classic card&lt;/h3&gt;
+    &lt;p&gt;Border, rounded corners, subtle shadow, grows on hover.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md">
+      <div class="ncss-card-body">
+        <h3>Classic card</h3>
+        <p>Border, rounded corners, subtle shadow, grows on hover.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-radius-lg ncss-shadow-lg">
+      <div class="ncss-card-body">
+        <h3>Shadow only</h3>
+        <p>No border, a stronger shadow instead - any combination is valid.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="media">
+  <h2 class="demo-section-title">3. Media (image/placeholder)</h2>
+  <p><code>.ncss-card-media</code> as the FIRST child produces the usual "image on top" card, <code>aspect-ratio</code> defaults to <code>--ncss-aspect-video</code>. One important gotcha: <code>.ncss-card-media</code> itself sets <code>border-radius: 0</code> and relies on the card's own <code>overflow: clip</code> to automatically round only the correct corners (the top ones, in this layout). Without this reset, combining media with e.g. <code>.ncss-placeholder</code> (which brings its own rounding) would round ALL four corners, including the bottom ones that never touch a card edge.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm"&gt;
+  &lt;div class="ncss-card-media"&gt;
+    &lt;img src="photo.jpg" alt="..."&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;With image&lt;/h3&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm">
+      <div class="ncss-card-media ncss-placeholder"></div>
+      <div class="ncss-card-body">
+        <h3>Media on top</h3>
+        <p class="ncss-text-sm ncss-text-muted">Natural document order, no extra class needed.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>Media at the bottom</h3>
+        <p class="ncss-text-sm ncss-text-muted">Just put <code>.ncss-card-media</code> as the LAST child, after <code>.ncss-card-body</code> - it automatically rounds the bottom corners instead of the top ones.</p>
+      </div>
+      <div class="ncss-card-media ncss-placeholder"></div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="header-footer">
+  <h2 class="demo-section-title">4. Header &amp; footer</h2>
+  <p><code>.ncss-card-header</code>/<code>-footer</code> are entirely optional, with their own divider border. The padding of all three building blocks (header/body/footer) scales with the width of the surrounding CONTAINER (<code>cqi</code> units), not the viewport - correct whether the card sits in a narrow sidebar or a wide grid.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-radius-lg ncss-shadow-lg"&gt;
+  &lt;div class="ncss-card-header"&gt;Header&lt;/div&gt;
+  &lt;div class="ncss-card-body"&gt;Content&lt;/div&gt;
+  &lt;div class="ncss-card-footer"&gt;
+    &lt;button class="ncss-btn ncss-btn--primary"&gt;Action&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-radius-lg ncss-shadow-lg">
+      <div class="ncss-card-header">Header</div>
+      <div class="ncss-card-body">
+        <p>Content</p>
+      </div>
+      <div class="ncss-card-footer">
+        <button type="button" class="ncss-btn ncss-btn--primary">Action</button>
+        <button type="button" class="ncss-btn ncss-btn--secondary">Cancel</button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="varianten">
+  <h2 class="demo-section-title">5. Variants</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-card--flush</code></td><td>No more padding in header/body/footer (not even top/bottom) - content reaches every card edge, e.g. for an image or a list without the usual card spacing</td></tr>
+        <tr><td><code>.ncss-card--transparent</code></td><td>Removes the only remaining decoration (background-color) - combined with <code>--flush</code> and without <code>.ncss-border</code>/<code>.ncss-radius-*</code>/<code>.ncss-shadow-*</code>, the card becomes an invisible wrapper while keeping the flex-column structure</td></tr>
+        <tr><td><code>.ncss-card--brand/-brand-2/-neutral/-success/-warning/-danger</code></td><td>"Status" card: subtle tint background + colored accent border, for notice/status content - not meant as a general "colorful card" decoration</td></tr>
+        <tr><td><code>.ncss-card--linked</code> + <code>.ncss-card-link</code></td><td>Whole card clickable (teaser pattern) - the link stays the only interactive focus point (stretched link instead of wrapping the entire card in <code>&lt;a&gt;</code>, see below)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-card--success ncss-radius-lg">
+      <div class="ncss-card-body">
+        <h3>Saved successfully</h3>
+        <p class="ncss-text-sm">Status variant, no border/shadow needed.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md">
+      <div class="ncss-card-body">
+        <h3><a class="ncss-card-link" href="#varianten">Whole card clickable</a></h3>
+        <p class="ncss-text-sm ncss-text-muted">Only the title link is interactive in the markup - <code>::after</code> visually stretches it across the whole card, so screen readers don't have to announce several nested interactive elements.</p>
+      </div>
+    </article>
+  </div>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-sm"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;&lt;a class="ncss-card-link" href="/article"&gt;Whole card clickable&lt;/a&gt;&lt;/h3&gt;
+    &lt;p&gt;Further text, images etc. stay normal - only the link itself is focusable.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="horizontal">
+  <h2 class="demo-section-title">6. Horizontal (media next to text)</h2>
+  <p>Media on the LEFT/RIGHT needs its own class (the flex direction has to switch) AND an extra <code>.ncss-card-container</code> wrapper, because an element can't query its OWN container-query context by spec - only descendants can. From 24rem CONTAINER width (not viewport!) the card automatically switches to side-by-side.</p>
+  <pre><code class="language-html">&lt;div class="ncss-card-container"&gt;
+  &lt;article class="ncss-card ncss-card--horizontal ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media"&gt;&lt;img src="photo.jpg" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3&gt;Title&lt;/h3&gt;
+      &lt;p&gt;Text ...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Live - shrink the browser window/panel to see it wrap at 24rem:</p>
+  <div class="ncss-card-container">
+    <article class="ncss-card ncss-card--horizontal ncss-border ncss-radius-lg ncss-shadow-sm">
+      <div class="ncss-card-media ncss-placeholder"></div>
+      <div class="ncss-card-body">
+        <h3>Horizontal</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-card--horizontal-end</code> mirrors the media to the other side (<code>row-reverse</code>), otherwise identical.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="adaptiver-radius">
+  <h2 class="demo-section-title">7. Advanced: adaptive radius for mobile</h2>
+  <p>A common problem: a card should look nicely rounded on wide screens, but deliberately goes edge-to-edge on mobile (e.g. inside <code>.ncss-full-bleed</code>, or simply because the surrounding container drops its padding at that width) - the rounded corners then suddenly look wrong, because the card touches the screen edge directly. Instead of toggling that by hand with a <code>@media</code> breakpoint, there's <code>.ncss-radius-adaptive-sm/-md/-lg</code> (<code>helpers/elevation.css</code>): it only rounds when the card actually has room around it.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"&gt;
+  ...
+&lt;/article&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Live - shrink the window: once the card touches both screen edges below, the corners go sharp, with no media query involved:</p>
+  <article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm" style="width: min(100%, 28rem);">
+    <div class="ncss-card-body">
+      <h3>Adaptive card</h3>
+      <p class="ncss-text-sm ncss-text-muted">Rounded with room around it, sharp once it touches the screen edge.</p>
+    </div>
+  </article>
+  <p class="ncss-text-sm ncss-text-muted">The principle (the classic "conditional border radius" trick, see <code>tokens.css</code>' <code>--ncss-radius-adaptive-*</code> for the formula): <code>100vw</code> (real viewport width) is compared against the element's own <code>100%</code> (its own width) - when both are practically equal, the radius flips to 0. This compares against the REAL browser viewport, not the element's own container - so it doesn't help inside a narrower, self-scrolling subregion. For components with their own radius escape hatch (e.g. <code>.ncss-stack-card</code>'s <code>--ncss-stack-radius</code>, see <a href="../../demo/stacked-cards.html#adaptiver-radius">demo/stacked-cards.html</a>), set <code>var(--ncss-radius-adaptive-lg)</code> directly as the value instead of using the ready-made class.</p>
+</section>

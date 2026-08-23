@@ -894,6 +894,19 @@ umgestellt:
     `.ncss-offcanvas-header` (gleiches Rezept) - bei eigener Überschrift im
     Panel-Inhalt verwenden, nicht nacktes `<h3>`/`.ncss-stack`.
 
+44. **`.ncss-radius-adaptive-sm/-md/-lg`** (`helpers/elevation.css` + `tokens.css`'
+    `--ncss-radius-adaptive-*`) - klassischer "Conditional Border Radius"-Trick
+    (`max(0px, min(RADIUS, calc((100vw - 16px - 100%) * 999)))`): rundet nur ab, solange
+    das Element NICHT beide Bildschirmränder gleichzeitig berührt, sonst automatisch 0 -
+    kein `@media`/JS nötig. Bezieht sich auf den echten VIEWPORT, nicht den eigenen
+    Container - hilft nicht innerhalb eines schmaleren, selbst scrollenden Bereichs. Für
+    Komponenten mit eigenem Radius-Escape-Hatch (z.B. `.ncss-stack-card`'s
+    `--ncss-stack-radius`) `var(--ncss-radius-adaptive-lg)` direkt als Wert setzen statt
+    der Utility-Klasse - die Klasse selbst würde von `.ncss-stack-card`s eigener
+    `border-radius`-Regel überschrieben (components-Layer schlägt helpers-Layer, siehe
+    Layer-Reihenfolge oben). Verifiziert per Playwright in Chromium/WebKit/Firefox.
+    Handbuch: `docs/de/cards.html`, Demo: `demo/stacked-cards.html#adaptiver-radius`.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

@@ -1,0 +1,179 @@
+<!--DESC: Schritt für Schritt zur eigenen Karte - Grundstruktur, Optik-Utilities, Media, Varianten und der adaptive Radius-Trick für Mobile.-->
+<section class="ncss-stack">
+  <h1>Karten</h1>
+  <p class="ncss-text-lg ncss-text-muted">Die <a href="components.html#karten">Komponenten-Referenz</a> listet nur die Klassennamen - hier geht es Schritt für Schritt darum, WIE eine Karte tatsächlich aus diesen Bausteinen zusammengesetzt wird, live nachvollziehbar auf dieser Seite.</p>
+</section>
+
+<section class="ncss-stack" id="grundstruktur">
+  <h2 class="demo-section-title">1. Grundstruktur</h2>
+  <p><code>.ncss-card</code> ist bewusst nur Struktur: eine Flex-Column mit <code>overflow: clip</code>, ohne eigene Optik. <code>.ncss-card-body</code> ist der einzige zwingende Baustein - Header/Footer/Media sind optional.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Titel&lt;/h3&gt;
+    &lt;p&gt;Text ...&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card">
+      <div class="ncss-card-body">
+        <h3>Titel</h3>
+        <p>Text ...</p>
+      </div>
+    </article>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">So allein sieht man von der Karte fast nichts - kein Rahmen, keine Rundung, kein Schatten. Das ist Absicht, kein fehlender Schritt: weiter unten kommt die Optik dazu.</p>
+</section>
+
+<section class="ncss-stack" id="optik">
+  <h2 class="demo-section-title">2. Optik: Rahmen, Ecken, Schatten</h2>
+  <p>Rahmen/Ecken/Schatten sind bewusst NICHT Teil von <code>.ncss-card</code> selbst - das ist eine gestalterische Entscheidung, keine Karten-Eigenschaft. Stattdessen die allgemeinen Utilities aus <a href="components.html#elevation">helpers/elevation.css</a>, die genauso auf jedem anderen Element funktionieren:</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Klassische Karte&lt;/h3&gt;
+    &lt;p&gt;Rahmen, runde Ecken, dezenter Schatten, wächst beim Hover.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md">
+      <div class="ncss-card-body">
+        <h3>Klassische Karte</h3>
+        <p>Rahmen, runde Ecken, dezenter Schatten, wächst beim Hover.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-radius-lg ncss-shadow-lg">
+      <div class="ncss-card-body">
+        <h3>Nur Schatten</h3>
+        <p>Kein Rahmen, dafür ein kräftigerer Schatten - jede Kombination ist erlaubt.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="media">
+  <h2 class="demo-section-title">3. Media (Bild/Platzhalter)</h2>
+  <p><code>.ncss-card-media</code> als ERSTES Kind erzeugt die übliche "Bild oben"-Karte, <code>aspect-ratio</code> per Default <code>--ncss-aspect-video</code>. Ein wichtiger Fallstrick: <code>.ncss-card-media</code> setzt selbst <code>border-radius: 0</code> und verlässt sich auf <code>overflow: clip</code> der Karte, um automatisch NUR die passenden Ecken zu runden (oben bei dieser Anordnung). Ohne dieses Zurücksetzen würde die Media (kombiniert mit z.B. <code>.ncss-placeholder</code>, das eine eigene Rundung mitbringt) an ALLEN vier Ecken rundlich wirken, auch unten, wo sie an keine Kartenecke stößt.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm"&gt;
+  &lt;div class="ncss-card-media"&gt;
+    &lt;img src="foto.jpg" alt="..."&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Mit Bild&lt;/h3&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm">
+      <div class="ncss-card-media ncss-placeholder"></div>
+      <div class="ncss-card-body">
+        <h3>Media oben</h3>
+        <p class="ncss-text-sm ncss-text-muted">Natürliche Dokumentreihenfolge, keine eigene Klasse nötig.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>Media unten</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-card-media</code> einfach als LETZTES Kind, nach <code>.ncss-card-body</code> - rundet automatisch die unteren Ecken statt der oberen.</p>
+      </div>
+      <div class="ncss-card-media ncss-placeholder"></div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="header-footer">
+  <h2 class="demo-section-title">4. Header &amp; Footer</h2>
+  <p><code>.ncss-card-header</code>/<code>-footer</code> sind rein optional, mit eigenem Trennrahmen. Das Padding aller drei Bausteine (Header/Body/Footer) skaliert mit der Breite des umgebenden CONTAINERS (<code>cqi</code>-Einheiten), nicht dem Viewport - passend, egal ob die Karte in einer schmalen Sidebar oder einem breiten Grid steckt.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-radius-lg ncss-shadow-lg"&gt;
+  &lt;div class="ncss-card-header"&gt;Kopfzeile&lt;/div&gt;
+  &lt;div class="ncss-card-body"&gt;Inhalt&lt;/div&gt;
+  &lt;div class="ncss-card-footer"&gt;
+    &lt;button class="ncss-btn ncss-btn--primary"&gt;Aktion&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-radius-lg ncss-shadow-lg">
+      <div class="ncss-card-header">Kopfzeile</div>
+      <div class="ncss-card-body">
+        <p>Inhalt</p>
+      </div>
+      <div class="ncss-card-footer">
+        <button type="button" class="ncss-btn ncss-btn--primary">Aktion</button>
+        <button type="button" class="ncss-btn ncss-btn--secondary">Abbrechen</button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="varianten">
+  <h2 class="demo-section-title">5. Varianten</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-card--flush</code></td><td>Kein Padding mehr in Header/Body/Footer (auch nicht oben/unten) - Inhalt reicht bis an jeden Kartenrand, z.B. für ein Bild oder eine Liste ohne Card-typischen Abstand</td></tr>
+        <tr><td><code>.ncss-card--transparent</code></td><td>Entfernt die einzige verbliebene Deko (background-color) - kombiniert mit <code>--flush</code> und ohne <code>.ncss-border</code>/<code>.ncss-radius-*</code>/<code>.ncss-shadow-*</code> wird die Karte zum unsichtbaren Wrapper, behält aber die Flex-Column-Struktur</td></tr>
+        <tr><td><code>.ncss-card--brand/-brand-2/-neutral/-success/-warning/-danger</code></td><td>"Status"-Karte: dezente Tonfläche + farbiger Akzentrand, für Hinweis-/Status-Inhalte - keine generelle "bunte Karte"-Deko</td></tr>
+        <tr><td><code>.ncss-card--linked</code> + <code>.ncss-card-link</code></td><td>Ganze Karte klickbar (Teaser-Muster) - der Link bleibt der einzige interaktive Fokuspunkt (Stretched-Link statt die ganze Karte in <code>&lt;a&gt;</code> zu verpacken, siehe unten)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+    <article class="ncss-card ncss-card--success ncss-radius-lg">
+      <div class="ncss-card-body">
+        <h3>Erfolgreich gespeichert</h3>
+        <p class="ncss-text-sm">Status-Variante, kein Rahmen/Schatten nötig.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md">
+      <div class="ncss-card-body">
+        <h3><a class="ncss-card-link" href="#varianten">Ganze Karte klickbar</a></h3>
+        <p class="ncss-text-sm ncss-text-muted">Nur der Titel-Link ist im Markup interaktiv - <code>::after</code> spannt ihn optisch über die ganze Karte, ohne dass Screenreader mehrere verschachtelte interaktive Elemente ansagen müssen.</p>
+      </div>
+    </article>
+  </div>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-sm"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;&lt;a class="ncss-card-link" href="/artikel"&gt;Ganze Karte klickbar&lt;/a&gt;&lt;/h3&gt;
+    &lt;p&gt;Weiterer Text, Bilder etc. bleiben normal - nur der Link selbst ist fokussierbar.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="horizontal">
+  <h2 class="demo-section-title">6. Horizontal (Media neben Text)</h2>
+  <p>Media LINKS/RECHTS braucht eine eigene Klasse (die Flex-Richtung muss wechseln) UND einen zusätzlichen Wrapper <code>.ncss-card-container</code>, weil ein Element per Spec nicht seinen EIGENEN Container-Query-Kontext abfragen kann - nur Nachfahren können das. Ab 24rem CONTAINER-Breite (nicht Viewport!) springt die Karte automatisch auf Nebeneinander um.</p>
+  <pre><code class="language-html">&lt;div class="ncss-card-container"&gt;
+  &lt;article class="ncss-card ncss-card--horizontal ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media"&gt;&lt;img src="foto.jpg" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3&gt;Titel&lt;/h3&gt;
+      &lt;p&gt;Text ...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Live - Browserfenster/Panel schmaler ziehen, um den Umbruch bei 24rem zu sehen:</p>
+  <div class="ncss-card-container">
+    <article class="ncss-card ncss-card--horizontal ncss-border ncss-radius-lg ncss-shadow-sm">
+      <div class="ncss-card-media ncss-placeholder"></div>
+      <div class="ncss-card-body">
+        <h3>Horizontal</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-card--horizontal-end</code> spiegelt die Media auf die andere Seite (<code>row-reverse</code>), sonst identisch.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="adaptiver-radius">
+  <h2 class="demo-section-title">7. Fortgeschritten: Adaptiver Radius für Mobile</h2>
+  <p>Ein häufiges Problem: eine Karte soll auf breiten Bildschirmen schön abgerundet aussehen, geht aber auf Mobile bewusst randlos über die volle Breite (z.B. innerhalb von <code>.ncss-full-bleed</code> oder einfach weil der umgebende Container dort kein Padding mehr hat) - dann wirken die runden Ecken plötzlich falsch, weil die Karte den Bildschirmrand direkt berührt. Statt das per <code>@media</code>-Breakpoint von Hand umzuschalten, gibt es <code>.ncss-radius-adaptive-sm/-md/-lg</code> (<code>helpers/elevation.css</code>): rundet automatisch NUR dann ab, wenn die Karte tatsächlich Außenabstand zum Bildschirmrand hat.</p>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"&gt;
+  ...
+&lt;/article&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Live - Fenster schmaler ziehen: sobald die Karte unten beide Bildschirmränder berührt, werden die Ecken eckig, ganz ohne Media Query:</p>
+  <article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm" style="width: min(100%, 28rem);">
+    <div class="ncss-card-body">
+      <h3>Adaptive Karte</h3>
+      <p class="ncss-text-sm ncss-text-muted">Rund mit Platz drumherum, eckig sobald sie den Bildschirmrand berührt.</p>
+    </div>
+  </article>
+  <p class="ncss-text-sm ncss-text-muted">Das Prinzip (klassischer "Conditional Border Radius"-Trick, siehe <code>tokens.css</code>' <code>--ncss-radius-adaptive-*</code> für die Formel): <code>100vw</code> (echte Viewport-Breite) wird mit der eigenen <code>100%</code> (eigene Element-Breite) verglichen - sind beide praktisch gleich groß, kippt der Radius auf 0. Bezieht sich auf den ECHTEN Browser-Viewport, nicht den eigenen Container - hilft deshalb nicht innerhalb eines schmaleren, selbst scrollenden Unterbereichs. Für Komponenten mit eigenem Radius-Escape-Hatch (z.B. <code>.ncss-stack-card</code>'s <code>--ncss-stack-radius</code>, siehe <a href="../../demo/stacked-cards.html#adaptiver-radius">demo/stacked-cards.html</a>) direkt <code>var(--ncss-radius-adaptive-lg)</code> als Wert setzen, statt der fertigen Klasse.</p>
+</section>

@@ -14,6 +14,19 @@
 .ncss-radius-full { border-radius: var(--ncss-radius-full); }
 .ncss-radius-none { border-radius: 0; }
 
+/* Rundet ab, AUSSER das Element berührt gerade beide Bildschirmränder gleichzeitig (z.B.
+   eine Karte, die auf Mobile edge-to-edge geht, aber auf Desktop Außenabstand hat) - dann
+   automatisch 0, ganz ohne @media/Breakpoint. Klassischer Trick (Ben Frain/CSS-Tricks,
+   "Conditional Border Radius"), Formel + Erklärung in tokens.css
+   (--ncss-radius-adaptive-sm/md/lg) - hier nur die fertigen Klassen. Anders als bei einer
+   echten @container-Abfrage bezieht sich das auf den ECHTEN Browser-Viewport, nicht den
+   eigenen Container - für "berührt den Bildschirmrand" ist das genau richtig, hilft aber
+   NICHT innerhalb eines schmaleren, selbst scrollenden Unterbereichs. Demo:
+   demo/stacked-cards.html, Handbuch: docs/de/cards.html. */
+.ncss-radius-adaptive-sm { border-radius: var(--ncss-radius-adaptive-sm); }
+.ncss-radius-adaptive-md { border-radius: var(--ncss-radius-adaptive-md); }
+.ncss-radius-adaptive-lg { border-radius: var(--ncss-radius-adaptive-lg); }
+
 /* --- Rahmen -------------------------------------------------------------------------- */
 .ncss-border {
   border: var(--ncss-border-width) solid var(--ncss-color-border);

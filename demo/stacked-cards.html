@@ -153,6 +153,35 @@
   </div>
 
   <div class="ncss-container ncss-stack ncss-py-xl">
+    <h2>Stacked Cards, adaptiver Radius</h2>
+    <p class="ncss-text-muted"><code>--ncss-stack-card-width: min(100vw, 34rem)</code> - auf breiten Fenstern bleibt die Karte bei 34rem mit Außenabstand (schön rund), auf schmalen Fenstern (Handy) wird sie exakt 100vw (Kante an Kante). <code>--ncss-stack-radius: var(--ncss-radius-adaptive-lg)</code> (statt eines festen Werts oder <code>0</code>) rundet die Ecken automatisch NUR dann ab, wenn tatsächlich Platz dafür da ist - Fenster schmaler ziehen, um es live zu sehen, kein Breakpoint im Spiel.</p>
+  </div>
+
+  <div class="ncss-stack-section" style="--ncss-stack-count: 3; --ncss-stack-card-width: min(100vw, 34rem); --ncss-stack-radius: var(--ncss-radius-adaptive-lg);">
+    <div class="ncss-stack-stage">
+      <article class="ncss-stack-card demo-stack-card demo-stack-card--1" style="--ncss-stack-index: 0;">
+        <h3>Karte 1</h3>
+        <p class="ncss-text-inherit">Fenster schmaler ziehen: Ecken werden eckig, sobald die Karte den Bildschirmrand berührt.</p>
+      </article>
+      <article class="ncss-stack-card demo-stack-card demo-stack-card--2" style="--ncss-stack-index: 1;">
+        <h3>Karte 2</h3>
+      </article>
+      <article class="ncss-stack-card demo-stack-card demo-stack-card--3" style="--ncss-stack-index: 2;">
+        <h3>Karte 3</h3>
+      </article>
+    </div>
+  </div>
+  <div class="ncss-container">
+    <pre><code class="language-html">&lt;div class="ncss-stack-section"
+     style="--ncss-stack-card-width: min(100vw, 34rem);
+            --ncss-stack-radius: var(--ncss-radius-adaptive-lg);"&gt;
+  &lt;div class="ncss-stack-stage"&gt;
+    &lt;article class="ncss-stack-card" style="--ncss-stack-index: 0;"&gt;...&lt;/article&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  </div>
+
+  <div class="ncss-container ncss-stack ncss-py-xl">
     <h2>Stacked Cards, horizontal</h2>
     <p class="ncss-text-muted">Modifier <code>.ncss-stack-section--horizontal</code> - dieselbe Bühne/Timeline-Mechanik wie oben, nur auf der X- statt der Y-Achse: Karten fächern sich seitlich auf, fahren von rechts herein und kippen beim Zurückweichen um die Y-Achse (statt X) zurück.</p>
   </div>
@@ -243,7 +272,7 @@
     <nav class="ncss-nav ncss-nav--tree">
       <ul class="ncss-nav-list">
         <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
-        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+        <li class="ncss-nav-item"><a href="../docs/de/index.html">Handbuch</a></li>
       </ul>
     </nav>
   </div>

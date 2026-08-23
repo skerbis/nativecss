@@ -72,6 +72,16 @@
   --ncss-radius-lg: 1rem;
   --ncss-radius-full: 999px;
 
+  /* Abgeleitet aus den drei Radius-Stufen oben, kein eigener Seed-Wert (siehe theme.css-
+     Regel dazu) - fällt automatisch auf 0 zurück, sobald das Element beide Bildschirmränder
+     gleichzeitig berührt (edge-to-edge), sonst die volle Stufe. Siehe helpers/elevation.css
+     für die fertigen .ncss-radius-adaptive-*-Klassen und die Erklärung des Tricks; als
+     var() auch direkt nutzbar, um den Radius-Escape-Hatch einer Komponente (z.B.
+     .ncss-stack-card's --ncss-stack-radius) adaptiv statt fest zu setzen. */
+  --ncss-radius-adaptive-sm: max(0px, min(var(--ncss-radius-sm), calc((100vw - 16px - 100%) * 999)));
+  --ncss-radius-adaptive-md: max(0px, min(var(--ncss-radius-md), calc((100vw - 16px - 100%) * 999)));
+  --ncss-radius-adaptive-lg: max(0px, min(var(--ncss-radius-lg), calc((100vw - 16px - 100%) * 999)));
+
   --ncss-shadow-sm: 0 1px 2px rgb(0 0 0 / 8%);
   --ncss-shadow-md: 0 4px 12px rgb(0 0 0 / 10%);
   --ncss-shadow-lg: 0 12px 32px rgb(0 0 0 / 14%);
