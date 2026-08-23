@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Adaptive Radius (Embed)</title>
+<link rel="stylesheet" href="../dist/ncss.css">
+<style>
+  /* Standalone mini-document, deliberately WITHOUT topbar/container - only meant to be
+     embedded via <iframe> in docs/en/cards.html#adaptiver-radius. An iframe establishes
+     its OWN viewport (vw units inside it refer to the iframe's width, not the parent
+     window's) - that lets readers test the "conditional border radius" trick by dragging
+     the surrounding box's resize handle, without shrinking their real browser window
+     (not possible on the doc page itself - its content sits in a sidebar grid layout
+     whose column isn't centered on the viewport, so .ncss-full-bleed would break out
+     asymmetrically there). */
+  body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+  }
+</style>
+</head>
+<body>
+  <article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm" style="width: min(100vw, 20rem);">
+    <div class="ncss-card-body">
+      <h3>Adaptive card</h3>
+      <p class="ncss-text-sm ncss-text-muted">Rounded with room around it, sharp once it touches the screen edge.</p>
+    </div>
+  </article>
+</body>
+</html>

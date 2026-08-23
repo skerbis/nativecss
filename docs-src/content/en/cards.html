@@ -168,12 +168,13 @@
   <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"&gt;
   ...
 &lt;/article&gt;</code></pre>
-  <p class="ncss-text-sm ncss-text-muted">Live - shrink the window: once the card touches both screen edges below, the corners go sharp, with no media query involved:</p>
-  <article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm" style="width: min(100%, 28rem);">
-    <div class="ncss-card-body">
-      <h3>Adaptive card</h3>
-      <p class="ncss-text-sm ncss-text-muted">Rounded with room around it, sharp once it touches the screen edge.</p>
-    </div>
-  </article>
-  <p class="ncss-text-sm ncss-text-muted">The principle (the classic "conditional border radius" trick, see <code>tokens.css</code>' <code>--ncss-radius-adaptive-*</code> for the formula): <code>100vw</code> (real viewport width) is compared against the element's own <code>100%</code> (its own width) - when both are practically equal, the radius flips to 0. This compares against the REAL browser viewport, not the element's own container - so it doesn't help inside a narrower, self-scrolling subregion. For components with their own radius escape hatch (e.g. <code>.ncss-stack-card</code>'s <code>--ncss-stack-radius</code>, see <a href="../../demo/stacked-cards.html#adaptiver-radius">demo/stacked-cards.html</a>), set <code>var(--ncss-radius-adaptive-lg)</code> directly as the value instead of using the ready-made class.</p>
+  <p class="ncss-text-sm ncss-text-muted">Live - drag the bottom-right corner of the box below to make it narrower (an <code>&lt;iframe&gt;</code> establishes its OWN viewport, so the effect is testable by dragging instead of having to shrink the whole browser window):</p>
+  <div style="resize: horizontal; overflow: hidden; width: 30rem; max-width: 100%; min-width: 12rem; border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+    <iframe src="../../demo/embed-adaptive-radius-en.html" style="display: block; width: 100%; height: 12rem; border: 0;" title="Adaptive radius, live testable"></iframe>
+  </div>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"
+         style="width: min(100vw, 20rem);"&gt;
+  ...
+&lt;/article&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">The principle (the classic "conditional border radius" trick, see <code>tokens.css</code>' <code>--ncss-radius-adaptive-*</code> for the formula): <code>100vw</code> (real viewport width) is compared against the element's own <code>100%</code> (its own width) - when both are practically equal, the radius flips to 0. This compares against the REAL viewport, not any ancestor container - so it doesn't help inside a narrower, self-scrolling subregion, but that's exactly why it works reliably inside the <code>&lt;iframe&gt;</code> above (its <code>vw</code> refers to the iframe's own width). On a normal page, a card that should deliberately go edge-to-edge on mobile is usually combined with <code>.ncss-full-bleed</code> - IMPORTANT: <code>.ncss-full-bleed</code> itself needs an ancestor chain centered all the way to the viewport (<code>calc(50% - 50vw)</code>), otherwise it breaks out asymmetrically from an off-center layout like this doc page (a sidebar grid) - which is exactly why this demo uses an iframe instead of <code>.ncss-full-bleed</code> directly on the page. For components with their own radius escape hatch (e.g. <code>.ncss-stack-card</code>'s <code>--ncss-stack-radius</code>, see <a href="../../demo/stacked-cards.html#adaptiver-radius">demo/stacked-cards.html</a>), set <code>var(--ncss-radius-adaptive-lg)</code> directly as the value instead of using the ready-made class.</p>
 </section>
