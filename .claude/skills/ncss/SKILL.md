@@ -1103,6 +1103,45 @@ gewünschte Zeichenweg).
     deshalb bewusst eine Pro-Instanz-Entscheidung über den bereits vorhandenen
     `--ncss-stack-radius`-Override-Token, nicht ein Komponenten-Verhalten.
 
+35. **Doku-Website (`docs-src/` → generiert `docs/`, User-Anstoß: "Nun möchte ich dass du
+    wirklich ne richtige Doku erstellt ... nach Vorbild von Bulma/UIkit", dann "integriere
+    alles was wir aktuell in /demo haben ... die navi soll auch anzeigen wo wir uns
+    befinden active state").** Struktrierte, Sidebar-navigierte, zweisprachige (DE/EN)
+    Doku-Website, gebaut mit einem handgerollten `node:fs`/`node:path`-Skript
+    (`docs-src/build.mjs`, kein npm/Bundler/Markdown-Parser - Inhaltsfragmente unter
+    `docs-src/content/{de,en}/*.html` sind bereits gültiges HTML, per
+    `.replaceAll()`-Platzhalter-Ersetzung in `docs-src/template.html` injiziert). Bewusste
+    Ausnahme vom "kein Build-Schritt"-Prinzip: gilt für die CSS-Bibliothek, nicht für das
+    Tooling der Doku-Website selbst - Details siehe README "Doku-Website". Zentrale Lektionen:
+    - **Aktiver Nav-Zustand gehört als ALLGEMEINE Regel in die Komponente, nicht als
+      seitenlokales CSS** (User explizit: "wenn was fehlt dafür in ncss dann füge es als
+      allgemeinen token oder helper hinzu" / "oder components.. egal") - `aria-current="page"`
+      ist der native, semantisch korrekte Mechanismus dafür, jetzt allgemein gestylt in
+      `components/nav.css` (`.ncss-nav-item > a[aria-current="page"]` etc.), NICHT nur in der
+      Doku-Website verwendet.
+    - **Ein blanker Such-/Ersetz-Migrationsscript über viele strukturell ähnliche Dateien
+      MUSS vorher auf Dateien mit bewusst ABWEICHENDER Struktur geprüft werden**, bevor er
+      destruktiv läuft. Eine Nav-Vereinheitlichung über 14 `demo/*.html`-Seiten per Regex-
+      Migration überschrieb bei `demo/landing.html` (einzige Seite mit einer eigenen
+      `<wa-dropdown id="moreNavDropdown">`-basierten Nav samt eigenem
+      `addEventListener`-Handler) die Nav-Struktur inkl. der vom Script benötigten `id` -
+      Ergebnis: `Cannot read properties of null (reading 'addEventListener')` auf JEDEM
+      Seitenaufruf. Kein Fehler beim Anschauen des Diffs (sah wie jede andere Migration
+      aus), erst der volle Regressionslauf mit `pageerror`-Listener deckte es auf. Fix:
+      `git checkout -- demo/landing.html` (voller Revert) + gezielter Minimal-Edit statt der
+      pauschalen Migration. Lehre: nach JEDER Mehrdateien-Migration alle Diffs gezielt auf
+      seiten-untypische Muster durchsuchen (hier `grep -oE 'href="#[a-z-]+"|<wa-dropdown'`
+      gegen jeden Diff), UND den vollen Regressionslauf fahren - ein Konsolenfehler ohne
+      visuelle Auffälligkeit wird von reinem Screenshot-Vergleich nicht gefangen.
+    - **Regex mit Lookahead, um den RICHTIGEN `</ul>` bei verschachtelten gleichnamigen
+      Listen zu treffen**: `<ul class="ncss-nav-list">[\s\S]*?<\/ul>` (lazy, ohne Lookahead)
+      matcht bei einem `<ul class="ncss-nav-list">` mit einer verschachtelten `<ul
+      class="ncss-nav-submenu">` darin fälschlich das ERSTE `</ul>` (die innere Liste), nicht
+      das äußere. Fix: `(?=\s*<\/dialog>)`-Lookahead anhängen, der die Lazy-Match-Backtracking
+      zwingt, bis unmittelbar vor dem bekannten äußeren Abschlusstag. VOR einem destruktiven
+      Mehrdateien-Lauf immer per Dry-Run-Skript an einer echten Datei verifizieren, nicht nur
+      am Muster ablesen.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

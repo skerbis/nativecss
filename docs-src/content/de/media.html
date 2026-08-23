@@ -1,0 +1,59 @@
+<!--DESC: Bilder, Video, Audio und Hero-Sektionen - Aspect-Ratio, object-fit, Art Direction und Parallax ohne JS.-->
+<section class="ncss-stack">
+  <h1>Medien</h1>
+  <p class="ncss-text-lg ncss-text-muted">Bild, Video, Audio und Hero-Sektionen - <code>helpers/media.css</code>, <code>components/video.css</code>, <code>components/audio.css</code>, <code>components/hero.css</code>.</p>
+</section>
+
+<section class="ncss-stack" id="bilder">
+  <h2 class="demo-section-title">Bilder</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-ratio-video/-square/-portrait</code></td><td><code>aspect-ratio</code> per Custom Property, kein Padding-Hack nötig</td></tr>
+        <tr><td><code>.ncss-img-cover</code> / <code>.ncss-img-contain</code></td><td><code>object-fit</code>, <code>-cover</code> inkl. <code>--ncss-focus-point</code></td></tr>
+        <tr><td><code>.ncss-img-rounded</code> / <code>.ncss-img-circle</code></td><td>Eckenradius / volle Kreisform</td></tr>
+        <tr><td><code>.ncss-img-dim-in-dark</code></td><td>Abdunkeln im Dark Mode (Icons/Grafiken mit hartem hellen Hintergrund)</td></tr>
+        <tr><td><code>.ncss-figure</code></td><td>Figure+Figcaption-Layout (Typografie sitzt bereits in <code>base.css</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Art Direction</strong>: <code>&lt;picture&gt;&lt;source media="..."&gt;</code> lädt zuverlässig eine andere Bilddatei je Breakpoint - das native, korrekte Werkzeug dafür.</p>
+</section>
+
+<section class="ncss-stack" id="video-audio">
+  <h2 class="demo-section-title">Video &amp; Audio</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-video</code></td><td>Aspect-Ratio-Wrapper für <code>&lt;video&gt;</code></td></tr>
+        <tr><td><code>.ncss-video--responsive-crop</code></td><td>Anderer Bildausschnitt derselben Datei per <code>object-fit</code> + Breakpoint - für Video gibt es kein verlässliches natives "andere Datei je Breakpoint", anders als bei Bildern (<code>&lt;source media&gt;</code> ist dort nur noch Safari-Altlast)</td></tr>
+        <tr><td><code>.ncss-audio</code></td><td>Einheitliche Breite für <code>&lt;audio controls&gt;</code></td></tr>
+        <tr><td><code>.ncss-audio-card</code></td><td>Audio-Player mit Titel</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="hero">
+  <h2 class="demo-section-title">Hero-Sektion</h2>
+  <p class="ncss-text-muted ncss-text-sm">Bild-Hintergrund mit Inhalt obenauf, <code>components/hero.css</code>.</p>
+  <pre><code>&lt;section class="ncss-hero"&gt;
+  &lt;div class="ncss-hero-media" style="background-image: url(bild.jpg)"&gt;&lt;/div&gt;
+  &lt;div class="ncss-hero-content ncss-hero-content--filled"&gt;
+    &lt;h2&gt;Überschrift&lt;/h2&gt;
+    &lt;p&gt;Text...&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-hero</code></td><td>Wrapper, <code>min-height: 22rem</code>, <code>overflow: clip</code></td></tr>
+        <tr><td><code>.ncss-hero-media</code></td><td>Eigene Ebene fürs Hintergrundbild (inkl. Lesbarkeits-Scrim) - <code>background-image</code> immer inline setzen, nie über eine Custom Property, siehe <a href="known-limitations.html">Bekannte Grenzen</a></td></tr>
+        <tr><td><code>.ncss-hero-content--transparent</code></td><td>Text direkt auf dem Bild (Default)</td></tr>
+        <tr><td><code>.ncss-hero-content--filled</code></td><td>Text auf blickdichter Karte obenauf</td></tr>
+        <tr><td><code>.ncss-hero--parallax</code></td><td>Bild bewegt sich beim Scrollen langsamer als der Inhalt, via <code>animation-timeline: view()</code> - kein JS, kein <code>background-attachment: fixed</code> (auf iOS Safari absichtlich nie unterstützt)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

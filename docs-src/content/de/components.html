@@ -1,0 +1,91 @@
+<!--DESC: Kurzreferenz aller Komponenten - Navigation, Karten, Modals, Scroll-Stapel, Effekte und mehr.-->
+<section class="ncss-stack">
+  <h1>Komponenten-Referenz</h1>
+  <p class="ncss-text-lg ncss-text-muted">Jede Komponente hat einen ausführlichen Markup-Kommentar direkt in ihrer <code>.css</code>-Datei unter <code>components/</code> - hier nur die Kurzreferenz. Lebende Beispiele in <a href="../../demo/index.html">den Demo-Seiten</a>.</p>
+</section>
+
+<section class="ncss-stack" id="navigation">
+  <h2 class="demo-section-title">Navigation &amp; Struktur</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Datei</th><th scope="col">Klassen</th><th scope="col">Kurzbeschreibung</th></tr></thead>
+      <tbody>
+        <tr><td><code>topbar.css</code></td><td><code>.ncss-topbar</code>, <code>-inner</code>, <code>-brand</code>, <code>-actions</code> (+ <code>--transparent</code>)</td><td>Kopfleiste, wächst statt zu überlaufen, wenn die Navigation umbricht. <code>--transparent</code> für eine Topbar über einem Hero, meist mit <code>.ncss-glass</code> als separatem Hintergrund-Element kombiniert.</td></tr>
+        <tr><td><code>nav.css</code></td><td><code>.ncss-nav</code>, <code>-toggle</code>, <code>-panel</code>, <code>-list</code>, <code>-item</code>, <code>-dropdown</code> (+ <code>--nested</code>), <code>-submenu</code> (+ <code>--mega</code>), <code>-mega-col</code>, <code>-mega-heading</code>, <code>--tree</code></td><td>Horizontale Nav (kollabiert ab 64rem zu Off-Canvas) + vertikale Tree-Variante. Dropdowns/Mega-Menü über <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, kein Hover-Bug auf Touch. Aktuelle Seite: <code>aria-current="page"</code> auf dem jeweiligen Link.</td></tr>
+        <tr><td><code>off-canvas.css</code></td><td><code>.ncss-offcanvas</code> (+ <code>--start</code>/<code>--end</code>)</td><td>Seitlich einschiebendes Panel, natives <code>&lt;dialog&gt;</code></td></tr>
+        <tr><td><code>breadcrumb.css</code></td><td><code>.ncss-breadcrumb</code></td><td>Natives <code>&lt;nav&gt;&lt;ol&gt;</code>, <code>::before</code>-generierte Trenner</td></tr>
+        <tr><td><code>footer.css</code></td><td><code>.ncss-footer</code>, <code>-inner</code>, <code>-bottom</code></td><td>Seitenfuß-Grundgerüst</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="dialoge">
+  <h2 class="demo-section-title">Dialoge &amp; Aufklappbares</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>modal.css</code></td><td><code>.ncss-modal</code>, <code>-header</code>, <code>-footer</code> (+ <code>--fullscreen</code>, <code>--dark</code>, <code>--3d</code>)</td><td>Zentriertes Dialog-Modal; <code>--fullscreen</code>+<code>--dark</code> ergibt eine Lightbox. <code>--3d</code> kippt beim Öffnen wie aus der Tiefe herein.</td></tr>
+        <tr><td><code>dialog-close.css</code></td><td><code>.ncss-dialog-close</code></td><td>Geteilter Schließen-Button für Modal/Off-Canvas/Nav-Panel</td></tr>
+        <tr><td><code>disclosure.css</code></td><td><code>.ncss-disclosure</code></td><td>FAQ-Box-Optik für <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="karten">
+  <h2 class="demo-section-title">Karten &amp; Inhalt</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>card.css</code></td><td><code>.ncss-card-container</code>, <code>.ncss-card</code>, <code>-media</code>, <code>-header</code>, <code>-body</code>, <code>-footer</code> (+ <code>--flush</code>, <code>--transparent</code>, <code>--linked</code>, <code>--horizontal</code>, <code>--horizontal-end</code>, Farbvarianten)</td><td>Karte ohne eingebauten Rahmen/Ecken/Schatten (siehe <a href="tokens.html">Design Tokens</a>). Farbvarianten dienen zugleich als Hinweis-/Callout-Box (Tipp/Warnung/Fehler).</td></tr>
+        <tr><td><code>badge.css</code></td><td><code>.ncss-badge</code> (+ Farbvarianten), <code>.ncss-badge-icon</code> (+ <code>--lg</code>)</td><td>Status-/Kategorie-Chips; <code>-icon</code>-Variante als Kreis/Quadrat um ein Icon statt Text-Pille</td></tr>
+        <tr><td><code>placeholder.css</code></td><td><code>.ncss-placeholder</code> (+ <code>--surface</code>)</td><td>Grauer Platzhalter für Demo-/Prototyp-Inhalte</td></tr>
+        <tr><td><code>hero.css</code></td><td>siehe <a href="media.html">Medien</a></td><td>Bild-Hintergrund-Sektion mit Inhalt obenauf, optional Parallax</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="formulare-suche">
+  <h2 class="demo-section-title">Formulare &amp; Suche</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>select.css</code></td><td><code>.ncss-select-wrapper</code>, <code>.ncss-select</code></td><td>Gestyltes natives <code>&lt;select&gt;</code> inkl. eigenem Chevron</td></tr>
+        <tr><td><code>search.css</code></td><td><code>.ncss-search</code>, <code>.ncss-search-input</code></td><td>Suchfeld, das schmal startet und beim Fokussieren per reiner <code>width</code>-Transition wächst - kein JS</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="scroll-animation">
+  <h2 class="demo-section-title">Scroll &amp; Animation</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>slideshow.css</code></td><td><code>.ncss-slideshow</code>, <code>-track</code> (+ <code>--no-scrollbar</code>), <code>-item</code> (+ <code>--peek</code>)</td><td>Scroll-Snap-Karussell, kein JS</td></tr>
+        <tr><td><code>sparkline.css</code></td><td><code>.ncss-sparkline</code>, <code>-area</code>, <code>-dot</code></td><td>Kleine Inline-Datenlinie</td></tr>
+        <tr><td><code>scroll-progress.css</code></td><td><code>.ncss-scroll-progress</code> (+ <code>--vertical</code>, <code>--end</code>)</td><td>Lesefortschrittsbalken, <code>animation-timeline: scroll()</code></td></tr>
+        <tr><td><code>scroll-stack.css</code></td><td><code>.ncss-stack-section</code>, <code>.ncss-stack-stage</code>, <code>.ncss-stack-card</code></td><td>Gepinnte Bühne, Karten gleiten beim Scrollen übereinander zu einem gefächerten Stapel ("Pinned Scrollytelling"). <code>view-timeline</code>-basiert, Opt-in-JS-Fallback für Firefox/älteres Safari: <code>components/scroll-stack-fallback.js</code>, siehe <a href="webawesome-bridge.html">Web Awesome Bridge</a></td></tr>
+        <tr><td><code>roadmap.css</code></td><td><code>.ncss-roadmap</code>, <code>-line</code>, <code>-list</code>, <code>-item</code>, <code>-dot</code>, <code>-card</code></td><td>Meilenstein-Liste mit selbst nachzeichnender Fortschrittslinie beim Scrollen</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="effekte">
+  <h2 class="demo-section-title">Effekte</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>effects.css</code></td><td><code>.ncss-glow-border</code></td><td>Rotierender Farbverlauf-Ring per <code>::before</code> + <code>mask-composite: exclude</code></td></tr>
+        <tr><td></td><td><code>.ncss-glow-pulse</code></td><td>Pulsierender <code>box-shadow</code></td></tr>
+        <tr><td></td><td><code>.ncss-glass</code></td><td>Glassmorphism (<code>backdrop-filter</code>, <code>@supports</code>-abgesichert). Nicht auf ein Element mit Floating-UI-Nachfahren setzen (<code>&lt;wa-dropdown&gt;</code> u.ä.) - <code>backdrop-filter</code> erzeugt einen neuen Containing Block für <code>position:fixed</code></td></tr>
+        <tr><td></td><td><code>.ncss-stamped</code> (+ <code>--press</code>)</td><td>Hauchdünner, zweifarbiger "gravierter" Rahmen, funktioniert auf jeder Fläche</td></tr>
+        <tr><td></td><td><code>.ncss-grain</code></td><td>Feines SVG-Rauschen per <code>::after</code> + <code>mix-blend-mode</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Rein dekorativ, bewusst optional - keine dieser Klassen ist Bestandteil von <code>.ncss-card</code>/<code>-btn</code>.</p>
+</section>

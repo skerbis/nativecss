@@ -1,0 +1,59 @@
+<!--DESC: Farb-Tokens, light-dark(), abgestufte Skalen und farbige Flächen mit garantiertem Kontrast.-->
+<section class="ncss-stack">
+  <h1>Farben & Flächen</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>light-dark()</code> ist die alleinige Dark-Mode-Mechanik - kein zweites Dark-Stylesheet, keine <code>.dark</code>-Klasse. EIN Wert pro Token deckt Hell und Dunkel ab.</p>
+</section>
+
+<section class="ncss-stack" id="semantische-tokens">
+  <h2 class="demo-section-title">Semantische Tokens</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Token</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>--ncss-color-brand</code> / <code>-brand-2</code></td><td>Marken-/Zweitfarbe</td></tr>
+        <tr><td><code>--ncss-color-neutral</code></td><td>Basis-Grauton</td></tr>
+        <tr><td><code>--ncss-color-success</code> / <code>-warning</code> / <code>-danger</code></td><td>Statusfarben</td></tr>
+        <tr><td><code>--ncss-color-bg</code> / <code>-bg-subtle</code></td><td>Seitenhintergrund, dezent abgesetzt</td></tr>
+        <tr><td><code>--ncss-color-surface</code></td><td>Karten/Panels</td></tr>
+        <tr><td><code>--ncss-color-text</code> / <code>-text-muted</code></td><td>Fließtext, gedämpfter Text</td></tr>
+        <tr><td><code>--ncss-color-border</code></td><td>Rahmen</td></tr>
+        <tr><td><code>--ncss-color-focus-ring</code></td><td>Fokus-Ring</td></tr>
+        <tr><td><code>--ncss-color-overlay</code></td><td>Modal-/Dialog-Backdrop (transparent)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="skalen">
+  <h2 class="demo-section-title">Abgestufte Skalen</h2>
+  <p>Jede der sechs Farbfamilien (<code>brand</code>, <code>brand-2</code>, <code>neutral</code>, <code>success</code>, <code>warning</code>, <code>danger</code>) hat abgeleitete Stufen, per <code>color-mix()</code> aus GENAU EINEM Basiswert berechnet:</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Suffix</th><th scope="col">Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><code>-100</code> / <code>-300</code></td><td>Heller/dezenter (Badge-/Chip-Hintergrund)</td></tr>
+        <tr><td><code>-500</code></td><td>Die Basisfarbe selbst (Alias)</td></tr>
+        <tr><td><code>-700</code> / <code>-900</code></td><td>Dunkler/kräftiger, bleibt in BEIDEN Modi dunkel</td></tr>
+        <tr><td><code>-on-soft</code></td><td>Passende Textfarbe für eine <code>-100</code>/<code>-300</code>-Fläche</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Eine Marke in <code>theme.css</code> ändern, die ganze Skala zieht automatisch mit - siehe <a href="theming.html">Theme anpassen</a>.</p>
+</section>
+
+<section class="ncss-stack" id="farbige-flaechen">
+  <h2 class="demo-section-title">Farbige Flächen</h2>
+  <p><code>helpers/surfaces.css</code>: <code>.ncss-surface--brand</code> / <code>--brand-2</code> / <code>--neutral</code> - Hintergrund + garantiert passende Textfarbe (900er-Stufe + <code>#fff</code>) in einer Klasse, statt Inline-Style mit hand-gepflegtem Kontrast.</p>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;div class="ncss-surface--brand"&gt;Immer lesbarer Kontrast&lt;/div&gt;</code></pre>
+  <p><strong>Web Awesome auf farbigen Flächen:</strong> ein <code>&lt;wa-input&gt;</code> o.ä. rendert Label/Wert im eigenen Shadow DOM - <code>color</code> allein erreicht das nicht. <code>webawesome-bridge.css</code> bridgt <code>--wa-form-control-label-color</code> u.a. automatisch mit, sobald <code>.ncss-surface--*</code> oder <code>.ncss-text-light</code>/<code>-dark</code> im Spiel sind.</p>
+</section>
+
+<section class="ncss-stack" id="erzwungener-text">
+  <h2 class="demo-section-title">Erzwungener heller/dunkler Text</h2>
+  <p><code>.ncss-text-light</code>/<code>-dark</code> (+ <code>-100</code>/<code>-300</code>/<code>-700</code>/<code>-900</code> als Deckkraft-Stufen) - fest auf Weiß/Schwarz, UNABHÄNGIG vom Theme. Für Flächen, deren Farbe nicht über ncss-Tokens läuft (Foto, Video-Poster). UIkit-<code>uk-light</code>-Pendant.</p>
+</section>
+
+<section class="ncss-stack" id="theme-override">
+  <h2 class="demo-section-title">Manueller Theme-Override</h2>
+  <p><code>[data-theme="light"]</code>/<code>[data-theme="dark"]</code> auf <code>&lt;html&gt;</code> erzwingt ein Farbschema unabhängig von der Systemeinstellung (z.B. für einen UI-Umschalter). Lokal auf ein einzelnes Element: <code>.ncss-scheme-dark</code>/<code>-light</code> (<code>helpers/surfaces.css</code>).</p>
+</section>

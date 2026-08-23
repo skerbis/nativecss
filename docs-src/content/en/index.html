@@ -1,0 +1,70 @@
+<!--DESC: NativeCSS is a native CSS design system with no build step - overview of principles, structure and how to get started.-->
+<section class="ncss-stack">
+  <p class="ncss-eyebrow">NativeCSS Handbook</p>
+  <h1>Overview</h1>
+  <p class="ncss-text-lg ncss-text-muted">A native CSS design system with no build step: no LESS/Sass, no bundler, no preprocessor. <code>@import</code> + CSS Cascade Layers control load order, a single token system (<code>tokens.css</code> + <code>colors.css</code>) is the sole source of values.</p>
+</section>
+
+<section class="ncss-stack" id="schnellstart">
+  <h2 class="demo-section-title">Quick Start</h2>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;</code></pre>
+  <p><code>ncss.css</code> imports everything else itself (tokens, reset, helpers, components) in the correct layer order. No build step needed - just include the file directly.</p>
+</section>
+
+<section class="ncss-stack" id="grundprinzipien">
+  <h2 class="demo-section-title">Core Principles</h2>
+  <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+    <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>Native first</h3>
+        <p class="ncss-text-sm ncss-text-muted">Cascade Layers instead of specificity fights, Container Queries instead of media-query sprawl, native elements (<code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>) instead of JS reimplementations wherever native behavior is enough.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>One source of truth</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>tokens.css</code>/<code>colors.css</code> are the only places raw values (colors, <code>rem</code>, <code>px</code>) are allowed to live. Everything else references them via <code>var()</code>.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>No build step</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>@import</code> + Cascade Layers handle everything. No preprocessor, no bundler, no compilation - load the file directly in the browser.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>No utility sprawl</h3>
+        <p class="ncss-text-sm ncss-text-muted">Small, curated utility sets instead of a Tailwind-style "a class for every CSS value" approach. New utilities are added only for real, recurring need.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>Breakpointless by default</h3>
+        <p class="ncss-text-sm ncss-text-muted">Typography and spacing are fluid by default (<code>clamp()</code>-based). Fixed breakpoints remain a deliberately sparingly used escape hatch.</p>
+      </div>
+    </article>
+    <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+      <div class="ncss-card-body">
+        <h3>Verify, don't assume</h3>
+        <p class="ncss-text-sm ncss-text-muted">Every non-trivial change is checked in real browsers (Chromium, WebKit, Firefox) - browser support claims are researched, not guessed from training knowledge.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="web-awesome">
+  <h2 class="demo-section-title">Web Awesome (optional)</h2>
+  <p>Optionally the system connects via <code>webawesome-bridge.css</code> to a self-hosted <a href="https://webawesome.com" target="_blank" rel="noopener">Web Awesome</a>, for cases where native HTML/CSS alone isn't enough (e.g. toast, carousel, drawer) - see <a href="webawesome-bridge.html">Web Awesome Bridge</a>.</p>
+</section>
+
+<section class="ncss-stack" id="weiter">
+  <h2 class="demo-section-title">Where to go next</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><a href="architecture.html">Architecture</a> - Cascade Layers, file structure, how everything fits together.</li>
+    <li><a href="theming.html">Theming</a> - your own brand in a single file.</li>
+    <li><a href="tokens.html">Design Tokens</a> - spacing, radius, shadow, motion.</li>
+    <li><a href="components.html">Component Reference</a> - every component with its classes and tokens.</li>
+  </ul>
+  <p class="ncss-text-sm ncss-text-muted">Live examples for every topic also live under <a href="../../demo/index.html">Demo</a> - this handbook explains the WHY and HOW, the demo pages show it in action.</p>
+</section>

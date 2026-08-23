@@ -1,0 +1,44 @@
+<!--DESC: Container, grid, stack and cluster - the layout building blocks from helpers/layout.css.-->
+<section class="ncss-stack">
+  <h1>Layout</h1>
+  <p class="ncss-text-lg ncss-text-muted">A few composable layout primitives instead of a utility matrix - <code>helpers/layout.css</code>.</p>
+</section>
+
+<section class="ncss-stack" id="container">
+  <h2 class="demo-section-title">Container</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-container</code></td><td>Centered, width-limited column with side padding</td></tr>
+        <tr><td><code>.ncss-container--narrow</code></td><td>Modifier, ONLY together with <code>.ncss-container</code> - narrower <code>max-width</code></td></tr>
+        <tr><td><code>.ncss-full-bleed</code></td><td>Breaks out of a container to the edge of the screen</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="grid">
+  <h2 class="demo-section-title">Grid</h2>
+  <p><code>.ncss-grid</code> - automatically responsive grid with no media queries (<code>repeat(auto-fit, minmax(...))</code>), minimum column width parametrized via a custom property:</p>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;div class="ncss-grid" style="--ncss-grid-min: 16rem;"&gt;...&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="stack-cluster">
+  <h2 class="demo-section-title">Stack & Cluster</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-stack</code></td><td>Vertical flex stack with even spacing</td></tr>
+        <tr><td><code>.ncss-stack--tight</code> / <code>--loose</code></td><td>Tighter/looser spacing than the default</td></tr>
+        <tr><td><code>.ncss-cluster</code></td><td>Horizontal group, wraps automatically (e.g. tag lists, button groups)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="bleed">
+  <h2 class="demo-section-title">Bleed</h2>
+  <p>Variants for deliberately breaking out of a container: <code>.ncss-bleed-start</code>/<code>-end</code> (one side), <code>.ncss-bleed-half-start</code>/<code>-half-end</code> (from the middle), <code>.ncss-bleed-center</code> (symmetric by a fixed amount, <code>--ncss-bleed-amount</code>).</p>
+</section>

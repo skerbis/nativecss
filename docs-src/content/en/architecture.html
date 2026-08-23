@@ -1,0 +1,43 @@
+<!--DESC: How NativeCSS is structured - Cascade Layers, layer order and the repo's file structure.-->
+<section class="ncss-stack">
+  <h1>Architecture</h1>
+  <p class="ncss-text-lg ncss-text-muted">Load order runs through a single global <code>@layer</code> declaration in <code>ncss.css</code> - layer order is page-global, independent of the order <code>&lt;link&gt;</code> tags appear in the <code>&lt;head&gt;</code>.</p>
+</section>
+
+<section class="ncss-stack" id="layer">
+  <h2 class="demo-section-title">Layer Order</h2>
+  <pre class="ncss-radius-lg ncss-border"><code>wa-native, wa-base, wa-utilities, wa-color-palette, wa-color-variant, wa-theme,
+wa-theme-dimension, wa-theme-overrides,   ← Web Awesome's own layers (if included)
+tokens, reset, base, helpers, components, ← NativeCSS itself
+webawesome-bridge,                        ← overrides Web Awesome's default theme selectively
+browser-fixes                             ← isolated browser/engine workarounds, last</code></pre>
+  <p><code>@layer</code> controls priority EXPLICITLY instead of via selector specificity/<code>!important</code>. A rule in a LATER layer always wins over a rule in an earlier layer - regardless of selector specificity. Unlayered CSS (e.g. <code>theme.css</code>, inline styles) ALWAYS beats every layered rule.</p>
+</section>
+
+<section class="ncss-stack" id="dateistruktur">
+  <h2 class="demo-section-title">File Structure</h2>
+  <pre class="ncss-radius-lg ncss-border"><code>dist/
+  ncss.css                  Import manifest (layer order + all @import)
+  tokens.css                Design tokens: typography, spacing, radius, shadow, motion
+  colors.css                Color tokens (light-dark(), graded scales)
+  reset.css                 Minimal reset
+  base.css                  Unstyled native elements get sensible defaults
+  browser-fixes.css         Isolated browser/engine-specific workarounds
+  webawesome-bridge.css     Maps ncss tokens onto Web Awesome's --wa-* variables
+  theme.css                 Included example theme
+  page-transitions.css      Opt-in page transitions
+  helpers/                  Utility classes (layout, typography, forms, media, ...)
+  components/               Ready-made components (nav, card, modal, badge, ...) + JS fallbacks
+demo/                     All demo/documentation pages
+vendor/                   Self-hosted Web Awesome + Font Awesome (optional)</code></pre>
+</section>
+
+<section class="ncss-stack" id="theme-mechanik">
+  <h2 class="demo-section-title">Why theming runs unlayered</h2>
+  <p>Theming runs through <code>theme.css</code> (load after <code>ncss.css</code>) - a single, deliberately UNLAYERED file with all the important seed values (brand colors, base surfaces, fonts, radii, shadows, motion). Unlayered CSS always wins against any layered rule, no <code>!important</code> needed. Details: <a href="theming.html">Theming</a>.</p>
+</section>
+
+<section class="ncss-stack" id="cherry-picking">
+  <h2 class="demo-section-title">Cherry-picking instead of all-or-nothing</h2>
+  <p>Every component is its own small file (<code>components/card.css</code>, <code>components/modal.css</code>, ...) - include only what's needed by copying <code>ncss.css</code> and removing the <code>@import</code> lines you don't need. No bundler that has to purge unused CSS after the fact - the file is only ever as large as intended from the start.</p>
+</section>

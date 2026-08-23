@@ -1,0 +1,61 @@
+<!--DESC: Design tokens for spacing, radius, shadow, motion and breakpoints - tokens.css as the sole source of values.-->
+<section class="ncss-stack">
+  <h1>Design Tokens</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>tokens.css</code> and <code>colors.css</code> are the only places raw values are allowed to live - everything else references them via <code>var()</code>. Color tokens in detail: <a href="colors.html">Colors & Surfaces</a>.</p>
+</section>
+
+<section class="ncss-stack" id="abstand">
+  <h2 class="demo-section-title">Spacing</h2>
+  <p><code>--ncss-space-3xs</code> through <code>--ncss-space-3xl</code> - a fluid scale (<code>clamp()</code>-based), growing slightly with viewport width instead of jumping in fixed steps.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Token</th><th scope="col">Approx.</th></tr></thead>
+      <tbody>
+        <tr><td><code>--ncss-space-3xs</code></td><td>0.25rem</td></tr>
+        <tr><td><code>--ncss-space-2xs</code></td><td>0.5rem</td></tr>
+        <tr><td><code>--ncss-space-xs</code></td><td>0.75rem</td></tr>
+        <tr><td><code>--ncss-space-sm</code></td><td>1rem</td></tr>
+        <tr><td><code>--ncss-space-md</code></td><td>1.5rem</td></tr>
+        <tr><td><code>--ncss-space-lg</code></td><td>2rem</td></tr>
+        <tr><td><code>--ncss-space-xl</code></td><td>3rem</td></tr>
+        <tr><td><code>--ncss-space-2xl</code></td><td>4rem</td></tr>
+        <tr><td><code>--ncss-space-3xl</code></td><td>6rem</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="radius-schatten">
+  <h2 class="demo-section-title">Radius & Shadow</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Token</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>--ncss-radius-sm/-md/-lg/-full</code></td><td>Corner radius, <code>-full</code> for pills/circles</td></tr>
+        <tr><td><code>--ncss-shadow-sm/-md/-lg</code></td><td>Shadow steps</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Usable as utility classes: <a href="components.html#elevation"><code>.ncss-radius-*</code>/<code>.ncss-shadow-*</code></a> - deliberately standalone, component-independent utilities instead of baked into individual components.</p>
+</section>
+
+<section class="ncss-stack" id="bewegung">
+  <h2 class="demo-section-title">Motion</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Token</th><th scope="col">Value</th></tr></thead>
+      <tbody>
+        <tr><td><code>--ncss-motion-duration-fast</code></td><td>100ms - fast entry into <code>:active</code> states</td></tr>
+        <tr><td><code>--ncss-motion-duration</code></td><td>200ms - normal transitions</td></tr>
+        <tr><td><code>--ncss-motion-duration-slow</code></td><td>400ms</td></tr>
+        <tr><td><code>--ncss-motion-easing</code></td><td><code>cubic-bezier(0.4, 0, 0.2, 1)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Tied to <code>prefers-reduced-motion</code> rather than hard-coded to 0 - <code>base.css</code> respects the setting globally.</p>
+</section>
+
+<section class="ncss-stack" id="breakpoints">
+  <h2 class="demo-section-title">Breakpoints & Container Query Thresholds</h2>
+  <p>A fixed convention, not usable as <code>var()</code> (media/container queries don't accept custom properties in the condition itself) - documented as a comment in <code>tokens.css</code>. Breakpointless remains the default approach, fixed breakpoints a deliberately sparingly used escape hatch, e.g. for the nav collapse at 64rem.</p>
+</section>

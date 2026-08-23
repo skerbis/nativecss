@@ -133,6 +133,20 @@
   }
 }
 
+/* Aktueller Punkt (aria-current="page", z.B. per Server/Build oder von Hand auf der
+   jeweils aktiven Seite gesetzt) - EIN allgemeiner Zustand für JEDE .ncss-nav-Variante
+   (horizontale Topbar UND .ncss-nav--tree-Sidebar, gleiche Markup-Struktur), kein
+   Seiten-lokales CSS mehr nötig. Bewusst NICHT hover-gated: ein Zustands-Indikator ist
+   keine Interaktions-Rückmeldung, gilt unabhängig vom Zeigegerät genau wie
+   :focus-visible oben. Eigene, kräftigere Fläche + Markenfarbe statt nur eines Rahmens -
+   muss auch auf einen Blick in einer langen Sidebar-Liste auffallen. */
+.ncss-nav-item > a[aria-current="page"],
+.ncss-nav-dropdown > summary[aria-current="page"] {
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-weight: 600;
+}
+
 /* Native Summary-Markierung (Dreieck) entfernen, eigenen Chevron per ::after nachbauen -
    funktioniert einheitlich über Browser hinweg (das native Dreieck unterscheidet sich
    sonst zwischen Chrome/Firefox/Safari). */
@@ -181,6 +195,13 @@
   .ncss-nav-submenu a:hover {
     background-color: var(--ncss-color-bg-subtle);
   }
+}
+/* Gleicher Zustand wie .ncss-nav-item > a[aria-current="page"] oben, hier für Einträge
+   INNERHALB eines Untermenüs/einer Sidebar-Unterliste. */
+.ncss-nav-submenu a[aria-current="page"] {
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-weight: 600;
 }
 
 /* Desktop: Untermenü schwebt als Panel unter dem Elternpunkt. */

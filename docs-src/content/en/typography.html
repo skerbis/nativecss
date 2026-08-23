@@ -1,0 +1,54 @@
+<!--DESC: Typography helpers - sizes, colors, drop caps, multi-column text and more from helpers/typography.css.-->
+<section class="ncss-stack">
+  <h1>Typography</h1>
+  <p class="ncss-text-lg ncss-text-muted">Extends <code>base.css</code> with classes for cases where a tag alone isn't enough - <code>helpers/typography.css</code>.</p>
+</section>
+
+<section class="ncss-stack" id="groesse-farbe">
+  <h2 class="demo-section-title">Size & Color</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-text-sm/base/md/lg/xl</code></td><td>Font size</td></tr>
+        <tr><td><code>.ncss-text-muted/brand/brand-2/neutral/success/warning/danger</code></td><td>Text color</td></tr>
+        <tr><td><code>.ncss-text-inherit</code></td><td><code>color: inherit</code> - for text on a colored surface</td></tr>
+        <tr><td><code>.ncss-text-light/-dark</code> (+ <code>-100/-300/-700/-900</code>)</td><td>Forced light/dark text, theme-independent - see <a href="colors.html">Colors</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="ausrichtung">
+  <h2 class="demo-section-title">Alignment & Wrapping</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-text-center/start/end/justify</code></td><td>Text alignment</td></tr>
+        <tr><td><code>.ncss-text-balance</code> / <code>.ncss-text-pretty</code></td><td><code>text-wrap: balance/pretty</code></td></tr>
+        <tr><td><code>.ncss-truncate</code></td><td>Single-line truncation with ellipsis</td></tr>
+        <tr><td><code>.ncss-clamp-lines</code> (+ <code>--ncss-clamp-lines</code>)</td><td>Multi-line truncation, modern CSS instead of JS</td></tr>
+        <tr><td><code>.ncss-hyphenate</code></td><td><code>hyphens: auto</code> (needs a correct <code>lang</code> attribute)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="drop-cap">
+  <h2 class="demo-section-title">Drop Cap & Multi-column Text</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-drop-cap</code> (+ <code>--sm</code>/<code>--lg</code>/<code>--light</code>/<code>--brand</code>)</td><td>Initial letter via <code>initial-letter</code> (+ <code>-webkit-</code> prefix for Safari)</td></tr>
+        <tr><td><code>.ncss-columns</code> (+ <code>--ncss-columns-width</code>)</td><td>Multi-column body text, <code>column-width</code>-based</td></tr>
+        <tr><td><code>.ncss-pull-quote</code></td><td>Highlighted quote, <code>column-span: all</code> inside <code>.ncss-columns</code></td></tr>
+        <tr><td><code>.ncss-text-boxed</code></td><td>"Highlighter" look across multiple lines (<code>box-decoration-break: clone</code>) - needs <code>display:inline</code>, never nest directly inside <code>.ncss-stack</code>/<code>-cluster</code>/<code>-grid</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="sonstiges">
+  <h2 class="demo-section-title">Other</h2>
+  <p><code>.ncss-eyebrow</code> (kicker above a heading), <code>.ncss-lead-quote</code> (left accent border), <code>.ncss-list--dot</code> (custom bullet points), <code>.ncss-tracking-tight/normal/wide/wider/widest</code> (letter spacing), <code>.ncss-nums-tabular</code>/<code>-oldstyle</code> (<code>font-variant-numeric</code>).</p>
+</section>

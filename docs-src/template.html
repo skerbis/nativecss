@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="__LANG__">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<meta name="description" content="__DESCRIPTION__">
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../../dist/page-transitions.css">
+<script src="../../dist/components/command-fallback.js" defer></script>
+<script src="../../dist/components/nav.js" defer></script>
+<style>
+  .docs-layout {
+    display: grid;
+    grid-template-columns: 15rem 1fr;
+    gap: var(--ncss-space-xl);
+    align-items: start;
+  }
+  /* Grid-Items schrumpfen ohne dies nicht unter ihre Inhaltsbreite (derselbe Fallstrick
+     wie bei flex), sprengt sonst die eigene Spalte bei langen Code-Zeilen/Tabellen. */
+  .docs-layout > * {
+    min-width: 0;
+  }
+  .docs-sidebar {
+    position: sticky;
+    top: calc(var(--ncss-topbar-height) + var(--ncss-space-md));
+    max-height: calc(100svh - var(--ncss-topbar-height) - 2 * var(--ncss-space-md));
+    overflow-y: auto;
+  }
+  .docs-sidebar-group + .docs-sidebar-group {
+    margin-block-start: var(--ncss-space-md);
+  }
+  .docs-sidebar-group-title {
+    font-size: var(--ncss-font-size-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ncss-color-text-muted);
+    padding-inline: var(--ncss-space-xs);
+    margin-block-end: var(--ncss-space-3xs);
+  }
+  @media (max-width: 59.99rem) {
+    .docs-layout {
+      grid-template-columns: 1fr;
+    }
+    .docs-sidebar {
+      position: static;
+      max-height: none;
+    }
+  }
+  .docs-prevnext {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ncss-space-md);
+    margin-block-start: var(--ncss-space-xl);
+    padding-block-start: var(--ncss-space-lg);
+    border-block-start: 1px solid var(--ncss-color-border);
+  }
+  .docs-prevnext-next {
+    text-align: end;
+  }
+  .docs-prevnext-label {
+    display: block;
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  /* Aktive-Seite-Optik für die Sidebar UND die Topbar kommt jetzt aus components/nav.css
+     selbst ([aria-current="page"], allgemein für jede .ncss-nav-Variante) - kein
+     Seiten-lokales CSS mehr nötig. Nur die Sprachumschalter-Markierung (eigener
+     Attributwert "true", kein Seiten-Konzept von ncss selbst) bleibt hier lokal. */
+  .ncss-nav-item a[aria-current="true"] {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .docs-footer-brand {
+    color: var(--ncss-color-text);
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">__SKIP_LINK__</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="../../demo/product.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="__MENU_LABEL__"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="__CLOSE_LABEL__"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="../../demo/index.html">__NAV_DEMOS__</a></li>
+          <li class="ncss-nav-item"><a href="index.html" aria-current="page">__NAV_DOCS__</a></li>
+__LANG_SWITCH__
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-container ncss-py-xl">
+  <div class="docs-layout">
+
+    <nav class="ncss-nav--tree docs-sidebar" aria-label="__SIDEBAR_LABEL__">
+__SIDEBAR__
+    </nav>
+
+    <div class="ncss-stack ncss-stack--loose">
+__CONTENT__
+__PREVNEXT__
+    </div>
+
+  </div>
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="docs-footer-brand">NativeCSS __FOOTER_DOCS_LABEL__</strong>
+      <p class="ncss-text-sm">__FOOTER_TAGLINE__</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="../../demo/product.html">__NAV_HOME__</a></li>
+        <li class="ncss-nav-item"><a href="../../demo/index.html">__NAV_DEMOS__</a></li>
+        <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

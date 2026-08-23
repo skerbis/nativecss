@@ -1,0 +1,32 @@
+{
+  "de": {
+    "skipLink": "Zum Inhalt springen",
+    "menuLabel": "Menü öffnen",
+    "closeLabel": "Menü schließen",
+    "navHome": "NativeCSS",
+    "navDemos": "Demo",
+    "navDocs": "Handbuch",
+    "sidebarLabel": "Handbuch-Inhalt",
+    "footerDocsLabel": "Handbuch",
+    "footerTagline": "Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.",
+    "prev": "Zurück",
+    "next": "Weiter",
+    "langName": "Deutsch",
+    "otherLangName": "English"
+  },
+  "en": {
+    "skipLink": "Skip to content",
+    "menuLabel": "Open menu",
+    "closeLabel": "Close menu",
+    "navHome": "NativeCSS",
+    "navDemos": "Demos",
+    "navDocs": "Docs",
+    "sidebarLabel": "Docs contents",
+    "footerDocsLabel": "Docs",
+    "footerTagline": "Plain CSS custom properties, no LESS, no compile step.",
+    "prev": "Previous",
+    "next": "Next",
+    "langName": "English",
+    "otherLangName": "Deutsch"
+  }
+}

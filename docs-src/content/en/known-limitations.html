@@ -1,0 +1,52 @@
+<!--DESC: Deliberate trade-offs and CSS limitations - why they are the way they are, not just that they are.-->
+<section class="ncss-stack">
+  <h1>Known Limitations</h1>
+  <p class="ncss-text-lg ncss-text-muted">Deliberate trade-offs, not bugs - every point here was found through real testing in real browsers and is solved this way on purpose, not overlooked.</p>
+</section>
+
+<section class="ncss-stack" id="color-mix">
+  <h2 class="demo-section-title">Derived Color Tokens Don't React to Local Overrides</h2>
+  <p class="ncss-text-muted ncss-text-sm">A custom property derived via <code>color-mix()</code> (e.g. <code>--ncss-color-brand-100</code>) is computed only once - where it's declared (<code>:root</code>) - and then inherited as a finished value. A seed value overridden locally deeper in the tree doesn't cause an already-inherited derivation to recompute. This only affects a theme applied locally (not on <code>:root</code>): components that use the seed directly (<code>.ncss-btn--primary</code>) react correctly; components that use the derived scale (<code>.ncss-badge</code> via <code>-100</code>/<code>-on-soft</code>) stay at the old color. A real <code>theme.css</code> on <code>:root</code> doesn't have this problem - see <a href="theming.html">Theming</a>.</p>
+</section>
+
+<section class="ncss-stack" id="modal-schliessen">
+  <h2 class="demo-section-title">:modal Stops Matching Immediately</h2>
+  <p class="ncss-text-muted ncss-text-sm">As soon as a dialog is closed - long before the fade transition is visually finished. Positioning that hangs only on <code>:modal</code> via the UA stylesheet therefore breaks away in the middle of its own closing animation. <code>.ncss-modal</code> declares <code>position:fixed; inset:0; margin:auto;</code> itself and unconditionally for this reason.</p>
+</section>
+
+<section class="ncss-stack" id="blockifizierung">
+  <h2 class="demo-section-title">Flex/Grid Children Get Automatically "Blockified"</h2>
+  <p class="ncss-text-muted ncss-text-sm">A declared <code>display: inline</code>/<code>inline-block</code> on a direct child of a flex/grid container (<code>.ncss-stack</code>/<code>-cluster</code>/<code>-grid</code>/<code>-flex</code>) gets computed by the browser to <code>display: block</code> - not a bug, officially anchored in the spec, no opt-out provided. Affects <code>.ncss-text-boxed</code> (needs <code>display:inline</code>): always place it in a plain <code>&lt;div&gt;</code> wrapper, never directly as a flex/grid child - not even indirectly via a <code>.ncss-card-body</code> that itself carries <code>.ncss-stack</code>/<code>-cluster</code>/<code>-grid</code> or is <code>--horizontal</code>. <code>display: contents</code> doesn't solve it (removes its own box entirely).</p>
+</section>
+
+<section class="ncss-stack" id="card-media-radius">
+  <h2 class="demo-section-title">.ncss-card-media Never Rounds Itself</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>border-radius: 0</code>, so that <code>.ncss-placeholder</code> (has its own <code>border-radius</code>) doesn't round all four corners of the media when combined - the card itself (<code>overflow: clip</code>) handles rounding only where the media actually touches a real card corner.</p>
+</section>
+
+<section class="ncss-stack" id="container-narrow">
+  <h2 class="demo-section-title">.ncss-container--narrow Is Only a Modifier</h2>
+  <p class="ncss-text-muted ncss-text-sm">Sets only <code>max-width</code> - always use it together with the base class (<code>class="ncss-container ncss-container--narrow"</code>). Used alone, centering is missing, the block sticks to the left, and a nested <code>.ncss-full-bleed</code> child inside it breaks out visibly askew.</p>
+</section>
+
+<section class="ncss-stack" id="kommentar-fallstrick">
+  <h2 class="demo-section-title">Never */ in the Middle of a CSS Comment</h2>
+  <p class="ncss-text-muted ncss-text-sm">For example, a wildcard class mention like <code>.ncss-radius-x/.ncss-shadow-x</code> in prose - that character sequence ends the comment right there, and everything after it up to the next comment terminator gets parsed as real (broken) CSS code, often without a console error. After every comment change containing wildcard class names, check that no new instance has appeared.</p>
+</section>
+
+<section class="ncss-stack" id="layer-reihenfolge">
+  <h2 class="demo-section-title">helpers Can't Override components</h2>
+  <p class="ncss-text-muted ncss-text-sm">A utility from <code>helpers/</code> can't override a same-named property from <code>components/</code>, regardless of the order the classes appear in the <code>class</code> attribute - Cascade Layers evaluate by layer order, not source order, and <code>components</code> comes after <code>helpers</code> (see <a href="architecture.html">Architecture</a>). <code>class="ncss-card ncss-surface--brand"</code> keeps the background of <code>.ncss-card</code>, for instance - for a colored card, use the component's own color variant instead (<code>.ncss-card--brand</code>).</p>
+</section>
+
+<section class="ncss-stack" id="sonstige-grenzen">
+  <h2 class="demo-section-title">Other Deliberate Trade-offs</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong><code>initial-letter</code></strong> (drop cap) is not Baseline (Firefox has never shipped it). Safari needs <code>-webkit-initial-letter</code>, ncss declares both. Without support, the first letter simply stays normal size.</li>
+    <li><strong><code>background-attachment: fixed</code></strong> is deliberately not used for parallax - it has always been disabled on iOS Safari. Instead <code>animation-timeline: view()</code> (<code>.ncss-hero--parallax</code>), <code>@supports</code>-gated.</li>
+    <li><strong>Relative <code>url()</code> values inside a custom property</strong> resolve against the base URL of the stylesheet that consumes the property - not against the page that set it. <code>background-image</code> is therefore never passed through a custom property, but always set directly inline on the element.</li>
+    <li><strong><code>.ncss-table-stacked</code></strong> deliberately breaks programmatic table semantics for screen readers - only use it when the content really should read like a list of record cards, otherwise use <code>.ncss-table-scroll</code>.</li>
+    <li><strong><code>display: grid-lanes</code></strong> (true row-respecting masonry) is only available in very recent browsers - <code>.ncss-masonry</code> automatically falls back to the column-based CSS Columns approach when <code>grid-lanes</code> is unavailable.</li>
+    <li><strong>Mega-menu positioning</strong> doesn't automatically dock to the viewport edge without CSS Anchor Positioning - <code>max-width</code> only prevents overflow; in very narrow windows the trigger may no longer sit centered under the menu.</li>
+  </ul>
+</section>

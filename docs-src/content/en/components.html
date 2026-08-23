@@ -1,0 +1,91 @@
+<!--DESC: Quick reference for all components - navigation, cards, modals, scroll stacks, effects and more.-->
+<section class="ncss-stack">
+  <h1>Component Reference</h1>
+  <p class="ncss-text-lg ncss-text-muted">Every component has a detailed markup comment directly in its <code>.css</code> file under <code>components/</code> - this is just the quick reference. Live examples in <a href="../../demo/index.html">the demo pages</a>.</p>
+</section>
+
+<section class="ncss-stack" id="navigation">
+  <h2 class="demo-section-title">Navigation &amp; Structure</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">File</th><th scope="col">Classes</th><th scope="col">Short description</th></tr></thead>
+      <tbody>
+        <tr><td><code>topbar.css</code></td><td><code>.ncss-topbar</code>, <code>-inner</code>, <code>-brand</code>, <code>-actions</code> (+ <code>--transparent</code>)</td><td>Header bar, grows instead of overflowing when the navigation wraps. <code>--transparent</code> for a topbar over a hero, usually combined with <code>.ncss-glass</code> as a separate background element.</td></tr>
+        <tr><td><code>nav.css</code></td><td><code>.ncss-nav</code>, <code>-toggle</code>, <code>-panel</code>, <code>-list</code>, <code>-item</code>, <code>-dropdown</code> (+ <code>--nested</code>), <code>-submenu</code> (+ <code>--mega</code>), <code>-mega-col</code>, <code>-mega-heading</code>, <code>--tree</code></td><td>Horizontal nav (collapses to off-canvas at 64rem) + vertical tree variant. Dropdowns/mega menu via <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, no hover bug on touch. Current page: <code>aria-current="page"</code> on the respective link.</td></tr>
+        <tr><td><code>off-canvas.css</code></td><td><code>.ncss-offcanvas</code> (+ <code>--start</code>/<code>--end</code>)</td><td>Side-sliding panel, native <code>&lt;dialog&gt;</code></td></tr>
+        <tr><td><code>breadcrumb.css</code></td><td><code>.ncss-breadcrumb</code></td><td>Native <code>&lt;nav&gt;&lt;ol&gt;</code>, <code>::before</code>-generated separators</td></tr>
+        <tr><td><code>footer.css</code></td><td><code>.ncss-footer</code>, <code>-inner</code>, <code>-bottom</code></td><td>Page footer scaffold</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="dialoge">
+  <h2 class="demo-section-title">Dialogs &amp; Disclosure</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>modal.css</code></td><td><code>.ncss-modal</code>, <code>-header</code>, <code>-footer</code> (+ <code>--fullscreen</code>, <code>--dark</code>, <code>--3d</code>)</td><td>Centered dialog modal; <code>--fullscreen</code>+<code>--dark</code> yields a lightbox. <code>--3d</code> tilts in from depth on open.</td></tr>
+        <tr><td><code>dialog-close.css</code></td><td><code>.ncss-dialog-close</code></td><td>Shared close button for modal/off-canvas/nav panel</td></tr>
+        <tr><td><code>disclosure.css</code></td><td><code>.ncss-disclosure</code></td><td>FAQ-box look for <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="karten">
+  <h2 class="demo-section-title">Cards &amp; Content</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>card.css</code></td><td><code>.ncss-card-container</code>, <code>.ncss-card</code>, <code>-media</code>, <code>-header</code>, <code>-body</code>, <code>-footer</code> (+ <code>--flush</code>, <code>--transparent</code>, <code>--linked</code>, <code>--horizontal</code>, <code>--horizontal-end</code>, color variants)</td><td>Card with no built-in border/corners/shadow (see <a href="tokens.html">Design Tokens</a>). Color variants also double as a hint/callout box (tip/warning/error).</td></tr>
+        <tr><td><code>badge.css</code></td><td><code>.ncss-badge</code> (+ color variants), <code>.ncss-badge-icon</code> (+ <code>--lg</code>)</td><td>Status/category chips; <code>-icon</code> variant as a circle/square around an icon instead of a text pill</td></tr>
+        <tr><td><code>placeholder.css</code></td><td><code>.ncss-placeholder</code> (+ <code>--surface</code>)</td><td>Gray placeholder for demo/prototype content</td></tr>
+        <tr><td><code>hero.css</code></td><td>see <a href="media.html">Media</a></td><td>Image background section with content on top, optional parallax</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="formulare-suche">
+  <h2 class="demo-section-title">Forms &amp; Search</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>select.css</code></td><td><code>.ncss-select-wrapper</code>, <code>.ncss-select</code></td><td>Styled native <code>&lt;select&gt;</code> including its own chevron</td></tr>
+        <tr><td><code>search.css</code></td><td><code>.ncss-search</code>, <code>.ncss-search-input</code></td><td>Search field that starts narrow and grows on focus via a pure <code>width</code> transition - no JS</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="scroll-animation">
+  <h2 class="demo-section-title">Scroll &amp; Animation</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>slideshow.css</code></td><td><code>.ncss-slideshow</code>, <code>-track</code> (+ <code>--no-scrollbar</code>), <code>-item</code> (+ <code>--peek</code>)</td><td>Scroll-snap carousel, no JS</td></tr>
+        <tr><td><code>sparkline.css</code></td><td><code>.ncss-sparkline</code>, <code>-area</code>, <code>-dot</code></td><td>Small inline data line</td></tr>
+        <tr><td><code>scroll-progress.css</code></td><td><code>.ncss-scroll-progress</code> (+ <code>--vertical</code>, <code>--end</code>)</td><td>Reading progress bar, <code>animation-timeline: scroll()</code></td></tr>
+        <tr><td><code>scroll-stack.css</code></td><td><code>.ncss-stack-section</code>, <code>.ncss-stack-stage</code>, <code>.ncss-stack-card</code></td><td>Pinned stage, cards slide over one another into a fanned stack while scrolling ("pinned scrollytelling"). <code>view-timeline</code>-based, opt-in JS fallback for Firefox/older Safari: <code>components/scroll-stack-fallback.js</code>, see <a href="webawesome-bridge.html">Web Awesome Bridge</a></td></tr>
+        <tr><td><code>roadmap.css</code></td><td><code>.ncss-roadmap</code>, <code>-line</code>, <code>-list</code>, <code>-item</code>, <code>-dot</code>, <code>-card</code></td><td>Milestone list with a self-drawing progress line on scroll</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="effekte">
+  <h2 class="demo-section-title">Effects</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>effects.css</code></td><td><code>.ncss-glow-border</code></td><td>Rotating gradient ring via <code>::before</code> + <code>mask-composite: exclude</code></td></tr>
+        <tr><td></td><td><code>.ncss-glow-pulse</code></td><td>Pulsing <code>box-shadow</code></td></tr>
+        <tr><td></td><td><code>.ncss-glass</code></td><td>Glassmorphism (<code>backdrop-filter</code>, <code>@supports</code>-guarded). Don't apply to an element with Floating UI descendants (<code>&lt;wa-dropdown&gt;</code> and similar) - <code>backdrop-filter</code> creates a new containing block for <code>position:fixed</code></td></tr>
+        <tr><td></td><td><code>.ncss-stamped</code> (+ <code>--press</code>)</td><td>Hairline-thin, two-tone "engraved" border, works on any surface</td></tr>
+        <tr><td></td><td><code>.ncss-grain</code></td><td>Fine SVG noise via <code>::after</code> + <code>mix-blend-mode</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Purely decorative, deliberately optional - none of these classes are part of <code>.ncss-card</code>/<code>-btn</code>.</p>
+</section>

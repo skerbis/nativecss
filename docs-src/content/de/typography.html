@@ -1,0 +1,54 @@
+<!--DESC: Typografie-Helfer - Größen, Farben, Drop Caps, Mehrspaltentext und mehr aus helpers/typography.css.-->
+<section class="ncss-stack">
+  <h1>Typografie</h1>
+  <p class="ncss-text-lg ncss-text-muted">Ergänzt <code>base.css</code> um Klassen für Fälle, in denen ein Tag allein nicht reicht - <code>helpers/typography.css</code>.</p>
+</section>
+
+<section class="ncss-stack" id="groesse-farbe">
+  <h2 class="demo-section-title">Größe & Farbe</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-text-sm/base/md/lg/xl</code></td><td>Schriftgröße</td></tr>
+        <tr><td><code>.ncss-text-muted/brand/brand-2/neutral/success/warning/danger</code></td><td>Textfarbe</td></tr>
+        <tr><td><code>.ncss-text-inherit</code></td><td><code>color: inherit</code> - für Text auf einer farbigen Fläche</td></tr>
+        <tr><td><code>.ncss-text-light/-dark</code> (+ <code>-100/-300/-700/-900</code>)</td><td>Erzwungener heller/dunkler Text, theme-unabhängig - siehe <a href="colors.html">Farben</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="ausrichtung">
+  <h2 class="demo-section-title">Ausrichtung & Umbruch</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-text-center/start/end/justify</code></td><td>Textausrichtung</td></tr>
+        <tr><td><code>.ncss-text-balance</code> / <code>.ncss-text-pretty</code></td><td><code>text-wrap: balance/pretty</code></td></tr>
+        <tr><td><code>.ncss-truncate</code></td><td>Einzeiliges Abschneiden mit Ellipsis</td></tr>
+        <tr><td><code>.ncss-clamp-lines</code> (+ <code>--ncss-clamp-lines</code>)</td><td>Mehrzeiliges Abschneiden, modernes CSS statt JS</td></tr>
+        <tr><td><code>.ncss-hyphenate</code></td><td><code>hyphens: auto</code> (braucht korrektes <code>lang</code>-Attribut)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="drop-cap">
+  <h2 class="demo-section-title">Drop Cap & Mehrspaltentext</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-drop-cap</code> (+ <code>--sm</code>/<code>--lg</code>/<code>--light</code>/<code>--brand</code>)</td><td>Initiale via <code>initial-letter</code> (+ <code>-webkit-</code>-Präfix für Safari)</td></tr>
+        <tr><td><code>.ncss-columns</code> (+ <code>--ncss-columns-width</code>)</td><td>Mehrspaltiger Fließtext, <code>column-width</code>-basiert</td></tr>
+        <tr><td><code>.ncss-pull-quote</code></td><td>Hervorgehobenes Zitat, <code>column-span: all</code> innerhalb <code>.ncss-columns</code></td></tr>
+        <tr><td><code>.ncss-text-boxed</code></td><td>"Textmarker"-Optik über mehrere Zeilen (<code>box-decoration-break: clone</code>) - braucht <code>display:inline</code>, nie direkt in <code>.ncss-stack</code>/<code>-cluster</code>/<code>-grid</code> verschachteln</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="sonstiges">
+  <h2 class="demo-section-title">Sonstiges</h2>
+  <p><code>.ncss-eyebrow</code> (Kicker über einer Überschrift), <code>.ncss-lead-quote</code> (linker Akzent-Rahmen), <code>.ncss-list--dot</code> (eigene Aufzählungspunkte), <code>.ncss-tracking-tight/normal/wide/wider/widest</code> (Laufweite), <code>.ncss-nums-tabular</code>/<code>-oldstyle</code> (<code>font-variant-numeric</code>).</p>
+</section>

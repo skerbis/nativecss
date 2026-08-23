@@ -1,0 +1,59 @@
+<!--DESC: Color tokens, light-dark(), graded scales and colored surfaces with guaranteed contrast.-->
+<section class="ncss-stack">
+  <h1>Colors & Surfaces</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>light-dark()</code> is the sole dark mode mechanism - no second dark stylesheet, no <code>.dark</code> class. ONE value per token covers both light and dark.</p>
+</section>
+
+<section class="ncss-stack" id="semantische-tokens">
+  <h2 class="demo-section-title">Semantic Tokens</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Token</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>--ncss-color-brand</code> / <code>-brand-2</code></td><td>Brand / secondary color</td></tr>
+        <tr><td><code>--ncss-color-neutral</code></td><td>Base gray tone</td></tr>
+        <tr><td><code>--ncss-color-success</code> / <code>-warning</code> / <code>-danger</code></td><td>Status colors</td></tr>
+        <tr><td><code>--ncss-color-bg</code> / <code>-bg-subtle</code></td><td>Page background, subtly offset</td></tr>
+        <tr><td><code>--ncss-color-surface</code></td><td>Cards/panels</td></tr>
+        <tr><td><code>--ncss-color-text</code> / <code>-text-muted</code></td><td>Body text, muted text</td></tr>
+        <tr><td><code>--ncss-color-border</code></td><td>Borders</td></tr>
+        <tr><td><code>--ncss-color-focus-ring</code></td><td>Focus ring</td></tr>
+        <tr><td><code>--ncss-color-overlay</code></td><td>Modal/dialog backdrop (transparent)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="skalen">
+  <h2 class="demo-section-title">Graded Scales</h2>
+  <p>Each of the six color families (<code>brand</code>, <code>brand-2</code>, <code>neutral</code>, <code>success</code>, <code>warning</code>, <code>danger</code>) has derived steps, computed via <code>color-mix()</code> from EXACTLY ONE base value:</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Suffix</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>-100</code> / <code>-300</code></td><td>Lighter/subtler (badge/chip background)</td></tr>
+        <tr><td><code>-500</code></td><td>The base color itself (alias)</td></tr>
+        <tr><td><code>-700</code> / <code>-900</code></td><td>Darker/bolder, stays dark in BOTH modes</td></tr>
+        <tr><td><code>-on-soft</code></td><td>Matching text color for a <code>-100</code>/<code>-300</code> surface</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Change a brand color in <code>theme.css</code>, the whole scale follows automatically - see <a href="theming.html">Theming</a>.</p>
+</section>
+
+<section class="ncss-stack" id="farbige-flaechen">
+  <h2 class="demo-section-title">Colored Surfaces</h2>
+  <p><code>helpers/surfaces.css</code>: <code>.ncss-surface--brand</code> / <code>--brand-2</code> / <code>--neutral</code> - background + guaranteed matching text color (900 step + <code>#fff</code>) in a single class, instead of an inline style with hand-maintained contrast.</p>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;div class="ncss-surface--brand"&gt;Always readable contrast&lt;/div&gt;</code></pre>
+  <p><strong>Web Awesome on colored surfaces:</strong> a <code>&lt;wa-input&gt;</code> or similar renders its label/value in its own shadow DOM - <code>color</code> alone doesn't reach it. <code>webawesome-bridge.css</code> bridges <code>--wa-form-control-label-color</code> and others automatically as soon as <code>.ncss-surface--*</code> or <code>.ncss-text-light</code>/<code>-dark</code> are in play.</p>
+</section>
+
+<section class="ncss-stack" id="erzwungener-text">
+  <h2 class="demo-section-title">Forced Light/Dark Text</h2>
+  <p><code>.ncss-text-light</code>/<code>-dark</code> (+ <code>-100</code>/<code>-300</code>/<code>-700</code>/<code>-900</code> as opacity steps) - fixed to white/black, INDEPENDENT of the theme. For surfaces whose color doesn't run through ncss tokens (photo, video poster). UIkit's <code>uk-light</code> counterpart.</p>
+</section>
+
+<section class="ncss-stack" id="theme-override">
+  <h2 class="demo-section-title">Manual Theme Override</h2>
+  <p><code>[data-theme="light"]</code>/<code>[data-theme="dark"]</code> on <code>&lt;html&gt;</code> forces a color scheme independent of the system setting (e.g. for a UI toggle). Locally on a single element: <code>.ncss-scheme-dark</code>/<code>-light</code> (<code>helpers/surfaces.css</code>).</p>
+</section>

@@ -1,0 +1,43 @@
+<!--DESC: Fade in/out, micro-interactions and GPU compositing hints - all respect prefers-reduced-motion.-->
+<section class="ncss-stack">
+  <h1>Animations</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>helpers/animations.css</code> - small, reusable transitions instead of an animation library.</p>
+</section>
+
+<section class="ncss-stack" id="ein-ausblenden">
+  <h2 class="demo-section-title">Fade In/Out &amp; Motion</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-animate-fade-in</code> / <code>-fade-out</code></td><td>Fade in/out</td></tr>
+        <tr><td><code>.ncss-animate-slide-in-up/-down/-left/-right</code></td><td>Slide in from a direction</td></tr>
+        <tr><td><code>.ncss-animate-scale-in</code></td><td>Grow in</td></tr>
+        <tr><td><code>.ncss-animate-spin</code></td><td>Endless rotation (e.g. loading icon)</td></tr>
+        <tr><td><code>.ncss-animate-pulse</code></td><td>Pulsing opacity</td></tr>
+        <tr><td><code>.ncss-animate-shake</code></td><td>Error shake</td></tr>
+        <tr><td><code>.ncss-skeleton</code></td><td>Shimmer loading state</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="mikro-interaktionen">
+  <h2 class="demo-section-title">Micro-interactions &amp; Transitions</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-hover-lift</code></td><td>Lift on hover</td></tr>
+        <tr><td><code>.ncss-hover-grow</code></td><td>Slight grow on hover</td></tr>
+        <tr><td><code>.ncss-press</code></td><td>Tactile tap feedback (<code>:active</code>-based, see <a href="touch-mobile.html">Touch &amp; Mobile Viewports</a>)</td></tr>
+        <tr><td><code>.ncss-transition</code> / <code>-slow</code> / <code>-colors</code> / <code>-transform</code></td><td>Generic transition utilities</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">All respect <code>prefers-reduced-motion</code> automatically.</p>
+</section>
+
+<section class="ncss-stack" id="gpu-boost">
+  <h2 class="demo-section-title">GPU Compositing Hint</h2>
+  <p class="ncss-text-muted ncss-text-sm">Opt-in, <code>translateZ(0)</code>: <code>.ncss-gpu-boost</code> promotes an element onto its own compositor layer - against jank on frequently animated/scrolled elements with expensive repaints. Uses the standalone <code>transform</code> property, combinable with <code>.ncss-hover-lift</code>/<code>-grow</code>/<code>-press</code> (which use <code>translate</code>/<code>scale</code>, not <code>transform</code>) without conflict. Deliberately NOT applied automatically - every additional compositor layer costs graphics memory, use it targeted only where jank is actually visible. For an element that already uses <code>transform</code> itself (e.g. <code>.ncss-hero--parallax</code>), set the <code>--ncss-gpu-hint</code> token directly inside its own <code>transform</code> declaration instead - two <code>transform</code> declarations on the same element would otherwise overwrite rather than combine.</p>
+</section>

@@ -1,0 +1,65 @@
+{
+  "groups": [
+    {
+      "id": "start",
+      "de": "Erste Schritte",
+      "en": "Getting Started",
+      "pages": [
+        { "slug": "index", "de": "Überblick", "en": "Overview" },
+        { "slug": "architecture", "de": "Architektur", "en": "Architecture" },
+        { "slug": "theming", "de": "Theme anpassen", "en": "Theming" }
+      ]
+    },
+    {
+      "id": "foundations",
+      "de": "Grundlagen",
+      "en": "Foundations",
+      "pages": [
+        { "slug": "tokens", "de": "Design Tokens", "en": "Design Tokens" },
+        { "slug": "colors", "de": "Farben & Flächen", "en": "Colors & Surfaces" },
+        { "slug": "layout", "de": "Layout", "en": "Layout" },
+        { "slug": "typography", "de": "Typografie", "en": "Typography" },
+        { "slug": "icons", "de": "Icons", "en": "Icons" }
+      ]
+    },
+    {
+      "id": "content",
+      "de": "Inhalt",
+      "en": "Content",
+      "pages": [
+        { "slug": "forms", "de": "Formulare", "en": "Forms" },
+        { "slug": "tables", "de": "Tabellen", "en": "Tables" },
+        { "slug": "media", "de": "Medien", "en": "Media" },
+        { "slug": "float", "de": "Textumfluss", "en": "Float & Text Wrap" }
+      ]
+    },
+    {
+      "id": "behavior",
+      "de": "Verhalten",
+      "en": "Behavior",
+      "pages": [
+        { "slug": "scroll", "de": "Scroll & Sichtbarkeit", "en": "Scroll & Visibility" },
+        { "slug": "animations", "de": "Animationen", "en": "Animations" },
+        { "slug": "touch-mobile", "de": "Touch & mobile Viewports", "en": "Touch & Mobile Viewports" },
+        { "slug": "accessibility", "de": "Barrierefreiheit", "en": "Accessibility" }
+      ]
+    },
+    {
+      "id": "components",
+      "de": "Komponenten",
+      "en": "Components",
+      "pages": [
+        { "slug": "components", "de": "Komponenten-Referenz", "en": "Component Reference" },
+        { "slug": "webawesome-bridge", "de": "Web Awesome Bridge", "en": "Web Awesome Bridge" }
+      ]
+    },
+    {
+      "id": "reference",
+      "de": "Referenz",
+      "en": "Reference",
+      "pages": [
+        { "slug": "known-limitations", "de": "Bekannte Grenzen", "en": "Known Limitations" }
+      ]
+    }
+  ]
+}

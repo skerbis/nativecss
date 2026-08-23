@@ -1,0 +1,68 @@
+<!--DESC: Native Formularelemente zu Ende gestylt - von Text über Datei-Upload bis Fortschrittsbalken, cross-browser.-->
+<section class="ncss-stack">
+  <h1>Formulare</h1>
+  <p class="ncss-text-lg ncss-text-muted">Native Elemente werden fertig gestylt (<code>helpers/forms.css</code>), keine JS-Nachbauten. Lebendes Beispiel: <a href="../../demo/forms.html">demo/forms.html</a>.</p>
+</section>
+
+<section class="ncss-stack" id="basis">
+  <h2 class="demo-section-title">Basis-Felder</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-field</code></td><td>Label+Input+Hint als vertikale Gruppe</td></tr>
+        <tr><td><code>.ncss-label</code> / <code>--required</code></td><td>Feld-Label, <code>--required</code> ergänzt ein rotes <code>*</code></td></tr>
+        <tr><td><code>.ncss-input</code> / <code>.ncss-select</code> / <code>.ncss-textarea</code></td><td>Einheitlicher Look, inkl. <code>:user-invalid</code>-Fehlerzustand</td></tr>
+        <tr><td><code>.ncss-field-hint</code> / <code>-error</code></td><td>Hilfetext / Fehlertext unter einem Feld</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="feldtypen">
+  <h2 class="demo-section-title">Weitere Feldtypen (cross-browser gestylt)</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Typ</th><th scope="col">Besonderheit</th></tr></thead>
+      <tbody>
+        <tr><td><code>type="file"</code></td><td>Größter Cross-Browser-Unterschied aller Feldtypen - <code>::file-selector-button</code> (+ <code>::-webkit-file-upload-button</code> für ältere Safari) bringt den Browser-Button auf <code>.ncss-btn--secondary</code>-Optik</td></tr>
+        <tr><td><code>type="color"</code></td><td>Swatch-Fläche per <code>::-webkit-color-swatch(-wrapper)</code>/<code>::-moz-color-swatch</code> an ncss-Radius angeglichen, feste Höhe passend zu den anderen Feldern</td></tr>
+        <tr><td><code>type="date/time/datetime-local/month/week"</code></td><td>Kalender-/Uhr-Icon folgt automatisch dem Theme (<code>color-scheme</code>), keine eigene Anpassung nötig</td></tr>
+        <tr><td><code>type="search"</code></td><td><code>appearance: none</code> nötig, sonst rundet Safari das Feld eigenständig komplett ab</td></tr>
+        <tr><td><code>type="number"</code></td><td>Native Spinner-Pfeile bewusst NICHT entfernt - echte Funktionalität, kein Grund sie zu kappen</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="checkbox-radio">
+  <h2 class="demo-section-title">Checkbox, Radio & Switch</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-choice</code></td><td>Checkbox/Radio-Zeile - native Elemente, nur <code>accent-color</code> + Ausrichtung</td></tr>
+        <tr><td><code>.ncss-switch</code></td><td>Toggle-Switch aus <code>&lt;input type="checkbox"&gt;</code>, per <code>appearance:none</code> neu gezeichnet, kein JS. <code>role="switch"</code> im Markup ergänzen</td></tr>
+        <tr><td><code>.ncss-range</code></td><td>Vereinheitlichtes <code>&lt;input type="range"&gt;</code>, Track/Thumb angeglichen</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="struktur">
+  <h2 class="demo-section-title">Gruppierung & Rückmeldung</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>fieldset</code> / <code>legend</code></td><td>Ohne eigene Klasse zu Ende gestylt (wie <code>&lt;blockquote&gt;</code>) - ersetzt den nativen 3D-Rahmen</td></tr>
+        <tr><td><code>progress</code> / <code>meter</code></td><td><code>accent-color</code> für die Grundfarbe. <code>meter</code> behält bewusst seine eigene Grün/Gelb/Rot-Bewertungslogik statt der Markenfarbe</td></tr>
+        <tr><td><code>output</code></td><td>Hervorgehobene Darstellung für ein berechnetes Ergebnis</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="buttons">
+  <h2 class="demo-section-title">Buttons</h2>
+  <p><code>.ncss-btn</code> + <code>--primary</code>/<code>--secondary</code>/<code>--danger</code>. Jede Variante hat eine ECHTE <code>:active</code>-Rückmeldung (nicht nur <code>:hover</code>) - siehe <a href="touch-mobile.html">Touch & mobile Viewports</a> für die Begründung.</p>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;button class="ncss-btn ncss-btn--primary"&gt;Absenden&lt;/button&gt;</code></pre>
+</section>

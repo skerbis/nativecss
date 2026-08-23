@@ -1,0 +1,35 @@
+<!--DESC: Textumfluss um Bilder - klassisches Float, Kreisform per shape-outside, Bleed-Kombination.-->
+<section class="ncss-stack">
+  <h1>Textumfluss (Float)</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>helpers/float.css</code> - Text fließt um ein Element, mit einer Container-Breiten-Schwelle statt Viewport-Breakpoint.</p>
+</section>
+
+<section class="ncss-stack" id="klassen">
+  <h2 class="demo-section-title">Klassen</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-float-start</code> / <code>.ncss-float-end</code></td><td>Text fließt um ein Element - floatet erst ab der Float-Wrap-Schwelle (28rem <strong>Container</strong>-Breite), darunter normaler (linksbündiger) Block</td></tr>
+        <tr><td><code>.ncss-float-shape-circle</code></td><td>Nicht-rechteckiger Umfluss (<code>shape-outside</code> + <code>clip-path</code>), Text folgt der echten Kreisform</td></tr>
+        <tr><td><code>.ncss-center-narrow</code></td><td>Unterhalb der Schwelle zentriert statt linksbündig - funktioniert an jedem Element, nicht nur gefloateten</td></tr>
+        <tr><td><code>.ncss-full-narrow</code></td><td>Unterhalb der Schwelle volle Breite statt schmal</td></tr>
+        <tr><td><code>.ncss-clear</code></td><td><code>clear: both</code></td></tr>
+        <tr><td><code>.ncss-float-bleed-start</code> / <code>.ncss-float-bleed-end</code></td><td>Textumfluss kombiniert mit Ausbrechen zum Bildschirmrand - Text fließt normal daneben, das Bild reicht bis zur echten Bildschirmkante. Braucht eine <strong>explizite</strong> <code>width</code> (ein Float mit <code>width:auto</code> schrumpft auf den Inhalt statt den Platz zu füllen)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Kombinierbares Beispiel</h2>
+  <p class="ncss-text-muted ncss-text-sm">Kreisbild mit Textumfluss, zentriert auf schmalen Containern:</p>
+  <pre><code>&lt;img class="ncss-float-start ncss-float-shape-circle ncss-center-narrow ncss-ratio-square ncss-img-cover"
+     src="bild.jpg" alt="Beschreibung"&gt;
+Text fließt um das Bild herum ...</code></pre>
+</section>
+
+<section class="ncss-stack" id="figcaption">
+  <h2 class="demo-section-title">Hinweis: Bildunterschrift bei Kreisbild</h2>
+  <p class="ncss-text-muted ncss-text-sm">Bewusst KEINE sichtbare <code>&lt;figcaption&gt;</code> innerhalb desselben gefloateten Elements - <code>shape-outside: circle(50%)</code> bezieht sich auf die GESAMTE Box, eine zusätzliche Textzeile darunter macht die Box höher als das Bild und der Textfluss läuft dann um eine Ellipse statt einen Kreis. Die Bildbeschreibung gehört hier ins <code>alt</code>-Attribut; eine sichtbare Figcaption eignet sich für ein eigenständiges (nicht gefloatetes) Bild, z.B. via <code>.ncss-figure</code> (siehe <a href="media.html">Medien</a>).</p>
+</section>

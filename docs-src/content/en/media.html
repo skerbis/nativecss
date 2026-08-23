@@ -1,0 +1,59 @@
+<!--DESC: Images, video, audio and hero sections - aspect ratio, object-fit, art direction and parallax without JS.-->
+<section class="ncss-stack">
+  <h1>Media</h1>
+  <p class="ncss-text-lg ncss-text-muted">Image, video, audio and hero sections - <code>helpers/media.css</code>, <code>components/video.css</code>, <code>components/audio.css</code>, <code>components/hero.css</code>.</p>
+</section>
+
+<section class="ncss-stack" id="bilder">
+  <h2 class="demo-section-title">Images</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-ratio-video/-square/-portrait</code></td><td><code>aspect-ratio</code> via custom property, no padding hack needed</td></tr>
+        <tr><td><code>.ncss-img-cover</code> / <code>.ncss-img-contain</code></td><td><code>object-fit</code>, <code>-cover</code> including <code>--ncss-focus-point</code></td></tr>
+        <tr><td><code>.ncss-img-rounded</code> / <code>.ncss-img-circle</code></td><td>Corner radius / full circle shape</td></tr>
+        <tr><td><code>.ncss-img-dim-in-dark</code></td><td>Dims in dark mode (icons/graphics with a hard light background)</td></tr>
+        <tr><td><code>.ncss-figure</code></td><td>Figure+figcaption layout (typography already sits in <code>base.css</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Art direction</strong>: <code>&lt;picture&gt;&lt;source media="..."&gt;</code> reliably loads a different image file per breakpoint - the native, correct tool for this.</p>
+</section>
+
+<section class="ncss-stack" id="video-audio">
+  <h2 class="demo-section-title">Video &amp; Audio</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-video</code></td><td>Aspect-ratio wrapper for <code>&lt;video&gt;</code></td></tr>
+        <tr><td><code>.ncss-video--responsive-crop</code></td><td>Different crop of the same file via <code>object-fit</code> + breakpoint - there's no reliable native "different file per breakpoint" for video, unlike images (<code>&lt;source media&gt;</code> there is now just Safari legacy)</td></tr>
+        <tr><td><code>.ncss-audio</code></td><td>Consistent width for <code>&lt;audio controls&gt;</code></td></tr>
+        <tr><td><code>.ncss-audio-card</code></td><td>Audio player with a title</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="hero">
+  <h2 class="demo-section-title">Hero Section</h2>
+  <p class="ncss-text-muted ncss-text-sm">Image background with content on top, <code>components/hero.css</code>.</p>
+  <pre><code>&lt;section class="ncss-hero"&gt;
+  &lt;div class="ncss-hero-media" style="background-image: url(image.jpg)"&gt;&lt;/div&gt;
+  &lt;div class="ncss-hero-content ncss-hero-content--filled"&gt;
+    &lt;h2&gt;Heading&lt;/h2&gt;
+    &lt;p&gt;Text...&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-hero</code></td><td>Wrapper, <code>min-height: 22rem</code>, <code>overflow: clip</code></td></tr>
+        <tr><td><code>.ncss-hero-media</code></td><td>Its own layer for the background image (including a readability scrim) - always set <code>background-image</code> inline, never via a custom property, see <a href="known-limitations.html">Known Limitations</a></td></tr>
+        <tr><td><code>.ncss-hero-content--transparent</code></td><td>Text directly on the image (default)</td></tr>
+        <tr><td><code>.ncss-hero-content--filled</code></td><td>Text on an opaque card on top</td></tr>
+        <tr><td><code>.ncss-hero--parallax</code></td><td>Image moves slower than the content while scrolling, via <code>animation-timeline: view()</code> - no JS, no <code>background-attachment: fixed</code> (deliberately never supported on iOS Safari)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

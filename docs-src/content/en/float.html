@@ -1,0 +1,35 @@
+<!--DESC: Text flow around images - classic float, circular shapes via shape-outside, bleed combination.-->
+<section class="ncss-stack">
+  <h1>Text Flow (Float)</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>helpers/float.css</code> - text flows around an element, using a container-width threshold instead of a viewport breakpoint.</p>
+</section>
+
+<section class="ncss-stack" id="klassen">
+  <h2 class="demo-section-title">Classes</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-float-start</code> / <code>.ncss-float-end</code></td><td>Text flows around an element - floats only above the float-wrap threshold (28rem <strong>container</strong> width), below it a normal (left-aligned) block</td></tr>
+        <tr><td><code>.ncss-float-shape-circle</code></td><td>Non-rectangular flow (<code>shape-outside</code> + <code>clip-path</code>), text follows the actual circle shape</td></tr>
+        <tr><td><code>.ncss-center-narrow</code></td><td>Centered instead of left-aligned below the threshold - works on any element, not just floated ones</td></tr>
+        <tr><td><code>.ncss-full-narrow</code></td><td>Full width instead of narrow below the threshold</td></tr>
+        <tr><td><code>.ncss-clear</code></td><td><code>clear: both</code></td></tr>
+        <tr><td><code>.ncss-float-bleed-start</code> / <code>.ncss-float-bleed-end</code></td><td>Text flow combined with breaking out to the screen edge - text flows normally beside it, the image reaches all the way to the actual screen edge. Needs an <strong>explicit</strong> <code>width</code> (a float with <code>width:auto</code> shrinks to its content instead of filling the space)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Combined Example</h2>
+  <p class="ncss-text-muted ncss-text-sm">Circular image with text flow, centered on narrow containers:</p>
+  <pre><code>&lt;img class="ncss-float-start ncss-float-shape-circle ncss-center-narrow ncss-ratio-square ncss-img-cover"
+     src="image.jpg" alt="Description"&gt;
+Text flows around the image ...</code></pre>
+</section>
+
+<section class="ncss-stack" id="figcaption">
+  <h2 class="demo-section-title">Note: Caption on a Circular Image</h2>
+  <p class="ncss-text-muted ncss-text-sm">Deliberately NO visible <code>&lt;figcaption&gt;</code> inside the same floated element - <code>shape-outside: circle(50%)</code> refers to the ENTIRE box, an extra line of text below it makes the box taller than the image and the text flow then wraps around an ellipse instead of a circle. The image description belongs in the <code>alt</code> attribute here; a visible figcaption suits a standalone (non-floated) image instead, e.g. via <code>.ncss-figure</code> (see <a href="media.html">Media</a>).</p>
+</section>

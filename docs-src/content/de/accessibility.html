@@ -1,0 +1,30 @@
+<!--DESC: Skip-Link, visually-hidden und die Barrierefreiheits-Prinzipien, die sich durch ganz ncss ziehen.-->
+<section class="ncss-stack">
+  <h1>Barrierefreiheit</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>helpers/a11y.css</code> plus Prinzipien, die sich durch das gesamte System ziehen statt in einer einzelnen Datei zu stecken.</p>
+</section>
+
+<section class="ncss-stack" id="klassen">
+  <h2 class="demo-section-title">Klassen</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-visually-hidden</code></td><td>Für Screenreader lesbar, visuell ausgeblendet</td></tr>
+        <tr><td><code>.ncss-visually-hidden-focusable</code></td><td>Wie oben, wird aber bei Tastaturfokus sichtbar</td></tr>
+        <tr><td><code>.ncss-skip-link</code></td><td>"Zum Inhalt springen"-Link, sichtbar erst bei Fokus - auf jeder Seite direkt nach <code>&lt;body&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="prinzipien">
+  <h2 class="demo-section-title">Durchgängige Prinzipien</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Native Elemente zuerst</strong> - <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>, <code>&lt;fieldset&gt;</code>, <code>&lt;progress&gt;</code>/<code>&lt;meter&gt;</code> bringen Tastatursteuerung, Fokus-Management und Rollen kostenlos mit, ohne ARIA-Nachbau.</li>
+        <li><code>:focus-visible</code> bleibt immer ungated - anders als <code>:hover</code>, das nur bei echten Zeigegeräten aktiv ist (siehe <a href="touch-mobile.html">Touch &amp; mobile Viewports</a>).</li>
+    <li><strong><code>prefers-reduced-motion</code></strong> wird global respektiert (<code>*</code>-Selektor schließt <code>html</code> mit ein) - keine Animation muss das einzeln selbst prüfen.</li>
+    <li><strong>Farbkontrast</strong> ist Teil der Token-Palette: <code>-on-soft</code>-Textfarben je Familie sind gegen ihre eigene <code>-100</code>-Fläche geprüft, nicht geraten (siehe <a href="colors.html">Farben &amp; Flächen</a>).</li>
+    <li><code>.ncss-table-stacked</code> ist die eine bewusste Ausnahme - bricht programmatische Tabellensemantik zugunsten der Lesbarkeit auf schmalen Screens, siehe <a href="known-limitations.html">Bekannte Grenzen</a>.</li>
+  </ul>
+</section>

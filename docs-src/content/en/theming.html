@@ -1,0 +1,34 @@
+<!--DESC: Your own brand in a single file - theme.css, palettes and page transitions.-->
+<section class="ncss-stack">
+  <h1>Theming</h1>
+  <p class="ncss-text-lg ncss-text-muted">One file for all the important values - <code>theme.css</code>. Load after <code>ncss.css</code>, override the values in it directly, don't touch any other file.</p>
+</section>
+
+<section class="ncss-stack" id="einbinden">
+  <h2 class="demo-section-title">Including it</h2>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+&lt;link rel="stylesheet" href="theme.css"&gt;</code></pre>
+  <p>Works without <code>@layer</code>/<code>!important</code>: <code>theme.css</code> is deliberately UNLAYERED, and unlayered CSS always wins against any layered rule per spec (see <a href="architecture.html">Architecture</a>) - a simple <code>:root { --ncss-color-brand: ... }</code> is enough.</p>
+</section>
+
+<section class="ncss-stack" id="seed-werte">
+  <h2 class="demo-section-title">Only seed values, no derivations</h2>
+  <p><code>theme.css</code> contains only the BASE/SEED values (brand colors, base surfaces, fonts, radii, shadows, motion), not the color scales derived from them. Colors like <code>--ncss-color-brand-100</code>/<code>-300</code>/<code>-700</code>/<code>-900</code> are computed automatically from EXACTLY ONE base value via <code>color-mix()</code> - changing the brand color in <code>theme.css</code> is enough, the whole scale (light/dark steps, "on-soft" text color, Web Awesome bridge) follows automatically.</p>
+  <div class="ncss-field ncss-callout ncss-radius-md ncss-border" style="padding: var(--ncss-space-md); background-color: var(--ncss-color-bg-subtle);">
+    <strong>Important limitation</strong>
+    <p class="ncss-text-sm">Automatic derivation only works when applied on <code>:root</code>. If the same seed value is instead overridden locally on a single element ONLY, only rules that directly reference the seed follow along - the derived scale stays at the old value, because it's computed only once on <code>:root</code> and inherited as a finished value.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="mehrere-themes">
+  <h2 class="demo-section-title">Multiple themes in parallel</h2>
+  <p>Repeat the same setup in another file (e.g. <code>theme-sunset.css</code>) and load it instead of <code>theme.css</code> as needed - or use the <code>[data-palette]</code> convention in <code>colors.css</code> for a purely attribute-driven switch with no second file at all: <code>&lt;html data-palette="sunset"&gt;</code>.</p>
+</section>
+
+<section class="ncss-stack" id="seitenuebergaenge">
+  <h2 class="demo-section-title">Page transitions (opt-in)</h2>
+  <p>Smooth transitions between page navigations - its own, likewise opt-in file: <code>page-transitions.css</code>.</p>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+&lt;link rel="stylesheet" href="page-transitions.css"&gt;</code></pre>
+  <p>Pure CSS (<code>@view-transition { navigation: auto; }</code>), no JavaScript needed. Currently not Baseline (Chromium family) - no effect on older browsers, an unknown <code>@</code>-rule is simply ignored during parsing, no <code>@supports</code> needed. Four presets are included: cross-fade (default), <code>slide</code>, <code>zoom</code>, <code>wipe</code> - enabled via the <code>types</code> descriptor.</p>
+</section>

@@ -21,6 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build docs site
+        run: node docs-src/build.mjs
+
       - name: Assemble site (repo tree + generated root index.html)
         run: |
           mkdir -p _site

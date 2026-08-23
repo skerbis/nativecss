@@ -1,0 +1,33 @@
+<!--DESC: Connecting Web Awesome to ncss tokens - setup, form text on colored surfaces, opt-in fallback scripts.-->
+<section class="ncss-stack">
+  <h1>Web Awesome Bridge</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>webawesome-bridge.css</code> maps Web Awesome's <code>--wa-color-{family}-{fill|border|on}-{quiet|normal|loud}</code> variables onto the same ncss color tokens, so that e.g. <code>&lt;wa-button&gt;</code> and <code>.ncss-btn</code> visually match - instead of maintaining two separate palettes. Web Awesome (Free) and Font Awesome (Free) are self-hosted under <code>vendor/</code>.</p>
+</section>
+
+<section class="ncss-stack" id="setup">
+  <h2 class="demo-section-title">Prerequisites</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li>Load via a real HTTP server - Web Awesome is ES-module-based, doesn't work over <code>file://</code>.</li>
+    <li><code>data-webawesome="&lt;path&gt;"</code> on the loader <code>&lt;script&gt;</code>, otherwise the base path doubles up for relative <code>src</code>.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="formular-text">
+  <h2 class="demo-section-title">Form Text on Colored Surfaces</h2>
+  <p class="ncss-text-muted ncss-text-sm">A <code>&lt;wa-input&gt;</code>/<code>&lt;wa-textarea&gt;</code>/<code>&lt;wa-select&gt;</code>/<code>&lt;wa-checkbox&gt;</code>/<code>&lt;wa-radio&gt;</code>/<code>&lt;wa-switch&gt;</code> renders its label/value/hint text in its own shadow DOM - a text color on a light-DOM ancestor doesn't reach it. Web Awesome's own <code>--wa-form-control-label-color</code>/<code>-value-color</code>/<code>-hint-color</code> are themselves <code>var(--wa-color-text-normal)</code> - but custom properties resolve <code>var()</code> references inside their own value at the site of their <strong>own</strong> declaration (here: once, on <code>:root</code>), not again at every point of use. The actual fix declares these tokens directly on <code>.ncss-surface--brand/-brand-2/-neutral</code>, <code>.ncss-gradient-brand</code>, <code>.ncss-text-light</code>, <code>.ncss-text-dark</code> as <code>currentColor</code>.</p>
+</section>
+
+<section class="ncss-stack" id="fallback-scripts">
+  <h2 class="demo-section-title">Opt-in Fallback Scripts</h2>
+  <p class="ncss-text-muted ncss-text-sm">Each script checks itself whether the native CSS technique already applies, and does nothing if so - no doubled-up mechanism.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">File</th><th scope="col">What for</th></tr></thead>
+      <tbody>
+        <tr><td><code>components/wa-close-on-scroll.js</code></td><td>Closes any open <code>&lt;wa-dropdown&gt;</code>/<code>&lt;wa-popover&gt;</code> panel on scroll - if the anchor sits in a <code>position:sticky</code> header bar, repositioning can otherwise glitch visibly (among others a known iOS Safari bug)</td></tr>
+        <tr><td><code>components/hide-on-scroll-fallback.js</code></td><td><code>.ncss-hide-on-scroll</code> (<a href="scroll.html">Scroll &amp; Visibility</a>) is CSS-only and active only in Chromium (<code>container-type: scroll-state</code>). Checks via <code>CSS.supports</code> whether the native technique applies, otherwise a <code>requestAnimationFrame</code>-throttled scroll listener</td></tr>
+        <tr><td><code>components/scroll-stack-fallback.js</code></td><td>Brings the real pinned scroll-stack experience (<a href="components.html">Component Reference</a>, <code>.ncss-stack-section</code>) to Firefox/older Safari too, instead of just the guaranteed-working but unanimated <code>@supports not()</code> fallback. Checks via <code>CSS.supports("view-timeline-name", ...)</code>, respects <code>prefers-reduced-motion</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

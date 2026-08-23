@@ -1,0 +1,30 @@
+<!--DESC: Skip link, visually-hidden and the accessibility principles that run through all of ncss.-->
+<section class="ncss-stack">
+  <h1>Accessibility</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>helpers/a11y.css</code> plus principles that run through the whole system rather than sitting in a single file.</p>
+</section>
+
+<section class="ncss-stack" id="klassen">
+  <h2 class="demo-section-title">Classes</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-visually-hidden</code></td><td>Readable by screen readers, visually hidden</td></tr>
+        <tr><td><code>.ncss-visually-hidden-focusable</code></td><td>As above, but becomes visible on keyboard focus</td></tr>
+        <tr><td><code>.ncss-skip-link</code></td><td>"Skip to content" link, visible only on focus - on every page directly after <code>&lt;body&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="prinzipien">
+  <h2 class="demo-section-title">System-wide Principles</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Native elements first</strong> - <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>, <code>&lt;fieldset&gt;</code>, <code>&lt;progress&gt;</code>/<code>&lt;meter&gt;</code> bring keyboard control, focus management and roles for free, with no ARIA reimplementation.</li>
+        <li><code>:focus-visible</code> always stays ungated - unlike <code>:hover</code>, which is only active on real pointing devices (see <a href="touch-mobile.html">Touch &amp; Mobile Viewports</a>).</li>
+    <li><strong><code>prefers-reduced-motion</code></strong> is respected globally (the <code>*</code> selector includes <code>html</code>) - no animation has to check it individually.</li>
+    <li><strong>Color contrast</strong> is part of the token palette: <code>-on-soft</code> text colors per family are checked against their own <code>-100</code> surface, not guessed (see <a href="colors.html">Colors &amp; Surfaces</a>).</li>
+    <li><code>.ncss-table-stacked</code> is the one deliberate exception - breaks programmatic table semantics in favor of readability on narrow screens, see <a href="known-limitations.html">Known Limitations</a>.</li>
+  </ul>
+</section>

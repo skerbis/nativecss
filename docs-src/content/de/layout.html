@@ -1,0 +1,44 @@
+<!--DESC: Container, Grid, Stack und Cluster - die Layout-Bausteine von helpers/layout.css.-->
+<section class="ncss-stack">
+  <h1>Layout</h1>
+  <p class="ncss-text-lg ncss-text-muted">Wenige, komponierbare Layout-Primitive statt einer Utility-Matrix - <code>helpers/layout.css</code>.</p>
+</section>
+
+<section class="ncss-stack" id="container">
+  <h2 class="demo-section-title">Container</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-container</code></td><td>Zentrierte, breitenbegrenzte Spalte mit Seiten-Padding</td></tr>
+        <tr><td><code>.ncss-container--narrow</code></td><td>Modifier, NUR zusammen mit <code>.ncss-container</code> - schmalere <code>max-width</code></td></tr>
+        <tr><td><code>.ncss-full-bleed</code></td><td>Bricht aus einem Container bis zum Bildschirmrand aus</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="grid">
+  <h2 class="demo-section-title">Grid</h2>
+  <p><code>.ncss-grid</code> - automatisch responsives Grid ohne Media Queries (<code>repeat(auto-fit, minmax(...))</code>), Mindestbreite pro Spalte per Custom Property parametrisiert:</p>
+  <pre class="ncss-radius-lg ncss-border"><code>&lt;div class="ncss-grid" style="--ncss-grid-min: 16rem;"&gt;...&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="stack-cluster">
+  <h2 class="demo-section-title">Stack & Cluster</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-stack</code></td><td>Vertikaler Flex-Stapel mit gleichmäßigem Abstand</td></tr>
+        <tr><td><code>.ncss-stack--tight</code> / <code>--loose</code></td><td>Engerer/weiterer Abstand als der Default</td></tr>
+        <tr><td><code>.ncss-cluster</code></td><td>Horizontale Gruppe, umbricht automatisch (z.B. Tag-Listen, Button-Gruppen)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="bleed">
+  <h2 class="demo-section-title">Ausbrechen (Bleed)</h2>
+  <p>Varianten, um gezielt aus einem Container auszubrechen: <code>.ncss-bleed-start</code>/<code>-end</code> (einseitig), <code>.ncss-bleed-half-start</code>/<code>-half-end</code> (ab der Mitte), <code>.ncss-bleed-center</code> (symmetrisch um einen festen Betrag, <code>--ncss-bleed-amount</code>).</p>
+</section>

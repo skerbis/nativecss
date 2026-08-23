@@ -1,0 +1,32 @@
+<!--DESC: Sticky, Scroll Snap, Vollbild-Sektionen und Sichtbarkeits-Utilities - komplett nativ ohne JS.-->
+<section class="ncss-stack">
+  <h1>Scroll &amp; Sichtbarkeit</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>helpers/scroll.css</code> und <code>helpers/visibility.css</code>.</p>
+</section>
+
+<section class="ncss-stack" id="scroll-verhalten">
+  <h2 class="demo-section-title">Scroll-Verhalten &amp; Sticky</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse / Regel</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>html { scroll-behavior: smooth }</code> (reset.css)</td><td>Seitenweiter Default für Anker-Klicks/<code>.scrollIntoView()</code> - gilt nur für die eigene Scroll-Box, vererbt sich nicht, deshalb setzen einzelne Komponenten es zusätzlich selbst. Respektiert <code>prefers-reduced-motion</code> automatisch</td></tr>
+        <tr><td><code>.ncss-sticky</code> / <code>--bottom</code></td><td><code>position: sticky</code></td></tr>
+        <tr><td><code>.ncss-sticky-container</code></td><td>Bezugsrahmen für ein Sticky-Element</td></tr>
+        <tr><td><code>.ncss-scroll-snap-x</code> / <code>-y</code> + <code>.ncss-scroll-snap-item</code></td><td>CSS Scroll Snap</td></tr>
+        <tr><td><code>.ncss-hide-on-scroll</code></td><td>Sticky Header blendet beim Runterscrollen aus/beim Hochscrollen ein - komplett JS-frei über die native <code>scroll-state</code>-Container-Query, <code>@supports</code>-gegated. Fallback-Script für Firefox/Safari: <code>components/hide-on-scroll-fallback.js</code>, siehe <a href="webawesome-bridge.html">Web Awesome Bridge</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="vollbild-sektionen">
+  <h2 class="demo-section-title">Vollbild-Sektionen</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>.ncss-snap-sections</code> + <code>.ncss-snap-section</code> (+ <code>--scrollable</code>) - klassisches "Fullpage"-Muster, section-für-section, komplett über Scroll Snap. <code>.ncss-scroll-snap-x</code> innerhalb einer Sektion verschachtelbar für horizontalen Unterablauf.</p>
+  <p class="ncss-text-muted ncss-text-sm">Für gepinnte, sich überlagernde Karten statt separater Sektionen: siehe <a href="components.html">Komponenten-Referenz</a> (<code>components/scroll-stack.css</code>) - andere Technik, jede Sektion bekommt dort KEINEN eigenen Scroll-Abschnitt, sondern eine Bühne bleibt gepinnt.</p>
+</section>
+
+<section class="ncss-stack" id="sichtbarkeit">
+  <h2 class="demo-section-title">Sichtbarkeit</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>helpers/visibility.css</code>: <code>.ncss-hidden</code>, <code>.ncss-invisible</code>, <code>.ncss-print-only</code>, <code>.ncss-screen-only</code>, <code>.ncss-reveal-on-hover</code>.</p>
+</section>

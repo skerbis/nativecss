@@ -38,6 +38,7 @@ HTML/CSS allein nicht reicht (z.B. Toast, Carousel, Drawer) - siehe `demo/webawe
 - [Komponenten](#komponenten)
 - [Web Awesome Bridge](#web-awesome-bridge)
 - [Demo-Seiten](#demo-seiten)
+- [Doku-Website](#doku-website)
 - [Bekannte Grenzen (bewusste Kompromisse)](#bekannte-grenzen-bewusste-kompromisse)
 
 ## Schnellstart
@@ -802,6 +803,41 @@ seitenspezifisches CSS mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
 | `guides.html` | Nummerierte, aufgabenorientierte Anleitungen mit Live-Beispielen |
 | `effects.html` | Glow-Border, Glow-Pulse, Glass, Stamped, Grain - die optionalen Effekt-Komponenten aus `effects.css` |
 | `theming.html` | Wie `theme.css` funktioniert, live am Beispiel (eigenes Beispiel-Theme, andere Markenfarben/Radien/Schrift) |
+
+## Doku-Website
+
+Neben den Demo-Seiten gibt es eine echte, strukturierte, zweisprachige (DE/EN) Doku-Website
+nach Vorbild von [Bulma](https://bulma.io/documentation/)/[UIkit](https://getuikit.com) -
+Sidebar-Navigation mit aktivem Zustand, Vor/Zurück-Links, eine Seite pro Thema statt einer
+langen Sammelseite. Quelle unter `docs-src/`, generierte Ausgabe unter `docs/` (nicht
+committed, siehe unten).
+
+- **Kein npm/Bundler** - reines `node:fs`/`node:path`/`node:url`-Skript
+  (`docs-src/build.mjs`), kein `package.json`. Bewusste Ausnahme vom sonst geltenden
+  "kein Build-Schritt"-Prinzip: das betrifft die CSS-*Bibliothek* (`dist/ncss.css`), die
+  Konsumenten einbinden, nicht das Build-Tooling der Doku-*Website* selbst - dasselbe
+  Präzedenzbeispiel wie der bereits bestehende GitHub-Actions-Schritt, der die
+  Root-`index.html` generiert (siehe [Architektur](#architektur)).
+- **Struktur**: `docs-src/nav.json` (Sidebar-Gruppen/Seiten, DE+EN-Label pro Seite),
+  `docs-src/strings.json` (UI-Textbausteine DE/EN), `docs-src/template.html` (Seitenrahmen:
+  Topbar, Sidebar, Vor/Zurück, Footer), `docs-src/content/{de,en}/*.html` (reine
+  Inhalts-Fragmente, kein Markdown-Parser - schon gültiges HTML, per `<!--DESC:
+  ...-->`-Erstzeilen-Kommentar mit Meta-Description).
+- **Build**: `node docs-src/build.mjs` liest Nav+Strings+Template, ersetzt
+  `__PLATZHALTER__`-Strings per `.replaceAll()`, schreibt `docs/{de,en}/{slug}.html`. Löscht
+  und erzeugt `docs/` bei jedem Lauf neu. `docs/index.html` ist ein rein clientseitiger
+  `navigator.language`-Redirect mit statischem Fallback-Link.
+- **Nicht committed**: `docs/` steht in `.gitignore` (generierter Output, wie die
+  Root-`index.html`) - im CI-Deploy (`.github/workflows/pages.yml`) läuft `node
+  docs-src/build.mjs` als eigener Schritt VOR dem Site-Zusammenbau, damit die Live-Seite
+  immer frisch generierte Doku zeigt.
+- **Navigation vereinheitlicht**: alle `demo/*.html`-Seiten und die Doku-Seiten teilen
+  dieselbe Topbar-Nav-Struktur, inkl. eines "Handbuch"-Links zur neuen Doku. Der aktive
+  Punkt wird über das native `aria-current="page"`-Attribut markiert - dafür gibt es jetzt
+  eine ALLGEMEINE, wiederverwendbare Regel in `components/nav.css`
+  (`.ncss-nav-item > a[aria-current="page"]` etc.), keine seitenlokale CSS. `demo/landing.html`
+  ist bewusst NICHT über die generische Migration gelaufen (eigene `<wa-dropdown>`-basierte
+  Nav mit eigenem JS-Handler) - dort wurde nur der neue Doku-Link von Hand ergänzt.
 
 ## Bekannte Grenzen (bewusste Kompromisse)
 

@@ -1,0 +1,43 @@
+<!--DESC: Wie NativeCSS aufgebaut ist - Cascade Layers, Layer-Reihenfolge und die Dateistruktur des Repos.-->
+<section class="ncss-stack">
+  <h1>Architektur</h1>
+  <p class="ncss-text-lg ncss-text-muted">Ladereihenfolge über eine einzige globale <code>@layer</code>-Deklaration in <code>ncss.css</code> - Layer-Reihenfolge ist seiten-global, unabhängig davon, in welcher Reihenfolge <code>&lt;link&gt;</code>-Tags im <code>&lt;head&gt;</code> stehen.</p>
+</section>
+
+<section class="ncss-stack" id="layer">
+  <h2 class="demo-section-title">Layer-Reihenfolge</h2>
+  <pre class="ncss-radius-lg ncss-border"><code>wa-native, wa-base, wa-utilities, wa-color-palette, wa-color-variant, wa-theme,
+wa-theme-dimension, wa-theme-overrides,   ← Web Awesomes eigene Layer (falls eingebunden)
+tokens, reset, base, helpers, components, ← NativeCSS selbst
+webawesome-bridge,                        ← überschreibt Web Awesomes Default-Theme gezielt
+browser-fixes                             ← isolierte Browser-/Engine-Workarounds, zuletzt</code></pre>
+  <p><code>@layer</code> regelt die Priorität EXPLIZIT statt über Selektor-Spezifität/<code>!important</code>. Eine Regel in einem SPÄTEREN Layer gewinnt immer gegen eine Regel in einem früheren Layer - unabhängig von Selektor-Spezifität. Unlayered CSS (z.B. <code>theme.css</code>, Inline-Styles) schlägt IMMER jede Layer-Regel.</p>
+</section>
+
+<section class="ncss-stack" id="dateistruktur">
+  <h2 class="demo-section-title">Dateistruktur</h2>
+  <pre class="ncss-radius-lg ncss-border"><code>dist/
+  ncss.css                  Import-Manifest (Layer-Reihenfolge + alle @import)
+  tokens.css                Design Tokens: Typografie, Abstand, Radius, Schatten, Bewegung
+  colors.css                Farb-Tokens (light-dark(), abgestufte Skalen)
+  reset.css                 Minimal-Reset
+  base.css                  Ungestylte native Elemente bekommen sinnvolle Defaults
+  browser-fixes.css         Isolierte Browser-/Engine-spezifische Workarounds
+  webawesome-bridge.css     Mappt ncss-Tokens auf Web Awesomes --wa-*-Variablen
+  theme.css                 Mitgeliefertes Beispiel-Theme
+  page-transitions.css      Opt-in Seitenübergänge
+  helpers/                  Utility-Klassen (Layout, Typografie, Formulare, Medien, ...)
+  components/               Fertige Komponenten (Nav, Card, Modal, Badge, ...) + JS-Fallbacks
+demo/                     Alle Demo-/Dokumentationsseiten
+vendor/                   Selbst gehostetes Web Awesome + Font Awesome (optional)</code></pre>
+</section>
+
+<section class="ncss-stack" id="theme-mechanik">
+  <h2 class="demo-section-title">Warum Theme-Anpassung unlayered läuft</h2>
+  <p>Theme-Anpassung läuft über <code>theme.css</code> (nach <code>ncss.css</code> laden) - eine einzige, bewusst UNLAYERED Datei mit allen wichtigen Seed-Werten (Markenfarben, Grundflächen, Schriften, Radien, Schatten, Bewegung). Unlayered CSS gewinnt immer gegen jede Layer-Regel, kein <code>!important</code> nötig. Details dazu: <a href="theming.html">Theme anpassen</a>.</p>
+</section>
+
+<section class="ncss-stack" id="cherry-picking">
+  <h2 class="demo-section-title">Cherry-Picking statt Alles-oder-nichts</h2>
+  <p>Jede Komponente ist eine eigene, kleine Datei (<code>components/card.css</code>, <code>components/modal.css</code>, ...) - nur einbinden, was gebraucht wird, indem man <code>ncss.css</code> kopiert und nicht benötigte <code>@import</code>-Zeilen entfernt. Kein Bundler, der ungenutztes CSS erst per Purge wieder herausschneiden muss - die Datei ist von Anfang an nur so groß wie gewollt.</p>
+</section>

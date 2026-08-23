@@ -1,0 +1,43 @@
+<!--DESC: Ein-/Ausblenden, Mikro-Interaktionen und GPU-Compositing-Hinweise - alle respektieren prefers-reduced-motion.-->
+<section class="ncss-stack">
+  <h1>Animationen</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>helpers/animations.css</code> - kleine, wiederverwendbare Übergänge statt einer Animations-Bibliothek.</p>
+</section>
+
+<section class="ncss-stack" id="ein-ausblenden">
+  <h2 class="demo-section-title">Ein-/Ausblenden &amp; Bewegung</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-animate-fade-in</code> / <code>-fade-out</code></td><td>Ein-/Ausblenden</td></tr>
+        <tr><td><code>.ncss-animate-slide-in-up/-down/-left/-right</code></td><td>Einschieben aus einer Richtung</td></tr>
+        <tr><td><code>.ncss-animate-scale-in</code></td><td>Einwachsen</td></tr>
+        <tr><td><code>.ncss-animate-spin</code></td><td>Endlose Rotation (z.B. Lade-Icon)</td></tr>
+        <tr><td><code>.ncss-animate-pulse</code></td><td>Pulsierende Deckkraft</td></tr>
+        <tr><td><code>.ncss-animate-shake</code></td><td>Fehler-Wackeln</td></tr>
+        <tr><td><code>.ncss-skeleton</code></td><td>Shimmer-Ladezustand</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="mikro-interaktionen">
+  <h2 class="demo-section-title">Mikro-Interaktionen &amp; Übergänge</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>.ncss-hover-lift</code></td><td>Anheben bei Hover</td></tr>
+        <tr><td><code>.ncss-hover-grow</code></td><td>Leichtes Wachsen bei Hover</td></tr>
+        <tr><td><code>.ncss-press</code></td><td>Taktile Tap-Rückmeldung (<code>:active</code>-basiert, siehe <a href="touch-mobile.html">Touch &amp; mobile Viewports</a>)</td></tr>
+        <tr><td><code>.ncss-transition</code> / <code>-slow</code> / <code>-colors</code> / <code>-transform</code></td><td>Generische Übergangs-Utilities</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Alle respektieren <code>prefers-reduced-motion</code> automatisch.</p>
+</section>
+
+<section class="ncss-stack" id="gpu-boost">
+  <h2 class="demo-section-title">GPU-Compositing-Hinweis</h2>
+  <p class="ncss-text-muted ncss-text-sm">Opt-in, <code>translateZ(0)</code>: <code>.ncss-gpu-boost</code> hebt ein Element auf eine eigene Compositor-Ebene an - gegen Ruckeln bei häufig animierten/gescrollten Elementen mit teurem Repaint. Nutzt die eigenständige <code>transform</code>-Eigenschaft, kombinierbar mit <code>.ncss-hover-lift</code>/<code>-grow</code>/<code>-press</code> (die <code>translate</code>/<code>scale</code> nutzen, nicht <code>transform</code>) ohne Konflikt. Bewusst NICHT automatisch angewendet - jede zusätzliche Compositor-Ebene kostet Grafikspeicher, nur bei sichtbarem Ruckeln gezielt einsetzen. Für ein Element, das selbst schon <code>transform</code> nutzt (z.B. <code>.ncss-hero--parallax</code>), stattdessen den <code>--ncss-gpu-hint</code>-Token direkt in der eigenen <code>transform</code>-Deklaration setzen - zwei <code>transform</code>-Deklarationen auf demselben Element würden sich sonst gegenseitig überschreiben statt zu kombinieren.</p>
+</section>

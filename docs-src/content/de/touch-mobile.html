@@ -1,0 +1,32 @@
+<!--DESC: Touch hat kein Hover, Viewport-Einheiten auf Mobil - warum ncss :active statt :hover für Feedback nutzt.-->
+<section class="ncss-stack">
+  <h1>Touch &amp; mobile Viewports</h1>
+  <p class="ncss-text-lg ncss-text-muted">Zwei Themen, die auf dem Desktop unsichtbar bleiben und erst auf echten Geräten auffallen.</p>
+</section>
+
+<section class="ncss-stack" id="kein-hover">
+  <h2 class="demo-section-title">Touch-Geräte haben kein Hover</h2>
+  <p class="ncss-text-muted ncss-text-sm">Ein Tap auf iPhone/Android löst <code>:hover</code>-Regeln nicht zuverlässig aus - ein Button, dessen einzige optische Rückmeldung ein <code>:hover</code>-Zustand ist, wirkt auf Touch dadurch komplett tot. Jede visuell bedeutsame <code>:hover</code>-Regel in ncss steht deshalb in <code>@media (hover: hover) and (pointer: fine)</code> (nur Geräte mit echtem Zeigegerät), nie unbedingt. <code>:focus-visible</code> (Tastatur-Fokus) bleibt davon immer ungated.</p>
+</section>
+
+<section class="ncss-stack" id="active-feedback">
+  <h2 class="demo-section-title">Taktile Rückmeldung: :active statt :hover</h2>
+  <p class="ncss-text-muted ncss-text-sm">Für taktile Rückmeldung auf Touch gilt <code>:active</code> (gilt für jedes Zeigegerät inkl. Touch, kein Gate nötig) - <code>.ncss-btn</code> hat einen eigenen, komponentenweiten <code>:active</code>-Zustand (<code>scale: 0.95</code>) und jede Farbvariante zusätzlich eine echte Farbänderung bei <code>:active</code> (dieselben Werte wie <code>:hover</code>, nur unbedingt).</p>
+  <p class="ncss-text-muted ncss-text-sm">Ein Tap dauert oft nur ~100-150ms - die normale Übergangsdauer (200ms) erreicht ihren Zielwert dabei oft gar nicht erst. Eigener Token <code>--ncss-motion-duration-fast</code> (100ms), nur als <code>transition-duration</code> auf der <code>:active</code>-Regel selbst überschrieben - der Einstieg ins Gedrückt-Aussehen ist dadurch schnell, das Zurückfedern bleibt bei der normalen, weicheren Dauer.</p>
+  <p class="ncss-text-muted ncss-text-sm">Für ein eigenes Element: <code>.ncss-press</code> (<code>helpers/animations.css</code>, ebenfalls <code>:active</code>-basiert mit demselben schnellen Einstieg, kombinierbar mit jedem Element).</p>
+</section>
+
+<section class="ncss-stack" id="viewport-einheiten">
+  <h2 class="demo-section-title">Volle Bildschirmhöhe auf Mobilgeräten</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>100vh</code>/<code>height: 100%</code> entsprechen auf Mobil-Browsern der größten möglichen Höhe (Adressleiste ausgeblendet) - ist die Adressleiste gerade sichtbar, ragt ein <code>100vh</code>-Element über den tatsächlich sichtbaren Bereich hinaus.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Einheit</th><th scope="col">Verhalten</th><th scope="col">Einsatz in ncss</th></tr></thead>
+      <tbody>
+        <tr><td><code>svh</code></td><td>Kleinstmöglicher Wert, passt immer</td><td>Modal, Off-Canvas, <code>.ncss-sticky-container</code> - Elemente, die garantiert ohne Scrollen sichtbar bleiben müssen (mit <code>vh</code> als Fallback: <code>height: 100vh; height: 100svh;</code>)</td></tr>
+        <tr><td><code>lvh</code></td><td>Identisch zum klassischen <code>vh</code> - stabil, ändert sich nicht während des Scrollens</td><td><code>components/scroll-stack.css</code> - scroll-gekoppelte Animationen brauchen ein Timing, das sich nicht mitten im Scrollen neu berechnet</td></tr>
+        <tr><td><code>dvh</code></td><td>Berechnet sich live neu, sobald die Adressleiste ein-/ausblendet</td><td>Bewusst NICHT für scroll-gekoppelte Animationen (bekanntes Ruckel-Verhalten in mobilem Safari)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
