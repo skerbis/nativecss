@@ -50,8 +50,17 @@
   inset-inline-start: auto;
 }
 
-/* Close-Button: geteilte Basis in components/dialog-close.css, hier keine Ausnahme
-   nötig - Default-Position (innen oben rechts) passt bereits. */
+/* Close-Button: geteilte Basis in components/dialog-close.css, Position selbst braucht
+   keine Ausnahme (Default innen oben rechts passt bereits) - der Inhalt DANEBEN
+   dagegen schon: .ncss-dialog-close ist position:absolute, reserviert also von sich aus
+   keinen Platz. Eine Überschrift direkt im Panel-Inhalt kollidiert dadurch sichtbar mit
+   dem Button, besonders auf den ohnehin schmalen Off-Canvas-Breiten (min(85vw, ...)) -
+   .ncss-modal-header hat dasselbe Problem bereits über padding-inline-end gelöst,
+   dasselbe Rezept hier für Off-Canvas-Panels mit eigener Überschrift. */
+.ncss-offcanvas-header {
+  margin-block-end: var(--ncss-space-sm);
+  padding-inline-end: var(--ncss-space-lg);
+}
 
 .ncss-offcanvas::backdrop {
   background-color: var(--ncss-color-overlay);

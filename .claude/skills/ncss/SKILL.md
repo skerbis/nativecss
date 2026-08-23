@@ -884,6 +884,13 @@ umgestellt:
       JS-Fallback für Browser ohne Unterstützung), muss auf BEIDEN Pfaden dieselbe
       Fähigkeit tragen - sonst ist der Fallback nur scheinbar gleichwertig.
 
+43. **`.ncss-dialog-close` ist `position:absolute` und reserviert keinen Platz** -
+    eine Überschrift direkt im Panel-Inhalt (Modal ODER Off-Canvas) kollidiert damit
+    sichtbar mit dem Button. `.ncss-modal-header` löst das bereits über
+    `padding-inline-end`; `off-canvas.css` hatte keine Entsprechung. Fix: neue Klasse
+    `.ncss-offcanvas-header` (gleiches Rezept) - bei eigener Überschrift im
+    Panel-Inhalt verwenden, nicht nacktes `<h3>`/`.ncss-stack`.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
