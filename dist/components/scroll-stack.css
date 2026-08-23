@@ -335,3 +335,29 @@
     transform: none;
   }
 }
+
+/* --- JS-Fallback-Unterstützung (components/scroll-stack-fallback.js, opt-in) --------------
+   Das Script prüft SELBST per CSS.supports(), ob animation-timeline fehlt, und setzt in dem
+   Fall diese Klasse auf .ncss-stack-section - stellt exakt dieselbe Bühnen-/Absolut-Stapel-
+   Struktur wieder her wie der native @supports(view-timeline-name)-Block oben, NUR ohne
+   animation/-timeline/-range selbst (die übernimmt das Script direkt per transform/filter
+   beim Scrollen, siehe dortiger Kommentar für die nachgerechnete view-timeline-inset-
+   Formel). Alle drei Selektoren binden .ncss-stack-js-active mit EIN statt es separat
+   voranzustellen (zwei Klassen Spezifität statt einer) - gewinnt dadurch zuverlässig gegen
+   den @supports not()-Fallback oben, unabhängig von der Reihenfolge im Stylesheet.
+   flex-direction/gap/padding-block des Fallbacks oben brauchen KEIN explizites Zurücksetzen
+   - beides wirkt nur auf normal fließende Kinder, absolut positionierte Karten ignorieren
+   es ohnehin. */
+.ncss-stack-js-active.ncss-stack-section {
+  height: calc(var(--ncss-stack-count, 4) * var(--ncss-stack-stage-height, 100lvh));
+}
+.ncss-stack-js-active .ncss-stack-stage {
+  position: sticky;
+  top: var(--ncss-stack-stage-top, 0px);
+  height: var(--ncss-stack-stage-height, 100lvh);
+  overflow: clip;
+}
+.ncss-stack-js-active .ncss-stack-card {
+  position: absolute;
+  transform-style: preserve-3d;
+}

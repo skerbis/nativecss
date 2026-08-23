@@ -1007,6 +1007,59 @@ gewünschte Zeichenweg).
     Swatch-Fläche selbst, praktisch nicht mehr wahrnehmbar (per Screenshot in beiden
     Farbschemata bestätigt).
 
+32. **`components/scroll-stack-fallback.js` (User-Anstoß: "erstelle für stacked cards ein
+    opt-in js für browser die timeline nicht unterstützen") - eigene JS-Nachbildung von
+    `animation-timeline`/`view-timeline-inset`/`animation-range` für Firefox/älteres
+    Safari, per `getBoundingClientRect()` statt echter Scroll-Timeline berechnet.** Der
+    naheliegende erste Ansatz für die 0%/100%-Formel: `view-timeline-inset: 100lvh
+    var(--stage-height, 100lvh)` naiv als "0% bei `rect.top === 0`, 100% bei `rect.bottom
+    === stageHeight`" gelesen - stimmte bei der ERSTEN Prüfung (Vollbild-Variante, echtes
+    Chromium als Referenz, Soll/Ist-Vergleich der `getComputedStyle().transform`-Matrizen
+    an sieben Scroll-Positionen) exakt überein, war aber ein FALSCHER Beweis: bei der
+    Vollbild-Variante ist `--ncss-stack-stage-height` selbst per Default `100lvh`, ALSO
+    identisch zum ersten (fest codierten) Inset-Wert - die Formel bestand den Test nur,
+    weil beide Inset-Werte dort zufällig gleich sind, nicht weil die Formel selbst richtig
+    war. Erst der Test der "in einem normalen Container"-Variante (`demo/stacked-cards.html`,
+    `--ncss-stack-stage-height: 22rem`, deutlich kleiner als die Viewport-Höhe) deckte den
+    echten Fehler auf: dort landete Karte 1 in Firefox (Script) sichtbar noch in Ruheposition,
+    während sie in Chromium (nativ) an derselben Scroll-Position bereits sichtbar am
+    Zurückweichen war. Ursache per genauer MDN-Definition von `view-timeline-inset`
+    nachvollzogen (nicht nur aus der eigenen CSS-Datei rückgeschlossen): der ERSTE
+    Inset-Wert (hier immer `100lvh`, unabhängig von der Bühnengröße) verschiebt den
+    0%-Bezugspunkt IMMER um die volle VIEWPORT-Höhe, nicht um die Bühnenhöhe - der
+    korrekte 0%-Punkt liegt bei `rect.top === viewportHeight - stageHeight` (reduziert sich
+    nur zufällig auf `0` bei `stageHeight === viewportHeight`, dem Vollbild-Default). Fix:
+    `progress = clamp((vh - stageHeightPx - rect.top) / totalDistance, 0, 1)` statt der
+    ursprünglichen `-rect.top / totalDistance`. Nach dem Fix per erneutem Soll/Ist-Vergleich
+    (nicht nur der ursprüngliche Test wiederholt, sondern gezielt ALLE DREI
+    Struktur-Varianten geprüft: Vollbild, `--horizontal`, kleine Bühne mit eigenem
+    `--ncss-stack-stage-top`-Versatz) bestätigt: Skalierung/Rotation/Helligkeit stimmen
+    jetzt bei jeder Variante bis auf Rundungsfehler überein, zusätzlich per
+    Pixel-Screenshot-Vergleich (nicht nur Zahlenvergleich) bestätigt identisch. Eine
+    verbleibende, bewusst NICHT weiter verfolgte Differenz: der `translateZ`-Anteil in der
+    resultierenden `matrix3d()` unterscheidet sich zwischen den Engines um einen
+    scheinbar variablen Betrag (z.B. -80 nativ vs. +20 im Script bei voll zurückgewichenem
+    Zustand) - der dominante, tatsächlich sichtbare Skalierungs-Anteil ([0]/[5] der Matrix)
+    stimmt dabei bis auf die 4.-5. Nachkommastelle überein, und der Pixel-Screenshot-
+    Vergleich zeigte keinen sichtbaren Unterschied - vermutlich eine reine
+    Matrix-Dekompositions-/Serialisierungs-Eigenheit zwischen den Engines (dieselbe
+    projizierte 2D-Erscheinung lässt sich über `perspective` auf mehrere mathematisch
+    äquivalente `matrix3d()`-Repräsentationen abbilden), keine funktionale Abweichung -
+    erst NACH dem Screenshot-Beleg als unbedenklich eingestuft, nicht vorab angenommen.
+    Weitere, beim Bauen selbst gefundene Lehren: `:active`-artige Zustände lassen sich
+    (anders als hier) nicht per synthetischem Event triggern lassen (Fallstrick 29) - aber
+    das Umgekehrte gilt hier NICHT: `window.scrollTo()` mit `behavior:'smooth'` (aktiv per
+    `html { scroll-behavior: smooth }`) lässt sich per Test-Skript sehr wohl auslösen, führt
+    aber zu einer ASYNCHRONEN, mehrere hundert Millisekunden dauernden Scroll-Animation -
+    ein erster Vergleichslauf mit zu kurzer Wartezeit maß dadurch scheinbar völlig falsche
+    Werte (Chromium und Firefox schienen um 20-30% Fortschritt auseinanderzuliegen), obwohl
+    die eigentliche Berechnung zu dem Zeitpunkt schon korrekt war - erst `{behavior:
+    'instant'}` + Polling auf eine stabile `scrollY` (statt einer festen Wartezeit) lieferte
+    einen sauberen Vergleich. Lehre: bevor ein scheinbarer Berechnungsfehler diagnostiziert
+    wird, erst prüfen, ob der Scroll-Vorgang selbst im Testaufbau überhaupt schon
+    abgeschlossen ist. Demo: `demo/stacked-cards.html`, `demo/product.html` (beide
+    Sektionen dort).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
