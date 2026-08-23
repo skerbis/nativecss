@@ -30,17 +30,18 @@
     color: #fff;
     text-align: center;
   }
-  /* Bewusst KEIN abdunkelnder Verlauf mehr - ein erster Versuch (25-30% Schwarz-Verlauf,
-     um Weiß-auf-#3399ff von 2.94:1 auf AA-Fließtext-Niveau zu heben) verwässerte die
-     gewünschte reine Hintergrundfarbe zu stark (User-Feedback: "nutzt nicht meine
-     Farben ... vor allem den Hintergrund"). Der Hintergrund bleibt jetzt exakt
-     --ncss-color-bg (#3399ff) - die etwas knappere Kontrastsituation bei der
-     Fließtext-Zeile ist eine bewusste, vom User bestätigte Priorität (reine Markenfarbe
-     vor strikter Kontrast-Marge). */
+  /* Bewusst KEIN abdunkelnder Verlauf - ein früherer Versuch (25-30% Schwarz-Verlauf, um
+     Weiß-auf-Hintergrund auf AA-Fließtext-Niveau zu heben, damals nötig wegen des
+     helleren #3399ff) verwässerte die gewünschte reine Hintergrundfarbe zu stark
+     (User-Feedback: "nutzt nicht meine Farben ... vor allem den Hintergrund"). Der
+     Hintergrund bleibt exakt --ncss-color-bg, keine verwässerte "sicherere"
+     Ersatzfarbe - seit dem Wechsel auf den dunkleren #154a86 (siehe theme.css) liegt
+     Weiß darauf ohnehin komfortabel bei 8.91:1, der Scrim ist also auch aus reiner
+     Kontrastsicht nicht mehr nötig. */
   /* Struktur/Größe kommt von der echten .ncss-badge (components/badge.css) - hier nur die
      helle Farbvariante für die Nutzung direkt auf dem Hero-Blau statt der Default-
-     Markenfarbe (die auf #3399ff denselben Kontrast-Fallstrick hätte wie an anderer
-     Stelle dieser Seite dokumentiert). */
+     Markenfarbe (die auf der kräftigen --ncss-color-bg-Fläche denselben
+     Kontrast-Fallstrick hätte wie an anderer Stelle dieser Seite dokumentiert). */
   .landing-hero-badge {
     background-color: rgb(255 255 255 / 15%);
     border: 1px solid rgb(255 255 255 / 30%);
@@ -83,10 +84,11 @@
   }
   /* .ncss-btn--secondary ist für Text auf normaler --ncss-color-bg kalibriert
      (color:var(--ncss-color-text), transparenter Hintergrund) - auf den beiden farbigen
-     Flächen dieser Seite (Hero direkt auf #3399ff, CTA-Verlauf bis ins dunkle Navy) blieb
-     der dunkle Default-Text praktisch unlesbar (User-Report: "handbuch lesen button text
-     kann man nicht lesen"). Beide Stellen explizit auf helle Variante umgestellt, statt
-     nur eine der beiden zu flicken - "damit es allgemein immer passt". */
+     Flächen dieser Seite (Hero direkt auf --ncss-color-bg, CTA-Verlauf bis ins dunkle
+     Navy) blieb der dunkle Default-Text praktisch unlesbar (User-Report: "handbuch lesen
+     button text kann man nicht lesen"). Beide Stellen explizit auf helle Variante
+     umgestellt, statt nur eine der beiden zu flicken - "damit es allgemein immer
+     passt". */
   .landing-hero .ncss-btn--secondary,
   .landing-cta .ncss-btn--secondary {
     color: #fff;
@@ -195,19 +197,30 @@
   }
   /* .ncss-lead-quote selbst kommt jetzt aus helpers/typography.css (an dieselbe Stelle
      wie .ncss-text-lead promoted, da genügend allgemein nützlich - siehe dort). */
-  /* .ncss-eyebrow (Default: var(--ncss-color-brand), unser gedämpftes Grau #6f6f6e) und
-     .ncss-text-muted (Default #5a5f6a) sind für Text auf WEISSEN Karten/Flächen
-     kalibriert - direkt auf der kräftigen #3399ff-Seitenfläche (Sektionen zwischen den
-     Karten, nicht die Karten selbst) fallen beide unter 2:1 Kontrast, per WCAG-Rechnung
-     bestätigt (1.71:1 bzw. 2.18:1 - weit unter der 4.5:1-Mindestgrenze für Fließtext).
-     Reines Schwarz/Weiß wäre zwar tauglich, verwässert aber die Farbunterscheidung
-     zwischen Überschrift und Eyebrow/Kicker - stattdessen zwei dunkle Navytöne AUS DER
-     BRAND-2-FAMILIE, beide individuell nachgerechnet bis sie AA-Fließtext-Kontrast
-     erreichen (nicht einfach angenommen). Nur auf Sektionen angewendet, die DIREKT auf
-     --ncss-color-bg liegen - .landing-section--tinted (helle bg-subtle-Fläche) und Karten
-     brauchen das nicht, dort ist der System-Default längst kontrastreich genug. */
-  .landing-on-bg .ncss-eyebrow { color: light-dark(#1b2740, #9fc4f2); }
-  .landing-on-bg .ncss-text-muted { color: light-dark(#1e2c40, #8fa3c2); }
+  /* .ncss-eyebrow (Default: var(--ncss-color-brand), unser gedämpftes Grau #6f6f6e),
+     .ncss-text-muted (Default #5a5f6a) UND die Standard-Überschriftenfarbe
+     (--ncss-color-text, dunkel) sind für Text auf WEISSEN Karten/Flächen kalibriert -
+     direkt auf der kräftigen --ncss-color-bg-Seitenfläche (Sektionen zwischen den
+     Karten, nicht die Karten selbst) bräuchten alle drei eigene, helle Ersatzfarben.
+     Mit dem alten helleren #3399ff genügten dafür noch zwei dunkle, individuell auf AA-
+     Fließtext-Kontrast nachgerechnete Navytöne (Überschrift blieb beim System-Default) -
+     seit dem Wechsel auf den dunkleren #154a86 (User-Feedback: "text sollte weiß sein")
+     brauchen jetzt ALLE DREI helle Farbe, dunkler Text jeder Art wäre auf dem jetzt
+     selbst dunklen Hintergrund unlesbar. Vereinfacht dadurch auch den Dark Mode: beide
+     Modi sitzen jetzt auf einem ähnlich dunklen Hintergrund, EIN heller Wert reicht für
+     beide (kein light-dark() mehr nötig) - Eyebrow/Muted wiederverwenden dieselben zwei
+     hellblauen Töne, die zuvor NUR für den Dark-Mode-Zweig kalibriert waren, jetzt per
+     WCAG-Rechnung erneut gegen den neuen helleren Hintergrund geprüft (4.95:1 bzw.
+     5.14:1, beide über der 4.5:1-Grenze). Nur auf Sektionen
+     angewendet, die DIREKT auf --ncss-color-bg liegen - .landing-section--tinted (helle
+     bg-subtle-Fläche) und Karten brauchen das nicht, dort ist der System-Default längst
+     kontrastreich genug. */
+  .landing-on-bg h1,
+  .landing-on-bg h2 {
+    color: #fff;
+  }
+  .landing-on-bg .ncss-eyebrow { color: #9fc4f2; }
+  .landing-on-bg .ncss-text-muted { color: #aec7e6; }
   /* .ncss-badge-icon/--lg selbst (Struktur/Farbe/Größe) kommt jetzt aus components/
      badge.css - hier nur der seitenspezifische Abstand nach unten zur folgenden
      Überschrift, kein struktureller Duplikat mehr. */
@@ -288,11 +301,11 @@
   }
 
   /* --- Finaler CTA ------------------------------------------------------------------------
-     Verlauf bis zum reinen --ncss-color-bg (#3399ff) - ein erster Versuch dunkelte das
-     Blau-Ende zusätzlich ab (#1c548c statt #3399ff) für mehr Kontrastmarge, verwässerte
-     damit aber dieselbe gewünschte reine Markenfarbe wie der Hero-Scrim (User-Feedback:
-     "nutzt nicht meine Farben ... vor allem den Hintergrund") - jetzt konsequent überall
-     dieselbe reine Farbe. */
+     Verlauf bis zum reinen --ncss-color-bg - ein erster Versuch dunkelte das Blau-Ende
+     zusätzlich ab (eigener fester Hex-Wert statt des Tokens) für mehr Kontrastmarge,
+     verwässerte damit aber dieselbe gewünschte reine Markenfarbe wie der Hero-Scrim
+     (User-Feedback: "nutzt nicht meine Farben ... vor allem den Hintergrund") - jetzt
+     konsequent überall dieselbe reine Farbe (heute #154a86, siehe theme.css). */
   .landing-cta {
     text-align: center;
     color: #fff;
@@ -552,7 +565,7 @@
   --ncss-color-brand:
     light-dark(#6f6f6e, #b7b7b6);
   --ncss-color-bg:
-    light-dark(#3399ff, #0b1c33);
+    light-dark(#154a86, #0b1c33);
 }
 /* Skalen (100-900), Badges, Buttons,
    Cards ziehen automatisch mit. */</code></pre>
