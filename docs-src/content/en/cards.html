@@ -168,10 +168,25 @@
   <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"&gt;
   ...
 &lt;/article&gt;</code></pre>
-  <p class="ncss-text-sm ncss-text-muted">Live - drag the bottom-right corner of the box below to make it narrower (an <code>&lt;iframe&gt;</code> establishes its OWN viewport, so the effect is testable by dragging instead of having to shrink the whole browser window):</p>
-  <div style="resize: horizontal; overflow: hidden; width: 30rem; max-width: 100%; min-width: 12rem; border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
-    <iframe src="../../demo/embed-adaptive-radius-en.html" style="display: block; width: 100%; height: 12rem; border: 0;" title="Adaptive radius, live testable"></iframe>
+  <p class="ncss-text-sm ncss-text-muted">Live - drag the slider to make the box narrower/wider (an <code>&lt;iframe&gt;</code> establishes its OWN viewport, so the effect is testable with the slider instead of having to shrink the whole browser window):</p>
+  <div class="ncss-stack ncss-stack--tight">
+    <label for="radiusWidthSlider" class="ncss-text-sm ncss-text-muted">Box width: <output id="radiusWidthOutput">400px</output></label>
+    <input type="range" id="radiusWidthSlider" min="220" max="400" value="400" step="4" style="width: min(100%, 30rem);">
   </div>
+  <div style="overflow: hidden; width: min(100%, 30rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+    <iframe id="radiusFrame" src="../../demo/embed-adaptive-radius-en.html" style="display: block; width: 400px; max-width: 100%; height: 12rem; border: 0;" title="Adaptive radius, live testable"></iframe>
+  </div>
+  <script>
+    (function () {
+      var slider = document.getElementById('radiusWidthSlider');
+      var output = document.getElementById('radiusWidthOutput');
+      var frame = document.getElementById('radiusFrame');
+      slider.addEventListener('input', function () {
+        frame.style.width = slider.value + 'px';
+        output.textContent = slider.value + 'px';
+      });
+    })();
+  </script>
   <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"
          style="width: min(100vw, 20rem);"&gt;
   ...
