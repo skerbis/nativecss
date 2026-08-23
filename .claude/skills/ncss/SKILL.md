@@ -756,38 +756,20 @@ umgestellt:
     (`position:sticky`, `animation-timeline: view()`) funktionieren normal über die
     Shadow-Grenze - reine Rendering-Mechanik der Engine, von der Style-Kapselung
     unberührt.
-    - **Nachtrag (User-Anstoß: "wenn ich es als container nutze wo muss ich die fallback
-      js einbinden?"): erst als "bekannte Grenze" dokumentiert, dann tatsächlich
-      behoben statt dabei belassen.** Ursprünglich dokumentiert: opt-in Fallback-
-      Scripts, die per `document.querySelectorAll(...)` GLOBAL suchen, finden Elemente
-      innerhalb eines `<ncss-container>` nicht (Shadow-DOM-Grenzen werden davon nicht
-      durchquert). Die Nutzerfrage zielte auf "wie bringe ich es zum Laufen", nicht nur
-      "wo ist die Grenze" - genau der Anstoß, die Grenze zu beseitigen statt sie nur zu
-      erklären. Betraf am Ende MEHR Scripts als ursprünglich dokumentiert
-      (`scroll-stack-fallback.js`/`hide-on-scroll-fallback.js` waren nur die zwei zuerst
-      genannten) - beim Nachsehen fanden sich exakt dasselbe Muster auch in
-      `code-block.js`, `downloads.js`, `events.js`, `wa-close-on-scroll.js` (`grep -rln
-      'document.querySelectorAll' components/*.js` deckte alle sechs auf einmal auf,
-      statt sie einzeln nachträglich zu entdecken). Fix: dieselbe kleine
-      `deepQueryAll(selector, root)`-Hilfsfunktion (rekursiver Abstieg in jeden offenen
-      Shadow Root über `root.querySelectorAll("*")` + `.shadowRoot`-Prüfung) in jedes der
-      fünf init-once-Scripts kopiert (bewusst dupliziert statt in eine gemeinsame Datei
-      ausgelagert - passt zum bestehenden Muster "jedes opt-in Script bleibt für sich
-      allein einbindbar", keine neue Script-Ladereihenfolge-Abhängigkeit einführen).
-      `code-block.js` zusätzlich von `Prism.highlightAll()` (document-global) auf
-      `Prism.highlightElement()` PRO gefundenem Block umgestellt - Prisms eigener
-      globaler Aufruf hätte Shadow-DOM-Inhalte trotz der eigenen `deepQueryAll()`-Suche
-      für den Copy-Button weiterhin übersehen, `highlightElement()` arbeitet dagegen
-      direkt auf dem übergebenen Element. `wa-close-on-scroll.js` bewusst ANDERS gelöst:
-      läuft bei JEDEM Scroll-Event (kein init-once), ein voller `deepQueryAll`-DOM-Walk
-      wäre dort spürbar teurer - stattdessen gezielt nur `<ncss-container>`-Elemente
-      selbst gesucht und deren Shadow Root rekursiv durchsucht (die einzige realistisch
-      vorkommende Shadow-DOM-Quelle auf einer ncss-Seite), zusätzlich der bisher
-      UNGEDROSSELTE Scroll-Listener gleich mit auf `requestAnimationFrame` umgestellt
-      (Bonus-Fix, beim Anfassen der Datei mit entdeckt). Alle Fixes per echtem
-      Playwright-Test verifiziert (Code-Block-Highlighting + Copy-Button + Downloads-
-      Widget innerhalb eines Shadow Roots, UND ein `wa-dropdown[open]` innerhalb eines
-      Containers schließt sich beim Scrollen), nicht nur am Code abgelesen.
+    - **Opt-in-Scripts mit `document.querySelectorAll(...)` finden nichts innerhalb
+      eines `<ncss-container>`** (Shadow-DOM-Grenzen werden davon nicht durchquert) -
+      betraf `code-block.js`, `downloads.js`, `events.js`, `scroll-stack-fallback.js`,
+      `hide-on-scroll-fallback.js`, `wa-close-on-scroll.js` (`grep -rln
+      'document.querySelectorAll' components/*.js` deckt alle sechs auf einmal auf). Fix:
+      `deepQueryAll(selector, root)` (rekursiver Abstieg in jeden offenen Shadow Root über
+      `.shadowRoot`) in jedes der fünf init-once-Scripts kopiert statt in eine gemeinsame
+      Datei ausgelagert (jedes opt-in Script bleibt einzeln einbindbar). `code-block.js`
+      zusätzlich von `Prism.highlightAll()` auf `Prism.highlightElement()` PRO Block
+      umgestellt (Prisms eigener globaler Aufruf hätte dieselbe Lücke gehabt).
+      `wa-close-on-scroll.js` läuft bei JEDEM Scroll-Event statt einmalig - dort gezielt
+      nur `<ncss-container>`-Elemente durchsucht statt eines vollen DOM-Walks
+      (Performance), dabei auch den bisher ungedrosselten Scroll-Listener auf
+      `requestAnimationFrame` umgestellt.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
