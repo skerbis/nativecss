@@ -907,6 +907,28 @@ umgestellt:
     Layer-Reihenfolge oben). Verifiziert per Playwright in Chromium/WebKit/Firefox.
     Handbuch: `docs/de/cards.html`, Demo: `demo/stacked-cards.html#adaptiver-radius`.
 
+45. **`components/sparkline.js`** (opt-in, ergänzt `sparkline.css`) - berechnet
+    `polyline`/`-area`/`-dot` aus `data-values="4,7,3,9"` oder `data-src="werte.json"`
+    (Zahlen-Array ODER `{label,value}`-Objekte), statt sie von Hand als SVG-Koordinaten
+    ausrechnen zu müssen. A11y (User-Vorgabe: "wichtig ist dass die daten a11y
+    zugänglich sind"): das `<svg>` bleibt `aria-hidden` (reine Formen sind keine
+    sinnvolle Screenreader-Ansage), daneben wird eine `.ncss-visually-hidden`-`<table>`
+    mit den ECHTEN Werten (nicht nur einer vagen Trend-Beschreibung) eingefügt - per
+    WebSearch verifiziertes Standardmuster für Chart-A11y (SVG `aria-hidden` +
+    versteckte Datentabelle als Alternativtext), keine geratene Lösung. Ohne
+    `data-values`/`-src` bleibt ein `<svg class="ncss-sparkline">` unangetastet (weiterhin
+    von Hand/serverseitig renderbar).
+
+46. **CSS `resize` (Drag-Handle) ist für interaktive Demos zu unzuverlässig, nicht
+    verlassen** - Trefferfläche nur wenige Pixel in der Ecke, funktioniert NICHT per
+    Touch/Trackpad-Tap. Für den `.ncss-radius-adaptive-*`-Handbuch-Demo (`docs/de/
+    cards.html#adaptiver-radius`) zunächst mit `resize:horizontal` gebaut - Style/
+    Computed-Value waren korrekt gesetzt, Handle sogar im Screenshot sichtbar, trotzdem
+    zweimal User-Report "kann ich nicht testen"/"erreicht nie die Kante". Fix: echter
+    `<input type="range">`, der die Breite direkt per JS setzt - eindeutig, funktioniert
+    identisch mit Maus/Trackpad/Touch/Tastatur. Für künftige "Box in der Doku größer/
+    kleiner ziehen"-Demos gleich den Regler nehmen, nicht erst `resize` versuchen.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

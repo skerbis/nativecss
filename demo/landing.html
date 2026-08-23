@@ -44,6 +44,7 @@
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <script src="../dist/components/wa-close-on-scroll.js" defer></script>
+<script src="../dist/components/sparkline.js" defer></script>
 
 <!-- setIconPath() MUSS laufen, bevor <wa-icon> zum ersten Mal verbunden wird (siehe
      Kommentar in vendor/webawesome/dist-cdn/utilities/base-path.d.ts) - deshalb ein
@@ -291,7 +292,15 @@
           </svg>
         </div>
       </article>
+      <article class="ncss-card ncss-animate-on-scroll--slide-up ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="ncss-text-sm ncss-text-muted">Neukunden / Woche (aus Daten berechnet)</span>
+          <strong class="landing-stat-number">156</strong>
+          <svg class="ncss-sparkline" data-values="88,102,97,121,134,140,156" data-label="Neukunden pro Woche, letzte 7 Wochen"></svg>
+        </div>
+      </article>
     </div>
+    <p class="ncss-text-sm ncss-text-muted">Die ersten drei Karten haben ihre <code>&lt;polyline&gt;</code>-Koordinaten von Hand gesetzt - die vierte übergibt nur <code>data-values</code>, <code>components/sparkline.js</code> (opt-in) rechnet Punkte/Fläche selbst aus UND legt daneben eine für Screenreader lesbare, visuell versteckte Tabelle mit den echten Werten an (das SVG selbst ist rein dekorativ, <code>aria-hidden</code>).</p>
   </section>
 
   <!-- Pricing-Beispiel: bewusst NICHT NativeCSS' eigene Preise (das Projekt ist frei/quelloffen) -

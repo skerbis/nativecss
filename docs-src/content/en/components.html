@@ -104,7 +104,7 @@
     <table>
       <tbody>
         <tr><td><code>slideshow.css</code></td><td><code>.ncss-slideshow</code>, <code>-track</code> (+ <code>--no-scrollbar</code>), <code>-item</code> (+ <code>--peek</code>)</td><td>Scroll-snap carousel, no JS</td></tr>
-        <tr><td><code>sparkline.css</code></td><td><code>.ncss-sparkline</code>, <code>-area</code>, <code>-dot</code></td><td>Small inline data line</td></tr>
+        <tr><td><code>sparkline.css</code></td><td><code>.ncss-sparkline</code>, <code>-area</code>, <code>-dot</code></td><td>Small inline data line. Coordinates by hand OR computed by <code>components/sparkline.js</code> (opt-in) from <code>data-values</code>/<code>data-src</code>, including an accessible hidden table with the real values</td></tr>
         <tr><td><code>scroll-progress.css</code></td><td><code>.ncss-scroll-progress</code> (+ <code>--vertical</code>, <code>--end</code>)</td><td>Reading progress bar, <code>animation-timeline: scroll()</code></td></tr>
         <tr><td><code>scroll-stack.css</code></td><td><code>.ncss-stack-section</code>, <code>.ncss-stack-stage</code>, <code>.ncss-stack-card</code></td><td>Pinned stage, cards slide over one another into a fanned stack while scrolling ("pinned scrollytelling"). <code>view-timeline</code>-based, opt-in JS fallback for Firefox/older Safari: <code>components/scroll-stack-fallback.js</code>, see <a href="webawesome-bridge.html">Web Awesome Bridge</a></td></tr>
         <tr><td><code>roadmap.css</code></td><td><code>.ncss-roadmap</code>, <code>-line</code>, <code>-list</code>, <code>-item</code>, <code>-dot</code>, <code>-card</code></td><td>Milestone list with a self-drawing progress line on scroll</td></tr>

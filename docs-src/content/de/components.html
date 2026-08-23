@@ -104,7 +104,7 @@
     <table>
       <tbody>
         <tr><td><code>slideshow.css</code></td><td><code>.ncss-slideshow</code>, <code>-track</code> (+ <code>--no-scrollbar</code>), <code>-item</code> (+ <code>--peek</code>)</td><td>Scroll-Snap-Karussell, kein JS</td></tr>
-        <tr><td><code>sparkline.css</code></td><td><code>.ncss-sparkline</code>, <code>-area</code>, <code>-dot</code></td><td>Kleine Inline-Datenlinie</td></tr>
+        <tr><td><code>sparkline.css</code></td><td><code>.ncss-sparkline</code>, <code>-area</code>, <code>-dot</code></td><td>Kleine Inline-Datenlinie. Koordinaten von Hand ODER per <code>components/sparkline.js</code> (opt-in) aus <code>data-values</code>/<code>data-src</code> berechnet, inkl. barrierefreier versteckter Tabelle mit den echten Werten</td></tr>
         <tr><td><code>scroll-progress.css</code></td><td><code>.ncss-scroll-progress</code> (+ <code>--vertical</code>, <code>--end</code>)</td><td>Lesefortschrittsbalken, <code>animation-timeline: scroll()</code></td></tr>
         <tr><td><code>scroll-stack.css</code></td><td><code>.ncss-stack-section</code>, <code>.ncss-stack-stage</code>, <code>.ncss-stack-card</code></td><td>Gepinnte Bühne, Karten gleiten beim Scrollen übereinander zu einem gefächerten Stapel ("Pinned Scrollytelling"). <code>view-timeline</code>-basiert, Opt-in-JS-Fallback für Firefox/älteres Safari: <code>components/scroll-stack-fallback.js</code>, siehe <a href="webawesome-bridge.html">Web Awesome Bridge</a></td></tr>
         <tr><td><code>roadmap.css</code></td><td><code>.ncss-roadmap</code>, <code>-line</code>, <code>-list</code>, <code>-item</code>, <code>-dot</code>, <code>-card</code></td><td>Meilenstein-Liste mit selbst nachzeichnender Fortschrittslinie beim Scrollen</td></tr>
