@@ -84,6 +84,14 @@
     color: #fff;
     border-color: rgb(255 255 255 / 55%);
   }
+  /* :active-Gegenstück zum :hover unten - dieselbe Füllung, nur per Tap statt Hover
+     ausgelöst, sonst bekämen diese beiden Buttons auf Touch (wo :hover gar nicht
+     matcht) NUR die generische scale-Rückmeldung von .ncss-btn, ohne die zu dieser
+     farbigen Fläche passende Füllung. */
+  .landing-hero .ncss-btn--secondary:active:not(:disabled),
+  .landing-cta .ncss-btn--secondary:active:not(:disabled) {
+    background-color: rgb(255 255 255 / 15%);
+  }
   /* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe dist/helpers/forms.css für
      dasselbe Muster am eigentlichen .ncss-btn--secondary:hover. Die :active-Rückmeldung
      (scale, dist/helpers/forms.css) gilt unverändert für jedes Zeigegerät inkl. Touch. */

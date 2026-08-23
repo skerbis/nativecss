@@ -884,6 +884,36 @@ gewünschte Zeichenweg).
     Geräte & mobile Viewports" neu, zentrale Referenz für alle `siehe README`-Kommentare
     an den 27 Fundstellen.
 
+    **Nachtrag, User-Feedback nach dem ersten Versuch ("kann kaum touch feedbacks
+    feststellen")**: `scale: 0.97` auf `.ncss-btn:active` allein war zu schwach UND kam bei
+    einem realistischen, kurzen Tap oft gar nicht sichtbar an - Ursache war NICHT die
+    fehlende Media-Query-Logik (die war korrekt), sondern zwei separate Probleme: (1) die
+    normale `--ncss-motion-duration` (200ms) erreicht ihren Zielwert bei einem ~100-150ms
+    kurzen Tap oft nicht mehr vollständig, per echtem Test bestätigt (`page.mouse.down()` +
+    120ms Wartezeit zeigte den Übergang noch mitten in Bewegung); (2) die FARBLICHE
+    Rückmeldung (das eigentlich auffälligste Signal) war komplett hinter der
+    `hover:hover`-Media-Query versteckt - Touch bekam dadurch NUR die schwache Skalierung,
+    keine Farbänderung. Fix: neuer Token `--ncss-motion-duration-fast` (100ms, tokens.css)
+    NUR für den EINSTIEG in `:active` (`transition-duration` direkt auf der `:active`-Regel
+    überschrieben, nicht auf der Basisregel - das Zurückfedern beim Loslassen bleibt bei der
+    normalen, weicheren Dauer); `scale` von 0.97 auf 0.95 verstärkt; UND pro Button-Variante
+    eine ECHTE `:active`-Farbänderung ergänzt (dieselben Werte wie die jeweilige
+    `:hover`-Variante, nur zusätzlich unbedingt statt nur unter der hover-Media-Query) -
+    `--danger` bekam dabei gleich einen `:hover`/`:active` spendiert, den es vorher gar
+    nicht hatte. Dieselbe Technik (schnellerer `:active`-Einstieg, normale Rückfeder-Dauer)
+    auch auf `.ncss-stamped`, `.ncss-stamped--press` und `.ncss-press` übertragen.
+
+    **Weiterer, beim Verifizieren gefundener echter Bug (Desktop, nicht Touch)**: eine
+    gehaltene Maustaste erfüllt `:hover` UND `:active` GLEICHZEITIG - bei gleicher
+    Spezifität gewinnt die im Quelltext SPÄTERE Regel. `.ncss-stamped:hover` (in der
+    `@media (hover: hover)`-Regel, später im Quelltext als die Basisregel mit `&:active`)
+    gewann dadurch beim Gedrückthalten der Maustaste gegen `:active` - der Button blieb
+    sichtbar "angehoben" (`translateY(-3px)`) statt "eingesunken" zu wirken, OBWOHL die
+    Maustaste noch gedrückt war (per `matrix()`-Auslese gefunden: `ty` zeigte
+    `-2.67` statt der erwarteten `+3`). Fix: `:hover:not(:active)` statt nur `:hover` auf
+    beiden betroffenen Selektoren - schließt exakt den Überlappungsfall aus, `:active`
+    gewinnt jetzt unbedingt, sobald es zutrifft.
+
 30. **`100vh`/`height: 100%` entsprechen auf Mobil-Browsern der GRÖSSTEN möglichen Höhe
     (Adressleiste ausgeblendet) - ist die Adressleiste sichtbar, ragt ein 100vh-Element
     über den tatsächlich sichtbaren Bereich hinaus.** User-Hinweis: "Full height auf

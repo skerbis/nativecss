@@ -86,6 +86,14 @@
   /* Bewegung: an prefers-reduced-motion gekoppelt statt hart auf "0" - siehe base.css,
      das @media (prefers-reduced-motion: reduce) global respektiert. Hier nur die
      "normale" Dauer definieren. */
+  /* Extra kurz für Press-Feedback (:active) - ein Tap dauert oft nur ~100-150ms
+     (touchstart bis touchend), die normale Dauer erreicht den Zielwert bis dahin oft gar
+     nicht erst, die Rückmeldung wirkt dadurch kaum wahrnehmbar (User-Report: "kann kaum
+     touch feedbacks feststellen"). Nur für den EINSTIEG in :active gedacht (per
+     transition-duration direkt auf der :active-Regel überschrieben) - das Zurückfedern
+     beim Loslassen bleibt bei der normalen Dauer, fühlt sich dadurch weich aus statt
+     ebenfalls abgehackt. */
+  --ncss-motion-duration-fast: 100ms;
   --ncss-motion-duration: 200ms;
   --ncss-motion-duration-slow: 400ms;
   --ncss-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);

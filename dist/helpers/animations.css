@@ -121,8 +121,12 @@
 .ncss-press {
   transition: scale var(--ncss-motion-duration) var(--ncss-motion-easing);
 }
+/* transition-duration überschreibt hier NUR den Einstieg in :active (schneller als ein
+   kurzer Tap oft dauert, siehe helpers/forms.css ".ncss-btn" für dieselbe Begründung) -
+   das Zurückfedern beim Loslassen bleibt bei der normalen, oben deklarierten Dauer. */
 .ncss-press:active {
-  scale: 0.97;
+  scale: 0.95;
+  transition-duration: var(--ncss-motion-duration-fast);
 }
 
 /* --- GPU-Compositing-Hinweis (Opt-in) ------------------------------------------------------

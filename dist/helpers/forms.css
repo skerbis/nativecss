@@ -216,16 +216,26 @@
 }
 /* :active statt :hover für die taktile Rückmeldung selbst - gilt für JEDES Zeigegerät
    inkl. Touch (siehe README "Touch-Geräte haben kein :hover"), anders als die
-   farblichen :hover-Zustände der Varianten unten. Auf dem BASIS-.ncss-btn statt pro
-   Variante, damit auch .ncss-btn--danger (aktuell ohne eigenen :hover) eine Rückmeldung
-   bekommt. */
+   farblichen :hover-Zustände der Varianten unten. transition-duration überschreibt hier
+   NUR die Dauer für den EINSTIEG in :active auf --ncss-motion-duration-fast (100ms statt
+   200ms) - ein Tap dauert oft nicht länger, die normale Dauer erreichte den Zielwert
+   bisher oft gar nicht erst (User-Report: "kann kaum touch feedbacks feststellen"). Das
+   Zurückfedern beim Loslassen nutzt weiterhin die normale Dauer von .ncss-btn oben (gilt
+   wieder, sobald :active nicht mehr matcht). scale 0.97->0.95: der kleinere Wert allein
+   reichte nicht als spürbare Rückmeldung, siehe unten außerdem die pro Variante ECHTE
+   Farbänderung (identisch zum jeweiligen :hover, nur per :active statt :hover ausgelöst -
+   :hover bleibt zusätzlich für Maus/Trackpad bestehen, siehe Media Query unten). */
 .ncss-btn:active:not(:disabled) {
-  scale: 0.97;
+  scale: 0.95;
+  transition-duration: var(--ncss-motion-duration-fast);
 }
 
 .ncss-btn--primary {
   background-color: var(--ncss-color-brand);
   color: var(--ncss-color-brand-contrast);
+}
+.ncss-btn--primary:active:not(:disabled) {
+  background-color: color-mix(in srgb, var(--ncss-color-brand) 75%, black);
 }
 
 .ncss-btn--secondary {
@@ -233,9 +243,14 @@
   border-color: var(--ncss-color-border);
   color: var(--ncss-color-text);
 }
+.ncss-btn--secondary:active:not(:disabled) {
+  background-color: var(--ncss-color-bg-subtle);
+}
 
 /* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
-   kein :hover". Die :active-Rückmeldung oben bleibt für ALLE Zeigegeräte bestehen. */
+   kein :hover". Dieselben Farbwerte wie die jeweilige :active-Regel oben (nur etwas
+   dezenter bei --primary, siehe dortiger Kommentar) - :hover UND :active bleiben beide
+   erreichbar, z.B. Maus gedrückt halten zeigt zuerst :hover-, dann :active-Farbe. */
 @media (hover: hover) and (pointer: fine) {
   .ncss-btn--primary:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--ncss-color-brand) 85%, black);
@@ -248,4 +263,14 @@
 .ncss-btn--danger {
   background-color: var(--ncss-color-danger);
   color: var(--ncss-color-brand-contrast);
+}
+.ncss-btn--danger:active:not(:disabled) {
+  background-color: color-mix(in srgb, var(--ncss-color-danger) 75%, black);
+}
+/* --danger hatte bisher GAR KEINEN :hover (vorbestehende Lücke) - beim Ergänzen der
+   :active-Rückmeldung gleich mitgeschlossen, dieselbe Formel wie --primary. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-btn--danger:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--ncss-color-danger) 85%, black);
+  }
 }

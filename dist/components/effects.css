@@ -172,9 +172,14 @@
     mask-composite: exclude;
   }
 
+  /* transition-duration überschreibt hier NUR den Einstieg in :active (siehe
+     helpers/forms.css für dieselbe Begründung/Technik an .ncss-btn) - ein Tap ist oft
+     kürzer als die normale Übergangsdauer, das Einsinken kam dadurch nie sichtbar fertig
+     an. Das Zurückfedern beim Loslassen bleibt bei der normalen, oben deklarierten Dauer. */
   &:active {
     box-shadow: inset 0 2px 4px var(--ncss-stamped-shadow-dark);
     transform: translateY(var(--ncss-stamped-lift, 3px));
+    transition-duration: var(--ncss-motion-duration-fast);
   }
 }
 
@@ -182,13 +187,20 @@
    "Touch-Geräte haben kein :hover" für die projektweite Begründung dieses Musters.
    .ncss-stamped bleibt auf Touch trotzdem voll funktionsfähig: :active (das "Einsinken")
    gilt unverändert für JEDES Zeigegerät inkl. Touch - nur das zusätzliche "Abheben" beim
-   Hover ist rein für Maus/Trackpad gedacht und auf Touch ohnehin bedeutungslos. */
+   Hover ist rein für Maus/Trackpad gedacht und auf Touch ohnehin bedeutungslos.
+
+   :not(:active) zusätzlich auf beiden Selektoren: eine gehaltene Maustaste erfüllt
+   :hover UND :active GLEICHZEITIG (gleiche Spezifität, :hover steht als spätere Regel im
+   Quelltext) - ohne dieses :not(:active) hätte :hover beim Gedrückthalten gewonnen, der
+   Button wäre sichtbar "angehoben" statt "eingesunken" geblieben, obwohl die Maustaste
+   noch gedrückt ist (per echtem Test beim Verifizieren der schnelleren :active-Rückmeldung
+   gefunden - matrix()-Wert zeigte -2.67px statt der erwarteten +3px). */
 @media (hover: hover) and (pointer: fine) {
-  .ncss-stamped:hover {
+  .ncss-stamped:hover:not(:active) {
     box-shadow: 0 4px 10px rgb(0 0 0 / 12%);
     transform: translateY(calc(-1 * var(--ncss-stamped-lift, 3px)));
   }
-  .ncss-stamped--press:hover {
+  .ncss-stamped--press:hover:not(:active) {
     box-shadow: inset 0 2px 4px var(--ncss-stamped-shadow-dark);
     transform: translateY(var(--ncss-stamped-lift, 3px));
   }
@@ -196,6 +208,7 @@
 .ncss-stamped--press:active {
   box-shadow: inset 0 3px 6px var(--ncss-stamped-shadow-dark);
   transform: translateY(calc(var(--ncss-stamped-lift, 3px) * 1.6));
+  transition-duration: var(--ncss-motion-duration-fast);
 }
 
 /* --- Grain (Korn-/Sandtextur) -----------------------------------------------------------

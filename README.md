@@ -577,10 +577,19 @@ UNGATED - wo beide bisher in einem gemeinsamen Selektor standen (z.B.
 
 Für die taktile Rückmeldung auf Touch selbst gilt stattdessen `:active` (gilt für JEDES
 Zeigegerät inkl. Touch, kein Gate nötig) - `.ncss-btn` bekam dafür einen eigenen,
-komponentenweiten `:active`-Zustand (`scale: 0.97`, unabhängig von der Farb-Variante,
-vorher hatte `.ncss-btn` GAR KEINE Tap-Rückmeldung). Wer eine ähnliche taktile
-Rückmeldung für ein eigenes Element will: `.ncss-press` (`helpers/animations.css`, ebenfalls
-`:active`-basiert, kombinierbar mit jedem Element).
+komponentenweiten `:active`-Zustand (`scale: 0.95`, unabhängig von der Farb-Variante,
+vorher hatte `.ncss-btn` GAR KEINE Tap-Rückmeldung) UND jede Variante zusätzlich eine
+ECHTE Farbänderung bei `:active` (dieselben Werte wie die jeweilige `:hover`-Variante,
+nur unbedingt statt nur unter der hover-Media-Query - reine Skalierung allein wirkte zu
+schwach). Ein Tap dauert oft nur ~100-150ms - die normale Übergangsdauer (200ms) erreicht
+ihren Zielwert dabei oft gar nicht erst, die Rückmeldung wirkte dadurch trotz korrekter
+Werte kaum wahrnehmbar (User-Report: "kann kaum touch feedbacks feststellen"). Fix: eigener
+Token `--ncss-motion-duration-fast` (100ms), NUR als `transition-duration` auf der
+`:active`-Regel selbst überschrieben - der EINSTIEG ins Gedrückt-Aussehen ist dadurch
+schnell, das Zurückfedern beim Loslassen bleibt bei der normalen, weicheren Dauer. Wer
+eine ähnliche taktile Rückmeldung für ein eigenes Element will: `.ncss-press`
+(`helpers/animations.css`, ebenfalls `:active`-basiert mit demselben schnellen Einstieg,
+kombinierbar mit jedem Element).
 
 **Volle Bildschirmhöhe auf Mobilgeräten**: `100vh`/`height: 100%` entsprechen auf Mobil-
 Browsern der GRÖSSTEN möglichen Höhe (Adressleiste ausgeblendet) - ist die Adressleiste
