@@ -13,12 +13,19 @@
      Drag am Resize-Handle der umgebenden Box testen, ohne das echte Browserfenster
      verkleinern zu müssen (auf der Doku-Seite selbst unmöglich, siehe dortige Erklärung -
      der Content steckt dort in einem Grid-Layout mit Sidebar, dessen Spalte NICHT auf den
-     Viewport zentriert ist, .ncss-full-bleed würde dort asymmetrisch ausbrechen). */
+     Viewport zentriert ist, .ncss-full-bleed würde dort asymmetrisch ausbrechen).
+     WICHTIG: KEIN padding-inline auf body - die Karte ist ein Flex-Kind, ein seitliches
+     Padding auf dem Flex-ELTERN reduziert den verfügbaren Platz, das Kind schrumpft dann
+     unter seine eigene explizite width (derselbe min-width:auto-Fallstrick wie sonst im
+     Projekt dokumentiert) - die Karte hätte dadurch NIE ihre volle width:min(100vw,...)
+     erreicht, egal wie schmal das iframe wird (per echtem Test gefunden: User-Report
+     "erreicht nie die Kante"). Nur padding-block, das kostet keinen Platz auf der Achse,
+     auf der die width-Formel misst. */
   body {
     margin: 0;
     display: flex;
     justify-content: center;
-    padding: 1.5rem 1rem;
+    padding-block: 1.5rem;
   }
 </style>
 </head>

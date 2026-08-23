@@ -197,30 +197,41 @@
   }
   /* .ncss-lead-quote selbst kommt jetzt aus helpers/typography.css (an dieselbe Stelle
      wie .ncss-text-lead promoted, da genügend allgemein nützlich - siehe dort). */
-  /* .ncss-eyebrow (Default: var(--ncss-color-brand), unser gedämpftes Grau #6f6f6e),
-     .ncss-text-muted (Default #5a5f6a) UND die Standard-Überschriftenfarbe
-     (--ncss-color-text, dunkel) sind für Text auf WEISSEN Karten/Flächen kalibriert -
-     direkt auf der kräftigen --ncss-color-bg-Seitenfläche (Sektionen zwischen den
-     Karten, nicht die Karten selbst) bräuchten alle drei eigene, helle Ersatzfarben.
-     Mit dem alten helleren #3399ff genügten dafür noch zwei dunkle, individuell auf AA-
-     Fließtext-Kontrast nachgerechnete Navytöne (Überschrift blieb beim System-Default) -
-     seit dem Wechsel auf den dunkleren #154a86 (User-Feedback: "text sollte weiß sein")
-     brauchen jetzt ALLE DREI helle Farbe, dunkler Text jeder Art wäre auf dem jetzt
-     selbst dunklen Hintergrund unlesbar. Vereinfacht dadurch auch den Dark Mode: beide
-     Modi sitzen jetzt auf einem ähnlich dunklen Hintergrund, EIN heller Wert reicht für
-     beide (kein light-dark() mehr nötig) - Eyebrow/Muted wiederverwenden dieselben zwei
-     hellblauen Töne, die zuvor NUR für den Dark-Mode-Zweig kalibriert waren, jetzt per
-     WCAG-Rechnung erneut gegen den neuen helleren Hintergrund geprüft (4.95:1 bzw.
-     5.14:1, beide über der 4.5:1-Grenze). Nur auf Sektionen
-     angewendet, die DIREKT auf --ncss-color-bg liegen - .landing-section--tinted (helle
-     bg-subtle-Fläche) und Karten brauchen das nicht, dort ist der System-Default längst
-     kontrastreich genug. */
-  .landing-on-bg h1,
-  .landing-on-bg h2 {
+  /* Text-Farbe für ALLES, was DIREKT auf --ncss-color-bg liegt (Sektionen zwischen den
+     Karten, nicht die Karten selbst) - per VERERBUNG statt einzelner Selektor-Patches
+     pro Element. Erster Versuch patchte nur h1/h2/.ncss-eyebrow/.ncss-text-muted
+     einzeln - traf dann prompt eine bare <table> (Fallstrick "Getestete Engines", User-
+     Report "tabellentext zu dunkel") UND unbeabsichtigt denselben Fließtext INNERHALB
+     der weißen Karten (User-Report "fließtext in den cards zu hell", weil die
+     Nachfahren-Selektoren nicht zwischen "direkt auf bg" und "in einer Karte" unter-
+     schieden). Allgemeine Lösung: color:#fff auf der Sektion SELBST, vererbt sich
+     automatisch in jedes Kind ohne eigene color-Regel (Tabellenzellen, h3, künftige neue
+     Elemente - kein Nachziehen pro Element-Typ mehr nötig). --ncss-color-text/-muted und
+     .ncss-eyebrow sind für Text auf WEISSEN Flächen kalibriert, dunkler Text jeder Art
+     wäre auf der jetzt selbst dunklen bg (seit #3399ff -> #154a86, User-Feedback: "text
+     sollte weiß sein") unlesbar - deshalb Eyebrow/Muted auf einen einzigen, dedizierten
+     hellen Wert je Rolle (kein light-dark()-Split mehr nötig, seit Light UND Dark Mode
+     beide auf einem ähnlich dunklen Hintergrund sitzen). Weiße Flächen INNERHALB der
+     Sektion (Karten, <pre>-Code-Blöcke) setzen die Vererbung explizit wieder auf den
+     System-Default zurück, sonst würde der geerbte helle Text dort unlesbar auf Weiß
+     landen - das war genau der zweite Fund oben. */
+  .landing-on-bg {
     color: #fff;
   }
   .landing-on-bg .ncss-eyebrow { color: #9fc4f2; }
   .landing-on-bg .ncss-text-muted { color: #aec7e6; }
+  .landing-on-bg .ncss-card,
+  .landing-on-bg pre {
+    color: var(--ncss-color-text);
+  }
+  .landing-on-bg .ncss-card .ncss-eyebrow,
+  .landing-on-bg pre .ncss-eyebrow {
+    color: var(--ncss-color-brand);
+  }
+  .landing-on-bg .ncss-card .ncss-text-muted,
+  .landing-on-bg pre .ncss-text-muted {
+    color: var(--ncss-color-text-muted);
+  }
   /* .ncss-badge-icon/--lg selbst (Struktur/Farbe/Größe) kommt jetzt aus components/
      badge.css - hier nur der seitenspezifische Abstand nach unten zur folgenden
      Überschrift, kein struktureller Duplikat mehr. */

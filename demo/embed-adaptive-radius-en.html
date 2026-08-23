@@ -13,12 +13,19 @@
      the surrounding box's resize handle, without shrinking their real browser window
      (not possible on the doc page itself - its content sits in a sidebar grid layout
      whose column isn't centered on the viewport, so .ncss-full-bleed would break out
-     asymmetrically there). */
+     asymmetrically there).
+     IMPORTANT: NO padding-inline on body - the card is a flex child, inline padding on
+     the flex PARENT reduces the available space, the child then shrinks below its own
+     explicit width (the same min-width:auto flex trap documented elsewhere in this
+     project) - the card would then NEVER reach its full width:min(100vw,...), no matter
+     how narrow the iframe gets (found via real testing: user report "never reaches the
+     viewport edge"). padding-block only, that doesn't cost space on the axis the width
+     formula measures. */
   body {
     margin: 0;
     display: flex;
     justify-content: center;
-    padding: 1.5rem 1rem;
+    padding-block: 1.5rem;
   }
 </style>
 </head>
