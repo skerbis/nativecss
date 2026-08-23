@@ -145,19 +145,32 @@
   <section id="input-group" class="ncss-stack">
     <h2 class="demo-section-title">Input-Group</h2>
     <p class="ncss-text-muted ncss-text-sm">Formular-Steuerelemente visuell zu EINER Einheit verschmolzen (<code>components/input-group.css</code>) - geteilte Rahmenlinie statt Lücke, nur die äußeren Ecken rund. Zwei Fälle: Feld + Button (Suchleiste) und mehrere Felder nebeneinander (Vorname/Nachname).</p>
+    <p class="ncss-text-muted ncss-text-sm"><strong>Barrierefreiheit</strong>: <code>placeholder</code> ist KEIN Ersatz für ein Label - verschwindet bei Eingabe, wird nicht von jeder Screenreader-Software zuverlässig als Feldname angekündigt. Jedes Feld braucht ein echtes <code>&lt;label&gt;</code>, bei Bedarf per <code>.ncss-visually-hidden</code> optisch versteckt. Das Label gehört dabei als Geschwister-Element VOR die <code>.ncss-input-group</code>, nicht als Kind hinein - sonst zählt es fälschlich als <code>:first-child</code> und die Eckenrundung landet auf dem unsichtbaren Label statt dem ersten echten Feld.</p>
     <div class="ncss-stack ncss-stack--tight demo-narrow-form">
-      <div class="ncss-input-group">
-        <input class="ncss-input" type="search" placeholder="Suchbegriff…">
-        <button type="submit" class="ncss-btn ncss-btn--primary">Suchen</button>
+      <div class="ncss-field">
+        <label class="ncss-visually-hidden" for="demoSearchGroup">Suchbegriff</label>
+        <div class="ncss-input-group">
+          <input class="ncss-input" type="search" id="demoSearchGroup" placeholder="Suchbegriff…">
+          <button type="submit" class="ncss-btn ncss-btn--primary">Suchen</button>
+        </div>
       </div>
       <div class="ncss-input-group">
-        <input class="ncss-input" placeholder="Vorname">
-        <input class="ncss-input" placeholder="Nachname">
+        <input class="ncss-input" aria-label="Vorname" placeholder="Vorname">
+        <input class="ncss-input" aria-label="Nachname" placeholder="Nachname">
       </div>
     </div>
-    <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
-  &lt;input class="ncss-input" type="search" placeholder="Suchbegriff…"&gt;
+    <pre><code class="language-html">&lt;label class="ncss-visually-hidden" for="search"&gt;Suchbegriff&lt;/label&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" id="search" placeholder="Suchbegriff…"&gt;
   &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Suchen&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Mehrere direkt verschmolzene Felder ohne Platz für ein sichtbares/verstecktes
+     Sibling-Label je Feld: aria-label direkt am &lt;input&gt; ist hier die richtige,
+     WCAG-konforme Technik (keine Strukturänderung der Input-Group nötig). --&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" aria-label="Vorname" placeholder="Vorname"&gt;
+  &lt;input class="ncss-input" aria-label="Nachname" placeholder="Nachname"&gt;
 &lt;/div&gt;</code></pre>
   </section>
 

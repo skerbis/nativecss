@@ -807,6 +807,25 @@ umgestellt:
     NICHT (dessen sichtbarer Rahmen sitzt am inneren `<select>`, nicht am Wrapper selbst,
     bräuchte eigene Verschachtelungsregeln) - kein konkreter Bedarf dafür in den beiden
     vom User genannten Fällen, bei Bedarf ergänzen statt vorsorglich mitbauen.
+    - **Erste eigene Demo-/Doku-Beispiele hatten KEIN Label, nur `placeholder`** - vom
+      User selbst nachträglich als a11y-Lücke aufgezeigt. `placeholder` ist kein
+      Label-Ersatz (verschwindet bei Eingabe, nicht zuverlässig als Feldname
+      angekündigt). Beim Nachbessern zusätzlich einen ECHTEN, selbst gebauten Bug
+      vermieden statt begangen: ein `<label class="ncss-visually-hidden">` ALS KIND von
+      `.ncss-input-group` gesetzt hätte fälschlich als `:first-child` gezählt (CSS
+      `:first-child` ist strukturell, zählt JEDES Element-Kind unabhängig von
+      `display`/Sichtbarkeit) - die Eckenrundung wäre auf das unsichtbare Label
+      gewandert statt auf das erste echte Feld. Fix: Label als GESCHWISTER-Element VOR
+      der `.ncss-input-group` (nicht als Kind hinein) - `<label for="...">` verknüpft
+      sich unabhängig von der DOM-Position, keine CSS-Änderung an input-group.css nötig.
+      Für mehrere direkt verschmolzene Felder OHNE Platz für ein Sibling-Label je Feld
+      (Vorname/Nachname): `aria-label` direkt am `<input>` statt eines echten
+      `<label>`-Elements - verändert die Kind-Struktur der Gruppe gar nicht erst, kein
+      Risiko für dieselbe `:first-child`-Falle. Erster eigener Entwurf für DIESEN Fall
+      wickelte jedes `<input>` fälschlich in ein eigenes `.ncss-field` (üblicher
+      Label+Input-Wrapper) - hätte `.ncss-input-group > .ncss-input` komplett
+      wirkungslos gemacht (direkte Kinder wären dann `.ncss-field`-Divs, keine
+      `.ncss-input`-Elemente mehr), noch vor dem Testen selbst bemerkt und korrigiert.
 
 41. **`components/combobox.js`/`.css` - `<datalist>`- und `<select>`-Popups sind in
     keinem Browser per CSS stylebar (per WebSearch bestätigt, Stand 2026), reines CSS

@@ -88,9 +88,15 @@
 <section class="ncss-stack" id="input-group">
   <h2 class="demo-section-title">Input-Group</h2>
   <p class="ncss-text-muted ncss-text-sm"><code>components/input-group.css</code> - mehrere Formular-Steuerelemente visuell zu EINER Einheit verschmolzen (geteilte Rahmenlinie statt Lücke, nur die äußeren Ecken rund). Deckt zwei Fälle ab: Feld + Button (Suchleiste) und mehrere Felder nebeneinander (z.B. Vorname/Nachname). Bewusst NICHT "Form-Group" genannt - leicht zu verwechseln mit der bereits bestehenden <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code>-Gruppierung (Semantik statt reiner Optik).</p>
-  <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
-  &lt;input class="ncss-input" type="search" placeholder="Suchbegriff…"&gt;
+  <pre><code class="language-html">&lt;label class="ncss-visually-hidden" for="search"&gt;Suchbegriff&lt;/label&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" id="search" placeholder="Suchbegriff…"&gt;
   &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Suchen&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Barrierefreiheit</strong>: <code>placeholder</code> ist KEIN Ersatz für ein Label - verschwindet bei Eingabe, wird nicht von jeder Screenreader-Software als Feldname angekündigt. Jedes Feld braucht ein echtes <code>&lt;label&gt;</code>, bei Bedarf per <code>.ncss-visually-hidden</code> versteckt - als Geschwister-Element VOR der <code>.ncss-input-group</code>, nicht als Kind hinein (sonst zählt es fälschlich als <code>:first-child</code> und die Eckenrundung landet auf dem unsichtbaren Label). Bei mehreren direkt verschmolzenen Feldern ohne Platz für ein Sibling-Label je Feld (z.B. Vorname/Nachname) ist <code>aria-label</code> direkt am <code>&lt;input&gt;</code> die richtige Technik, ohne die Kind-Struktur der Gruppe zu verändern:</p>
+  <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" aria-label="Vorname" placeholder="Vorname"&gt;
+  &lt;input class="ncss-input" aria-label="Nachname" placeholder="Nachname"&gt;
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">Deckt aktuell <code>.ncss-input</code>/<code>-textarea</code>/<code>.ncss-btn</code> als direkte Kinder ab - <code>.ncss-select-wrapper</code> (noch) nicht (der sichtbare Rahmen sitzt am inneren <code>&lt;select&gt;</code>, nicht am Wrapper selbst).</p>
 </section>

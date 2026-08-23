@@ -88,9 +88,15 @@
 <section class="ncss-stack" id="input-group">
   <h2 class="demo-section-title">Input Group</h2>
   <p class="ncss-text-muted ncss-text-sm"><code>components/input-group.css</code> - multiple form controls visually fused into ONE unit (shared border line instead of a gap, only the outer corners rounded). Covers two cases: field + button (search bar) and multiple fields side by side (e.g. first name/last name). Deliberately NOT called "form group" - too easy to confuse with the already-existing <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code> grouping (semantics rather than pure styling).</p>
-  <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
-  &lt;input class="ncss-input" type="search" placeholder="Search…"&gt;
+  <pre><code class="language-html">&lt;label class="ncss-visually-hidden" for="search"&gt;Search term&lt;/label&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" id="search" placeholder="Search…"&gt;
   &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Search&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Accessibility</strong>: a <code>placeholder</code> is NOT a substitute for a label - it disappears once text is entered, and isn't reliably announced as the field's name by every screen reader. Every field needs a real <code>&lt;label&gt;</code>, visually hidden via <code>.ncss-visually-hidden</code> if needed - as a sibling BEFORE the <code>.ncss-input-group</code>, not nested inside it (otherwise it would incorrectly count as <code>:first-child</code> and the corner rounding would land on the invisible label instead of the first real field). For multiple tightly-fused fields with no room for a per-field sibling label (e.g. first/last name), <code>aria-label</code> directly on the <code>&lt;input&gt;</code> is the right technique, without changing the group's child structure:</p>
+  <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" aria-label="First name" placeholder="First name"&gt;
+  &lt;input class="ncss-input" aria-label="Last name" placeholder="Last name"&gt;
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">Currently covers <code>.ncss-input</code>/<code>-textarea</code>/<code>.ncss-btn</code> as direct children - not (yet) <code>.ncss-select-wrapper</code> (its visible border sits on the inner <code>&lt;select&gt;</code>, not the wrapper itself).</p>
 </section>

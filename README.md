@@ -464,9 +464,26 @@ rund. Deckt zwei Fälle ab: Feld + Button (Suchleiste) und mehrere Felder nebene
 (z.B. Vorname/Nachname).
 
 ```html
+<label class="ncss-visually-hidden" for="search">Suchbegriff</label>
 <div class="ncss-input-group">
-  <input class="ncss-input" type="search" placeholder="Suchbegriff…">
+  <input class="ncss-input" type="search" id="search" placeholder="Suchbegriff…">
   <button type="submit" class="ncss-btn ncss-btn--primary">Suchen</button>
+</div>
+```
+
+**Barrierefreiheit**: `placeholder` ist KEIN Ersatz für ein Label - verschwindet bei
+Eingabe, wird nicht von jeder Screenreader-Software als Feldname angekündigt. Jedes Feld
+braucht ein echtes `<label>`, bei Bedarf per `.ncss-visually-hidden` versteckt - als
+Geschwister-Element VOR der `.ncss-input-group`, nicht als Kind hinein (sonst zählt es
+fälschlich als `:first-child` und die Eckenrundung landet auf dem unsichtbaren Label
+statt dem ersten echten Feld). Bei mehreren direkt verschmolzenen Feldern ohne Platz für
+ein Sibling-Label je Feld (z.B. Vorname/Nachname) ist `aria-label` direkt am `<input>`
+die richtige Technik, ohne die Kind-Struktur der Gruppe zu verändern:
+
+```html
+<div class="ncss-input-group">
+  <input class="ncss-input" aria-label="Vorname" placeholder="Vorname">
+  <input class="ncss-input" aria-label="Nachname" placeholder="Nachname">
 </div>
 ```
 
