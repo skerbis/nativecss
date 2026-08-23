@@ -1060,6 +1060,31 @@ gewünschte Zeichenweg).
     abgeschlossen ist. Demo: `demo/stacked-cards.html`, `demo/product.html` (beide
     Sektionen dort).
 
+33. **`demo/colors.html`s Live-Farbeditor setzte ursprünglich einen EINZELNEN festen
+    Hex-Wert statt eines echten `light-dark()`-Paars - Light UND Dark zeigten während der
+    Bearbeitung dieselbe Farbe.** User-Frage, die den Fehler aufdeckte: "müsste ich im
+    Picker nicht auch die Farbwerte für dark und light pflegen? aktuell geht ja nur
+    light". Fix: zwei getrennte JS-Objekte (`lightValues`/`darkValues`) statt eines
+    einzelnen Hex-Strings pro Token, ein Umschalter im Modal wählt, welche Hälfte die
+    Regler gerade zeigen/bearbeiten, jede Änderung baut `light-dark(hell, dunkel)` frisch
+    zusammen. Für die Vorbelegung beider Hälften (nicht nur der gerade aktiven) reicht das
+    bestehende Sonden-Element-Muster (Fallstrick 22, `color: var(--token)` erzwingt die
+    `light-dark()`-Auflösung) allein nicht - es liest nur die AKTUELL aktive Variante.
+    Ergänzt: `color-scheme` zusätzlich DIREKT auf demselben Sonden-Element gesetzt (nicht
+    nur `color`) erzwingt GEZIELT Light oder Dark für genau diese Auflösung, unabhängig
+    vom Seiten-Theme - dasselbe Muster wie `.ncss-scheme-light`/`-dark`
+    (`helpers/surfaces.css`), hier zum ersten Mal per JS statt per Klasse angewendet.
+    Wichtig dabei (per genauer Prüfung von Fallstrick 22s eigenem Text bestätigt, nicht nur
+    angenommen): `color-scheme` UND `color` müssen BEIDE auf demselben Element gesetzt
+    werden, sonst greift die dort dokumentierte Einschränkung ("color-scheme kann einen
+    bereits GEERBTEN, fertig aufgelösten color-Wert nicht rückwirkend ändern") - hier
+    unproblematisch, weil `color` bei jeder Abfrage ohnehin frisch auf dem Sonden-Element
+    selbst gesetzt wird, nichts vererbt werden muss. Kleine Zusatz-Lehre: `aria-pressed`
+    hat KEINE eigene Optik - für den Umschalter zusätzlich die Button-Variante
+    (`--primary`/`--secondary`) per Klasse getauscht, sonst war für sehende Nutzer nicht
+    erkennbar, welche Hälfte gerade aktiv ist, obwohl das Attribut selbst korrekt gesetzt
+    war.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

@@ -186,7 +186,11 @@
   <button type="button" class="ncss-dialog-close" command="close" commandfor="colorEditorModal" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
   <div class="ncss-modal-header"><h3>Farben live anpassen</h3></div>
   <div class="ncss-modal-body ncss-stack">
-    <p class="ncss-text-sm ncss-text-muted">Setzt jede Basisfarbe direkt als CSS Custom Property auf <code>&lt;html&gt;</code> - alle abgeleiteten Stufen (100/300/700/900, Badges, Buttons, Cards ...) ziehen automatisch mit, weil sie per <code>color-mix()</code> aus genau diesen Werten berechnet werden. Überschreibt Light UND Dark mit derselben Farbe, solange die Anpassung aktiv ist (ersetzt das <code>light-dark()</code>-Paar durch einen festen Wert) - Theme-/Palette-Button bleiben klickbar, wirken sich auf die hier geänderten Farben aber nicht mehr aus, bis "Zurücksetzen" gedrückt wird.</p>
+    <p class="ncss-text-sm ncss-text-muted">Setzt jede Basisfarbe direkt als CSS Custom Property auf <code>&lt;html&gt;</code> - alle abgeleiteten Stufen (100/300/700/900, Badges, Buttons, Cards ...) ziehen automatisch mit, weil sie per <code>color-mix()</code> aus genau diesen Werten berechnet werden. Light und Dark bleiben dabei GETRENNT pflegbar (echtes <code>light-dark()</code>-Paar, kein fester Wert) - unten umschalten, welche der beiden Varianten die Regler gerade zeigen/bearbeiten. Theme-/Palette-Button bleiben klickbar, wirken sich auf die hier geänderten Farben aber nicht mehr aus, bis "Zurücksetzen" gedrückt wird.</p>
+    <div class="ncss-cluster" role="group" aria-label="Bearbeitete Variante">
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="colorEditorSchemeLight" aria-pressed="true">☀️ Hell bearbeiten</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="colorEditorSchemeDark" aria-pressed="false">🌙 Dunkel bearbeiten</button>
+    </div>
     <div class="demo-color-editor-grid" id="colorEditorFields">
       <div class="demo-color-field">
         <input type="color" id="colorEdit-brand" data-token="--ncss-color-brand">
@@ -449,7 +453,21 @@
   // warum das NUR auf :root zuverlässig funktioniert (eine lokal auf einem Nachfahren
   // gesetzte Überschreibung würde die bereits vererbten, fertig berechneten Ableitungen
   // NICHT neu auflösen).
+  //
+  // Light UND Dark bleiben GETRENNT pflegbar (User-Frage: "müsste ich im picker nicht
+  // auch die Farbwerte für dark und light pflegen? aktuell geht ja nur light" - zu Recht,
+  // die erste Fassung setzte einen FESTEN Hex-Wert statt eines echten light-dark()-Paars,
+  // überschrieb dadurch beide Modi mit derselben Farbe). lightValues/darkValues halten
+  // BEIDE Hälften unabhängig im Speicher, jede Änderung baut daraus sofort
+  // "light-dark(hell, dunkel)" neu zusammen und setzt DAS als Override - nie einen
+  // nackten Hex-Wert.
   var colorEditorFields = document.querySelectorAll("#colorEditorFields input[type=color]");
+  var schemeLightBtn = document.getElementById("colorEditorSchemeLight");
+  var schemeDarkBtn = document.getElementById("colorEditorSchemeDark");
+  var editingScheme = "light";
+  var lightValues = {};
+  var darkValues = {};
+  var defaultsCaptured = false;
 
   function rgbStringToHex(rgbString) {
     var match = rgbString.match(/\d+/g);
@@ -464,28 +482,69 @@
   // #6ea8ff)"), keine fertig berechnete Farbe - light-dark() wird erst aufgelöst, wenn
   // der Wert tatsächlich an einer echten Farb-Eigenschaft (color/background-color/...)
   // verwendet wird. Ein unsichtbares Sonden-Element mit "color: var(--token)" zwingt genau
-  // diese Auflösung, danach liefert getComputedStyle(...).color den echten, aktuell
-  // aktiven (Light- ODER Dark-Anteil, je nach [data-theme]/prefers-color-scheme) Farbwert.
+  // diese Auflösung. color-scheme DIREKT auf demselben Sonden-Element erzwingt zusätzlich
+  // GEZIELT Light ODER Dark, unabhängig vom aktuell aktiven Seiten-Theme (dasselbe Muster
+  // wie .ncss-scheme-light/-dark, helpers/surfaces.css) - color-scheme UND color müssen
+  // dafür beide DIREKT auf diesem einen Element gesetzt werden, nicht nur color-scheme
+  // allein (siehe Kommentar dort: color-scheme wirkt sich nur auf light-dark()-Aufrufe
+  // INNERHALB des Elements aus, kann einen von einem Vorfahren schon fertig aufgelösten,
+  // NUR GEERBTEN Wert nicht rückwirkend ändern - hier aber unproblematisch, weil color
+  // hier ohnehin jedes Mal frisch am Sonden-Element selbst gesetzt wird, nichts geerbt
+  // werden muss).
   var colorProbe = document.createElement("span");
   colorProbe.style.display = "none";
   document.body.appendChild(colorProbe);
 
-  function resolveTokenHex(token) {
+  function resolveTokenHex(token, scheme) {
+    colorProbe.style.colorScheme = scheme;
     colorProbe.style.color = "var(" + token + ")";
     return rgbStringToHex(getComputedStyle(colorProbe).color);
   }
 
-  function syncColorEditorFields() {
+  function captureDefaultsOnce() {
+    if (defaultsCaptured) return;
     colorEditorFields.forEach(function (input) {
-      input.value = resolveTokenHex(input.dataset.token);
+      var token = input.dataset.token;
+      lightValues[token] = resolveTokenHex(token, "light");
+      darkValues[token] = resolveTokenHex(token, "dark");
+    });
+    defaultsCaptured = true;
+  }
+
+  function syncColorEditorFields() {
+    var values = editingScheme === "light" ? lightValues : darkValues;
+    colorEditorFields.forEach(function (input) {
+      input.value = values[input.dataset.token];
     });
   }
 
-  document.getElementById("colorEditorOpen").addEventListener("click", syncColorEditorFields);
+  function setEditingScheme(scheme) {
+    editingScheme = scheme;
+    schemeLightBtn.setAttribute("aria-pressed", String(scheme === "light"));
+    schemeDarkBtn.setAttribute("aria-pressed", String(scheme === "dark"));
+    // aria-pressed allein hat keine eigene Optik (reines a11y-Attribut) - Varianten-Klasse
+    // zusätzlich tauschen macht den aktiven Modus auch SEHEND erkennbar.
+    schemeLightBtn.classList.toggle("ncss-btn--primary", scheme === "light");
+    schemeLightBtn.classList.toggle("ncss-btn--secondary", scheme !== "light");
+    schemeDarkBtn.classList.toggle("ncss-btn--primary", scheme === "dark");
+    schemeDarkBtn.classList.toggle("ncss-btn--secondary", scheme !== "dark");
+    syncColorEditorFields();
+  }
+
+  schemeLightBtn.addEventListener("click", function () { setEditingScheme("light"); });
+  schemeDarkBtn.addEventListener("click", function () { setEditingScheme("dark"); });
+  setEditingScheme("light");
+
+  document.getElementById("colorEditorOpen").addEventListener("click", function () {
+    captureDefaultsOnce();
+    syncColorEditorFields();
+  });
 
   colorEditorFields.forEach(function (input) {
     input.addEventListener("input", function () {
-      document.documentElement.style.setProperty(input.dataset.token, input.value);
+      var token = input.dataset.token;
+      (editingScheme === "light" ? lightValues : darkValues)[token] = input.value;
+      document.documentElement.style.setProperty(token, "light-dark(" + lightValues[token] + ", " + darkValues[token] + ")");
     });
   });
 
@@ -493,6 +552,8 @@
     colorEditorFields.forEach(function (input) {
       document.documentElement.style.removeProperty(input.dataset.token);
     });
+    defaultsCaptured = false;
+    captureDefaultsOnce();
     syncColorEditorFields();
   });
 </script>

@@ -282,14 +282,21 @@ Swatches im Abschnitt "Semantische Tokens" außer `overlay`, siehe unten), setzt
 `documentElement.style.setProperty()` direkt auf `<html>` - dieselbe Voraussetzung wie bei
 `theme.css` (siehe oben "Theme anpassen"): NUR auf `:root` gesetzt rechnen sich alle
 abgeleiteten Skalen (100/300/700/900, `-on-soft`, Badges/Buttons/Cards) automatisch mit,
-weil sie per `color-mix()` aus genau diesen Werten kommen. Ersetzt dabei das
-`light-dark()`-Paar durch einen einzelnen festen Wert (Light/Dark zeigen währenddessen
-dieselbe Farbe) - "Zurücksetzen" entfernt die Inline-Styles wieder vollständig. Beim
-Öffnen werden die Regler auf die AKTUELL resultierende Farbe vorbelegt: `getComputedStyle
-(...).getPropertyValue("--x")` liefert bei einem Custom Property nur den unaufgelösten
-`light-dark(...)`-Text zurück, kein fertiges RGB - ein unsichtbares Sonden-Element mit
-`color: var(--x)` zwingt die tatsächliche Auflösung (abhängig vom aktuell aktiven
-Theme), erst dessen `getComputedStyle(...).color` ist die reale Farbe. `--ncss-color-
+weil sie per `color-mix()` aus genau diesen Werten kommen. Setzt dabei ein ECHTES
+`light-dark(hell, dunkel)`-Paar (nicht einen einzelnen festen Wert) - ein Umschalter im
+Modal ("☀️ Hell bearbeiten"/"🌙 Dunkel bearbeiten") wählt, welche der beiden Hälften die
+Regler gerade zeigen/bearbeiten, beide werden unabhängig im Speicher gehalten und bei
+JEDER Änderung neu zu `light-dark(...)` zusammengesetzt - ursprünglich ersetzte ein
+einzelner fester Wert das ganze Paar (Light/Dark zeigten währenddessen dieselbe Farbe),
+zu Recht als Lücke gemeldet ("müsste ich im Picker nicht auch die Farbwerte für dark und
+light pflegen? aktuell geht ja nur light"). "Zurücksetzen" entfernt die Inline-Styles
+wieder vollständig. Vorbelegung pro Hälfte: `getComputedStyle(...).getPropertyValue
+("--x")` liefert bei einem Custom Property nur den unaufgelösten `light-dark(...)`-Text
+zurück, kein fertiges RGB - ein unsichtbares Sonden-Element mit `color: var(--x)` zwingt
+die tatsächliche Auflösung, zusätzlich `color-scheme` DIREKT auf demselben Sonden-Element
+erzwingt dabei GEZIELT Light oder Dark (dasselbe Muster wie `.ncss-scheme-light`/`-dark`,
+`helpers/surfaces.css`) - unabhängig vom gerade aktiven Seiten-Theme liest der Editor so
+IMMER beide echten Standardwerte aus, nicht nur den aktuell sichtbaren. `--ncss-color-
 overlay` bleibt bewusst OHNE Regler - ein transparenter `rgb(0 0 0 / 45%)`-Wert, `<input
 type="color">` kann keine Transparenz abbilden und würde die Deckkraft beim Übernehmen
 stillschweigend auf 100% setzen.
