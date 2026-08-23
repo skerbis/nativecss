@@ -127,6 +127,16 @@
    Firefox - beide parallel nötig, kein gemeinsamer Standardname bisher. */
 .ncss-input[type="color"] {
   width: 4rem;
+  /* Ohne explizite Höhe bemisst jeder Browser das Swatch-"Feld" anders, statt wie bei
+     Text-artigen Inputs (die die Höhe aus Zeilenhöhe + Padding + Rahmen ableiten) die
+     GLEICHE Formel anzuwenden - per echtem Test bestätigt: WebKit rendert dadurch nur
+     23px (statt 49px bei den anderen Feldern) - ein sichtbar schmaler Streifen statt
+     eines vollwertigen Feldes (User-Report: "im Safari nur ein schmaler Strich"), Chromium
+     (27px) und Firefox (32px) weichen ebenfalls ab, nur weniger extrem. 1lh (Baseline seit
+     2023) + dieselben Padding-/Rahmen-Token wie .ncss-input oben errechnen exakt dieselbe
+     Höhe wie ein normales Textfeld, unabhängig von Schriftgröße/Zeilenhöhe-Änderungen -
+     robuster als ein geschätzter fester px/em-Wert. */
+  height: calc(1lh + 2 * var(--ncss-space-2xs) + 2 * var(--ncss-border-width));
   padding: var(--ncss-space-3xs);
   cursor: pointer;
 }

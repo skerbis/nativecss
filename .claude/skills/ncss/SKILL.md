@@ -990,6 +990,23 @@ gewünschte Zeichenweg).
     Demo: `demo/forms.html`, vier neue Sektionen (Datei-Upload, Weitere Feldtypen,
     Gruppierte Felder, Fortschritt/Messwert/Ergebnis).
 
+    **Nachtrag, User-Report auf echtem Safari ("Farbefeld ist im Safari nur ein schmaler
+    Strich")**: `.ncss-input[type="color"]` hatte KEINE eigene `height` - anders als
+    Text-artige Inputs (Höhe ergibt sich dort automatisch aus Zeilenhöhe + Padding +
+    Rahmen) bemisst jeder Browser die Swatch-Fläche eines Farb-Inputs offenbar nach einer
+    ANDEREN, eigenen Formel. Per echtem Höhenvergleich bestätigt (nicht nur der
+    Safari-Report übernommen): WebKit 23px (Soll: 49px, am extremsten), Chromium 27px
+    (Soll: 47px), Firefox 32px (Soll: 45px) - der Bug betraf alle drei Engines, nur
+    unterschiedlich stark, Safari war lediglich der zuerst bemerkte, deutlichste Fall.
+    Fix: `height: calc(1lh + 2 * var(--ncss-space-2xs) + 2 * var(--ncss-border-width));` -
+    dieselbe Formel, die ein normales `.ncss-input` implizit über sein Boxmodell erreicht,
+    hier explizit nachgebaut (`1lh`, Baseline seit 2023, robuster als ein geschätzter
+    fester px/em-Wert - bleibt korrekt, auch wenn Schriftgröße/Zeilenhöhe sich künftig
+    ändern). Nach dem Fix: Firefox exakt 1:1 (45.33px beide), Chromium/WebKit auf 2-4px
+    Differenz statt 20-26px - der verbleibende Rest ist die eigene UA-Polsterung der
+    Swatch-Fläche selbst, praktisch nicht mehr wahrnehmbar (per Screenshot in beiden
+    Farbschemata bestätigt).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
