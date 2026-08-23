@@ -694,7 +694,9 @@ normalisierte Termin-Datentyp, nur andere Darstellung):
 
 Weitere Attribute: `data-limit` (max. Anzahl in agenda/list), `data-month`
 (Start-Monat der Monatsansicht, `"YYYY-MM"`), `data-window-months` (wie weit eine
-unbegrenzte ICS-`RRULE` ohne `COUNT`/`UNTIL` vorausberechnet wird, Default 18).
+unbegrenzte ICS-`RRULE` ohne `COUNT`/`UNTIL` vorausberechnet wird, Default 18),
+`data-week-start` (Wochenstart-Tag im Monatsraster, `0`=Sonntag..`6`=Samstag - Default
+richtet sich nach `lang`: Montag für `de`, Sonntag für `en`).
 
 **Datenquelle, zwei Optionen** (beide ergeben denselben internen Termin-Datentyp):
 - `data-src`: JSON-Array, jedes Element `{id?, title, start, end?, allDay?, location?,

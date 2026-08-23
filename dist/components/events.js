@@ -28,6 +28,9 @@
 (function () {
   "use strict";
 
+  /* Index 0 = Sonntag (JS Date.getDay()-Konvention), NICHT die Anzeige-Reihenfolge - die
+     Anzeige-Reihenfolge wird erst in weekdayNamesFor() per Rotation um den tatsächlichen
+     Wochenstart gebildet. */
   var WEEKDAY_NAMES = {
     de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
     en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -36,10 +39,28 @@
     de: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
     en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
   };
+  /* Deutschland (und die weit überwiegende Mehrheit anderer Länder/ISO 8601) beginnt die
+     Woche mit Montag, nicht Sonntag - JS' eigene Date-API (getDay()===0 für Sonntag) folgt
+     dagegen der US-Konvention. Per-Locale-Default, zusätzlich per data-week-start (0=So..
+     6=Sa) explizit überschreibbar für Sonderfälle. */
+  var WEEK_START_DEFAULT = { de: 1, en: 0 };
 
   function locale() {
     var lang = document.documentElement.getAttribute("lang") || "de";
     return lang.slice(0, 2) === "en" ? "en" : "de";
+  }
+
+  function weekStartFor(el, lang) {
+    var attr = el.getAttribute("data-week-start");
+    if (attr !== null && /^[0-6]$/.test(attr)) {
+      return parseInt(attr, 10);
+    }
+    return WEEK_START_DEFAULT[lang] !== undefined ? WEEK_START_DEFAULT[lang] : 0;
+  }
+
+  function weekdayNamesFor(lang, weekStart) {
+    var names = WEEKDAY_NAMES[lang];
+    return names.slice(weekStart).concat(names.slice(0, weekStart));
   }
 
   function pad2(n) {
@@ -285,6 +306,7 @@
   /* --- View: month (Kalender-Monatsraster) ----------------------------------------------- */
   function renderMonth(el, events) {
     var lang = locale();
+    var weekStart = weekStartFor(el, lang);
     var monthAttr = el.getAttribute("data-month");
     var current;
     if (monthAttr && /^\d{4}-\d{2}$/.test(monthAttr)) {
@@ -329,7 +351,7 @@
       var year = current.getFullYear();
       var month = current.getMonth();
       var firstOfMonth = new Date(year, month, 1);
-      var startOffset = firstOfMonth.getDay(); // 0=Sun
+      var startOffset = (firstOfMonth.getDay() - weekStart + 7) % 7;
       var gridStart = new Date(year, month, 1 - startOffset);
       var today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -348,7 +370,7 @@
         (lang === "de" ? "Nächster Monat" : "Next month") +
         '">&rsaquo;</button>' +
         '</div><table class="ncss-cal-grid"><thead><tr>';
-      WEEKDAY_NAMES[lang].forEach(function (name) {
+      weekdayNamesFor(lang, weekStart).forEach(function (name) {
         html += '<th scope="col" class="ncss-cal-weekday">' + name + "</th>";
       });
       html += "</tr></thead><tbody>";

@@ -1217,6 +1217,21 @@ gewünschte Zeichenweg).
       anzulegen ("kein Wildwuchs"): kleinere Button-Größe komponenten-lokal in
       `events.css` über `.ncss-cal-header .ncss-btn { padding/font-size: ... }` gelöst,
       kein neuer globaler Modifier.
+    - **Wochenstart im Monatsraster war hartkodiert auf Sonntag** (`firstOfMonth.getDay()`
+      direkt als Versatz verwendet - JS' eigene `Date`-API folgt der US-Konvention, Index
+      0 = Sonntag) - übersehen, bis der User es explizit ansprach ("kalender in
+      deutschland beginnt gewöhnlich mit montag als starttag der woche"). Für ein
+      zweisprachiges Widget reicht "einmal die Spec nachlesen" nicht - JEDE
+      locale-abhängige Konvention (Wochenstart, Datumsformat, Papierformat, Adressfelder
+      ...) muss aktiv geprüft werden, nicht nur die Übersetzung der sichtbaren Strings.
+      Fix: `WEEK_START_DEFAULT = { de: 1, en: 0 }` (per `lang`-Attribut, dieselbe
+      `locale()`-Erkennung wie für Monatsnamen), zusätzlich per `data-week-start`
+      (`0`-`6`) explizit überschreibbar für Sonderfälle. `startOffset`-Berechnung von
+      `firstOfMonth.getDay()` auf `(firstOfMonth.getDay() - weekStart + 7) % 7` geändert
+      (modulare Rotation statt direkter Wert), Wochentag-Kopfzeile passend dazu per
+      `weekdayNamesFor()` um denselben Versatz rotiert - beide Stellen MÜSSEN synchron
+      bleiben, sonst zeigt die Kopfzeile einen anderen Wochentag als tatsächlich in der
+      jeweiligen Spalte steht.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
