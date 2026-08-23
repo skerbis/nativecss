@@ -8,9 +8,12 @@ description: Arbeiten mit dem ncss Design System (public/ncss/) - natives CSS, k
 `public/ncss/` ist ein eigenständiges, natives CSS-Design-System - kein UIkit-Erbe, kein
 LESS/Sass, kein Build-Schritt. Web Awesome (Free) und Font Awesome (Free) sind selbst
 gehostet unter `public/ncss/vendor/` und über `webawesome-bridge.css` an ncss-Tokens
-gekoppelt. Das vollständige Handbuch (dogfooded, im Browser lesbar) liegt unter
-`public/ncss/demo/docs.html` - dieses Skill-Dokument ist die kondensierte Fassung für
+gekoppelt. Das vollständige Handbuch (dogfooded, im Browser lesbar, mehrsprachig) liegt
+unter `public/ncss/docs/de/index.html` (Quelle: `docs-src/`, per `docs-src/build.mjs`
+generiert - siehe Fallstrick 35) - dieses Skill-Dokument ist die kondensierte Fassung für
 schnelle Arbeit plus die Fallstricke, die man sich sonst mühsam erneut erarbeiten müsste.
+Die alte einseitige `demo/docs.html`-Variante wurde entfernt, seit die Doku-Website
+vollständig ist (siehe Fallstrick 35).
 
 **Repo-Struktur (seit dem Aufräumen des Hauptordners)**: die eigentliche Bibliothek
 (`ncss.css` + alles, was sie importiert - `tokens.css`/`colors.css`/`reset.css`/
@@ -1028,10 +1031,10 @@ als mask-image data-URI nach demselben Muster ergänzen, kein großes Set vorsor
 (Switch/Range), `media.html` (Video), `landing.html` (realistische Beispielseite, NativeCSS +
 Web Awesome + Font Awesome im Zusammenspiel, u.a. `<wa-dropdown>` als Menü statt nativem
 `<details>`), `effects.html` (Glow-Border/-Pulse, Glass, Stamped, Grain), `theming.html`
-(`theme.css` live am Beispiel), `docs.html` (dieses Handbuch,
-ausführlicher als dieses Skill-Dokument). Jede Seite bindet `../ncss.css` ein und trägt ihr eigenes,
-seitenspezifisches CSS in einem eigenen `<style>`-Block mit `demo-*`-Präfix - nie in den
-ncss-Dateien selbst.
+(`theme.css` live am Beispiel). Das ausführliche Handbuch ist keine Demo-Seite mehr,
+sondern die eigene Doku-Website unter `docs/` (siehe Fallstrick 35). Jede Demo-Seite
+bindet `../dist/ncss.css` ein und trägt ihr eigenes, seitenspezifisches CSS in einem
+eigenen `<style>`-Block mit `demo-*`-Präfix - nie in den ncss-Dateien selbst.
 
 **Nav-Konvention (User-Anstoß: "startseite soll übrigens immer die page startseite
 sein")**: der `.ncss-topbar-brand`-Link ("NativeCSS"-Wortmarke) geht auf JEDER Seite

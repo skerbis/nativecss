@@ -58,6 +58,31 @@
     font-weight: 600;
     cursor: pointer;
   }
+
+  /* Nur fürs Demo: zwei überlappende Farbkreise, damit ein Blend-Modus überhaupt
+     sichtbar wird - .ncss-blend-* selbst bringt keine eigene Fläche/Farbe mit. */
+  .demo-blend-pair {
+    position: relative;
+    height: 8rem;
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-blend-circle {
+    position: absolute;
+    width: 5rem;
+    height: 5rem;
+    border-radius: var(--ncss-radius-full);
+  }
+  .demo-blend-circle--a {
+    inset-inline-start: var(--ncss-space-md);
+    inset-block-start: var(--ncss-space-md);
+    background-color: var(--ncss-color-brand);
+  }
+  .demo-blend-circle--b {
+    inset-inline-end: var(--ncss-space-md);
+    inset-block-end: var(--ncss-space-md);
+    background-color: var(--ncss-color-brand-2);
+  }
 </style>
 </head>
 <body class="ncss-page-shell">
@@ -91,7 +116,6 @@
                 <li><a href="theming.html">Theme anpassen</a></li>
                 <li><a href="widgets.html">Termine &amp; Downloads</a></li>
                 <li><a href="uikit-integration.html">UIkit-Integration</a></li>
-                <li><a href="docs.html">Handbuch (alt, einzelne Seite)</a></li>
                 <li><a href="guides.html">Anleitungen</a></li>
               </ul>
             </details>
@@ -218,6 +242,23 @@
 &lt;!-- stärker/anders einfärben, für dunkle/gesättigte Flächen --&gt;
 &lt;div class="ncss-grain" style="--ncss-grain-opacity: 0.4; --ncss-grain-blend: soft-light;"&gt;...&lt;/div&gt;</code></pre>
     <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-grain-opacity</code> (Default 0.12), <code>--ncss-grain-blend</code> (Default <code>overlay</code>).</p>
+  </section>
+
+  <!-- Blend-Modi -->
+  <section id="blend-modes" class="ncss-stack">
+    <h2 class="demo-section-title">Blend-Modi</h2>
+    <p class="ncss-text-muted"><code>.ncss-blend-*</code> (<code>helpers/elevation.css</code>) sind 1:1-Utilities für <code>mix-blend-mode</code> - das Element blendet mit dem, was DAHINTER liegt (anderer Fall als <code>--ncss-grain-blend</code> oben, das ist <code>background-blend-mode</code> und blendet nur zwischen den eigenen Hintergrund-Ebenen eines Elements). Zwei überlappende Farbkreise als Beispiel: der obere Kreis trägt jeweils eine andere <code>.ncss-blend-*</code>-Klasse.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 9rem;">
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-multiply"></div><p class="ncss-text-sm ncss-text-muted">multiply</p></div>
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-screen"></div><p class="ncss-text-sm ncss-text-muted">screen</p></div>
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-difference"></div><p class="ncss-text-sm ncss-text-muted">difference</p></div>
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-overlay"></div><p class="ncss-text-sm ncss-text-muted">overlay</p></div>
+    </div>
+    <pre><code class="language-html">&lt;div style="position: relative;"&gt;
+  &lt;div class="demo-circle-a"&gt;&lt;/div&gt;
+  &lt;div class="demo-circle-b ncss-blend-multiply"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Alle 15 CSS-Blend-Keywords als Klasse: <code>multiply</code>/<code>screen</code>/<code>overlay</code>/<code>darken</code>/<code>lighten</code>/<code>color-dodge</code>/<code>color-burn</code>/<code>hard-light</code>/<code>soft-light</code>/<code>difference</code>/<code>exclusion</code>/<code>hue</code>/<code>saturation</code>/<code>color</code>/<code>luminosity</code>.</p>
   </section>
 
   <!-- Erzwungenes Farbschema pro Element -->

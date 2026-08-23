@@ -48,3 +48,27 @@
   .ncss-shadow-hover-md:hover { box-shadow: var(--ncss-shadow-md); }
   .ncss-shadow-hover-lg:hover { box-shadow: var(--ncss-shadow-lg); }
 }
+
+/* --- Blend-Modi -----------------------------------------------------------------------
+   1:1-Utilities für mix-blend-mode (Element blendet mit dem, was DAHINTER liegt - für ein
+   Overlay-Bild/Farbfläche über einem Foto o.ä.). Kein Token dahinter, reine CSS-Keywords -
+   deshalb hier als vollständige Aufzählung statt einer kuratierten Teilmenge, jede Klasse
+   genau eine Deklaration. background-blend-mode (Blend NUR zwischen den eigenen background-
+   Ebenen desselben Elements, nicht mit dahinterliegendem Seiteninhalt) ist ein anderer Fall
+   mit anderem Einsatzzweck - siehe components/effects.css' --ncss-grain-blend für ein
+   Beispiel, wo genau das gebraucht wird. */
+.ncss-blend-multiply { mix-blend-mode: multiply; }
+.ncss-blend-screen { mix-blend-mode: screen; }
+.ncss-blend-overlay { mix-blend-mode: overlay; }
+.ncss-blend-darken { mix-blend-mode: darken; }
+.ncss-blend-lighten { mix-blend-mode: lighten; }
+.ncss-blend-color-dodge { mix-blend-mode: color-dodge; }
+.ncss-blend-color-burn { mix-blend-mode: color-burn; }
+.ncss-blend-hard-light { mix-blend-mode: hard-light; }
+.ncss-blend-soft-light { mix-blend-mode: soft-light; }
+.ncss-blend-difference { mix-blend-mode: difference; }
+.ncss-blend-exclusion { mix-blend-mode: exclusion; }
+.ncss-blend-hue { mix-blend-mode: hue; }
+.ncss-blend-saturation { mix-blend-mode: saturation; }
+.ncss-blend-color { mix-blend-mode: color; }
+.ncss-blend-luminosity { mix-blend-mode: luminosity; }

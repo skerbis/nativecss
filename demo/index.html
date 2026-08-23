@@ -239,7 +239,6 @@
                 <li><a href="theming.html">Theme anpassen</a></li>
                 <li><a href="widgets.html">Termine &amp; Downloads</a></li>
                 <li><a href="uikit-integration.html">UIkit-Integration</a></li>
-                <li><a href="docs.html">Handbuch (alt, einzelne Seite)</a></li>
                 <li><a href="guides.html">Anleitungen</a></li>
               </ul>
             </details>
@@ -484,6 +483,23 @@
       <hr class="ncss-divider--vertical" aria-orientation="vertical">
       <span>Drei</span>
     </div>
+  </section>
+
+  <!-- Transform-Center -->
+  <section class="ncss-stack" id="transform-center">
+    <h2 class="demo-section-title">Transform-Center</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-transform-center</code> zentriert ein Element auf sich selbst
+      (<code>position:absolute</code> + <code>translate:-50% -50%</code>) - der
+      Elterncontainer braucht dafür eine eigene <code>position</code> (hier
+      <code>position:relative</code> per Inline-Style auf dem Platzhalter).
+    </p>
+    <div class="ncss-placeholder" style="position: relative; height: 8rem;">
+      <span class="ncss-badge ncss-badge--success ncss-transform-center">Zentriert</span>
+    </div>
+    <pre><code class="language-html">&lt;div style="position: relative;"&gt;
+  &lt;span class="ncss-badge ncss-transform-center"&gt;Zentriert&lt;/span&gt;
+&lt;/div&gt;</code></pre>
   </section>
 
   <!-- Medien -->

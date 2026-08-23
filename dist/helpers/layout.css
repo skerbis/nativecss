@@ -118,6 +118,18 @@
   flex: 1 1 auto;
 }
 
+/* Zentriert ein Element auf sich selbst per position:absolute + translate - nützlich für
+   z.B. ein Icon/Badge mittig über einem beliebig großen Container. Der Elterncontainer
+   braucht dafür selbst eine eigene position (relative/absolute/fixed/sticky), sonst
+   zentriert sich das Element relativ zum nächsten positionierten Vorfahren weiter oben
+   im Baum (normales CSS-position:absolute-Verhalten, keine ncss-Besonderheit). */
+.ncss-transform-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
 /* --- Abstands-Utilities (Padding/Margin/Gap) --------------------------------------------
    Bewusst klein gehalten: vier Stufen (sm/md/lg/xl) je Richtung, nicht die volle Skala ×
    jede denkbare Richtung - das wäre wieder die Utility-Klassen-Explosion, die ausdrücklich

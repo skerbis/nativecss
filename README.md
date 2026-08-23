@@ -354,6 +354,7 @@ Alle Klassen in `helpers/layout.css`.
 | `.ncss-hide-below-md` / `.ncss-hide-from-md` | Klassischer Viewport-Breakpoint-Escape-Hatch (768px) |
 | `.ncss-divider` | Horizontaler Trenner als Klasse (native `<hr>` hat denselben Look bereits als Default) |
 | `.ncss-divider--vertical` | Vertikaler Trenner für eine Flex-Zeile (auf einem `<hr>`, `align-self: stretch`) |
+| `.ncss-transform-center` | Zentriert ein Element auf sich selbst (`position:absolute` + `translate: -50% -50%`) - der Elterncontainer braucht dafür selbst eine eigene `position` (relative/absolute/fixed/sticky) |
 
 ## Typografie
 
@@ -416,7 +417,7 @@ Theme-Override" über `[data-theme]` weiter oben in dieser Datei (`colors.css`) 
 angewendet (dasselbe Muster wie `.ncss-modal--dark`, components/modal.css, hier generisch
 für jedes beliebige Element).
 
-## Ecken, Rahmen, Schatten
+## Ecken, Rahmen, Schatten, Blend-Modi
 
 `helpers/elevation.css` - bewusst als eigenständige, allgemeine Utilities statt in
 Komponenten wie Card eingebacken: ob etwas abgerundet ist, einen Rahmen oder Schatten (und
@@ -429,6 +430,7 @@ Komponente. Funktioniert auf JEDEM Element, nicht nur `.ncss-card`.
 | `.ncss-border` / `.ncss-border-none` | Rahmen |
 | `.ncss-shadow-sm/md/lg/none` | Schatten |
 | `.ncss-shadow-hover-sm/md/lg` | Schatten wächst beim Hover auf die genannte Stufe (Ausgangsstufe bleibt frei wählbar) |
+| `.ncss-blend-multiply/screen/overlay/darken/lighten/color-dodge/color-burn/hard-light/soft-light/difference/exclusion/hue/saturation/color/luminosity` | `mix-blend-mode`-Utilities, 1:1 auf die gleichnamigen CSS-Keywords (Blend mit dem, was HINTER dem Element liegt) |
 
 Beispiel: `class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md"`
 ergibt die "klassische" Karte. `class="ncss-card"` allein ist eine komplett bare Karte
@@ -1021,7 +1023,6 @@ seitenspezifisches CSS mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
 | `colors.html` | Alle Farbtokens, Karten-/Badge-/Button-Farbvarianten, Theme-/Paletten-Umschalter, Live-Farbeditor (freie `<input type="color">`-Regler statt fester Paletten) |
 | `webawesome.html` | Web-Awesome-Komponenten im Zusammenspiel mit NativeCSS |
 | `landing.html` | Realistische Beispielseite (NativeCSS + Web Awesome + Font Awesome) |
-| `docs.html` | Ausführliches Handbuch mit Anleitungen (mehr Tiefe als dieses README) |
 | `guides.html` | Nummerierte, aufgabenorientierte Anleitungen mit Live-Beispielen |
 | `effects.html` | Glow-Border, Glow-Pulse, Glass, Stamped, Grain - die optionalen Effekt-Komponenten aus `effects.css` |
 | `theming.html` | Wie `theme.css` funktioniert, live am Beispiel (eigenes Beispiel-Theme, andere Markenfarben/Radien/Schrift) |
