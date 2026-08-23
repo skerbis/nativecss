@@ -15,13 +15,42 @@
  *
  * Einbindung (nur auf Seiten mit <wa-dropdown>/<wa-popover> nötig):
  *   <script src="../components/wa-close-on-scroll.js" defer></script>
+ *
+ * Sucht zusätzlich gezielt INNERHALB jedes <ncss-container> (siehe ncss-container.js) -
+ * dessen Inhalt liegt in einem Shadow Root, den ein normales querySelectorAll() nicht
+ * durchquert. Bewusst NICHT der generische "jedes Element auf .shadowRoot prüfen"-Ansatz
+ * wie in den anderen Fallback-Scripts (deren Suche läuft nur EINMAL beim Laden) - dieser
+ * Handler läuft bei JEDEM Scroll-Event, ein voller DOM-Walk wäre dort spürbar teurer als
+ * die gezielte Suche nach der einzigen Quelle von Shadow Roots, die auf einer
+ * ncss-Seite realistisch vorkommt. Zusätzlich jetzt per requestAnimationFrame gedrosselt
+ * (vorher ungedrosselt bei jedem einzelnen Scroll-Event) - dieselbe Technik wie die
+ * übrigen Scroll-Fallback-Scripts.
  */
-document.addEventListener(
-  "scroll",
-  () => {
-    document.querySelectorAll("wa-dropdown[open], wa-popover[open]").forEach((el) => {
+(function () {
+  "use strict";
+
+  function closeOpenPopups(root) {
+    root.querySelectorAll("wa-dropdown[open], wa-popover[open]").forEach((el) => {
       el.open = false;
     });
-  },
-  { passive: true },
-);
+    root.querySelectorAll("ncss-container").forEach((container) => {
+      if (container.shadowRoot) {
+        closeOpenPopups(container.shadowRoot);
+      }
+    });
+  }
+
+  var ticking = false;
+  document.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        closeOpenPopups(document);
+        ticking = false;
+      });
+    },
+    { passive: true },
+  );
+})();

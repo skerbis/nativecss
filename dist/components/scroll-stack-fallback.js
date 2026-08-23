@@ -23,8 +23,28 @@
  * Einbindung (nur auf Seiten mit .ncss-stack-section, die auch in Firefox/älterem Safari
  * animiert werden sollen):
  *   <script src="../components/scroll-stack-fallback.js" defer></script>
+ *
+ * deepQueryAll() statt document.querySelectorAll(): eine .ncss-stack-section INNERHALB
+ * eines <ncss-container> (siehe ncss-container.js) liegt in dessen Shadow Root -
+ * querySelectorAll() durchquert Shadow-Grenzen NICHT, würde sie also stillschweigend
+ * übersehen. deepQueryAll() steigt rekursiv in jeden offenen Shadow Root ab (auch
+ * verschachtelt), findet dadurch Sektionen unabhängig davon, ob/wie tief sie in Shadow-
+ * DOM-Bäumen stecken - für den ganz normalen Fall (kein Shadow DOM auf der Seite) verhält
+ * es sich exakt wie querySelectorAll (keine Elemente mit .shadowRoot zu durchsuchen).
  */
 (function () {
+  function deepQueryAll(selector, root) {
+    root = root || document;
+    var found = Array.prototype.slice.call(root.querySelectorAll(selector));
+    var all = root.querySelectorAll("*");
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].shadowRoot) {
+        found = found.concat(deepQueryAll(selector, all[i].shadowRoot));
+      }
+    }
+    return found;
+  }
+
   if (
     typeof CSS === "undefined" ||
     !CSS.supports ||
@@ -34,7 +54,7 @@
     return;
   }
 
-  var sectionEls = document.querySelectorAll(".ncss-stack-section");
+  var sectionEls = deepQueryAll(".ncss-stack-section");
   if (!sectionEls.length) return;
 
   // Unsichtbares Sonden-Element zum Auflösen beliebiger CSS-Längen (rem/vh/lvh/px/em/

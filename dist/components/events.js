@@ -461,7 +461,22 @@
     });
   }
 
-  var widgets = document.querySelectorAll(".ncss-events");
+  function deepQueryAll(selector, root) {
+    root = root || document;
+    var found = Array.prototype.slice.call(root.querySelectorAll(selector));
+    var all = root.querySelectorAll("*");
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].shadowRoot) {
+        found = found.concat(deepQueryAll(selector, all[i].shadowRoot));
+      }
+    }
+    return found;
+  }
+
+  // deepQueryAll() statt document.querySelectorAll(): ein .ncss-events-Widget
+  // INNERHALB eines <ncss-container> (siehe ncss-container.js) liegt in dessen Shadow
+  // Root - querySelectorAll() durchquert Shadow-Grenzen nicht.
+  var widgets = deepQueryAll(".ncss-events");
   for (var i = 0; i < widgets.length; i++) {
     init(widgets[i]);
   }

@@ -17,8 +17,26 @@
  * Einbindung (nur auf Seiten mit .ncss-hide-on-scroll nötig, wo auch Firefox/Safari
  * gebraucht werden):
  *   <script src="../components/hide-on-scroll-fallback.js" defer></script>
+ *
+ * deepQueryAll() statt document.querySelectorAll(): ein .ncss-hide-on-scroll-Element
+ * INNERHALB eines <ncss-container> (siehe ncss-container.js) liegt in dessen Shadow
+ * Root - querySelectorAll() durchquert Shadow-Grenzen nicht. deepQueryAll() steigt
+ * rekursiv in jeden offenen Shadow Root ab, verhält sich ohne Shadow DOM auf der Seite
+ * exakt wie querySelectorAll.
  */
 (function () {
+  function deepQueryAll(selector, root) {
+    root = root || document;
+    var found = Array.prototype.slice.call(root.querySelectorAll(selector));
+    var all = root.querySelectorAll("*");
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].shadowRoot) {
+        found = found.concat(deepQueryAll(selector, all[i].shadowRoot));
+      }
+    }
+    return found;
+  }
+
   if (
     typeof CSS === "undefined" ||
     !CSS.supports ||
@@ -27,7 +45,7 @@
     return;
   }
 
-  var els = document.querySelectorAll(".ncss-hide-on-scroll");
+  var els = deepQueryAll(".ncss-hide-on-scroll");
   if (!els.length) return;
 
   // Erst ab dieser Schwelle überhaupt ausblenden - sonst würde ein winziges Scrollen

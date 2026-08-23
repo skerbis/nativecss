@@ -1,0 +1,47 @@
+<!--DESC: ncss isoliert in einer fremden Seite laufen lassen - ein Custom Element mit echter Shadow-DOM-Kapselung.-->
+<section class="ncss-stack">
+  <h1>&lt;ncss-container&gt;</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>components/ncss-container.js</code> kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, um sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen zu lassen, ohne dass Styles in beide Richtungen durchsickern.</p>
+</section>
+
+<section class="ncss-stack" id="einbindung">
+  <h2 class="demo-section-title">Einbindung</h2>
+  <pre><code class="language-html">&lt;script src="components/ncss-container.js" defer&gt;&lt;/script&gt;
+&lt;ncss-container src="dist/ncss.css"&gt;
+  &lt;div class="ncss-card"&gt;
+    &lt;div class="ncss-card-body"&gt;Isolierter Inhalt&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/ncss-container&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribut</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>src</code></td><td>Pflicht (oder <code>data-ncss-src</code> auf dem Loader-<code>&lt;script&gt;</code> als Seiten-Default) - Pfad zu <code>ncss.css</code>, ganz normaler <code>&lt;link&gt;</code>, keine ncss-Sonderregel</td></tr>
+        <tr><td><code>theme</code></td><td>Optional, zusätzliches Stylesheet, NACH <code>src</code> geladen - für einen Container mit anderer Markenfarbe/Radien/Schrift als die restliche Seite</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="funktionsweise">
+  <h2 class="demo-section-title">Zwei technische Voraussetzungen</h2>
+
+  <h3>1. Token-Isolation</h3>
+  <p class="ncss-text-muted ncss-text-sm">ncss' Tokens sind in <code>colors.css</code>/<code>tokens.css</code>/<code>theme.css</code>/<code>webawesome-bridge.css</code> bewusst als <code>:root, :host { ... }</code> deklariert (statt nur <code>:root</code>) - <code>:root</code> trifft immer das echte Seiten-Wurzelelement, niemals einen Shadow Host; <code>:host</code> dagegen nur den Host-Knoten eines Shadow-Trees und ist außerhalb eines Shadow-Trees wirkungslos. Dieselbe Datei liefert dadurch, unverändert, eine komplett eigenständige Token-Kopie, sobald sie in einem Shadow Root statt am Seiten-<code>&lt;head&gt;</code> geladen wird - keine zweite, duplizierte Token-Datei, kein Build-Schritt. Per echtem Test bestätigt: ein <code>.ncss-btn--primary</code> im Container zeigt die korrekte Markenfarbe, obwohl die Host-Seite selbst gar kein ncss geladen hat.</p>
+
+  <h3>2. Inhalts-Isolation</h3>
+  <p class="ncss-text-muted ncss-text-sm">Der eigene Inhalt wird nicht per <code>&lt;slot&gt;</code> eingebunden, sondern beim Verbinden einmalig per JS in den Shadow Root verschoben (echte <code>appendChild</code>-Umhängung). Ein <code>&lt;slot&gt;</code> würde die Kind-Elemente nur im Shadow Root anzeigen - sie blieben aber Teil des Light DOM und dadurch weiterhin von den globalen Stylesheets der äußeren Seite getroffen (z.B. ein Framework-Reset oder <code>!important</code>-Regeln). Per echtem Test bestätigt: ein <code>&lt;slot&gt;</code>-basierter Button übernahm eine äußere <code>!important</code>-Regel unverändert, ein per Verschieben eingebetteter Button blieb komplett unberührt.</p>
+  <p class="ncss-text-muted ncss-text-sm">Kehrseite bewusst in Kauf genommen: kein automatisches Nachziehen bei späteren dynamischen DOM-Änderungen am Original-Markup - für einen fertig eingebetteten Inhaltsblock kein praktischer Nachteil.</p>
+</section>
+
+<section class="ncss-stack" id="demo">
+  <h2 class="demo-section-title">Live-Demo: UIkit 3 + isolierter Container</h2>
+  <p class="ncss-text-muted ncss-text-sm">Bidirektional getestet: eine komplette Seite auf <a href="https://getuikit.com" target="_blank" rel="noopener">UIkit 3</a> mit einem <code>&lt;ncss-container&gt;</code> samt Stacked Cards mitten drin. UIkits <code>button</code>/<code>h1</code>-<code>h6</code>-Reset erreicht den Container nicht, ncss' eigener Reset (<code>* { margin: 0 }</code> u.a.) beeinflusst UIkit-Inhalt vor/nach dem Container nicht. Auch scroll-gekoppelte Effekte (<code>position:sticky</code>, <code>animation-timeline: view()</code>) funktionieren normal über die Shadow-Grenze hinweg - reine Layout-/Rendering-Mechanik, von der DOM-/Style-Kapselung unberührt.</p>
+  <p class="ncss-text-muted ncss-text-sm">Demo: <a href="../../demo/uikit-integration.html">demo/uikit-integration.html</a>.</p>
+</section>
+
+<section class="ncss-stack" id="opt-in-scripts">
+  <h2 class="demo-section-title">Opt-in-Scripts funktionieren auch im Container</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>code-block.js</code>, <code>events.js</code>, <code>downloads.js</code>, <code>scroll-stack-fallback.js</code>, <code>hide-on-scroll-fallback.js</code> und <code>wa-close-on-scroll.js</code> suchen ihre Elemente nicht mehr per einfachem <code>document.querySelectorAll(...)</code> (durchquert Shadow-Grenzen standardmäßig nicht), sondern per <code>deepQueryAll()</code> - steigt rekursiv in jeden offenen Shadow Root ab (also auch in jeden <code>&lt;ncss-container&gt;</code>) und verhält sich ohne Shadow DOM auf der Seite exakt wie <code>querySelectorAll</code>. <code>code-block.js</code> ruft dafür zusätzlich <code>Prism.highlightElement()</code> pro gefundenem Block statt des document-globalen <code>Prism.highlightAll()</code> auf.</p>
+  <p class="ncss-text-muted ncss-text-sm">Einbindung immer gleich, egal ob mit oder ohne <code>&lt;ncss-container&gt;</code> - einfach das jeweilige Script wie gewohnt auf der Seite laden, es findet seine Elemente unabhängig davon, ob sie in einem Shadow Root stecken. Einzige Ausnahme: <code>wa-close-on-scroll.js</code> läuft bei jedem Scroll-Event und sucht deshalb gezielt nur innerhalb <code>&lt;ncss-container&gt;</code>-Elementen statt eines vollen DOM-Walks (Performance), zusätzlich per <code>requestAnimationFrame</code> gedrosselt.</p>
+</section>

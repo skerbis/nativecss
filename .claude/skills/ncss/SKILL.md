@@ -90,6 +90,12 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
 
 ## Bekannte Fallstricke (per echtem Test gefunden - vor erneuter Recherche hier nachsehen)
 
+**Beim Ergänzen eines neuen Punkts: nur Gotcha + Ursache + Fix, keine Debug-Erzählung.**
+Kein Nacherzählen des Vorgehens (Anläufe, Zwischenversuche, "per echtem Test bestätigt"),
+keine User-Zitate, keine "Nachtrag"-Unterabschnitte - Fakten direkt in den Haupttext
+einarbeiten. Ein Punkt sollte auch nach mehreren Fixes derselben Komponente EIN
+kompakter Absatz bleiben, kein wachsendes Protokoll.
+
 0. **Web Awesome liefert seine eigene, zur genau installierten Version passende Referenz-
    Doku mit** - `vendor/webawesome/dist-cdn/skills/webawesome/references/components/*.md`,
    ein `.md` pro Komponente. Das ist die verlässliche Quelle (per Test bestätigt korrekt für
@@ -384,767 +390,404 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     nächsten Änderung auseinanderlaufen kann. Bei jeder neuen Demo-/Produktseite prüfen,
     ob eine gerade erfundene Seiten-Klasse eigentlich ein fehlendes System-Teil ist.
 
-26. **Ein VERIFIZIERTER, aber gescheiterter Fallback-Versuch: `.ncss-hide-on-scroll`
-    (helpers/scroll.css) sollte auf expliziten User-Wunsch ("fallback ja, auf Funktion
-    prüfen ob verfügbar") um den älteren `@property` + `animation-timeline: scroll()`-
-    Trick (nach bram.us) für Browser ohne `container-type: scroll-state` erweitert
-    werden.** Support-Recherche vorab ergab: Safari unterstützt `animation-timeline:
-    scroll()` bereits (seit Version 26), Firefox nicht - ein Fallback hätte also
-    zumindest Safari echten Mehrwert gebracht, anders als beim ersten (2024) Versuch, wo
-    beide Techniken gleichermaßen nur Chromium betrafen. Vollständig implementiert
-    (`--ncss-scroll-pos`/`-delayed` per `scroll(root)`-Timeline, `--ncss-scroll-direction`
-    per `calc()`-Vorzeichen-Kette, `@container style()` für das eigentliche Ein-/
-    Ausblenden) UND in ECHTEM Playwright-WebKit getestet, nicht nur für "unterstützt"
-    gehalten. Ergebnis: Scroll-RUNTER funktionierte korrekt (Header versteckte sich),
-    Scroll-HOCH funktionierte NIE - der Header blieb dauerhaft versteckt, unabhängig
-    davon, wie lange/wie oft nach oben gescrollt wurde. Ursache per gezieltem Diagnose-
-    Skript eingegrenzt (nicht nur vermutet): `getComputedStyle().getPropertyValue()` auf
-    `--ncss-scroll-direction` lieferte korrekt den Text "-1", aber ein Sonden-Element mit
-    `width: calc(1px * var(--ncss-scroll-direction, 0))` löste in WebKit zu `0px` auf
-    statt `-1px` - die per `@property`-typisierte, mehrfach verschachtelte `calc()`-Kette
-    (Direction = calc(Velocity/Speed), Velocity/Speed selbst schon `calc()`/`max()`-
-    Ausdrücke) verhält sich in WebKit also wie "0" SOBALD sie in einem WEITEREN `calc()`
-    konsumiert wird, obwohl ihr Text-Wert korrekt "-1" zeigt - ein WebKit-Bug in der
-    Auswertung tief verschachtelter typisierter Custom-Property-Ketten, keine eigene
-    Fehlformel. Fix: der komplette Fallback-Block wieder ENTFERNT (nicht nur deaktiviert)
-    - ein Header, der sich beim Scrollen nach unten korrekt versteckt, aber durch Hoch-
-    Scrollen NIE WIEDER erreichbar wird, ist ein SCHLECHTERES Ergebnis als der 2024 schon
-    bekannte, mildere Bug ("schnelles Runter-dann-Hoch kann kurz hängen bleiben") - hier
-    wäre die komplette Navigation in Safari dauerhaft blockiert gewesen. Lehre: "auf
-    Funktion prüfen" heißt nicht nur "unterstützt der Browser die einzelnen Features"
-    (bestätigt: `scroll()`, `@property`, `@container style()` UNTERSTÜTZT alle einzeln in
-    WebKit), sondern "funktioniert die TATSÄCHLICHE ZUSAMMENSETZUNG end-to-end" - isolierte
-    Feature-Detection reicht nicht, wenn mehrere fortgeschrittene Features TIEF
-    ineinander verschachtelt zusammenspielen müssen; nur ein echter, mehrstufiger
-    Interaktionstest (kontinuierliches Scrollen simuliert, nicht nur ein einzelner
-    `wheel()`-Aufruf, PLUS Diagnose der rohen Zwischenwerte statt nur des Endergebnisses)
-    deckte den Bug auf. Ganz verworfen statt "nur für Chromium aktiv lassen" wäre zu
-    vorsichtig gewesen, ganz OHNE echten Test übernehmen wäre fahrlässig gewesen - der
-    Mittelweg (bauen, ECHT testen, bei echtem Scheitern wieder verwerfen) war hier richtig.
+26. **Ein CSS-only-Fallback-Versuch, verifiziert und wieder verworfen**: `.ncss-hide-on-
+    scroll` (helpers/scroll.css) sollte um den älteren `@property` + `animation-timeline:
+    scroll()`-Trick für Browser ohne `container-type: scroll-state` erweitert werden
+    (Safari unterstützt `scroll()` bereits, Firefox nicht - ein Fallback hätte Safari
+    also echten Mehrwert gebracht). Vollständig implementiert und in echtem
+    Playwright-WebKit getestet: Scroll-runter funktionierte, Scroll-hoch NIE - der Header
+    blieb dauerhaft versteckt. Ursache: eine `@property`-typisierte, mehrfach
+    verschachtelte `calc()`-Kette löste in WebKit zu `0` auf, sobald sie in einem
+    WEITEREN `calc()` konsumiert wurde, obwohl ihr eigener Text-Wert korrekt war - ein
+    WebKit-Bug bei tief verschachtelten typisierten Custom-Property-Ketten. Ein Header,
+    der sich versteckt, aber durch Hochscrollen nie wieder erreichbar wird, ist
+    schlechter als kein Fallback - der komplette Block wurde entfernt, nicht nur
+    deaktiviert. Lehre: "unterstützt der Browser die einzelnen Features" reicht bei tief
+    verschachtelten Custom-Property-Ketten nicht - nur ein echter, mehrstufiger
+    Interaktionstest (kontinuierliches Scrollen, nicht nur ein einzelner `wheel()`-Aufruf)
+    deckt auf, ob die tatsächliche Zusammensetzung end-to-end funktioniert.
 
-    **Nachtrag (User-Frage danach: "das müsste per JS dann ggf. gefixt werden oder?")**:
-    Ja - genau dafür gibt es im Projekt bereits das etablierte Muster "kleine, OPT-IN
-    JS-Datei nur für Seiten, die es brauchen" (`components/wa-close-on-scroll.js`,
-    `components/command-fallback.js`). `components/hide-on-scroll-fallback.js` neu gebaut:
-    prüft sich selbst per `CSS.supports("container-type", "scroll-state")` und tut NICHTS,
-    wenn die native Technik bereits greift (kein doppelt arbeitender Mechanismus, kein
-    Konflikt) - sonst ein einfacher `requestAnimationFrame`-gedrosselter Scroll-Listener,
-    der dieselbe `translate`-Eigenschaft setzt wie die CSS-Variante. Dafür musste
-    `.ncss-hide-on-scroll { translate:0 0; transition: translate ...; }` aus dem
-    `@supports (container-type: scroll-state)`-Block HERAUSgezogen werden (jetzt
-    unbedingt) - sonst hätte das Skript zwar den `translate`-Wert gesetzt, aber ohne die
-    weiche Übergangs-Animation, die vorher nur INNERHALB des Supports-Blocks existierte.
-    Über mehrere vollständige Runter-/Hoch-Scroll-Zyklen (nicht nur einen) in echtem
-    Chromium, WebKit UND Firefox verifiziert - kein Hängenbleiben, anders als der
-    CSS-only-Versuch oben. Lehre: "kein CSS-only-Fallback möglich" ist nicht dasselbe wie
-    "keine Lösung möglich" - das Projekt lehnt JS nicht grundsätzlich ab (siehe Fallstrick
-    0/"Native zuerst"-Prinzip: "Web Awesome nur, wo natives HTML/CSS nicht reicht"), eine
-    kleine, opt-in, sich selbst wegschaltende JS-Datei ist für einen echten
-    Cross-Browser-Gap wie diesen der richtige, bereits etablierte Kompromiss.
+    Da CSS-only hier nicht ging, aber eine Lösung trotzdem gebraucht wurde:
+    `components/hide-on-scroll-fallback.js` (opt-in, wie `wa-close-on-scroll.js`) - prüft
+    sich selbst per `CSS.supports("container-type", "scroll-state")` und tut nichts, wenn
+    die native Technik bereits greift, sonst ein `requestAnimationFrame`-gedrosselter
+    Scroll-Listener, der dieselbe `translate`-Eigenschaft setzt. Dafür musste die
+    `translate`/`transition`-Deklaration aus dem `@supports`-Block herausgezogen werden
+    (jetzt unbedingt), sonst hätte das Skript den Wert ohne die weiche
+    Übergangs-Animation gesetzt. Über mehrere Scroll-Zyklen in Chromium, WebKit und
+    Firefox verifiziert, kein Hängenbleiben.
 
-Viertes Beispiel, diesmal EIN Feature (`animation-timeline: view()`), aber DREI getrennte
-Kalibrierungs-Bugs, alle erst durch echten Test bzw. echtes User-Feedback gefunden, nicht
-beim Schreiben selbst sichtbar - und ein Lehrstück darin, wie zwei oberflächlich ähnlich
-klingende User-Reports ("Linie nicht durchgezogen") tatsächlich VÖLLIG verschiedene
-Ursachen hatten, die NACHEINANDER, nicht gleichzeitig gefunden wurden (voreiliges
-"dieselbe Ursache"-Schließen beim ersten Report war ein eigener Fehler, siehe Punkt 3):
-`.ncss-roadmap` (components/roadmap.css) - eine
-Meilenstein-Liste, verbunden durch EINE durchgehende SVG-Linie, die sich beim Scrollen
-selbst "nachzeichnet" (`stroke-dasharray`/`-dashoffset`, `pathLength="1"` auf dem
-`<line>`-Element normiert die Pfadlänge unabhängig von der viewBox auf 0..1). Anders als
-`scroll-stack.css` KEIN Pinning - die Meilensteine laufen ganz normal im Fluss, nur die
-Linie selbst bekommt eine eigene, ANONYME `view()`-Timeline (kein benannter
-`view-timeline-name` nötig, da kein gepinntes Element mit künstlicher Extra-Scrollhöhe
-existiert - der natürliche Ein-/Austritts-Scrollweg der Linie IST bereits genau der
-gewünschte Zeichenweg).
-1) **Falscher `animation-range`-Default für ein Element nahe dem Seitenende**: Der
-   Default-Bereich "cover" (0% = erster sichtbarer Pixel, 100% = Element VOLLSTÄNDIG aus
-   dem Viewport verschwunden) verlangt für 100%, dass die Linie komplett über den oberen
-   Bildschirmrand hinauswandert - das braucht rechnerisch ungefähr Linienhöhe +
-   Viewporthöhe an Scrollweg NACH Erscheinen der Linie. Steht die Roadmap (wie in der
-   Praxis üblich für ein Meilenstein-Element) kurz vor dem Footer, ohne große Pufferzone
-   danach, reicht der tatsächlich vorhandene Rest-Scrollweg der Seite dafür NICHT aus -
-   `document.body.scrollHeight` gibt die tatsächliche Grenze vor, unabhängig davon, was
-   die Timeline-Berechnung bräuchte. Per echtem Test bestätigt (Scroll bis
-   `document.body.scrollHeight`, `getComputedStyle().strokeDashoffset` ausgelesen): blieb
-   bei `cover` dauerhaft auf ca. 0.27 statt 0 stehen, sichtbar als abgeschnittene Linie
-   kurz vor dem letzten Punkt, obwohl die letzte Karte längst voll sichtbar war
-   (Screenshot bestätigte die Lücke). Mehrere benannte Bereiche systematisch per Playwright
-   durchgetestet (`cover`, `contain`, `entry`, verschiedene explizite Prozent-Kombinationen)
-   statt eine Vermutung zu übernehmen - `contain` traf exakt: fertig gezeichnet, sobald die
-   letzte Karte gerade voll sichtbar wird, unabhängig vom Rest-Scrollweg danach. Lehre:
-   der "cover"-Default ist nur dann die richtige Wahl, wenn tatsächlich genug Scrollweg
-   existiert, damit das Element vollständig austritt (z.B. mitten auf einer langen Seite)
-   - für ein Element nahe dem Seitenende (sehr verbreitet bei Roadmap-/Timeline-Mustern)
-   IMMER zuerst per echtem Scroll-bis-zum-Ende-Test prüfen, nicht annehmen.
-2) **`ul`/`ol` bekommen per `base.css`-Default ein eigenes `padding-inline-start`** (Listen-
-   Einzug, `ul, ol { padding-inline-start: var(--ncss-space-md); }`) - `.ncss-roadmap-list`
-   ist ein `<ol>` und erbte diesen Einzug zusätzlich zum eigenen, komponenteneigenen
-   `--ncss-roadmap-gutter`-Versatz auf `.ncss-roadmap-item`. Die Linie selbst (`position:
-   absolute` relativ zu `.ncss-roadmap`, dem ÄUSSEREN Container, NICHT zur Liste) blieb an
-   ihrer korrekt berechneten Stelle stehen, während jedes Listenelement (und damit sein
-   `.ncss-roadmap-dot`, positioniert relativ zum eigenen `<li>`) durch den zusätzlichen
-   Listen-Einzug nach rechts verschoben war - Punkte lagen sichtbar NEBEN statt AUF der
-   Linie (User-Report: "Punkte liegen nicht auf den Linien"). Per `getBoundingClientRect()`
-   beider Elemente bestätigt: Punkt-Mittelpunkt und Linien-X-Position stimmten nach dem Fix
-   exakt überein (`78.875px` bei beiden). Lehre: bei JEDER neuen Komponente, die
-   `<ul>`/`<ol>` für eigenes, freies Positionieren (nicht als normale Aufzählung)
-   verwendet, explizit `padding-inline-start: 0` setzen - der globale Listen-Einzug aus
-   base.css gilt sonst automatisch mit, auch wenn die Komponente ihn nie selbst
-   referenziert.
-3) **VOREILIGER Fehlschluss, dann die eigentliche Ursache**: Dasselbe erste User-Feedback
-   nannte ZUSÄTZLICH "Linien sind nicht durchgezogen" - fälschlich als bloßen optischen
-   Nebeneffekt derselben Punkt-Verschiebung (Punkt 2) eingeordnet, statt es separat zu
-   verifizieren. Nach dem Push meldete der User erneut "roadmap linien sind immer noch
-   unterbrochen" UND "die Linien zeichnen sich aber sie verbinden sich nie" - stellte sich
-   als eigenständiger, dritter Bug heraus: `vector-effect: non-scaling-stroke` auf dem
-   `<line>`-Element (ursprünglich gedacht, um die Strichbreite gegen die durch
-   `preserveAspectRatio="none"` nicht-uniform gestreckte viewBox konstant zu halten) UND
-   `pathLength="1"` (normiert die Pfadlänge für `stroke-dasharray`/`-dashoffset` auf 0..1)
-   vertragen sich NICHT: `non-scaling-stroke` berechnet laut Spec das gesamte
-   Stroke-Rendering - INKLUSIVE des Dash-Musters - in einem von der viewBox-Streckung
-   ENTKOPPELTEN Koordinatensystem, wodurch das per `pathLength` normierte
-   `stroke-dasharray:1` nicht als "gesamte Pfadlänge" interpretiert wurde, sondern als ein
-   viel kleinerer, sich ständig WIEDERHOLENDER Strich-Lücke-Zyklus (~180px-Periode über
-   die gesamte Linie verteilt) - sichtbar als klar erkennbares Muster aus kurzem
-   sichtbaren Stück, Lücke, sichtbarem Stück, Lücke... statt EINER durchgehenden Linie.
-   Gefunden per systematischem Pixel-Scan (Screenshot einer festen Spalte an der
-   Linien-X-Position, Farbübergänge Y-Position für Y-Position ausgelesen) bei MEHREREN
-   statischen `stroke-dashoffset`-Werten UND bei ausgeschalteter Animation - das
-   Wiederholungsmuster blieb bei JEDEM Wert identisch (bewies: kein Animations-/
-   Timing-Bug, ein rein strukturelles Rendering-Problem). Fix: `vector-effect:
-   non-scaling-stroke` komplett entfernt - für eine rein VERTIKALE Linie (x1=x2) ist die
-   Strichbreite ohnehin entlang der X-Achse gemessen, und GENAU die X-Achse wird von
-   `preserveAspectRatio="none"` gar nicht gestreckt (nur die Y-Achse) - die Eigenschaft war
-   also nicht einmal für ihren ursprünglichen Zweck nötig, geschweige denn ihren
-   tatsächlichen Nebeneffekt wert. Nach Entfernen: derselbe Pixel-Scan zeigt EINEN
-   durchgehenden Lauf pro Kartenabstand (nur die kleinen, gewollten ~20px-Lücken exakt an
-   den Punkt-Positionen durch deren `box-shadow`-Ring), in Chromium UND Playwright-WebKit
-   gegengeprüft. Lehre: bei JEDER Kombination aus `pathLength` (Pfadlängen-Normierung) und
-   `vector-effect: non-scaling-stroke` (eigenes, entkoppeltes Koordinatensystem für den
-   Strich) auf ein-und-demselben Element besonders misstrauisch sein - beide wollen
-   bestimmen, in welchem Koordinatensystem strichbezogene Längen (Breite UND Dash-Muster)
-   berechnet werden, und sind nicht für die Kombination miteinander gedacht. Und generell:
-   ein erster, naheliegend klingender Erklärungsversuch für ein User-Feedback ("ist sicher
-   dieselbe Ursache wie X") ersetzt NICHT die eigene Verifikation - hier hätte ein einziger
-   Pixel-Scan schon beim ersten Report die zweite, echte Ursache sofort sichtbar gemacht,
-   statt sie erst nach einer weiteren Push-Runde vom User erneut gemeldet zu bekommen. Auch
-   via `file://` (nicht nur über den lokalen PHP-Server) nachverifiziert, dass die Linie
-   korrekt rendert (reines CSS/SVG, keine ES-Module wie Web Awesome betroffen - Fallstrick
-   3 unten gilt nur für JS-Module, nicht für CSS/SVG).
-4) **Funktional korrekt, aber optisch bedeutungslos**: Nach Fix von Punkt 3 zeichnete sich
-   die Linie technisch einwandfrei nach - trotzdem User-Feedback: "das stimmt nicht und
-   ist eigentlich sinnfrei ... jetzt ist sie einfach durchgezogen". Ursache: EINE
-   einfarbige Linie (gedämpftes Grau, `--ncss-color-border`) macht den Zeichen-Effekt kaum
-   wahrnehmbar - der "noch nicht gezeichnete" Teil ist per Dash-Lücke unsichtbar und
-   verschmilzt optisch mit dem ohnehin weißen Seitenhintergrund, der bereits gezeichnete
-   Teil sieht dabei genauso aus wie eine ganz gewöhnliche, längst fertige graue Linie -
-   fürs Auge ändert sich beim Scrollen praktisch nichts Erkennbares. Lehre: bei einem
-   "Reveal on scroll"-Effekt reicht es NICHT, dass der Übergang technisch (Dashoffset)
-   korrekt animiert - der VERBORGENE Zustand muss sich auch farblich/optisch klar vom
-   ENTHÜLLTEN Zustand unterscheiden, sonst ist der Fortschritt unsichtbar. Fix (User-Idee):
-   ZWEI `<line>`-Elemente statt einer - ein statischer, immer voll sichtbarer `-track` in
-   gedämpftem Grau UND eine markenfarbene `-progress`-Linie exakt darüber, die weiterhin
-   per `stroke-dasharray`/`-dashoffset` + `pathLength="1"` nachgezeichnet wird (NUR die
-   Progress-Linie braucht `pathLength`, der Track hat keine Dash-Animation). Ergebnis: ein
-   klassisches (nur vertikales) Fortschrittsbalken-Muster - der Farbkontrast macht
-   sichtbar, wie weit der markenfarbene Teil beim Scrollen "vorankommt", während der graue
-   Rest als Vorschau auf noch Kommendes sichtbar bleibt. Baseline (kein `view()`-Support)
-   profitiert nebenbei: die Progress-Linie ist dort einfach von Anfang an voll gezeichnet
-   und deckt den Track komplett ab, ergibt eine durchgehend markenfarbene (statt zuvor
-   grauen) Linie - eine optische Verbesserung, kein reiner Kompromiss.
-5) **NUR in echtem Safari reproduzierbar (wieder das Muster aus Punkt 21 weiter unten) -
-   die Zwei-Linien-Lösung aus Punkt 4 sah in Chromium UND Playwright-WebKit einwandfrei
-   aus (per Pixel-Scan bestätigt), User meldete danach trotzdem "in chrome geht es"
-   (impliziert: woanders nicht) und schließlich "jetzt is es nur ne blaue linie" -
-   nachgefragt per AskUserQuestion, welcher Browser betroffen ist: Safari 26.5.2. Laut
-   WebSearch unterstützt Safari `animation-timeline: view()` erst seit Version 26 - 26.5.2
-   MÜSSTE es also eigentlich unterstützen (kein reiner Baseline-Fallback-Fall), User
-   bestätigte zusätzlich "in chrome geht es" (per direktem Vergleich). Ursache (nicht in
-   echtem Safari nachvollzogen, da nicht verfügbar - per Fachwissen zu Paint- vs.
-   Compositor-Eigenschaften hergeleitet UND durch die anschließende Lösung indirekt
-   bestätigt, da das Problem danach verschwand): `stroke-dashoffset` ist eine
-   PAINT-Eigenschaft - jede Wertänderung erzwingt ein echtes Neuzeichnen der
-   SVG-Geometrie, anders als `transform`/`opacity`/`scale` (COMPOSITOR-Eigenschaften, ohne
-   Repaint pro Frame interpolierbar). Scroll-getriebene Animationen sind technisch am
-   zuverlässigsten über GENAU diese Compositor-Eigenschaften - eine über `view()`
-   angesteuerte Paint-Eigenschaft ist ein bekannt riskanteres Pflaster, das nicht jede
-   Engine gleich zuverlässig pro Scroll-Frame nachzieht (Chromium tut es hier
-   offensichtlich, Safari 26.5.2 laut User-Report nicht spürbar). Fix: komplette
-   Umstellung von SVG (`<line>` + `stroke-dasharray`/`-dashoffset` + `pathLength`) auf
-   zwei einfache `<div>`s + `scale` (Y-Achse, `transform-origin: top`) - exakt dieselbe,
-   bereits in `scroll-progress.css` bewährte Technik (dort horizontal), nur vertikal
-   gespiegelt. Kein SVG, kein `pathLength`, kein `vector-effect` mehr nötig - dadurch auch
-   strukturell einfacher als der SVG-Anlauf, nicht nur robuster. Lehre: bei
-   scroll-getriebenen Animationen IMMER zuerst prüfen, ob sich der Effekt über
+Viertes Beispiel, `.ncss-roadmap` (components/roadmap.css) - eine Meilenstein-Liste,
+verbunden durch eine SVG-Linie, die sich beim Scrollen selbst "nachzeichnet" per
+`animation-timeline: view()` (anonym, kein Pinning wie bei `scroll-stack.css` - der
+natürliche Ein-/Austritts-Scrollweg der Linie IST bereits der gewünschte Zeichenweg).
+Mehrere Kalibrierungs-Bugs dabei gefunden, am Ende komplett auf eine robustere Technik
+umgestellt:
+
+1) **`animation-range: cover` (Default) braucht Linienhöhe + Viewporthöhe Scrollweg NACH
+   Erscheinen des Elements, um 100% zu erreichen** - reicht bei einem Element kurz vor dem
+   Footer (üblich für Roadmap-/Timeline-Muster) oft nicht aus, die Linie blieb sichtbar
+   unvollständig, obwohl die letzte Karte längst sichtbar war. Fix: `contain` statt
+   `cover` - fertig gezeichnet, sobald die letzte Karte gerade voll sichtbar wird,
+   unabhängig vom Rest-Scrollweg danach. Bei Elementen nahe dem Seitenende immer per
+   echtem Scroll-bis-zum-Ende-Test prüfen, nicht annehmen.
+2) **`ul`/`ol` erben per `base.css`-Default ein eigenes `padding-inline-start`** -
+   `.ncss-roadmap-list` (ein `<ol>`) verschob dadurch jeden Listenpunkt zusätzlich zum
+   eigenen Gutter-Versatz nach rechts, während die absolut zum äußeren Container
+   positionierte Linie an ihrer korrekten Stelle blieb: Punkte lagen sichtbar neben statt
+   auf der Linie. Fix: bei jeder Komponente, die `<ul>`/`<ol>` für freies Positionieren
+   (nicht als Aufzählung) nutzt, explizit `padding-inline-start: 0` setzen.
+3) **`pathLength` (Pfadlängen-Normierung für `stroke-dasharray`/`-dashoffset`) und
+   `vector-effect: non-scaling-stroke` auf demselben `<line>` vertragen sich nicht** -
+   `non-scaling-stroke` berechnet das gesamte Stroke-Rendering inkl. Dash-Muster in einem
+   von der viewBox-Streckung entkoppelten Koordinatensystem, wodurch `stroke-dasharray:1`
+   nicht als "gesamte Pfadlänge" interpretiert wird, sondern als kurzer, sich
+   wiederholender Strich-Lücke-Zyklus - die Linie wirkte durchgehend unterbrochen statt
+   sich einmal durchgängig nachzuzeichnen. Fix: `vector-effect: non-scaling-stroke`
+   entfernt - für eine rein vertikale Linie (x1=x2) ist die Strichbreite ohnehin nur
+   entlang der X-Achse relevant, die von `preserveAspectRatio="none"` gar nicht gestreckt
+   wird, die Eigenschaft war also nicht einmal für ihren ursprünglichen Zweck nötig.
+4) **Eine einfarbige Reveal-Linie ist optisch bedeutungslos** - der "noch nicht
+   gezeichnete" Teil (Dash-Lücke) verschmilzt farblich mit dem Seitenhintergrund, der
+   bereits gezeichnete Teil sieht wie eine gewöhnliche fertige Linie aus, der
+   Scroll-Fortschritt bleibt unsichtbar. Ein technisch korrekt animierter Dashoffset
+   reicht bei einem Reveal-Effekt nicht - der verborgene und der enthüllte Zustand müssen
+   sich auch farblich unterscheiden. Fix: zwei `<line>`-Elemente - ein statischer, grauer
+   `-track` plus eine markenfarbene `-progress`-Linie exakt darüber, nur die Progress-
+   Linie bekommt `pathLength`/Dash-Animation. Ergebnis: ein klassisches
+   Fortschrittsbalken-Muster, der Farbkontrast macht den Fortschritt sichtbar.
+5) **`stroke-dashoffset` ist eine Paint-Eigenschaft, kein zuverlässiger Träger für eine
+   scroll-getriebene Animation** - jede Wertänderung erzwingt ein echtes Neuzeichnen der
+   SVG-Geometrie, anders als `transform`/`opacity`/`scale` (Compositor-Eigenschaften, ohne
+   Repaint pro Frame interpolierbar). Auf echtem Safari (26.5.2) blieb der Effekt trotz
+   vorhandenem `view()`-Support sichtbar hinter Chromium zurück. Fix: komplette Umstellung
+   von SVG (`<line>` + `stroke-dasharray`/`-dashoffset`) auf zwei `<div>`s + `scale`
+   (Y-Achse, `transform-origin: top`) - dieselbe Technik wie in `scroll-progress.css`
+   (dort horizontal), nur gespiegelt; kein SVG/`pathLength`/`vector-effect` mehr nötig.
+   Bei scroll-getriebenen Animationen immer zuerst prüfen, ob sich der Effekt über
    `transform`/`opacity`/`scale`/`filter` erreichen lässt, bevor eine Paint-Eigenschaft
-   (Farben, `stroke-*`, `width`/`height`, `clip-path` mit komplexen Formen o.ä.) animiert
-   wird - insbesondere wenn der Ziel-Effekt (hier: "eine Linie zeichnet sich") sich
-   genauso gut über eine geometrisch simple, compositor-freundliche Alternative bauen
-   lässt (ein rechteckiger Balken mit `scale` statt einer SVG-Linie mit Dash-Muster).
-   Danach EIN letztes Feintuning per User-Feedback ("geht jetzt aber ich finde es geht zu
-   schnell ans ende"): reines `animation-range: contain` blieb bis ca. 35%
-   Scroll-Fortschritt bei 0 stehen, zog dann sehr steil auf 100% hoch (nur ca. 40% der
-   Gesamt-Scrollstrecke) und blieb danach nochmal ca. 25% lang bei "fertig" stehen -
-   fühlte sich dadurch hastig durchgezogen an statt gleichmäßig aufgebaut. Erster
-   Fix-Versuch: `animation-range: cover 0% contain 100%` - `cover 0%` als (viel früherer)
-   Startpunkt statt `contain 0%`, Endpunkt `contain 100%` unverändert. In EINER
-   Viewport-Größe (1280×900) per Testreihe bestätigt gleichmäßiger - aber NICHT bei
-   anderen Viewport-Größen gegengeprüft, bevor ausgeliefert. **Dieser Fix wurde wieder
-   verworfen**: User-Report kurz danach "jetzt geht es weder in chrome noch safari" /
-   "in beiden browsern nur eine durchgezogene linie" - per Testreihe über mehrere
-   Viewport-Größen (1280×900 bis 375×812) nachträglich bestätigt: der Fortschritt bei
-   Seitenaufruf (scrollY 0) lag je nach Verhältnis von Roadmap- zu Viewport-Höhe zwischen
-   17% und 65% VORGEZEICHNET statt konstant bei 0% - `cover` und `contain` haben
-   unterschiedliche, geometrieabhängige Referenz-Rahmen, das Mischen zweier verschiedener
-   benannter Bereiche ist NICHT robust über unterschiedliche Seiten-/Viewport-Geometrien
-   hinweg (anders als ein einzelner benannter Bereich wie `contain` allein, der bei JEDER
-   getesteten Viewport-Größe konstant `0` bei Aufruf und `1` bei maximalem Scroll ergab).
-   Zurückgerollt auf reines `contain` (wieder nur mit dem ursprünglichen, akzeptierten
-   Pacing-Problem, aber verlässlich funktionierend). Lehre: eine Testreihe nur bei EINER
-   Viewport-Größe reicht nicht, um eine `animation-range`-Änderung als sicher zu
-   bezeichnen - IMMER mehrere Viewport-Größen (mind. Desktop breit/schmal + Mobile) prüfen,
-   bevor eine Range-Anpassung ausgeliefert wird, besonders wenn zwei verschiedene benannte
-   Bereiche kombiniert werden. Ein besserer Pacing-Fix müsste INNERHALB desselben
-   benannten Bereichs bleiben (z.B. `contain -X% contain 100%`, negativer Prozentwert
-   erweitert den Referenz-Rahmen VOR `contain`s eigenem 0%-Punkt, statt einen zweiten,
-   fremden Bereich hereinzumischen) - noch nicht umgesetzt/getestet.
+   animiert wird. Feintuning-Falle danach: `animation-range: cover 0% contain 100%`
+   (gemischte benannte Bereiche) sah bei EINER Viewport-Größe gleichmäßiger aus, brach
+   aber bei anderen Verhältnissen von Roadmap- zu Viewport-Höhe komplett (Fortschritt lag
+   bei Seitenaufruf schon zwischen 17% und 65% vorgezeichnet statt bei 0%) -
+   unterschiedliche benannte Bereiche haben unterschiedliche, geometrieabhängige
+   Referenz-Rahmen, das Mischen zweier ist NICHT robust über verschiedene Geometrien
+   hinweg. Zurückgerollt auf reines `contain` (verlässlich, auch wenn das Pacing weniger
+   gleichmäßig ist). Jede `animation-range`-Änderung immer über mehrere Viewport-Größen
+   (Desktop breit/schmal + Mobile) prüfen, nicht nur eine.
 
 27. **Web Awesome auf farbigen Flächen (`.ncss-surface--brand/-brand-2/-neutral`,
     `.ncss-gradient-brand`): `color:#fff` auf dem Light-DOM-Vorfahren reicht nicht, ein
     `<wa-input>`/`<wa-textarea>`/`<wa-select>`/`<wa-checkbox>`/`<wa-radio>`/`<wa-switch>`
     zeigt Label/Wert/Hinweistext trotzdem in Web Awesomes eigenem Standard-Textton.**
-    User-Report: "landing.html Auf dem Laufenden bleiben, label nicht sichtbar:
-    E-Mail-Adresse schwarz auf blau - sowas darf nicht passieren" (Newsletter-Sektion,
-    `demo/landing.html`, `<wa-input label="E-Mail-Adresse">` auf `.ncss-surface--brand`).
-    Ursache: Label/Wert/Hinweistext werden im SHADOW DOM der Komponente gerendert -
-    `color:inherit` durchquert Shadow-DOM-Grenzen nicht (anders als Custom Properties, die
-    normal weitervererben). Naheliegender erster Fix-Versuch: NUR die Basis-Bridge-Tokens
-    `--wa-color-text-normal`/`-quiet` (webawesome-bridge.css, `:root`) auf der farbigen
-    Fläche zusätzlich auf `currentColor` umbiegen, in der Annahme, Web Awesomes eigene
-    `--wa-form-control-label-color`/`-value-color`/`-hint-color` (vendor/webawesome/
-    dist-cdn/styles/themes/default.css, "Form Controls", jeweils `var(--wa-color-text-
-    normal)`) würden das als lebende `var()`-Kette bei jedem Verwendungsort neu auflösen.
-    Per echtem `CSS.getMatchedStylesForNode`(CDP)/`getComputedStyle`-Test WIDERLEGT: eine
-    Custom Property löst `var()`-Referenzen INNERHALB ihres eigenen Werts am Ort ihrer
-    EIGENEN Deklaration auf (hier: einmalig an `:root`, wo Web Awesomes Theme sie setzt) -
-    das Ergebnis ist ein FERTIGER, eingefrorener Wert (`light-dark(#1a1a1a, #f0f0f0)`), der
-    ab da nur noch unverändert weitervererbt wird. Ein `--wa-color-text-normal`, das auf
-    einem Nachfahren NEU gesetzt wird, kommt für diese bereits eingefrorenen abgeleiteten
-    Tokens zu spät - nur EIGENE, direkte Neu-Deklarationen GENAU dieser abgeleiteten Tokens
-    wirken noch. Direkte Verwendungen von `--wa-color-text-normal` selbst (nicht über eine
-    solche Zwischenstufe, z.B. `segmented-field.styles.ts`) sind von diesem Effekt NICHT
-    betroffen - die einmalige `:root`-Bridge bleibt für den Normalfall richtig und
-    ausreichend, das hier ist die dokumentierte Ausnahme. Echter Fix (webawesome-bridge.css):
+    Ursache: Label/Wert/Hinweistext werden im Shadow DOM der Komponente gerendert -
+    `color:inherit` durchquert Shadow-DOM-Grenzen nicht. Ein naheliegender, aber falscher
+    Fix ist, nur die Basis-Bridge-Tokens (`--wa-color-text-normal`/`-quiet`) auf der
+    farbigen Fläche umzubiegen: eine Custom Property löst `var()`-Referenzen INNERHALB
+    ihres eigenen Werts am Ort ihrer EIGENEN Deklaration auf (hier: einmalig an `:root`)
+    und vererbt danach nur noch den fertigen, eingefrorenen Wert - Web Awesomes eigene
+    abgeleitete Tokens (`--wa-form-control-label-color` usw., selbst `var(--wa-color-text-
+    normal)`) sind davon bereits "eingefroren" und reagieren nicht mehr auf eine spätere
+    Neu-Deklaration der Basis-Tokens. Echter Fix (webawesome-bridge.css):
     `--wa-form-control-label-color`/`-value-color`/`-hint-color`/`-required-content-color`
-    DIREKT auf `.ncss-surface--brand/-brand-2/-neutral`, `.ncss-gradient-brand` (und den neu
-    gebauten `.ncss-text-light`/`.ncss-text-dark`, siehe unten) als `currentColor`
-    deklarieren - kein `::part()`-Gefrickel pro Seite nötig (das wäre wieder eine
-    Seiten-lokale Erfindung gewesen, siehe Fallstrick 25 zur Glaubwürdigkeits-Anforderung).
+    DIREKT auf den farbigen Flächen-Klassen als `currentColor` deklarieren.
 
-    **Nachtrag, eigener Fehler beim Schreiben des Fixes**: die erste Fassung dieser Regel
-    landete in einem Kommentar mit `.ncss-surface--*/.ncss-gradient-brand` als Wildcard-
-    Aufzählung - exakt Fallstrick 14 (`*/` mitten im Kommentar beendet ihn sofort, alles
-    danach bis zum NÄCHSTEN `*/` wird als echtes CSS geparst und die eigentliche Regel
-    verschwindet spurlos, ohne Konsolenfehler). Erst per `grep -c '/\*'` gegen `grep -c
-    '\*/'` (ungleiche Anzahl entlarvt das) UND per direktem `getComputedStyle`-Vergleich
-    (Wert blieb trotz "fertigem" Fix unverändert) gefunden - wieder ein Beleg, warum dieser
-    Grep-Check nach JEDER Kommentar-Änderung mit `-`/`*`/`/` in Klassennamen-Aufzählungen
-    Pflicht bleibt, auch wenn man die Regel selbst kennt.
+    Als Nebenprodukt: `.ncss-text-light`/`.ncss-text-dark` (+ `-100/-300/-700/-900`
+    Deckkraft-Stufen) in `helpers/typography.css` - fest auf Weiß/Schwarz, unabhängig vom
+    Theme, für Flächen, deren Farbe nicht über ncss-Tokens läuft (Foto, fester
+    Marken-Ton). Als reine Deckkraft-Stufen VON Weiß/Schwarz umgesetzt
+    (`color-mix(in srgb, #fff/#000 X%, transparent)`), nicht wie die normale
+    Marken-Farbskala - Weiß/Schwarz sind bereits die hellst-/dunkelstmögliche Stufe.
+    Funktioniert konfliktfrei auch innerhalb von `.ncss-scheme-dark`/`-light`, weil
+    `color-scheme` nur steuert, wie `light-dark()`-Tokens auflösen, während
+    `.ncss-text-light` `color` direkt mit einem festen Wert überschreibt. Demo:
+    `demo/magazine.html`.
 
-    **Neue Utility als Nebenprodukt (User-Wunsch, UIkit-`uk-light`/`uk-dark` als Vorbild,
-    "mit weiteren Variationen auch dark oder soft oder light-10 -100 oder so")**:
-    `.ncss-text-light`/`.ncss-text-dark` (+ `-100/-300/-700/-900` als Deckkraft-Stufen,
-    `-900` == Basis-Klasse ohne Zahl) in `helpers/typography.css` - fest auf Weiß/Schwarz,
-    UNABHÄNGIG vom Theme, für Flächen, deren Farbe nicht über ncss-Tokens läuft (Foto, ein
-    fester Marken-Ton außerhalb der Skala). Bewusst NICHT wie die Marken-Farbskala
-    (Farbton-Mischung per `color-mix()` gegen Weiß/Schwarz) umgesetzt, sondern als reine
-    Deckkraft-Stufen VON Weiß/Schwarz (`color-mix(in srgb, #fff/#000 X%, transparent)`) -
-    Weiß/Schwarz selbst sind bereits die hellst-/dunkelstmögliche Stufe, ein "helleres
-    Weiß" gibt es nicht. Per echtem Cross-Engine-Test (Chromium/WebKit/Firefox, je
-    Light-/Dark-Mode-Seite) bestätigt: vollständig theme-unabhängig, identisches Ergebnis
-    in allen sechs Kombinationen. Auf User-Wunsch ausdrücklich auch INNERHALB von
-    `.ncss-scheme-dark`/`-light` getestet (Kombination `.ncss-scheme-dark` +
-    `.ncss-text-light-700` auf derselben Karte, demo/magazine.html) - keine Konflikte, weil
-    beide Mechanismen unabhängig sind (`color-scheme` steuert nur, wie `light-dark()`-
-    Tokens INNERHALB des Elements auflösen, `.ncss-text-light` überschreibt `color` direkt
-    mit einem festen, nicht von `light-dark()` abhängigen Wert). Demo: `demo/magazine.html`.
+28. **`mix-blend-mode: overlay` (Default von `.ncss-grain`) verhält sich wie `multiply`
+    auf dunklen und wie `screen` auf hellen Flächen** - auf einer sehr dunklen/gesättigten
+    Fläche bleibt die Standard-Deckkraft dadurch praktisch unsichtbar, obwohl das Feature
+    selbst korrekt rendert (per Pixel-Stichprobe/Standardabweichung quantifiziert, nicht
+    nur Augenmaß: stddev ≈ 0.33 auf sehr dunkler Fläche vs. 1.0-1.75 auf mittelheller
+    Fläche bei identischen Werten). Kein Bug im CSS selbst - `mix-blend-mode: overlay`
+    verhält sich spezifikationsgemäß, nur die gewählte Demo-Hintergrundfarbe war der
+    ungünstigste Fall für den Default-Blend-Modus. Fix nur in der Demo: die "Dezent"-Karte
+    auf eine mittelhelle Fläche umgestellt (zeigt den echten Default ehrlich), die
+    "Sandig"-Karte behält eine dunkle Fläche, aber mit höherer Opacity + `--ncss-grain-
+    blend: soft-light` (auf dunklen Flächen zuverlässiger sichtbar als `overlay`). Bei
+    "ist ein Effekt sichtbar?"-Prüfungen reicht Augenmaß bei geringem Kontrast nicht - eine
+    Pixel-Stichprobe macht "unsichtbar" vs. "schwach aber vorhanden" messbar.
 
-28. **`mix-blend-mode: overlay` (Default von `.ncss-grain`) verhält sich wie `multiply` auf
-    dunklen und wie `screen` auf hellen Flächen - auf einer SEHR dunklen/gesättigten Fläche
-    bleibt die Standard-Deckkraft (`--ncss-grain-opacity: 0.12`) dadurch praktisch
-    unsichtbar, unabhängig davon, ob die Textur selbst korrekt rendert.** User-Report:
-    "Grain... Körnung ist bei den gewählten Hintergrundfarben nicht zu erkennen" -
-    `demo/effects.html` zeigte beide Grain-Karten auf `.ncss-surface--brand`/`-brand-2`
-    (900er-Stufe, sehr dunkel/gesättigt). Per Pixel-Stichprobe quantifiziert (Standard-
-    abweichung eines Bildausschnitts ohne Text, kein bloßes Augenmaß): auf dieser
-    Hintergrundfarbe bei Default-Werten stddev ≈ 0.33 (praktisch eine Fläche, keine
-    Textur), auf einer MITTELHELLEN Fläche (`--ncss-color-neutral`, `#64748b`) bei
-    IDENTISCHEN Default-Werten stddev ≈ 1.0-1.75 (deutlich sichtbares Korn) - das Feature
-    selbst war nie kaputt, nur die DEMO-Hintergrundfarbe war der ungünstigste denkbare Fall
-    für den Default-Blend-Modus. Fix (nur `demo/effects.html`, keine Komponenten-Änderung
-    nötig - `mix-blend-mode: overlay` verhält sich exakt spezifikationsgemäß, kein Bug im
-    CSS selbst): "Dezent (Default)"-Karte auf eine mittelhelle Fläche umgestellt (zeigt den
-    ECHTEN Default ehrlich), "Sandig"-Karte bleibt auf `.ncss-surface--brand-2`, aber mit
-    `--ncss-grain-opacity: 0.4` + `--ncss-grain-blend: soft-light` (auf sehr dunklen
-    Flächen zuverlässiger sichtbar als höhere `overlay`-Werte, per Test verglichen).
-    Zusätzlich Erklärtext ergänzt, warum das passiert, statt nur die Werte stillschweigend
-    zu ändern. Lehre: bei einem Screenshot-Vergleich für "ist ein Effekt sichtbar?" reicht
-    Augenmaß bei geringem Kontrast nicht zuverlässig - eine Pixel-Stichprobe (Mittelwert/
-    Standardabweichung eines textfreien Ausschnitts) macht "unsichtbar" vs. "schwach aber
-    vorhanden" eindeutig messbar, statt sich auf den Bildschirm-Eindruck zu verlassen.
+29. **Touch-Geräte lösen `:hover` nicht zuverlässig per Tap aus - ein Button/eine Karte,
+    deren einzige Rückmeldung ein `:hover`-Zustand ist, wirkt auf Touch komplett tot.**
+    `matchMedia('(hover: hover) and (pointer: fine)')` liefert auf Touch `false` - das
+    Signal für das Fix-Muster. Betraf projektweit 27 `:hover`-Regeln über 11 Dateien,
+    jede jetzt in `@media (hover: hover) and (pointer: fine) { ... }` gewrappt. Zwei
+    Fallstricke beim Umsetzen:
+    - Regeln mit gemeinsamem Selektor `a:hover, a:focus-visible { ... }` dürfen nicht
+      blind komplett gewrappt werden - `:focus-visible` (Tastatur-Fokus) gilt unabhängig
+      vom Zeigegerät und darf nicht mit-gated werden. Selektoren aufteilen: nur `:hover`
+      wandert in die Media Query.
+    - `.ncss-btn` hatte vor diesem Fix gar keinen `:active`-Zustand - auf Touch also
+      buchstäblich keine Rückmeldung beim Tippen. Ergänzt: `.ncss-btn:active:not(:disabled)
+      { scale: 0.97; }` auf der Basis-Klasse. `scale` (eigenständige Property statt
+      `transform: scale()`) gewählt, damit es sich mit `.ncss-stamped`s `transform:
+      translateY(...)` überlagert statt es zu überschreiben. `.ncss-press`
+      (helpers/animations.css) hatte dieses Muster (`:active` statt `:hover`) bereits für
+      eigene Elemente - die Lehre war im Projekt schon vorhanden, nur nicht überall
+      angewendet.
 
-29. **Touch-Geräte (iPhone etc.) lösen `:hover` nicht zuverlässig per Tap aus - ein
-    Button/eine Karte, deren einzige optische Rückmeldung ein `:hover`-Zustand ist, wirkt
-    auf Touch komplett tot.** User-Report: "unsere hover und click effekte haben auf dem
-    iPhone keine Auswirkung ... z.b card hover oder auch bei Stamped". Per echtem Test mit
-    Playwright-iPhone-Emulation (Chromium UND WebKit) bestätigt: `transform`/`box-shadow`
-    aus `:hover`-Regeln bleiben nach einem simulierten Tap komplett unverändert, `matchMedia
-    ('(hover: hover) and (pointer: fine)')` liefert dort `false` (Desktop: `true`) - exakt
-    das Signal, das das Fix-Muster braucht. Betraf projektweit 27 `:hover`-Regeln über 11
-    Dateien (`.ncss-stamped`, `.ncss-shadow-hover-*`, `.ncss-hover-lift/-grow`,
-    `.ncss-btn--primary/-secondary`, Formular-Rahmen, Breadcrumb/Footer/Dialog-Close-Links,
-    Nav-Items) - JEDE davon jetzt in `@media (hover: hover) and (pointer: fine) { ... }`
-    gewrappt. Zwei Fallstricke beim Umsetzen selbst:
-    - Mehrere Regeln standen als GEMEINSAMER Selektor mit `:focus-visible` zusammen (z.B.
-      `a:hover, a:focus-visible { ... }`, `components/nav.css`) - ein blindes Wrappen der
-      GANZEN Regel hätte `:focus-visible` (Tastatur-Fokus, gilt unabhängig vom Zeigegerät)
-      versehentlich mit-gated und Tastatur-Nutzer auf Touch-Geräten mit Tastatur (z.B.
-      Touchscreen-Notebook) benachteiligt. Fix: Selektoren AUFGETEILT, `:focus-visible`
-      bleibt unbedingt, nur `:hover` wandert in die Media Query.
-    - `.ncss-btn` hatte VOR diesem Fix gar keinen `:active`-Zustand - auf Touch also
-      buchstäblich NULL Rückmeldung beim Tippen (nicht nur "kein Hover", sondern "keine
-      Reaktion überhaupt"). Ergänzt: `.ncss-btn:active:not(:disabled) { scale: 0.97; }`
-      auf der BASIS-Klasse (nicht pro Variante), damit auch `.ncss-btn--danger` (hatte
-      nie einen eigenen `:hover`) jetzt eine Rückmeldung bekommt. `scale` (eigenständige
-      Property, nicht `transform: scale()`) gewählt, damit es sich mit `.ncss-stamped`s
-      `transform: translateY(...)` überlagert statt es zu überschreiben (einzelne
-      Transform-Properties komponieren automatisch mit der `transform`-Shorthand, keine
-      Kaskaden-Konkurrenz). `:active`-Auslösung selbst ließ sich per synthetischem
-      `TouchEvent`/CDP-`Input.dispatchTouchEvent` NICHT zuverlässig automatisiert
-      reproduzieren (bekannte Grenze von Browser-Automatisierung, nicht der CSS-Regel -
-      per echtem `mouse.down()` bestätigt, dass die Regel selbst korrekt matcht/skaliert).
-      `.ncss-press` (`helpers/animations.css`) existierte bereits als DASSELBE Muster für
-      eigene Elemente (`:active` statt `:hover`, "funktioniert auch per Touch") - die
-      Lehre war schon im Projekt vorhanden, nur nicht überall angewendet.
-    `helpers/visibility.css`s `.ncss-reveal-on-hover` brauchte KEINE Änderung - hatte
-    bereits ein korrektes `@media (hover: none) { ... opacity: 1 ... }` (immer sichtbar auf
-    reinen Touch-Geräten), von Anfang an mit Touch im Kopf gebaut. README-Abschnitt "Touch-
-    Geräte & mobile Viewports" neu, zentrale Referenz für alle `siehe README`-Kommentare
-    an den 27 Fundstellen.
+    Erste Fassung war zu schwach: `scale: 0.97` allein kam bei einem realistischen, kurzen
+    Tap oft nicht sichtbar an, weil die normale Übergangsdauer (200ms) einen ~100-150ms
+    kurzen Tap oft nicht mehr vollständig durchläuft, UND weil die farbliche Rückmeldung
+    (das auffälligste Signal) komplett hinter der `hover:hover`-Media-Query versteckt war.
+    Fix: eigener, schnellerer Token nur für den Einstieg in `:active` (normale Dauer bleibt
+    beim Loslassen), `scale` verstärkt auf 0.95, UND pro Button-Variante eine echte
+    `:active`-Farbänderung ergänzt (nicht nur unter der hover-Media-Query).
 
-    **Nachtrag, User-Feedback nach dem ersten Versuch ("kann kaum touch feedbacks
-    feststellen")**: `scale: 0.97` auf `.ncss-btn:active` allein war zu schwach UND kam bei
-    einem realistischen, kurzen Tap oft gar nicht sichtbar an - Ursache war NICHT die
-    fehlende Media-Query-Logik (die war korrekt), sondern zwei separate Probleme: (1) die
-    normale `--ncss-motion-duration` (200ms) erreicht ihren Zielwert bei einem ~100-150ms
-    kurzen Tap oft nicht mehr vollständig, per echtem Test bestätigt (`page.mouse.down()` +
-    120ms Wartezeit zeigte den Übergang noch mitten in Bewegung); (2) die FARBLICHE
-    Rückmeldung (das eigentlich auffälligste Signal) war komplett hinter der
-    `hover:hover`-Media-Query versteckt - Touch bekam dadurch NUR die schwache Skalierung,
-    keine Farbänderung. Fix: neuer Token `--ncss-motion-duration-fast` (100ms, tokens.css)
-    NUR für den EINSTIEG in `:active` (`transition-duration` direkt auf der `:active`-Regel
-    überschrieben, nicht auf der Basisregel - das Zurückfedern beim Loslassen bleibt bei der
-    normalen, weicheren Dauer); `scale` von 0.97 auf 0.95 verstärkt; UND pro Button-Variante
-    eine ECHTE `:active`-Farbänderung ergänzt (dieselben Werte wie die jeweilige
-    `:hover`-Variante, nur zusätzlich unbedingt statt nur unter der hover-Media-Query) -
-    `--danger` bekam dabei gleich einen `:hover`/`:active` spendiert, den es vorher gar
-    nicht hatte. Dieselbe Technik (schnellerer `:active`-Einstieg, normale Rückfeder-Dauer)
-    auch auf `.ncss-stamped`, `.ncss-stamped--press` und `.ncss-press` übertragen.
-
-    **Weiterer, beim Verifizieren gefundener echter Bug (Desktop, nicht Touch)**: eine
-    gehaltene Maustaste erfüllt `:hover` UND `:active` GLEICHZEITIG - bei gleicher
-    Spezifität gewinnt die im Quelltext SPÄTERE Regel. `.ncss-stamped:hover` (in der
-    `@media (hover: hover)`-Regel, später im Quelltext als die Basisregel mit `&:active`)
-    gewann dadurch beim Gedrückthalten der Maustaste gegen `:active` - der Button blieb
-    sichtbar "angehoben" (`translateY(-3px)`) statt "eingesunken" zu wirken, OBWOHL die
-    Maustaste noch gedrückt war (per `matrix()`-Auslese gefunden: `ty` zeigte
-    `-2.67` statt der erwarteten `+3`). Fix: `:hover:not(:active)` statt nur `:hover` auf
-    beiden betroffenen Selektoren - schließt exakt den Überlappungsfall aus, `:active`
-    gewinnt jetzt unbedingt, sobald es zutrifft.
+    Zusätzlicher Desktop-Bug beim Verifizieren gefunden: eine gehaltene Maustaste erfüllt
+    `:hover` UND `:active` gleichzeitig - bei gleicher Spezifität gewinnt die im Quelltext
+    spätere Regel, wodurch `:hover` (später im Quelltext) gegen `:active` gewann und der
+    Button beim Gedrückthalten sichtbar "angehoben" statt "eingesunken" blieb. Fix:
+    `:hover:not(:active)` statt nur `:hover`, damit `:active` unbedingt gewinnt, sobald es
+    zutrifft.
 
 30. **`100vh`/`height: 100%` entsprechen auf Mobil-Browsern der GRÖSSTEN möglichen Höhe
     (Adressleiste ausgeblendet) - ist die Adressleiste sichtbar, ragt ein 100vh-Element
-    über den tatsächlich sichtbaren Bereich hinaus.** User-Hinweis: "Full height auf
-    Smartphones vh oder 100% sind dort nicht die beste Wahl". Betraf `dist/tokens.css`
-    (`--ncss-sticky-container-max-height`), `dist/components/modal.css`
-    (`.ncss-modal--fullscreen`), `dist/components/off-canvas.css`, `dist/components/
-    scroll-stack.css`. `dist/reset.css`/`dist/helpers/layout.css` hatten das Problem
-    bereits VORHER korrekt gelöst (`100svh`, mit eigenem erklärendem Kommentar) - das
-    richtige Muster existierte im Projekt schon, nur nicht überall konsequent angewendet
-    (derselbe Lehre-Typ wie Punkt 29 oben mit `.ncss-press`).
-    Drei verschiedene moderne Viewport-Einheiten für DREI verschiedene Situationen, NICHT
-    austauschbar:
-    - `svh` ("small viewport height", kleinstmöglicher Wert) für alles, was GARANTIERT
-      ohne Scrollen komplett sichtbar bleiben muss (Modal, Off-Canvas, `.ncss-sticky-
-      container`) - mit `vh` als Fallback-Deklaration davor für ältere Browser (`height:
-      100vh; height: 100svh;` - zweite gültige Deklaration gewinnt, kein `@supports`
-      nötig, dasselbe Muster wie `helpers/scroll.css`s bereits vorhandenes `vh`/`dvh`-Paar).
-    - `dvh` ("dynamic viewport height", lebt live mit dem Adressleisten-Zustand mit) - NUR
-      dort, wo bereits vorhanden (`helpers/scroll.css`, `demo/scroll-sections.html`),
-      NICHT neu für `scroll-stack.css` übernommen (siehe nächster Punkt).
-    - `lvh` ("large viewport height", identisch zum klassischen `vh`-Verhalten - stabil,
-      ändert sich NICHT während des Scrollens) für `components/scroll-stack.css`s
-      `--ncss-stack-stage-height`-Default, BEWUSST nicht `dvh`: die Bühnenhöhe fließt
-      direkt in `view-timeline-inset` und die Off-Stage-Position der Karten
-      (`@keyframes ncss-stack-arrive`) ein - eine mitten im Scrollen wachsende/
-      schrumpfende Bühnenhöhe (genau das, was `dvh` tun würde, sobald die Adressleiste
-      ein-/ausblendet) hätte das bereits fein kalibrierte Timing dieser Datei
-      durcheinandergebracht (bekanntes reales `dvh`-Ruckel-Verhalten in mobilem Safari,
-      plus diese Datei hatte bereits ZWEI dokumentierte echte Bugs aus genau dieser Art
-      Berechnung, siehe die `view-timeline-inset`- und `ncss-stack-arrive`-Kommentare in
-      der Datei selbst - ein drittes, neues Risiko hier bewusst vermieden statt
-      ungetestet einzuführen). `lvh` behält exakt das alte, bereits funktionierende
-      Verhalten, nur unter einem modernen, ABSICHTLICHEN statt zufälligen Namen.
-    Demo-Seiten (`demo/product.html`, `demo/stacked-cards.html`), die `--ncss-stack-card-
-    height: 100vh` als Inline-Override zeigten, auf `100lvh` mitgezogen - sonst DEFAULT
-    und demonstrierter Override-Wert inkonsistent (einer lvh, einer vh, ohne erkennbaren
-    Unterschied im Ergebnis, aber verwirrend beim Lesen).
+    über den tatsächlich sichtbaren Bereich hinaus.** Betraf mehrere Dateien
+    (`tokens.css`, `modal.css`, `off-canvas.css`, `scroll-stack.css`); `reset.css`/
+    `helpers/layout.css` hatten das Problem bereits vorher korrekt gelöst (`100svh`) - das
+    richtige Muster existierte im Projekt schon, nur nicht überall konsequent angewendet.
+    Drei moderne Viewport-Einheiten für drei verschiedene Situationen, NICHT austauschbar:
+    - `svh` (kleinstmöglicher Wert) für alles, was GARANTIERT ohne Scrollen komplett
+      sichtbar bleiben muss (Modal, Off-Canvas, Sticky-Container) - mit `vh` als
+      Fallback-Deklaration davor für ältere Browser (zweite gültige Deklaration gewinnt,
+      kein `@supports` nötig).
+    - `dvh` (lebt live mit dem Adressleisten-Zustand mit) - nur dort, wo bereits
+      vorhanden, nicht neu übernehmen, wo bereits fein kalibriertes Scroll-Timing existiert
+      (siehe nächster Punkt).
+    - `lvh` (identisch zum klassischen `vh`-Verhalten - stabil, ändert sich nicht während
+      des Scrollens) für `scroll-stack.css`s Bühnenhöhe-Default, bewusst nicht `dvh`: die
+      Bühnenhöhe fließt direkt in `view-timeline-inset` und die Off-Stage-Position der
+      Karten ein - eine mitten im Scrollen wachsende/schrumpfende Bühnenhöhe (genau das,
+      was `dvh` bei ein-/ausblendender Adressleiste tut) hätte das bereits fein
+      kalibrierte Timing durcheinandergebracht. `lvh` behält das alte, funktionierende
+      Verhalten unter einem absichtlichen statt zufälligen Namen.
 
-31. **Formular-Feldtypen-Audit (User-Anstoß: "checke ob wir alle möglichen Felder durch
-    gestyled haben z.b. uploadfeld cross browser") - `helpers/forms.css` deckte vorher nur
-    text/select/textarea/checkbox/radio/switch/range ab, mit kompletten Lücken bei
-    `type="file"`/`"color"`/`"date"`-Familie/`"search"` sowie `<fieldset>`/`<legend>`/
-    `<progress>`/`<meter>`/`<output>`.** `<input type="file">` ist der Feldtyp mit dem
-    größten Cross-Browser-Unterschied (Chrome/Edge/Safari: eigener Button + Dateiname
-    INNERHALB des Feldes; Firefox: "Durchsuchen…"-Button) - `::file-selector-button`
-    (Baseline seit 2023) + `::-webkit-file-upload-button` (ältere WebKit-Schreibweise,
-    schadet parallel angegeben nicht) bringen den Button auf `.ncss-btn--secondary`-Optik,
-    per echtem Test in Chromium/WebKit/Firefox bestätigt einheitlich. Zwei Erkenntnisse
-    beim Verifizieren, die man sich sonst erneut erarbeiten müsste:
-    - Die Kalender-/Uhr-Icons der date/time-Familie (`::-webkit-calendar-picker-indicator`)
-      brauchten ENTGEGEN der Erwartung KEINE manuelle Dark-Mode-Anpassung
-      (`filter: invert()` o.ä.) - `color-scheme: light dark` (bereits in `colors.css` auf
-      `:root` gesetzt, ursprünglich für `light-dark()` selbst) sorgt schon dafür, dass
-      Chromium/Safari das passende System-Icon zeichnen. Per Screenshot in beiden Modi
-      bestätigt, nicht nur angenommen - erst geprüft, dann als "kein Fix nötig"
-      dokumentiert statt stillschweigend übersprungen.
+31. **Formular-Feldtypen-Audit** - `helpers/forms.css` deckte vorher nur text/select/
+    textarea/checkbox/radio/switch/range ab, mit Lücken bei `type="file"`/`"color"`/
+    `"date"`-Familie/`"search"` sowie `<fieldset>`/`<legend>`/`<progress>`/`<meter>`/
+    `<output>`. `<input type="file">` hat den größten Cross-Browser-Unterschied
+    (Chrome/Edge/Safari: eigener Button + Dateiname im Feld; Firefox: eigener Button-Text)
+    - `::file-selector-button` + `::-webkit-file-upload-button` bringen den Button auf
+    `.ncss-btn--secondary`-Optik. Zwei Erkenntnisse beim Verifizieren:
+    - Die Kalender-/Uhr-Icons der date/time-Familie brauchen KEINE manuelle
+      Dark-Mode-Anpassung - `color-scheme: light dark` (bereits auf `:root` gesetzt)
+      sorgt bereits dafür, dass Chromium/Safari das passende System-Icon zeichnen.
     - `<meter>` respektiert `accent-color` NICHT für seine Grün/Gelb/Rot-Bewertungsfarbe
-      (bleibt grün, obwohl `accent-color` auf die Markenfarbe Blau gesetzt war - in allen
-      drei Engines identisch reproduziert). BEWUSST NICHT per `::-webkit-meter-*`
-      erzwungen: das ist die eigentliche Funktion von `<meter>` (zeigt an, ob ein Wert im
-      guten/mittleren/kritischen Bereich der Skala liegt, sobald `optimum`/`low`/`high`
-      gesetzt sind), keine zufällige Farbabweichung wie bei den anderen Elementen in
-      diesem Punkt - `<progress>` (kein Wertungs-Konzept) respektiert `accent-color`
-      dagegen vollständig und ist die richtige Wahl, wenn wirklich nur Markenfarbe
-      gewünscht ist.
-    `<input type="search">` brauchte `appearance: none` (sonst rundet Safari es auf eigene
-    Faust komplett ab, ignoriert `border-radius` aus der gemeinsamen `.ncss-input`-Regel).
-    `<input type="number">`s Spinner-Pfeile bewusst NICHT versteckt (verbreitete Praxis in
-    anderen Design-Systemen) - echte native Funktionalität ohne konkreten Anlass zu
-    entfernen widerspricht dem Projekt-Grundprinzip, kosmetische Cross-Browser-Unterschiede
-    bei den Pfeilen selbst sind kein funktionaler Mangel. `fieldset`/`legend` bekamen wie
-    `<blockquote>` in `base.css` direkt einen Default OHNE eigene Klasse (reine
-    Gruppierungs-Elemente, keine neu gezeichnete Optik wie `.ncss-choice`/`.ncss-switch`).
-    Demo: `demo/forms.html`, vier neue Sektionen (Datei-Upload, Weitere Feldtypen,
-    Gruppierte Felder, Fortschritt/Messwert/Ergebnis).
+      (bleibt grün) - bewusst NICHT per `::-webkit-meter-*` erzwungen, das ist die
+      eigentliche Funktion von `<meter>` (zeigt an, ob ein Wert im guten/kritischen
+      Bereich liegt). `<progress>` (kein Wertungs-Konzept) respektiert `accent-color`
+      vollständig und ist die richtige Wahl, wenn nur Markenfarbe gewünscht ist.
+    `<input type="search">` braucht `appearance: none` (sonst rundet Safari es eigenmächtig
+    komplett ab). `<input type="number">`s Spinner-Pfeile bewusst NICHT versteckt - echte
+    native Funktionalität ohne Anlass zu entfernen widerspricht dem Projekt-Grundprinzip.
 
-    **Nachtrag, User-Report auf echtem Safari ("Farbefeld ist im Safari nur ein schmaler
-    Strich")**: `.ncss-input[type="color"]` hatte KEINE eigene `height` - anders als
-    Text-artige Inputs (Höhe ergibt sich dort automatisch aus Zeilenhöhe + Padding +
-    Rahmen) bemisst jeder Browser die Swatch-Fläche eines Farb-Inputs offenbar nach einer
-    ANDEREN, eigenen Formel. Per echtem Höhenvergleich bestätigt (nicht nur der
-    Safari-Report übernommen): WebKit 23px (Soll: 49px, am extremsten), Chromium 27px
-    (Soll: 47px), Firefox 32px (Soll: 45px) - der Bug betraf alle drei Engines, nur
-    unterschiedlich stark, Safari war lediglich der zuerst bemerkte, deutlichste Fall.
-    Fix: `height: calc(1lh + 2 * var(--ncss-space-2xs) + 2 * var(--ncss-border-width));` -
-    dieselbe Formel, die ein normales `.ncss-input` implizit über sein Boxmodell erreicht,
-    hier explizit nachgebaut (`1lh`, Baseline seit 2023, robuster als ein geschätzter
-    fester px/em-Wert - bleibt korrekt, auch wenn Schriftgröße/Zeilenhöhe sich künftig
-    ändern). Nach dem Fix: Firefox exakt 1:1 (45.33px beide), Chromium/WebKit auf 2-4px
-    Differenz statt 20-26px - der verbleibende Rest ist die eigene UA-Polsterung der
-    Swatch-Fläche selbst, praktisch nicht mehr wahrnehmbar (per Screenshot in beiden
-    Farbschemata bestätigt).
+    **Nachtrag**: `.ncss-input[type="color"]` hatte keine eigene `height` - anders als
+    Text-Inputs (Höhe ergibt sich dort aus Zeilenhöhe + Padding + Rahmen) bemisst jeder
+    Browser die Swatch-Fläche nach einer eigenen Formel; betraf alle drei Engines
+    unterschiedlich stark (WebKit am extremsten, nur ein schmaler Strich statt der vollen
+    Feldhöhe). Fix: `height: calc(1lh + 2 * var(--ncss-space-2xs) + 2 * var(--ncss-border-
+    width));` - dieselbe Formel, die ein normales `.ncss-input` implizit über sein
+    Boxmodell erreicht, hier explizit nachgebaut (`1lh` bleibt korrekt, auch wenn
+    Schriftgröße/Zeilenhöhe sich künftig ändern).
 
-32. **`components/scroll-stack-fallback.js` (User-Anstoß: "erstelle für stacked cards ein
-    opt-in js für browser die timeline nicht unterstützen") - eigene JS-Nachbildung von
+32. **`components/scroll-stack-fallback.js` - eigene JS-Nachbildung von
     `animation-timeline`/`view-timeline-inset`/`animation-range` für Firefox/älteres
     Safari, per `getBoundingClientRect()` statt echter Scroll-Timeline berechnet.** Der
-    naheliegende erste Ansatz für die 0%/100%-Formel: `view-timeline-inset: 100lvh
-    var(--stage-height, 100lvh)` naiv als "0% bei `rect.top === 0`, 100% bei `rect.bottom
-    === stageHeight`" gelesen - stimmte bei der ERSTEN Prüfung (Vollbild-Variante, echtes
-    Chromium als Referenz, Soll/Ist-Vergleich der `getComputedStyle().transform`-Matrizen
-    an sieben Scroll-Positionen) exakt überein, war aber ein FALSCHER Beweis: bei der
-    Vollbild-Variante ist `--ncss-stack-stage-height` selbst per Default `100lvh`, ALSO
-    identisch zum ersten (fest codierten) Inset-Wert - die Formel bestand den Test nur,
-    weil beide Inset-Werte dort zufällig gleich sind, nicht weil die Formel selbst richtig
-    war. Erst der Test der "in einem normalen Container"-Variante (`demo/stacked-cards.html`,
-    `--ncss-stack-stage-height: 22rem`, deutlich kleiner als die Viewport-Höhe) deckte den
-    echten Fehler auf: dort landete Karte 1 in Firefox (Script) sichtbar noch in Ruheposition,
-    während sie in Chromium (nativ) an derselben Scroll-Position bereits sichtbar am
-    Zurückweichen war. Ursache per genauer MDN-Definition von `view-timeline-inset`
-    nachvollzogen (nicht nur aus der eigenen CSS-Datei rückgeschlossen): der ERSTE
-    Inset-Wert (hier immer `100lvh`, unabhängig von der Bühnengröße) verschiebt den
-    0%-Bezugspunkt IMMER um die volle VIEWPORT-Höhe, nicht um die Bühnenhöhe - der
-    korrekte 0%-Punkt liegt bei `rect.top === viewportHeight - stageHeight` (reduziert sich
-    nur zufällig auf `0` bei `stageHeight === viewportHeight`, dem Vollbild-Default). Fix:
-    `progress = clamp((vh - stageHeightPx - rect.top) / totalDistance, 0, 1)` statt der
-    ursprünglichen `-rect.top / totalDistance`. Nach dem Fix per erneutem Soll/Ist-Vergleich
-    (nicht nur der ursprüngliche Test wiederholt, sondern gezielt ALLE DREI
-    Struktur-Varianten geprüft: Vollbild, `--horizontal`, kleine Bühne mit eigenem
-    `--ncss-stack-stage-top`-Versatz) bestätigt: Skalierung/Rotation/Helligkeit stimmen
-    jetzt bei jeder Variante bis auf Rundungsfehler überein, zusätzlich per
-    Pixel-Screenshot-Vergleich (nicht nur Zahlenvergleich) bestätigt identisch. Eine
-    verbleibende, bewusst NICHT weiter verfolgte Differenz: der `translateZ`-Anteil in der
-    resultierenden `matrix3d()` unterscheidet sich zwischen den Engines um einen
-    scheinbar variablen Betrag (z.B. -80 nativ vs. +20 im Script bei voll zurückgewichenem
-    Zustand) - der dominante, tatsächlich sichtbare Skalierungs-Anteil ([0]/[5] der Matrix)
-    stimmt dabei bis auf die 4.-5. Nachkommastelle überein, und der Pixel-Screenshot-
-    Vergleich zeigte keinen sichtbaren Unterschied - vermutlich eine reine
-    Matrix-Dekompositions-/Serialisierungs-Eigenheit zwischen den Engines (dieselbe
-    projizierte 2D-Erscheinung lässt sich über `perspective` auf mehrere mathematisch
-    äquivalente `matrix3d()`-Repräsentationen abbilden), keine funktionale Abweichung -
-    erst NACH dem Screenshot-Beleg als unbedenklich eingestuft, nicht vorab angenommen.
-    Weitere, beim Bauen selbst gefundene Lehren: `:active`-artige Zustände lassen sich
-    (anders als hier) nicht per synthetischem Event triggern lassen (Fallstrick 29) - aber
-    das Umgekehrte gilt hier NICHT: `window.scrollTo()` mit `behavior:'smooth'` (aktiv per
-    `html { scroll-behavior: smooth }`) lässt sich per Test-Skript sehr wohl auslösen, führt
-    aber zu einer ASYNCHRONEN, mehrere hundert Millisekunden dauernden Scroll-Animation -
-    ein erster Vergleichslauf mit zu kurzer Wartezeit maß dadurch scheinbar völlig falsche
-    Werte (Chromium und Firefox schienen um 20-30% Fortschritt auseinanderzuliegen), obwohl
-    die eigentliche Berechnung zu dem Zeitpunkt schon korrekt war - erst `{behavior:
-    'instant'}` + Polling auf eine stabile `scrollY` (statt einer festen Wartezeit) lieferte
-    einen sauberen Vergleich. Lehre: bevor ein scheinbarer Berechnungsfehler diagnostiziert
-    wird, erst prüfen, ob der Scroll-Vorgang selbst im Testaufbau überhaupt schon
-    abgeschlossen ist. Demo: `demo/stacked-cards.html`, `demo/product.html` (beide
-    Sektionen dort).
+    naheliegende erste Ansatz (0% bei `rect.top === 0`, 100% bei `rect.bottom ===
+    stageHeight`) bestand den ersten Test nur zufällig: in der geprüften Vollbild-Variante
+    ist die Bühnenhöhe selbst `100lvh`, identisch zum fest codierten Inset-Wert. Erst der
+    Test einer kleineren Bühne (deutlich kleiner als die Viewport-Höhe) deckte den echten
+    Fehler auf. Ursache: der erste `view-timeline-inset`-Wert (hier immer `100lvh`,
+    unabhängig von der Bühnengröße) verschiebt den 0%-Bezugspunkt IMMER um die volle
+    Viewport-Höhe, nicht um die Bühnenhöhe - der korrekte 0%-Punkt liegt bei `rect.top ===
+    viewportHeight - stageHeight` (reduziert sich nur zufällig auf `0`, wenn Bühnenhöhe ==
+    Viewport-Höhe). Fix: `progress = clamp((vh - stageHeightPx - rect.top) /
+    totalDistance, 0, 1)` statt der ursprünglichen `-rect.top / totalDistance`. Nach dem
+    Fix gegen alle drei Struktur-Varianten (Vollbild, horizontal, kleine Bühne)
+    gegengeprüft, nicht nur die ursprünglich getestete.
 
-33. **`demo/colors.html`s Live-Farbeditor setzte ursprünglich einen EINZELNEN festen
+    Lehre beim Testaufbau selbst: `window.scrollTo({behavior:'smooth'})` löst eine
+    asynchrone, mehrere hundert Millisekunden dauernde Scroll-Animation aus - ein
+    Vergleichslauf mit zu kurzer Wartezeit danach misst scheinbare Berechnungsfehler, die
+    tatsächlich nur unvollständig gescrollte Zwischenzustände sind. `{behavior: 'instant'}`
+    + Polling auf eine stabile `scrollY` (statt fester Wartezeit) liefert einen sauberen
+    Vergleich - bevor ein Berechnungsfehler diagnostiziert wird, erst prüfen, ob der
+    Scroll-Vorgang im Testaufbau überhaupt schon abgeschlossen ist. Demo:
+    `demo/stacked-cards.html`, `demo/product.html`.
+
+33. **`demo/colors.html`s Live-Farbeditor setzte ursprünglich einen einzelnen festen
     Hex-Wert statt eines echten `light-dark()`-Paars - Light UND Dark zeigten während der
-    Bearbeitung dieselbe Farbe.** User-Frage, die den Fehler aufdeckte: "müsste ich im
-    Picker nicht auch die Farbwerte für dark und light pflegen? aktuell geht ja nur
-    light". Fix: zwei getrennte JS-Objekte (`lightValues`/`darkValues`) statt eines
-    einzelnen Hex-Strings pro Token, ein Umschalter im Modal wählt, welche Hälfte die
-    Regler gerade zeigen/bearbeiten, jede Änderung baut `light-dark(hell, dunkel)` frisch
-    zusammen. Für die Vorbelegung beider Hälften (nicht nur der gerade aktiven) reicht das
-    bestehende Sonden-Element-Muster (Fallstrick 22, `color: var(--token)` erzwingt die
-    `light-dark()`-Auflösung) allein nicht - es liest nur die AKTUELL aktive Variante.
-    Ergänzt: `color-scheme` zusätzlich DIREKT auf demselben Sonden-Element gesetzt (nicht
-    nur `color`) erzwingt GEZIELT Light oder Dark für genau diese Auflösung, unabhängig
-    vom Seiten-Theme - dasselbe Muster wie `.ncss-scheme-light`/`-dark`
-    (`helpers/surfaces.css`), hier zum ersten Mal per JS statt per Klasse angewendet.
-    Wichtig dabei (per genauer Prüfung von Fallstrick 22s eigenem Text bestätigt, nicht nur
-    angenommen): `color-scheme` UND `color` müssen BEIDE auf demselben Element gesetzt
-    werden, sonst greift die dort dokumentierte Einschränkung ("color-scheme kann einen
-    bereits GEERBTEN, fertig aufgelösten color-Wert nicht rückwirkend ändern") - hier
-    unproblematisch, weil `color` bei jeder Abfrage ohnehin frisch auf dem Sonden-Element
-    selbst gesetzt wird, nichts vererbt werden muss. Kleine Zusatz-Lehre: `aria-pressed`
-    hat KEINE eigene Optik - für den Umschalter zusätzlich die Button-Variante
-    (`--primary`/`--secondary`) per Klasse getauscht, sonst war für sehende Nutzer nicht
-    erkennbar, welche Hälfte gerade aktiv ist, obwohl das Attribut selbst korrekt gesetzt
-    war.
+    Bearbeitung dieselbe Farbe.** Fix: zwei getrennte JS-Objekte (`lightValues`/
+    `darkValues`) statt eines einzelnen Hex-Strings pro Token, ein Umschalter im Modal
+    wählt, welche Hälfte die Regler zeigen. Für die Vorbelegung beider Hälften reicht das
+    Sonden-Element-Muster (Punkt 22) allein nicht, es liest nur die aktuell aktive
+    Variante - zusätzlich `color-scheme` direkt auf demselben Sonden-Element gesetzt
+    (nicht nur `color`) erzwingt gezielt Light oder Dark für diese Auflösung, unabhängig
+    vom Seiten-Theme. `color-scheme` und `color` müssen dafür BEIDE auf demselben Element
+    gesetzt werden - `color-scheme` kann einen bereits geerbten, fertig aufgelösten
+    `color`-Wert nicht rückwirkend ändern.
 
-34. **Die "Vollbild"-Variante von `.ncss-stack-section` (`--ncss-stack-card-height: 100lvh`/
-    `-card-width: 100%`/`-fan: 0px`) behält ohne weiteres Zutun `.ncss-stack-card`s Default-
-    `border-radius` (`--ncss-radius-lg`) - sichtbar als abgerundete Ecke GENAU an der
-    Bildschirmkante, ein Spalt zum Seitenhintergrund statt eines sauberen Vollbilds.**
-    User-Report auf der live deployten Produktseite: "die fullscreen cards ... sind
-    abgerundet ... ich denke sie sollten nicht angerundet sein, da sonst die rundungen an
-    die browser kante stoßen". Betraf `demo/product.html` UND `demo/stacked-cards.html`s
-    eigene "Vollbild"-Demo-Sektion - beide nutzen dasselbe Rezept. Fix: zusätzlich
-    `--ncss-stack-radius: 0` in dieselbe Inline-Style-Liste, auf der SEKTION gesetzt
-    (vererbt sich normal an die Karten, gleiches Muster wie `--ncss-stack-count` u.a.).
-    NICHT generell in `scroll-stack.css` selbst behoben (z.B. "radius:0, sobald
-    card-width:100%") - dieselbe `--ncss-stack-card-width: 100%`-Einstellung wird AUCH von
-    der "in einem normalen Container"-Demo verwendet, wo abgerundete Ecken weiterhin
-    korrekt/gewünscht sind (die Karte berührt dort nie den Bildschirmrand) - eine
-    automatische Kopplung an die Breite hätte dort die Rundung fälschlich entfernt. Bleibt
-    deshalb bewusst eine Pro-Instanz-Entscheidung über den bereits vorhandenen
-    `--ncss-stack-radius`-Override-Token, nicht ein Komponenten-Verhalten.
+34. **Die "Vollbild"-Variante von `.ncss-stack-section` behält ohne weiteres Zutun
+    `.ncss-stack-card`s Default-`border-radius`** - sichtbar als abgerundete Ecke genau an
+    der Bildschirmkante statt eines sauberen Vollbilds. Fix: zusätzlich
+    `--ncss-stack-radius: 0` in derselben Inline-Style-Liste auf der Sektion setzen
+    (vererbt sich normal an die Karten). NICHT generell in `scroll-stack.css` behoben
+    (z.B. "radius:0, sobald card-width:100%") - dieselbe Breiteneinstellung wird auch von
+    einer "in einem normalen Container"-Demo verwendet, wo abgerundete Ecken weiterhin
+    gewünscht sind. Bleibt bewusst eine Pro-Instanz-Entscheidung über den bereits
+    vorhandenen `--ncss-stack-radius`-Override-Token, kein automatisches
+    Komponenten-Verhalten.
 
-35. **Doku-Website (`docs-src/` → generiert `docs/`, User-Anstoß: "Nun möchte ich dass du
-    wirklich ne richtige Doku erstellt ... nach Vorbild von Bulma/UIkit", dann "integriere
-    alles was wir aktuell in /demo haben ... die navi soll auch anzeigen wo wir uns
-    befinden active state").** Struktrierte, Sidebar-navigierte, zweisprachige (DE/EN)
-    Doku-Website, gebaut mit einem handgerollten `node:fs`/`node:path`-Skript
-    (`docs-src/build.mjs`, kein npm/Bundler/Markdown-Parser - Inhaltsfragmente unter
-    `docs-src/content/{de,en}/*.html` sind bereits gültiges HTML, per
-    `.replaceAll()`-Platzhalter-Ersetzung in `docs-src/template.html` injiziert). Bewusste
+35. **Doku-Website (`docs-src/` → generiert `docs/`)** - Sidebar-navigierte,
+    zweisprachige (DE/EN) Doku-Website, gebaut mit einem handgerollten `node:fs`/
+    `node:path`-Skript (`docs-src/build.mjs`, kein npm/Bundler/Markdown-Parser). Bewusste
     Ausnahme vom "kein Build-Schritt"-Prinzip: gilt für die CSS-Bibliothek, nicht für das
-    Tooling der Doku-Website selbst - Details siehe README "Doku-Website". Zentrale Lektionen:
-    - **Aktiver Nav-Zustand gehört als ALLGEMEINE Regel in die Komponente, nicht als
-      seitenlokales CSS** (User explizit: "wenn was fehlt dafür in ncss dann füge es als
-      allgemeinen token oder helper hinzu" / "oder components.. egal") - `aria-current="page"`
-      ist der native, semantisch korrekte Mechanismus dafür, jetzt allgemein gestylt in
-      `components/nav.css` (`.ncss-nav-item > a[aria-current="page"]` etc.), NICHT nur in der
+    Tooling der Doku-Website selbst. Zentrale Lektionen:
+    - **Aktiver Nav-Zustand gehört als allgemeine Regel in die Komponente, nicht als
+      seitenlokales CSS** - `aria-current="page"` ist der native, semantisch korrekte
+      Mechanismus dafür, jetzt allgemein in `components/nav.css` gestylt, nicht nur in der
       Doku-Website verwendet.
     - **Ein blanker Such-/Ersetz-Migrationsscript über viele strukturell ähnliche Dateien
-      MUSS vorher auf Dateien mit bewusst ABWEICHENDER Struktur geprüft werden**, bevor er
-      destruktiv läuft. Eine Nav-Vereinheitlichung über 14 `demo/*.html`-Seiten per Regex-
-      Migration überschrieb bei `demo/landing.html` (einzige Seite mit einer eigenen
-      `<wa-dropdown id="moreNavDropdown">`-basierten Nav samt eigenem
-      `addEventListener`-Handler) die Nav-Struktur inkl. der vom Script benötigten `id` -
-      Ergebnis: `Cannot read properties of null (reading 'addEventListener')` auf JEDEM
-      Seitenaufruf. Kein Fehler beim Anschauen des Diffs (sah wie jede andere Migration
-      aus), erst der volle Regressionslauf mit `pageerror`-Listener deckte es auf. Fix:
-      `git checkout -- demo/landing.html` (voller Revert) + gezielter Minimal-Edit statt der
-      pauschalen Migration. Lehre: nach JEDER Mehrdateien-Migration alle Diffs gezielt auf
-      seiten-untypische Muster durchsuchen (hier `grep -oE 'href="#[a-z-]+"|<wa-dropdown'`
-      gegen jeden Diff), UND den vollen Regressionslauf fahren - ein Konsolenfehler ohne
-      visuelle Auffälligkeit wird von reinem Screenshot-Vergleich nicht gefangen.
-    - **Regex mit Lookahead, um den RICHTIGEN `</ul>` bei verschachtelten gleichnamigen
-      Listen zu treffen**: `<ul class="ncss-nav-list">[\s\S]*?<\/ul>` (lazy, ohne Lookahead)
-      matcht bei einem `<ul class="ncss-nav-list">` mit einer verschachtelten `<ul
-      class="ncss-nav-submenu">` darin fälschlich das ERSTE `</ul>` (die innere Liste), nicht
-      das äußere. Fix: `(?=\s*<\/dialog>)`-Lookahead anhängen, der die Lazy-Match-Backtracking
-      zwingt, bis unmittelbar vor dem bekannten äußeren Abschlusstag. VOR einem destruktiven
-      Mehrdateien-Lauf immer per Dry-Run-Skript an einer echten Datei verifizieren, nicht nur
-      am Muster ablesen.
+      muss vorher auf Dateien mit abweichender Struktur geprüft werden**, bevor er
+      destruktiv läuft. Eine Nav-Vereinheitlichung per Regex über 14 Demo-Seiten überschrieb
+      bei der einen Seite mit einer abweichenden `<wa-dropdown>`-basierten Nav samt eigenem
+      Event-Handler die vom Script benötigte `id` - Ergebnis: ein JS-Fehler auf jedem
+      Seitenaufruf, unsichtbar im reinen Diff- oder Screenshot-Vergleich, erst ein voller
+      Regressionslauf mit `pageerror`-Listener deckte es auf. Nach jeder Mehrdateien-
+      Migration gezielt auf seiten-untypische Muster durchsuchen UND den vollen
+      Regressionslauf fahren.
+    - **Regex mit Lookahead, um den richtigen schließenden Tag bei verschachtelten
+      gleichnamigen Strukturen zu treffen**: ein lazy Match ohne Lookahead matcht bei
+      verschachtelten Listen fälschlich das erste, innere Schluss-Tag statt des äußeren.
+      Vor einem destruktiven Mehrdateien-Lauf immer per Dry-Run an einer echten Datei
+      verifizieren, nicht nur am Muster ablesen.
 
-36. **Code-Block-Syntax-Highlighting (`components/code-block.css`/`.js`, User-Anstoß:
-    "Hast du an Code highlighting und copy to clipboard gedacht? Für die docs. Ready to
-    use Beispiele").** Selbst gehostetes Prism.js (`vendor/prismjs/`, per `curl` von
-    cdnjs geladen, ~23KB minified für core+markup+css+clike+javascript+bash) statt eines
-    eigenen Tokenizers - User-Entscheidung explizit abgefragt (Custom-Mini-Tokenizer vs.
-    Prism), Prism gewählt für Robustheit. WICHTIG: Prisms EIGENER `DOMContentLoaded`-
+36. **Code-Block-Syntax-Highlighting (`components/code-block.css`/`.js`)** - selbst
+    gehostetes Prism.js statt eigenem Tokenizer. Prisms eigener `DOMContentLoaded`-
     Autostart muss VOR dem Laden von `prism-core.min.js` unterdrückt werden
-    (`window.Prism = { manual: true }` als eigenes `<script>` DAVOR) - sonst highlightet
-    Prism unkontrolliert selbst schon, BEVOR `code-block.js` seinen Copy-Button einfügen
-    kann, und der eigene `Prism.highlightAll()`-Aufruf in `code-block.js` findet keine
-    rohen `<code>`-Blöcke mehr vor (Timing-Falle, nicht offensichtlich aus der Prism-
-    Doku allein). KEIN Stock-Prism-Theme (Tomorrow/Twilight/o.ä.) verwendet - stattdessen
-    Prisms `.token.*`-Klassen direkt auf ncss-Farbtokens gebridged
-    (`--ncss-color-brand/-brand-2/-success/-warning/-danger`, dieselbe Bridging-Technik
-    wie `webawesome-bridge.css`) - Highlighting zieht dadurch automatisch mit
-    `theme.css` um, kein zweites, unabhängiges Farbschema zu pflegen. Copy-Button kopiert
-    `codeEl.textContent` (den ROHEN Text vor Prisms Span-Einfügung wäre gleichwertig,
-    `textContent` NACH dem Highlighten funktioniert genauso, weil `textContent` über
-    Element-Grenzen hinweg immer nur den reinen Text liefert, keine `<span>`-Tags) - nicht
-    `innerHTML`, das würde Prisms Highlighting-Markup mitkopieren.
+    (`window.Prism = { manual: true }` als eigenes Script davor) - sonst highlightet Prism
+    bereits selbst, bevor `code-block.js` seinen Copy-Button einfügen kann, und der eigene
+    `Prism.highlightAll()`-Aufruf findet keine rohen `<code>`-Blöcke mehr vor (Timing-
+    Falle, nicht offensichtlich aus der Prism-Doku). Kein Stock-Prism-Theme verwendet -
+    Prisms `.token.*`-Klassen direkt auf ncss-Farbtokens gebridged (dieselbe
+    Bridging-Technik wie `webawesome-bridge.css`), Highlighting zieht dadurch automatisch
+    mit `theme.css` um. Copy-Button kopiert `codeEl.textContent`, nicht `innerHTML` - das
+    würde Prisms Highlighting-Markup mitkopieren.
 
-37. **Termine/Downloads-Widgets (`components/ics.js`/`events.js`/`downloads.js`, User-
-    Anstoß: "liefere auch wa kompatible Widgets für inline document als Alternative zu
-    iframes, calendar, calendar list, event, Events, downloads… alles opt-in").** Zwei
-    Design-Entscheidungen VORHER per `AskUserQuestion` geklärt statt angenommen (Umfang
-    zu groß/mehrdeutig für eine einzelne, korrekte Annahme): (1) Datenquelle
-    JSON/ICS-datengetrieben statt reinem Hand-HTML - User wollte echte Funktionalität,
-    nicht nur eine weitere gestylte Markup-Konvention; (2) "wa-kompatibel" heißt optisch/
-    token-kompatibel (native HTML + ncss-Klassen), NICHT echte `<wa-*>`-Custom-Elements -
-    verletzt sonst das Grundprinzip "Web Awesome nie fürs strukturelle Seitengerüst" und
-    bräuchte zwingend einen HTTP-Server statt auch offline/`file://` nutzbar zu bleiben.
-    EIN Lade-/Render-Motor (`events.js`) für vier Ansichten (Kalender/Kalender-Liste/
-    Termin-Liste/Einzeltermin) statt vier getrennter Komponenten - "VOR einer neuen
-    Komponente prüfen, ob eine bestehende das schon kann" gilt genauso für die eigene
-    neue Fläche: nicht vier Parallel-Implementierungen des immer gleichen normalisierten
-    Termin-Datentyps. Rendering nutzt bewusst bereits vorhandene Komponenten
-    (`.ncss-modal` für den Tages-Dialog im Monatsraster, `.ncss-card` für Liste/
-    Einzeltermin) statt eigener Parallel-Optik.
-    - **Eigener ICS-Parser (`ics.js`) statt Vendor-Bibliothek** (z.B. ical.js) - RFC-5545-
-      Umfang bewusst auf das beschränkt, was ein Termin-Widget wirklich braucht (siehe
-      Datei-Kommentar für die genaue Abdeckung/Grenzen), passt zu "kein Build-Schritt,
-      selbst gehostet, kein Wildwuchs". VOR dem Einbau in `events.js` isoliert mit einer
-      eigenen Node-Testsuite (19 Assertions: einfacher UTC-Termin, ganztägig, Zeilen-
-      Folding+Escaping, `WEEKLY`+`BYDAY`, `DAILY`+`UNTIL`, `MONTHLY`+`EXDATE`,
-      `INTERVAL`+`BYDAY` kombiniert, unbegrenzte Regel mit `windowEnd`-Deckel) gegen
-      erwartete Ausgaben geprüft - Kalenderarithmetik ist eine der Fehlerklassen, bei der
-      "sieht im Browser plausibel aus" nichts über Korrektheit aussagt (falsch berechnete
-      Wochentage fallen nur bei genauem Hinsehen auf).
-    - **RFC-5545-Zeilen-Unfolding-Falle beim eigenen Testen**: eine Fold-Stelle braucht
-      GENAU EIN Whitespace-Zeichen direkt nach dem CRLF als Marker, das beim Unfolding
-      IMMER entfernt wird (unabhängig vom Inhalt) - ein zusätzliches Leerzeichen für den
-      Wortzwischenraum muss VOR dem CRLF stehen (Inhalt), nicht zusätzlich danach (das
-      wäre ein zweites, im Original nie vorhandenes Leerzeichen). Erster eigener
-      Testfixture-Versuch hatte Leerzeichen auf BEIDEN Seiten der Fold-Stelle, ergab nach
-      dem Unfolding ein Test-erwartetes Doppel-Leerzeichen, das der (korrekte) Parser zu
-      Recht nicht lieferte - der Parser war richtig, das Testfixture falsch. Lehre: beim
-      Verifizieren einer Spec-Implementierung mit selbst geschriebenen Testfixtures immer
+37. **Termine/Downloads-Widgets (`components/ics.js`/`events.js`/`downloads.js`)** - EIN
+    Lade-/Render-Motor (`events.js`) für vier Ansichten (Kalender/Kalender-Liste/
+    Termin-Liste/Einzeltermin) statt vier getrennter Komponenten, mit bereits vorhandenen
+    Komponenten (`.ncss-modal`, `.ncss-card`) statt eigener Parallel-Optik. "wa-kompatibel"
+    heißt optisch/token-kompatibel (native HTML + ncss-Klassen), NICHT echte `<wa-*>`-
+    Custom-Elements - verletzt sonst das Grundprinzip "Web Awesome nie fürs strukturelle
+    Seitengerüst" und bräuchte einen HTTP-Server statt offline/`file://` nutzbar zu
+    bleiben.
+    - **Eigener ICS-Parser (`ics.js`) statt Vendor-Bibliothek** - RFC-5545-Umfang bewusst
+      auf das beschränkt, was ein Termin-Widget wirklich braucht. Vor dem Einbau isoliert
+      gegen eine eigene Testsuite geprüft (einfacher/ganztägiger Termin, Zeilen-Folding,
+      `WEEKLY`+`BYDAY`, `DAILY`+`UNTIL`, `MONTHLY`+`EXDATE`, kombiniertes `INTERVAL`+
+      `BYDAY`) - Kalenderarithmetik ist eine Fehlerklasse, bei der "sieht im Browser
+      plausibel aus" nichts über Korrektheit aussagt.
+    - **RFC-5545-Zeilen-Unfolding**: eine Fold-Stelle braucht genau EIN Whitespace-Zeichen
+      direkt nach dem CRLF als Marker, das beim Unfolding immer entfernt wird - ein
+      zusätzliches Leerzeichen für den Wortzwischenraum muss vor dem CRLF stehen, nicht
+      danach. Beim Verifizieren einer Spec-Implementierung mit eigenen Testfixtures immer
       auch die Fixture-Erwartung selbst gegen die Spec prüfen, nicht nur den Code.
-    - **`WEEKLY`+`BYDAY`-Expansion läuft Woche-für-Woche, nicht Tag-für-Tag.** Erster
-      Anlauf iterierte Tag für Tag und versuchte, `INTERVAL>1` nachträglich mit einer
-      Sonderfall-Sprung-Logik mitten in der Iteration zu behandeln - fehleranfällig,
-      schwer nachvollziehbar. Zweiter, beibehaltener Anlauf: die Woche ist die natürliche
-      Schrittweite von `RRULE INTERVAL` bei `FREQ=WEEKLY`, unabhängig davon, wie viele
-      `BYDAY`-Wochentage pro Woche einschlagen - `INTERVAL` steuert nur, wie viele Wochen
-      zwischen den betrachteten Wochen liegen, `BYDAY` nur, welche Tage INNERHALB einer
-      betrachteten Woche zählen. Diese Trennung vermeidet die Sonderfall-Logik strukturell
-      statt sie nachträglich zu flicken.
-    - **`.ncss-btn--sm` existiert nicht** - beim ersten Entwurf der Kalender-Navigations-
-      Buttons (Vor/Zurück) fälschlich angenommen, `.ncss-btn` hätte Größen-Modifier wie
-      viele andere Komponenten (Card/Badge haben Farbvarianten, kein Beispiel hat
-      `--sm`/`--lg`) - `grep -rn '\.ncss-btn--sm\|--lg'` VOR dem Verwenden einer vermuteten
-      Modifier-Klasse hätte das sofort gezeigt. Statt spekulativ eine neue globale Utility
-      anzulegen ("kein Wildwuchs"): kleinere Button-Größe komponenten-lokal in
-      `events.css` über `.ncss-cal-header .ncss-btn { padding/font-size: ... }` gelöst,
-      kein neuer globaler Modifier.
+    - **`WEEKLY`+`BYDAY`-Expansion läuft Woche-für-Woche, nicht Tag-für-Tag** - die Woche
+      ist die natürliche Schrittweite von `RRULE INTERVAL` bei `FREQ=WEEKLY`: `INTERVAL`
+      steuert, wie viele Wochen zwischen betrachteten Wochen liegen, `BYDAY` nur, welche
+      Tage innerhalb einer Woche zählen. Diese Trennung vermeidet Sonderfall-Logik
+      strukturell, statt eine Tag-für-Tag-Iteration nachträglich zu flicken.
+    - **`.ncss-btn--sm` existiert nicht** - `.ncss-btn` hat keine Größen-Modifier (anders
+      als Card/Badge, die Farbvarianten haben). Vor dem Verwenden einer vermuteten
+      Modifier-Klasse per `grep` prüfen, ob sie existiert. Statt spekulativ eine neue
+      globale Utility anzulegen: kleinere Button-Größe komponenten-lokal gelöst, kein
+      neuer globaler Modifier.
     - **Wochenstart im Monatsraster war hartkodiert auf Sonntag** (`firstOfMonth.getDay()`
-      direkt als Versatz verwendet - JS' eigene `Date`-API folgt der US-Konvention, Index
-      0 = Sonntag) - übersehen, bis der User es explizit ansprach ("kalender in
-      deutschland beginnt gewöhnlich mit montag als starttag der woche"). Für ein
-      zweisprachiges Widget reicht "einmal die Spec nachlesen" nicht - JEDE
-      locale-abhängige Konvention (Wochenstart, Datumsformat, Papierformat, Adressfelder
-      ...) muss aktiv geprüft werden, nicht nur die Übersetzung der sichtbaren Strings.
-      Fix: `WEEK_START_DEFAULT = { de: 1, en: 0 }` (per `lang`-Attribut, dieselbe
-      `locale()`-Erkennung wie für Monatsnamen), zusätzlich per `data-week-start`
-      (`0`-`6`) explizit überschreibbar für Sonderfälle. `startOffset`-Berechnung von
-      `firstOfMonth.getDay()` auf `(firstOfMonth.getDay() - weekStart + 7) % 7` geändert
-      (modulare Rotation statt direkter Wert), Wochentag-Kopfzeile passend dazu per
-      `weekdayNamesFor()` um denselben Versatz rotiert - beide Stellen MÜSSEN synchron
-      bleiben, sonst zeigt die Kopfzeile einen anderen Wochentag als tatsächlich in der
-      jeweiligen Spalte steht.
+      direkt als Versatz - JS' `Date`-API folgt der US-Konvention). Für ein
+      zweisprachiges Widget reicht "einmal die Spec nachlesen" nicht - jede
+      locale-abhängige Konvention (Wochenstart, Datumsformat, ...) muss aktiv geprüft
+      werden, nicht nur die Übersetzung sichtbarer Strings. Fix: Wochenstart per
+      `lang`-Attribut (de: Montag, en: Sonntag), zusätzlich per `data-week-start`
+      explizit überschreibbar; `startOffset`-Berechnung auf modulare Rotation
+      (`(firstOfMonth.getDay() - weekStart + 7) % 7`) geändert. Die Wochentag-Kopfzeile
+      muss um denselben Versatz rotiert werden - beide Stellen müssen synchron bleiben.
 
-38. **`<ncss-container>` (`components/ncss-container.js`, User-Anstoß: "können wir ncss
-    in einer eigenen webcomponente ausführen ... um so ncss inhalte isoliert innerhalb
-    einer anderen framework laufen zu lassen").** Shadow-DOM-Kapselung für ncss-Inhalte
-    innerhalb einer FREMDEN Seite. Zwei nicht offensichtliche technische Fallen, BEIDE
-    vor der Implementierung per echtem Playwright-Test verifiziert statt angenommen -
-    beide hätten bei bloßem "sollte funktionieren"-Vertrauen eine leck geschlagene, also
-    funktionslose Isolation ergeben:
+38. **`<ncss-container>` (`components/ncss-container.js`)** - Shadow-DOM-Kapselung für
+    ncss-Inhalte innerhalb einer fremden Seite. Zwei nicht offensichtliche Fallen, beide
+    hätten bei bloßem "sollte funktionieren"-Vertrauen eine leck geschlagene Isolation
+    ergeben:
     - **`:root` trifft NIEMALS einen Shadow Host, egal wo die Stylesheet-Datei geladen
-      wird.** ncss' komplettes Token-System hängt an `:root { --ncss-color-brand: ... }`
-      (colors.css/tokens.css/theme.css/webawesome-bridge.css) - unverändert in einem
-      Shadow Root geladen, würde `:root` weiterhin nur das ECHTE Seiten-Wurzelelement
-      treffen, nicht den Shadow-Host-Knoten. Ergebnis ohne Fix: alle `var(--ncss-*)` im
-      Container lösen sich zu nichts auf (keine Fehlermeldung, einfach unstyled/Ausgangs-
-      werte) - SOLANGE die Host-Seite nicht zufällig selbst dieselben Tokens an ihrem
-      echten `:root` definiert (was den ganzen Sinn der Isolation zunichtemachen würde).
-      Fix: JEDE `:root`-Deklaration in diesen vier Dateien zu `:root, :host` erweitert -
-      `:host` matcht NUR innerhalb eines Shadow Trees und ist dort präzise der
-      Shadow-Root-eigene Bezugspunkt, außerhalb jeder Shadow-DOM-Nutzung vollständig
-      wirkungslos (kein Risiko für die 99% normale Seiten-Nutzung). Per echtem Test
-      bestätigt: ein `.ncss-btn--primary` im Container zeigt die korrekte Markenfarbe,
-      OBWOHL `getComputedStyle(document.documentElement).getPropertyValue('--ncss-color-
-      brand')` an der echten Seite leer ist - vollständig eigenständige Token-Kopie,
-      keine Abhängigkeit von der Host-Seite. Dieselbe Erweiterung zusätzlich auf
-      `body { ... }` in base.css angewendet (Baseline-Schrift/-Farbe/-Hintergrund) - ein
-      Shadow Root hat kein eigenes `<body>`-Element, `:host` ist dort das Äquivalent.
-      NICHT erweitert: `html { scroll-behavior: ... }` (reset.css, html-spezifisch, kein
-      sinnvolles `:host`-Äquivalent) und `:root { container-type: scroll-state }`
-      (helpers/scroll.css, schmales Feature, siehe zweiter Punkt unten).
-    - **`<slot>` reicht NICHT für echte Stil-Isolation - nur `<slot>`-fremde, tatsächlich
-      in den Shadow Root VERSCHOBENE Elemente sind vor äußerem CSS geschützt.** Ein
-      naheliegender erster Entwurf nutzte `<slot>` (der "normale" Web-Components-Weg,
-      eigenen Inhalt anzuzeigen) - dabei übersehen: `<slot>`-zugewiesene Elemente
-      bleiben technisch Teil des LIGHT DOM (nur ihre RENDERING-Position wandert in den
-      Shadow Tree) und werden deshalb WEITERHIN von den globalen Stylesheets der äußeren
-      Seite getroffen, inkl. `!important`-Regeln - genau der Leck-Fall, den die ganze
-      Komponente verhindern soll. Per gezieltem Vorab-Test (zwei Varianten nebeneinander,
-      eine `<slot>`-basiert, eine per `appendChild`-Verschiebung) hart bestätigt: der
-      `<slot>`-Button übernahm eine äußere `button { color: red !important }`-Regel
-      unverändert, der verschobene Button blieb komplett unberührt. Fix: `connectedCallback()`
-      verschiebt `this.firstChild` iterativ per `appendChild` in einen Wrapper INNERHALB
-      des Shadow Roots (kein `<slot>`) - echte Shadow-Tree-Nachfahren sind laut Spec
-      vollständig vor äußerem CSS geschützt, bloß durchgereichte "slotted" Elemente nicht.
-      Kehrseite bewusst in Kauf genommen: kein automatisches Nachziehen bei späteren
-      dynamischen Änderungen am (bereits umgezogenen) Original-Markup - für einen fertig
-      eingebetteten, statischen Inhaltsblock kein praktischer Nachteil.
-    - **Bidirektional getestet, nicht nur eine Richtung**: `demo/uikit-integration.html`
-      (self-hosted UIkit 3, `vendor/uikit3/`, aus einem bereits im REDAXO-Projekt
-      vorhandenen offiziellen MIT-Build übernommen statt neu heruntergeladen) prüft
-      BEIDE Richtungen - UIkits `button`/`h1`-Reset erreicht den Container nicht (Punkt
-      oben), UND ncss' eigener `* { margin: 0 }`-Reset beeinflusst UIkit-Überschriften
-      VOR/NACH dem Container nicht (`getComputedStyle` auf ein `<h2>` außerhalb des
-      Containers bestätigt weiterhin UIkits eigenen 20px-Default). Scroll-gekoppelte
-      Effekte (`position:sticky`, `animation-timeline: view()` der Stacked-Cards-Demo
-      im Container) funktionieren normal über die Shadow-Grenze - reine Rendering-/
-      Layout-Mechanik der Engine, von der DOM-/Style-Kapselung unberührt, extra verifiziert
-      statt angenommen (Screenshot bei Scroll-Zwischenposition zeigt korrekt gestapelte
-      Karten).
-    - **Bekannte Grenze**: opt-in Fallback-Scripts, die per `document.querySelectorAll(...)`
-      GLOBAL suchen (`scroll-stack-fallback.js`, `hide-on-scroll-fallback.js`), finden
-      Elemente innerhalb eines `<ncss-container>` NICHT (Shadow-DOM-Grenzen werden von
-      `querySelectorAll` nicht standardmäßig durchquert) - betrifft nur Browser ohne die
-      jeweilige native CSS-Unterstützung; der reine `@supports`-CSS-Fallback funktioniert
-      unverändert, da Engine-Ebene statt JS-DOM-Traversal.
+      wird.** ncss' komplettes Token-System hängt an `:root { --ncss-color-brand: ... }` -
+      unverändert in einem Shadow Root geladen, würde `:root` weiterhin nur das echte
+      Seiten-Wurzelelement treffen, nicht den Shadow-Host-Knoten - alle `var(--ncss-*)` im
+      Container lösen sich zu nichts auf (kein Fehler, einfach unstyled). Fix: jede
+      `:root`-Deklaration in den Token-Dateien zu `:root, :host` erweitert - `:host`
+      matcht nur innerhalb eines Shadow Trees, außerhalb jeder Shadow-DOM-Nutzung
+      vollständig wirkungslos. Dieselbe Erweiterung auf `body { ... }` in base.css
+      angewendet - ein Shadow Root hat kein eigenes `<body>`, `:host` ist dort das
+      Äquivalent.
+    - **`<slot>` reicht NICHT für echte Stil-Isolation - nur tatsächlich in den Shadow
+      Root VERSCHOBENE Elemente sind vor äußerem CSS geschützt.** `<slot>`-zugewiesene
+      Elemente bleiben technisch Teil des Light DOM (nur ihre Rendering-Position wandert
+      in den Shadow Tree) und werden weiterhin von globalen Stylesheets der äußeren Seite
+      getroffen, inkl. `!important`-Regeln - genau der Leck-Fall, den die Komponente
+      verhindern soll. Fix: `connectedCallback()` verschiebt `this.firstChild` iterativ
+      per `appendChild` in einen Wrapper innerhalb des Shadow Roots (kein `<slot>`) -
+      echte Shadow-Tree-Nachfahren sind laut Spec vollständig vor äußerem CSS geschützt,
+      bloß durchgereichte "slotted" Elemente nicht. Kehrseite in Kauf genommen: kein
+      automatisches Nachziehen bei späteren dynamischen Änderungen am umgezogenen
+      Original-Markup - für einen statischen Inhaltsblock kein praktischer Nachteil.
+
+    Bidirektional getestet (`demo/uikit-integration.html`, self-hosted UIkit 3): UIkits
+    eigener Reset erreicht den Container nicht (siehe oben), UND ncss' eigener Reset
+    beeinflusst UIkit-Elemente außerhalb des Containers nicht. Scroll-gekoppelte Effekte
+    (`position:sticky`, `animation-timeline: view()`) funktionieren normal über die
+    Shadow-Grenze - reine Rendering-Mechanik der Engine, von der Style-Kapselung
+    unberührt.
+    - **Nachtrag (User-Anstoß: "wenn ich es als container nutze wo muss ich die fallback
+      js einbinden?"): erst als "bekannte Grenze" dokumentiert, dann tatsächlich
+      behoben statt dabei belassen.** Ursprünglich dokumentiert: opt-in Fallback-
+      Scripts, die per `document.querySelectorAll(...)` GLOBAL suchen, finden Elemente
+      innerhalb eines `<ncss-container>` nicht (Shadow-DOM-Grenzen werden davon nicht
+      durchquert). Die Nutzerfrage zielte auf "wie bringe ich es zum Laufen", nicht nur
+      "wo ist die Grenze" - genau der Anstoß, die Grenze zu beseitigen statt sie nur zu
+      erklären. Betraf am Ende MEHR Scripts als ursprünglich dokumentiert
+      (`scroll-stack-fallback.js`/`hide-on-scroll-fallback.js` waren nur die zwei zuerst
+      genannten) - beim Nachsehen fanden sich exakt dasselbe Muster auch in
+      `code-block.js`, `downloads.js`, `events.js`, `wa-close-on-scroll.js` (`grep -rln
+      'document.querySelectorAll' components/*.js` deckte alle sechs auf einmal auf,
+      statt sie einzeln nachträglich zu entdecken). Fix: dieselbe kleine
+      `deepQueryAll(selector, root)`-Hilfsfunktion (rekursiver Abstieg in jeden offenen
+      Shadow Root über `root.querySelectorAll("*")` + `.shadowRoot`-Prüfung) in jedes der
+      fünf init-once-Scripts kopiert (bewusst dupliziert statt in eine gemeinsame Datei
+      ausgelagert - passt zum bestehenden Muster "jedes opt-in Script bleibt für sich
+      allein einbindbar", keine neue Script-Ladereihenfolge-Abhängigkeit einführen).
+      `code-block.js` zusätzlich von `Prism.highlightAll()` (document-global) auf
+      `Prism.highlightElement()` PRO gefundenem Block umgestellt - Prisms eigener
+      globaler Aufruf hätte Shadow-DOM-Inhalte trotz der eigenen `deepQueryAll()`-Suche
+      für den Copy-Button weiterhin übersehen, `highlightElement()` arbeitet dagegen
+      direkt auf dem übergebenen Element. `wa-close-on-scroll.js` bewusst ANDERS gelöst:
+      läuft bei JEDEM Scroll-Event (kein init-once), ein voller `deepQueryAll`-DOM-Walk
+      wäre dort spürbar teurer - stattdessen gezielt nur `<ncss-container>`-Elemente
+      selbst gesucht und deren Shadow Root rekursiv durchsucht (die einzige realistisch
+      vorkommende Shadow-DOM-Quelle auf einer ncss-Seite), zusätzlich der bisher
+      UNGEDROSSELTE Scroll-Listener gleich mit auf `requestAnimationFrame` umgestellt
+      (Bonus-Fix, beim Anfassen der Datei mit entdeckt). Alle Fixes per echtem
+      Playwright-Test verifiziert (Code-Block-Highlighting + Copy-Button + Downloads-
+      Widget innerhalb eines Shadow Roots, UND ein `wa-dropdown[open]` innerhalb eines
+      Containers schließt sich beim Scrollen), nicht nur am Code abgelesen.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
@@ -1189,118 +832,62 @@ NICHT als Fallback ergänzt, weil zwei konkurrierende Hacks für eine reine Zusa
 mehr Wartungslast wären, als sie wert sind. Dasselbe Abwägen gilt für jede künftige
 ähnliche Situation: EINE saubere, gut-gegatete Lösung statt mehrerer sich überschneidender.
 
-Zweites Beispiel, mit funktionierendem `@supports`-Fallback statt "kein Fallback nötig",
-UND ein Lehrstück darin, wie viele Anläufe ein scroll-getriebenes Feature bis zur
-richtigen Kalibrierung brauchen kann: `.ncss-stack-section`/`.ncss-stack-stage`/
-`.ncss-stack-card` (components/scroll-stack.css) - EINE Vollbild-Sektion, in der Karten
-beim Scrollen INNERHALB dieser einen Sektion übereinander gleiten (Nutzer-Anforderung
-nach mehreren Iterationen: erst unabhängig sticky Karten je eigenem Vollbild-Abschnitt,
-dann kompakt+gefächert am oberen Rand, dann in der Bildschirmmitte, am Ende explizit
-"eine Vollbild-Sektion, darin die stacked cards"). Ein fixer `translateY`-Versatz pro
-Karte (`--ncss-stack-index * --ncss-stack-fan`) liefert die Ruheposition/den Endzustand
-der Scroll-Animation (NICHT der echte Fallback für Browser ohne `view-timeline` -
-dazu unten mehr, eigener Absatz). Die Scroll-Animation nutzt eine BENANNTE `view-timeline-name`
-(nicht die anonyme `view()`-Funktion wie im ersten Anlauf) auf der äußeren Sektion, jede
-Karte per `animation-range` auf ihre eigene Scheibe gemappt - zwei echte Kalibrierungs-
-Bugs dabei per `getComputedStyle().transform`-Auslese gefunden, nicht nur optisch:
-1) Die DEFAULT-"cover"-Reichweite von `view-timeline` misst vom ersten bis zum letzten
-   sichtbaren Pixel des Subjekt-Elements - bei einem Element, das viele Bildschirmhöhen
-   groß ist, schließt das eine ganze Bildschirmhöhe Entry- UND Exit-Polsterung VOR/NACH
-   der eigentlich gepinnten Phase mit ein. `view-timeline-inset: 100vh` (= die
-   Bühnenhöhe) beschneidet genau diese Polsterung, erst danach fallen 0%/100% der
-   Timeline exakt mit "Bühne wird gepinnt"/"Bühne löst sich" zusammen.
-2) Ein `animation-range` ZENTRIERT um den eigenen Karten-Index (index-1 bis index+1)
-   ließ eine Karte schon MITTEN in ihrer eigenen, noch aktiven Anzeige-Phase zurück-
-   weichen (User-Feedback: "müsste erst kippen, wenn man vom Vollbild wegscrollt") - der
-   Bereich muss stattdessen AN der eigenen Scheibe BEGINNEN (index bis index+2), damit
-   die erste Hälfte (0%-50%) exakt die eigene Anzeige-Phase abdeckt und erst die zweite
-   Hälfte (50%-100%, deckungsgleich mit der Scheibe der NÄCHSTEN Karte) zurückweicht.
-   Karte 0 (keine "eigene Ankunft" nötig, schon da beim Erscheinen der Bühne) bekommt
-   dafür einen eigenen, kürzeren Satz Keyframes (`ncss-stack-settle`, nur "flach → zurück-
-   weichend") statt der Ankunfts-Keyframes der übrigen Karten (`ncss-stack-arrive`,
-   "andockend → flach → zurückweichend") - dieselbe `animation-range`-Formel gilt für
-   beide gleich, nur der Keyframe-Name unterscheidet sich.
-Zusätzlich: KEIN `opacity`-Fade beim Andocken - eine bereits blickdichte Karte, die
-zusätzlich einblendet, ließ die darunterliegende währenddessen unschön durchscheinen
-(matschige Doppelbelichtung, per Screenshot-Review gefunden), reines `transform` (Karte
-malt dank normaler DOM-Reihenfolge ohnehin über die vorherige) reicht. Das gesamte
-Enhancement komplett hinter `@supports (view-timeline-name: --x)` UND zusätzlich
-`@media (prefers-reduced-motion: no-preference)` (eigenes Gate, nicht nur die globale
-reset.css-Regel - eine scroll-timeline-gekoppelte Animation hat keine echte Zeitdauer,
-das globale Kappen von animation-duration könnte sich unvorhersehbar verhalten statt
-sauber zu deaktivieren).
+Zweites Beispiel, mit funktionierendem `@supports`-Fallback statt "kein Fallback nötig":
+`.ncss-stack-section`/`.ncss-stack-stage`/`.ncss-stack-card` (components/scroll-stack.css)
+- eine Vollbild-Sektion, in der Karten beim Scrollen innerhalb dieser einen Sektion
+übereinander gleiten. Ein fixer `translateY`-Versatz pro Karte
+(`--ncss-stack-index * --ncss-stack-fan`) liefert die Ruheposition; die eigentliche
+Scroll-Animation nutzt eine benannte `view-timeline-name` auf der äußeren Sektion, jede
+Karte per `animation-range` auf ihre eigene Scheibe gemappt. Kalibrierungs-Regeln:
 
-Dritter Kalibrierungs-Bug, ebenfalls per echtem Test (nicht nur Augenschein) gefunden:
-der Off-Stage-`translateY`-Wert für die Anfahrt-Phase war anfangs ein fixer `60vh` -
-reichte bei einer per `flex` ZENTRIERTEN, `--ncss-stack-card-height: 60vh` hohen Karte
-in einer 100vh-Bühne NICHT aus, um sie vollständig unter die Bühnen-Unterkante zu
-schieben (User-Report: "der grüne ist initial über der Karte 1 sichtbar" - ein
-sichtbarer Streifen blieb am unteren Bühnenrand stehen). Richtige Formel:
-`50vh + Kartenhöhe/2` (halbe Bühnenhöhe, weil die Karte mittig sitzt, PLUS die halbe
-eigene Höhe) - relativ zu `--ncss-stack-card-height` berechnet statt eines fixen Werts,
-funktioniert dadurch automatisch für JEDE Kartenhöhen-Konfiguration (auch die
-Vollbild-Variante mit 100vh) ohne zwei parallele Formeln pflegen zu müssen.
+1) Die Default-"cover"-Reichweite von `view-timeline` misst vom ersten bis letzten
+   sichtbaren Pixel des Elements - bei einem vielfach bildschirmhohen Element schließt
+   das eine ganze Bildschirmhöhe Entry-/Exit-Polsterung vor/nach der eigentlich gepinnten
+   Phase mit ein. Fix: `view-timeline-inset: 100vh` (= Bühnenhöhe) beschneidet die
+   Polsterung, erst danach fallen 0%/100% exakt mit "Bühne wird gepinnt"/"löst sich"
+   zusammen.
+2) Ein um den eigenen Karten-Index ZENTRIERTER `animation-range` (index-1 bis index+1)
+   lässt eine Karte schon mitten in ihrer aktiven Anzeige-Phase zurückweichen. Der Bereich
+   muss stattdessen AN der eigenen Scheibe beginnen (index bis index+2): die erste Hälfte
+   deckt die eigene Anzeige ab, erst die zweite (deckungsgleich mit der nächsten Karte)
+   weicht zurück. Karte 0 (keine eigene Ankunft nötig) bekommt einen kürzeren Keyframe-Satz
+   (nur "flach → zurückweichend") statt der vollen Ankunfts-Keyframes der übrigen Karten.
+3) Der Off-Stage-`translateY`-Wert für die Anfahrt-Phase muss relativ zur Kartenhöhe
+   berechnet werden (`50vh + Kartenhöhe/2`), nicht als fixer Wert - sonst schiebt er eine
+   hohe Karte nicht vollständig unter die Bühnen-Unterkante.
 
-Horizontal-Modifier `.ncss-stack-section--horizontal` später ergänzt (Fächer/Anfahrt auf
-X- statt Y-Achse, eigene `ncss-stack-arrive-horizontal`/`ncss-stack-settle-horizontal`-
-Keyframes statt eines Achsen-Multiplikator-Tricks in einer gemeinsamen Formel - bewusst,
-bleibt so für beide Fälle einzeln lesbar). User-Report danach: "doppelte Scrollbalken,
-Sections bleiben halb stehen" - gründlich geprüft (jedes Element auf aktive Scrollbars
-gescannt, alle drei gleichzeitig auf der Seite befindlichen `.ncss-stack-section`
-gleichzeitig auf Cross-Contamination der `animation-timeline` getestet, da alle
-DENSELBEN `view-timeline-name` tragen) - KEIN Bug in Chromium gefunden, jede Sektion
-löst ihre Karten unabhängig und korrekt auf. Trotzdem `demo/scroll-sections.html` (der
-ursprüngliche verschachtelte Scroll-Snap-Container) und die drei Stacked-Cards-Varianten
-auf eine EIGENE Seite (`demo/stacked-cards.html`) aufgeteilt, auf Wunsch des Users - eine
-Seite mit einem verschachtelten Scroll-Container UND mehreren `view-timeline`-Sektionen
-gleichzeitig ist unnötig komplex und erschwert das Eingrenzen von Browser-spezifischen
-Problemen (siehe das Muster bei Punkt 21: mehrere Bugs dieser Session waren nur auf
-echtem Safari reproduzierbar, nicht in Chromium/Playwright-WebKit) - weniger
-gleichzeitige Scroll-Mechanik pro Seite bleibt die robustere Grundregel.
+Kein `opacity`-Fade beim Andocken (eine bereits blickdichte Karte, die zusätzlich
+einblendet, erzeugt eine matschige Doppelbelichtung) - reines `transform` reicht, da die
+Karte dank normaler DOM-Reihenfolge ohnehin über die vorherige malt. Das gesamte
+Enhancement liegt hinter `@supports (view-timeline-name: --x)` UND zusätzlich einem
+eigenen `@media (prefers-reduced-motion: no-preference)`-Gate (nicht nur die globale
+reset.css-Regel, da eine scroll-timeline-gekoppelte Animation keine echte Zeitdauer hat
+und das globale Kappen von `animation-duration` sich hier unvorhersehbar verhalten kann).
 
-WICHTIGER Landmine-Fund danach, echter Fallback-Bug statt nur Optik: der fixe
-`translateY`-Versatz (`--ncss-stack-index * --ncss-stack-fan`) ist KEIN ausreichender
-Fallback für Browser ohne `view-timeline`-Unterstützung, obwohl er zunächst genau danach
-aussah (in echtem Firefox getestet, alle Karten sichtbar gefächert) - dieser Test deckte
-nur Demos mit `--ncss-stack-fan` ungleich 0 ab. Bei der Vollbild-Variante
-(`--ncss-stack-card-height: 100vh`/`-card-width: 100%`/`-fan: 0px`, Karten sollen die
-GANZE Bühne füllen) ergibt derselbe Versatz für JEDE Karte exakt `translateY(0)` - ohne
-Scroll-Animation liegen alle Karten deckungsgleich übereinander, nur die letzte (oberste
-im DOM) bleibt sichtbar/erreichbar, der Rest ist komplett verdeckt und nicht anschaubar
-(User-Feedback, nachdem ich den Fallback fälschlich als "über alle Varianten verifiziert"
-gemeldet hatte, obwohl mein eigener Firefox-Testlauf die deckungsgleichen
-`matrix(1,0,0,1,0,0)`-Transforms für genau diese Sektion schon zeigte - ich hatte nur die
-Screenshots der anderen Varianten angesehen, nicht diese: "fallback darstellung fehlt
-noch für die nicht timeline browser .. die karten liegen halt übereinander und man kann
-sie sich nicht anschauen"). Lehre: ein Fallback, der von einem Custom-Property-Wert
-abhängt, den Demos bewusst auf 0 setzen dürfen, ist kein echter Fallback - er muss
-UNABHÄNGIG vom Wert dieser Property funktionieren. Fix: eigener
-`@supports not (view-timeline-name: --ncss-stack-progress)`-Block schaltet die komplette
-Pinning-/Absolut-Stapel-Mechanik ab (`.ncss-stack-section` height:auto, `.ncss-stack-stage`
-position:static/height:auto/overflow:visible, `.ncss-stack-card` position:relative +
-transform:none) - Karten laufen dann ganz normal im Flex-Fluss untereinander, garantiert
-einzeln sichtbar/scrollbar, unabhängig von `--ncss-stack-fan`/`-count` oder der
-`--horizontal`-Variante (dieselbe einfache vertikale Liste für beide, bewusst kein
-zweites Fallback-Layout). Re-verifiziert in echtem Firefox MIT expliziter Prüfung genau
-der Vollbild-Sektion (nicht nur "sieht insgesamt gut aus") sowie in Chromium, dass die
-`@supports`-Gate dort weiterhin die animierte Sticky-Variante unverändert lässt.
+**Wichtig für den `@supports not (...)`-Fallback:** ein Fallback, der von einem
+Custom-Property-Wert abhängt, den Demos bewusst auf 0 setzen dürfen (hier
+`--ncss-stack-fan`), ist kein echter Fallback. Bei der Vollbild-Variante
+(`-fan: 0px`, Karten sollen die ganze Bühne füllen) ergibt der fixe `translateY`-Versatz
+für JEDE Karte `translateY(0)` - ohne Scroll-Animation liegen alle Karten deckungsgleich
+übereinander, nur die letzte im DOM bleibt erreichbar. Ein Fallback muss unabhängig vom
+Wert der Property funktionieren: `@supports not (view-timeline-name: --ncss-stack-progress)`
+schaltet die komplette Pinning-/Stapel-Mechanik ab (`height:auto`, `position:static`/
+`relative`, `transform:none`) - Karten laufen dann normal im Flex-Fluss untereinander,
+garantiert einzeln sichtbar, unabhängig von `--ncss-stack-fan`/`-count` oder der
+horizontalen Variante.
 
-Drittes Beispiel für "erst prüfen, dann committen", diesmal auch ein Beispiel dafür, wie
-man einen verlinkten Artikel über eine ZUKÜNFTIGE, noch nicht implementierte Spec-Idee
-(`@location`/`@navigation`/`:nav-source`, per WebFetch geprüft - keine Browser-
-Unterstützung, reines Proposal) von der tatsächlich SCHON VERFÜGBAREN Technik für
-dasselbe Ziel unterscheidet: `page-transitions.css` (Repo-Root, opt-in wie `theme.css`)
-nutzt die bereits shippende Cross-Document-View-Transitions-API
-(`@view-transition { navigation: auto; }`), nicht die im Artikel beschriebene Spec-Idee.
-Keine `@supports`-Absicherung nötig für die Auswirkung auf ältere Browser: eine
-unbekannte `@`-Regel wird beim CSS-Parsen einfach ignoriert (Grundprinzip der Sprache),
-die Navigation bleibt dort einfach der normale, sofortige Seitenwechsel. Trotzdem ein
-eigenes `@media (prefers-reduced-motion: no-preference)`-Gate nötig (wie bei
-`scroll-stack.css`) - die View-Transitions-API respektiert `prefers-reduced-motion`
-NICHT von selbst. `view-transition-name` auf `.ncss-topbar` sorgt dafür, dass die
-Kopfleiste beim Seitenwechsel nahtlos an Ort und Stelle bleibt statt zu kreuzblenden -
-MUSS auf allen teilnehmenden Seiten exakt derselbe Name sein, sonst behandelt der
-Browser es als zwei unabhängige Elemente (sichtbares Flackern/doppeltes Element).
+Drittes Beispiel: `page-transitions.css` (Repo-Root, opt-in wie `theme.css`) nutzt die
+bereits shippende Cross-Document-View-Transitions-API (`@view-transition { navigation:
+auto; }`) - nicht die spekulative, noch unimplementierte `@navigation`/`:nav-source`-Idee
+aus älteren Artikeln zum Thema (per WebFetch verifizieren, welche Technik tatsächlich
+Browser-Unterstützung hat). Keine `@supports`-Absicherung nötig: eine unbekannte
+`@`-Regel wird beim CSS-Parsen einfach ignoriert, ältere Browser bleiben beim normalen,
+sofortigen Seitenwechsel. Trotzdem ein eigenes `@media (prefers-reduced-motion:
+no-preference)`-Gate nötig (wie bei `scroll-stack.css`) - die View-Transitions-API
+respektiert `prefers-reduced-motion` nicht von selbst. `view-transition-name` auf einem
+wiederkehrenden Element (z.B. `.ncss-topbar`) muss auf ALLEN teilnehmenden Seiten exakt
+derselbe Name sein, sonst behandelt der Browser es als zwei unabhängige Elemente
+(Flackern/doppeltes Element beim Seitenwechsel).
 
 ## Icon-System (`helpers/icons.css`)
 

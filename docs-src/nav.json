@@ -51,7 +51,8 @@
       "pages": [
         { "slug": "components", "de": "Komponenten-Referenz", "en": "Component Reference" },
         { "slug": "webawesome-bridge", "de": "Web Awesome Bridge", "en": "Web Awesome Bridge" },
-        { "slug": "widgets", "de": "Termine & Downloads", "en": "Events & Downloads" }
+        { "slug": "widgets", "de": "Termine & Downloads", "en": "Events & Downloads" },
+        { "slug": "ncss-container", "de": "&lt;ncss-container&gt;", "en": "&lt;ncss-container&gt;" }
       ]
     },
     {

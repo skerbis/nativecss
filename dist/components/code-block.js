@@ -4,18 +4,38 @@
  * siehe code-block.css für die dafür nötige "window.Prism = { manual: true }"-Zeile VOR
  * dem Laden von prism-core) und ergänzt jeden gefundenen Code-Block danach um einen
  * Copy-to-Clipboard-Button. Läuft auch ohne Prism (z.B. falls nur der Copy-Button
- * gebraucht wird, ohne die Prism-Scripts einzubinden) - highlightAll() wird dann
- * einfach übersprungen, der Rohtext bleibt unhighlighted, aber kopierbar.
+ * gebraucht wird, ohne die Prism-Scripts einzubinden) - Highlighting wird dann einfach
+ * übersprungen, der Rohtext bleibt unhighlighted, aber kopierbar.
+ *
+ * deepQueryAll() statt document.querySelectorAll(): ein Code-Block INNERHALB eines
+ * <ncss-container> (siehe ncss-container.js) liegt in dessen Shadow Root -
+ * querySelectorAll() durchquert Shadow-Grenzen nicht. Aus demselben Grund wird
+ * Prism.highlightElement() PRO Block aufgerufen statt des document-globalen
+ * Prism.highlightAll() - highlightElement() arbeitet direkt auf dem übergebenen Element,
+ * unabhängig davon, wo es im DOM (oder Shadow-DOM-Baum) sitzt.
  */
 (function () {
   "use strict";
 
-  if (window.Prism && typeof window.Prism.highlightAll === "function") {
-    window.Prism.highlightAll();
+  function deepQueryAll(selector, root) {
+    root = root || document;
+    var found = Array.prototype.slice.call(root.querySelectorAll(selector));
+    var all = root.querySelectorAll("*");
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].shadowRoot) {
+        found = found.concat(deepQueryAll(selector, all[i].shadowRoot));
+      }
+    }
+    return found;
   }
 
-  var blocks = document.querySelectorAll('pre > code[class*="language-"]');
+  var canHighlight = window.Prism && typeof window.Prism.highlightElement === "function";
+
+  var blocks = deepQueryAll('pre > code[class*="language-"]');
   for (var i = 0; i < blocks.length; i++) {
+    if (canHighlight) {
+      window.Prism.highlightElement(blocks[i]);
+    }
     addCopyButton(blocks[i]);
   }
 

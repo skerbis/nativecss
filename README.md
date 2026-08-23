@@ -778,13 +778,20 @@ scroll-gekoppelte Effekte (`position:sticky`, `animation-timeline: view()`, sieh
 Cards) funktionieren normal über die Shadow-Grenze hinweg, das ist reine Layout-/
 Rendering-Mechanik, von der DOM-/Style-Kapselung unberührt.
 
-**Bekannte Grenze**: opt-in JS-Fallback-Scripts, die per `document.querySelectorAll(...)`
-GLOBAL nach Elementen suchen (z.B. `scroll-stack-fallback.js`, `hide-on-scroll-fallback.js`),
-finden Elemente INNERHALB eines `<ncss-container>` nicht (Shadow-DOM-Grenzen werden von
-`querySelectorAll` nicht standardmäßig durchquert) - betrifft nur Browser OHNE die jeweilige
-native CSS-Unterstützung (z.B. kein `view-timeline`); der reine `@supports`-CSS-Fallback
-(statischer, unanimierter Zustand) funktioniert dagegen unverändert, da er auf Engine-Ebene
-arbeitet, nicht auf JS-DOM-Traversal.
+**Alle opt-in JS-Scripts sind Shadow-DOM-fähig**: `code-block.js`, `events.js`,
+`downloads.js`, `scroll-stack-fallback.js`, `hide-on-scroll-fallback.js` und
+`wa-close-on-scroll.js` suchen ihre Elemente NICHT mehr per einfachem
+`document.querySelectorAll(...)` (durchquert Shadow-Grenzen standardmäßig nicht), sondern
+per `deepQueryAll()` - steigt rekursiv in jeden offenen Shadow Root ab (also auch in jeden
+`<ncss-container>`) und verhält sich ohne Shadow DOM auf der Seite exakt wie
+`querySelectorAll`. `code-block.js` ruft dafür zusätzlich `Prism.highlightElement()` pro
+gefundenem Block statt des document-globalen `Prism.highlightAll()` auf. Einbindung
+IMMER gleich, egal ob mit oder ohne `<ncss-container>` - einfach das jeweilige Script
+wie gewohnt auf der Seite laden (per `<script defer>`, nicht zusätzlich pro Container),
+es findet seine Elemente unabhängig davon, ob sie in einem Shadow Root stecken. Einzige
+Ausnahme: `wa-close-on-scroll.js` läuft bei jedem Scroll-Event und sucht deshalb GEZIELT
+nur innerhalb `<ncss-container>`-Elementen statt eines vollen DOM-Walks (Performance),
+zusätzlich jetzt per `requestAnimationFrame` gedrosselt.
 
 ## Web Awesome Bridge
 
