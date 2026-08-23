@@ -14,6 +14,7 @@
   <p class="ncss-text-muted ncss-text-sm">Für taktile Rückmeldung auf Touch gilt <code>:active</code> (gilt für jedes Zeigegerät inkl. Touch, kein Gate nötig) - <code>.ncss-btn</code> hat einen eigenen, komponentenweiten <code>:active</code>-Zustand (<code>scale: 0.95</code>) und jede Farbvariante zusätzlich eine echte Farbänderung bei <code>:active</code> (dieselben Werte wie <code>:hover</code>, nur unbedingt).</p>
   <p class="ncss-text-muted ncss-text-sm">Ein Tap dauert oft nur ~100-150ms - die normale Übergangsdauer (200ms) erreicht ihren Zielwert dabei oft gar nicht erst. Eigener Token <code>--ncss-motion-duration-fast</code> (100ms), nur als <code>transition-duration</code> auf der <code>:active</code>-Regel selbst überschrieben - der Einstieg ins Gedrückt-Aussehen ist dadurch schnell, das Zurückfedern bleibt bei der normalen, weicheren Dauer.</p>
   <p class="ncss-text-muted ncss-text-sm">Für ein eigenes Element: <code>.ncss-press</code> (<code>helpers/animations.css</code>, ebenfalls <code>:active</code>-basiert mit demselben schnellen Einstieg, kombinierbar mit jedem Element).</p>
+  <pre><code class="language-html">&lt;div class="ncss-card ncss-press"&gt;Beliebiges Element mit Tap-Feedback&lt;/div&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="viewport-einheiten">
@@ -29,4 +30,8 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-css">.ncss-vollflaechig {
+  height: 100vh;   /* Fallback für ältere Browser */
+  height: 100svh;  /* gewinnt, wo unterstützt - passt immer */
+}</code></pre>
 </section>

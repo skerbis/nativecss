@@ -14,6 +14,7 @@
   <p class="ncss-text-muted ncss-text-sm">For tactile feedback on touch, <code>:active</code> applies (works for every pointing device including touch, no gate needed) - <code>.ncss-btn</code> has its own, component-wide <code>:active</code> state (<code>scale: 0.95</code>) and every color variant additionally gets a real color change on <code>:active</code> (the same values as <code>:hover</code>, just unconditional).</p>
   <p class="ncss-text-muted ncss-text-sm">A tap often lasts only ~100-150ms - the normal transition duration (200ms) frequently doesn't even reach its target value in that time. A dedicated token <code>--ncss-motion-duration-fast</code> (100ms), overridden only as <code>transition-duration</code> on the <code>:active</code> rule itself - the entry into the pressed look is thereby fast, the spring-back stays at the normal, softer duration.</p>
   <p class="ncss-text-muted ncss-text-sm">For a custom element: <code>.ncss-press</code> (<code>helpers/animations.css</code>, likewise <code>:active</code>-based with the same fast entry, combinable with any element).</p>
+  <pre><code class="language-html">&lt;div class="ncss-card ncss-press"&gt;Any element with tap feedback&lt;/div&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="viewport-einheiten">
@@ -29,4 +30,8 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-css">.ncss-full-height {
+  height: 100vh;   /* fallback for older browsers */
+  height: 100svh;  /* wins where supported - always fits */
+}</code></pre>
 </section>

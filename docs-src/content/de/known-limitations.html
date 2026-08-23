@@ -27,6 +27,10 @@
 <section class="ncss-stack" id="container-narrow">
   <h2 class="demo-section-title">.ncss-container--narrow ist nur ein Modifier</h2>
   <p class="ncss-text-muted ncss-text-sm">Setzt ausschließlich <code>max-width</code> - immer zusammen mit der Basisklasse verwenden (<code>class="ncss-container ncss-container--narrow"</code>). Allein verwendet fehlt die Zentrierung, der Block klebt linksbündig, und ein darin verschachteltes <code>.ncss-full-bleed</code>-Kind bricht sichtbar schief aus.</p>
+  <pre><code class="language-html">&lt;!-- Richtig --&gt;
+&lt;div class="ncss-container ncss-container--narrow"&gt;...&lt;/div&gt;
+&lt;!-- Falsch: --narrow allein fehlt die Zentrierung --&gt;
+&lt;div class="ncss-container--narrow"&gt;...&lt;/div&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="kommentar-fallstrick">

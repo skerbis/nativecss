@@ -18,11 +18,18 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;div class="ncss-sticky-container"&gt;
+  &lt;aside class="ncss-sticky"&gt;Bleibt beim Scrollen sichtbar&lt;/aside&gt;
+&lt;/div&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="vollbild-sektionen">
   <h2 class="demo-section-title">Vollbild-Sektionen</h2>
   <p class="ncss-text-muted ncss-text-sm"><code>.ncss-snap-sections</code> + <code>.ncss-snap-section</code> (+ <code>--scrollable</code>) - klassisches "Fullpage"-Muster, section-für-section, komplett über Scroll Snap. <code>.ncss-scroll-snap-x</code> innerhalb einer Sektion verschachtelbar für horizontalen Unterablauf.</p>
+  <pre><code class="language-html">&lt;div class="ncss-snap-sections"&gt;
+  &lt;section class="ncss-snap-section"&gt;Sektion 1&lt;/section&gt;
+  &lt;section class="ncss-snap-section"&gt;Sektion 2&lt;/section&gt;
+&lt;/div&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">Für gepinnte, sich überlagernde Karten statt separater Sektionen: siehe <a href="components.html">Komponenten-Referenz</a> (<code>components/scroll-stack.css</code>) - andere Technik, jede Sektion bekommt dort KEINEN eigenen Scroll-Abschnitt, sondern eine Bühne bleibt gepinnt.</p>
 </section>
 

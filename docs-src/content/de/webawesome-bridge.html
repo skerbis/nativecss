@@ -10,6 +10,12 @@
     <li>Laden über einen echten HTTP-Server - Web Awesome ist ES-Module-basiert, funktioniert nicht über <code>file://</code>.</li>
     <li><code>data-webawesome="&lt;pfad&gt;"</code> auf dem Loader-<code>&lt;script&gt;</code>, sonst verdoppelt sich der Basis-Pfad bei relativem <code>src</code>.</li>
   </ul>
+  <pre><code class="language-html">&lt;link rel="stylesheet" href="vendor/webawesome/dist-cdn/styles/themes/default.css"&gt;
+&lt;link rel="stylesheet" href="dist/ncss.css"&gt;
+&lt;script type="module" src="vendor/webawesome/dist-cdn/webawesome.loader.js"
+        data-webawesome="vendor/webawesome/dist-cdn"&gt;&lt;/script&gt;
+
+&lt;wa-button variant="brand"&gt;Passt optisch zu .ncss-btn--primary&lt;/wa-button&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="formular-text">
@@ -30,4 +36,7 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;script src="components/wa-close-on-scroll.js" defer&gt;&lt;/script&gt;
+&lt;script src="components/hide-on-scroll-fallback.js" defer&gt;&lt;/script&gt;
+&lt;script src="components/scroll-stack-fallback.js" defer&gt;&lt;/script&gt;</code></pre>
 </section>

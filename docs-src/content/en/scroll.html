@@ -18,11 +18,18 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;div class="ncss-sticky-container"&gt;
+  &lt;aside class="ncss-sticky"&gt;Stays visible while scrolling&lt;/aside&gt;
+&lt;/div&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="vollbild-sektionen">
   <h2 class="demo-section-title">Full-screen Sections</h2>
   <p class="ncss-text-muted ncss-text-sm"><code>.ncss-snap-sections</code> + <code>.ncss-snap-section</code> (+ <code>--scrollable</code>) - the classic "fullpage" pattern, section by section, entirely via Scroll Snap. <code>.ncss-scroll-snap-x</code> can be nested inside a section for a horizontal sub-flow.</p>
+  <pre><code class="language-html">&lt;div class="ncss-snap-sections"&gt;
+  &lt;section class="ncss-snap-section"&gt;Section 1&lt;/section&gt;
+  &lt;section class="ncss-snap-section"&gt;Section 2&lt;/section&gt;
+&lt;/div&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">For pinned, overlapping cards instead of separate sections: see <a href="components.html">Component Reference</a> (<code>components/scroll-stack.css</code>) - a different technique, there each section gets NO scroll segment of its own, instead a stage stays pinned.</p>
 </section>
 

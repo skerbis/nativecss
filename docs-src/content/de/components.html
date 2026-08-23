@@ -18,6 +18,12 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;nav class="ncss-nav"&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/" aria-current="page"&gt;Start&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/ueber-uns"&gt;Über uns&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="dialoge">
@@ -31,6 +37,14 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;dialog id="d" class="ncss-modal"&gt;
+  &lt;button type="button" class="ncss-dialog-close" command="close" commandfor="d" aria-label="Schließen"&gt;
+    &lt;span class="ncss-icon ncss-icon-close" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="ncss-modal-header"&gt;&lt;h3&gt;Titel&lt;/h3&gt;&lt;/div&gt;
+  &lt;div class="ncss-modal-body"&gt;Inhalt&lt;/div&gt;
+&lt;/dialog&gt;
+&lt;button type="button" command="show-modal" commandfor="d"&gt;Öffnen&lt;/button&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="karten">
@@ -45,6 +59,30 @@
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"&gt;
+  &lt;img class="ncss-card-media ncss-ratio-video ncss-img-cover" src="bild.jpg" alt=""&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Titel&lt;/h3&gt;
+    &lt;p class="ncss-text-muted"&gt;Beschreibung&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="elevation">
+  <h2 class="demo-section-title">Rahmen, Radius & Schatten</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>helpers/elevation.css</code> - eigenständige, komponentenunabhängige Utilities statt fest in Komponenten eingebacken (siehe <a href="tokens.html">Design Tokens</a>), frei kombinierbar mit JEDEM Element.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-border</code> / <code>--none</code></td><td>Rahmen an/aus</td></tr>
+        <tr><td><code>.ncss-radius-sm/-md/-lg/-full/-none</code></td><td>Eckenradius</td></tr>
+        <tr><td><code>.ncss-shadow-sm/-md/-lg/-none</code></td><td>Schattenstufe</td></tr>
+        <tr><td><code>.ncss-shadow-hover-sm/-md/-lg</code></td><td>Schatten wächst bei Hover</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"&gt;...&lt;/div&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="formulare-suche">
