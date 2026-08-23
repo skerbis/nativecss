@@ -952,6 +952,44 @@ gewünschte Zeichenweg).
     und demonstrierter Override-Wert inkonsistent (einer lvh, einer vh, ohne erkennbaren
     Unterschied im Ergebnis, aber verwirrend beim Lesen).
 
+31. **Formular-Feldtypen-Audit (User-Anstoß: "checke ob wir alle möglichen Felder durch
+    gestyled haben z.b. uploadfeld cross browser") - `helpers/forms.css` deckte vorher nur
+    text/select/textarea/checkbox/radio/switch/range ab, mit kompletten Lücken bei
+    `type="file"`/`"color"`/`"date"`-Familie/`"search"` sowie `<fieldset>`/`<legend>`/
+    `<progress>`/`<meter>`/`<output>`.** `<input type="file">` ist der Feldtyp mit dem
+    größten Cross-Browser-Unterschied (Chrome/Edge/Safari: eigener Button + Dateiname
+    INNERHALB des Feldes; Firefox: "Durchsuchen…"-Button) - `::file-selector-button`
+    (Baseline seit 2023) + `::-webkit-file-upload-button` (ältere WebKit-Schreibweise,
+    schadet parallel angegeben nicht) bringen den Button auf `.ncss-btn--secondary`-Optik,
+    per echtem Test in Chromium/WebKit/Firefox bestätigt einheitlich. Zwei Erkenntnisse
+    beim Verifizieren, die man sich sonst erneut erarbeiten müsste:
+    - Die Kalender-/Uhr-Icons der date/time-Familie (`::-webkit-calendar-picker-indicator`)
+      brauchten ENTGEGEN der Erwartung KEINE manuelle Dark-Mode-Anpassung
+      (`filter: invert()` o.ä.) - `color-scheme: light dark` (bereits in `colors.css` auf
+      `:root` gesetzt, ursprünglich für `light-dark()` selbst) sorgt schon dafür, dass
+      Chromium/Safari das passende System-Icon zeichnen. Per Screenshot in beiden Modi
+      bestätigt, nicht nur angenommen - erst geprüft, dann als "kein Fix nötig"
+      dokumentiert statt stillschweigend übersprungen.
+    - `<meter>` respektiert `accent-color` NICHT für seine Grün/Gelb/Rot-Bewertungsfarbe
+      (bleibt grün, obwohl `accent-color` auf die Markenfarbe Blau gesetzt war - in allen
+      drei Engines identisch reproduziert). BEWUSST NICHT per `::-webkit-meter-*`
+      erzwungen: das ist die eigentliche Funktion von `<meter>` (zeigt an, ob ein Wert im
+      guten/mittleren/kritischen Bereich der Skala liegt, sobald `optimum`/`low`/`high`
+      gesetzt sind), keine zufällige Farbabweichung wie bei den anderen Elementen in
+      diesem Punkt - `<progress>` (kein Wertungs-Konzept) respektiert `accent-color`
+      dagegen vollständig und ist die richtige Wahl, wenn wirklich nur Markenfarbe
+      gewünscht ist.
+    `<input type="search">` brauchte `appearance: none` (sonst rundet Safari es auf eigene
+    Faust komplett ab, ignoriert `border-radius` aus der gemeinsamen `.ncss-input`-Regel).
+    `<input type="number">`s Spinner-Pfeile bewusst NICHT versteckt (verbreitete Praxis in
+    anderen Design-Systemen) - echte native Funktionalität ohne konkreten Anlass zu
+    entfernen widerspricht dem Projekt-Grundprinzip, kosmetische Cross-Browser-Unterschiede
+    bei den Pfeilen selbst sind kein funktionaler Mangel. `fieldset`/`legend` bekamen wie
+    `<blockquote>` in `base.css` direkt einen Default OHNE eigene Klasse (reine
+    Gruppierungs-Elemente, keine neu gezeichnete Optik wie `.ncss-choice`/`.ncss-switch`).
+    Demo: `demo/forms.html`, vier neue Sektionen (Datei-Upload, Weitere Feldtypen,
+    Gruppierte Felder, Fortschritt/Messwert/Ergebnis).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

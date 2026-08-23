@@ -438,7 +438,14 @@ JS-Nachbauten.
 | `.ncss-choice` | Checkbox/Radio-Zeile (native Elemente, nur `accent-color` + Ausrichtung) |
 | `.ncss-switch` | Toggle-Switch aus `<input type="checkbox">`, komplett neu gezeichnet über `::before`, kein JS |
 | `.ncss-range` | Vereinheitlichtes `<input type="range">` |
-| `.ncss-btn` + `--primary`/`--secondary`/`--danger` | Button-Varianten |
+| `.ncss-input[type="file"]` | Datei-Upload - `::file-selector-button` (+ `::-webkit-file-upload-button` für ältere Safari) bringt den Browser-eigenen Button auf `.ncss-btn--secondary`-Optik. Größter Cross-Browser-Unterschied aller Feldtypen (Chrome/Edge/Safari: eigener Button + Dateiname; Firefox: "Durchsuchen…"-Button) |
+| `.ncss-input[type="color"]` | Swatch-Fläche über `::-webkit-color-swatch(-wrapper)`/`::-moz-color-swatch` an ncss-Radius angeglichen - der native Picker-Dialog selbst bleibt Browser-UI |
+| `.ncss-input[type="date"/"time"/"datetime-local"/"month"/"week"]` | Kalender-/Uhr-Icon (`::-webkit-calendar-picker-indicator`) folgt automatisch dem Theme, keine eigene Anpassung nötig - `color-scheme: light dark` (`colors.css`, `:root`) sorgt bereits für die passende Icon-Farbe in Chromium/Safari |
+| `.ncss-input[type="search"]` | `appearance: none` nötig, sonst rundet Safari das Feld auf eigene Faust komplett ab (ignoriert `border-radius`). Natives "×"-Lösch-Icon bleibt unangetastet |
+| `fieldset` / `legend` | Ohne eigene Klasse zu Ende gestylt (wie `<blockquote>` in `base.css`) - ersetzt den nativen 3D-"groove"-Rahmen durch die flache ncss-Optik |
+| `progress` / `meter` | `accent-color` für die Grundfarbe. `<meter>` bleibt bewusst bei seiner eigenen Grün/Gelb/Rot-Bewertungslogik (sobald `optimum`/`low`/`high` gesetzt sind) statt zur Markenfarbe gezwungen zu werden - das ist seine eigentliche Funktion, `<progress>` für reine Markenfarbe ohne Wertung |
+| `output` | Hervorgehobene Darstellung für ein berechnetes Formular-Ergebnis |
+| `.ncss-btn` + `--primary`/`--secondary`/`--danger` | Button-Varianten, inkl. `:active`-Rückmeldung für Touch (siehe [Touch-Geräte & mobile Viewports](#touch-geräte--mobile-viewports)) |
 
 ## Tabellen
 

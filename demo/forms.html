@@ -121,6 +121,76 @@
     </div>
   </section>
 
+  <section id="datei-upload" class="ncss-stack">
+    <h2 class="demo-section-title">Datei-Upload</h2>
+    <p class="ncss-text-muted ncss-text-sm">Der Input-Typ mit dem größten Cross-Browser-Unterschied - Chrome/Edge/Safari zeichnen einen eigenen Button + Dateiname, Firefox einen "Durchsuchen…"-Button. <code>::file-selector-button</code> (+ <code>::-webkit-file-upload-button</code> für ältere Safari-Versionen) bringt den Button auf dieselbe Optik wie <code>.ncss-btn--secondary</code>.</p>
+    <div class="ncss-field demo-narrow-form">
+      <label class="ncss-label" for="demoFile">Datei auswählen</label>
+      <input class="ncss-input" type="file" id="demoFile">
+    </div>
+    <div class="ncss-field demo-narrow-form">
+      <label class="ncss-label" for="demoFileMulti">Mehrere Dateien, nur Bilder</label>
+      <input class="ncss-input" type="file" id="demoFileMulti" multiple accept="image/*">
+    </div>
+  </section>
+
+  <section id="weitere-feldtypen" class="ncss-stack">
+    <h2 class="demo-section-title">Weitere Feldtypen</h2>
+    <p class="ncss-text-muted ncss-text-sm">Alle über dieselbe <code>.ncss-input</code>-Basisregel, mit gezielten Ergänzungen pro Typ dort, wo Browser eigene Pseudo-Elemente mitbringen (Farb-Swatch, Kalender-/Uhr-Icon, Lösch-Symbol bei der Suche).</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoColor">Farbe</label>
+        <input class="ncss-input" type="color" id="demoColor" value="#3399ff">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoDate">Datum</label>
+        <input class="ncss-input" type="date" id="demoDate">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoTime">Uhrzeit</label>
+        <input class="ncss-input" type="time" id="demoTime">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoDatetime">Datum + Uhrzeit</label>
+        <input class="ncss-input" type="datetime-local" id="demoDatetime">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoSearch">Suche</label>
+        <input class="ncss-input" type="search" id="demoSearch" placeholder="Suchbegriff…">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoNumber">Zahl</label>
+        <input class="ncss-input" type="number" id="demoNumber" min="0" max="10" value="5">
+      </div>
+    </div>
+  </section>
+
+  <section id="fieldset" class="ncss-stack">
+    <h2 class="demo-section-title">Gruppierte Felder</h2>
+    <p class="ncss-text-muted ncss-text-sm">Natives <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code> statt eines eigenen "Gruppe"-Bausteins - ohne eigene Klasse zu Ende gestylt (wie <code>&lt;blockquote&gt;</code> in base.css), der native 3D-Rahmen des UA-Stylesheets ist sonst der einzige verbliebene Stilbruch gegenüber den flachen ncss-Feldern.</p>
+    <fieldset class="demo-narrow-form">
+      <legend>Versand</legend>
+      <label class="ncss-choice"><input type="radio" name="demoShipping" checked> Standard (kostenlos)</label>
+      <label class="ncss-choice"><input type="radio" name="demoShipping"> Express (+4,90&nbsp;€)</label>
+    </fieldset>
+  </section>
+
+  <section id="fortschritt" class="ncss-stack">
+    <h2 class="demo-section-title">Fortschritt, Messwert &amp; Ergebnis</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>&lt;progress&gt;</code> (eine laufende Aufgabe, z.B. der Upload oben) und <code>&lt;meter&gt;</code> (ein Wert innerhalb einer Skala, z.B. Speicherplatz) sehen ähnlich aus, bedeuten aber Verschiedenes - <code>&lt;meter&gt;</code> bleibt bewusst bei seiner eigenen Grün/Gelb/Rot-Bewertungslogik statt der Markenfarbe, das ist seine eigentliche Funktion. <code>&lt;output&gt;</code> für ein berechnetes Ergebnis.</p>
+    <div class="ncss-stack ncss-stack--tight demo-narrow-form">
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoProgress">Upload-Fortschritt</label>
+        <progress id="demoProgress" value="60" max="100"></progress>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoMeter">Speicherplatz belegt</label>
+        <meter id="demoMeter" value="0.6" min="0" max="1"></meter>
+      </div>
+      <p><output>Ergebnis: 42</output></p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="ncss-footer">

@@ -76,6 +76,101 @@
   color: var(--ncss-color-danger);
 }
 
+/* --- Datei-Upload -----------------------------------------------------------------------
+   <input type="file"> ist der Input-Typ mit dem größten Cross-Browser-Unterschied - Chrome/
+   Edge/Safari zeichnen einen eigenen "Datei auswählen"-Button + Dateiname-Text INNERHALB
+   des Feldes, Firefox einen "Durchsuchen…"-Button. Der Button selbst ist ein eigenes
+   Pseudo-Element (::file-selector-button, Baseline seit 2023) - ::-webkit-file-upload-
+   button ist die ältere, WebKit-spezifische Schreibweise davor (schadet nicht, parallel
+   angegeben - ein Browser ignoriert das ihm unbekannte Pseudo-Element einfach). Ohne beide
+   bleibt der Button auf seinem nativen, je nach Browser unterschiedlichen Grau hängen,
+   während das Feld drumherum bereits ncss-Rahmen/-Radius trägt - ein sichtbarer Stilbruch.
+   Optik entspricht .ncss-btn--secondary (Rahmen statt Füllung), damit sich der Button klar
+   vom übrigen Feldinhalt (Dateiname) absetzt, ohne mit den echten Formular-Buttons zu
+   konkurrieren. */
+.ncss-input[type="file"] {
+  padding-block: var(--ncss-space-3xs);
+  cursor: pointer;
+}
+.ncss-input[type="file"]::file-selector-button,
+.ncss-input[type="file"]::-webkit-file-upload-button {
+  font: inherit;
+  font-weight: 600;
+  color: var(--ncss-color-text);
+  background-color: transparent;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-sm);
+  padding: var(--ncss-space-3xs) var(--ncss-space-xs);
+  margin-inline-end: var(--ncss-space-xs);
+  cursor: pointer;
+  transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-input[type="file"]:hover::file-selector-button,
+  .ncss-input[type="file"]:hover::-webkit-file-upload-button {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+.ncss-input[type="file"]:disabled {
+  cursor: not-allowed;
+}
+.ncss-input[type="file"]:disabled::file-selector-button,
+.ncss-input[type="file"]:disabled::-webkit-file-upload-button {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* --- Farbe --------------------------------------------------------------------------------
+   Nur die Swatch-Fläche selbst individualisierbar (Browser-eigener Picker-Dialog beim Klick
+   bleibt nativ, wie bei date/color-typischen Eingaben üblich - kein Bereich, den CSS
+   erreicht). ::-webkit-color-swatch(-wrapper) für Chromium/Safari, ::-moz-color-swatch für
+   Firefox - beide parallel nötig, kein gemeinsamer Standardname bisher. */
+.ncss-input[type="color"] {
+  width: 4rem;
+  padding: var(--ncss-space-3xs);
+  cursor: pointer;
+}
+.ncss-input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.ncss-input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: var(--ncss-radius-sm);
+}
+.ncss-input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: var(--ncss-radius-sm);
+}
+
+/* --- Datum/Zeit -----------------------------------------------------------------------
+   date/time/datetime-local/month/week teilen sich denselben Kalender-/Uhr-Icon-Mechanismus
+   in Chromium/Safari (::-webkit-calendar-picker-indicator, Firefox zeichnet sein eigenes,
+   nicht per CSS erreichbares Icon). Die Icon-FARBE selbst muss NICHT manuell ans Theme
+   angepasst werden - color-scheme:light dark (colors.css, :root) sorgt bereits dafür, dass
+   Chromium/Safari das zum jeweiligen Modus passende (helle/dunkle) System-Icon zeichnen,
+   kein zusätzliches invert()/filter nötig (per echtem Test in beiden Modi bestätigt). Hier
+   nur der Cursor + etwas Abstand zum Feldrand. */
+.ncss-input[type="date"]::-webkit-calendar-picker-indicator,
+.ncss-input[type="time"]::-webkit-calendar-picker-indicator,
+.ncss-input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.ncss-input[type="month"]::-webkit-calendar-picker-indicator,
+.ncss-input[type="week"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: var(--ncss-radius-sm);
+  margin-inline-start: var(--ncss-space-2xs);
+}
+
+/* --- Suche ----------------------------------------------------------------------------
+   Ohne dieses appearance:none rundet Safari ein type="search" auf eigene Faust komplett ab
+   (ignoriert border-radius aus der gemeinsamen .ncss-input-Regel oben) - erst danach
+   verhält sich das Feld optisch wie jedes andere .ncss-input. Das native "×"-Icon zum
+   Leeren (::-webkit-search-cancel-button) bleibt bewusst unangetastet - eigenständig
+   nachzubauen wäre reiner Aufwand ohne echten optischen Zugewinn. */
+.ncss-input[type="search"] {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
 /* Checkbox/Radio: native Elemente, nur Ausrichtung + Akzentfarbe (accent-color deckt die
    allermeiste Individualisierung ab, ganz ohne Custom-Markup/-CSS für den Haken/Punkt
    selbst - genau der "erst HTML/CSS, dann mehr" Fall). */
@@ -185,6 +280,58 @@
 .ncss-range:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+/* --- Fieldset/Legend --------------------------------------------------------------------
+   Ungestylt bekommt <fieldset> vom UA-Stylesheet einen 2px "groove"-3D-Rahmen + eigenes
+   Margin, <legend> überlappt diesen Rahmen automatisch - beides wirkt neben den flachen,
+   eckig-radierten ncss-Feldern wie aus einer anderen Design-Sprache. Kein eigener Klassen-
+   name nötig (anders als .ncss-choice/.ncss-switch, die ECHTES natives Markup mit einer
+   ganz eigenen Optik neu zeichnen) - <fieldset>/<legend> sind reine Gruppierungs-Elemente,
+   bekommen deshalb wie <blockquote> in base.css direkt einen sinnvollen Default ohne
+   zusätzliche Klasse. */
+fieldset {
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-sm);
+  padding: var(--ncss-space-sm);
+  margin: 0;
+}
+fieldset > legend {
+  padding-inline: var(--ncss-space-2xs);
+  font-weight: 600;
+  font-size: var(--ncss-font-size-sm);
+}
+
+/* --- Progress/Meter ---------------------------------------------------------------------
+   Zwei semantisch unterschiedliche, aber optisch verwandte Elemente: <progress> (Fortschritt
+   einer laufenden Aufgabe, z.B. Datei-Upload - value/max ohne max wird zum unbestimmten
+   "läuft"-Zustand) und <meter> (ein Messwert INNERHALB einer bekannten Skala, z.B.
+   Speicherplatz-Auslastung - kein "läuft gerade"-Konzept). accent-color reicht bei BEIDEN
+   für die Grundfarbe (dieselbe Technik wie Checkbox/Radio/Range oben), Chromium/Safari/
+   Firefox setzen sie unterschiedlich auf ihre jeweiligen internen Pseudo-Elemente um, ganz
+   ohne dass hier selbst welche benannt werden müssten.
+
+   <meter> bleibt trotz accent-color grün, solange kein optimum/low/high gesetzt ist (per
+   echtem Test in allen drei Engines bestätigt, einheitlich) - BEWUSST nicht per
+   ::-webkit-meter-*-Pseudo-Elementen zur Markenfarbe gezwungen: die Grün/Gelb/Rot-Logik
+   ist die eigentliche Funktion von <meter> (zeigt an, ob ein Wert im guten/mittleren/
+   kritischen Bereich liegt, sobald diese Attribute gesetzt sind), keine Optik-Macke wie
+   bei den anderen Elementen hier. Wer wirklich Markenfarbe statt Semantik will: <progress>
+   verwenden (kein Wertungs-Konzept, respektiert accent-color vollständig). */
+progress,
+meter {
+  width: 100%;
+  height: 0.6em;
+  accent-color: var(--ncss-color-brand);
+}
+
+/* --- Output -----------------------------------------------------------------------------
+   <output> (berechnetes/abgeleitetes Ergebnis eines Formulars, z.B. eine Summe) erbt ohne
+   eigenes CSS bereits font/color korrekt von base.css - hier nur als eigenständiges
+   Element hervorgehoben, damit es sich sichtbar vom umgebenden Fließtext absetzt. */
+output {
+  font-weight: 600;
+  color: var(--ncss-color-brand);
 }
 
 /* --- Buttons -------------------------------------------------------------------------- */
