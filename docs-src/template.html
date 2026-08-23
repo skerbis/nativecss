@@ -55,6 +55,40 @@
       max-height: none;
     }
   }
+  /* Sidebar auf Mobile hinter einem <details>/<summary>-Umschalter statt IMMER voll
+     aufgeklappt vor dem eigentlichen Seiteninhalt zu stehen (User-Report: "Handbuch navi
+     ist mobil immer voll aufgeklappt", per Screenshot bestätigt - alle Nav-Gruppen
+     nahmen den kompletten ersten Bildschirm ein, bevor überhaupt Seiteninhalt kam).
+     .ncss-nav-dropdown liefert Chevron/Hover/Fokus-Optik bereits fertig (siehe
+     components/nav.css) - hier nur die responsive Sichtbarkeit des Umschalters selbst.
+     Erster Versuch: <details> OHNE open-Attribut im Markup lassen, stattdessen
+     .docs-sidebar { display:block !important } ab 60rem erzwingen, um den Inhalt trotz
+     geschlossenem <details> sichtbar zu machen - per echtem Test verworfen: moderne
+     Browser rendern den Inhalt eines GESCHLOSSENEN <details> über einen internen Slot-
+     Mechanismus (nicht nur simples display:none), ein via Kind-Selektor erzwungenes
+     display:block gewinnt zwar in getComputedStyle/getBoundingClientRect (Layout läuft
+     normal), das Element wird aber trotzdem nicht GEMALT (Screenshot blieb leer, obwohl
+     alle Werte "sichtbar" meldeten) - dieselbe Kind-Display-Override-Masche, die früher
+     zuverlässig funktionierte, greift hier nicht mehr. Fix: das ECHTE open-Attribut
+     verwenden statt es per CSS vorzutäuschen - im Markup PER DEFAULT gesetzt (JS-lose
+     Besucher/Bots sehen die Sidebar dadurch immer offen, wie vor diesem Fix - sicherer
+     Fallback statt sie ihnen komplett zu verstecken), ein winziges synchrones Inline-
+     Script (im <details> selbst, läuft vor dem ersten Paint) entfernt es wieder, wenn
+     der Viewport beim Laden schmaler als 60rem ist. */
+  .docs-sidebar-summary {
+    display: none;
+  }
+  @media (max-width: 59.99rem) {
+    .docs-sidebar-summary {
+      display: flex;
+      justify-content: space-between;
+      border: var(--ncss-border-width) solid var(--ncss-color-border);
+      border-radius: var(--ncss-radius-md);
+      padding: var(--ncss-space-sm) var(--ncss-space-md);
+      margin-block-end: var(--ncss-space-md);
+      font-weight: 700;
+    }
+  }
   .docs-prevnext {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -111,9 +145,13 @@ __LANG_SWITCH__
 <main id="main" class="ncss-stretch ncss-container ncss-py-xl">
   <div class="docs-layout">
 
-    <nav class="ncss-nav--tree docs-sidebar" aria-label="__SIDEBAR_LABEL__">
+    <details class="ncss-nav-dropdown docs-sidebar-details" open>
+      <summary class="docs-sidebar-summary">__SIDEBAR_LABEL__</summary>
+      <nav class="ncss-nav--tree docs-sidebar" aria-label="__SIDEBAR_LABEL__">
 __SIDEBAR__
-    </nav>
+      </nav>
+      <script>if (!matchMedia("(min-width: 60rem)").matches) document.currentScript.closest("details").removeAttribute("open");</script>
+    </details>
 
     <div class="ncss-stack ncss-stack--loose">
 __CONTENT__

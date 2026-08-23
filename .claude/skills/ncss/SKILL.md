@@ -929,6 +929,38 @@ umgestellt:
     identisch mit Maus/Trackpad/Touch/Tastatur. Für künftige "Box in der Doku größer/
     kleiner ziehen"-Demos gleich den Regler nehmen, nicht erst `resize` versuchen.
 
+47. **`.ncss-code-copy` (components/code-block.css) NIE über `--ncss-color-bg`/
+    `-text-muted` einfärben** - der Button sitzt über einem `<pre>`, dessen eigener
+    Hintergrund unabhängig vom Seiten-bg sein kann (Default hell über
+    `--ncss-color-bg-subtle`, aber z.B. `.landing-hero-code` auf product.html fest
+    dunkel/transluzent). `--ncss-color-bg` ist zudem selbst kein garantiert neutraler
+    Wert - auf product.html bewusst ein kräftiges Marken-Blau (theme.css). User-Report
+    "startseite copy buttons sind nicht erkennbar, das musst du allgemein lösen" (Button
+    dunkelgrau-auf-dunkelblau auf dem Hero-Code-Block, praktisch unsichtbar). Fix:
+    Farben aus `currentColor` ableiten (`color-mix(in srgb, currentColor 12%,
+    transparent)` für die Fläche, `currentColor` für Icon/Text) - `<pre>` setzt bereits
+    selbst die zu seinem EIGENEN Hintergrund passende Textfarbe, der Button erbt davon
+    automatisch die richtige Kontrastrichtung, egal was `--ncss-color-bg` gerade bedeutet.
+    Allgemeines Prinzip für jede künftige "schwebt über beliebigem Hintergrund"-Komponente:
+    lieber `currentColor`-relativ als über einen globalen Seiten-Token einfärben.
+
+48. **`<details>` ohne `[open]`-Attribut: ein per CSS auf ein Kind erzwungenes
+    `display:block !important` gewinnt zwar in `getComputedStyle`/
+    `getBoundingClientRect` (Layout läuft normal), das Kind wird in aktuellen Browsern
+    trotzdem NICHT gemalt** - moderner `<details>`-Inhalt (alles nach `<summary>`) läuft
+    über einen internen Slot-Mechanismus, der sich nicht per einfacher Display-Kaskade
+    auf ein Nachfahren-Element überschreiben lässt (bei älteren Engines/älterer Spec-Lage
+    funktionierte dieser Trick noch). Betraf die Doku-Sidebar (`docs-src/template.html`,
+    User-Report: "Handbuch navi ist mobil immer voll aufgeklappt", Fix mobil per
+    `<details>`/`<summary>` - Desktop sollte trotzdem immer offen bleiben): der
+    naheliegende `@media (min-width: 60rem) { .docs-sidebar { display:block !important }
+    }`-Versuch blieb im Screenshot leer, obwohl alle Computed-Styles "sichtbar" meldeten.
+    Fix: das ECHTE `open`-Attribut setzen statt es per CSS vorzutäuschen - im Markup PER
+    DEFAULT `open` (JS-loser Fallback bleibt sichtbar statt komplett versteckt), ein
+    winziges synchrones Inline-`<script>` direkt im `<details>` (läuft vor dem ersten
+    Paint, `document.currentScript.closest("details")`) entfernt `open` nur, wenn der
+    Viewport beim Laden schmaler als die Breakpoint-Schwelle ist.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

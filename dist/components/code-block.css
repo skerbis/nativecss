@@ -29,6 +29,18 @@ pre:has(> code[class*="language-"]) {
   position: relative;
 }
 
+/* Farben bewusst NICHT über --ncss-color-bg/-text-muted (globale Seiten-Tokens) -
+   .ncss-code-copy sitzt über EINEM <pre>, dessen eigener Hintergrund völlig unabhängig
+   vom Seiten-bg sein kann (helle --ncss-color-bg-subtle im Normalfall, aber z.B. ein
+   fest dunkel/transluzentes .landing-hero-code auf product.html, siehe dort). Ein
+   Button, der sich auf --ncss-color-bg verlässt, geht kaputt, sobald DAS zu etwas
+   anderem als "hell" wird (User-Report: "startseite copy buttons sind nicht
+   erkennbar" - --ncss-color-bg ist dort bewusst ein kräftiges Marken-Blau, siehe
+   theme.css). Fix: Farben aus currentColor ableiten - <pre> setzt bereits selbst die
+   für seinen EIGENEN Hintergrund passende Textfarbe (hell auf dunklem Code-Block,
+   dunkel auf hellem), color-mix() gegen transparent macht daraus automatisch eine
+   dezente, aber IMMER kontrastierende Fläche, egal welcher Hintergrund tatsächlich
+   dahintersteckt - kein Raten/Pflegen einzelner Spezialfälle pro Seite mehr nötig. */
 .ncss-code-copy {
   position: absolute;
   inset-block-start: var(--ncss-space-2xs);
@@ -38,19 +50,18 @@ pre:has(> code[class*="language-"]) {
   justify-content: center;
   width: var(--ncss-space-md);
   height: var(--ncss-space-md);
-  border: 1px solid var(--ncss-color-border);
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
   border-radius: var(--ncss-radius-sm);
-  background-color: var(--ncss-color-bg);
-  color: var(--ncss-color-text-muted);
+  background-color: color-mix(in srgb, currentColor 12%, transparent);
+  color: currentColor;
   font-size: var(--ncss-font-size-sm);
   line-height: 1;
   cursor: pointer;
-  transition: color var(--ncss-motion-duration), background-color var(--ncss-motion-duration);
+  transition: color var(--ncss-motion-duration), background-color var(--ncss-motion-duration), border-color var(--ncss-motion-duration);
 }
 @media (hover: hover) and (pointer: fine) {
   .ncss-code-copy:hover {
-    color: var(--ncss-color-text);
-    background-color: var(--ncss-color-bg-subtle);
+    background-color: color-mix(in srgb, currentColor 22%, transparent);
   }
 }
 .ncss-code-copy:active {
@@ -60,6 +71,7 @@ pre:has(> code[class*="language-"]) {
 .ncss-code-copy[data-copied="true"] {
   color: var(--ncss-color-success);
   border-color: var(--ncss-color-success);
+  background-color: color-mix(in srgb, var(--ncss-color-success) 15%, transparent);
 }
 
 /* --- Prism-Token-Bridge: auf dieselben ncss-Farbtokens gemappt, die auch Komponenten
