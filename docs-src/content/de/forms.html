@@ -30,9 +30,15 @@
         <tr><td><code>type="date/time/datetime-local/month/week"</code></td><td>Kalender-/Uhr-Icon folgt automatisch dem Theme (<code>color-scheme</code>), keine eigene Anpassung nötig</td></tr>
         <tr><td><code>type="search"</code></td><td><code>appearance: none</code> nötig, sonst rundet Safari das Feld eigenständig komplett ab</td></tr>
         <tr><td><code>type="number"</code></td><td>Native Spinner-Pfeile bewusst NICHT entfernt - echte Funktionalität, kein Grund sie zu kappen</td></tr>
+        <tr><td><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code></td><td>Nativer Combobox - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel (generisch auf jedes <code>&lt;input&gt;</code>). Die Vorschlagsliste selbst ist reine Browser-UI, in keinem Browser per CSS stylebar</td></tr>
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;input class="ncss-input" list="staedte" placeholder="Wählen oder eingeben…"&gt;
+&lt;datalist id="staedte"&gt;
+  &lt;option value="Berlin"&gt;&lt;/option&gt;
+  &lt;option value="Hamburg"&gt;&lt;/option&gt;
+&lt;/datalist&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="checkbox-radio">
@@ -61,8 +67,18 @@
   </div>
 </section>
 
+<section class="ncss-stack" id="input-group">
+  <h2 class="demo-section-title">Input-Group</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/input-group.css</code> - mehrere Formular-Steuerelemente visuell zu EINER Einheit verschmolzen (geteilte Rahmenlinie statt Lücke, nur die äußeren Ecken rund). Deckt zwei Fälle ab: Feld + Button (Suchleiste) und mehrere Felder nebeneinander (z.B. Vorname/Nachname). Bewusst NICHT "Form-Group" genannt - leicht zu verwechseln mit der bereits bestehenden <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code>-Gruppierung (Semantik statt reiner Optik).</p>
+  <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" placeholder="Suchbegriff…"&gt;
+  &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Suchen&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Deckt aktuell <code>.ncss-input</code>/<code>-textarea</code>/<code>.ncss-btn</code> als direkte Kinder ab - <code>.ncss-select-wrapper</code> (noch) nicht (der sichtbare Rahmen sitzt am inneren <code>&lt;select&gt;</code>, nicht am Wrapper selbst).</p>
+</section>
+
 <section class="ncss-stack" id="buttons">
   <h2 class="demo-section-title">Buttons</h2>
   <p><code>.ncss-btn</code> + <code>--primary</code>/<code>--secondary</code>/<code>--danger</code>. Jede Variante hat eine ECHTE <code>:active</code>-Rückmeldung (nicht nur <code>:hover</code>) - siehe <a href="touch-mobile.html">Touch & mobile Viewports</a> für die Begründung.</p>
-  <pre class="ncss-radius-lg ncss-border"><code>&lt;button class="ncss-btn ncss-btn--primary"&gt;Absenden&lt;/button&gt;</code></pre>
+  <pre><code class="language-html">&lt;button class="ncss-btn ncss-btn--primary"&gt;Absenden&lt;/button&gt;</code></pre>
 </section>

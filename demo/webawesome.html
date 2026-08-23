@@ -10,6 +10,13 @@
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <script src="../dist/components/wa-close-on-scroll.js" defer></script>
@@ -90,6 +97,10 @@
   <section class="ncss-stack">
     <h1>Weitere Web-Awesome-Komponenten</h1>
     <p class="ncss-text-muted">Alle über dieselbe <code>webawesome-bridge.css</code> im NativeCSS-Look - kein zusätzliches CSS pro Komponente nötig. Wo NativeCSS bereits einen nativen Baustein dafür hat (Accordion/Disclosure, Carousel/Slideshow, Drawer/Off-Canvas), ist das jeweils verlinkt zum Vergleich.</p>
+    <pre><code class="language-html">&lt;wa-accordion&gt;
+  &lt;wa-accordion-item label="Frage 1"&gt;Antwort 1&lt;/wa-accordion-item&gt;
+  &lt;wa-accordion-item label="Frage 2"&gt;Antwort 2&lt;/wa-accordion-item&gt;
+&lt;/wa-accordion&gt;</code></pre>
   </section>
 
   <section id="accordion" class="ncss-stack">

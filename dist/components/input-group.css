@@ -1,0 +1,67 @@
+/**
+ * ncss - Input-Group (Layer "components"): visuell zu EINER Einheit verschmolzene
+ * Formular-Steuerelemente (z.B. Suchfeld + Button, Vorname + Nachname nebeneinander) -
+ * geteilte Rahmenlinie statt Lücke zwischen den Elementen, nur die äußeren Ecken rund.
+ *
+ * Bewusst NICHT "Form-Group" genannt - das wäre mit der bereits bestehenden
+ * <fieldset>/<legend>-Gruppierung (semantisches Zusammenfassen mehrerer Felder, siehe
+ * demo/forms.html) leicht zu verwechseln, obwohl es ein völlig anderes Konzept ist (rein
+ * visuelle Verschmelzung, keine Semantik dahinter). "Input Group" ist der in anderen
+ * CSS-Frameworks etablierte Begriff für genau dieses Muster.
+ *
+ * Markup:
+ *   <div class="ncss-input-group">
+ *     <input class="ncss-input" type="search" placeholder="Suchen...">
+ *     <button type="submit" class="ncss-btn ncss-btn--primary">Suchen</button>
+ *   </div>
+ *   <div class="ncss-input-group">
+ *     <input class="ncss-input" placeholder="Vorname">
+ *     <input class="ncss-input" placeholder="Nachname">
+ *   </div>
+ *
+ * Deckt aktuell `.ncss-input`/`-textarea`/`.ncss-btn` als direkte Kinder ab - die beiden
+ * genannten Fälle (Eingabefeld + Button, zwei Felder nebeneinander). `.ncss-select-
+ * wrapper` NICHT unterstützt: der sichtbare Rahmen sitzt am inneren `<select>`, nicht am
+ * Wrapper selbst - bräuchte eigene Verschachtelungsregeln, noch keine konkrete
+ * Notwendigkeit dafür, bei Bedarf ergänzen statt vorsorglich mitbauen.
+ */
+
+.ncss-input-group {
+  display: flex;
+  align-items: stretch;
+}
+
+.ncss-input-group > .ncss-input,
+.ncss-input-group > .ncss-textarea {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ncss-input-group > .ncss-btn {
+  flex: 0 0 auto;
+}
+
+.ncss-input-group > * {
+  border-radius: 0;
+}
+/* Geteilte Rahmenlinie statt doppelter Rahmen zwischen den Elementen - dieselbe
+   `--ncss-border-width`, die auch .ncss-input/.ncss-btn selbst für ihren eigenen Rahmen
+   verwenden, macht den Überlapp exakt passend. */
+.ncss-input-group > :not(:first-child) {
+  margin-inline-start: calc(-1 * var(--ncss-border-width));
+}
+.ncss-input-group > :first-child {
+  border-start-start-radius: var(--ncss-radius-sm);
+  border-end-start-radius: var(--ncss-radius-sm);
+}
+.ncss-input-group > :last-child {
+  border-start-end-radius: var(--ncss-radius-sm);
+  border-end-end-radius: var(--ncss-radius-sm);
+}
+
+/* Fokussiertes Element vor den überlappenden Nachbar-Rahmen anheben, sonst schneidet der
+   Nachbar den Fokusring/die Fokus-Randfarbe sichtbar an. */
+.ncss-input-group > :focus,
+.ncss-input-group > :focus-within {
+  position: relative;
+  z-index: 1;
+}

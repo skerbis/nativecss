@@ -6,7 +6,7 @@
 
 <section class="ncss-stack" id="einbinden">
   <h2 class="demo-section-title">Including it</h2>
-  <pre class="ncss-radius-lg ncss-border"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
 &lt;link rel="stylesheet" href="theme.css"&gt;</code></pre>
   <p>Works without <code>@layer</code>/<code>!important</code>: <code>theme.css</code> is deliberately UNLAYERED, and unlayered CSS always wins against any layered rule per spec (see <a href="architecture.html">Architecture</a>) - a simple <code>:root { --ncss-color-brand: ... }</code> is enough.</p>
 </section>
@@ -28,7 +28,7 @@
 <section class="ncss-stack" id="seitenuebergaenge">
   <h2 class="demo-section-title">Page transitions (opt-in)</h2>
   <p>Smooth transitions between page navigations - its own, likewise opt-in file: <code>page-transitions.css</code>.</p>
-  <pre class="ncss-radius-lg ncss-border"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
 &lt;link rel="stylesheet" href="page-transitions.css"&gt;</code></pre>
   <p>Pure CSS (<code>@view-transition { navigation: auto; }</code>), no JavaScript needed. Currently not Baseline (Chromium family) - no effect on older browsers, an unknown <code>@</code>-rule is simply ignored during parsing, no <code>@supports</code> needed. Four presets are included: cross-fade (default), <code>slide</code>, <code>zoom</code>, <code>wipe</code> - enabled via the <code>types</code> descriptor.</p>
 </section>

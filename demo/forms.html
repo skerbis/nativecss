@@ -6,6 +6,13 @@
 <title>NativeCSS - Formulare</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -75,6 +82,11 @@
   <section class="ncss-stack">
     <h1>Formulare</h1>
     <p class="ncss-text-muted">Native Formularelemente, zu Ende gestylt (helpers/forms.css) - kein Web-Component-Ersatz nötig, wo HTML schon reicht.</p>
+    <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="name"&gt;Name&lt;/label&gt;
+  &lt;input class="ncss-input" type="text" id="name" required&gt;
+  &lt;span class="ncss-field-hint"&gt;Pflichtfeld&lt;/span&gt;
+&lt;/div&gt;</code></pre>
   </section>
 
   <section id="basis" class="ncss-stack">
@@ -103,6 +115,25 @@
       <label class="ncss-choice"><input type="radio" name="demoRadio"> Radio B</label>
       <button type="submit" class="ncss-btn ncss-btn--primary demo-align-start">Absenden</button>
     </form>
+  </section>
+
+  <section id="input-group" class="ncss-stack">
+    <h2 class="demo-section-title">Input-Group</h2>
+    <p class="ncss-text-muted ncss-text-sm">Formular-Steuerelemente visuell zu EINER Einheit verschmolzen (<code>components/input-group.css</code>) - geteilte Rahmenlinie statt Lücke, nur die äußeren Ecken rund. Zwei Fälle: Feld + Button (Suchleiste) und mehrere Felder nebeneinander (Vorname/Nachname).</p>
+    <div class="ncss-stack ncss-stack--tight demo-narrow-form">
+      <div class="ncss-input-group">
+        <input class="ncss-input" type="search" placeholder="Suchbegriff…">
+        <button type="submit" class="ncss-btn ncss-btn--primary">Suchen</button>
+      </div>
+      <div class="ncss-input-group">
+        <input class="ncss-input" placeholder="Vorname">
+        <input class="ncss-input" placeholder="Nachname">
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" placeholder="Suchbegriff…"&gt;
+  &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Suchen&lt;/button&gt;
+&lt;/div&gt;</code></pre>
   </section>
 
   <section id="switch" class="ncss-stack">
@@ -165,7 +196,17 @@
         <label class="ncss-label" for="demoNumber">Zahl</label>
         <input class="ncss-input" type="number" id="demoNumber" min="0" max="10" value="5">
       </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoCombobox">Stadt (Combobox)</label>
+        <input class="ncss-input" list="demoCities" id="demoCombobox" placeholder="Wählen oder eingeben…">
+        <datalist id="demoCities">
+          <option value="Berlin"></option>
+          <option value="Hamburg"></option>
+          <option value="München"></option>
+        </datalist>
+      </div>
     </div>
+    <p class="ncss-text-muted ncss-text-sm"><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code> - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel, da es generisch auf jedes <code>&lt;input&gt;</code> zutrifft. Die Vorschlagsliste selbst ist reine Browser-UI (wie beim nativen <code>&lt;select&gt;</code>-Popup) - nicht per CSS stylebar, in keinem Browser.</p>
   </section>
 
   <section id="fieldset" class="ncss-stack">

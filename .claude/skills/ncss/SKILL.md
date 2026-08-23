@@ -771,6 +771,43 @@ umgestellt:
       (Performance), dabei auch den bisher ungedrosselten Scroll-Listener auf
       `requestAnimationFrame` umgestellt.
 
+39. **Viele bereits vorhandene `<pre><code>`-Beispiele (7 Doku-Seiten + `demo/product.html`,
+    die eigentliche Startseite) hatten `<pre><code>` OHNE `class="language-*"`** - Prism
+    tokenisiert nur, wenn diese Klasse vorhanden ist, und `code-block.js`s eigener
+    `deepQueryAll`-Selektor (`pre > code[class*="language-"]`) findet ohne sie auch den
+    Copy-Button-Slot nicht - beides lief also seit dem Bau der Highlighting-Funktion
+    unbemerkt leer auf diesen Seiten. Fund kam nicht durch eigenes Nachprüfen, sondern
+    durch eine gezielte User-Nachfrage zu einem völlig anderen Feature (Input-Group) -
+    `grep -rl '<pre[^>]*><code>' docs-src/content demo` (ohne nachfolgendes
+    `class="language-`) deckte den vollen Umfang auf einmal auf. `demo/product.html` hatte
+    zusätzlich noch gar keine Prism-`<script>`-Tags geladen. Lehre: nach dem Bau einer
+    seitenübergreifenden Funktion (hier: Syntax-Highlighting) einmal GEZIELT über den
+    gesamten Bestand grep-prüfen, ob sie überall greift, statt nur die neu hinzugefügten
+    Stellen zu verifizieren - eine Funktion, die auf NEUEN Seiten korrekt funktioniert,
+    kann auf ÄLTEREN, vor ihrem Bau entstandenen Seiten trotzdem lückenhaft bleiben.
+    Zusätzlicher Fund beim Fixen: der reguläre Prism-Farbsatz (code-block.css, auf die
+    normale `--ncss-color-bg` kalibriert) hatte auf `product.html`s dunkelblau-
+    transluzentem Hero-Code-Block zu wenig Kontrast (Grün-auf-Blau kaum lesbar, per
+    Screenshot bestätigt) - eigene, seiten-lokale `.token.*`-Farbüberschreibung nur für
+    diesen einen Block ergänzt, statt die globale Palette anzufassen.
+
+40. **`components/input-group.css`** - mehrere Formular-Steuerelemente visuell zu EINER
+    Einheit verschmolzen (Feld+Button, Felder nebeneinander wie Vorname/Nachname):
+    geteilte Rahmenlinie statt Lücke (`margin-inline-start: calc(-1 * var(--ncss-border-
+    width))` auf allen Kindern außer dem ersten, exakt passend, weil `.ncss-input`/
+    `.ncss-btn` dieselbe `--ncss-border-width` für ihren eigenen Rahmen verwenden), nur
+    die äußeren Ecken rund (`:first-child`/`:last-child`), fokussiertes Kind per
+    `position:relative; z-index:1` vor den überlappenden Nachbar-Rahmen gehoben (sonst
+    schneidet der Nachbar den Fokusring sichtbar an). User bat explizit um einen
+    ANDEREN Namen als "Form-Group" - zu leicht mit der bereits bestehenden
+    `<fieldset>`/`<legend>`-Gruppierung (Semantik, kein visuelles Verschmelzen) zu
+    verwechseln. "Input Group" (aus anderen CSS-Frameworks etabliert) trifft den
+    tatsächlichen Charakter (rein optisch) präziser. Bewusst NUR `.ncss-input`/
+    `-textarea`/`.ncss-btn` als direkte Kinder unterstützt - `.ncss-select-wrapper`
+    NICHT (dessen sichtbarer Rahmen sitzt am inneren `<select>`, nicht am Wrapper selbst,
+    bräuchte eigene Verschachtelungsregeln) - kein konkreter Bedarf dafür in den beiden
+    vom User genannten Fällen, bei Bedarf ergänzen statt vorsorglich mitbauen.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

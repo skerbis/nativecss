@@ -17,6 +17,13 @@
     }
   }
 </style>
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -168,6 +175,10 @@
         Pull-Quotes und Textumfluss. Alles fließend (<code>clamp()</code>), alles
         Container-bewusst, kein einziger fester Breakpoint nötig.
       </p>
+      <pre><code class="language-html">&lt;p class="ncss-drop-cap ncss-columns" style="--ncss-columns-width: 18rem;"&gt;
+  Fließtext, der sich automatisch in Spalten aufteilt…
+  &lt;span class="ncss-pull-quote"&gt;Ein hervorgehobenes Zitat.&lt;/span&gt;
+&lt;/p&gt;</code></pre>
       <div class="demo-byline ncss-text-sm ncss-text-muted">
         <span>ncss-Redaktion</span>
         <span>&middot;</span>

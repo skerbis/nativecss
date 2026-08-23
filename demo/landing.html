@@ -34,6 +34,13 @@
 </style>
 <link rel="stylesheet" href="landing.css">
 
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <script src="../dist/components/wa-close-on-scroll.js" defer></script>
@@ -436,8 +443,9 @@
       </ul>
     </nav>
   </div>
-  <div class="ncss-footer-bottom">
-    Diese Seite kombiniert NativeCSS (nativ), Web Awesome Free (Web Components) und Font Awesome Free (Icons) über <code>webawesome-bridge.css</code>.
+  <div class="ncss-footer-bottom ncss-stack ncss-stack--tight">
+    <p>Diese Seite kombiniert NativeCSS (nativ), Web Awesome Free (Web Components) und Font Awesome Free (Icons) über <code>webawesome-bridge.css</code> - z.B. so:</p>
+    <pre><code class="language-html">&lt;wa-button variant="brand" appearance="accent"&gt;Passt optisch zu .ncss-btn--primary&lt;/wa-button&gt;</code></pre>
   </div>
 </footer>
 

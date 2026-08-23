@@ -30,9 +30,15 @@
         <tr><td><code>type="date/time/datetime-local/month/week"</code></td><td>Calendar/clock icon follows the theme automatically (<code>color-scheme</code>), no custom adjustment needed</td></tr>
         <tr><td><code>type="search"</code></td><td><code>appearance: none</code> needed, otherwise Safari rounds the field fully off on its own</td></tr>
         <tr><td><code>type="number"</code></td><td>Native spinner arrows deliberately NOT removed - real functionality, no reason to cut it</td></tr>
+        <tr><td><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code></td><td>Native combobox - an editable text field WITH a suggestion list (unlike <code>&lt;select&gt;</code>, which only allows choosing, no free text). <code>.ncss-input</code> applies with no special rule (generic on any <code>&lt;input&gt;</code>). The suggestion popup itself is pure browser UI, not stylable via CSS in any browser</td></tr>
       </tbody>
     </table>
   </div>
+  <pre><code class="language-html">&lt;input class="ncss-input" list="cities" placeholder="Choose or type…"&gt;
+&lt;datalist id="cities"&gt;
+  &lt;option value="Berlin"&gt;&lt;/option&gt;
+  &lt;option value="Hamburg"&gt;&lt;/option&gt;
+&lt;/datalist&gt;</code></pre>
 </section>
 
 <section class="ncss-stack" id="checkbox-radio">
@@ -61,8 +67,18 @@
   </div>
 </section>
 
+<section class="ncss-stack" id="input-group">
+  <h2 class="demo-section-title">Input Group</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/input-group.css</code> - multiple form controls visually fused into ONE unit (shared border line instead of a gap, only the outer corners rounded). Covers two cases: field + button (search bar) and multiple fields side by side (e.g. first name/last name). Deliberately NOT called "form group" - too easy to confuse with the already-existing <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code> grouping (semantics rather than pure styling).</p>
+  <pre><code class="language-html">&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" placeholder="Search…"&gt;
+  &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Search&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Currently covers <code>.ncss-input</code>/<code>-textarea</code>/<code>.ncss-btn</code> as direct children - not (yet) <code>.ncss-select-wrapper</code> (its visible border sits on the inner <code>&lt;select&gt;</code>, not the wrapper itself).</p>
+</section>
+
 <section class="ncss-stack" id="buttons">
   <h2 class="demo-section-title">Buttons</h2>
   <p><code>.ncss-btn</code> + <code>--primary</code>/<code>--secondary</code>/<code>--danger</code>. Every variant has REAL <code>:active</code> feedback (not just <code>:hover</code>) - see <a href="touch-mobile.html">Touch & Mobile Viewports</a> for the reasoning.</p>
-  <pre class="ncss-radius-lg ncss-border"><code>&lt;button class="ncss-btn ncss-btn--primary"&gt;Submit&lt;/button&gt;</code></pre>
+  <pre><code class="language-html">&lt;button class="ncss-btn ncss-btn--primary"&gt;Submit&lt;/button&gt;</code></pre>
 </section>

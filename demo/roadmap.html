@@ -6,6 +6,13 @@
 <title>NativeCSS - Roadmap</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -68,6 +75,23 @@
   <div class="ncss-container ncss-stack ncss-py-xl">
     <h1>Roadmap</h1>
     <p class="ncss-text-lead">Eine Meilenstein-Liste, verbunden durch eine einzige Linie, die sich beim Scrollen selbst nachzeichnet - komplett ohne JavaScript, per <code>animation-timeline: view()</code>. Kein Pinning wie bei den Stacked Cards: die Karten laufen ganz normal im Fluss, nur die Linie (und jede Karte selbst, dezent) reagiert auf die eigene Scroll-Position.</p>
+    <pre><code class="language-html">&lt;div class="ncss-roadmap"&gt;
+  &lt;div class="ncss-roadmap-line" aria-hidden="true"&gt;
+    &lt;div class="ncss-roadmap-line-track"&gt;&lt;/div&gt;
+    &lt;div class="ncss-roadmap-line-progress"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;ol class="ncss-roadmap-list" role="list"&gt;
+    &lt;li class="ncss-roadmap-item"&gt;
+      &lt;span class="ncss-roadmap-dot"&gt;&lt;/span&gt;
+      &lt;div class="ncss-roadmap-card ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"&gt;
+        &lt;div class="ncss-card-body"&gt;
+          &lt;time&gt;2024&lt;/time&gt;
+          &lt;h3&gt;Erste Version&lt;/h3&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</code></pre>
   </div>
 
   <div class="ncss-container ncss-py-xl">

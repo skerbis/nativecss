@@ -44,7 +44,7 @@
 <section class="ncss-stack" id="farbige-flaechen">
   <h2 class="demo-section-title">Colored Surfaces</h2>
   <p><code>helpers/surfaces.css</code>: <code>.ncss-surface--brand</code> / <code>--brand-2</code> / <code>--neutral</code> - background + guaranteed matching text color (900 step + <code>#fff</code>) in a single class, instead of an inline style with hand-maintained contrast.</p>
-  <pre class="ncss-radius-lg ncss-border"><code>&lt;div class="ncss-surface--brand"&gt;Always readable contrast&lt;/div&gt;</code></pre>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-surface--brand"&gt;Always readable contrast&lt;/div&gt;</code></pre>
   <p><strong>Web Awesome on colored surfaces:</strong> a <code>&lt;wa-input&gt;</code> or similar renders its label/value in its own shadow DOM - <code>color</code> alone doesn't reach it. <code>webawesome-bridge.css</code> bridges <code>--wa-form-control-label-color</code> and others automatically as soon as <code>.ncss-surface--*</code> or <code>.ncss-text-light</code>/<code>-dark</code> are in play.</p>
 </section>
 

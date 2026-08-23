@@ -6,6 +6,13 @@
 <title>NativeCSS - Navigation</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -94,6 +101,19 @@
       Alle Varianten nutzen dieselbe <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>-
       Mechanik für Untermenüs (Klick/Tastatur, kein Hover-Problem) - siehe components/nav.css.
     </p>
+    <pre><code class="language-html">&lt;nav class="ncss-nav"&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/" aria-current="page"&gt;Start&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-nav-item"&gt;
+      &lt;details class="ncss-nav-dropdown"&gt;
+        &lt;summary&gt;Mehr&lt;/summary&gt;
+        &lt;ul class="ncss-nav-submenu"&gt;
+          &lt;li&gt;&lt;a href="/a"&gt;Punkt A&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
   </section>
 
   <!-- Verschachtelte Dropdowns -->

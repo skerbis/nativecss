@@ -6,6 +6,13 @@
 <title>NativeCSS - Stacked Cards</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <script src="../dist/components/scroll-stack-fallback.js" defer></script>
@@ -95,6 +102,12 @@
   <div class="ncss-container ncss-stack ncss-py-xl">
     <h1>Stacked Cards</h1>
     <p class="ncss-text-lg ncss-text-muted">EINE Vollbild-Sektion (<code>.ncss-stack-section</code>, <code>components/scroll-stack.css</code>), in der Karten beim Scrollen INNERHALB dieser einen Sektion übereinander gleiten - anders als bei <a href="scroll-sections.html">Vollbild-Sektionen</a> (Sektion für Sektion vollflächig einrasten, jede mit eigenem Scroll-Abschnitt) bleibt hier die Bühne (<code>.ncss-stack-stage</code>) die ganze Zeit ein einziges Vollbild, nur der Inhalt darin stapelt sich während man hindurchscrollt. Baseline ganz ohne Scroll-Animation: die Karten liegen von Anfang an fertig gefächert da. Mit <code>view-timeline</code>-Unterstützung (aktuell nicht Baseline) fährt jede Karte erst während des Scrollens durch ihren eigenen Abschnitt der Sektion herein.</p>
+    <pre><code class="language-html">&lt;div class="ncss-stack-section" style="--ncss-stack-count: 4;"&gt;
+  &lt;div class="ncss-stack-stage"&gt;
+    &lt;article class="ncss-stack-card" style="--ncss-stack-index: 0;"&gt;Karte 1&lt;/article&gt;
+    &lt;article class="ncss-stack-card" style="--ncss-stack-index: 1;"&gt;Karte 2&lt;/article&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
   </div>
 
   <div class="ncss-stack-section" style="--ncss-stack-count: 4;">

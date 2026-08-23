@@ -6,6 +6,13 @@
 <title>NativeCSS - Vollbild-Sektionen</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -137,6 +144,10 @@
     <section class="ncss-snap-section demo-snap-section demo-snap-section--d">
       <h2>Letzte Sektion</h2>
       <p class="ncss-text-muted">Markup: <code>.ncss-snap-sections</code> außen, <code>.ncss-snap-section</code> je Bildschirm - siehe <code>helpers/scroll.css</code>. Für Karten, die sich beim Scrollen aufeinander stapeln statt Sektion für Sektion einzurasten, siehe stattdessen <a href="stacked-cards.html">Stacked Cards</a>.</p>
+      <pre style="max-width:32rem; margin-inline:auto; text-align:start;"><code class="language-html">&lt;div class="ncss-snap-sections"&gt;
+  &lt;section class="ncss-snap-section"&gt;Sektion 1&lt;/section&gt;
+  &lt;section class="ncss-snap-section"&gt;Sektion 2&lt;/section&gt;
+&lt;/div&gt;</code></pre>
       <p><a href="index.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
     </section>
 

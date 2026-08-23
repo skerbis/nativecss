@@ -6,6 +6,13 @@
 <title>NativeCSS - Medien</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <style>
@@ -78,6 +85,7 @@
   <section class="ncss-stack">
     <h1>Medien</h1>
     <p class="ncss-text-muted">Bilder und lokale Videos sollen gleich einfach zu handhaben sein - reset.css behandelt beide identisch (<code>display:block; max-width:100%; height:auto</code>).</p>
+    <pre><code class="language-html">&lt;img class="ncss-ratio-video ncss-img-cover ncss-radius-md" src="bild.jpg" alt="Beschreibung"&gt;</code></pre>
   </section>
 
   <section id="video" class="ncss-stack">

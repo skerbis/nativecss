@@ -9,6 +9,13 @@
 <link rel="stylesheet" href="../dist/theme.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <script src="../dist/components/hide-on-scroll-fallback.js" defer></script>
@@ -111,6 +118,16 @@
     color: #f4f7ff;
   }
   .landing-hero-code code { background: none; color: inherit; padding: 0; }
+  /* Prisms Standard-Token-Farben (code-block.css) sind auf den normalen hellen/dunklen
+     --ncss-color-bg kalibriert - auf dem dunkelblau-transluzenten Hero-Hintergrund hier
+     zu wenig Kontrast (per Screenshot geprüft, z.B. Grün-auf-Blau kaum lesbar). Eigene,
+     auf DIESEN Hintergrund abgestimmte Palette, nur für diesen einen Code-Block. */
+  .landing-hero-code .token.tag,
+  .landing-hero-code .token.attr-name { color: #ffd479; }
+  .landing-hero-code .token.attr-value,
+  .landing-hero-code .token.string { color: #8ce8c3; }
+  .landing-hero-code .token.punctuation { color: rgb(244 247 255 / 70%); }
+  .landing-hero-code .token.comment { color: rgb(244 247 255 / 60%); }
 
   /* --- Topbar direkt auf dem Hero - Glass + helle Textfarbe ----------------------------
      Die Transparenz selbst kommt jetzt aus dem echten .ncss-topbar--transparent-Modifier
@@ -326,7 +343,7 @@
         <a class="ncss-btn ncss-btn--primary" href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> Auf GitHub ansehen</a>
         <a class="ncss-btn ncss-btn--secondary" href="index.html">Demo entdecken</a>
       </div>
-      <pre class="ncss-radius-lg landing-hero-code"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+      <pre class="ncss-radius-lg landing-hero-code"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
 &lt;link rel="stylesheet" href="theme.css"&gt;
 &lt;!-- fertig. kein npm install, kein Build. --&gt;</code></pre>
     </div>
@@ -519,7 +536,7 @@
     <div class="ncss-grid" style="--ncss-grid-min: 22rem;">
       <div class="ncss-stack ncss-stack--tight">
         <h3 class="ncss-text-sm ncss-text-muted">Karte + Button, automatisch dark-mode-fähig</h3>
-        <pre class="ncss-radius-lg ncss-border"><code>&lt;article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"&gt;
+        <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"&gt;
   &lt;div class="ncss-card-body"&gt;
     &lt;h3&gt;Titel&lt;/h3&gt;
     &lt;p&gt;Text ...&lt;/p&gt;
@@ -531,7 +548,7 @@
       </div>
       <div class="ncss-stack ncss-stack--tight">
         <h3 class="ncss-text-sm ncss-text-muted">Eigene Marke - <code>theme.css</code></h3>
-        <pre class="ncss-radius-lg ncss-border"><code>:root {
+        <pre class="ncss-radius-lg ncss-border"><code class="language-css">:root {
   --ncss-color-brand:
     light-dark(#6f6f6e, #b7b7b6);
   --ncss-color-bg:
@@ -542,7 +559,7 @@
       </div>
       <div class="ncss-stack ncss-stack--tight">
         <h3 class="ncss-text-sm ncss-text-muted">Gestapelte Karten (wie oben)</h3>
-        <pre class="ncss-radius-lg ncss-border"><code>&lt;div class="ncss-stack-section"
+        <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-stack-section"
      style="--ncss-stack-count: 4;"&gt;
   &lt;div class="ncss-stack-stage"&gt;
     &lt;article class="ncss-stack-card"
@@ -555,7 +572,7 @@
       </div>
       <div class="ncss-stack ncss-stack--tight">
         <h3 class="ncss-text-sm ncss-text-muted">Modal - natives <code>&lt;dialog&gt;</code></h3>
-        <pre class="ncss-radius-lg ncss-border"><code>&lt;button command="show-modal"
+        <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;button command="show-modal"
         commandfor="d"&gt;Öffnen&lt;/button&gt;
 &lt;dialog id="d" class="ncss-modal"&gt;
   &lt;div class="ncss-modal-body"&gt;

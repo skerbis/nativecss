@@ -6,7 +6,7 @@
 
 <section class="ncss-stack" id="einbinden">
   <h2 class="demo-section-title">Einbinden</h2>
-  <pre class="ncss-radius-lg ncss-border"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
 &lt;link rel="stylesheet" href="theme.css"&gt;</code></pre>
   <p>Funktioniert ohne <code>@layer</code>/<code>!important</code>: <code>theme.css</code> ist bewusst UNLAYERED, und unlayered CSS gewinnt in der Spec immer gegen jede Layer-Regel (siehe <a href="architecture.html">Architektur</a>) - ein einfaches <code>:root { --ncss-color-brand: ... }</code> reicht.</p>
 </section>
@@ -28,7 +28,7 @@
 <section class="ncss-stack" id="seitenuebergaenge">
   <h2 class="demo-section-title">Seitenübergänge (opt-in)</h2>
   <p>Weiche Übergänge zwischen Seiten-Navigationen - eigene, ebenfalls opt-in Datei: <code>page-transitions.css</code>.</p>
-  <pre class="ncss-radius-lg ncss-border"><code>&lt;link rel="stylesheet" href="ncss.css"&gt;
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
 &lt;link rel="stylesheet" href="page-transitions.css"&gt;</code></pre>
   <p>Reines CSS (<code>@view-transition { navigation: auto; }</code>), kein JavaScript nötig. Aktuell nicht Baseline (Chromium-Familie) - keine Auswirkung auf ältere Browser, eine unbekannte <code>@</code>-Regel wird beim Parsen einfach ignoriert, kein <code>@supports</code> nötig. Vier Presets liegen bei: Kreuzblende (Default), <code>slide</code>, <code>zoom</code>, <code>wipe</code> - aktivierbar über den <code>types</code>-Deskriptor.</p>
 </section>
