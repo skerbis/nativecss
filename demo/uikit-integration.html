@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - &lt;ncss-container&gt; in UIkit3</title>
+<link rel="stylesheet" href="../vendor/uikit3/uikit.min.css">
+<script src="../vendor/uikit3/uikit.min.js"></script>
+<script src="../vendor/uikit3/uikit-icons.min.js"></script>
+<script src="../dist/components/ncss-container.js" defer></script>
+<style>
+  .demo-note {
+    background: #fffbe6;
+    border: 1px solid #f0d97a;
+    border-radius: 4px;
+    padding: 20px;
+  }
+  .demo-container-frame {
+    border: 3px dashed #1e87f0;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 40px 0;
+    position: relative;
+  }
+  .demo-container-label {
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    background: #1e87f0;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="uk-navbar-container" uk-navbar>
+  <div class="uk-container">
+    <div class="uk-navbar-left">
+      <a class="uk-navbar-item uk-logo" href="#">Beispiel-Website (UIkit 3)</a>
+      <ul class="uk-navbar-nav">
+        <li class="uk-active"><a href="#">Start</a></li>
+        <li><a href="#">Über uns</a></li>
+        <li><a href="#">Kontakt</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="uk-container uk-margin-top uk-margin-bottom">
+
+  <div class="uk-margin-top">
+    <h1>&lt;ncss-container&gt; in einer fremden Seite</h1>
+    <p class="uk-text-lead">Diese komplette Seite läuft auf <a href="https://getuikit.com" target="_blank" rel="noopener">UIkit 3</a> - eigenes Reset, eigene Typografie, eigene Buttons/Cards. Mitten drin: ein <code>&lt;ncss-container&gt;</code> mit echtem NativeCSS-Inhalt (Stacked Cards), per Shadow DOM vollständig isoliert - kein CSS läuft in irgendeine Richtung über die Grenze.</p>
+  </div>
+
+  <div class="demo-note">
+    Alles hier oben ist reines UIkit: <button class="uk-button uk-button-primary">UIkit-Button</button>
+    <button class="uk-button uk-button-default">Sekundär</button> - Schriftart, Radius, Farben kommen ausschließlich aus <code>uikit.min.css</code>.
+  </div>
+
+  <div class="uk-child-width-1-3@m uk-grid-small uk-margin-top" uk-grid>
+    <div>
+      <div class="uk-card uk-card-default uk-card-body">
+        <h3 class="uk-card-title">UIkit-Karte 1</h3>
+        <p>Ganz normales <code>.uk-card</code>, außerhalb des Containers.</p>
+      </div>
+    </div>
+    <div>
+      <div class="uk-card uk-card-default uk-card-body">
+        <h3 class="uk-card-title">UIkit-Karte 2</h3>
+        <p>Margins, Radius, Schatten - alles UIkit-Standard.</p>
+      </div>
+    </div>
+    <div>
+      <div class="uk-card uk-card-primary uk-card-body">
+        <h3 class="uk-card-title">UIkit-Karte 3</h3>
+        <p>Auch Farbvarianten funktionieren normal weiter.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-container-frame">
+    <span class="demo-container-label">Isolierter ncss-container</span>
+
+    <ncss-container src="../dist/ncss.css">
+      <style>
+        .demo-stack-card { box-shadow: var(--ncss-shadow-lg); }
+        .demo-stack-card--1 { background-color: var(--ncss-color-brand); color: var(--ncss-color-brand-contrast); }
+        .demo-stack-card--2 { background-color: var(--ncss-color-brand-2); color: #fff; }
+        .demo-stack-card--3 { background-color: var(--ncss-color-success); color: #fff; }
+        .demo-stack-card--4 { background-color: var(--ncss-color-surface); }
+      </style>
+
+      <section class="ncss-stack ncss-py-lg">
+        <h2>Native CSS Design System</h2>
+        <p class="ncss-text-muted">Dieser komplette Block läuft in einem eigenen Shadow Root mit eigener, unveränderter <code>ncss.css</code> - eigene Tokens, eigener Reset, eigene Cascade Layers. UIkits <code>button</code>/<code>h1</code>-<code>h6</code>-Reset erreicht diesen Bereich nicht; ncss' eigener Reset (<code>* { margin: 0 }</code> u.a.) bleibt umgekehrt auf diesen Bereich beschränkt und beeinflusst UIkit oben/unten nicht.</p>
+        <button type="button" class="ncss-btn ncss-btn--primary">ncss-Button</button>
+      </section>
+
+      <div class="ncss-stack-section" style="--ncss-stack-count: 4;">
+        <div class="ncss-stack-stage">
+          <article class="ncss-stack-card demo-stack-card demo-stack-card--1" style="--ncss-stack-index: 0;">
+            <h3>Karte 1</h3>
+            <p class="ncss-text-inherit">Schon da, wenn die Bühne ankommt.</p>
+          </article>
+          <article class="ncss-stack-card demo-stack-card demo-stack-card--2" style="--ncss-stack-index: 1;">
+            <h3>Karte 2</h3>
+            <p class="ncss-text-inherit">Fährt beim Weiterscrollen über Karte 1.</p>
+          </article>
+          <article class="ncss-stack-card demo-stack-card demo-stack-card--3" style="--ncss-stack-index: 2;">
+            <h3>Karte 3</h3>
+            <p class="ncss-text-inherit">Und so weiter, ganz ohne JavaScript-Animation.</p>
+          </article>
+          <article class="ncss-stack-card demo-stack-card demo-stack-card--4" style="--ncss-stack-index: 3;">
+            <h3>Letzte Karte</h3>
+            <p class="ncss-text-inherit">Am Ende liegt der ganze Stapel gefächert da.</p>
+          </article>
+        </div>
+      </div>
+
+      <section class="ncss-stack ncss-py-lg">
+        <div class="ncss-card">
+          <div class="ncss-card-body">
+            <h3>.ncss-card innerhalb des Containers</h3>
+            <p class="ncss-text-muted">Rahmen/Radius/Schatten kommen aus <code>helpers/elevation.css</code>, nicht aus UIkit.</p>
+          </div>
+        </div>
+      </section>
+    </ncss-container>
+  </div>
+
+  <div class="demo-note uk-margin-top">
+    Und hier wieder reines UIkit, DIREKT nach dem Container: <button class="uk-button uk-button-danger">Noch ein UIkit-Button</button> - normale UIkit-Abstände/-Margins, nicht durch ncss' Reset verschoben.
+  </div>
+
+  <div class="uk-margin-top uk-margin-bottom">
+    <h2>Weiterer UIkit-Inhalt</h2>
+    <p>Überschriften-Margins, Absatzabstände, Listenpunkte - alles normales UIkit-Verhalten, unverändert durch den ncss-Block weiter oben.</p>
+    <ul class="uk-list uk-list-bullet">
+      <li>Erster Punkt</li>
+      <li>Zweiter Punkt</li>
+      <li>Dritter Punkt</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

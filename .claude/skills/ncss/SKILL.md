@@ -268,272 +268,121 @@ NICHT in `theme.css`, zieht automatisch mit). Demo: `demo/theming.html`.
     Darstellungsfehler, also kein `@supports`-Fallback nötig.
 
 18. **Ein `::before` mit negativem `z-index` malt NICHT hinter dem eigenen Hintergrund des
-    Elements** - erster Versuch für `.ncss-glow-border` war ein `::before` mit
-    `z-index: -1` als "Rahmen dahinter", das Element selbst sollte die Mitte mit seiner
-    eigenen `background-color` abdecken. Falsch: laut CSS-Stacking-Reihenfolge (Anhang E)
-    malt der eigene Hintergrund des Elements ALS ERSTES, negative z-index-Nachfahren malen
-    danach, also OBEN DRAUF - der "Rahmen" überdeckte die komplette Fläche statt nur den
-    Rand (per Screenshot-Review gefunden, sah aus wie ein voll gefülltes Rechteck statt
-    eines Rings). Fix: kein `z-index`-Trick, sondern ein echtes "Loch" in die `::before`-Box
-    maskieren - `padding: <dicke>` erzeugt die Ringstärke, `mask-composite: exclude`
-    (`-webkit-mask-composite: xor` für Safari, andere Wertsyntax) schneidet die
-    `content-box` aus der vollen Box heraus, übrig bleibt nur der Ring, die Mitte bleibt
-    vollständig transparent (kein Farbwert, der zufällig passen müsste).
+    Elements** - laut CSS-Stacking-Reihenfolge (Anhang E) malt der eigene Hintergrund des
+    Elements ALS ERSTES, negative z-index-Nachfahren malen danach, also OBEN DRAUF. Für
+    einen Ring-Effekt (`.ncss-glow-border`) daher kein `z-index`-Trick, sondern ein echtes
+    "Loch" maskieren: `padding: <dicke>` erzeugt die Ringstärke, `mask-composite: exclude`
+    (`-webkit-mask-composite: xor` für Safari) schneidet die `content-box` aus der vollen
+    Box heraus, übrig bleibt nur der Ring, die Mitte bleibt transparent.
 
 19. **Gefülltes Neumorphism (Schatten aus `color-mix()` der eigenen Hintergrundfarbe
-    abgeleitet) braucht eine MITTELTON-Basisfarbe und wird schnell zur "schwebenden Karte"
-    statt einer feinen Prägung** - `.ncss-stamped` ging zwei Anläufe: Anlauf 1 leitete
-    Schatten per `color-mix()` aus `--ncss-color-bg` (reines `#fff`) ab - von Weiß Richtung
-    Weiß gemischt gibt es keinen Spielraum mehr nach oben, der helle Anteil verschwand
-    komplett, übrig blieb nur ein normaler Drop-Shadow (User-Feedback: "muss ganz fein
-    sein, wie eine Prägung"). Anlauf 2 (großflächiger Blur, nur auf `--ncss-color-bg-subtle`
-    umgestellt) wirkte selbst mit Mittelton-Fläche und feinerem Blur noch zu sehr nach
-    "Karte", nicht nach graviertem Material (User: "Hintergrundfarbe weiß, nur der Rahmen
-    soll zu sehen sein"). Endgültiger Ansatz: KEINE gefüllte Fläche mehr, sondern dieselbe
-    Masken-Ring-Technik wie `.ncss-glow-border` (Punkt 18) - ein `::before` mit
-    `mask-composite: exclude` zeichnet nur einen hauchdünnen Rahmen, per
-    `linear-gradient(135deg, dunkel, hell)` diagonal von dunkel nach hell statt eines
-    rotierenden `conic-gradient()`. Funktioniert dadurch auf JEDER Hintergrundfarbe inkl.
-    reinem Weiß, weil keine Hintergrundfarbe mehr abgeglichen werden muss - die Ring-Technik
-    war die eigentlich richtige Lösung von Anfang an, nicht die Neumorphism-Variante mit
-    gefüllter Fläche.
-
-    **Nachtrag, echter Bug in genau diesem Gradient gefunden**: die allererste Fassung
-    hatte einen DRITTEN, mittigen Farbstopp - `linear-gradient(135deg, dunkel 0%,
-    transparent 50%, hell 100%)`, in der Annahme, das ergäbe ein sanftes Verblassen in der
-    Mitte. Per Screenshot bestätigt: bei nur 1px Ringdicke (`--ncss-stamped-thickness`)
-    reißt der Übergang durch `transparent` den Rahmen stattdessen sichtbar AUF - über
-    einen guten Teil des Rings (etwa die rechte/untere Seite) war GAR KEIN Rahmen mehr zu
-    sehen, kein sanftes Verblassen, sondern eine echte Lücke (User-Report: "Rahmen laufen
-    aus... sieht cool als eigener Stil, ist aber nicht was gedacht war" - ein Vorher-
-    Nachher-Screenshot-Vergleich hätte den Bug schon beim ursprünglichen Bauen gezeigt, es
-    wurde offenbar nur der obere linke Teil des Rings geprüft). Fix: der mittlere
-    `transparent`-Stopp ENTFERNT, nur noch zwei Stopps (dunkel 0%, hell 100%) - der Ring
-    bleibt dadurch DURCHGEHEND sichtbar und blendet in der Mitte zu einem Grauton aus
-    beiden Farben, statt irgendwo unsichtbar zu werden. Lehre: bei einem so schmalen
-    Element (1px Ringdicke) reicht ein Blick auf EINE Ecke nicht, um "sieht gut aus" zu
-    bestätigen - den ganzen Ring rundherum prüfen, besonders wenn ein Gradient-Stopp auf
-    `transparent` zeigt (der einzige Farbwert, bei dem "Zwischenfarbe" und "kein Rahmen
-    mehr da" optisch identisch aussehen können).
-
-    **Nachtrag, User-Frage danach ("geht es auch in Kombi mit den normalen Button-Stilen?
-    also dass die Farben übernommen werden?")**: `.ncss-stamped` zusammen mit
-    `.ncss-btn`/`--primary`/`--secondary`/`--danger` getestet. Die RINGFARBE übernimmt die
-    Button-Farbe automatisch, OHNE jede Anpassung - `--ncss-stamped-shadow-dark`/`-light`
-    sind bereits halbtransparent (`rgb(0 0 0 / 35%)`/`rgb(255 255 255 / 90%)`), Alpha-
-    Compositing blendet sie beim Zeichnen mit JEDER darunterliegenden Fläche, auch einer
-    satten Markenfarbe. Die ECKENFORM übernimmt `.ncss-stamped` dagegen NICHT automatisch:
-    sein eigener Default `border-radius: var(--ncss-stamped-radius, var(--ncss-radius-lg))`
-    lebt im `components`-Layer, `.ncss-btn`s eigene `border-radius` (`--ncss-radius-sm`) im
-    `helpers`-Layer - components schlägt helpers immer, der Button bekommt beim reinen
-    Kombinieren sichtbar zu runde Ecken (per `getComputedStyle` bestätigt: 16px statt der
-    Button-eigenen 4px). Ein automatischer Cross-Layer-Fallback wurde geprüft
-    (`border-radius: var(--ncss-stamped-radius, revert-layer)`, per echtem Test in allen
-    drei Engines bestätigt technisch funktionsfähig: `revert-layer` fällt korrekt auf den
-    Wert einer Regel in einem NIEDRIGEREN Layer zurück, wenn eine existiert, sonst weiter
-    auf `unset`/`0`) - dafür hätte aber der Ambient-Default (`--ncss-radius-lg` als Fallback
-    für den Alleingang-Fall) selbst im `helpers`-Layer liegen müssen, weil `revert-layer`
-    NUR bereits vorhandene Deklarationen in niedrigeren Layern findet, keine eigene neue
-    Fallback-Ebene erzeugt - das hätte `.ncss-stamped`s Definition über zwei Dateien/Layer
-    verstreut (Radius-Default in `helpers/forms.css`, Rest in `components/effects.css`),
-    schlechter für Auffindbarkeit als die bewusst einfache Lösung: beim Kombinieren
-    `--ncss-stamped-radius` explizit auf den Wert der anderen Komponente setzen (siehe
-    `demo/effects.html`, `style="--ncss-stamped-radius: var(--ncss-radius-sm);"`) - der
-    Override-Token existierte dafür bereits, nur ungenutzt/undokumentiert für diesen Fall.
+    abgeleitet) braucht eine MITTELTON-Basisfarbe** - gegen reines Weiß gemischt gibt es
+    keinen Spielraum mehr nach oben, der helle Anteil verschwindet komplett und übrig
+    bleibt ein gewöhnlicher Drop-Shadow statt einer feinen Prägung. Robusterer Ansatz
+    (`.ncss-stamped`): keine gefüllte Fläche, sondern dieselbe Masken-Ring-Technik wie
+    `.ncss-glow-border` (Punkt 18), mit `linear-gradient(135deg, dunkel, hell)` (NUR zwei
+    Farbstopps - ein dritter, mittiger `transparent`-Stopp reißt den Ring bei geringer
+    Ringdicke sichtbar auf statt sanft zu verblassen). Funktioniert auf JEDER
+    Hintergrundfarbe, weil keine Hintergrundfarbe abgeglichen werden muss. In Kombination
+    mit `.ncss-btn`-Varianten übernimmt die Ringfarbe automatisch die Button-Farbe (Alpha-
+    Compositing), die Eckenform NICHT (`.ncss-stamped`s eigener Radius liegt im
+    `components`-Layer, schlägt `.ncss-btn`s `helpers`-Layer-Radius) - beim Kombinieren
+    `--ncss-stamped-radius` explizit auf den Wert der anderen Komponente setzen.
 
 20. **Eine per `color-mix()` aus einem Seed-Wert ABGELEITETE Custom Property wird nur EINMAL
     berechnet (dort, wo sie deklariert ist), dann als fertiger Wert vererbt - ein tiefer im
     Baum überschriebener Seed-Wert lässt eine bereits vererbte Ableitung NICHT neu
-    rechnen.** Bei `theme.css` (siehe README "Theme anpassen") lokal auf ein Element statt
-    auf `:root` angewendet (Demo: `demo/theming.html`) reagierte `.ncss-btn--primary`
-    korrekt auf ein überschriebenes `--ncss-color-brand` (nutzt den Seed-Wert direkt), aber
-    `.ncss-badge` blieb bei der alten Farbe (nutzt `--ncss-color-brand-100`/`-on-soft`, die
-    per `color-mix()` aus `--ncss-color-brand` ABGELEITETE Skala aus `colors.css`) - per
-    `getComputedStyle` bestätigt: der geerbte Wert von `--ncss-color-brand-100` enthielt
-    noch immer den ALTEN, globalen `--ncss-color-brand`-Wert fest eingebacken (als String
-    sichtbar: `color-mix(in oklch, light-dark(#0057d8, ...) ...)`), obwohl der Seed selbst
-    lokal auf einen anderen Wert überschrieben war. Ursache: `--ncss-color-brand-100` ist
-    nur EIN EINZIGES MAL deklariert (auf `:root`) - jedes Element, das sie nicht selbst neu
-    deklariert, erbt genau DIESEN einen, am `:root` berechneten Wert, unabhängig davon, was
-    weiter unten im Baum mit `--ncss-color-brand` passiert. Betrifft NUR lokal/nicht-`:root`
-    angewendete Theme-Overrides - ein echtes `theme.css` auf `:root` hat dieses Problem
-    nicht (dort WIRD die ganze abgeleitete Skala frisch berechnet, weil `:root` die
-    Deklarationsstelle selbst ist). Für ein lokal begrenztes Theme, das auch abgeleitete
-    Farben treffen soll, bräuchte man die komplette Skala (`-100`/`-300`/`-700`/`-900`/
-    `-on-soft`) zusätzlich an derselben Stelle neu deklarieren - nicht automatisch, kein
-    Workaround dafür eingebaut.
+    rechnen.** Ein lokal (nicht auf `:root`) angewendetes `theme.css`-Override
+    (`demo/theming.html`) lässt Regeln, die den Seed-Wert direkt nutzen
+    (`--ncss-color-brand`), korrekt reagieren, aber Regeln, die eine daraus abgeleitete
+    Skala nutzen (`--ncss-color-brand-100`, per `color-mix()` in `colors.css` einmalig auf
+    `:root` berechnet), bleiben bei der alten Farbe - der geerbte Wert hat den alten Seed
+    bereits fest eingebacken. Nur ein echtes `theme.css` auf `:root` selbst berechnet die
+    ganze abgeleitete Skala frisch. Für ein lokal begrenztes Theme, das auch abgeleitete
+    Farben treffen soll, muss die komplette Skala (`-100`/`-300`/`-700`/`-900`/`-on-soft`)
+    an derselben Stelle zusätzlich neu deklariert werden - kein automatischer Workaround.
 
 21. **`backdrop-filter` (wie `filter`/`transform`/`perspective`/`will-change`) erzeugt per
-    Spec einen NEUEN CONTAINING BLOCK für `position:fixed`-Nachfahren - auf einem Element
-    mit einer Floating-UI-Komponente (`<wa-dropdown>`/`<wa-popover>`/o.ä., intern
-    typischerweise `position:fixed` relativ zum VIEWPORT) als Nachfahre zuckt deren Popup
-    sichtbar beim Scrollen.** `.ncss-glass` auf `<header class="ncss-topbar">` in
-    `demo/landing.html` gesetzt (das `<wa-dropdown>` "Mehr"-Menü ist ein Nachfahre) -
-    User-Report: "Dropdown im Menü zuckelt, wenn geöffnet und Seite wird gescrollt". Per
-    echtem Test bestätigt: `getBoundingClientRect()` des Dropdown-Items blieb bei
-    diskreten Scroll-Schritten zwar stabil (kein grober Sprung), das eigentliche
-    Zuckeln ist ein feineres Timing-Problem zwischen der eigenen Scroll-Neuberechnung des
-    Popups (nimmt Viewport-relative `position:fixed` an) und dem durch `backdrop-filter`
-    tatsächlich verschobenen Containing Block. **Erster Fix-Versuch verworfen**:
-    `backdrop-filter` von `.ncss-glass` selbst auf ein `::before` verlagern - kollidiert
-    mit `.ncss-glow-border`, das ebenfalls `::before` braucht (dokumentierte Kombination
-    "Glass + Glow-Border" in `demo/effects.html`, Karte 3) - ein Element hat nur EIN
-    `::before`. Tatsächlicher Fix: `.ncss-glass` unverändert lassen (kein Pseudo-Element-
-    Ansatz), stattdessen an der VERWENDUNGSSTELLE ein eigenes, rein dekoratives Element
-    (`.landing-topbar-backdrop`, absolut positioniert, `z-index:-1`) VOR dem eigentlichen
-    Nav-Inhalt einfügen statt `.ncss-glass` direkt auf den Nav-Container zu setzen -
-    trennt die Filter-Fläche vom Element, das die Floating-UI-Komponente enthält, ganz
-    ohne die Komponente selbst zu ändern. Regel für künftige Verwendung: `.ncss-glass`
-    NIE direkt auf ein Element mit `<wa-dropdown>`/`<wa-popover>`/`<dialog>` o.ä. als
-    Nachfahre setzen.
+    Spec einen NEUEN CONTAINING BLOCK für `position:fixed`-Nachfahren** - ein Floating-UI-
+    Element (`<wa-dropdown>`/`<wa-popover>`, intern `position:fixed` relativ zum Viewport)
+    als Nachfahre eines gefilterten Elements zuckt beim Scrollen. Fix: `.ncss-glass` NIE
+    direkt auf ein Element mit `<wa-dropdown>`/`<wa-popover>`/`<dialog>` als Nachfahre
+    setzen - stattdessen ein eigenes, rein dekoratives Element (absolut positioniert,
+    `z-index:-1`) davor einfügen, das den Filter trägt, statt die Komponente selbst zu
+    ändern (kollidiert sonst mit `.ncss-glow-border`, das ebenfalls `::before` braucht -
+    ein Element hat nur eins).
 
-    **Nachtrag 1 (User-Report nach dem Fix, eingegrenzt auf Safari/WebKit):** Der spec-
-    basierte Containing-Block-Fix oben behebt das Zucken in Chromium UND Playwrights
-    WebKit-Build nachweisbar (120 rAF-Positions-Samples + Video-Frame-Extraktion während
-    echtem Scroll, beides absolut stabil, keine Abweichung). Zwischenzeitliche Vermutung:
-    Safari/WebKit hat zusätzlich einen bekannten, rein ENGINE-seitigen Bug (`backdrop-
-    filter` in der Nähe von sticky/fixed-Inhalt verursacht Repaint-Artefakte an Nachbar-
-    Elementen) - `transform: translateZ(0)` auf `.landing-topbar-backdrop` als Mitigation
-    versucht (eigene Compositor-Ebene erzwingen).
-
-    **Nachtrag 2 (entscheidender Hinweis vom User): dasselbe Glitchen trat AUCH beim
-    Glocken-`<wa-popover>` auf** - einer völlig anderen Komponente, ohne jede Nähe zum
-    Glass-Hintergrund. Das widerlegt die backdrop-filter-Theorie als (alleinige) Ursache:
-    beide Floating-Komponenten sitzen im selben `position:sticky`-Header, das ist der
-    tatsächliche gemeinsame Nenner. Web Awesomes Popup-Baustein hält ein offenes Panel
-    ABSICHTLICH während des Scrollens am Anker positioniert (siehe vendor/webawesome/
-    dist-cdn/skills/webawesome/references/components/popup.md: "keep them positioned
-    together as the page scrolls") - kombiniert mit einem `position:sticky`-Anker (dessen
-    Bildschirmposition sich technisch nicht ändert, aber jeden Scroll-Tick trotzdem neu
-    berechnet wird) und dem lange dokumentierten iOS-Safari-Bug bei Z-Index-Reihenfolge
-    rund um `position:fixed`-Elemente beim Scrollen (User verlinkte
-    https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/)
-    ergibt das ein bekanntes, NICHT per eigenem CSS behebbares Rendering-Problem der
-    Browser-Engine, kein ncss-Bug.
-
-    Endgültiger Fix statt weiterer CSS-Mitigation: `components/wa-close-on-scroll.js`
-    (neu, opt-in wie `command-fallback.js`) - schließt jedes offene
-    `<wa-dropdown>`/`<wa-popover>` sobald gescrollt wird (`el.open = false`, beide haben
-    eine reflektierte `open`-Property). Kämpft nicht gegen das Positionierungs-/
-    Rendering-Problem an, sondern umgeht es komplett - dasselbe verbreitete Muster wie
-    bei den meisten Mega-/Dropdown-Menüs anderer Sites. Eingebunden auf
-    `demo/landing.html` und `demo/webawesome.html` (die einzigen Seiten mit
-    `<wa-dropdown>`/`<wa-popover>`). `.ncss-glass` auf der Landingpage-Topbar war
-    zwischenzeitlich probeweise entfernt worden, war aber nachweislich nie die
-    eigentliche Ursache (siehe oben) - mit `wa-close-on-scroll.js` als tatsächlichem Fix
-    wieder eingesetzt, im selben sicheren Muster wie zuvor (eigenes dekoratives
-    Element, kein direkter Vorfahre des Dropdowns, siehe Punkt 21 oben).
+    Auf echtem Safari trat dasselbe Zucken zusätzlich bei einem `<wa-popover>` OHNE jede
+    Nähe zu `backdrop-filter` auf - der tatsächliche gemeinsame Nenner ist ein
+    `position:sticky`-Header als Anker: Web Awesome hält ein offenes Panel absichtlich am
+    Anker positioniert, kombiniert mit dem bekannten iOS-Safari-Bug bei Z-Index/
+    `position:fixed` beim Scrollen ergibt das ein Engine-Rendering-Problem, kein
+    ncss-CSS-Bug, also per CSS nicht behebbar. Tatsächlicher Fix: `components/
+    wa-close-on-scroll.js` (opt-in) schließt jedes offene `<wa-dropdown>`/`<wa-popover>`
+    sobald gescrollt wird (`el.open = false`) - umgeht das Rendering-Problem komplett,
+    statt dagegen anzukämpfen. Eingebunden auf `demo/landing.html` und
+    `demo/webawesome.html`.
 
 22. **`getComputedStyle(el).getPropertyValue("--x")` liefert bei einem CUSTOM PROPERTY nur
     den roh gespeicherten Token-Text zurück, KEINE aufgelöste Farbe** - anders als beim
-    Lesen einer echten Farb-Eigenschaft (`color`/`background-color`/...), die `var()` UND
-    Funktionen wie `light-dark()` bereits fertig auflöst. Bei `--ncss-color-brand: light-
-    dark(#0057d8, #6ea8ff)` lieferte `getPropertyValue("--ncss-color-brand")` buchstäblich
-    den String `"light-dark(#0057d8, #6ea8ff)"` zurück - ein direkt darauf angewendeter
-    `rgb(...)`-zu-Hex-Regex (für die Vorbelegung eines `<input type="color">`-Reglers im
-    Live-Farbeditor, `demo/colors.html`) extrahierte daraus wahllose Ziffernfolgen und
-    ergab einen bedeutungslosen Hex-Wert (`#390806` statt des tatsächlichen `#0057d8`) -
-    kein Fehler/keine Exception, nur ein falscher, aber gültig aussehender Hex-String, per
-    echtem Test (Screenshot des Reglers) gefunden. Fix: ein unsichtbares Sonden-Element
-    (`display:none`, einmalig erzeugt und wiederverwendet) mit `el.style.color =
-    "var(--x)"`, danach `getComputedStyle(el).color` lesen - das ZWINGT die tatsächliche
-    Auflösung (inklusive `light-dark()`, abhängig vom aktuell aktiven `[data-theme]`/
-    `prefers-color-scheme`), liefert ein echtes `rgb(...)`. Gilt für JEDE Custom Property,
-    die eine Farbfunktion (`light-dark()`, `color-mix()`, o.ä.) enthält - ein einfacher
-    Hex-Literal-Wert als Custom Property würde dagegen wortwörtlich unverändert
-    zurückkommen und bräuchte diesen Umweg nicht, aber das im Vorfeld zu unterscheiden ist
-    unnötiger Aufwand - die Sonden-Technik funktioniert für beide Fälle gleichermaßen.
+    Lesen einer echten Farb-Eigenschaft (`color`/`background-color`), die `var()` UND
+    Funktionen wie `light-dark()` bereits fertig auflöst. `--ncss-color-brand: light-
+    dark(#0057d8, #6ea8ff)` liefert wortwörtlich den String zurück, nicht die aktuell
+    aktive Farbe - ein Regex, der daraus einen Hex-Wert extrahieren will (z.B. für die
+    Vorbelegung eines `<input type="color">`, `demo/colors.html`), ergibt Zufallswerte.
+    Fix: ein unsichtbares Sonden-Element (`display:none`) mit `el.style.color =
+    "var(--x)"`, danach `getComputedStyle(el).color` lesen - erzwingt die tatsächliche
+    Auflösung inkl. `light-dark()`, abhängig vom aktuell aktiven Theme. Gilt für jede
+    Custom Property mit einer Farbfunktion (`light-dark()`, `color-mix()`).
 
 23. **`flex-wrap: wrap` auf den KINDERN eines flex-Containers reicht nicht, wenn der
-    CONTAINER SELBST wiederum ein `flex: 0 0 auto`-Kind eines äußeren Flex-Layouts ist** -
-    `.ncss-topbar-actions` (components/topbar.css) ist bewusst `flex: 0 0 auto` (schrumpft
-    nie), reichte bei zwei Buttons auf `demo/colors.html` bislang aus. Ein dritter Button
-    (Live-Farbeditor-Trigger) ließ die Topbar bei 375px Breite um 188px überlaufen -
-    `flex-wrap: wrap` NUR auf `.ncss-topbar-actions` selbst gesetzt (ohne eigene
-    `flex-basis`) änderte am Overflow NICHTS, per echtem Regressions-Test bestätigt
-    (exakt derselbe 188px-Wert vor und nach dem Versuch). Ursache: ein flex-Item mit
-    `flex: 0 0 auto` bemisst seine eigene Breite am MAX-CONTENT (so breit, wie alle
-    eigenen Kinder NEBENEINANDER bräuchten) - das interne `flex-wrap` der Kinder wird nur
-    ausgelöst, wenn der Container selbst schon auf eine BEGRENZTE Breite gezwungen ist,
-    was `flex:0 0 auto` gerade verhindert (das ist ja sein ganzer Zweck: nie schrumpfen).
-    Fix (nur lokal auf `demo/colors.html` per `@media (max-width: 30rem)`, NICHT die
-    geteilte Komponente global geändert): zusätzlich `flex: 1 1 100%` auf
-    `.ncss-topbar-actions` - zwingt die Breite auf die volle verfügbare Zeile (die selbst
-    dank `.ncss-topbar-inner`s eigenem `flex-wrap:wrap` umbrechen darf), erst INNERHALB
-    dieses dadurch begrenzten Rahmens greift das `flex-wrap` der drei Buttons. Lehre: bei
-    einer verschachtelten Flex-Struktur IMMER prüfen, auf welcher EBENE `flex-wrap`
-    tatsächlich etwas bewirken kann - es wirkt nur auf einen Container, dessen eigene
-    Breite bereits begrenzt ist, nicht automatisch auf jeden beliebigen Vorfahren mit
-    `display:flex`.
+    CONTAINER SELBST ein `flex: 0 0 auto`-Kind eines äußeren Flex-Layouts ist** - ein
+    solches Item bemisst seine Breite am Max-Content (so breit wie alle Kinder
+    nebeneinander bräuchten); das interne `flex-wrap` der Kinder greift erst, wenn der
+    Container selbst auf eine begrenzte Breite gezwungen ist, was `flex:0 0 auto` gerade
+    verhindert. Fix: zusätzlich `flex: 1 1 100%` auf dem Container setzen, um ihn auf die
+    volle verfügbare Zeile zu zwingen - erst innerhalb dieses Rahmens greift das
+    `flex-wrap` der Kinder. Bei verschachtelten Flex-Strukturen immer prüfen, auf welcher
+    Ebene `flex-wrap` tatsächlich wirken kann, statt es auf einen beliebigen Vorfahren zu
+    setzen.
 
-24. **Eine ECHTE Produktseite (`index.html`, Repo-Root) mit eigener, kräftiger Marken-
-    farbe als `--ncss-color-bg` (nicht die übliche fast-weiße Fläche) deckte gleich
-    mehrere Landminen auf einmal auf, die eine gewöhnliche Demo-Seite nie berührt -
-    volle Details in README "Produktseite (index.html)", hier nur die übertragbaren
-    Lehren:
-    - Farb-Kontrast-Fixes NICHT stärker als nötig ausfallen lassen: ein erster Versuch
-      dunkelte den Hero/CTA-Hintergrund per Scrim/Verlauf ab, um von 2.94:1 auf AA-Niveau
-      zu kommen - der User wollte lieber die REINE angefragte Farbe behalten, auch mit
-      knapperer Marge. Kontrast-Fixes sind ein Trade-off, keine automatische Pflicht -
-      im Zweifel den User entscheiden lassen, welche Seite der Abwägung er will.
-    - Eine Komponente mit EIGENEM, undurchsichtigem `background-color` (hier
-      `.ncss-topbar`, siehe topbar.css) macht einen Glass-Backdrop-Trick dahinter
-      wirkungslos, selbst wenn die z-index-Mechanik selbst korrekt sitzt (Fallstrick 18)
-      - die Eigenfläche der Komponente muss zusätzlich explizit transparent gesetzt
-      werden, nicht nur ein Backdrop-Element davor/dahinter platziert.
-    - Ein Element, das für ZWEI verschiedene Kontexte wiederverwendet wird (hier
-      `.ncss-nav-list`: Desktop-Inline via `display:contents` am `<dialog>`-Wrapper
-      versus echtes Mobile-Off-Canvas-Panel darunter, siehe nav.css), braucht Farb-
-      Overrides GENAU in derselben Breakpoint-Grenze wie die Komponente selbst - ein
-      pauschaler Override ohne Media Query trifft zwangsläufig auch den Kontext, für den
-      er nie gedacht war (hier: weißer Text im weißen Off-Canvas-Panel).
-    - `:hover`/`:focus-visible`-Zustände einer Komponente SEPARAT gegen den jeweiligen
-      Hintergrund prüfen, nicht nur den Ruhezustand - eine Komponente ändert im Hover oft
-      ihre eigene Hintergrundfarbe (hier: `.ncss-nav-item > a:hover` setzt `--ncss-color-
-      bg-subtle`), wodurch ein für den Ruhezustand korrekter Text-Override im Hover
-      plötzlich wieder unlesbar wird.
+24. **Eine Produktseite mit kräftiger Markenfarbe als `--ncss-color-bg` (statt der
+    üblichen fast-weißen Fläche) deckt Landminen auf, die eine gewöhnliche Demo-Seite nie
+    berührt:**
+    - Kontrast-Fixes nicht stärker als nötig ausfallen lassen (z.B. Hero/CTA per Scrim
+      abdunkeln) - im Zweifel den User entscheiden lassen, ob die reine angefragte Farbe
+      mit knapperer AA-Marge Vorrang hat.
+    - Eine Komponente mit eigenem, undurchsichtigem `background-color` (z.B.
+      `.ncss-topbar`) macht einen Glass-Backdrop-Trick dahinter wirkungslos, selbst wenn
+      die z-index-Mechanik korrekt sitzt (Punkt 18) - die Eigenfläche muss zusätzlich
+      explizit transparent gesetzt werden.
+    - Ein Element, das für zwei Kontexte wiederverwendet wird (z.B. Desktop-Inline-Nav
+      versus Mobile-Off-Canvas-Panel), braucht Farb-Overrides GENAU in derselben
+      Breakpoint-Grenze wie die Komponente selbst - ein pauschaler Override ohne Media
+      Query trifft auch den Kontext, für den er nie gedacht war.
+    - `:hover`/`:focus-visible`-Zustände separat gegen den jeweiligen Hintergrund prüfen,
+      nicht nur den Ruhezustand - ein Hover ändert oft die eigene Hintergrundfarbe,
+      wodurch ein sonst korrekter Text-Override plötzlich unlesbar wird.
     - Ein `<ul>` mit eigenem `::before`-Aufzählungspunkt braucht trotzdem explizit
-      `list-style:none` - base.css setzt das nur für `role="list"`, ohne das zeigt der
-      Browser seinen NATIVEN Bullet zusätzlich zum eigenen an (zwei Punkte nebeneinander).
-    Übergreifende Lehre aus der ganzen Serie: bei einer NEUEN, farblich kräftigen Marke
-    reicht es nicht, nur die offensichtlichen Textblöcke zu prüfen - JEDE Kombination aus
-    Text-Rolle (Überschrift/Eyebrow/Muted/Button/Nav/Hover) und JEDEM Hintergrund, auf dem
-    sie tatsächlich landet (inkl. Zustands-Wechsel wie Hover und unterschiedlicher
-    Layout-Kontexte wie Mobile-Off-Canvas), einzeln durchgehen - genau das hat der User
-    wiederholt eingefordert ("gehe bitte noch mal alles durch, stile müssen immer auf ihre
-    hintergründe passen") und war nötig, weil jede einzelne Kombination ihre EIGENE,
-    unabhängige Bruchstelle haben kann.
+      `list-style:none` - base.css setzt das nur für `role="list"`.
+    Übergreifende Lehre: bei einer neuen, farblich kräftigen Marke jede Kombination aus
+    Text-Rolle und tatsächlichem Hintergrund (inkl. Hover-/Layout-Varianten) einzeln
+    durchgehen, nicht nur die offensichtlichen Textblöcke - jede Kombination kann ihre
+    eigene, unabhängige Bruchstelle haben.
 
-25. **Seiteneigene "landing-*"-Klassen, die eigentlich allgemein nützlich sind, gehören
-    ins geteilte System, nicht in die Produktseite** - User-Feedback nach dem ersten
-    Durchlauf von index.html: "die Seite darf nur Stile und Effekte nutzen, die auch
-    integriert sind, sonst ist sie nicht glaubwürdig". Beim Durchgehen stellte sich
-    heraus: mehrere page-lokale Klassen dupliziert bereits vorhandene ODER waren
-    generalisierbar genug, um sie zu verschieben - erst geprüft, ob etwas Passendes
-    SCHON existiert (`.ncss-badge` für die Hero-Pille statt einer eigenen Pillen-Klasse,
-    `.ncss-text-success`/`-danger` für Vergleichstabellen-Zellen statt eigener
-    `.landing-compare-yes/-no`), dann fehlende, aber klar wiederverwendbare Muster als
-    ECHTE Klassen ergänzt:
-    - `.ncss-badge-icon` (+ `--lg`) in components/badge.css - Icon-in-Kreis/Quadrat,
-      dieselbe 100-Fläche/-on-soft-Logik wie `.ncss-badge`.
-    - `.ncss-topbar--transparent` in components/topbar.css - macht die sonst
-      undurchsichtige Eigenfläche transparent (siehe Punkt 24, Fallstrick "Glass-Backdrop
-      hinter einer opaken Komponente bleibt wirkungslos") + entfernt den Rahmen.
-    - `.ncss-lead-quote` in helpers/typography.css - derselbe linke Akzent-Rahmen wie
-      `<blockquote>` (base.css), als zusätzliche Klasse statt eigenem Element für einen
-      Lead-Absatz, der wie ein Zitat aussehen soll, aber keins ist (semantisch falsch als
-      echtes `<blockquote>`). `border-color` folgt `currentColor` statt einem festen
-      Token, passt sich dadurch automatisch an jede Textfarbe an.
-    - `.ncss-list--dot` in helpers/typography.css - der "zwei Punkte nebeneinander"-Fund
-      aus Punkt 24 selbst, jetzt mit korrektem `list-style:none` als wiederverwendbare
-      Klasse statt eines Bugs, der pro Projekt neu gemacht werden müsste.
-    Nach der Promotion: page-lokale CSS-Duplikate der jetzt geteilten Regeln vollständig
-    ENTFERNT (nicht nur die Klassennamen umbenannt) - ein Duplikat, das zufällig identisch
-    aussieht, ist trotzdem ein zweiter Ort, der bei der nächsten Änderung auseinanderlaufen
-    kann. Lehre: bei JEDER neuen Demo-/Produktseite prüfen, ob eine gerade erfundene
-    `demo-*`/`landing-*`-Klasse eigentlich ein fehlendes, allgemein nützliches System-
-    Teil ist - eine "echte" Seite, die das eigene Design-System bewirbt, verliert an
-    Glaubwürdigkeit, wenn sie selbst nicht nur aus dessen echten Bausteinen besteht.
+25. **Seiteneigene, aber eigentlich allgemein nützliche Klassen gehören ins geteilte
+    System, nicht in eine einzelne Seite** - beim Aufräumen einer neuen Produktseite
+    zeigte sich: mehrere page-lokale Klassen duplizierten bereits Vorhandenes (`.ncss-
+    badge` statt einer eigenen Pillen-Klasse) oder waren generalisierbar genug, um sie
+    als echte Klassen ins System zu heben, z.B. `.ncss-badge-icon` (Icon-in-Kreis,
+    components/badge.css), `.ncss-topbar--transparent` (macht die sonst opake Eigenfläche
+    transparent, siehe Punkt 24), `.ncss-lead-quote` (derselbe Akzent-Rahmen wie
+    `<blockquote>`, aber als Klasse für semantisch falsche Fälle), `.ncss-list--dot` (die
+    `list-style:none`-Lehre aus Punkt 24 als wiederverwendbare Klasse). Nach der Promotion
+    die page-lokalen CSS-Duplikate vollständig entfernt, nicht nur umbenannt - ein
+    Duplikat, das zufällig identisch aussieht, ist trotzdem ein zweiter Ort, der bei der
+    nächsten Änderung auseinanderlaufen kann. Bei jeder neuen Demo-/Produktseite prüfen,
+    ob eine gerade erfundene Seiten-Klasse eigentlich ein fehlendes System-Teil ist.
 
 26. **Ein VERIFIZIERTER, aber gescheiterter Fallback-Versuch: `.ncss-hide-on-scroll`
     (helpers/scroll.css) sollte auf expliziten User-Wunsch ("fallback ja, auf Funktion
@@ -1232,6 +1081,70 @@ gewünschte Zeichenweg).
       `weekdayNamesFor()` um denselben Versatz rotiert - beide Stellen MÜSSEN synchron
       bleiben, sonst zeigt die Kopfzeile einen anderen Wochentag als tatsächlich in der
       jeweiligen Spalte steht.
+
+38. **`<ncss-container>` (`components/ncss-container.js`, User-Anstoß: "können wir ncss
+    in einer eigenen webcomponente ausführen ... um so ncss inhalte isoliert innerhalb
+    einer anderen framework laufen zu lassen").** Shadow-DOM-Kapselung für ncss-Inhalte
+    innerhalb einer FREMDEN Seite. Zwei nicht offensichtliche technische Fallen, BEIDE
+    vor der Implementierung per echtem Playwright-Test verifiziert statt angenommen -
+    beide hätten bei bloßem "sollte funktionieren"-Vertrauen eine leck geschlagene, also
+    funktionslose Isolation ergeben:
+    - **`:root` trifft NIEMALS einen Shadow Host, egal wo die Stylesheet-Datei geladen
+      wird.** ncss' komplettes Token-System hängt an `:root { --ncss-color-brand: ... }`
+      (colors.css/tokens.css/theme.css/webawesome-bridge.css) - unverändert in einem
+      Shadow Root geladen, würde `:root` weiterhin nur das ECHTE Seiten-Wurzelelement
+      treffen, nicht den Shadow-Host-Knoten. Ergebnis ohne Fix: alle `var(--ncss-*)` im
+      Container lösen sich zu nichts auf (keine Fehlermeldung, einfach unstyled/Ausgangs-
+      werte) - SOLANGE die Host-Seite nicht zufällig selbst dieselben Tokens an ihrem
+      echten `:root` definiert (was den ganzen Sinn der Isolation zunichtemachen würde).
+      Fix: JEDE `:root`-Deklaration in diesen vier Dateien zu `:root, :host` erweitert -
+      `:host` matcht NUR innerhalb eines Shadow Trees und ist dort präzise der
+      Shadow-Root-eigene Bezugspunkt, außerhalb jeder Shadow-DOM-Nutzung vollständig
+      wirkungslos (kein Risiko für die 99% normale Seiten-Nutzung). Per echtem Test
+      bestätigt: ein `.ncss-btn--primary` im Container zeigt die korrekte Markenfarbe,
+      OBWOHL `getComputedStyle(document.documentElement).getPropertyValue('--ncss-color-
+      brand')` an der echten Seite leer ist - vollständig eigenständige Token-Kopie,
+      keine Abhängigkeit von der Host-Seite. Dieselbe Erweiterung zusätzlich auf
+      `body { ... }` in base.css angewendet (Baseline-Schrift/-Farbe/-Hintergrund) - ein
+      Shadow Root hat kein eigenes `<body>`-Element, `:host` ist dort das Äquivalent.
+      NICHT erweitert: `html { scroll-behavior: ... }` (reset.css, html-spezifisch, kein
+      sinnvolles `:host`-Äquivalent) und `:root { container-type: scroll-state }`
+      (helpers/scroll.css, schmales Feature, siehe zweiter Punkt unten).
+    - **`<slot>` reicht NICHT für echte Stil-Isolation - nur `<slot>`-fremde, tatsächlich
+      in den Shadow Root VERSCHOBENE Elemente sind vor äußerem CSS geschützt.** Ein
+      naheliegender erster Entwurf nutzte `<slot>` (der "normale" Web-Components-Weg,
+      eigenen Inhalt anzuzeigen) - dabei übersehen: `<slot>`-zugewiesene Elemente
+      bleiben technisch Teil des LIGHT DOM (nur ihre RENDERING-Position wandert in den
+      Shadow Tree) und werden deshalb WEITERHIN von den globalen Stylesheets der äußeren
+      Seite getroffen, inkl. `!important`-Regeln - genau der Leck-Fall, den die ganze
+      Komponente verhindern soll. Per gezieltem Vorab-Test (zwei Varianten nebeneinander,
+      eine `<slot>`-basiert, eine per `appendChild`-Verschiebung) hart bestätigt: der
+      `<slot>`-Button übernahm eine äußere `button { color: red !important }`-Regel
+      unverändert, der verschobene Button blieb komplett unberührt. Fix: `connectedCallback()`
+      verschiebt `this.firstChild` iterativ per `appendChild` in einen Wrapper INNERHALB
+      des Shadow Roots (kein `<slot>`) - echte Shadow-Tree-Nachfahren sind laut Spec
+      vollständig vor äußerem CSS geschützt, bloß durchgereichte "slotted" Elemente nicht.
+      Kehrseite bewusst in Kauf genommen: kein automatisches Nachziehen bei späteren
+      dynamischen Änderungen am (bereits umgezogenen) Original-Markup - für einen fertig
+      eingebetteten, statischen Inhaltsblock kein praktischer Nachteil.
+    - **Bidirektional getestet, nicht nur eine Richtung**: `demo/uikit-integration.html`
+      (self-hosted UIkit 3, `vendor/uikit3/`, aus einem bereits im REDAXO-Projekt
+      vorhandenen offiziellen MIT-Build übernommen statt neu heruntergeladen) prüft
+      BEIDE Richtungen - UIkits `button`/`h1`-Reset erreicht den Container nicht (Punkt
+      oben), UND ncss' eigener `* { margin: 0 }`-Reset beeinflusst UIkit-Überschriften
+      VOR/NACH dem Container nicht (`getComputedStyle` auf ein `<h2>` außerhalb des
+      Containers bestätigt weiterhin UIkits eigenen 20px-Default). Scroll-gekoppelte
+      Effekte (`position:sticky`, `animation-timeline: view()` der Stacked-Cards-Demo
+      im Container) funktionieren normal über die Shadow-Grenze - reine Rendering-/
+      Layout-Mechanik der Engine, von der DOM-/Style-Kapselung unberührt, extra verifiziert
+      statt angenommen (Screenshot bei Scroll-Zwischenposition zeigt korrekt gestapelte
+      Karten).
+    - **Bekannte Grenze**: opt-in Fallback-Scripts, die per `document.querySelectorAll(...)`
+      GLOBAL suchen (`scroll-stack-fallback.js`, `hide-on-scroll-fallback.js`), finden
+      Elemente innerhalb eines `<ncss-container>` NICHT (Shadow-DOM-Grenzen werden von
+      `querySelectorAll` nicht standardmäßig durchquert) - betrifft nur Browser ohne die
+      jeweilige native CSS-Unterstützung; der reine `@supports`-CSS-Fallback funktioniert
+      unverändert, da Engine-Ebene statt JS-DOM-Traversal.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

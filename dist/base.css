@@ -5,7 +5,10 @@
  * -top/-left) durchgängig, damit RTL-Sprachen ohne Zusatzaufwand funktionieren.
  */
 
-body {
+/* :host: dieselbe Baseline gilt für den Wurzelknoten eines Shadow-DOM-Baums, wenn
+   base.css dort geladen wird (siehe components/ncss-container.js) - :host matcht sonst
+   nirgends, wirkungslos für jede normale Seite ohne Shadow DOM. */
+body, :host {
   font-family: var(--ncss-font-family-base);
   font-size: var(--ncss-font-size-base);
   color: var(--ncss-color-text);

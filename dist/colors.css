@@ -6,7 +6,7 @@
  * Tokenwert deckt beide Modi ab, keine separate Dark-Datei.
  */
 
-:root {
+:root, :host {
   color-scheme: light dark;
 
   --ncss-color-brand: light-dark(#0057d8, #6ea8ff);
@@ -227,10 +227,10 @@
 /* Manueller Theme-Override (z.B. ein Umschalter in der UI) gewinnt gegen die
    Systemeinstellung - color-scheme hier erneut setzen, sonst bleibt light-dark() bei
    der Systemwahl hängen, auch wenn [data-theme] gesetzt ist. */
-:root[data-theme="light"] {
+:root[data-theme="light"], :host([data-theme="light"]) {
   color-scheme: light;
 }
-:root[data-theme="dark"] {
+:root[data-theme="dark"], :host([data-theme="dark"]) {
   color-scheme: dark;
 }
 
@@ -250,7 +250,7 @@
  */
 
 /* "Football": Grün + Schwarz. */
-:root[data-palette="football"] {
+:root[data-palette="football"], :host([data-palette="football"]) {
   --ncss-color-brand: light-dark(#15803d, #34d399);
   --ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);
   --ncss-color-brand-2: light-dark(#18181b, #d4d4d8);
@@ -258,7 +258,7 @@
 }
 
 /* "Sunset": Orange + Grau. */
-:root[data-palette="sunset"] {
+:root[data-palette="sunset"], :host([data-palette="sunset"]) {
   --ncss-color-brand: light-dark(#c2410c, #fb923c);
   --ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);
   --ncss-color-brand-2: light-dark(#52525b, #a1a1aa);

@@ -10,7 +10,7 @@
  * benannten Cascade Layers (tokens/reset/base/helpers/components/...). Diese Datei hier
  * ist ABSICHTLICH UNLAYERED (kein eigenes @layer) - und unlayered CSS gewinnt in der
  * Spec IMMER gegen jede Layer-Regel, unabhängig von Selektor-Spezifität oder
- * Lade-Reihenfolge. Ein einfaches ":root { --ncss-color-brand: ... }" hier reicht also,
+ * Lade-Reihenfolge. Ein einfaches ":root, :host { --ncss-color-brand: ... }" hier reicht also,
  * kein !important, kein höher-spezifischer Selektor nötig.
  *
  * Enthält nur die BASIS-/SEED-Werte, nicht die daraus abgeleiteten Skalen. Farben wie
@@ -26,7 +26,7 @@
  * colors.css für einen rein attributgesteuerten Wechsel ohne zweite Datei.
  */
 
-:root {
+:root, :host {
   /* --- Markenfarben (Seed-Werte, alle abgeleiteten Stufen folgen automatisch) -------
      light-dark(HELL, DUNKEL) - EIN Wert deckt beide Modi ab, kein zweiter Dark-Block
      nötig. Reine Hex-Farbe statt light-dark() ist auch gültig, wenn ein Projekt gar

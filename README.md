@@ -37,6 +37,7 @@ HTML/CSS allein nicht reicht (z.B. Toast, Carousel, Drawer) - siehe `demo/webawe
 - [Icons](#icons)
 - [Komponenten](#komponenten)
 - [Termine & Downloads (Widgets)](#termine--downloads-widgets)
+- [`<ncss-container>` - ncss isoliert in einer fremden Seite](#ncss-container---ncss-isoliert-in-einer-fremden-seite)
 - [Web Awesome Bridge](#web-awesome-bridge)
 - [Demo-Seiten](#demo-seiten)
 - [Doku-Website](#doku-website)
@@ -726,6 +727,65 @@ abgeleitet, `size` (Bytes) wird ohne Angabe einfach nicht angezeigt.
 Demo mit allen vier Ansichten + Downloads + Beispieldaten (JSON und `.ics`):
 `demo/widgets.html`.
 
+## `<ncss-container>` - ncss isoliert in einer fremden Seite
+
+`components/ncss-container.js` kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, um
+sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein
+CMS-Theme, ...) laufen zu lassen, ohne dass Styles in beide Richtungen durchsickern.
+
+```html
+<script src="components/ncss-container.js" defer></script>
+<ncss-container src="dist/ncss.css">
+  <div class="ncss-card">
+    <div class="ncss-card-body">Isolierter Inhalt</div>
+  </div>
+</ncss-container>
+```
+
+- `src` (Pflicht, ODER `data-ncss-src` auf dem Loader-`<script>` als Seiten-Default):
+  Pfad zu `ncss.css`, ganz normaler `<link>`, keine ncss-Sonderregel.
+- `theme` (optional): zusätzliches Stylesheet, NACH `src` geladen - für einen Container
+  mit einer ANDEREN Markenfarbe/Radien/Schrift als die restliche Seite.
+
+**Zwei technische Voraussetzungen, beide bereits erfüllt:**
+
+1. **Token-Isolation**: ncss' Tokens sind in `colors.css`/`tokens.css`/`theme.css`/
+   `webawesome-bridge.css` bewusst als `:root, :host { ... }` deklariert (statt nur
+   `:root`) - `:root` trifft IMMER das echte Seiten-Wurzelelement, niemals einen Shadow
+   Host; `:host` dagegen NUR den Host-Knoten eines Shadow-Trees und ist außerhalb eines
+   Shadow-Trees wirkungslos. Dieselbe Datei liefert dadurch, unverändert, eine komplett
+   EIGENSTÄNDIGE Token-Kopie, sobald sie in einem Shadow Root statt am Seiten-`<head>`
+   geladen wird - keine zweite, duplizierte Token-Datei, kein Build-Schritt. Per echtem
+   Test bestätigt: ein `.ncss-btn--primary` im Container zeigt die korrekte Markenfarbe,
+   OBWOHL die Host-Seite selbst gar kein ncss geladen hat und `--ncss-color-brand` an
+   ihrem eigenen Wurzelelement überhaupt nicht existiert.
+2. **Inhalts-Isolation**: der eigene Inhalt wird NICHT per `<slot>` eingebunden, sondern
+   beim Verbinden EINMALIG per JS in den Shadow Root VERSCHOBEN (echte
+   `appendChild`-Umhängung). Ein `<slot>` würde die Kind-Elemente nur im Shadow Root
+   ANZEIGEN - sie blieben aber Teil des LIGHT DOM und dadurch weiterhin von den globalen
+   Stylesheets der äußeren Seite getroffen (z.B. ein Framework-Reset wie `button { ... }`
+   oder `!important`-Regeln). Per echtem Test bestätigt: ein `<slot>`-basierter Button
+   übernahm eine äußere `!important`-Regel unverändert, ein per Verschieben
+   eingebetteter Button blieb komplett unberührt. Kehrseite: kein automatisches
+   Nachziehen bei späteren dynamischen DOM-Änderungen am Original-Markup (für einen
+   fertig eingebetteten Inhaltsblock kein praktischer Nachteil).
+
+Bidirektional getestet (`demo/uikit-integration.html`, eine komplette Seite auf
+[UIkit 3](https://getuikit.com) mit einem `<ncss-container>` samt Stacked Cards mitten
+drin): UIkits `button`/`h1`-`h6`-Reset erreicht den Container nicht, ncss' eigener Reset
+(`* { margin: 0 }` u.a.) beeinflusst UIkit-Inhalt vor/nach dem Container nicht - auch
+scroll-gekoppelte Effekte (`position:sticky`, `animation-timeline: view()`, siehe Stacked
+Cards) funktionieren normal über die Shadow-Grenze hinweg, das ist reine Layout-/
+Rendering-Mechanik, von der DOM-/Style-Kapselung unberührt.
+
+**Bekannte Grenze**: opt-in JS-Fallback-Scripts, die per `document.querySelectorAll(...)`
+GLOBAL nach Elementen suchen (z.B. `scroll-stack-fallback.js`, `hide-on-scroll-fallback.js`),
+finden Elemente INNERHALB eines `<ncss-container>` nicht (Shadow-DOM-Grenzen werden von
+`querySelectorAll` nicht standardmäßig durchquert) - betrifft nur Browser OHNE die jeweilige
+native CSS-Unterstützung (z.B. kein `view-timeline`); der reine `@supports`-CSS-Fallback
+(statischer, unanimierter Zustand) funktioniert dagegen unverändert, da er auf Engine-Ebene
+arbeitet, nicht auf JS-DOM-Traversal.
+
 ## Web Awesome Bridge
 
 `webawesome-bridge.css` mappt Web Awesomes `--wa-color-{familie}-{fill|border|on}-
@@ -873,6 +933,7 @@ seitenspezifisches CSS mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
 | `effects.html` | Glow-Border, Glow-Pulse, Glass, Stamped, Grain - die optionalen Effekt-Komponenten aus `effects.css` |
 | `theming.html` | Wie `theme.css` funktioniert, live am Beispiel (eigenes Beispiel-Theme, andere Markenfarben/Radien/Schrift) |
 | `widgets.html` | Termine & Downloads: alle vier Event-Ansichten (Monat/Agenda/Liste/Einzeltermin), JSON- und `.ics`-Datenquelle, Downloads-Widget |
+| `uikit-integration.html` | `<ncss-container>` mitten in einer kompletten UIkit-3-Seite (self-hosted, `vendor/uikit3/`) - Stacked Cards vollständig isoliert, bidirektional getestet |
 
 ## Doku-Website
 

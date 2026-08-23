@@ -17,7 +17,7 @@
  * Queries erwägen (siehe helpers/layout.css) statt Viewport-Breakpoints.
  */
 
-:root {
+:root, :host {
   /* --- Fließende Typografie (clamp(min, bevorzugt, max)) ------------------------- */
   /* Bevorzugter Wert in Viewport-Einheiten (vw) sorgt fürs Fließen zwischen min/max -
      bewusst mit einem festen rem-Anteil gemischt (clamp() Formel), damit Nutzer-Zoom

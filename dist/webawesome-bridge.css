@@ -41,7 +41,7 @@
  * eine Definition statt der Formel an mehreren Stellen dupliziert.
  */
 
-:root {
+:root, :host {
   /* --- Oberflächen/Text/Rahmen ------------------------------------------------------ */
   --wa-color-surface-default: var(--ncss-color-bg);
   --wa-color-surface-raised: var(--ncss-color-surface);
@@ -148,11 +148,11 @@
    fragen sie u.U. intern ab) - color-scheme hier zusätzlich synchron halten, damit z.B.
    natives Formular-Chrome INNERHALB eines Web-Awesome-Inputs (Shadow-DOM-<input>) im Dark
    Mode nicht hell aufblitzt. */
-:root {
+:root, :host {
   color-scheme: light dark;
 }
-:root[data-theme="light"] { color-scheme: light; }
-:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"], :host([data-theme="light"]) { color-scheme: light; }
+:root[data-theme="dark"], :host([data-theme="dark"]) { color-scheme: dark; }
 
 /* --- Formular-Text auf farbigen Flächen (.ncss-surface--... / .ncss-gradient-brand,
    helpers/surfaces.css) --------------------------------------------------------------------
