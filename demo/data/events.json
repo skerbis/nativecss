@@ -1,0 +1,66 @@
+[
+  {
+    "id": "kickoff",
+    "title": "Projekt-Kickoff",
+    "start": "2026-08-26T09:00",
+    "end": "2026-08-26T10:30",
+    "location": "Konferenzraum A",
+    "description": "Auftakt-Meeting mit allen Beteiligten.",
+    "url": "https://example.com/kickoff"
+  },
+  {
+    "id": "workshop",
+    "title": "CSS-Workshop",
+    "start": "2026-08-26T14:00",
+    "end": "2026-08-26T17:00",
+    "location": "Online",
+    "description": "Vertiefung Cascade Layers und Container Queries."
+  },
+  {
+    "id": "release",
+    "title": "Release v2.0",
+    "start": "2026-09-03",
+    "allDay": true,
+    "description": "Geplantes Release-Datum."
+  },
+  {
+    "id": "meetup",
+    "title": "Community Meetup",
+    "start": "2026-09-12T18:30",
+    "end": "2026-09-12T21:00",
+    "location": "Stadtbibliothek",
+    "url": "https://example.com/meetup"
+  },
+  {
+    "id": "training",
+    "title": "Schulung: Barrierefreiheit",
+    "start": "2026-09-12T09:00",
+    "end": "2026-09-12T12:00",
+    "location": "Raum 2"
+  },
+  {
+    "id": "conf",
+    "title": "Branchenkonferenz",
+    "start": "2026-09-24",
+    "end": "2026-09-25",
+    "allDay": true,
+    "location": "Messehalle 3",
+    "description": "Zwei Tage Vorträge und Networking.",
+    "url": "https://example.com/konferenz"
+  },
+  {
+    "id": "review",
+    "title": "Quartals-Review",
+    "start": "2026-10-08T10:00",
+    "end": "2026-10-08T11:00",
+    "location": "Konferenzraum B"
+  },
+  {
+    "id": "holiday",
+    "title": "Betriebsurlaub",
+    "start": "2026-12-24",
+    "end": "2026-12-31",
+    "allDay": true,
+    "description": "Das Büro bleibt über die Feiertage geschlossen."
+  }
+]

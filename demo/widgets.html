@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Termine &amp; Downloads</title>
+<link rel="stylesheet" href="../dist/ncss.css">
+<link rel="stylesheet" href="../dist/page-transitions.css">
+<script>window.Prism = { manual: true };</script>
+<script src="../vendor/prismjs/prism-core.min.js"></script>
+<script src="../vendor/prismjs/prism-markup.min.js"></script>
+<script src="../vendor/prismjs/prism-css.min.js"></script>
+<script src="../vendor/prismjs/prism-clike.min.js"></script>
+<script src="../vendor/prismjs/prism-javascript.min.js"></script>
+<script src="../dist/components/code-block.js" defer></script>
+<script src="../dist/components/command-fallback.js" defer></script>
+<script src="../dist/components/nav.js" defer></script>
+<script src="../dist/components/ics.js" defer></script>
+<script src="../dist/components/events.js" defer></script>
+<script src="../dist/components/downloads.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="product.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="stacked-cards.html">Stacked Cards</a></li>
+                <li><a href="roadmap.html">Roadmap</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="theming.html">Theme anpassen</a></li>
+                <li><a href="widgets.html" aria-current="page">Termine &amp; Downloads</a></li>
+                <li><a href="docs.html">Handbuch (alt, einzelne Seite)</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+          <li class="ncss-nav-item"><a href="../docs/de/index.html">Handbuch</a></li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+
+  <div class="ncss-stack ncss-stack--tight">
+    <h1>Termine &amp; Downloads</h1>
+    <p class="ncss-text-lg ncss-text-muted">Datengetriebene Widgets (JSON oder .ics) als native HTML-Alternative zur iframe-Einbettung - durchsuchbar, per CSS themebar, kein Cross-Origin-/Höhenproblem. Alles opt-in: <code>components/ics.js</code>, <code>components/events.js</code>, <code>components/downloads.js</code>, jeweils nur auf Seiten einbinden, die sie wirklich nutzen.</p>
+  </div>
+
+  <section class="ncss-stack" id="monat">
+    <h2 class="demo-section-title">Kalender (Monatsraster)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="month"</code> - Termine als Punkte im Tag, Klick öffnet den Tag als <code>.ncss-modal</code>. Quelle hier: <code>data/events.json</code>.</p>
+    <div class="ncss-events" data-view="month" data-src="data/events.json"></div>
+  </section>
+
+  <section class="ncss-stack" id="agenda">
+    <h2 class="demo-section-title">Kalender-Liste (Agenda)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="agenda"</code> - anstehende Termine, nach Monat gruppiert. Quelle hier: eine <code>.ics</code>-Datei (<code>data/sample.ics</code>), inkl. wiederkehrender Termine über <code>RRULE</code>.</p>
+    <div class="ncss-events" data-view="agenda" data-ics="data/sample.ics" data-limit="8"></div>
+  </section>
+
+  <section class="ncss-stack" id="liste">
+    <h2 class="demo-section-title">Termin-Liste</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="list"</code> - Termine als Karten-Raster, nutzt <code>.ncss-card</code> statt eigener Optik.</p>
+    <div class="ncss-events" data-view="list" data-src="data/events.json" data-limit="4"></div>
+  </section>
+
+  <section class="ncss-stack" id="einzeltermin">
+    <h2 class="demo-section-title">Einzeltermin</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="single"</code> - ein hervorgehobener Termin, per <code>data-event-id</code> gewählt (hier: <code>"conf"</code>) oder ohne diese Angabe der nächste anstehende.</p>
+    <div class="ncss-events" data-view="single" data-src="data/events.json" data-event-id="conf"></div>
+  </section>
+
+  <section class="ncss-stack" id="downloads">
+    <h2 class="demo-section-title">Downloads</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>components/downloads.js</code> - Datei-Liste aus <code>data/downloads.json</code>, Icon/Größe automatisch aus <code>type</code>/<code>size</code> bzw. der Datei-Endung.</p>
+    <div class="ncss-downloads" data-src="data/downloads.json"></div>
+  </section>
+
+  <section class="ncss-stack" id="datenformat">
+    <h2 class="demo-section-title">Datenformat</h2>
+    <p class="ncss-text-muted ncss-text-sm">JSON-Termine (jedes Feld außer <code>title</code>/<code>start</code> optional):</p>
+    <pre><code class="language-javascript">[
+  { "title": "Kickoff", "start": "2026-08-26T09:00", "end": "2026-08-26T10:30",
+    "location": "Raum A", "description": "...", "url": "https://..." },
+  { "title": "Feiertag", "start": "2026-10-03", "allDay": true }
+]</code></pre>
+    <p class="ncss-text-muted ncss-text-sm">.ics-Dateien (Google-/Outlook-/Apple-Export) werden ebenfalls unterstützt (<code>data-ics</code> statt <code>data-src</code>) - siehe <code>components/ics.js</code> für den abgedeckten <code>RRULE</code>-Umfang.</p>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Komponenten</a></li>
+        <li class="ncss-nav-item"><a href="docs.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

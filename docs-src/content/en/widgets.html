@@ -1,0 +1,52 @@
+<!--DESC: Events & Downloads - data-driven widgets (JSON/ICS) as a native HTML alternative to iframes.-->
+<section class="ncss-stack">
+  <h1>Events &amp; Downloads</h1>
+  <p class="ncss-text-lg ncss-text-muted">Data-driven widgets as a native HTML alternative to iframe embedding (e.g. an external calendar or file-browser widget) - searchable, themeable via CSS, no cross-origin/height problem. Visually/token-compatible with Web Awesome, but not a <code>&lt;wa-*&gt;</code> custom element - plain vanilla JS + native ncss classes, works even without Web Awesome on the page. All three files are opt-in.</p>
+</section>
+
+<section class="ncss-stack" id="einbindung">
+  <h2 class="demo-section-title">Setup</h2>
+  <pre><code class="language-html">&lt;script src="components/ics.js" defer&gt;&lt;/script&gt;      &lt;!-- only needed for data-ics --&gt;
+&lt;script src="components/events.js" defer&gt;&lt;/script&gt;
+&lt;script src="components/downloads.js" defer&gt;&lt;/script&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="events">
+  <h2 class="demo-section-title">events.js - four views, one engine</h2>
+  <p class="ncss-text-muted ncss-text-sm">ONE load/render engine instead of four separate components - calendar, calendar list, event list, and single event are all the same normalized event data type, just displayed differently.</p>
+  <pre><code class="language-html">&lt;div class="ncss-events" data-view="month" data-src="events.json"&gt;&lt;/div&gt;
+&lt;div class="ncss-events" data-view="agenda" data-ics="calendar.ics" data-limit="8"&gt;&lt;/div&gt;
+&lt;div class="ncss-events" data-view="list" data-src="events.json" data-limit="6"&gt;&lt;/div&gt;
+&lt;div class="ncss-events" data-view="single" data-src="events.json" data-event-id="evt-3"&gt;&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col"><code>data-view</code></th><th scope="col">Display</th></tr></thead>
+      <tbody>
+        <tr><td><code>month</code></td><td>Month grid (<code>&lt;table&gt;</code>), events shown as dots on the day, clicking a day opens it as a <code>.ncss-modal</code></td></tr>
+        <tr><td><code>agenda</code></td><td>Upcoming events, grouped by month - "calendar list"</td></tr>
+        <tr><td><code>list</code></td><td>Events as a card grid (<code>.ncss-card</code>)</td></tr>
+        <tr><td><code>single</code></td><td>One featured event (<code>data-event-id</code>, or the next upcoming one if omitted)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Further attributes: <code>data-limit</code> (max. number of events in agenda/list), <code>data-month</code> (starting month for the month view, <code>"YYYY-MM"</code>), <code>data-window-months</code> (how far ahead an unbounded ICS <code>RRULE</code> without <code>COUNT</code>/<code>UNTIL</code> is expanded, default 18).</p>
+</section>
+
+<section class="ncss-stack" id="datenquelle">
+  <h2 class="demo-section-title">Data source</h2>
+  <p class="ncss-text-muted ncss-text-sm">Two options, both resulting in the same internal event data type:</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><code>data-src</code>: a JSON array, each element <code>{id?, title, start, end?, allDay?, location?, description?, url?}</code> - <code>start</code>/<code>end</code> as an ISO 8601 string (<code>"2026-09-01"</code> for all-day, <code>"2026-09-01T09:00"</code> with a time, no timezone suffix means local wall-clock time).</li>
+    <li><code>data-ics</code>: an <code>.ics</code> file (Google/Outlook/Apple calendar export), parsed by <code>components/ics.js</code> - its own dependency-free RFC 5545 parser rather than an npm package.</li>
+  </ul>
+  <p class="ncss-text-muted ncss-text-sm"><strong>ICS coverage</strong>: <code>VEVENT</code> (<code>UID</code>/<code>SUMMARY</code>/<code>DTSTART</code>/<code>DTEND</code>/<code>LOCATION</code>/<code>DESCRIPTION</code>/<code>URL</code>), line unfolding, value escaping, all-day events, UTC times. <code>RRULE</code> subset: <code>FREQ=DAILY/WEEKLY/MONTHLY/YEARLY</code>, <code>INTERVAL</code>, <code>COUNT</code>, <code>UNTIL</code>, <code>BYDAY</code> (simple weekday list), <code>EXDATE</code> - covers the vast majority of real-world recurring events.</p>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Not covered</strong>: <code>TZID</code> timezone conversion (times without a <code>Z</code> suffix are taken as local wall-clock time), <code>BYMONTHDAY</code>/<code>BYSETPOS</code>/<code>BYWEEKNO</code>, <code>RECURRENCE-ID</code> exceptions beyond <code>EXDATE</code> - see <a href="known-limitations.html">Known Limitations</a>.</p>
+</section>
+
+<section class="ncss-stack" id="downloads">
+  <h2 class="demo-section-title">downloads.js</h2>
+  <p class="ncss-text-muted ncss-text-sm">A file download list from JSON.</p>
+  <pre><code class="language-html">&lt;div class="ncss-downloads" data-src="downloads.json"&gt;&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">A JSON array, each element <code>{title, url, size?, type?, description?}</code> - <code>type</code> (the file extension without a dot, e.g. <code>"pdf"</code>) is derived from the <code>url</code>'s extension if omitted, and <code>size</code> (bytes) is simply not shown if omitted.</p>
+  <p class="ncss-text-muted ncss-text-sm">Live demo with all four views + downloads + sample data (JSON and <code>.ics</code>): <a href="../../demo/widgets.html">demo/widgets.html</a>.</p>
+</section>

@@ -1,0 +1,24 @@
+[
+  {
+    "title": "Preisliste 2026",
+    "url": "data/preisliste.pdf",
+    "size": 599,
+    "description": "Gültig ab Januar 2026."
+  },
+  {
+    "title": "Produktdatenblatt",
+    "url": "data/datenblatt.pdf",
+    "size": 601
+  },
+  {
+    "title": "Beispieldaten",
+    "url": "data/beispieldaten.csv",
+    "size": 81,
+    "description": "Rohdaten für den Import."
+  },
+  {
+    "title": "Markenlogo",
+    "url": "data/logo.svg",
+    "size": 290
+  }
+]

@@ -1,0 +1,47 @@
+/**
+ * ncss - Downloads-Widget (Layer "components"): Styling für die Dateiliste aus
+ * downloads.js. Eigenständige Komponente statt Wiederverwendung von .ncss-card - eine
+ * Downloadliste ist strukturell eine Liste (kein Karten-Raster), .ncss-events-empty
+ * (events.css) wird für den Leerzustand mitgenutzt statt dupliziert.
+ */
+
+.ncss-downloads-list {
+  list-style: none;
+  padding-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-downloads-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-sm);
+  padding: var(--ncss-space-xs);
+  border: 1px solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+}
+.ncss-downloads-type {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ncss-space-xl);
+  height: var(--ncss-space-xl);
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-neutral-100);
+  color: var(--ncss-color-neutral-on-soft);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.ncss-downloads-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ncss-downloads-title {
+  font-weight: 600;
+  margin: 0;
+}
+.ncss-downloads-action {
+  flex: 0 0 auto;
+}

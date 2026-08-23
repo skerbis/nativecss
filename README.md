@@ -36,6 +36,7 @@ HTML/CSS allein nicht reicht (z.B. Toast, Carousel, Drawer) - siehe `demo/webawe
 - [Touch-Geräte & mobile Viewports](#touch-geräte--mobile-viewports)
 - [Icons](#icons)
 - [Komponenten](#komponenten)
+- [Termine & Downloads (Widgets)](#termine--downloads-widgets)
 - [Web Awesome Bridge](#web-awesome-bridge)
 - [Demo-Seiten](#demo-seiten)
 - [Doku-Website](#doku-website)
@@ -658,6 +659,71 @@ hier nur die Kurzreferenz.
 | `effects.css` | `.ncss-glow-border`, `.ncss-glow-pulse`, `.ncss-glass`, `.ncss-stamped`, `.ncss-grain` | Rein dekorativ, bewusst optional (Zusatzklassen, kein Bestandteil von `.ncss-card`/`-btn`). `.ncss-glow-border` zeichnet einen rotierenden `conic-gradient()`-Ring über ein `::before` mit `mask-composite: exclude` (echtes "Loch" in der Mitte, kein Wrapper-Element nötig) - der Winkel läuft über eine per `@property` typisierte `<angle>`-Custom-Property (`--ncss-glow-angle`), sonst wäre die Rotation nur diskret statt interpoliert. `.ncss-glow-pulse` pulsiert per `box-shadow`, unabhängig kombinierbar. `.ncss-glass` ist Glassmorphism (`backdrop-filter: blur() saturate()`, `@supports`-abgesichert). **NICHT auf ein Element mit einer Floating-UI-Komponente als Nachfahre setzen** (`<wa-dropdown>`/`<wa-popover>`/o.ä., typischerweise intern `position:fixed` relativ zum Viewport) - `backdrop-filter` erzeugt per Spec einen neuen Containing Block für `position:fixed`-Nachfahren, das Popup zuckt dann beim Scrollen (per echtem Test an `demo/landing.html` gefunden). Stattdessen als eigenes dekoratives Element (absolut positioniert, negativer `z-index`) VOR dem eigentlichen Inhalt platzieren, siehe `.landing-topbar-backdrop` in `demo/landing.html`/`landing.css`. `.ncss-stamped` zeichnet einen hauchdünnen, zweifarbigen "gravierten" Rahmen (dieselbe Masken-Ring-Technik wie `.ncss-glow-border`, diagonal dunkel-zu-hell statt rotierendem Verlauf) - keine eigene Hintergrundfarbe nötig, funktioniert auf jeder Fläche inkl. reinem Weiß. Hebt sich beim Hover an, sinkt bei `:active` tiefer ein; `.ncss-stamped--press` zusätzlich kehrt das Hover-Verhalten um (sinkt statt sich zu heben). Ringfarbe ist halbtransparent und blendet sich per Alpha-Compositing automatisch mit JEDER darunterliegenden Fläche, auch mit `.ncss-btn`-Varianten - nur die Eckenform übernimmt `.ncss-stamped` NICHT automatisch (eigener Default `--ncss-radius-lg`), beim Kombinieren `--ncss-stamped-radius` explizit auf den Wert der anderen Komponente setzen. `.ncss-grain` legt ein feines `<feTurbulence>`-Rauschen (SVG data-URI, kein Bild-Asset) per `::after` + `mix-blend-mode` über die Fläche - Default `overlay` verhält sich wie `multiply`/`screen` auf sehr dunklen/hellen Flächen und bleibt dort bei der Standard-Deckkraft (0.12) praktisch unsichtbar; auf sehr dunklen/gesättigten Flächen (z.B. `.ncss-surface--brand-2`) `--ncss-grain-opacity` deutlich erhöhen oder auf `--ncss-grain-blend: soft-light` wechseln. Demo: `demo/effects.html` |
 | `code-block.css` | `.ncss-code-copy` | Syntax-Highlighting + Copy-to-Clipboard für `<pre><code class="language-*">`-Beispiele. Bridged selbst gehostetes [Prism.js](https://prismjs.com) (`vendor/prismjs/`, kein CDN) auf dieselben ncss-Farbtokens, die auch Buttons/Badges nutzen (`--ncss-color-brand`/`-success`/`-warning`/`-danger`/`-brand-2` für die jeweiligen Token-Klassen) - kein zweites, eigenständiges Highlighting-Theme, zieht automatisch mit `theme.css` um. Opt-in (nur auf Seiten mit Code-Beispielen einbinden): `window.Prism = { manual: true }` VOR `vendor/prismjs/prism-core.min.js` setzen (sonst highlightet Prism beim `DOMContentLoaded` unkontrolliert selbst schon, ohne Copy-Button), dann die gebrauchten Sprachkomponenten (`prism-markup`, `prism-css`, `prism-clike` + `prism-javascript`, ...) laden, zuletzt `dist/components/code-block.js` - ruft `Prism.highlightAll()` selbst auf und injiziert den Button. `.ncss-icon-copy`/`-check` (`helpers/icons.css`) fürs Icon. Läuft auch ohne Prism (nur Copy-Button, unhighlighted). Demo: jede Doku-Seite, `demo/theming.html`, `demo/guides.html` |
 
+## Termine & Downloads (Widgets)
+
+Datengetriebene Widgets als native HTML-Alternative zu iframe-Einbettung (z.B. eines
+externen Kalender- oder Datei-Browser-Widgets) - durchsuchbar, per CSS themebar, kein
+Cross-Origin-/Höhenproblem. Optisch/token-kompatibel mit Web Awesome (nutzt dieselben
+ncss-Farbtokens wie `webawesome-bridge.css`), aber KEIN `<wa-*>`-Custom-Element - reines
+Vanilla-JS + native ncss-Klassen, funktioniert auch ohne Web Awesome auf der Seite. Alle
+drei Dateien sind opt-in, nur auf Seiten einbinden, die sie wirklich nutzen:
+
+```html
+<script src="components/ics.js" defer></script>      <!-- nur nötig für data-ics -->
+<script src="components/events.js" defer></script>
+<script src="components/downloads.js" defer></script>
+```
+
+**`events.js`**: EIN Lade-/Render-Motor für vier Ansichten statt vier getrennter
+Komponenten (Kalender, Kalender-Liste, Termin-Liste, Einzeltermin sind derselbe
+normalisierte Termin-Datentyp, nur andere Darstellung):
+
+```html
+<div class="ncss-events" data-view="month" data-src="events.json"></div>
+<div class="ncss-events" data-view="agenda" data-ics="kalender.ics" data-limit="8"></div>
+<div class="ncss-events" data-view="list" data-src="events.json" data-limit="6"></div>
+<div class="ncss-events" data-view="single" data-src="events.json" data-event-id="evt-3"></div>
+```
+
+| `data-view` | Darstellung |
+|---|---|
+| `month` | Monatsraster (`<table>`), Termine als Punkte im Tag, Klick öffnet den Tag als `.ncss-modal` (Wiederverwendung der bestehenden Modal-Komponente statt eigener Dialog-Optik) |
+| `agenda` | Anstehende Termine, nach Monat gruppiert - "Kalender-Liste" |
+| `list` | Termine als Karten-Raster (`.ncss-card`, kein eigenes Karten-Layout) |
+| `single` | Ein hervorgehobener Termin (`data-event-id` oder ohne Angabe der nächste anstehende) |
+
+Weitere Attribute: `data-limit` (max. Anzahl in agenda/list), `data-month`
+(Start-Monat der Monatsansicht, `"YYYY-MM"`), `data-window-months` (wie weit eine
+unbegrenzte ICS-`RRULE` ohne `COUNT`/`UNTIL` vorausberechnet wird, Default 18).
+
+**Datenquelle, zwei Optionen** (beide ergeben denselben internen Termin-Datentyp):
+- `data-src`: JSON-Array, jedes Element `{id?, title, start, end?, allDay?, location?,
+  description?, url?}` - `start`/`end` als ISO-8601-String (`"2026-09-01"` ganztägig,
+  `"2026-09-01T09:00"` mit Uhrzeit, ohne Zeitzonen-Suffix = lokale Wanduhrzeit).
+- `data-ics`: eine `.ics`-Datei (Google-/Outlook-/Apple-Kalender-Export), geparst von
+  `components/ics.js` (eigener, abhängigkeitsfreier RFC-5545-Parser statt eines npm-
+  Pakets wie ical.js - passt zu "kein Build-Schritt, selbst gehostet"). Abgedeckt:
+  `VEVENT` (`UID`/`SUMMARY`/`DTSTART`/`DTEND`/`LOCATION`/`DESCRIPTION`/`URL`), Zeilen-
+  Unfolding, Wert-Escaping, ganztägige Termine, UTC-Zeiten. `RRULE`-Teilmenge:
+  `FREQ=DAILY/WEEKLY/MONTHLY/YEARLY`, `INTERVAL`, `COUNT`, `UNTIL`, `BYDAY` (einfache
+  Wochentags-Liste), `EXDATE` - deckt die weit überwiegende Mehrheit realer
+  wiederkehrender Termine ab. NICHT abgedeckt: `TZID`-Zeitzonenkonvertierung (Zeiten ohne
+  `Z`-Suffix werden als lokale Wanduhrzeit übernommen), `BYMONTHDAY`/`BYSETPOS`/
+  `BYWEEKNO`, `RECURRENCE-ID`-Ausnahmen jenseits von `EXDATE`.
+
+**`downloads.js`**: Datei-Download-Liste aus JSON.
+
+```html
+<div class="ncss-downloads" data-src="downloads.json"></div>
+```
+
+JSON-Array, jedes Element `{title, url, size?, type?, description?}` - `type`
+(Dateiendung ohne Punkt, z.B. `"pdf"`) wird ohne Angabe aus der `url`-Endung
+abgeleitet, `size` (Bytes) wird ohne Angabe einfach nicht angezeigt.
+
+Demo mit allen vier Ansichten + Downloads + Beispieldaten (JSON und `.ics`):
+`demo/widgets.html`.
+
 ## Web Awesome Bridge
 
 `webawesome-bridge.css` mappt Web Awesomes `--wa-color-{familie}-{fill|border|on}-
@@ -804,6 +870,7 @@ seitenspezifisches CSS mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
 | `guides.html` | Nummerierte, aufgabenorientierte Anleitungen mit Live-Beispielen |
 | `effects.html` | Glow-Border, Glow-Pulse, Glass, Stamped, Grain - die optionalen Effekt-Komponenten aus `effects.css` |
 | `theming.html` | Wie `theme.css` funktioniert, live am Beispiel (eigenes Beispiel-Theme, andere Markenfarben/Radien/Schrift) |
+| `widgets.html` | Termine & Downloads: alle vier Event-Ansichten (Monat/Agenda/Liste/Einzeltermin), JSON- und `.ics`-Datenquelle, Downloads-Widget |
 
 ## Doku-Website
 

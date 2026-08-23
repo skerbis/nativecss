@@ -1,0 +1,165 @@
+/**
+ * ncss - Events-Widget (Layer "components"): Styling für die vier Ansichten aus
+ * events.js (Monatsraster/Agenda/Liste/Einzeltermin). Nutzt bewusst bereits vorhandene
+ * Komponenten wo möglich (.ncss-card für Liste/Einzeltermin, .ncss-modal für den
+ * Tages-Dialog im Monatsraster) - hier nur, was diese Komponenten NICHT schon
+ * mitbringen: das Monatsraster selbst und den Tages-/Monats-Mini-Badge
+ * (.ncss-event-date), den .ncss-badge (einzeilige Pille) nicht abdeckt.
+ */
+
+.ncss-events-empty {
+  color: var(--ncss-color-text-muted);
+}
+
+/* --- Tages-/Monats-Mini-Badge (Agenda/Liste/Einzeltermin) ---------------------------- */
+.ncss-event-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--ncss-space-xl);
+  height: var(--ncss-space-xl);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  line-height: 1.1;
+}
+.ncss-event-date-day {
+  font-size: var(--ncss-font-size-lg);
+  font-weight: 700;
+}
+.ncss-event-date-month {
+  font-size: var(--ncss-font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ncss-event-title {
+  margin: 0;
+}
+.ncss-event-featured .ncss-event-title {
+  font-size: var(--ncss-font-size-lg);
+}
+
+/* --- Agenda (Kalender-Liste) ---------------------------------------------------------- */
+.ncss-agenda-group-title {
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ncss-color-text-muted);
+  margin-block-end: var(--ncss-space-xs);
+}
+.ncss-agenda-group-title:not(:first-child) {
+  margin-block-start: var(--ncss-space-md);
+}
+.ncss-agenda-list {
+  list-style: none;
+  padding-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-xs);
+}
+.ncss-agenda-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ncss-space-sm);
+  padding-block-end: var(--ncss-space-xs);
+  border-block-end: 1px solid var(--ncss-color-border);
+}
+.ncss-agenda-item:last-child {
+  border-block-end: none;
+}
+.ncss-agenda-title {
+  font-weight: 600;
+  margin: 0;
+}
+
+/* --- Monatsraster ----------------------------------------------------------------------- */
+.ncss-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ncss-space-sm);
+  margin-block-end: var(--ncss-space-sm);
+}
+.ncss-cal-header h3 {
+  margin: 0;
+}
+.ncss-cal-header .ncss-btn {
+  padding: var(--ncss-space-3xs) var(--ncss-space-xs);
+  font-size: var(--ncss-font-size-md);
+  line-height: 1;
+}
+
+.ncss-cal-grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.ncss-cal-weekday {
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+  color: var(--ncss-color-text-muted);
+  padding-block: var(--ncss-space-2xs);
+  text-align: center;
+}
+.ncss-cal-day {
+  border: 1px solid var(--ncss-color-border);
+  vertical-align: top;
+  height: 4.5rem;
+  padding: 0;
+}
+.ncss-cal-day--other-month {
+  background-color: var(--ncss-color-bg-subtle);
+}
+.ncss-cal-day--other-month .ncss-cal-day-number {
+  color: var(--ncss-color-text-muted);
+}
+.ncss-cal-day--today .ncss-cal-day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+}
+
+.ncss-cal-day-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2em;
+  width: 100%;
+  height: 100%;
+  padding: var(--ncss-space-2xs);
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ncss-cal-day-btn--empty {
+  cursor: default;
+}
+@media (hover: hover) and (pointer: fine) {
+  button.ncss-cal-day-btn:hover {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+.ncss-cal-day-number {
+  font-size: var(--ncss-font-size-sm);
+}
+.ncss-cal-day-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand);
+}
+.ncss-cal-day-more {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}

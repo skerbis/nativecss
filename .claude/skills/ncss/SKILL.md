@@ -1163,6 +1163,61 @@ gewünschte Zeichenweg).
     Element-Grenzen hinweg immer nur den reinen Text liefert, keine `<span>`-Tags) - nicht
     `innerHTML`, das würde Prisms Highlighting-Markup mitkopieren.
 
+37. **Termine/Downloads-Widgets (`components/ics.js`/`events.js`/`downloads.js`, User-
+    Anstoß: "liefere auch wa kompatible Widgets für inline document als Alternative zu
+    iframes, calendar, calendar list, event, Events, downloads… alles opt-in").** Zwei
+    Design-Entscheidungen VORHER per `AskUserQuestion` geklärt statt angenommen (Umfang
+    zu groß/mehrdeutig für eine einzelne, korrekte Annahme): (1) Datenquelle
+    JSON/ICS-datengetrieben statt reinem Hand-HTML - User wollte echte Funktionalität,
+    nicht nur eine weitere gestylte Markup-Konvention; (2) "wa-kompatibel" heißt optisch/
+    token-kompatibel (native HTML + ncss-Klassen), NICHT echte `<wa-*>`-Custom-Elements -
+    verletzt sonst das Grundprinzip "Web Awesome nie fürs strukturelle Seitengerüst" und
+    bräuchte zwingend einen HTTP-Server statt auch offline/`file://` nutzbar zu bleiben.
+    EIN Lade-/Render-Motor (`events.js`) für vier Ansichten (Kalender/Kalender-Liste/
+    Termin-Liste/Einzeltermin) statt vier getrennter Komponenten - "VOR einer neuen
+    Komponente prüfen, ob eine bestehende das schon kann" gilt genauso für die eigene
+    neue Fläche: nicht vier Parallel-Implementierungen des immer gleichen normalisierten
+    Termin-Datentyps. Rendering nutzt bewusst bereits vorhandene Komponenten
+    (`.ncss-modal` für den Tages-Dialog im Monatsraster, `.ncss-card` für Liste/
+    Einzeltermin) statt eigener Parallel-Optik.
+    - **Eigener ICS-Parser (`ics.js`) statt Vendor-Bibliothek** (z.B. ical.js) - RFC-5545-
+      Umfang bewusst auf das beschränkt, was ein Termin-Widget wirklich braucht (siehe
+      Datei-Kommentar für die genaue Abdeckung/Grenzen), passt zu "kein Build-Schritt,
+      selbst gehostet, kein Wildwuchs". VOR dem Einbau in `events.js` isoliert mit einer
+      eigenen Node-Testsuite (19 Assertions: einfacher UTC-Termin, ganztägig, Zeilen-
+      Folding+Escaping, `WEEKLY`+`BYDAY`, `DAILY`+`UNTIL`, `MONTHLY`+`EXDATE`,
+      `INTERVAL`+`BYDAY` kombiniert, unbegrenzte Regel mit `windowEnd`-Deckel) gegen
+      erwartete Ausgaben geprüft - Kalenderarithmetik ist eine der Fehlerklassen, bei der
+      "sieht im Browser plausibel aus" nichts über Korrektheit aussagt (falsch berechnete
+      Wochentage fallen nur bei genauem Hinsehen auf).
+    - **RFC-5545-Zeilen-Unfolding-Falle beim eigenen Testen**: eine Fold-Stelle braucht
+      GENAU EIN Whitespace-Zeichen direkt nach dem CRLF als Marker, das beim Unfolding
+      IMMER entfernt wird (unabhängig vom Inhalt) - ein zusätzliches Leerzeichen für den
+      Wortzwischenraum muss VOR dem CRLF stehen (Inhalt), nicht zusätzlich danach (das
+      wäre ein zweites, im Original nie vorhandenes Leerzeichen). Erster eigener
+      Testfixture-Versuch hatte Leerzeichen auf BEIDEN Seiten der Fold-Stelle, ergab nach
+      dem Unfolding ein Test-erwartetes Doppel-Leerzeichen, das der (korrekte) Parser zu
+      Recht nicht lieferte - der Parser war richtig, das Testfixture falsch. Lehre: beim
+      Verifizieren einer Spec-Implementierung mit selbst geschriebenen Testfixtures immer
+      auch die Fixture-Erwartung selbst gegen die Spec prüfen, nicht nur den Code.
+    - **`WEEKLY`+`BYDAY`-Expansion läuft Woche-für-Woche, nicht Tag-für-Tag.** Erster
+      Anlauf iterierte Tag für Tag und versuchte, `INTERVAL>1` nachträglich mit einer
+      Sonderfall-Sprung-Logik mitten in der Iteration zu behandeln - fehleranfällig,
+      schwer nachvollziehbar. Zweiter, beibehaltener Anlauf: die Woche ist die natürliche
+      Schrittweite von `RRULE INTERVAL` bei `FREQ=WEEKLY`, unabhängig davon, wie viele
+      `BYDAY`-Wochentage pro Woche einschlagen - `INTERVAL` steuert nur, wie viele Wochen
+      zwischen den betrachteten Wochen liegen, `BYDAY` nur, welche Tage INNERHALB einer
+      betrachteten Woche zählen. Diese Trennung vermeidet die Sonderfall-Logik strukturell
+      statt sie nachträglich zu flicken.
+    - **`.ncss-btn--sm` existiert nicht** - beim ersten Entwurf der Kalender-Navigations-
+      Buttons (Vor/Zurück) fälschlich angenommen, `.ncss-btn` hätte Größen-Modifier wie
+      viele andere Komponenten (Card/Badge haben Farbvarianten, kein Beispiel hat
+      `--sm`/`--lg`) - `grep -rn '\.ncss-btn--sm\|--lg'` VOR dem Verwenden einer vermuteten
+      Modifier-Klasse hätte das sofort gezeigt. Statt spekulativ eine neue globale Utility
+      anzulegen ("kein Wildwuchs"): kleinere Button-Größe komponenten-lokal in
+      `events.css` über `.ncss-cal-header .ncss-btn { padding/font-size: ... }` gelöst,
+      kein neuer globaler Modifier.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
@@ -1360,3 +1415,17 @@ Web Awesome + Font Awesome im Zusammenspiel, u.a. `<wa-dropdown>` als Menü stat
 ausführlicher als dieses Skill-Dokument). Jede Seite bindet `../ncss.css` ein und trägt ihr eigenes,
 seitenspezifisches CSS in einem eigenen `<style>`-Block mit `demo-*`-Präfix - nie in den
 ncss-Dateien selbst.
+
+**Nav-Konvention (User-Anstoß: "startseite soll übrigens immer die page startseite
+sein")**: der `.ncss-topbar-brand`-Link ("NativeCSS"-Wortmarke) geht auf JEDER Seite
+(alle `demo/*.html` UND die Doku-Website) zu `product.html` - der tatsächlichen
+Startseite/Marketingseite, die als Site-Wurzel deployed wird (siehe
+[Architektur](#architektur) im README). NICHT zu `demo/index.html` (das ist nur die
+Komponenten-Kitchen-Sink, eine Demo-Seite unter vielen, keine Startseite) und NICHT zu
+`#main` (Selbst-Skip-Link). War vor diesem Fix uneinheitlich (13 von 17 Demo-Seiten
+zeigten fälschlich auf `index.html`, zwei auf `#main`) - bei jeder neuen Demo-Seite
+diese Konvention direkt korrekt anlegen: `<a class="ncss-topbar-brand"
+href="product.html">NativeCSS</a>`, außer auf `product.html` selbst (dort
+selbstreferenzierend `href="product.html"`). Der separate Nav-Punkt "Komponenten" (linkt
+weiterhin zu `index.html`) bleibt davon unberührt - nur der Logo-Link folgt dieser Regel,
+nicht jeder Verweis auf die Komponenten-Übersicht.
