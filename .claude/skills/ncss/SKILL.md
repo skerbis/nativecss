@@ -1085,6 +1085,24 @@ gewünschte Zeichenweg).
     erkennbar, welche Hälfte gerade aktiv ist, obwohl das Attribut selbst korrekt gesetzt
     war.
 
+34. **Die "Vollbild"-Variante von `.ncss-stack-section` (`--ncss-stack-card-height: 100lvh`/
+    `-card-width: 100%`/`-fan: 0px`) behält ohne weiteres Zutun `.ncss-stack-card`s Default-
+    `border-radius` (`--ncss-radius-lg`) - sichtbar als abgerundete Ecke GENAU an der
+    Bildschirmkante, ein Spalt zum Seitenhintergrund statt eines sauberen Vollbilds.**
+    User-Report auf der live deployten Produktseite: "die fullscreen cards ... sind
+    abgerundet ... ich denke sie sollten nicht angerundet sein, da sonst die rundungen an
+    die browser kante stoßen". Betraf `demo/product.html` UND `demo/stacked-cards.html`s
+    eigene "Vollbild"-Demo-Sektion - beide nutzen dasselbe Rezept. Fix: zusätzlich
+    `--ncss-stack-radius: 0` in dieselbe Inline-Style-Liste, auf der SEKTION gesetzt
+    (vererbt sich normal an die Karten, gleiches Muster wie `--ncss-stack-count` u.a.).
+    NICHT generell in `scroll-stack.css` selbst behoben (z.B. "radius:0, sobald
+    card-width:100%") - dieselbe `--ncss-stack-card-width: 100%`-Einstellung wird AUCH von
+    der "in einem normalen Container"-Demo verwendet, wo abgerundete Ecken weiterhin
+    korrekt/gewünscht sind (die Karte berührt dort nie den Bildschirmrand) - eine
+    automatische Kopplung an die Breite hätte dort die Rundung fälschlich entfernt. Bleibt
+    deshalb bewusst eine Pro-Instanz-Entscheidung über den bereits vorhandenen
+    `--ncss-stack-radius`-Override-Token, nicht ein Komponenten-Verhalten.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

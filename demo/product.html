@@ -204,7 +204,10 @@
   /* --- Stacked-Cards Feature-Showcase (Vollbild) -----------------------------------------
      --ncss-stack-card-height:100lvh/-card-width:100%/-fan:0px = die "Vollbild"-Variante von
      scroll-stack.css (siehe demo/stacked-cards.html) - jede Karte nimmt die GANZE Bühne
-     ein statt nur einen Ausschnitt. */
+     ein statt nur einen Ausschnitt. Zusätzlich --ncss-stack-radius:0 (Default wäre
+     --ncss-radius-lg) - eine Karte, die randlos bis zur Bildschirmkante reicht, aber
+     trotzdem abgerundete Ecken hat, zeigt dort einen sichtbaren Spalt zum Seitenhintergrund
+     (User-Report: "die rundungen stoßen an die browser kante"). */
   .landing-stack-card {
     color: #fff;
     flex-direction: column;
@@ -394,7 +397,7 @@
       <h2>Fünf Bausteine, die NativeCSS ausmachen</h2>
       <p class="ncss-text-lead ncss-text-muted ncss-lead-quote">Diese Sektion ist selbst ein NativeCSS-Feature: <code>.ncss-stack-section</code> (components/scroll-stack.css) - Karten stapeln sich beim Scrollen, komplett ohne JavaScript, mit einem funktionierenden Fallback für Browser ohne <code>view()</code>-Unterstützung.</p>
     </div>
-    <div class="ncss-stack-section" style="--ncss-stack-count: 5; --ncss-stack-card-height: 100lvh; --ncss-stack-card-width: 100%; --ncss-stack-fan: 0px;">
+    <div class="ncss-stack-section" style="--ncss-stack-count: 5; --ncss-stack-card-height: 100lvh; --ncss-stack-card-width: 100%; --ncss-stack-fan: 0px; --ncss-stack-radius: 0;">
         <div class="ncss-stack-stage">
           <article class="ncss-stack-card landing-stack-card landing-stack-card--1" style="--ncss-stack-index: 0;">
             <span class="landing-stack-num">01</span>
