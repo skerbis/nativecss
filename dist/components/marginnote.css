@@ -6,13 +6,25 @@
  * nachgebaut: reines CSS Grid statt fester Pixel-Ränder).
  *
  * Technik: `.ncss-marginnote-layout` ist ein 3-Spalten-Grid (Randspalte / Textspalte /
- * Randspalte). Die Textspalte deckelt bei --ncss-container-max-narrow; `min(100%, ...)`
- * sorgt dafür, dass sie auf schmalen Containern automatisch 100% wird - die beiden
- * Randspalten (`1fr`) schrumpfen dann von selbst auf 0, ganz ohne eigene Media/Container
- * Query dafür. Normale Kinder (Absätze etc.) bleiben in der mittleren Spalte,
- * `.ncss-marginnote-start/-end` springen erst AB einer Mindestbreite des Grids (siehe
- * Container Query unten) in die jeweilige Randspalte - darunter bleiben sie ein normaler
- * Block in der Textspalte (kein kaputter/leerer Zustand).
+ * Randspalte). IM RUHEZUSTAND (unterhalb der Container Query) deckelt die Textspalte bei
+ * --ncss-container-max-narrow; `min(100%, ...)` sorgt dafür, dass sie auf schmalen
+ * Containern automatisch 100% wird - die beiden Randspalten (`1fr`) schrumpfen dann von
+ * selbst auf 0, ganz ohne eigene Media/Container Query dafür. Normale Kinder (Absätze
+ * etc.) bleiben in der mittleren Spalte, `.ncss-marginnote-start/-end` springen erst AB
+ * einer Mindestbreite des Grids (siehe Container Query unten) in die jeweilige
+ * Randspalte, darunter bleiben sie ein normaler Block in der Textspalte (kein kaputter/
+ * leerer Zustand). SOBALD die Randspalten aktiv werden, wird die Textspalte ZUSÄTZLICH
+ * auf eine schmalere feste Breite umgestellt (statt weiter starr 45rem zu beanspruchen) -
+ * das macht bewusst Platz für die Randspalten, statt ihnen nur die zufälligen Reste zu
+ * überlassen (echtes Sidenote-Verhalten, kein Kompromiss). GRUND für diese zweite Stufe,
+ * nicht bloß eine höhere Schwelle: in `docs-src/template.html`s Sidebar-Layout
+ * (`.docs-layout { grid-template-columns: 15rem 1fr; }`) bleibt die Inhaltsspalte SELBST
+ * bei sehr breitem Browserfenster bei ca. 53.5rem gedeckelt (die Sidebar frisst
+ * dauerhaft Platz weg, unabhängig vom Viewport) - eine feste 45rem-Textspalte hätte dort
+ * für die Randspalten nur ca. 4rem pro Seite übriggelassen (per echtem Test gefunden:
+ * zu schmal, Notizen blieben unbrauchbar zusammengequetscht bzw. die Schwelle wurde in
+ * diesem Kontext nie erreicht). Mit der schmaleren Textspalte im Breakout-Zustand bleiben
+ * dort ca. 9-10rem pro Randspalte übrig - brauchbar für kurze bis mittlere Notizen.
  *
  * WICHTIG - warum eine Marginnote automatisch NEBEN dem passenden Absatz landet, ohne
  * ihre Position selbst zu kennen: CSS Grids Auto-Placement platziert Elemente in
@@ -68,16 +80,24 @@
   border-radius: var(--ncss-radius-md);
 }
 
-/* -- ncss container-query: marginnote-breakout (60rem) --
+/* -- ncss container-query: marginnote-breakout (46rem) --
    column-gap ABSICHTLICH nur hier drin (nicht in .ncss-marginnote-layout selbst) - eine
    feste column-gap wird vom Grid IMMER zwischen den Spalten reserviert, auch wenn die
    äußeren 1fr-Spalten mangels Inhalt auf 0 kollabieren (min(100%, ...) füllt die
    Textspalte dann auf 100% der Container-Breite) - das hätte auf schmalen Containern
    einen horizontalen Overflow um genau die Summe der beiden Gaps verursacht (per echtem
    Test gefunden: 16px Overflow bei 375px Breite, obwohl visuell nichts auffiel). Der Gap
-   darf erst existieren, wenn auch tatsächlich Platz für ihn eingeplant ist. */
-@container ncss-marginnote (min-width: 60rem) {
+   darf erst existieren, wenn auch tatsächlich Platz für ihn eingeplant ist.
+   Textspalte wechselt HIER zusätzlich von `min(100%, 45rem)` auf ein festes, schmaleres
+   `min(100%, 30rem)` - macht Platz für die Randspalten (siehe Kopf-Kommentar). Schwelle
+   46rem statt der ursprünglichen 60rem, EMPIRISCH aus dem tatsächlich engsten
+   Praxis-Kontext hergeleitet (Doku-Sidebar-Layout deckelt bei ca. 53.5rem, siehe
+   Kopf-Kommentar) - großzügig genug Abstand nach unten, damit die Randspalten selbst an
+   dieser Schwelle noch eine sinnvolle Mindestbreite haben (per echtem Test verifiziert,
+   nicht nur errechnet). */
+@container ncss-marginnote (min-width: 46rem) {
   .ncss-marginnote-layout {
+    grid-template-columns: 1fr min(100%, 30rem) 1fr;
     column-gap: var(--ncss-space-lg);
   }
   .ncss-marginnote-end {

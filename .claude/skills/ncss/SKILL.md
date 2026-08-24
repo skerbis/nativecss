@@ -1137,8 +1137,60 @@ umgestellt:
     einsortiert werden und rutscht in die NÄCHSTE Zeile - dort teilt es sich dann mit dem
     darauffolgenden Absatz. Beim ersten Testlauf (Notiz nach ihrem Absatz für BEIDE Seiten)
     fiel genau das auf: die `-start`-Notiz landete neben dem FALSCHEN (nächsten) Absatz.
-    Schwelle für den Sprung in die Randspalte: 60rem Grid-Breite (Text 45rem +
-    ausreichend Platz für mindestens eine ~10-15rem breite Randspalte + Gap). (per echtem Test gefunden, components/nav.css + off-canvas.css)
+    URSPRÜNGLICHE Schwelle für den Sprung in die Randspalte: 60rem Grid-Breite (Text
+    45rem + ausreichend Platz für mindestens eine ~10-15rem breite Randspalte + Gap) -
+    siehe nächster Absatz für eine zweite, notwendige Korrektur dieser Schwelle.
+    ZWEITE RUNDE nötig (User-Report per Screenshot: "sehe hier keine Randnotizen" auf der
+    eigenen Handbuch-Seite `layouts.html#marginnote`) - die feste 60rem-Schwelle wurde in
+    der Doku-Seite NIE erreicht, obwohl das Browserfenster beliebig breit gezogen wurde.
+    Ursache: `docs-src/template.html`s Sidebar-Layout (`.docs-layout {
+    grid-template-columns: 15rem 1fr; }`) deckelt die Inhaltsspalte SELBST bei sehr
+    breitem Viewport dauerhaft bei ca. 53.5rem (per echtem Test gemessen, u.a. bei
+    1920px Viewport-Breite immer noch exakt derselbe Wert) - die Sidebar frisst
+    unabhängig vom Viewport denselben Anteil weg, es gibt keinen Viewport, der die
+    60rem-Schwelle in diesem Kontext je erreicht. Eine feste 45rem-Textspalte hätte den
+    Randspalten dort ohnehin nur ca. 4rem pro Seite übriggelassen - zu schmal für
+    brauchbaren Notiz-Inhalt, selbst wenn die Schwelle gesenkt worden wäre. ECHTER Fix:
+    ZWEI Anpassungen gleichzeitig statt nur die Zahl zu senken - (1) Schwelle auf 46rem
+    gesenkt (mit Sicherheitsabstand unter den gemessenen 53.5rem), UND (2) die Textspalte
+    wechselt INNERHALB der Container Query zusätzlich von `min(100%, 45rem)` auf ein
+    festes, schmaleres `min(100%, 30rem)` - macht aktiv Platz für die Randspalten, statt
+    ihnen nur die zufälligen Reste der festen 45rem-Textspalte zu überlassen (das
+    eigentliche, korrekte Sidenote-Verhalten: die Textspalte wird bewusst schmaler, wenn
+    Randnotizen aktiv sind, kein Kompromiss). Ergebnis in der Doku-Sidebar per echtem Test
+    verifiziert: Randspalten ca. 9.4rem statt der vorher errechneten ~4rem. Lehre: ein
+    Container-Query-Schwellenwert, der nur gegen die BREITESTE getestete Umgebung
+    (`.ncss-container` allein, bis 75rem) geprüft wurde, kann in einer SCHMALEREN, aber
+    genauso realen Praxis-Umgebung (hier: die eigene Doku-Seite mit Sidebar) nie
+    ausgelöst werden - der jeweils ENGSTE reale Nutzungskontext ist die maßgebliche
+    Referenz für eine Schwelle, nicht nur der offensichtlichste Demo-Kontext.
+
+56. **Seitenübergreifende Navi war zwischen Demo-Suite und Doku-Website strukturell
+    inkonsistent** (User-Report: "man blickt nicht durch") - alle 15 regulären
+    `demo/*.html`-Seiten teilten sich bereits eine identische, reiche Kopf-Navi
+    (Komponenten/Navigation/Formulare/Medien + "Mehr"-Dropdown mit 12 weiteren
+    Demo-Seiten + Handbuch), aber `docs-src/template.html` (die Vorlage für alle 46
+    Doku-Seiten) hatte nur zwei nackte Links ("Demo"/"Handbuch") - keinerlei direkten
+    Sprung von einer Doku-Seite zu einer EINZELNEN Demo-Seite (z.B. `forms.html`) ohne
+    erst über `demo/index.html` umzuweg. Fix: dasselbe "Mehr"-Dropdown-Muster 1:1 in
+    `docs-src/template.html` übernommen (Pfade auf `../../demo/...` angepasst, da
+    Doku-Seiten zwei Ebenen tiefer liegen), dafür 15 neue Platzhalter-Tokens in
+    `docs-src/strings.json` (DE+EN) UND passende `.replaceAll(...)`-Zeilen in
+    `docs-src/build.mjs` ergänzt - wie bei jedem neuen Platzhalter in diesem Build-System
+    (siehe Fallstrick zu `docs-src/build.mjs`s einfachem String-Replace-Mechanismus:
+    JEDER Platzhalter braucht diese drei Stellen synchron: `strings.json`-Eintrag,
+    `template.html`-Nutzung, `build.mjs`-Replace-Zeile). Nach dem Rebuild auf ALLEN 46
+    Doku-Seiten geprüft: `grep -rl "__NAV_"` über den gesamten `docs/`-Ordner muss leer
+    sein (kein unaufgelöster Platzhalter durchgerutscht).
+    Separat gefunden bei derselben Audit: `demo/landing.html` (bewusst eigenständige
+    "wirkt wie eine echte Kunden-Landingpage"-Demo, nutzt `<wa-dropdown>` statt nativem
+    `<details>` fürs eigene Mehr-Menü) hatte in genau diesem Menü zwei Lücken -
+    `forms.html`/`media.html` fehlten (12 von 14 anderen Demo-Seiten vorhanden, diese
+    zwei nicht) - ergänzt als zwei weitere `<wa-dropdown-item>`. Der generische
+    `wa-select`-Handler in `assets/js/landing-interactions.js` navigiert per
+    `value`-Attribut, keine JS-Änderung nötig, nur Markup ergänzt.
+
+## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
   ODER Grid-Item schrumpft NICHT automatisch unter seine Inhaltsbreite, selbst mit
