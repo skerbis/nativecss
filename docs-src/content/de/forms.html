@@ -46,7 +46,15 @@
   <p class="ncss-text-muted ncss-text-sm">Die native Vorschlagsliste eines <code>&lt;datalist&gt;</code> UND das Options-Popup eines <code>&lt;select&gt;</code> sind in keinem Browser per CSS stylebar (Stand 2026, geprüft) - für <code>&lt;select&gt;</code> gibt es mit <code>appearance: base-select</code> mittlerweile einen CSS-Weg (Chrome/Edge 135+, Safari 26+, siehe <a href="components.html">Komponenten-Referenz</a>), für <code>&lt;datalist&gt;</code> nicht.</p>
   <p class="ncss-text-muted ncss-text-sm"><code>components/combobox.js</code> (opt-in) ersetzt in beiden Fällen die native Popup-Optik durch eine echte, gestylte Dropdown-Liste - Original-Markup unverändert (<code>&lt;input list&gt;</code>/<code>&lt;datalist&gt;</code> bzw. <code>&lt;select&gt;</code>/<code>&lt;option&gt;</code>), volle native Funktion bleibt ohne JS bestehen (progressive enhancement, kein Funktionsverlust). Bei <code>&lt;select&gt;</code> greift es NUR dort, wo <code>appearance: base-select</code> fehlt (z.B. Firefox) - wo die native Technik bereits ein gestyltes Popup liefert, tut das Script nichts.</p>
   <pre><code class="language-html">&lt;script src="components/combobox.js" defer&gt;&lt;/script&gt;</code></pre>
-  <p class="ncss-text-muted ncss-text-sm"><strong>Reicher <code>&lt;option&gt;</code>-Inhalt</strong> (nur mit <code>appearance: base-select</code>): <code>&lt;option&gt;</code> darf seit der "Customizable Select"-Erweiterung beliebige Kind-Elemente enthalten (Icon+Label statt nur Text), ein optionaler <code>&lt;button&gt;&lt;selectedcontent&gt;</code> als erstes Kind von <code>&lt;select&gt;</code> steuert die Anzeige im geschlossenen Zustand. "The Golden Rule of Customizable Select": Text bleibt Pflicht (sichtbar oder per <code>.ncss-visually-hidden</code>), Icons sind eine Ergänzung, nie ein Ersatz.</p>
+  <p class="ncss-text-muted ncss-text-sm"><strong><code>&lt;button&gt;&lt;selectedcontent&gt;</code> als erstes Kind IMMER angeben, auch bei ganz normalem Text-Select</strong> - laut Spezifikation optional (der Browser erzeugt sonst selbst einen passenden Default-Button), in Safari 26 aber per User-Report zeitweise mit einem doppelten Pfeil-Symbol beobachtet, wenn dieser implizite Button genutzt wird. Ein expliziter Button umgeht das zuverlässig, unabhängig von der genauen Ursache.</p>
+  <pre><code class="language-html">&lt;select class="ncss-select"&gt;
+  &lt;button type="button"&gt;
+    &lt;selectedcontent&gt;&lt;/selectedcontent&gt;
+  &lt;/button&gt;
+  &lt;option&gt;Option A&lt;/option&gt;
+  &lt;option&gt;Option B&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Reicher <code>&lt;option&gt;</code>-Inhalt</strong> (nur mit <code>appearance: base-select</code>): <code>&lt;option&gt;</code> darf seit der "Customizable Select"-Erweiterung beliebige Kind-Elemente enthalten (Icon+Label statt nur Text), derselbe <code>&lt;button&gt;&lt;selectedcontent&gt;</code> steuert dann zusätzlich die Anzeige im geschlossenen Zustand. "The Golden Rule of Customizable Select": Text bleibt Pflicht (sichtbar oder per <code>.ncss-visually-hidden</code>), Icons sind eine Ergänzung, nie ein Ersatz.</p>
   <pre><code class="language-html">&lt;select class="ncss-select"&gt;
   &lt;button type="button"&gt;
     &lt;selectedcontent&gt;&lt;/selectedcontent&gt;

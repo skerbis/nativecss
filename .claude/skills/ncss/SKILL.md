@@ -1032,6 +1032,43 @@ umgestellt:
     Akkordeon-Instanz eindeutig sein (Radio-Button-Gruppen-Semantik), sonst gruppieren
     sich mehrere Akkordeons auf derselben Seite ungewollt exklusiv miteinander.
 
+53. **`<select>` mit `appearance: base-select` OHNE eigenen `<button><selectedcontent>`
+    zeigte auf Safari 26 zeitweise einen DOPPELTEN Pfeil** (User-Screenshot: ein Pfeil
+    knapp über dem oberen Rahmen, einer normal unten rechts) - nur bei EINEM von zwei
+    Test-Selects auf derselben Seite betroffen, nämlich dem OHNE expliziten Button (der
+    Browser erzeugt dann selbst einen impliziten Default-Button). Der zweite Select
+    (bereits mit `<button><selectedcontent>` für reichen Options-Inhalt) zeigte nur
+    einen Pfeil. NICHT in Playwrights Chromium/WebKit-Builds reproduzierbar (beide
+    zeigen dort nur einen Pfeil, computed style bestätigt `.ncss-select-wrapper::after`
+    korrekt auf `display:none`) - vermutlich eine Eigenheit der echten Safari-26-
+    Implementierung dieses sehr neuen Features, dieselbe Lücke wie bei `initial-letter`
+    (Fallstrick 9): generische Test-Engines bilden brandneue Safari-Features nicht immer
+    exakt nach. Fix (ohne die genaue Browser-Ursache 100% zu kennen): IMMER einen
+    expliziten `<button type="button"><selectedcontent></selectedcontent></button>` als
+    erstes Kind angeben, auch bei ganz normalem Text-Select - umgeht das Problem
+    zuverlässig unabhängig von der Ursache, siehe components/select.css.
+
+54. **Natives `<details>` sanft animieren (User-Report: "nicht schön animiert"), ohne JS**
+    - `::details-content` (Baseline seit September 2025) ist das Pseudo-Element für ALLES
+    außer `<summary>`; `height: 0` → `[open]::details-content { height: auto }` +
+    `transition: height ...` animiert das dank `interpolate-size: allow-keywords`
+    (`@supports`-gated global in reset.css, siehe dort) NUR in Chromium (Stand 2026) -
+    ohne Unterstützung bleibt der native Sofort-Sprung als Fallback, KEIN kaputter/leerer
+    Zustand, deshalb kein eigenes Feature-Gate pro Komponente nötig (per Playwright über
+    alle drei Engines bestätigt: WebKit/Firefox zeigen sofort die Endhöhe, kein Fehler).
+    Muster: `.ncss-disclosure::details-content`/`.ncss-accordion-split-item::details-
+    content` je `{ overflow: clip; height: 0; transition: height var(--ncss-motion-
+    duration-slow) var(--ncss-motion-easing); }` + `[open]::details-content { height:
+    auto; }`. WICHTIGE LÜCKE dabei gefunden (nicht user-gemeldet, proaktiv beim Bauen
+    aufgefallen): die bestehende globale `prefers-reduced-motion`-Regel in reset.css nutzt
+    den Universalselektor `*, *::before, *::after` - das erreicht ANDERE benannte Pseudo-
+    Elemente wie `::details-content` NICHT (der Stern trifft nur echte Elemente plus
+    genau die beiden dort explizit gelisteten Pseudo-Elemente), musste also separat
+    ergänzt werden (`*, *::before, *::after, *::details-content { transition-duration:
+    0.01ms !important; ... }`) - sonst würde die Öffnen/Schließen-Animation reduced-motion
+    ignorieren. Per Playwright mit `reducedMotion: 'reduce'` über alle drei Engines
+    bestätigt: `transitionDuration` auf `::details-content` sinkt korrekt auf ~0.00001s.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

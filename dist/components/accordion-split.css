@@ -94,6 +94,19 @@
   rotate: 225deg;
   translate: 0 0.2em;
 }
+/* Sanftes Auf-/Zuklappen statt des nativen Sofort-Sprungs (User-Report: "nicht schön
+   animiert") - dieselbe Technik wie .ncss-disclosure (components/disclosure.css, dort
+   ausführlicher kommentiert): ::details-content ist alles AUSSER <summary>, height:0-
+   >auto animiert dank interpolate-size (reset.css). Nur Chromium interpoliert das
+   bisher - ohne Unterstützung bleibt der native Sofort-Sprung, kein kaputter Zustand. */
+.ncss-accordion-split-item::details-content {
+  overflow: clip;
+  height: 0;
+  transition: height var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+}
+.ncss-accordion-split-item[open]::details-content {
+  height: auto;
+}
 .ncss-accordion-split-body {
   padding-block-end: var(--ncss-space-lg);
   color: var(--ncss-color-text-muted);

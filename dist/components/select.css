@@ -11,6 +11,17 @@
  * Markup: <span class="ncss-select-wrapper"><select class="ncss-select">...</select></span>
  * - der Wrapper trägt den Pfeil-Indikator (Formularelemente selbst unterstützen kein
  * generiertes ::after-Content).
+ *
+ * IMMER einen expliziten <button type="button"><selectedcontent></selectedcontent></button>
+ * als erstes Kind des <select> mitgeben, auch bei ganz normalem Text-Select ohne reichen
+ * Options-Inhalt - laut Spec optional (der Browser erzeugt sonst selbst einen passenden
+ * Default-Button), per User-Report auf Safari 26 aber zeitweise mit einem doppelten
+ * Pfeil-Symbol beobachtet, wenn dieser implizite Button genutzt wird (nur bei EINEM von
+ * zwei Test-Selects auf derselben Seite - der explizit mit eigenem Button ausgestattete
+ * Select war nicht betroffen). Nicht in Playwrights Chromium/WebKit-Builds reproduzierbar
+ * (beide zeigen nur einen Pfeil) - vermutlich eine Eigenheit der echten Safari-26-
+ * Implementierung dieses noch sehr neuen Features, nicht in den generischen Test-Engines
+ * exakt nachgebildet (dieselbe Lücke wie bei initial-letter, siehe helpers/typography.css).
  */
 
 .ncss-select-wrapper {

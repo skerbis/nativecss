@@ -15,7 +15,23 @@
 }
 .ncss-disclosure > summary {
   font-weight: 600;
+  cursor: pointer;
 }
 .ncss-disclosure[open] > summary {
   margin-block-end: var(--ncss-space-xs);
+}
+
+/* Sanftes Auf-/Zuklappen statt des nativen Sofort-Sprungs (User-Report: "nicht schön
+   animiert") - ::details-content ist alles AUSSER <summary>, height:0->auto animiert
+   dank interpolate-size (siehe reset.css, dort auch die reduced-motion-Behandlung
+   dafür). Nur Chromium interpoliert das bisher (Stand 2026) - ohne Unterstützung bleibt
+   der native Sofort-Sprung als Fallback, kein kaputter/leerer Zustand, deshalb kein
+   eigenes @supports-Gate hier nötig (dieselbe Begründung wie beim globalen Opt-in). */
+.ncss-disclosure::details-content {
+  overflow: clip;
+  height: 0;
+  transition: height var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+}
+.ncss-disclosure[open]::details-content {
+  height: auto;
 }
