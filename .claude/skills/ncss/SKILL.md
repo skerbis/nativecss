@@ -1260,17 +1260,37 @@ umgestellt:
     ein normaler Block-Nachfahre seines `<li>`-Wrappers, nicht direkt Kind von
     `.ncss-nav-list` (dem Flex-Container), das ursprünglich für `.ncss-topbar-actions`
     geschriebene `align-self:stretch` auf `.ncss-divider--vertical` selbst blieb dadurch
-    wirkungslos. Fix Teil 1: `.ncss-nav-item:has(> .ncss-divider--vertical) { align-self:
-    stretch; }` - das LI (der tatsächliche Flex-Item) stretcht. (2) Selbst mit korrekt
-    gestrecktem `<li>` blieb das `<hr>` darin bei `height:0` - `height:auto` (aus der
-    geteilten Utility-Klasse) berechnet sich für einen normalen Block NICHT automatisch
-    aus der Höhe eines flex-gestreckten Elternteils. Fix Teil 2: `.ncss-nav-item >
-    .ncss-divider--vertical { height: 100%; }` - explizite Prozent-Höhe relativ zum jetzt
-    definierten `<li>`. Zusätzlich responsive: unterhalb 64rem (`.ncss-nav-list` wechselt
-    dort auf `flex-direction: column` fürs Off-Canvas-Panel) wäre eine VERTIKALE Linie
-    zwischen gestapelten Zeilen witzlos - `.ncss-nav-list .ncss-divider--vertical` wird im
-    selben `@media (max-width: 63.99rem)`-Block auf eine horizontale Linie zurückgesetzt
-    (`border-block-start` statt `border-inline-start`).
+    wirkungslos (Divider unsichtbar, `height:0`).
+    ERSTER Fix (per `:has()` das `<li>` selbst stretchen + `height:100%` aufs `<hr>`)
+    machte den Divider zwar sichtbar, brachte aber einen ZWEITEN, subtileren Fehler:
+    User-Report samt Screenshot "Divider ist zu hoch und viel zu hell" - der Trenner war
+    dadurch exakt so hoch wie die GESAMTE Flex-Zeile inklusive Innenabstand, nicht wie der
+    Text daneben. Kein absoluter Pixel-Fehler, sondern eine falsche BEZUGSGRÖSSE
+    (Zeilenhöhe statt Textgröße) - auf Seiten mit größerem Zeilenabstand (z.B.
+    product.html's transparente "Glass"-Topbar) wirkte das entsprechend überproportional.
+    ENDGÜLTIGER Fix (deutlich einfacher als beide vorherigen Versuche zusammen): `height:
+    1.2em` statt jeglichem Höhen-Bezug auf die Elternzeile - skaliert automatisch mit dem
+    umgebenden Text, unabhängig vom Zeilen-Padding, kein `:has()`-Stretch-Trick mehr
+    nötig (Default `align-self:center` von `.ncss-nav-list` reicht). Gleichzeitig auch
+    die FARBE korrigiert (zweiter Teil desselben User-Reports: "viel zu hell") - das feste
+    `--ncss-color-border`-Token ist für helle Standard-Flächen gedacht, auf einer
+    abweichend eingefärbten Topbar (z.B. product.html's dunkle Glass-Variante mit lokal
+    auf Weiß gesetztem Navi-Text) blieb der Trenner dadurch fehl am Platz. Fix:
+    `border-inline-start-color: color-mix(in oklch, currentColor 30%, transparent)` -
+    folgt automatisch der jeweils schon korrekten Textfarbe an dieser Stelle, keine
+    Seiten-spezifische Farbanpassung am Divider selbst nötig. VORAUSSETZUNG dafür: die
+    Textfarbe muss an GENAU dieser Position (dem Divider-`<li>`, nicht nur den `<a>`s
+    daneben) korrekt ererbt werden - `product.html`s bereits bestehende lokale
+    Weiß-Textfarben-Regel (siehe eigener `<style>`-Block, dort schon für die dunkle
+    Glass-Topbar nötig) musste dafür um genau dieses `<li>` erweitert werden
+    (`.landing-topbar .ncss-nav-item:has(> .ncss-divider--vertical) { color: #fff; }`) -
+    keine neue Sonderbehandlung, nur eine bereits nötige Liste um ein weiteres Element
+    ergänzt.
+    Zusätzlich responsive: unterhalb 64rem (`.ncss-nav-list` wechselt dort auf
+    `flex-direction: column` fürs Off-Canvas-Panel) wäre eine VERTIKALE Linie zwischen
+    gestapelten Zeilen witzlos - `.ncss-nav-list .ncss-divider--vertical` wird im selben
+    `@media (max-width: 63.99rem)`-Block auf eine horizontale Linie zurückgesetzt
+    (`border-block-start` statt `border-inline-start`), mit derselben currentColor-Logik.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

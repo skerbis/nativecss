@@ -163,7 +163,8 @@
      (User-Report: leeres weißes Mobil-Menü ohne erkennbare Punkte). */
   @media (min-width: 64rem) {
     .landing-topbar .ncss-nav-item > a,
-    .landing-topbar .ncss-nav-dropdown > summary {
+    .landing-topbar .ncss-nav-dropdown > summary,
+    .landing-topbar .ncss-nav-item:has(> .ncss-divider--vertical) {
       color: #fff;
     }
     /* nav.css' eigener :hover/:focus-visible-Zustand setzt background-color:var(--ncss-

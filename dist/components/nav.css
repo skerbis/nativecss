@@ -100,27 +100,37 @@
   padding: 0;
   min-width: 0;
 }
-/* helpers/layout.css' .ncss-divider--vertical erwartet, DIREKTER Flex-Item zu sein
-   (align-self wirkt nur auf echte Flex-Items, nicht auf beliebig tief verschachtelte
-   Nachfahren) - hier steckt das <hr> aber in einem eigenen <li> (gültiges HTML, <ul> darf
-   nur <li> als Kinder haben), der eigentliche Flex-Item ist also das <li>, nicht das <hr>
-   darin. `align-self:stretch` auf dem <hr> selbst blieb dadurch wirkungslos, der Divider
-   bekam per `.ncss-nav-list`s eigenem `align-items:center` (nicht stretch) eine Höhe von
-   0 (per echtem Test/getBoundingClientRect gefunden: unsichtbar, kein Fehler in der
-   Konsole). Fix: das <li> selbst bekommt hier das stretch, das <hr> darin füllt es dank
-   seines eigenen `height:auto`/`align-self:stretch` dann korrekt aus. */
-.ncss-nav-item:has(> .ncss-divider--vertical) {
-  align-self: stretch;
-}
-/* Der stretch-Effekt braucht ZWEI Schritte, nicht nur einen: das <li> selbst auf die
-   volle Zeilenhöhe strecken (Regel oben) UND das <hr> darin explizit auf 100% dieser
-   (jetzt definierten) <li>-Höhe setzen - die geerbte `height:auto` aus
-   .ncss-divider--vertical selbst bleibt wirkungslos, weil `align-self:stretch` NUR auf
-   echte Flex-Items wirkt, das <hr> hier aber ein ganz normaler Block-Nachfahre des <li>
-   ist, kein eigenes Flex-Item (per echtem Test/getBoundingClientRect gefunden: <li> hatte
-   bereits korrekt die volle Höhe, das <hr> darin trotzdem weiterhin 0). */
+/* Eigene, von helpers/layout.css' Grundform ABWEICHENDE Größen-/Farblogik für den
+   Divider INNERHALB einer Nav-Liste (User-Report samt Screenshot: "Divider ist zu hoch
+   und viel zu hell"). ERSTER Versuch (verworfen): das <hr> steckt in einem eigenen <li>
+   (gültiges HTML, <ul> darf nur <li>-Kinder haben) statt direkt im Flex-Container zu
+   sitzen wie bei .ncss-topbar-actions - `align-self:stretch` auf dem <li> plus
+   `height:100%` auf dem <hr> darin machte den Trenner zwar sichtbar, aber exakt so hoch
+   wie die GESAMTE Flex-Zeile inklusive Innenabstand. Auf Seiten mit größerem
+   Zeilenabstand (z.B. product.html's transparente "Glass"-Topbar, deren eigene Padding-
+   Regeln abweichen) wirkte der Trenner dadurch überproportional lang im Vergleich zum
+   eigentlichen Text daneben - kein absoluter Pixel-Fehler, sondern ein Problem der
+   BEZUGSGRÖSSE (Zeilenhöhe statt Textgröße). Bessere, textrelative Bezugsgröße: `1.2em`
+   statt eines Höhen-Bezugs auf die Elternzeile - skaliert automatisch mit, wo auch immer
+   der Trenner landet, unabhängig von Zeilen-Padding. `align-self` bleibt unangetastet
+   (Default `center` von `.ncss-nav-list` reicht, kein `:has()`-Stretch-Trick mehr nötig -
+   deutlich einfacher als der erste Versuch). */
 .ncss-nav-item > .ncss-divider--vertical {
-  height: 100%;
+  height: 1.2em;
+  /* `--ncss-color-border` ist ein FESTER, für helle Flächen gedachter Farbwert - auf
+     einer abweichend eingefärbten Topbar (z.B. product.html's dunkle Glass-Variante mit
+     Seiten-lokal auf Weiß gesetztem Navi-Text) blieb der Trenner dadurch entweder zu
+     blass (User-Report: "viel zu hell") oder unpassend zur jeweiligen Umgebung.
+     `currentColor` statt eines festen Tokens macht ihn stattdessen automatisch zur
+     jeweils bereits korrekten Textfarbe an dieser Stelle passend - color-mix() reduziert
+     die Deckkraft auf einen dezenten Trennerwert, ohne eine zweite, separat zu pflegende
+     Halbtransparenz-Variable je Kontext zu brauchen. Voraussetzung: die Textfarbe muss an
+     GENAU dieser Position (dem Divider-<li>, nicht nur den Link-<a>s daneben) korrekt
+     ererbt werden - Seiten mit einer vom Standard abweichenden Navi-Farbe (wie
+     product.html) müssen ihre eigene, ohnehin schon nötige lokale Farb-Anpassung (siehe
+     dortige <style>) auf dieses <li> mit ausweiten, sonst greift currentColor auf den
+     ncss-Standardtext zurück statt auf die lokal gewünschte Farbe. */
+  border-inline-start-color: color-mix(in oklch, currentColor 30%, transparent);
 }
 
 /* base.css's generischer Block-Rhythmus (jedes <details> bekommt margin-block-end, wie
@@ -282,17 +292,21 @@
   /* Trenner zwischen den festen Hauptbereichen (Handbuch/Demo) und den seitenspezifischen
      Punkten (siehe helpers/layout.css' .ncss-divider--vertical, hier per Markup als
      <li><hr class="ncss-divider--vertical" ...></li> eingesetzt) - dessen Grundform
-     (border-inline-start, align-self:stretch) ist für eine FLEX-ZEILE gedacht. Sobald
-     .ncss-nav-list oben auf flex-direction:column umschaltet (schmaler Viewport, off-
-     canvas-Panel), würde dieselbe vertikale Linie nur noch als kaum sichtbarer, seitlich
-     hängender Strich zwischen zwei gestapelten Zeilen wirken - hier deshalb auf eine
-     normale HORIZONTALE Trennlinie zurückgesetzt, passend zur gestapelten Liste. */
+     (border-inline-start) ist für eine FLEX-ZEILE gedacht. Sobald .ncss-nav-list oben auf
+     flex-direction:column umschaltet (schmaler Viewport, off-canvas-Panel), würde
+     dieselbe vertikale Linie nur noch als kaum sichtbarer, seitlich hängender Strich
+     zwischen zwei gestapelten Zeilen wirken - hier deshalb auf eine normale HORIZONTALE
+     Trennlinie zurückgesetzt, passend zur gestapelten Liste. Dieselbe currentColor-
+     Begründung wie bei der Desktop-Variante weiter oben in dieser Datei (Größen-/
+     Farblogik-Kommentar bei `.ncss-nav-item > .ncss-divider--vertical`) gilt hier
+     unverändert mit. */
   .ncss-nav-list .ncss-divider--vertical {
     align-self: stretch;
     width: auto;
     height: 0;
     border-inline-start: none;
-    border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-block-start: var(--ncss-border-width) solid
+      color-mix(in oklch, currentColor 30%, transparent);
     margin-inline: 0;
     margin-block: var(--ncss-space-3xs);
   }
