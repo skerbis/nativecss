@@ -4,8 +4,10 @@
  *
  * 1. <input list="..."> + <datalist> -> filterbares custom Dropdown, Original-Element
  *    bleibt Werttyp (echtes <input>, kein Ersatz).
- * 2. <select class="ncss-select"> (nur auf Browsern OHNE "appearance: base-select") ->
- *    natives <select> bleibt der Werthalter, wird aber visuell + für Assistive Technology
+ * 2. <select class="ncss-select"> (nur dort, wo components/select.css KEIN
+ *    "appearance: base-select" aktiviert - siehe dessen Kopf-Kommentar für die genaue
+ *    Bedingung, u.a. auch WebKit/Safari, siehe enhanceSelect() unten) -> natives
+ *    <select> bleibt der Werthalter, wird aber visuell + für Assistive Technology
  *    durch einen custom Trigger-Button + Listbox ersetzt (WAI-ARIA "Select-Only
  *    Combobox"-Muster: https://www.w3.org/WAI/ARIA/apg/patterns/combobox/), da die
  *    native Popup-Optik dort durch nichts erreichbar ist.
@@ -228,10 +230,24 @@
     });
   }
 
-  /* --- Fall 2: <select> (nur ohne native appearance:base-select-Unterstützung) --------- */
+  /* --- Fall 2: <select> (nur ohne native appearance:base-select-Unterstützung) ---------
+     Dieselbe zusammengesetzte Bedingung wie components/select.css' @supports-Gate (dort
+     ausführlich begründet: WebKit/Safari bewusst ausgeschlossen wegen eines noch nicht
+     selbst fixbaren Doppelpfeil-Rendering-Bugs in Safari 26) - MUSS synchron bleiben,
+     sonst denkt dieses Script fälschlich, Safari hätte bereits ein gestyltes natives
+     Popup (hat es nicht mehr, seit select.css es dort deaktiviert) und enhanct dann gar
+     nichts, Safari-Nutzer bekämen ein unstyled Popup statt der JS-Alternative. */
   function enhanceSelect(select) {
     if (select.hasAttribute("data-ncss-combobox")) return;
-    if (window.CSS && CSS.supports && CSS.supports("appearance", "base-select")) return;
+    if (
+      window.CSS &&
+      CSS.supports &&
+      CSS.supports(
+        "(appearance: base-select) and (not ((hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none)))"
+      )
+    ) {
+      return;
+    }
 
     var options = Array.prototype.slice.call(select.options).map(function (opt) {
       return { value: opt.value, label: opt.textContent.trim(), node: opt };

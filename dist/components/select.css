@@ -3,10 +3,11 @@
  *
  * Fallback-first: das Basisstyling (Pfeil-Indikator per mask-image statt Hintergrundbild,
  * damit die Farbe aus unseren Tokens statt einem fest codierten SVG-Wert kommt) läuft in
- * JEDEM Browser. appearance: base-select wird nur ergänzt, wo unterstützt (siehe
- * @supports unten) - "The Golden Rule of Customizable Select"
- * (https://webkit.org/blog/18117/the-golden-rule-of-customizable-select/): natives
- * <select> bleibt die funktionale Baseline, nie nur ein Enhancement-Layer ohne Fallback.
+ * JEDEM Browser. appearance: base-select wird nur ergänzt, wo unterstützt UND (Stand
+ * jetzt) nicht WebKit/Safari ist (siehe @supports-Begründung unten) - "The Golden Rule of
+ * Customizable Select" (https://webkit.org/blog/18117/the-golden-rule-of-customizable-select/):
+ * natives <select> bleibt die funktionale Baseline, nie nur ein Enhancement-Layer ohne
+ * Fallback.
  *
  * Markup: <span class="ncss-select-wrapper"><select class="ncss-select">...</select></span>
  * - der Wrapper trägt den Pfeil-Indikator (Formularelemente selbst unterstützen kein
@@ -15,13 +16,33 @@
  * IMMER einen expliziten <button type="button"><selectedcontent></selectedcontent></button>
  * als erstes Kind des <select> mitgeben, auch bei ganz normalem Text-Select ohne reichen
  * Options-Inhalt - laut Spec optional (der Browser erzeugt sonst selbst einen passenden
- * Default-Button), per User-Report auf Safari 26 aber zeitweise mit einem doppelten
- * Pfeil-Symbol beobachtet, wenn dieser implizite Button genutzt wird (nur bei EINEM von
- * zwei Test-Selects auf derselben Seite - der explizit mit eigenem Button ausgestattete
- * Select war nicht betroffen). Nicht in Playwrights Chromium/WebKit-Builds reproduzierbar
- * (beide zeigen nur einen Pfeil) - vermutlich eine Eigenheit der echten Safari-26-
- * Implementierung dieses noch sehr neuen Features, nicht in den generischen Test-Engines
- * exakt nachgebildet (dieselbe Lücke wie bei initial-letter, siehe helpers/typography.css).
+ * Default-Button), macht das Verhalten aber über alle Browser hinweg konsistent und
+ * vorhersehbar.
+ *
+ * WEBKIT/SAFARI BEWUSST AUSGESCHLOSSEN (Stand August 2026): User-Report (Safari 26,
+ * stabile Version, KEIN Beta) zeigte einen doppelten Pfeil bei appearance: base-select -
+ * ein Pfeil knapp über dem oberen Rahmen (offensichtliches Rendering-Artefakt), einer an
+ * normaler Position unten rechts. Bestand WEITERHIN, nachdem der explizite
+ * <button><selectedcontent> (siehe oben) bereits auf BEIDEN betroffenen Selects vorhanden
+ * war - die ursprüngliche Diagnose ("fehlender Button verursacht impliziten Fallback-
+ * Button mit eigenem Pfeil") war damit widerlegt, nicht die tatsächliche Ursache. Nicht in
+ * Playwrights WebKit-Build reproduzierbar (zeigt nur einen korrekten Pfeil, computed style
+ * bestätigt unseren eigenen Pfeil korrekt auf display:none) - vermutlich ein echter,
+ * unfertiger WebKit-Implementierungs-Bug in diesem sehr neuen Feature (Apples eigener
+ * WWDC26-Blog nennt Safari 27 als Ziel-Version für die ausgereifte Umsetzung; Safari 26
+ * hat offenbar schon eine frühe, noch fehlerhafte Vorstufe). Mangels Testzugang zu echtem
+ * Safari nicht gezielt fixbar - Nutzer-Entscheidung: WebKit bekommt bis auf Weiteres
+ * bewusst NUR das schlichte native Select mit unserem eigenen Pfeil (garantiert korrekt),
+ * statt der angereicherten Optik (reiche Options-Inhalte, eigenes Popup-Styling). Sobald
+ * Apple den Bug behebt (neu gegentestet werden, sobald Safari 27 uneingeschränkt
+ * verfügbar ist), kann der WebKit-Ausschluss unten wieder entfernt werden.
+ *
+ * WebKit-Erkennung per Feature-Kombination, die (Stand jetzt) nur in WebKit gleichzeitig
+ * zutrifft, kein User-Agent-Sniffing (per echtem Test in Chromium/WebKit/Firefox
+ * bestätigt: nur WebKit liefert bei allen drei Bedingungen gemeinsam `true`) -
+ * `hanging-punctuation`/`font: -apple-system-body` sind reine WebKit-Eigenheiten,
+ * `-webkit-appearance: none` grenzt zusätzlich gegen ältere/andere Browser ein, die
+ * zufällig eine der ersten beiden ebenfalls unterstützen könnten.
  */
 
 .ncss-select-wrapper {
@@ -51,10 +72,12 @@
   width: 100%;
 }
 
-/* Nur dort aktiv, wo appearance:base-select tatsächlich unterstützt wird (siehe
-   Browser-Stand: Chrome/Edge 135+, Safari 27+ - Firefox/ältere Browser bleiben beim
-   Fallback oben, voll funktionsfähig, nur schlichter gestylt). */
-@supports (appearance: base-select) {
+/* Nur dort aktiv, wo appearance:base-select tatsächlich unterstützt wird UND es nicht
+   WebKit/Safari ist (siehe Kopf-Kommentar: dort bekannter, nicht selbst fixbarer
+   Doppelpfeil-Bug in Safari 26) - Chrome/Edge 135+ bekommen die volle Optik, Firefox/
+   ältere Browser UND WebKit/Safari bleiben beim Fallback oben, voll funktionsfähig, nur
+   schlichter gestylt. */
+@supports (appearance: base-select) and (not ((hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none))) {
   .ncss-select {
     appearance: base-select;
   }

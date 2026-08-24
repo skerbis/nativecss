@@ -1032,21 +1032,35 @@ umgestellt:
     Akkordeon-Instanz eindeutig sein (Radio-Button-Gruppen-Semantik), sonst gruppieren
     sich mehrere Akkordeons auf derselben Seite ungewollt exklusiv miteinander.
 
-53. **`<select>` mit `appearance: base-select` OHNE eigenen `<button><selectedcontent>`
-    zeigte auf Safari 26 zeitweise einen DOPPELTEN Pfeil** (User-Screenshot: ein Pfeil
-    knapp über dem oberen Rahmen, einer normal unten rechts) - nur bei EINEM von zwei
-    Test-Selects auf derselben Seite betroffen, nämlich dem OHNE expliziten Button (der
-    Browser erzeugt dann selbst einen impliziten Default-Button). Der zweite Select
-    (bereits mit `<button><selectedcontent>` für reichen Options-Inhalt) zeigte nur
-    einen Pfeil. NICHT in Playwrights Chromium/WebKit-Builds reproduzierbar (beide
-    zeigen dort nur einen Pfeil, computed style bestätigt `.ncss-select-wrapper::after`
-    korrekt auf `display:none`) - vermutlich eine Eigenheit der echten Safari-26-
-    Implementierung dieses sehr neuen Features, dieselbe Lücke wie bei `initial-letter`
-    (Fallstrick 9): generische Test-Engines bilden brandneue Safari-Features nicht immer
-    exakt nach. Fix (ohne die genaue Browser-Ursache 100% zu kennen): IMMER einen
-    expliziten `<button type="button"><selectedcontent></selectedcontent></button>` als
-    erstes Kind angeben, auch bei ganz normalem Text-Select - umgeht das Problem
-    zuverlässig unabhängig von der Ursache, siehe components/select.css.
+53. **`<select>` mit `appearance: base-select` zeigte auf Safari 26 (stabil, KEIN Beta)
+    einen DOPPELTEN Pfeil** (User-Screenshot: ein Pfeil knapp über dem oberen Rahmen -
+    offensichtliches Rendering-Artefakt -, einer normal unten rechts). ERSTE, WIDERLEGTE
+    Diagnose: "fehlender expliziter `<button><selectedcontent>`, Browser erzeugt
+    impliziten Default-Button, DER zeigt den Doppelpfeil" - Fix (Button überall ergänzen)
+    ausgeliefert, User bestätigte per Folge-Report ausdrücklich: Bug bestand WEITERHIN,
+    obwohl beide betroffenen Selects auf `forms.html` zu diesem Zeitpunkt bereits einen
+    expliziten Button hatten. Lehre: eine plausible Korrelation aus EINEM Screenshot
+    (nur der button-lose Select zeigte den Bug beim ersten Report) ist keine bestätigte
+    Kausalität - ohne echten Repro-Zugriff (Playwrights WebKit-Build zeigt hier
+    durchgehend nur einen korrekten Pfeil, keine Reproduktion möglich) bleibt jede
+    Diagnose eine Hypothese, bis der Nutzer den tatsächlichen Fix bestätigt.
+    ECHTER Fix (Nutzer-Entscheidung nach Rückfrage, da mangels Testzugang nicht gezielt
+    behebbar): `appearance: base-select` in WebKit/Safari komplett deaktivieren (nicht nur
+    den Button ergänzen) - Safari fällt bewusst auf das schlichte native `<select>` mit
+    eigenem Pfeil zurück, bis Apple den Bug behebt (Ziel-Version laut Apples eigenem
+    WWDC26-Blog: Safari 27, Safari 26 hat offenbar nur eine frühe/fehlerhafte Vorstufe).
+    WebKit-Erkennung OHNE User-Agent-Sniffing über eine Feature-Kombination, die nur dort
+    gleichzeitig zutrifft (per echtem `CSS.supports()`-Test in Chromium/WebKit/Firefox
+    bestätigt - nur WebKit liefert bei allen dreien gemeinsam `true`):
+    `@supports (appearance: base-select) and (not ((hanging-punctuation: first) and
+    (font: -apple-system-body) and (-webkit-appearance: none)))`. WICHTIG: `combobox.js`
+    (der JS-Fallback für Browser ohne aktives `base-select`) hatte sein eigenes,
+    unabhängiges Feature-Detection (`CSS.supports("appearance", "base-select")` OHNE die
+    WebKit-Ausnahme) - dieses MUSS exakt dieselbe zusammengesetzte Bedingung nutzen wie
+    `select.css`s `@supports`-Gate, sonst denkt das Script fälschlich, Safari hätte
+    bereits ein gestyltes natives Popup (hat es nicht mehr, seit CSS es dort deaktiviert)
+    und enhanct dort gar nichts - beide Stellen synchron halten, siehe components/
+    select.css UND components/combobox.js.
 
 54. **Natives `<details>` sanft animieren (User-Report: "nicht schön animiert"), ohne JS**
     - `::details-content` (Baseline seit September 2025) ist das Pseudo-Element für ALLES

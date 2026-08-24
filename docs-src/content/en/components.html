@@ -95,7 +95,7 @@
   <div class="ncss-table-scroll">
     <table>
       <tbody>
-        <tr><td><code>select.css</code></td><td><code>.ncss-select-wrapper</code>, <code>.ncss-select</code></td><td>Styled native <code>&lt;select&gt;</code> including its own chevron</td></tr>
+        <tr><td><code>select.css</code></td><td><code>.ncss-select-wrapper</code>, <code>.ncss-select</code></td><td>Styled native <code>&lt;select&gt;</code> including its own chevron. With <code>appearance: base-select</code>, additionally rich <code>&lt;option&gt;</code> content/custom popup styling - currently enabled ONLY in Chrome/Edge 135+, WebKit/Safari deliberately excluded (a known, not independently fixable duplicate-arrow rendering bug in Safari 26 - there AND in Firefox, <code>components/combobox.js</code> takes over automatically, see <a href="forms.html#combobox-js">Forms</a>)</td></tr>
         <tr><td><code>search.css</code></td><td><code>.ncss-search</code>, <code>.ncss-search-input</code></td><td>Search field that starts narrow and grows on focus via a pure <code>width</code> transition - no JS</td></tr>
       </tbody>
     </table>

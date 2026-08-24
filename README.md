@@ -498,13 +498,17 @@ Semantik). Deckt aktuell `.ncss-input`/`-textarea`/`.ncss-btn` als direkte Kinde
 **Gestylte Dropdowns, opt-in** (`components/combobox.js` + `combobox.css`): die native
 Vorschlagsliste eines `<datalist>` UND das Options-Popup eines `<select>` sind in keinem
 Browser per CSS stylebar (Stand 2026, geprüft) - für `<select>` gibt es mit `appearance:
-base-select` mittlerweile einen CSS-Weg (Chrome/Edge 135+, Safari 26+, siehe
-`select.css`), für `<datalist>` nicht. `components/combobox.js` (opt-in) ersetzt in
+base-select` mittlerweile einen CSS-Weg, den ncss aktuell nur in Chrome/Edge 135+
+aktiviert (WebKit/Safari bewusst ausgeschlossen, siehe `select.css` für die Begründung:
+ein bekannter, nicht selbst fixbarer Doppelpfeil-Rendering-Bug in Safari 26), für
+`<datalist>` gibt es gar keinen. `components/combobox.js` (opt-in) ersetzt in
 beiden Fällen die native Popup-Optik durch eine echte, gestylte Dropdown-Liste -
 Original-Markup unverändert, volle native Funktion bleibt ohne JS bestehen (progressive
-enhancement). Bei `<select>` greift es NUR dort, wo `appearance: base-select` fehlt
-(z.B. Firefox) - per `CSS.supports("appearance", "base-select")` selbst geprüft, tut
-nichts, wo die native Technik bereits ein gestyltes Popup liefert. Tastatur (Pfeiltasten/
+enhancement). Bei `<select>` greift es genau dort, wo ncss `appearance: base-select`
+NICHT aktiviert (Firefox UND aktuell auch Safari) - per `CSS.supports(...)` mit
+DERSELBEN zusammengesetzten Bedingung wie `select.css`s `@supports`-Gate selbst geprüft
+(muss synchron bleiben), tut nichts, wo die native Technik bereits ein gestyltes Popup
+liefert (Chrome/Edge). Tastatur (Pfeiltasten/
 Enter/Escape) und ARIA (`role="combobox"`/`"listbox"`/`"option"`, `aria-expanded`,
 `aria-activedescendant`) nach dem WAI-ARIA-Combobox-Muster, per echtem Test in
 Chromium/WebKit/Firefox bestätigt (inkl. Tippen+Filtern, Klick- und Tastaturauswahl,
@@ -734,7 +738,7 @@ hier nur die Kurzreferenz.
 | `search.css` | `.ncss-search`, `.ncss-search-input` (+ `--ncss-search-expanded-width`) | Suchfeld, das schmal startet und beim Fokussieren/bei Eingabe per reiner `width`-Transition wächst - kein JS |
 | `badge.css` | `.ncss-badge` (+ `--brand-2/-neutral/-success/-warning/-danger`), `.ncss-badge-icon` (+ `--lg`) | Kleine Status-/Kategorie-Chips. `.ncss-badge-icon` ist dieselbe "100-Fläche + -on-soft-Text"-Logik als Kreis/Quadrat um ein einzelnes Icon statt als Text-Pille (Feature-Listen/-Karten) - erwartet ein Icon-Kind (`<i class="fa-solid ...">`, `.ncss-icon-*` oder `<svg>`), `--lg` für die größere Variante (z.B. auf Vollbild-Stacked-Cards) |
 | `breadcrumb.css` | `.ncss-breadcrumb` | Natives `<nav><ol>`, `::before`-generierte Trenner |
-| `select.css` | `.ncss-select-wrapper`, `.ncss-select` | Gestyltes natives `<select>` inkl. eigenem Chevron. Mit `appearance: base-select` (Chrome/Edge 135+, Safari 26+) zusätzlich: reicher `<option>`-Inhalt (Icon+Label statt nur Text), `::checkmark`, optionaler `<button><selectedcontent>` für die Anzeige im geschlossenen Zustand - siehe [Formulare](#formulare) |
+| `select.css` | `.ncss-select-wrapper`, `.ncss-select` | Gestyltes natives `<select>` inkl. eigenem Chevron. Mit `appearance: base-select` (aktuell nur Chrome/Edge 135+, WebKit/Safari bewusst ausgeschlossen wegen eines Doppelpfeil-Rendering-Bugs in Safari 26) zusätzlich: reicher `<option>`-Inhalt (Icon+Label statt nur Text), `::checkmark`, optionaler `<button><selectedcontent>` für die Anzeige im geschlossenen Zustand. In Firefox und aktuell auch Safari übernimmt `components/combobox.js` denselben reichen Inhalt als JS-Fallback - siehe [Formulare](#formulare) |
 | `input-group.css` | `.ncss-input-group` | Formular-Steuerelemente visuell zu einer Einheit verschmolzen (Feld+Button, Felder nebeneinander) - siehe [Formulare](#formulare) |
 | `combobox.css` | `.ncss-combobox`, `-chevron`, `-list`, `-option`, `-trigger` | Gestylte Dropdown-Liste für `components/combobox.js` (opt-in JS, `<datalist>`/`<select>`-Fallback) - siehe [Formulare](#formulare) |
 | `split.css` | `.ncss-split-container`, `.ncss-split` (+ `--align-start/-end/-stretch`), `-media`, `-content` | Text neben Bild, für Marketing-/Feature-Sektionen. Bild links/rechts braucht keinen Modifier - reine Dokumentreihenfolge (`.ncss-split-media` als erstes/letztes Kind), genau wie bei Card. Ab 36rem CONTAINER-Breite (`.ncss-split-container` als Wrapper nötig) stehen beide Spalten nebeneinander, darunter stapeln sie sich automatisch. `--ncss-split-align` (Default `center`) steuert die vertikale Ausrichtung zueinander, `--ncss-split-media-width` auf `.ncss-split-media` für ein asymmetrisches Breiten-Verhältnis statt 50/50 |

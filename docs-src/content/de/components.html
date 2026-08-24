@@ -95,7 +95,7 @@
   <div class="ncss-table-scroll">
     <table>
       <tbody>
-        <tr><td><code>select.css</code></td><td><code>.ncss-select-wrapper</code>, <code>.ncss-select</code></td><td>Gestyltes natives <code>&lt;select&gt;</code> inkl. eigenem Chevron</td></tr>
+        <tr><td><code>select.css</code></td><td><code>.ncss-select-wrapper</code>, <code>.ncss-select</code></td><td>Gestyltes natives <code>&lt;select&gt;</code> inkl. eigenem Chevron. Mit <code>appearance: base-select</code> zusätzlich reicher <code>&lt;option&gt;</code>-Inhalt/eigenes Popup-Styling - aktuell NUR in Chrome/Edge 135+ aktiviert, WebKit/Safari bewusst ausgeschlossen (bekannter, noch nicht selbst fixbarer Doppelpfeil-Rendering-Bug in Safari 26 - dort UND in Firefox übernimmt automatisch <code>components/combobox.js</code>, siehe <a href="forms.html#combobox-js">Formulare</a>)</td></tr>
         <tr><td><code>search.css</code></td><td><code>.ncss-search</code>, <code>.ncss-search-input</code></td><td>Suchfeld, das schmal startet und beim Fokussieren per reiner <code>width</code>-Transition wächst - kein JS</td></tr>
       </tbody>
     </table>

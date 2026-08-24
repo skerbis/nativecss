@@ -43,10 +43,10 @@
 
 <section class="ncss-stack" id="combobox-js">
   <h2 class="demo-section-title">Styled Dropdowns (opt-in)</h2>
-  <p class="ncss-text-muted ncss-text-sm">The native suggestion list of a <code>&lt;datalist&gt;</code> AND the options popup of a <code>&lt;select&gt;</code> are not stylable via CSS in any browser (checked as of 2026) - for <code>&lt;select&gt;</code> there's now a CSS path via <code>appearance: base-select</code> (Chrome/Edge 135+, Safari 26+, see <a href="components.html">Component Reference</a>), but not for <code>&lt;datalist&gt;</code>.</p>
-  <p class="ncss-text-muted ncss-text-sm"><code>components/combobox.js</code> (opt-in) replaces the native popup look with a real, styled dropdown list in both cases - the original markup stays unchanged (<code>&lt;input list&gt;</code>/<code>&lt;datalist&gt;</code> or <code>&lt;select&gt;</code>/<code>&lt;option&gt;</code>), full native functionality remains without JS (progressive enhancement, no functional loss). For <code>&lt;select&gt;</code> it only kicks in where <code>appearance: base-select</code> is missing (e.g. Firefox) - where the native technique already delivers a styled popup, the script does nothing.</p>
+  <p class="ncss-text-muted ncss-text-sm">The native suggestion list of a <code>&lt;datalist&gt;</code> AND the options popup of a <code>&lt;select&gt;</code> are not stylable via CSS in any browser (checked as of 2026) - for <code>&lt;select&gt;</code> there's now a CSS path via <code>appearance: base-select</code>, which ncss currently only enables in Chrome/Edge 135+ (see <a href="components.html">Component Reference</a> for why Safari is deliberately excluded), and none at all for <code>&lt;datalist&gt;</code>.</p>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/combobox.js</code> (opt-in) replaces the native popup look with a real, styled dropdown list in both cases - the original markup stays unchanged (<code>&lt;input list&gt;</code>/<code>&lt;datalist&gt;</code> or <code>&lt;select&gt;</code>/<code>&lt;option&gt;</code>), full native functionality remains without JS (progressive enhancement, no functional loss). For <code>&lt;select&gt;</code> it kicks in exactly where ncss does NOT enable <code>appearance: base-select</code> (Firefox and currently also Safari) - where the native technique already delivers a styled popup (Chrome/Edge), the script does nothing.</p>
   <pre><code class="language-html">&lt;script src="components/combobox.js" defer&gt;&lt;/script&gt;</code></pre>
-  <p class="ncss-text-muted ncss-text-sm"><strong>Always include <code>&lt;button&gt;&lt;selectedcontent&gt;</code> as the first child, even for a plain text select</strong> - optional per spec (the browser generates a matching default button otherwise), but a user report observed it occasionally rendering a duplicate arrow icon in Safari 26 when relying on that implicit button. An explicit button reliably avoids it, regardless of the exact root cause.</p>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Always include <code>&lt;button&gt;&lt;selectedcontent&gt;</code> as the first child, even for a plain text select</strong> - optional per spec (the browser generates a matching default button otherwise), but it keeps the behavior consistent and predictable across browsers.</p>
   <pre><code class="language-html">&lt;select class="ncss-select"&gt;
   &lt;button type="button"&gt;
     &lt;selectedcontent&gt;&lt;/selectedcontent&gt;
@@ -54,7 +54,7 @@
   &lt;option&gt;Option A&lt;/option&gt;
   &lt;option&gt;Option B&lt;/option&gt;
 &lt;/select&gt;</code></pre>
-  <p class="ncss-text-muted ncss-text-sm"><strong>Rich <code>&lt;option&gt;</code> content</strong> (only with <code>appearance: base-select</code>): since the "Customizable Select" extension, <code>&lt;option&gt;</code> may contain arbitrary child elements (icon+label instead of just text), and the same <code>&lt;button&gt;&lt;selectedcontent&gt;</code> then also controls how the current selection is shown in its closed state. "The Golden Rule of Customizable Select": text stays mandatory (visible or via <code>.ncss-visually-hidden</code>), icons are an addition, never a replacement.</p>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Rich <code>&lt;option&gt;</code> content</strong> (natively only with <code>appearance: base-select</code>, replicated by <code>components/combobox.js</code> elsewhere): since the "Customizable Select" extension, <code>&lt;option&gt;</code> may contain arbitrary child elements (icon+label instead of just text), and the same <code>&lt;button&gt;&lt;selectedcontent&gt;</code> then also controls how the current selection is shown in its closed state. "The Golden Rule of Customizable Select": text stays mandatory (visible or via <code>.ncss-visually-hidden</code>), icons are an addition, never a replacement.</p>
   <pre><code class="language-html">&lt;select class="ncss-select"&gt;
   &lt;button type="button"&gt;
     &lt;selectedcontent&gt;&lt;/selectedcontent&gt;
@@ -64,7 +64,7 @@
     &lt;span&gt;Apple&lt;/span&gt;
   &lt;/option&gt;
 &lt;/select&gt;</code></pre>
-  <p class="ncss-text-muted ncss-text-sm"><code>components/combobox.js</code> replicates the same rich content for the JS fallback path (browsers without <code>base-select</code>) - <code>&lt;option&gt;</code> child elements are cloned 1:1 into the custom dropdown list instead of just the squashed-together text. Visually identical result, confirmed with real tests in both Chromium (native) and Firefox (JS fallback).</p>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/combobox.js</code> replicates the same rich content for the JS fallback path (Firefox and currently also Safari) - <code>&lt;option&gt;</code> child elements are cloned 1:1 into the custom dropdown list instead of just the squashed-together text. Visually identical result, confirmed with real tests in Chromium (native) as well as WebKit and Firefox (both JS fallback).</p>
 </section>
 
 <section class="ncss-stack" id="checkbox-radio">
