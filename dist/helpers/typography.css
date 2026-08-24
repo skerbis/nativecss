@@ -115,14 +115,27 @@
 /* Eyebrow/Kicker - das kleine, versal gesetzte Label ÜBER einer Überschrift ("Typografie"
    über "Fließtext, der mitdenkt", siehe demo/magazine.html). War bislang nur eine
    Kombination aus drei Klassen + einer lokalen font-weight-Regel pro Demo (.demo-eyebrow)
-   - hier als EINE Klasse, die für sich allein reicht. */
+   - hier als EINE Klasse, die für sich allein reicht.
+   `--ncss-color-brand-on-soft` statt der rohen `--ncss-color-brand` (User-Report samt
+   Lighthouse-Befund: "Background and foreground colors do not have a sufficient
+   contrast ratio") - die rohe Markenfarbe ist nur GARANTIERT kontrastreich in DER
+   Kombination, für die ein Projekt sie kalibriert (typischerweise heller Text AUF der
+   Markenfarbe als Fläche, siehe theme.css) - als kleiner, semibold gesetzter TEXT auf
+   einer hellen Fläche ist das eine andere, ungeprüfte Kombination. Per echtem Test auf
+   diesem Projekt selbst gefunden: dessen eigene, bewusst zurückhaltende Grau-Markenfarbe
+   (`#6f6f6e`, siehe theme.css - kalibriert für Weiß-auf-Marke, nicht Marke-auf-Weiß) lag
+   als `.ncss-eyebrow`-Text auf `--ncss-color-bg-subtle` bei 4.49:1 - hauchdünn UNTER der
+   4.5:1-Grenze für normalen Fließtext. `-on-soft` ist genau für diesen Fall gedacht
+   (siehe colors.css: eine automatisch abgeleitete, dunklere -700-Stufe im Light Mode) -
+   kein Problem der Komponente an sich, sondern das falsche der mehreren vorhandenen
+   Marken-Farbtokens für einen freistehenden Text-auf-Fläche-Fall. */
 .ncss-eyebrow {
   display: block;
   font-size: var(--ncss-font-size-sm);
   font-weight: var(--ncss-font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: var(--ncss-tracking-wider);
-  color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-on-soft);
 }
 
 .ncss-truncate {

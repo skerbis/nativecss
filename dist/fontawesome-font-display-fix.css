@@ -1,0 +1,67 @@
+/**
+ * NativeCSS - Font-Display-Fix für Font Awesome (vendor/fontawesome/, NICHT selbst
+ * angefasst - siehe unten für die Begründung). Eigene, OPT-IN Datei (wie theme.css/
+ * page-transitions.css) - NACH vendor/fontawesome/css/all.min.css laden.
+ *
+ * Lighthouse-Audit "Ensure text remains visible during webfont load" (User-Report):
+ * Font Awesomes eigene @font-face-Regeln setzen `font-display: block` - kein FEHLENDER
+ * Wert (der Default wäre `auto`, von Lighthouse ebenfalls bemängelt), sondern eine
+ * BEWUSSTE Entscheidung der Bibliothek selbst, nur eben eine, die Lighthouse als
+ * suboptimal einstuft. `swap`/`optional` sind Lighthouses eigene Empfehlung.
+ *
+ * `swap` NICHT gewählt: für ein Icon-Font ist ein sofortiger Fallback-Glyph oft eine
+ * FALSCHE/fehlende Glyphe (kein Icon oder ein Tofu-Kästchen) für die Dauer des Ladens,
+ * bis der echte Font eintrifft ("Flash of wrong/missing icon") - schlechter als das
+ * kurze Unsichtbar-Fenster von `block`. `optional` stattdessen: kurzes Lade-Fenster
+ * (~100ms Spec-Minimum), danach entweder der fertige Font ODER der Browser gibt auf und
+ * zeigt dauerhaft den Fallback, OHNE beliebig lang auf ein langsames Netz zu warten -
+ * bei einem bereits gecachten Font (jeder wiederkehrende Besuch) macht das ohnehin
+ * keinen Unterschied, der Font steht sofort bereit.
+ *
+ * ERSTER Versuch (verworfen): dieselben drei @font-face-Deskriptoren (Familie/Gewicht/
+ * Quelle) unter IDENTISCHEM Namen erneut deklarieren, nur mit anderem font-display -
+ * per Recherche widerlegt, BEVOR es ausgeliefert wurde: zwei @font-face-Regeln mit
+ * exakt gleicher Familie/Gewicht/Stil bilden KEIN "letzte Regel gewinnt"-Override,
+ * sondern eine "Composite Face" - der Browser wählt zwischen den Kandidaten anhand der
+ * tatsächlichen Zeichenabdeckung (unicode-range), nicht per Ladereihenfolge. Per echtem
+ * Playwright-Test bestätigt: `document.fonts` enthielt danach BEIDE Einträge
+ * gleichzeitig (den alten `block`- UND den neuen `optional`-Eintrag) - welcher davon
+ * tatsächlich das Lade-Timing bestimmt, ist damit nicht zuverlässig steuerbar.
+ *
+ * ENDGÜLTIGER Fix: Font Awesomes eigene CSS setzt `font-family` nie hart, sondern über
+ * die Custom Properties `--fa-family-classic`/`--fa-family-brands` (per Sichtprüfung im
+ * Vendor-Code bestätigt: `.fas,.fa-classic{--fa-family:var(--fa-family-classic)}` usw.,
+ * die eigentliche Regel konsumiert das über `font-family:var(--_fa-family)`). Hier
+ * werden GENAU diese beiden Custom Properties auf zwei neue, ausschließlich von dieser
+ * Datei definierte Familiennamen umgebogen - jeweils NUR EIN @font-face pro Familie/
+ * Gewicht, keine Namenskollision mit Font Awesomes eigenen Regeln, dadurch auch keine
+ * Composite-Face-Mehrdeutigkeit mehr möglich. Unlayered (wie theme.css) gewinnt
+ * automatisch gegen die gelayerte Vendor-CSS, kein !important/höhere Spezifität nötig.
+ */
+@font-face {
+  font-family: "NativeCSS Font Awesome Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url("../vendor/fontawesome/webfonts/fa-brands-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "NativeCSS Font Awesome Classic";
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url("../vendor/fontawesome/webfonts/fa-regular-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "NativeCSS Font Awesome Classic";
+  font-style: normal;
+  font-weight: 900;
+  font-display: optional;
+  src: url("../vendor/fontawesome/webfonts/fa-solid-900.woff2") format("woff2");
+}
+
+:root,
+:host {
+  --fa-family-classic: "NativeCSS Font Awesome Classic";
+  --fa-family-brands: "NativeCSS Font Awesome Brands";
+}

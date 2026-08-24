@@ -1292,6 +1292,62 @@ umgestellt:
     `@media (max-width: 63.99rem)`-Block auf eine horizontale Linie zurückgesetzt
     (`border-block-start` statt `border-inline-start`), mit derselben currentColor-Logik.
 
+59. **`.ncss-eyebrow` nutzte die rohe `--ncss-color-brand` statt `--ncss-color-brand-
+    on-soft`** (User-Report: Lighthouse-Kontrast-Warnung "Background and foreground
+    colors do not have a sufficient contrast ratio", betraf laut User "meist `<code>`,
+    `.ncss-eyebrow`"). Eine Markenfarbe ist nur in der Kombination GARANTIERT
+    kontrastreich, für die ein Projekt sie kalibriert hat (typischerweise heller Text
+    AUF der Fläche, siehe theme.css) - als kleiner Text AUF einer hellen Fläche ist das
+    eine andere, ungeprüfte Kombination. Per echtem Test (eigenes Kontrast-Skript,
+    WCAG-Formel, siehe unten) auf diesem Projekt selbst gefunden: dessen zurückhaltende
+    Grau-Markenfarbe (`#6f6f6e`) lag als `.ncss-eyebrow`-Text auf `--ncss-color-bg-subtle`
+    bei 4.49:1 - hauchdünn unter der 4.5:1-AA-Grenze. Fix: `--ncss-color-brand-on-soft`
+    (colors.css, bereits vorhanden - automatisch abgeleitete, im Light Mode dunklere
+    `-700`-Stufe) statt der rohen Markenfarbe, siehe helpers/typography.css.
+    EIGENES Kontrast-Prüfskript geschrieben (kein axe-core/Lighthouse zur Hand) - dabei
+    zwei Fallstricke im SKRIPT SELBST gefunden, die zu falschen "Fehlern" führten
+    (per echtem `getComputedStyle`-Vergleich aufgeklärt, nicht einfach verworfen):
+    (1) `getComputedStyle(...).backgroundColor` liefert NICHT immer ein `rgb()`/`rgba()`-
+    Format - moderne Chromium-Versionen liefern für manche Farben `oklch(...)`, ein
+    einfacher `rgba?\(...)`-Regex übersieht das komplett und lässt die Hintergrundfarben-
+    Kette dadurch STILLSCHWEIGEND eine echte Fläche auslassen (kein Fehler, einfach
+    `null`, Fallback auf Weiß - erzeugte etliche falsche "Weiß auf Weiß"-Befunde). (2)
+    `background-image: linear-gradient(...)` wird von `backgroundColor` gar nicht erst
+    erfasst - Text auf einem Gradient-Hintergrund (z.B. `.ncss-gradient-brand`-Demo)
+    erschien im ersten Skript-Durchlauf ebenfalls fälschlich als "Weiß auf Weiß". Lehre:
+    ein SELBST GESCHRIEBENES Kontrast-Prüfwerkzeug ist nicht automatisch verlässlicher
+    als das Ausgangsproblem, das es prüfen soll - jeden gemeldeten "Fehler" einzeln an der
+    tatsächlichen `getComputedStyle`-Kette nachvollziehen, bevor man ihn für echt hält
+    ODER verwirft (hier: EIN echter Fund von >10 gemeldeten, der Rest waren Artefakte des
+    eigenen Skripts, nicht der Seite).
+
+60. **Font Awesomes eigene `@font-face`-Regeln setzen `font-display: block`** (User-
+    Report: Lighthouse "Consider setting font-display to swap or optional"). `swap` NICHT
+    gewählt: für ein Icon-Font ist ein sofortiger, falscher/fehlender Fallback-Glyph beim
+    Laden schlechter als `block`s kurzes Unsichtbar-Fenster ("Flash of wrong/missing
+    icon") - `optional` stattdessen: kurzes Lade-Fenster, danach entweder der fertige
+    Font oder dauerhaft der Fallback, ohne beliebig lang zu warten; bei gecachtem Font
+    (jeder wiederkehrende Besuch) ohnehin kein Unterschied.
+    ERSTER Versuch (verworfen, VOR dem Ausliefern per Recherche widerlegt): dieselben
+    `@font-face`-Deskriptoren unter IDENTISCHEM Familiennamen erneut deklarieren, nur mit
+    anderem `font-display`. Das ist KEIN "letzte Regel gewinnt"-Override - zwei
+    `@font-face`-Regeln mit exakt gleicher Familie/Gewicht/Stil bilden eine "Composite
+    Face", der Browser wählt zwischen den Kandidaten anhand tatsächlicher
+    Zeichenabdeckung (unicode-range), nicht per Ladereihenfolge (per echtem Playwright-
+    Test bestätigt: `document.fonts` enthielt hinterher BEIDE Einträge gleichzeitig,
+    welcher das Lade-Timing bestimmt war nicht zuverlässig steuerbar).
+    ENDGÜLTIGER Fix: Font Awesomes eigene CSS setzt `font-family` nie hart, sondern über
+    `--fa-family-classic`/`--fa-family-brands` (Custom Properties, von der eigentlichen
+    Regel über `font-family:var(--_fa-family)` konsumiert). Diese beiden Custom
+    Properties in einer eigenen, unlayered Datei (`dist/fontawesome-font-display-fix.css`,
+    NACH Font Awesome geladen, dasselbe unlayered-gewinnt-Prinzip wie theme.css) auf zwei
+    NEUE, nur dort definierte Familiennamen umgebogen - jeweils NUR EIN `@font-face` pro
+    Familie/Gewicht, keine Namenskollision mit Font Awesomes eigenen Regeln, dadurch auch
+    keine Composite-Face-Mehrdeutigkeit mehr möglich. Vendor-Datei selbst unangetastet
+    (dasselbe Muster wie webawesome-bridge.css für Web Awesome). Per echtem Test
+    bestätigt: `::before`-Pseudoelement der Icons löst `font-family` korrekt auf den
+    neuen Namen auf, alle Icons weiterhin sichtbar (Chromium/WebKit/Firefox, 0 Fehler).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
