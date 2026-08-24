@@ -28,6 +28,7 @@ const replacements = [
   ['src="../vendor/', 'src="vendor/'],
   ['href="../LICENSE"', 'href="LICENSE"'],
   ['href="../docs/', 'href="docs/'],
+  ['href="../favicon.svg"', 'href="favicon.svg"'],
   ['href="index.html"', 'href="demo/index.html"'],
   ['href="docs.html"', 'href="demo/docs.html"'],
   ['href="product.html"', 'href="index.html"'],

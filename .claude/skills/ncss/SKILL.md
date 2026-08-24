@@ -1388,6 +1388,29 @@ umgestellt:
     Farbformat (`rgb`/`oklch`/`hsl`/benannte Farben/...) einzeln nachzubauen - funktioniert
     für JEDEN gültigen CSS-Farbwert, unabhängig vom Ausgabeformat des Browsers.
 
+62. **Fehlendes `<link rel="icon">` erzeugte einen Konsolenfehler** (echtes Lighthouse,
+    Kategorie best-practices: "Browser errors were logged to the console" - der Browser
+    fragt ohne expliziten Favicon-Link automatisch `/favicon.ico` an der DOMAIN-WURZEL an,
+    nicht am `/nativecss/`-Unterpfad, den dieses Projekt überhaupt kontrolliert; 404
+    unvermeidbar, SOLANGE kein expliziter Link vorhanden ist - moderne Browser
+    unterdrücken die implizite Anfrage zuverlässig, sobald ein `<link rel="icon">`
+    deklariert ist). `favicon.svg` (Repo-Wurzel, einfache "N"-Marke in `--ncss-color-bg`s
+    eigenem Signature-Blau `#154a86`, NICHT im generischen Bibliotheks-Default-Blau -
+    dasselbe Blau, das theme.css bereits als "Erkennungswert der Seite selbst"
+    dokumentiert) auf ALLEN Seiten verlinkt (18 Demo-Seiten + docs-src/template.html für
+    alle 46 Doku-Seiten + der separat erzeugten docs/index.html-Sprachweiche).
+    NICHT-OFFENSICHTLICHER STOLPERSTEIN dabei gefunden, BEVOR er den Deploy gebrochen
+    hätte (lokal nachgestellt, nicht nur angenommen): `.github/scripts/
+    build-root-index.mjs` erzeugt beim Deploy eine index.html an der Site-Wurzel aus
+    `demo/product.html`, per EXAKTEN String-Ersetzungspaaren für dessen relative Pfade
+    (`../dist/` -> `dist/` usw.) - der neue `href="../favicon.svg"` fiel durch KEINE der
+    bestehenden Regeln, das Skript hat aber genau dafür einen eigenen Sanity-Check
+    (`if (html.includes('="../'))`), der bei einem unbehandelten `../`-Rest laut fehlschlägt
+    statt still eine kaputte Datei zu erzeugen - hätte den GitHub-Actions-Build sichtbar
+    rot werden lassen. Fix: eigenes Ersetzungspaar (`href="../favicon.svg"` ->
+    `href="favicon.svg"`) ergänzt, LOKAL gegen eine `rsync`-Kopie des Repos genau wie im
+    echten Workflow ausgeführt und verifiziert, bevor es ausgeliefert wurde.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

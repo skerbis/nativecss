@@ -146,6 +146,7 @@ const rootRedirect = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <title>NativeCSS Docs</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <meta http-equiv="refresh" content="0; url=en/index.html">
 <script>
   var lang = (navigator.language || "en").slice(0, 2) === "de" ? "de" : "en";
