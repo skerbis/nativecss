@@ -100,6 +100,28 @@
   padding: 0;
   min-width: 0;
 }
+/* helpers/layout.css' .ncss-divider--vertical erwartet, DIREKTER Flex-Item zu sein
+   (align-self wirkt nur auf echte Flex-Items, nicht auf beliebig tief verschachtelte
+   Nachfahren) - hier steckt das <hr> aber in einem eigenen <li> (gültiges HTML, <ul> darf
+   nur <li> als Kinder haben), der eigentliche Flex-Item ist also das <li>, nicht das <hr>
+   darin. `align-self:stretch` auf dem <hr> selbst blieb dadurch wirkungslos, der Divider
+   bekam per `.ncss-nav-list`s eigenem `align-items:center` (nicht stretch) eine Höhe von
+   0 (per echtem Test/getBoundingClientRect gefunden: unsichtbar, kein Fehler in der
+   Konsole). Fix: das <li> selbst bekommt hier das stretch, das <hr> darin füllt es dank
+   seines eigenen `height:auto`/`align-self:stretch` dann korrekt aus. */
+.ncss-nav-item:has(> .ncss-divider--vertical) {
+  align-self: stretch;
+}
+/* Der stretch-Effekt braucht ZWEI Schritte, nicht nur einen: das <li> selbst auf die
+   volle Zeilenhöhe strecken (Regel oben) UND das <hr> darin explizit auf 100% dieser
+   (jetzt definierten) <li>-Höhe setzen - die geerbte `height:auto` aus
+   .ncss-divider--vertical selbst bleibt wirkungslos, weil `align-self:stretch` NUR auf
+   echte Flex-Items wirkt, das <hr> hier aber ein ganz normaler Block-Nachfahre des <li>
+   ist, kein eigenes Flex-Item (per echtem Test/getBoundingClientRect gefunden: <li> hatte
+   bereits korrekt die volle Höhe, das <hr> darin trotzdem weiterhin 0). */
+.ncss-nav-item > .ncss-divider--vertical {
+  height: 100%;
+}
 
 /* base.css's generischer Block-Rhythmus (jedes <details> bekommt margin-block-end, wie
    auch p/ul/blockquote/etc.) ist als STANDALONE-Block-Element sinnvoll, hier aber ein
@@ -255,6 +277,24 @@
     border: none;
     background: none;
     padding-inline-start: var(--ncss-space-md);
+  }
+
+  /* Trenner zwischen den festen Hauptbereichen (Handbuch/Demo) und den seitenspezifischen
+     Punkten (siehe helpers/layout.css' .ncss-divider--vertical, hier per Markup als
+     <li><hr class="ncss-divider--vertical" ...></li> eingesetzt) - dessen Grundform
+     (border-inline-start, align-self:stretch) ist für eine FLEX-ZEILE gedacht. Sobald
+     .ncss-nav-list oben auf flex-direction:column umschaltet (schmaler Viewport, off-
+     canvas-Panel), würde dieselbe vertikale Linie nur noch als kaum sichtbarer, seitlich
+     hängender Strich zwischen zwei gestapelten Zeilen wirken - hier deshalb auf eine
+     normale HORIZONTALE Trennlinie zurückgesetzt, passend zur gestapelten Liste. */
+  .ncss-nav-list .ncss-divider--vertical {
+    align-self: stretch;
+    width: auto;
+    height: 0;
+    border-inline-start: none;
+    border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+    margin-inline: 0;
+    margin-block: var(--ncss-space-3xs);
   }
 }
 

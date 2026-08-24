@@ -1229,6 +1229,49 @@ umgestellt:
     drei Engines bestätigt) - `::view-transition-group(*.klasse)` trifft alle Gruppen mit
     dieser Klasse, unabhängig von ihrem jeweils eindeutigen Namen.
 
+58. **Feste Hauptbereiche (Start/Handbuch/Demo) über ALLE Seiten hinweg an derselben
+    Position** (User-Vorgabe nach mehrfachem Nachfragen: "nach dem Schriftzug: Handbuch,
+    Demo, danach Divider, um die eigenen Hauptpunkte zu zeigen ... Navi sollte klarstellen
+    wo man aktuell ist"). Struktur jetzt auf JEDER Seite identisch (Logo bleibt "Start",
+    kein Text-Duplikat nötig): `NativeCSS-Logo → Handbuch → Demo → | → seitenspezifische
+    Punkte (nur wenn vorhanden)`. `product.html` (Start) bekommt selbst KEIN "Start"-
+    Textlink - das Logo trägt stattdessen `aria-current="page"`, eigens gestylt in
+    `topbar.css` (`.ncss-topbar-brand[aria-current="page"] { text-decoration:
+    underline; }` - die generische `[aria-current="page"]`-Regel in nav.css deckt nur
+    `.ncss-nav-item > a`/`.ncss-nav-dropdown > summary` ab, nicht die Marke, die eine
+    andere Klasse trägt). "Demo" bekommt `aria-current="page"` auf ALLEN `demo/*.html`-
+    Seiten (nicht nur `index.html` selbst) - zeigt den ÜBERGEORDNETEN Bereich, während
+    das spezifischere Item (z.B. "Farben" im Mehr-Dropdown) zusätzlich die genaue Seite
+    markiert (verschachteltes Aktiv-Muster, dieselbe Idee wie `.ncss-nav-dropdown >
+    summary[aria-current="page"]`, das schon existierte). Auf Doku-Seiten wandern
+    Navigation/Formulare/Medien (die auf Demo-Seiten eigene Top-Level-Punkte sind) mit IN
+    das Mehr-Dropdown - Doku-Seiten haben keine eigene "Top-Level-Identität" dafür, nur
+    ihre Sidebar für Seiteninhalt. `demo/landing.html` (bewusst "wirkt wie eine echte
+    Kunden-Landingpage") bekam Handbuch/Demo/Divider trotzdem VORNE ergänzt (Konsistenz
+    schlägt hier die Illusions-Reinheit), ihr eigenes `<wa-dropdown>`-Mehr-Menü bleibt
+    als seitenspezifischer Teil danach unverändert.
+    Trenner: `<hr class="ncss-divider--vertical" aria-orientation="vertical">`
+    (helpers/layout.css, bereits vorhanden für `.ncss-topbar-actions`) - `<ul>` darf laut
+    Spec nur `<li>`-Kinder haben, das `<hr>` steckt deshalb in einem eigenen
+    `<li class="ncss-nav-item" aria-hidden="true">`. ZWEI NICHT-OFFENSICHTLICHE BUGS
+    dabei gefunden (per echtem `getBoundingClientRect()`-Test, nicht angenommen - der
+    Divider war zuerst komplett unsichtbar, `height:0`, ohne jeden Konsolenfehler):
+    (1) `align-self:stretch` wirkt NUR auf echte Flex-Items - das `<hr>` selbst ist aber
+    ein normaler Block-Nachfahre seines `<li>`-Wrappers, nicht direkt Kind von
+    `.ncss-nav-list` (dem Flex-Container), das ursprünglich für `.ncss-topbar-actions`
+    geschriebene `align-self:stretch` auf `.ncss-divider--vertical` selbst blieb dadurch
+    wirkungslos. Fix Teil 1: `.ncss-nav-item:has(> .ncss-divider--vertical) { align-self:
+    stretch; }` - das LI (der tatsächliche Flex-Item) stretcht. (2) Selbst mit korrekt
+    gestrecktem `<li>` blieb das `<hr>` darin bei `height:0` - `height:auto` (aus der
+    geteilten Utility-Klasse) berechnet sich für einen normalen Block NICHT automatisch
+    aus der Höhe eines flex-gestreckten Elternteils. Fix Teil 2: `.ncss-nav-item >
+    .ncss-divider--vertical { height: 100%; }` - explizite Prozent-Höhe relativ zum jetzt
+    definierten `<li>`. Zusätzlich responsive: unterhalb 64rem (`.ncss-nav-list` wechselt
+    dort auf `flex-direction: column` fürs Off-Canvas-Panel) wäre eine VERTIKALE Linie
+    zwischen gestapelten Zeilen witzlos - `.ncss-nav-list .ncss-divider--vertical` wird im
+    selben `@media (max-width: 63.99rem)`-Block auf eine horizontale Linie zurückgesetzt
+    (`border-block-start` statt `border-inline-start`).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

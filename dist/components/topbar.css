@@ -63,6 +63,13 @@
   text-decoration: none;
   flex: 0 0 auto;
 }
+/* Aktuelle Seite ist die Startseite (product.html) - derselbe Unterstreichungs-
+   Wortsinn wie components/nav.css' [aria-current="page"] auf normalen Nav-Punkten, hier
+   separat, weil die Marke keine .ncss-nav-item ist und ohnehin schon fett ist (font-
+   weight allein wäre also kein sichtbarer Unterschied). */
+.ncss-topbar-brand[aria-current="page"] {
+  text-decoration: underline;
+}
 
 /* Zwischen Brand und Actions - füllt den Platz, damit .ncss-nav (falls eingebettet) und
    .ncss-topbar-actions an den Rändern bleiben. min-width:0 hebt Flexbox' Default
