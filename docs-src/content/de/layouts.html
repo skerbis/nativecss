@@ -146,7 +146,7 @@
 
 <section class="ncss-stack" id="accordion-split">
   <h2 class="demo-section-title">7. Transformierendes Akkordeon</h2>
-  <p>Bekannt von apple.com - ein Text-Akkordeon, dessen zugehöriges Bild rechts automatisch mit dem gerade geöffneten Punkt wechselt. Komplett nativ, KEIN JavaScript: exklusives Öffnen/Schließen über <code>&lt;details name="..."&gt;</code> (Baseline seit September 2025), das passende Bild wird per <code>:has()</code> ausgewählt - dieselbe Technik, die schon <code>pre:has(&gt; code[class*="language-"])</code> in den Code-Blöcken auf dieser Seite nutzt.</p>
+  <p>Bekannt von apple.com - ein Text-Akkordeon, dessen zugehöriges Bild rechts automatisch mit dem gerade geöffneten Punkt wechselt. Komplett nativ, KEIN JavaScript nötig: exklusives Öffnen/Schließen über <code>&lt;details name="..."&gt;</code> (Baseline seit September 2025), das passende Bild wird per <code>:has()</code> ausgewählt - dieselbe Technik, die schon <code>pre:has(&gt; code[class*="language-"])</code> in den Code-Blöcken auf dieser Seite nutzt. Öffnen/Schließen selbst ist bereits sanft animiert (<code>::details-content</code>). Für einen weichen Übergang beim BILDWECHSEL selbst (statt eines harten Schnitts) optional <code>components/view-transitions.js</code> einbinden - siehe unten.</p>
   <div class="ncss-accordion-split-container">
     <div class="ncss-accordion-split">
       <div class="ncss-accordion-split-list">
@@ -199,6 +199,16 @@
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted"><code>name="..."</code> muss pro Akkordeon-Instanz auf der Seite eindeutig sein (wie eine Radio-Button-Gruppe), sonst gruppieren sich mehrere Akkordeons ungewollt miteinander. Jedes Bild steht bewusst ZWEIMAL im Markup (Desktop-Spalte + mobile Inline-Kopie) - ohne JS lässt sich ein DOM-Knoten nicht zwischen zwei entfernten Containern verschieben. Dieselbe Bild-URL wird trotzdem nur einmal geladen (normales HTTP-Caching), pro Breakpoint ist immer nur eine der beiden Kopien im Layout. Unterstützt bis zu 6 Punkte (mehr wären für dieses Muster ohnehin unüblich).</p>
+
+  <h3>Weicher Bildwechsel (opt-in)</h3>
+  <p><code>components/view-transitions.js</code> nutzt Same-Document <a href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API" target="_blank" rel="noopener">View Transitions</a> (Chrome/Edge 111+, Safari 18+, Firefox 133+), um den Bildwechsel statt eines harten Schnitts weich zu animieren - Kreuzblende ist der Default (kein Markup nötig), <code>data-transition="slide"</code>/<code>"3d"</code> auf <code>.ncss-accordion-split-container</code> schalten auf Verschieben bzw. einen 3D-Flip um. Ohne Skript oder in Browsern ohne View-Transitions-Unterstützung bleibt der native, sofortige Wechsel erhalten - kein Funktionsverlust. Das Beispiel oben nutzt bereits die Kreuzblende live.</p>
+  <pre><code class="language-html">&lt;script src="components/view-transitions.js" defer&gt;&lt;/script&gt;
+
+&lt;div class="ncss-accordion-split-container" data-transition="slide"&gt;
+  &lt;!-- ... --&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Technischer Hintergrund (u.a. warum <code>&lt;details&gt;</code> den Klick auf <code>&lt;summary&gt;</code> statt eines <code>beforetoggle</code>-Events abfängt, und wie <code>view-transition-class</code> mehrere Instanzen auf derselben Seite unterscheidet) im <a href="https://github.com/skerbis/nativecss/blob/main/dist/components/view-transitions.js" target="_blank" rel="noopener">Quellcode-Kommentar</a>.</p>
+  <script src="../../dist/components/view-transitions.js" defer></script>
 </section>
 
 <section class="ncss-stack" id="marginnote">

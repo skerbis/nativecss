@@ -1,11 +1,15 @@
 /**
  * ncss - Accordion-Split-Komponente (Layer "components"): "transformierendes Akkordeon"
  * (bekannt von apple.com/mac) - Text-Akkordeon links, dazugehöriges Bild rechts, wechselt
- * automatisch mit dem gerade geöffneten Punkt. Komplett nativ, KEIN JS: exklusives
- * Öffnen/Schließen über `<details name="...">` (Baseline seit September 2025, in
- * Chrome/Firefox/Safari verifiziert), das passende Bild wird per `:has()` ausgewählt
+ * automatisch mit dem gerade geöffneten Punkt. Funktioniert KOMPLETT NATIV OHNE JS:
+ * exklusives Öffnen/Schließen über `<details name="...">` (Baseline seit September 2025,
+ * in Chrome/Firefox/Safari verifiziert), das passende Bild wird per `:has()` ausgewählt
  * (dieselbe Technik, die schon `pre:has(> code[class*="language-"])` in
- * components/code-block.css nutzt).
+ * components/code-block.css nutzt) - dabei bleibt der Bildwechsel selbst ein harter
+ * display:none/block-Schnitt. `components/view-transitions.js` (separates, optionales
+ * Opt-in-Skript, NICHT Teil dieser Datei) macht diesen Wechsel zusätzlich weich
+ * (Kreuzblende/Slide/3D-Flip per Same-Document View Transitions) - siehe die
+ * `::view-transition-*`-Regeln weiter unten für die zugehörigen Presets.
  *
  * Markup (bis zu 6 Punkte - siehe "Bounded enumeration" unten für den Grund):
  *   <div class="ncss-accordion-split-container">
@@ -172,5 +176,94 @@
   .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(5)[open]) ~ .ncss-accordion-split-media > :nth-child(5),
   .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(6)[open]) ~ .ncss-accordion-split-media > :nth-child(6) {
     display: block;
+  }
+}
+
+/* --- View-Transitions-Presets für components/view-transitions.js (opt-in) --------------
+   Gehört inhaltlich zur Komponente, obwohl das Skript separat bleibt (JS ist optional,
+   diese Regeln greifen nur, wenn `view-transition-class` per JS tatsächlich gesetzt
+   wurde - ohne Skript keine Wirkung, kein toter Code, nur ungenutzte Selektoren).
+   Kreuzblende (Default, KEIN eigenes Preset hier nötig) ist bereits das eingebaute
+   UA-Standardverhalten eines benannten `view-transition-name` - "einfaden" kommt also
+   automatisch, sobald das Skript nur den Namen setzt, ganz ohne Slide/3D-Klasse.
+   `::view-transition-group(*.klasse)` statt eines festen Namens: `view-transition-name`
+   muss pro Instanz eindeutig sein (Spec), das Preset-Styling soll aber unabhängig davon
+   für JEDE Instanz mit derselben Klasse gelten - der Universalselektor `*` kombiniert mit
+   `.klasse` matcht genau das (Level 2, per echtem Test in Chromium/WebKit/Firefox
+   bestätigt: eine gemeinsame Klasse auf mehreren, individuell benannten Gruppen lässt
+   sich darüber gemeinsam ansprechen, andere Gruppen ohne diese Klasse bleiben unberührt).
+   NUR unter prefers-reduced-motion:no-preference nötig - anders als die meisten
+   Animationen hier (global über reset.css gedrosselt) reagiert die View-Transitions-API
+   NICHT von selbst auf prefers-reduced-motion (dieselbe Begründung wie in
+   page-transitions.css); `view-transitions.js` prüft es zusätzlich selbst VOR dem
+   Verkabeln (kein Trigger, keine Transition), dieses Gate hier ist die zweite,
+   unabhängige Absicherung auf CSS-Seite, falls je ein anderer Auslöser hinzukommt. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Root-Übergang bewusst abgeschaltet - der Browser crossfadet per Default IMMER
+     zusätzlich die GANZE Seite (::view-transition-old/-new(root)), nicht nur das
+     benannte Medien-Element. Weil sich beim Öffnen/Schließen eines Akkordeon-Punkts der
+     restliche Seiteninhalt darunter verschiebt (die eigene Höhen-Animation aus
+     ::details-content oben), unterscheiden sich Vorher-/Nachher-Screenshot der GANZEN
+     Seite spürbar - der Browser blendet dann sichtbar doppelten/geisterhaften Text ein
+     (per echtem Test/Screenshot gefunden, nicht nur vermutet: "Cascade Layers" und
+     nachfolgender Seiteninhalt erschienen kurz doppelt/transparent übereinander). Fix:
+     die root-Gruppe bekommt keine eigene Animation mehr, nur das explizit benannte
+     Medien-Element transitiont noch. */
+  ::view-transition-image-pair(root) {
+    isolation: auto;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /* Slide: altes Bild schiebt sich zur Seite raus, neues kommt von der anderen Seite -
+     Kombination aus Verschiebung UND Verblassen, damit sich beide Bilder unterwegs nicht
+     hart überlappen. */
+  ::view-transition-old(*.ncss-vt-slide) {
+    animation: ncss-vt-slide-out var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both;
+  }
+  ::view-transition-new(*.ncss-vt-slide) {
+    animation: ncss-vt-slide-in var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both;
+  }
+  @keyframes ncss-vt-slide-out {
+    to {
+      transform: translateX(-12%);
+      opacity: 0;
+    }
+  }
+  @keyframes ncss-vt-slide-in {
+    from {
+      transform: translateX(12%);
+      opacity: 0;
+    }
+  }
+
+  /* 3D-Flip: altes Bild dreht sich von der Kamera weg, neues dreht sich ihr entgegen -
+     perspective auf der Gruppe selbst (nicht auf old/new einzeln), damit beide densel-
+     ben Fluchtpunkt teilen und die Drehung nicht wie zwei unabhängige Flachbilder wirkt. */
+  ::view-transition-group(*.ncss-vt-3d) {
+    perspective: 60rem;
+  }
+  ::view-transition-old(*.ncss-vt-3d) {
+    animation: ncss-vt-3d-out var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both;
+    backface-visibility: hidden;
+  }
+  ::view-transition-new(*.ncss-vt-3d) {
+    animation: ncss-vt-3d-in var(--ncss-motion-duration-slow) var(--ncss-motion-easing) both;
+    backface-visibility: hidden;
+  }
+  @keyframes ncss-vt-3d-out {
+    to {
+      transform: rotateY(80deg);
+      opacity: 0;
+    }
+  }
+  @keyframes ncss-vt-3d-in {
+    from {
+      transform: rotateY(-80deg);
+      opacity: 0;
+    }
   }
 }

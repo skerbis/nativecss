@@ -1190,6 +1190,45 @@ umgestellt:
     `wa-select`-Handler in `assets/js/landing-interactions.js` navigiert per
     `value`-Attribut, keine JS-Änderung nötig, nur Markup ergänzt.
 
+57. **`components/view-transitions.js`** (opt-in, zu `.ncss-accordion-split` gehörig,
+    siehe accordion-split.css für die zugehörigen `::view-transition-*`-Presets) - weicher
+    Bildwechsel (Kreuzblende/Slide/3D-Flip) statt hartem `display:none/block`-Schnitt, per
+    Same-Document View Transitions (`document.startViewTransition()`, User-Report:
+    "fehlen Transitions ... Bild sollte einfaden oder gleiten"). Browser-Support per
+    Recherche + echtem Playwright-Test bestätigt (`typeof document.startViewTransition
+    === 'function'`): Chrome/Edge 111+, Safari 18+, Firefox 133+ - deutlich breiter als
+    die bereits vorhandenen Cross-Document View Transitions (page-transitions.css, wo
+    Firefox noch fehlt), aber OHNE deren rein deklarative CSS-Form: ein kurzer JS-Trigger
+    ist für die Same-Document-Variante unvermeidlich.
+    `<details>` feuert KEIN abbrechbares `beforetoggle` (anders als `<dialog>`/Popover -
+    offener Spec-Issue whatwg/html#9743, per Recherche bestätigt, nicht angenommen) - der
+    funktionierende Weg ist stattdessen, den Klick auf `<summary>` selbst abzufangen
+    (dessen Aktivierungsverhalten IST abbrechbar) und `.open` manuell INNERHALB von
+    `document.startViewTransition(...)` umzuschalten. Per echtem Test bestätigt: das
+    funktioniert auch für EXKLUSIVE `<details name="...">`-Gruppen weiterhin korrekt (das
+    Schließen der Geschwister-Punkte passiert weiterhin automatisch, obwohl `.open` per
+    JS statt durch echten Nutzer-Klick gesetzt wird).
+    NICHT-OFFENSICHTLICHER BUG dabei gefunden (per Screenshot, nicht angenommen): ohne
+    weiteres Zutun crossfadet `document.startViewTransition()` per Default IMMER
+    zusätzlich die GANZE Seite (`::view-transition-old/-new(root)`), nicht nur das
+    explizit benannte Element - weil sich beim Öffnen/Schließen eines Akkordeon-Punkts
+    der Seiteninhalt darunter durch dessen eigene Höhen-Animation verschiebt, unter-
+    scheiden sich Vorher-/Nachher-Screenshot der GANZEN Seite spürbar, der Browser
+    blendete sichtbar doppelten/geisterhaften Text ein. Fix: `::view-transition-old(root)`/
+    `::view-transition-new(root)` auf `animation:none; mix-blend-mode:normal;` gesetzt,
+    `::view-transition-image-pair(root) { isolation: auto; }` - Standard-Pattern, um
+    einen View Transition auf nur EIN benanntes Element zu beschränken.
+    `view-transition-name` MUSS unter simultan sichtbaren Elementen eindeutig sein (Spec)
+    - bei mehreren `.ncss-accordion-split`-Instanzen auf einer Seite bekommt jede Instanz
+    einen eigenen Namen (Instanz-Index). Für die PRESETS reicht das aber nicht: CSS'
+    `::view-transition-group()`-Selektor kennt nur exakte Namen oder den Universal-
+    selektor `*` (per Recherche + echtem Test bestätigt: KEIN Scoping über eine DOM-
+    Vorfahren-Bedingung wie `[data-transition] ::view-transition-group(...)` möglich, die
+    Pseudo-Elemente hängen an einem eigenen, von `:root` ausgehenden Baum, nicht am
+    normalen DOM). Lösung: `view-transition-class` (Level 2, per echtem Test in allen
+    drei Engines bestätigt) - `::view-transition-group(*.klasse)` trifft alle Gruppen mit
+    dieser Klasse, unabhängig von ihrem jeweils eindeutigen Namen.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
