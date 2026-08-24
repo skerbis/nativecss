@@ -220,6 +220,21 @@
     </div>
   </section>
 
+  <!-- Spotlight-Feature: Text neben Bild (.ncss-split) -->
+  <section id="container-queries" class="ncss-container ncss-py-xl">
+    <div class="ncss-split-container">
+      <div class="ncss-split">
+        <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+        <div class="ncss-split-content ncss-stack ncss-stack--tight">
+          <p class="ncss-eyebrow">Im Detail</p>
+          <h2>Container Queries statt Viewport-Breakpoints</h2>
+          <p class="ncss-text-muted">Dieselbe Karte verhält sich in einer schmalen Sidebar anders als im breiten Hauptbereich - automatisch, ohne JavaScript, ohne dass die Seite weiß, wo die Komponente gerade eingebettet ist. Klassische Viewport-Breakpoints kennen nur die Fensterbreite, nicht den tatsächlich verfügbaren Platz.</p>
+          <a href="../docs/de/layouts.html" class="ncss-btn ncss-btn--secondary">Mehr im Handbuch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Komponenten-Übersicht (wa-tree) -->
   <section id="komponenten" class="ncss-container ncss-stack ncss-py-xl">
     <div class="ncss-stack ncss-stack--tight landing-section-head">
@@ -247,6 +262,13 @@
         <wa-tree-item>Font Awesome Icons (selbst gehostet)</wa-tree-item>
       </wa-tree-item>
     </wa-tree>
+  </section>
+
+  <!-- Sektions-Trenner (.ncss-tile), UIkit-artige Farbfläche -->
+  <section class="ncss-tile ncss-tile--muted ncss-full-bleed ncss-text-center">
+    <p class="ncss-eyebrow">Ehrlich bleiben</p>
+    <h2>Kein Framework-Lock-in - jederzeit aussteigbar</h2>
+    <p class="ncss-text-muted" style="max-width: 34rem; margin-inline: auto;">Reines CSS, kein proprietäres Klassensystem, das sich nur mit einem Build-Schritt wieder entfernen lässt. <code>ncss.css</code> weglassen genügt.</p>
   </section>
 
   <!-- Beispiel-Dashboard (native SVG-Sparklines, keine Chart-Bibliothek) -->
