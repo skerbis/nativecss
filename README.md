@@ -1008,7 +1008,13 @@ einzeln per Screenshot/Playwright verifiziert, nicht nur angenommen):
 ## Demo-Seiten
 
 Alle unter `demo/`, jede bindet `../dist/ncss.css` ein und trägt eigenes,
-seitenspezifisches CSS mit `demo-*`-Präfix (nie in den ncss-Dateien selbst):
+seitenspezifisches CSS mit `demo-*`-Präfix (nie in den ncss-Dateien selbst). Seiten-
+eigene JS-Interaktionen (Theme-/Paletten-Umschalter, Live-Farbeditor, Formulare,
+Sidebar-Umschalter der Doku-Website) liegen als externe Dateien unter
+`demo/assets/js/`, per `<script src="...">` eingebunden - bewusst KEINE Inline-
+`<script>`-Blöcke (CSP ohne `unsafe-inline` bräuchte sonst pro Seite gepflegte
+Nonces). `dist/components/` bleibt reserviert für tatsächlich ausgelieferte,
+wiederverwendbare ncss-Bibliotheksfeatures, nicht für Seiten-eigene Demo-Logik.
 
 | Seite | Inhalt |
 |---|---|

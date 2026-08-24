@@ -6,7 +6,7 @@
 <title>NativeCSS - Demo</title>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
-<script>window.Prism = { manual: true };</script>
+<script src="assets/js/prism-manual.js"></script>
 <script src="../vendor/prismjs/prism-core.min.js"></script>
 <script src="../vendor/prismjs/prism-markup.min.js"></script>
 <script src="../vendor/prismjs/prism-css.min.js"></script>
@@ -975,39 +975,8 @@
   </div>
 </footer>
 
-<script>
-  var toggle = document.getElementById("themeToggle");
-  var label = document.getElementById("themeLabel");
-  var order = ["system", "light", "dark"];
-  var labels = { system: "System", light: "Hell", dark: "Dunkel" };
-  var current = "system";
-
-  toggle.addEventListener("click", function () {
-    current = order[(order.indexOf(current) + 1) % order.length];
-    if (current === "system") {
-      document.documentElement.removeAttribute("data-theme");
-    } else {
-      document.documentElement.setAttribute("data-theme", current);
-    }
-    label.textContent = labels[current];
-  });
-
-  document.getElementById("replayAnimBtn").addEventListener("click", function () {
-    var grid = document.getElementById("animGrid");
-    grid.querySelectorAll("[class*='ncss-animate-']").forEach(function (el) {
-      el.style.animation = "none";
-      void el.offsetWidth;
-      el.style.animation = "";
-    });
-  });
-
-  document.getElementById("shakeBtn").addEventListener("click", function (e) {
-    var btn = e.currentTarget;
-    btn.classList.remove("ncss-animate-shake");
-    void btn.offsetWidth;
-    btn.classList.add("ncss-animate-shake");
-  });
-</script>
+<script src="assets/js/theme-toggle.js"></script>
+<script src="assets/js/index-animations.js"></script>
 
 </body>
 </html>

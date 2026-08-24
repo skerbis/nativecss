@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 
-<script>window.Prism = { manual: true };</script>
+<script src="assets/js/prism-manual.js"></script>
 <script src="../vendor/prismjs/prism-core.min.js"></script>
 <script src="../vendor/prismjs/prism-markup.min.js"></script>
 <script src="../vendor/prismjs/prism-css.min.js"></script>
@@ -20,10 +20,7 @@
 <script src="../dist/components/command-fallback.js" defer></script>
 <script src="../dist/components/nav.js" defer></script>
 <script src="../dist/components/wa-close-on-scroll.js" defer></script>
-<script type="module">
-  import { setIconPath } from "../vendor/webawesome/dist-cdn/utilities/base-path.js";
-  setIconPath("../vendor/fontawesome/svgs");
-</script>
+<script type="module" src="assets/js/set-icon-path.js"></script>
 <script type="module" src="../vendor/webawesome/dist-cdn/webawesome.loader.js" data-webawesome="../vendor/webawesome/dist-cdn"></script>
 
 <style>
@@ -225,15 +222,7 @@
   </div>
 </footer>
 
-<script>
-  document.querySelector("wa-dropdown").addEventListener("wa-select", function (e) {
-    document.getElementById("dropdownResult").textContent = "Ausgewählt: " + e.detail.item.value;
-  });
-
-  document.getElementById("toastBtn").addEventListener("click", function () {
-    document.getElementById("demoToast").create("Gespeichert - alles klar.", { variant: "success" });
-  });
-</script>
+<script src="assets/js/webawesome-demo.js"></script>
 
 </body>
 </html>

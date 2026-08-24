@@ -176,17 +176,7 @@
   <div style="overflow: hidden; width: min(100%, 30rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
     <iframe id="radiusFrame" src="../../demo/embed-adaptive-radius.html" style="display: block; width: 400px; max-width: 100%; height: 12rem; border: 0;" title="Adaptiver Radius, live testbar"></iframe>
   </div>
-  <script>
-    (function () {
-      var slider = document.getElementById('radiusWidthSlider');
-      var output = document.getElementById('radiusWidthOutput');
-      var frame = document.getElementById('radiusFrame');
-      slider.addEventListener('input', function () {
-        frame.style.width = slider.value + 'px';
-        output.textContent = slider.value + 'px';
-      });
-    })();
-  </script>
+  <script src="../../demo/assets/js/cards-radius-slider.js" defer></script>
   <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"
          style="width: min(100vw, 20rem);"&gt;
   ...

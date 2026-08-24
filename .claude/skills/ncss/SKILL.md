@@ -957,9 +957,28 @@ umgestellt:
     }`-Versuch blieb im Screenshot leer, obwohl alle Computed-Styles "sichtbar" meldeten.
     Fix: das ECHTE `open`-Attribut setzen statt es per CSS vorzutäuschen - im Markup PER
     DEFAULT `open` (JS-loser Fallback bleibt sichtbar statt komplett versteckt), ein
-    winziges synchrones Inline-`<script>` direkt im `<details>` (läuft vor dem ersten
-    Paint, `document.currentScript.closest("details")`) entfernt `open` nur, wenn der
-    Viewport beim Laden schmaler als die Breakpoint-Schwelle ist.
+    winziges SYNCHRONES `<script src="...">` (kein `defer`/`async`, `demo/assets/js/
+    docs-sidebar.js`) direkt im `<details>` (läuft vor dem ersten Paint an exakt dieser
+    Markup-Position, `document.currentScript.closest("details")`) entfernt `open` nur,
+    wenn der Viewport beim Laden schmaler als die Breakpoint-Schwelle ist. Bewusst NICHT
+    inline (Projekt-Vorgabe: keine Inline-Scripts, CSP-Nonce-Pflege sonst pro Seite nötig)
+    - `document.currentScript` funktioniert für ein synchrones externes Script GENAUSO wie
+    für ein Inline-Script, kein Verhaltensunterschied.
+
+49. **Keine Inline-`<script>`s auf der eigenen Website** (User-Vorgabe: CSP ohne
+    `unsafe-inline` bräuchte sonst pro Seite gepflegte Nonces) - jede Seiten-JS-Logik
+    lebt als externe Datei unter `demo/assets/js/`, referenziert per `<script src="...">`
+    (synchron, wo Timing zählt - z.B. `docs-sidebar.js`, siehe Punkt 48 - sonst `defer`).
+    `dist/components/` bleibt reserviert für tatsächlich ausgelieferte, wiederverwendbare
+    ncss-Bibliotheksfeatures - Seiten-eigene Interaktionen (Theme-/Paletten-Umschalter,
+    Live-Farbeditor, Landingpage-Formulare, Sidebar-Umschalter) gehören NICHT dorthin,
+    auch wenn sie technisch genauso funktionieren würden. Ein Modul-Script (`type=
+    "module"`), das per `<script type="module" src="...">` extern statt inline
+    eingebunden wird, löst SEINE EIGENEN `import`-Pfade relativ zur MODUL-DATEI selbst
+    auf, nicht zur ladenden Seite - `demo/assets/js/set-icon-path.js` brauchte deshalb
+    `../../../vendor/...` (drei Ebenen zurück zum Repo-Root), obwohl dieselbe Zeile
+    inline auf einer Seite direkt unter `demo/` nur `../vendor/...` gebraucht hätte (per
+    echtem Test mit MIME-Type-Fehler gefunden, als nur zwei Ebenen gesetzt waren).
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

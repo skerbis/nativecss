@@ -34,7 +34,7 @@
 </style>
 <link rel="stylesheet" href="landing.css">
 
-<script>window.Prism = { manual: true };</script>
+<script src="assets/js/prism-manual.js"></script>
 <script src="../vendor/prismjs/prism-core.min.js"></script>
 <script src="../vendor/prismjs/prism-markup.min.js"></script>
 <script src="../vendor/prismjs/prism-css.min.js"></script>
@@ -52,10 +52,7 @@
      importiert (nicht das komplette webawesome.js-Bundle). Zeigt auf dieselben, bereits
      für die Webfont-Icons oben genutzten SVGs - ein Font-Awesome-Download deckt beide
      Nutzungsarten ab. -->
-<script type="module">
-  import { setIconPath } from "../vendor/webawesome/dist-cdn/utilities/base-path.js";
-  setIconPath("../vendor/fontawesome/svgs");
-</script>
+<script type="module" src="assets/js/set-icon-path.js"></script>
 <!-- data-webawesome ist NICHT optional beim Self-Hosting mit relativem Pfad: Web Awesomes
      eigene Basis-Pfad-Erkennung (vendor/webawesome/dist-cdn/utilities/base-path.js) nimmt
      bei fehlendem data-webawesome sonst das rohe, unaufgelöste src-Attribut dieses
@@ -470,35 +467,7 @@
   <wa-button slot="footer" variant="brand" appearance="accent" id="contactSubmit">Absenden</wa-button>
 </wa-dialog>
 
-<script>
-  var moreNavDropdown = document.getElementById("moreNavDropdown");
-  moreNavDropdown.addEventListener("wa-select", function (e) {
-    window.location.href = e.detail.item.value;
-  });
-
-  var billingSwitch = document.getElementById("billingSwitch");
-  var pricingGrid = document.getElementById("pricingGrid");
-  billingSwitch.addEventListener("change", function (e) {
-    pricingGrid.dataset.billing = e.target.checked ? "yearly" : "monthly";
-  });
-
-  var newsletterForm = document.getElementById("newsletterForm");
-  var newsletterStatus = document.getElementById("newsletterStatus");
-  newsletterForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    newsletterStatus.textContent = "Danke! (Demo - es wurde nichts wirklich verschickt.)";
-    newsletterForm.reset();
-  });
-
-  var contactDialog = document.getElementById("contactDialog");
-  var contactForm = document.getElementById("contactForm");
-  document.getElementById("contactSubmit").addEventListener("click", function () {
-    if (contactForm.reportValidity()) {
-      contactDialog.open = false;
-      contactForm.reset();
-    }
-  });
-</script>
+<script src="assets/js/landing-interactions.js"></script>
 
 </body>
 </html>
