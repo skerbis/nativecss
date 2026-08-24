@@ -1,0 +1,85 @@
+/**
+ * ncss - Split-Komponente (Layer "components"): Text neben Bild (oder Video), typisch
+ * für Marketing-/Feature-Sektionen ("Bild links, Text rechts" und umgekehrt). Reines
+ * Flex-Layout, kein JS.
+ *
+ * Markup:
+ *   <div class="ncss-split-container">
+ *     <div class="ncss-split">
+ *       <div class="ncss-split-media"><img src="foto.jpg" alt="..."></div>
+ *       <div class="ncss-split-content">
+ *         <h2>Titel</h2>
+ *         <p>Text ...</p>
+ *       </div>
+ *     </div>
+ *   </div>
+ *
+ * Bild LINKS vs. RECHTS braucht KEINEN Modifier - reine Dokumentreihenfolge (dasselbe
+ * Prinzip wie .ncss-card-media oben/unten in card.css): .ncss-split-media als ERSTES
+ * Kind = links (und beim Stapeln auf schmalen Containern automatisch OBEN), als
+ * LETZTES Kind = rechts (bzw. beim Stapeln UNTEN). Kein row-reverse-Trick nötig, der
+ * Vorlese-/Fokus-Reihenfolge vom visuellen Layout entkoppeln würde.
+ *
+ * .ncss-split-container erzeugt den Container-Query-Kontext - muss ein SEPARATES
+ * Element sein, da .ncss-split selbst ihre eigene Breite per Spec nicht abfragen kann
+ * (nur Nachfahren können das, siehe dieselbe Einschränkung bei .ncss-card--horizontal).
+ * Schwelle 36rem (breiter als die 24rem einer einzelnen Karte) - eine volle Text+Bild-
+ * Sektion braucht mehr Platz, bevor zwei Spalten nebeneinander noch angenehm lesbar
+ * bleiben.
+ */
+
+.ncss-split-container {
+  container-type: inline-size;
+  container-name: ncss-split;
+}
+
+.ncss-split {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-split-gap, var(--ncss-space-xl));
+}
+
+/* -- ncss container-query: split-two-col (36rem) --
+   --ncss-split-align (Default center) steuert die VERTIKALE Ausrichtung der beiden
+   Spalten zueinander, sobald sie nebeneinander stehen - kein Effekt im gestapelten
+   Zustand (dort bestimmt die normale Blockreihenfolge die Position). */
+@container ncss-split (min-width: 36rem) {
+  .ncss-split {
+    flex-direction: row;
+    align-items: var(--ncss-split-align, center);
+  }
+  /* Medien-Spalte nimmt standardmäßig die Hälfte ein und darf schrumpfen (0 1 50%) -
+     --ncss-split-media-width parametrisiert eine ASYMMETRISCHE Aufteilung (z.B. 40%),
+     nur auf .ncss-split-media selbst gesetzt. Die Content-Spalte füllt IMMER den Rest
+     (1 1 0, kein eigener Breiten-Token nötig) - beide zusammen ergeben automatisch
+     100%, unabhängig vom Medien-Anteil. */
+  .ncss-split-media {
+    flex: 0 1 var(--ncss-split-media-width, 50%);
+    min-width: 0;
+  }
+  .ncss-split-content {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+.ncss-split-media img,
+.ncss-split-media video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- Ausrichtungs-Modifier ------------------------------------------------------------
+   Bequemlichkeits-Klassen für die häufigsten --ncss-split-align-Werte, center bleibt
+   der klassenlose Default. Wie bei .ncss-grid--align-start (helpers/layout.css) nur für
+   den abweichenden Fall gedacht, keine Klasse für jeden denkbaren align-items-Wert. */
+.ncss-split--align-start {
+  --ncss-split-align: start;
+}
+.ncss-split--align-end {
+  --ncss-split-align: end;
+}
+.ncss-split--align-stretch {
+  --ncss-split-align: stretch;
+}

@@ -980,6 +980,38 @@ umgestellt:
     inline auf einer Seite direkt unter `demo/` nur `../vendor/...` gebraucht hätte (per
     echtem Test mit MIME-Type-Fehler gefunden, als nur zwei Ebenen gesetzt waren).
 
+50. **Die Drei-Ebenen-Korrektur aus Punkt 49 gilt NUR für den `import`-Spezifizierer
+    selbst, NICHT für jeden String, den das importierte Modul entgegennimmt** -
+    `setIconPath("../vendor/fontawesome/svgs")` ist reine Laufzeit-Data, Web Awesome baut
+    daraus intern nur eine Text-URL zusammen, die der BROWSER später relativ zur SEITE
+    auflöst, nicht zur Moduldatei - blieb bei `demo/assets/js/set-icon-path.js` deshalb
+    bei `../vendor/...` (eine Ebene), obwohl der `import`-Spezifizierer direkt daneben
+    drei Ebenen braucht. Lokal an der Domain-Wurzel serviert (Server-Root = Repo-Root)
+    bleibt der Unterschied unsichtbar (beide Basen landen zufällig am selben Ort) - erst
+    unter einem echten Unterpfad wie `skerbis.github.io/nativecss/` sichtbar (per echtem
+    Test dort gefunden: alle Font-Awesome-Icons 404eten, weil der Pfad bis vor die
+    Domain-Wurzel escapte). Bei jeder Moduldatei mit gemischten Import-Spezifizierern UND
+    weitergereichten Pfad-Strings beide Fälle EINZELN prüfen, im Zweifel unter einem
+    simulierten Unterpfad testen (`mkdir subpfad && cp -r repo subpfad/ && php -S ... -t
+    .`), nicht nur an der Server-Wurzel.
+
+51. **`.ncss-split`/`.ncss-tile`** (components/split.css, components/tile.css) -
+    Text-neben-Bild-Sektionen und UIkit-artige Farbflächen-Sektionen. Split: Bild
+    links/rechts über Dokumentreihenfolge (`.ncss-split-media` erstes/letztes Kind),
+    KEIN Modifier, KEIN `row-reverse` - dieselbe Konvention wie Card-Media oben/unten.
+    Braucht `.ncss-split-container` als separaten Container-Query-Wrapper (36rem
+    Schwelle) - dieselbe Einschränkung wie bei `.ncss-card--horizontal` (Element kann
+    nicht die eigene Breite abfragen). `--ncss-split-media-width` auf `.ncss-split-media`
+    für asymmetrische Aufteilung, `--ncss-split-align` (+ Klassen `--align-start/-end/
+    -stretch`) für vertikale Ausrichtung. Tile: `--brand`/`--brand-2` kippen automatisch
+    auf hellen Text (dieselben `-contrast`-Tokens wie `.ncss-btn--primary`) - `.ncss-card`/
+    `<pre>` DARIN werden automatisch wieder auf normalen Text zurückgesetzt, sonst exakt
+    derselbe Vererbungs-Fallstrick wie bei product.html's `.landing-on-bg` (siehe oben),
+    hier von Anfang an generisch mitgelöst statt erst nachträglich als Seiten-Fix. Beim
+    Bauen des Tile-Kommentars selbst in dieselbe Wildcard-Falle gelaufen wie Punkt 14
+    beschreibt (`.ncss-py-* / .ncss-px-*` schloss den Kommentar vorzeitig) - per
+    `grep -rn '\-\*/'` sofort gefunden, bevor es committed wurde.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

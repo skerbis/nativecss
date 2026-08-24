@@ -1,0 +1,141 @@
+<!--DESC: Text neben Bild (Split) und volle-Breite Farbflächen-Sektionen (Tile, bekannt aus UIkit) - Schritt für Schritt mit Live-Beispielen.-->
+<section class="ncss-stack">
+  <h1>Text &amp; Bild, Tiles</h1>
+  <p class="ncss-text-lg ncss-text-muted">Zwei Bausteine für typische Marketing-/Landingpage-Sektionen: <code>.ncss-split</code> (Text neben Bild) und <code>.ncss-tile</code> (volle-Breite Farbflächen, bekannt aus UIkit). Beide lassen sich kombinieren - eine Tile als Hintergrundfläche, darin ein Split-Layout.</p>
+</section>
+
+<section class="ncss-stack" id="split-grundstruktur">
+  <h2 class="demo-section-title">1. Split: Grundstruktur</h2>
+  <p><code>.ncss-split-container</code> erzeugt den Container-Query-Kontext (ein Element kann per Spec nicht seine eigene Breite abfragen, siehe <a href="cards.html#horizontal">Karten, Abschnitt 6</a> für dieselbe Einschränkung), <code>.ncss-split</code> ist das eigentliche zweispaltige Layout. Ab 36rem CONTAINER-Breite stehen Media und Content nebeneinander, darunter stapeln sie sich automatisch.</p>
+  <pre><code class="language-html">&lt;div class="ncss-split-container"&gt;
+  &lt;div class="ncss-split"&gt;
+    &lt;div class="ncss-split-media"&gt;&lt;img src="foto.jpg" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-split-content"&gt;
+      &lt;h3&gt;Titel&lt;/h3&gt;
+      &lt;p&gt;Text ...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-split-container">
+    <div class="ncss-split">
+      <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+      <div class="ncss-split-content ncss-stack ncss-stack--tight">
+        <h3>Grundbeispiel</h3>
+        <p class="ncss-text-sm ncss-text-muted">Fenster/Panel schmaler ziehen, um das Stapeln unter 36rem zu sehen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ncss-stack" id="split-links-rechts">
+  <h2 class="demo-section-title">2. Bild links vs. rechts</h2>
+  <p>Kein Modifier nötig - reine Dokumentreihenfolge, genau wie bei <a href="cards.html#media">Karten</a> (<code>.ncss-card-media</code> oben/unten). <code>.ncss-split-media</code> als ERSTES Kind = links (und beim Stapeln oben), als LETZTES Kind = rechts (und beim Stapeln unten). Kein <code>row-reverse</code>-Trick, der die Vorlese-/Fokus-Reihenfolge vom visuellen Layout entkoppeln würde.</p>
+  <pre><code class="language-html">&lt;!-- Bild rechts: .ncss-split-media einfach als LETZTES Kind --&gt;
+&lt;div class="ncss-split"&gt;
+  &lt;div class="ncss-split-content"&gt;...&lt;/div&gt;
+  &lt;div class="ncss-split-media"&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-split-container">
+    <div class="ncss-split">
+      <div class="ncss-split-content ncss-stack ncss-stack--tight">
+        <h3>Bild rechts</h3>
+        <p class="ncss-text-sm ncss-text-muted">Dieselbe Klasse, nur die Kindreihenfolge im Markup ist getauscht.</p>
+      </div>
+      <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="ncss-stack" id="split-ausrichtung">
+  <h2 class="demo-section-title">3. Vertikale Ausrichtung &amp; Breiten-Verhältnis</h2>
+  <p><code>--ncss-split-align</code> (Default <code>center</code>) steuert, wie die beiden Spalten zueinander ausgerichtet sind, sobald sie nebeneinander stehen - kein Effekt im gestapelten Zustand. Bequemlichkeits-Klassen für die häufigsten Werte:</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-split--align-start</code></td><td>Beide Spalten oben ausgerichtet</td></tr>
+        <tr><td><code>.ncss-split--align-end</code></td><td>Beide Spalten unten ausgerichtet</td></tr>
+        <tr><td><code>.ncss-split--align-stretch</code></td><td>Beide Spalten gleich hoch gestreckt</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Für ein asymmetrisches Breiten-Verhältnis (statt 50/50) <code>--ncss-split-media-width</code> direkt auf <code>.ncss-split-media</code> setzen - die Content-Spalte füllt automatisch den Rest, ergibt immer zusammen 100%:</p>
+  <pre><code class="language-html">&lt;div class="ncss-split ncss-split--align-start"&gt;
+  &lt;div class="ncss-split-media" style="--ncss-split-media-width: 40%;"&gt;...&lt;/div&gt;
+  &lt;div class="ncss-split-content"&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-split-container">
+    <div class="ncss-split ncss-split--align-start">
+      <div class="ncss-split-media" style="--ncss-split-media-width: 40%;"><div class="ncss-placeholder" style="aspect-ratio: 1/1;"></div></div>
+      <div class="ncss-split-content ncss-stack ncss-stack--tight">
+        <h3>40/60-Aufteilung, oben ausgerichtet</h3>
+        <p class="ncss-text-sm ncss-text-muted">Media schmaler als die Content-Spalte, beide oben bündig statt zentriert.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ncss-stack" id="tile-grundlagen">
+  <h2 class="demo-section-title">4. Tile: Farbflächen-Sektionen</h2>
+  <p>Bekannt aus UIkit (<code>uk-tile-default/-muted/-primary/-secondary</code>) - volle-Breite Blöcke zum Gliedern einer langen Seite in klar unterscheidbare Abschnitte. <code>.ncss-tile</code> allein (ohne Modifier) ist die normale Seitenfläche, kein sichtbarer Unterschied zur Umgebung außer dem eigenen Innenabstand.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Entspricht UIkit</th><th scope="col">Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-tile</code></td><td><code>uk-tile-default</code></td><td>Normale Seitenfläche</td></tr>
+        <tr><td><code>.ncss-tile--muted</code></td><td><code>uk-tile-muted</code></td><td><code>--ncss-color-bg-subtle</code> als Hintergrund</td></tr>
+        <tr><td><code>.ncss-tile--brand</code></td><td><code>uk-tile-primary</code></td><td>Markenfarbe, Text kippt automatisch auf hell</td></tr>
+        <tr><td><code>.ncss-tile--brand-2</code></td><td><code>uk-tile-secondary</code></td><td>Zweitfarbe, Text kippt automatisch auf hell</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code class="language-html">&lt;section class="ncss-tile ncss-tile--brand"&gt;
+  &lt;h2&gt;Titel&lt;/h2&gt;
+  &lt;p&gt;Text ...&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-tile ncss-tile--brand ncss-radius-md">
+    <h3>Marken-Fläche</h3>
+    <p class="ncss-text-sm">Heller Text automatisch, keine eigene Klasse nötig.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="tile-verschachtelt">
+  <h2 class="demo-section-title">5. Weiße Flächen innerhalb einer Tile</h2>
+  <p>Der automatische helle Text von <code>--brand</code>/<code>--brand-2</code> ist eine reine Nachfahren-Selektor-Vererbung - ohne Gegenmaßnahme würde er auch in eine verschachtelte weiße <code>.ncss-card</code> hineinlaufen und dort unlesbar werden (derselbe Fallstrick, der zuerst an <code>product.html</code> gefunden wurde, hier von vornherein generisch mitgelöst). <code>.ncss-tile</code> setzt <code>.ncss-card</code> und <code>&lt;pre&gt;</code> DARIN deshalb automatisch auf den normalen dunklen Text zurück:</p>
+  <div class="ncss-tile ncss-tile--brand ncss-radius-md">
+    <h3>Marken-Fläche mit Karte</h3>
+    <p class="ncss-text-sm">Dieser Text ist hell.</p>
+    <article class="ncss-card ncss-radius-lg ncss-shadow-sm" style="max-width: 20rem; margin-block-start: var(--ncss-space-md);">
+      <div class="ncss-card-body">
+        <h4>Karten-Titel</h4>
+        <p class="ncss-text-sm ncss-text-muted">Dieser Text bleibt normal dunkel-auf-weiß, unabhängig von der Tile-Farbe.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="ncss-stack" id="tile-kombiniert">
+  <h2 class="demo-section-title">6. Kombiniert: Split innerhalb einer Tile</h2>
+  <p>Beide Bausteine sind bewusst unabhängig voneinander - eine Tile als Hintergrundfläche, darin ganz normal ein Split-Layout. Für volle Bildschirmbreite (statt nur innerhalb des aktuellen Containers) zusätzlich <code>.ncss-full-bleed</code> auf die Tile kombinieren - Tile selbst bricht nicht von sich aus aus einem umgebenden <code>.ncss-container</code> aus, das bleibt bewusst eine separate Entscheidung.</p>
+  <pre><code class="language-html">&lt;section class="ncss-tile ncss-tile--muted ncss-full-bleed"&gt;
+  &lt;div class="ncss-container"&gt;
+    &lt;div class="ncss-split-container"&gt;
+      &lt;div class="ncss-split"&gt;
+        &lt;div class="ncss-split-media"&gt;...&lt;/div&gt;
+        &lt;div class="ncss-split-content"&gt;...&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-tile ncss-tile--muted ncss-radius-md">
+    <div class="ncss-split-container">
+      <div class="ncss-split">
+        <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+        <div class="ncss-split-content ncss-stack ncss-stack--tight">
+          <h3>Split in einer Tile</h3>
+          <p class="ncss-text-sm ncss-text-muted">Zwei unabhängige Bausteine, frei kombinierbar.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

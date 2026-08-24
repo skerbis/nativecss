@@ -623,6 +623,58 @@
     </div>
   </section>
 
+  <!-- Split: Text neben Bild -->
+  <section class="ncss-stack" id="split">
+    <h2 class="demo-section-title">Split: Text neben Bild</h2>
+    <p class="ncss-text-muted ncss-text-sm">Bild links vs. rechts braucht keinen Modifier - reine Dokumentreihenfolge (<code>.ncss-split-media</code> als erstes oder letztes Kind), genau wie bei Card oben. Ab 36rem CONTAINER-Breite stehen beide Spalten nebeneinander, darunter stapeln sie sich automatisch:</p>
+    <div class="ncss-split-container">
+      <div class="ncss-split">
+        <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+        <div class="ncss-split-content ncss-stack ncss-stack--tight">
+          <h3>Bild links</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>.ncss-split-media</code> als erstes Kind. Vertikale Ausrichtung standardmäßig zentriert (<code>--ncss-split-align</code>).</p>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-split-container">
+      <div class="ncss-split ncss-split--align-start">
+        <div class="ncss-split-content ncss-stack ncss-stack--tight">
+          <h3>Bild rechts, oben ausgerichtet</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>.ncss-split-media</code> als letztes Kind + <code>.ncss-split--align-start</code> statt der zentrierten Standardausrichtung.</p>
+        </div>
+        <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-split-container"&gt;
+  &lt;div class="ncss-split"&gt;
+    &lt;div class="ncss-split-media"&gt;&lt;img src="foto.jpg" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-split-content"&gt;
+      &lt;h3&gt;Titel&lt;/h3&gt;
+      &lt;p&gt;Text ...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <!-- Tile: Farbflächen-Sektionen -->
+  <section class="ncss-stack" id="tile">
+    <h2 class="demo-section-title">Tile: Farbflächen-Sektionen</h2>
+    <p class="ncss-text-muted ncss-text-sm">Bekannt aus UIkit (<code>uk-tile-*</code>) - volle-Breite Blöcke zum Gliedern einer langen Seite. <code>--brand</code>/<code>--brand-2</code> kippen automatisch auf hellen Text, Karten/Code-Blöcke DARIN bleiben normal dunkel-auf-weiß:</p>
+    <div class="ncss-tile ncss-tile--brand ncss-radius-md">
+      <h3>Marken-Fläche</h3>
+      <p class="ncss-text-sm">Heller Text automatisch, keine eigene Klasse nötig.</p>
+    </div>
+    <div class="ncss-tile ncss-tile--muted ncss-radius-md">
+      <h3>Gedämpfte Fläche</h3>
+      <p class="ncss-text-sm ncss-text-muted"><code>--ncss-color-bg-subtle</code> als Hintergrund, normaler Text.</p>
+    </div>
+    <pre><code class="language-html">&lt;section class="ncss-tile ncss-tile--brand"&gt;
+  &lt;h2&gt;Titel&lt;/h2&gt;
+  &lt;p&gt;Text ...&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Für volle Bildschirmbreite zusätzlich <code>.ncss-full-bleed</code> kombinieren (Tile selbst bricht nicht von sich aus aus, siehe <a href="../docs/de/layouts.html">Handbuch</a> für ein Beispiel).</p>
+  </section>
+
   <!-- Grid-Spaltenzahl & Bento -->
   <section class="ncss-stack" id="grid-bento">
     <h2 class="demo-section-title">Feste Spaltenzahl, Spannweiten &amp; Bento-Grid</h2>

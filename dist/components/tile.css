@@ -1,0 +1,52 @@
+/**
+ * ncss - Tile-Komponente (Layer "components"): volle-Breite Farbflächen-Sektionen zum
+ * Gliedern einer langen Seite in klar unterscheidbare Blöcke (bekannt aus UIkit -
+ * uk-tile-default/-muted/-primary/-secondary). Reines Struktur+Farbe, kein JS.
+ *
+ * Markup:
+ *   <section class="ncss-tile">Normale Fläche (Default, kein Modifier nötig)</section>
+ *   <section class="ncss-tile ncss-tile--muted">Gedämpfte Fläche</section>
+ *   <section class="ncss-tile ncss-tile--brand">Marken-Fläche, automatisch heller Text</section>
+ *   <section class="ncss-tile ncss-tile--brand-2">Zweitfarben-Fläche, automatisch heller Text</section>
+ *
+ * Für eine volle Breite bis zum Bildschirmrand zusätzlich .ncss-full-bleed kombinieren
+ * (Tile selbst bricht NICHT von sich aus aus einem umgebenden .ncss-container aus -
+ * beide Anliegen bleiben getrennt, dieselbe Trennung wie bei Card/Radius-Utilities:
+ * eine Komponente soll nicht zwei unabhängige Entscheidungen gleichzeitig treffen).
+ * Padding über --ncss-tile-padding-block/-inline parametrisierbar (Default
+ * --ncss-space-2xl/-lg), kein eigenes Größen-Klassensystem - die bestehenden
+ * padding-Utilities (helpers/layout.css) würden gegen diesen Default nicht gewinnen
+ * (Layer-Reihenfolge: helpers vor components), deshalb hier bewusst als Custom
+ * Property statt fest codiert - siehe demo/index.html für ein Override-Beispiel.
+ */
+
+.ncss-tile {
+  padding-block: var(--ncss-tile-padding-block, var(--ncss-space-2xl));
+  padding-inline: var(--ncss-tile-padding-inline, var(--ncss-space-lg));
+}
+
+.ncss-tile--muted {
+  background-color: var(--ncss-color-bg-subtle);
+}
+
+/* .ncss-tile--brand/--brand-2 kippen automatisch auf hellen Text (dieselben -contrast-
+   Tokens, die auch .ncss-btn--primary/-secondary nutzen) - ohne das wäre der normale
+   dunkle Fließtext-Default auf der kräftigen Markenfarbe unlesbar (exakt derselbe
+   Fallstrick, der product.html's .landing-on-bg-Sektionen betraf, hier von Anfang an
+   generisch gelöst statt erst nachträglich als Seiten-Fix). Weiße Flächen INNERHALB
+   einer Tile (Karten, <pre>-Code-Blöcke) setzen die Vererbung explizit zurück, sonst
+   würde der geerbte helle Text dort unlesbar auf Weiß landen. */
+.ncss-tile--brand {
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+}
+.ncss-tile--brand-2 {
+  background-color: var(--ncss-color-brand-2);
+  color: var(--ncss-color-brand-2-contrast);
+}
+.ncss-tile--brand .ncss-card,
+.ncss-tile--brand-2 .ncss-card,
+.ncss-tile--brand pre,
+.ncss-tile--brand-2 pre {
+  color: var(--ncss-color-text);
+}

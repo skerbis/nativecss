@@ -53,6 +53,8 @@
 @import url("components/video.css") layer(components);
 @import url("components/audio.css") layer(components);
 @import url("components/card.css") layer(components);
+@import url("components/split.css") layer(components);
+@import url("components/tile.css") layer(components);
 @import url("components/slideshow.css") layer(components);
 @import url("components/dialog-close.css") layer(components);
 @import url("components/modal.css") layer(components);
