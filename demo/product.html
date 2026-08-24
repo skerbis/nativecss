@@ -221,7 +221,17 @@
     color: #fff;
   }
   .landing-on-bg .ncss-eyebrow { color: #9fc4f2; }
-  .landing-on-bg .ncss-text-muted { color: #aec7e6; }
+  /* War #aec7e6 - echtes Lighthouse fand 4.13:1 für <code> INNERHALB von .ncss-text-muted
+     hier (z.B. ".ncss-stack-section" in einem Fließtext-Satz): base.css' <code>-
+     Hintergrund ist ein 12%-currentColor-Tint (color-mix(in oklch, currentColor 12%,
+     transparent)) - der zieht die LOKALE Hintergrundfarbe unter dem Code-Chip Richtung
+     der eigenen (bereits eher hellen) Textfarbe, was den Kontrast GENAU DORT zusätzlich
+     verengt, wo <code> vorkommt (reiner Fließtext ohne <code> lag klar über 4.5:1, nur
+     die code-umschlossenen Stellen fielen knapp durch). Fix: #c3d8f2 (heller, mehr
+     Headroom) - per echtem `getComputedStyle`+Canvas-Kontrast-Test verifiziert: 4.78:1
+     für <code> darin, 6.12:1 für reinen Fließtext ohne <code>, beide komfortabel über
+     4.5:1. */
+  .landing-on-bg .ncss-text-muted { color: #c3d8f2; }
   .landing-on-bg .ncss-card,
   .landing-on-bg pre {
     color: var(--ncss-color-text);

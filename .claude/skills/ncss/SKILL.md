@@ -1348,6 +1348,46 @@ umgestellt:
     bestätigt: `::before`-Pseudoelement der Icons löst `font-family` korrekt auf den
     neuen Namen auf, alle Icons weiterhin sichtbar (Chromium/WebKit/Firefox, 0 Fehler).
 
+61. **Eigenes Kontrast-Skript reichte nicht - ECHTES Lighthouse (`npx lighthouse`) fand
+    nach Fallstrick 59 noch echte, verbliebene Befunde**, die das eigene Skript nicht
+    prüfte (kannte nur `.ncss-eyebrow`/`code`/`.ncss-text-muted`/`.ncss-text-sm` als
+    Selektoren, nicht Prisms `.token.*`-Klassen) UND einen, den es durch einen eigenen
+    Parsing-Fehler übersah (siehe unten). Lehre, die über den Einzelfall hinausgeht: bei
+    einer Lighthouse-Rückfrage IMMER `npx lighthouse <url> --only-categories=accessibility
+    --output=json` laufen lassen und die konkreten `audits["color-contrast"].details.items`
+    auswerten, statt sich auf ein selbst gebautes Ersatz-Skript zu verlassen, dessen
+    Abdeckung/Korrektheit man selbst nicht unabhängig geprüft hat.
+    ZWEI echte, unterschiedliche Befunde gefunden und gefixt:
+    (a) `.token.function`/`.token.class-name` (components/code-block.css) nutzten die
+    rohe `--ncss-color-warning` statt `-on-soft` - dieselbe Diagnose wie Fallstrick 59,
+    hier systemisch auf ALLE `.token.*`-Farbzuordnungen angewendet (keyword/property/tag/
+    selector/string/operator/etc.), nicht nur die eine von Lighthouse konkret genannte
+    Klasse - andere Farbfamilien hätten beim nächsten Crawl derselben Seite mit anderem
+    Beispiel-Code ebenso auffallen können. `.landing-hero-code` (product.html, dedizierter
+    dunkler Code-Block) bleibt unberührt, da dessen eigene lokale Token-Overrides
+    (tag/attr-name/attr-value/string/punctuation/comment) die dort TATSÄCHLICH
+    vorkommenden Klassen bereits vollständig abdecken, nichts fällt auf die gemeinsame
+    Regel zurück (vor dem Ändern geprüft, nicht angenommen).
+    (b) `<code>` INNERHALB von `.landing-on-bg .ncss-text-muted` (product.html) lag bei
+    4.13:1 - subtiler, seitenspezifischer Bug: `<code>`s eigener Hintergrund ist ein
+    12%-currentColor-Tint (base.css) - der zieht die LOKALE Fläche unter dem Code-Chip
+    RICHTUNG der eigenen (hier bereits recht hellen) Textfarbe, was den Kontrast GENAU
+    DORT enger macht, wo `<code>` vorkommt (reiner Fließtext ohne `<code>` lag längst über
+    4.5:1). Fix: die betroffene Textfarbe (`#aec7e6` -> `#c3d8f2`) hell genug gewählt, dass
+    SOWOHL der reine Fließtext-Fall (6.12:1) als auch der code-umschlossene Fall (4.78:1)
+    komfortabel über 4.5:1 bleiben - per echtem Canvas-basiertem Kontrast-Test verifiziert
+    (nicht nur der reine Fließtext-Fall, das hätte den `<code>`-Fall übersehen).
+    NICHT-OFFENSICHTLICHER FALLSTRICK im eigenen Prüf-Tooling dabei gefunden:
+    `getComputedStyle(...).backgroundColor`/`.color` liefert bei einem per `color-mix(in
+    oklch, ...)` erzeugten Wert ein `oklch(...)`-Farbformat zurück, kein `rgb()`/`rgba()`
+    - ein einfacher Regex-Parser für `rgba?\(...)` übersieht das STILLSCHWEIGEND (kein
+    Fehler, einfach `null`/übersprungen), was zu falschen "kein Hintergrund gefunden"-
+    Ergebnissen führte. Robuster, generischer Fix fürs eigene Tooling: jede CSS-
+    Farbangabe über eine 1×1-Canvas (`ctx.fillStyle = colorStr; ctx.getImageData(...)`)
+    zu echten RGBA-Bytes normalisieren, statt String-Parsing für jedes mögliche
+    Farbformat (`rgb`/`oklch`/`hsl`/benannte Farben/...) einzeln nachzubauen - funktioniert
+    für JEDEN gültigen CSS-Farbwert, unabhängig vom Ausgabeformat des Browsers.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

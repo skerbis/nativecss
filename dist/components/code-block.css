@@ -75,7 +75,20 @@ pre:has(> code[class*="language-"]) {
 }
 
 /* --- Prism-Token-Bridge: auf dieselben ncss-Farbtokens gemappt, die auch Komponenten
-   nutzen - zieht automatisch mit theme.css um, kein eigenes Highlighting-Farbschema. */
+   nutzen - zieht automatisch mit theme.css um, kein eigenes Highlighting-Farbschema.
+   Bewusst die `-on-soft`-Stufe jedes Farbtokens statt der rohen Basisfarbe (User-Report:
+   echtes Lighthouse fand `.token.function` mit 4.48:1 auf `--ncss-color-bg-subtle` -
+   hauchdünn unter der 4.5:1-AA-Grenze, mit der rohen `--ncss-color-warning`; dieselbe
+   Diagnose wie bei `.ncss-eyebrow` in helpers/typography.css: eine Basisfarbe ist nur in
+   IHRER kalibrierten Kombination sicher kontrastreich, nicht automatisch auch als
+   freistehender Text auf einer hellen Fläche wie hier). `-on-soft` ist pro Farbfamilie
+   bereits vorhanden (colors.css) und genau für diesen Fall gedacht - im Light Mode eine
+   automatisch abgeleitete, dunklere `-700`-Stufe, im Dark Mode die rohe Basisfarbe (dort
+   unproblematisch, da <pre> dann selbst dunkel ist). `.landing-hero-code` auf
+   product.html (dediziert dunkler Code-Block, unabhängig vom Seiten-Farbschema) bleibt
+   unberührt - dessen eigene, lokale Token-Overrides (tag/attr-name/attr-value/string/
+   punctuation/comment) decken die dort tatsächlich vorkommenden Token-Typen bereits
+   vollständig ab, nichts davon fällt auf diese gemeinsamen Regeln zurück. */
 .token.comment,
 .token.prolog,
 .token.doctype,
@@ -93,7 +106,7 @@ pre:has(> code[class*="language-"]) {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  color: var(--ncss-color-danger);
+  color: var(--ncss-color-danger-on-soft);
 }
 .token.selector,
 .token.attr-name,
@@ -101,26 +114,26 @@ pre:has(> code[class*="language-"]) {
 .token.char,
 .token.builtin,
 .token.inserted {
-  color: var(--ncss-color-success);
+  color: var(--ncss-color-success-on-soft);
 }
 .token.operator,
 .token.entity,
 .token.url,
 .token.atrule,
 .token.attr-value {
-  color: var(--ncss-color-brand-2);
+  color: var(--ncss-color-brand-2-on-soft);
 }
 .token.keyword {
-  color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-on-soft);
 }
 .token.function,
 .token.class-name {
-  color: var(--ncss-color-warning);
+  color: var(--ncss-color-warning-on-soft);
 }
 .token.regex,
 .token.important,
 .token.variable {
-  color: var(--ncss-color-brand-2);
+  color: var(--ncss-color-brand-2-on-soft);
 }
 .token.important,
 .token.bold {
