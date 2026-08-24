@@ -55,6 +55,7 @@
 @import url("components/card.css") layer(components);
 @import url("components/split.css") layer(components);
 @import url("components/tile.css") layer(components);
+@import url("components/accordion-split.css") layer(components);
 @import url("components/slideshow.css") layer(components);
 @import url("components/dialog-close.css") layer(components);
 @import url("components/modal.css") layer(components);

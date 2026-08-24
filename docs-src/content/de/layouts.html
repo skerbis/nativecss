@@ -1,7 +1,7 @@
-<!--DESC: Text neben Bild (Split) und volle-Breite Farbflächen-Sektionen (Tile, bekannt aus UIkit) - Schritt für Schritt mit Live-Beispielen.-->
+<!--DESC: Drei Bausteine für Marketing-/Landingpage-Sektionen: Text neben Bild (Split), volle-Breite Farbflächen (Tile) und ein transformierendes Akkordeon - Schritt für Schritt mit Live-Beispielen.-->
 <section class="ncss-stack">
-  <h1>Text &amp; Bild, Tiles</h1>
-  <p class="ncss-text-lg ncss-text-muted">Zwei Bausteine für typische Marketing-/Landingpage-Sektionen: <code>.ncss-split</code> (Text neben Bild) und <code>.ncss-tile</code> (volle-Breite Farbflächen, bekannt aus UIkit). Beide lassen sich kombinieren - eine Tile als Hintergrundfläche, darin ein Split-Layout.</p>
+  <h1>Sektionen</h1>
+  <p class="ncss-text-lg ncss-text-muted">Drei Bausteine für typische Marketing-/Landingpage-Sektionen: <code>.ncss-split</code> (Text neben Bild), <code>.ncss-tile</code> (volle-Breite Farbflächen, bekannt aus UIkit) und <code>.ncss-accordion-split</code> (transformierendes Akkordeon, bekannt von apple.com). Split und Tile lassen sich kombinieren - eine Tile als Hintergrundfläche, darin ein Split-Layout.</p>
 </section>
 
 <section class="ncss-stack" id="split-grundstruktur">
@@ -138,4 +138,61 @@
       </div>
     </div>
   </div>
+</section>
+
+<section class="ncss-stack" id="accordion-split">
+  <h2 class="demo-section-title">7. Transformierendes Akkordeon</h2>
+  <p>Bekannt von apple.com - ein Text-Akkordeon, dessen zugehöriges Bild rechts automatisch mit dem gerade geöffneten Punkt wechselt. Komplett nativ, KEIN JavaScript: exklusives Öffnen/Schließen über <code>&lt;details name="..."&gt;</code> (Baseline seit September 2025), das passende Bild wird per <code>:has()</code> ausgewählt - dieselbe Technik, die schon <code>pre:has(&gt; code[class*="language-"])</code> in den Code-Blöcken auf dieser Seite nutzt.</p>
+  <div class="ncss-accordion-split-container">
+    <div class="ncss-accordion-split">
+      <div class="ncss-accordion-split-list">
+        <details name="doks-accordion" class="ncss-accordion-split-item" open>
+          <summary>Container Queries</summary>
+          <div class="ncss-accordion-split-body">
+            <p>Komponenten reagieren auf ihren eigenen Platz, nicht auf den Viewport.</p>
+            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+          </div>
+        </details>
+        <details name="doks-accordion" class="ncss-accordion-split-item">
+          <summary>Cascade Layers</summary>
+          <div class="ncss-accordion-split-body">
+            <p>Reihenfolge statt Spezifitäts-Kämpfe - kein <code>!important</code> nötig.</p>
+            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+          </div>
+        </details>
+        <details name="doks-accordion" class="ncss-accordion-split-item">
+          <summary>light-dark()</summary>
+          <div class="ncss-accordion-split-body">
+            <p>Ein Wert pro Token deckt Hell und Dunkel ab - kein zweites Stylesheet.</p>
+            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+          </div>
+        </details>
+      </div>
+      <div class="ncss-accordion-split-media">
+        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+      </div>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-accordion-split-container"&gt;
+  &lt;div class="ncss-accordion-split"&gt;
+    &lt;div class="ncss-accordion-split-list"&gt;
+      &lt;details name="mein-akkordeon" class="ncss-accordion-split-item" open&gt;
+        &lt;summary&gt;Punkt eins&lt;/summary&gt;
+        &lt;div class="ncss-accordion-split-body"&gt;
+          &lt;p&gt;Text ...&lt;/p&gt;
+          &lt;!-- fürs Stapeln auf Mobile, dasselbe Bild wie unten --&gt;
+          &lt;div class="ncss-accordion-split-media-mobile"&gt;&lt;img src="bild-1.jpg" alt="..."&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/details&gt;
+      &lt;!-- weitere Punkte, immer dasselbe name="..." --&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-accordion-split-media"&gt;
+      &lt;img src="bild-1.jpg" alt="..."&gt;
+      &lt;!-- ein Bild pro Punkt, gleiche Reihenfolge --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>name="..."</code> muss pro Akkordeon-Instanz auf der Seite eindeutig sein (wie eine Radio-Button-Gruppe), sonst gruppieren sich mehrere Akkordeons ungewollt miteinander. Jedes Bild steht bewusst ZWEIMAL im Markup (Desktop-Spalte + mobile Inline-Kopie) - ohne JS lässt sich ein DOM-Knoten nicht zwischen zwei entfernten Containern verschieben. Dieselbe Bild-URL wird trotzdem nur einmal geladen (normales HTTP-Caching), pro Breakpoint ist immer nur eine der beiden Kopien im Layout. Unterstützt bis zu 6 Punkte (mehr wären für dieses Muster ohnehin unüblich).</p>
 </section>

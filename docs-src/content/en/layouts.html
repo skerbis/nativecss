@@ -1,7 +1,7 @@
-<!--DESC: Text next to image (Split) and full-width color-block sections (Tile, known from UIkit) - step by step with live examples.-->
+<!--DESC: Three building blocks for marketing/landing-page sections: text next to image (Split), full-width color blocks (Tile), and a transforming accordion - step by step with live examples.-->
 <section class="ncss-stack">
-  <h1>Text &amp; Image, Tiles</h1>
-  <p class="ncss-text-lg ncss-text-muted">Two building blocks for typical marketing/landing-page sections: <code>.ncss-split</code> (text next to an image) and <code>.ncss-tile</code> (full-width color blocks, known from UIkit). Both are independent and combinable - a Tile as the background surface, a Split layout inside it.</p>
+  <h1>Sections</h1>
+  <p class="ncss-text-lg ncss-text-muted">Three building blocks for typical marketing/landing-page sections: <code>.ncss-split</code> (text next to an image), <code>.ncss-tile</code> (full-width color blocks, known from UIkit) and <code>.ncss-accordion-split</code> (transforming accordion, known from apple.com). Split and Tile are combinable - a Tile as the background surface, a Split layout inside it.</p>
 </section>
 
 <section class="ncss-stack" id="split-grundstruktur">
@@ -138,4 +138,61 @@
       </div>
     </div>
   </div>
+</section>
+
+<section class="ncss-stack" id="accordion-split">
+  <h2 class="demo-section-title">7. Transforming accordion</h2>
+  <p>Known from apple.com - a text accordion whose associated image on the right automatically switches with whichever point is currently open. Completely native, NO JavaScript: exclusive open/close via <code>&lt;details name="..."&gt;</code> (Baseline since September 2025), the matching image is selected via <code>:has()</code> - the same technique already used by <code>pre:has(&gt; code[class*="language-"])</code> for the code blocks on this page.</p>
+  <div class="ncss-accordion-split-container">
+    <div class="ncss-accordion-split">
+      <div class="ncss-accordion-split-list">
+        <details name="docs-accordion" class="ncss-accordion-split-item" open>
+          <summary>Container Queries</summary>
+          <div class="ncss-accordion-split-body">
+            <p>Components react to their own available space, not the viewport.</p>
+            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+          </div>
+        </details>
+        <details name="docs-accordion" class="ncss-accordion-split-item">
+          <summary>Cascade Layers</summary>
+          <div class="ncss-accordion-split-body">
+            <p>Order instead of specificity fights - no <code>!important</code> needed.</p>
+            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+          </div>
+        </details>
+        <details name="docs-accordion" class="ncss-accordion-split-item">
+          <summary>light-dark()</summary>
+          <div class="ncss-accordion-split-body">
+            <p>One value per token covers both light and dark - no second stylesheet.</p>
+            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+          </div>
+        </details>
+      </div>
+      <div class="ncss-accordion-split-media">
+        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+      </div>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-accordion-split-container"&gt;
+  &lt;div class="ncss-accordion-split"&gt;
+    &lt;div class="ncss-accordion-split-list"&gt;
+      &lt;details name="my-accordion" class="ncss-accordion-split-item" open&gt;
+        &lt;summary&gt;Point one&lt;/summary&gt;
+        &lt;div class="ncss-accordion-split-body"&gt;
+          &lt;p&gt;Text ...&lt;/p&gt;
+          &lt;!-- for stacking on mobile, same image as below --&gt;
+          &lt;div class="ncss-accordion-split-media-mobile"&gt;&lt;img src="image-1.jpg" alt="..."&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/details&gt;
+      &lt;!-- more points, always the same name="..." --&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-accordion-split-media"&gt;
+      &lt;img src="image-1.jpg" alt="..."&gt;
+      &lt;!-- one image per point, same order --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>name="..."</code> must be unique per accordion instance on the page (like a radio-button group), otherwise multiple accordions unintentionally group together. Each image deliberately appears TWICE in the markup (desktop column + mobile inline copy) - without JS a DOM node can't be moved between two distant containers. The same image URL is still only loaded once (normal HTTP caching), and only one of the two copies is ever in the layout at a given breakpoint. Supports up to 6 points (more would be unusual for this pattern anyway).</p>
 </section>

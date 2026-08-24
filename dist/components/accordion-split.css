@@ -1,0 +1,163 @@
+/**
+ * ncss - Accordion-Split-Komponente (Layer "components"): "transformierendes Akkordeon"
+ * (bekannt von apple.com/mac) - Text-Akkordeon links, dazugehöriges Bild rechts, wechselt
+ * automatisch mit dem gerade geöffneten Punkt. Komplett nativ, KEIN JS: exklusives
+ * Öffnen/Schließen über `<details name="...">` (Baseline seit September 2025, in
+ * Chrome/Firefox/Safari verifiziert), das passende Bild wird per `:has()` ausgewählt
+ * (dieselbe Technik, die schon `pre:has(> code[class*="language-"])` in
+ * components/code-block.css nutzt).
+ *
+ * Markup (bis zu 6 Punkte - siehe "Bounded enumeration" unten für den Grund):
+ *   <div class="ncss-accordion-split-container">
+ *     <div class="ncss-accordion-split">
+ *       <div class="ncss-accordion-split-list">
+ *         <details name="as-1" class="ncss-accordion-split-item" open>
+ *           <summary>Mac und iPhone</summary>
+ *           <div class="ncss-accordion-split-body">
+ *             <p>Text ...</p>
+ *             <div class="ncss-accordion-split-media-mobile"><img src="bild-1.jpg" alt="..."></div>
+ *           </div>
+ *         </details>
+ *         <details name="as-1" class="ncss-accordion-split-item">
+ *           <summary>Mac und iPad</summary>
+ *           <div class="ncss-accordion-split-body">
+ *             <p>Text ...</p>
+ *             <div class="ncss-accordion-split-media-mobile"><img src="bild-2.jpg" alt="..."></div>
+ *           </div>
+ *         </details>
+ *       </div>
+ *       <div class="ncss-accordion-split-media">
+ *         <img src="bild-1.jpg" alt="...">
+ *         <img src="bild-2.jpg" alt="...">
+ *       </div>
+ *     </div>
+ *   </div>
+ *
+ * WICHTIG - jedes Bild steht ZWEIMAL im Markup: einmal in der rechten Desktop-Medien-
+ * Spalte, einmal klein inline im eigenen Akkordeon-Punkt für Mobile (dort gibt es keine
+ * zweite Spalte, das Bild erscheint stattdessen direkt im geöffneten Text, siehe Screen-
+ * shot-Vorlage). Das ist eine BEWUSSTE Verdopplung, kein Kopierfehler: ohne JS lässt
+ * sich ein DOM-Knoten nicht zwischen zwei weit auseinanderliegenden Containern
+ * verschieben, nur eine Kopie in jedem Kontext funktioniert rein deklarativ. Dieselbe
+ * Bild-URL wird vom Browser trotzdem nur EINMAL geladen (normales HTTP-Caching
+ * innerhalb derselben Seite) - keine doppelte Ladezeit, nur etwas mehr Markup. Pro
+ * Breakpoint ist jeweils nur EINE der beiden Kopien tatsächlich im Layout (die andere
+ * `display:none`) - kein doppeltes Vorlesen für Screenreader.
+ *
+ * `name="..."` MUSS pro Akkordeon-Split-Instanz auf der Seite EINDEUTIG sein (sonst
+ * gruppieren sich mehrere Akkordeons ungewollt exklusiv miteinander) - wie eine
+ * Radio-Button-`name`-Gruppe.
+ */
+
+.ncss-accordion-split-container {
+  container-type: inline-size;
+  container-name: ncss-accordion-split;
+}
+
+.ncss-accordion-split {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-lg);
+}
+
+.ncss-accordion-split-item {
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.ncss-accordion-split-item > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ncss-space-sm);
+  padding-block: var(--ncss-space-sm);
+  font-weight: var(--ncss-font-weight-bold);
+  font-size: var(--ncss-font-size-lg);
+  cursor: pointer;
+  list-style: none;
+}
+.ncss-accordion-split-item > summary::-webkit-details-marker {
+  display: none;
+}
+/* Chevron per ::after statt nativem Dreieck - einheitlich über Browser hinweg, dieselbe
+   Technik wie .ncss-nav-dropdown (components/nav.css). */
+.ncss-accordion-split-item > summary::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.5em;
+  height: 0.5em;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  rotate: 45deg;
+  translate: 0 -0.2em;
+  transition: rotate var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-accordion-split-item[open] > summary::after {
+  rotate: 225deg;
+  translate: 0 0.2em;
+}
+.ncss-accordion-split-body {
+  padding-block-end: var(--ncss-space-lg);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-accordion-split-media-mobile {
+  margin-block-start: var(--ncss-space-sm);
+}
+.ncss-accordion-split-media-mobile > * {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--ncss-radius-md);
+}
+
+/* Desktop-Medienspalte bleibt auf schmalen Containern unsichtbar (Bild kommt stattdessen
+   inline pro Punkt, siehe .ncss-accordion-split-media-mobile oben). */
+.ncss-accordion-split-media {
+  display: none;
+}
+
+/* -- ncss container-query: accordion-split-two-col (36rem) -- */
+@container ncss-accordion-split (min-width: 36rem) {
+  .ncss-accordion-split {
+    flex-direction: row;
+    align-items: start;
+    gap: var(--ncss-space-2xl);
+  }
+  .ncss-accordion-split-list,
+  .ncss-accordion-split-media {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .ncss-accordion-split-media {
+    display: block;
+    position: sticky;
+    top: var(--ncss-space-lg);
+  }
+  /* > * statt img - der Medien-Inhalt pro Punkt muss kein <img> sein, funktioniert
+     genauso mit .ncss-placeholder (Demo/Prototyp) oder <picture>/<video>. */
+  .ncss-accordion-split-media > * {
+    display: none;
+    width: 100%;
+    height: auto;
+    border-radius: var(--ncss-radius-md);
+  }
+  .ncss-accordion-split-media-mobile {
+    display: none;
+  }
+
+  /* Bounded enumeration: pro Position ein Selektor-Paar. :has() muss auf einem
+     GEMEINSAMEN VORFAHREN von <details> und Medien-Element sitzen ODER, wie hier, über
+     den allgemeinen Nachfolger-Kombinator (~) auf die direkte Geschwister-Spalte
+     zielen - .ncss-accordion-split-list und .ncss-accordion-split-media sind direkte
+     Geschwister. :nth-child() statt :nth-of-type() auf der Medienseite, da die Kinder
+     unterschiedliche Tags sein können (img/div/picture gemischt) - :nth-of-type zählt
+     nur pro Tag-Name, das würde bei gemischten Typen die Positionen verschieben. 6
+     Positionen reichen für dieses Muster reichlich (Apples eigenes Vorbild hat 3) - mehr
+     als 6 Punkte wären ohnehin kaum noch überschaubar für ein Akkordeon dieser Art. */
+  .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(1)[open]) ~ .ncss-accordion-split-media > :nth-child(1),
+  .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(2)[open]) ~ .ncss-accordion-split-media > :nth-child(2),
+  .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(3)[open]) ~ .ncss-accordion-split-media > :nth-child(3),
+  .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(4)[open]) ~ .ncss-accordion-split-media > :nth-child(4),
+  .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(5)[open]) ~ .ncss-accordion-split-media > :nth-child(5),
+  .ncss-accordion-split-list:has(> .ncss-accordion-split-item:nth-of-type(6)[open]) ~ .ncss-accordion-split-media > :nth-child(6) {
+    display: block;
+  }
+}

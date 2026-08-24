@@ -675,6 +675,45 @@
     <p class="ncss-text-sm ncss-text-muted">Für volle Bildschirmbreite zusätzlich <code>.ncss-full-bleed</code> kombinieren (Tile selbst bricht nicht von sich aus aus, siehe <a href="../docs/de/layouts.html">Handbuch</a> für ein Beispiel).</p>
   </section>
 
+  <!-- Accordion-Split: transformierendes Akkordeon -->
+  <section class="ncss-stack" id="accordion-split">
+    <h2 class="demo-section-title">Accordion-Split: transformierendes Akkordeon</h2>
+    <p class="ncss-text-muted ncss-text-sm">Bekannt von apple.com - Text-Akkordeon links, dazugehöriges Bild rechts wechselt automatisch. Komplett nativ (<code>&lt;details name&gt;</code> + <code>:has()</code>), kein JS. Fenster/Panel schmaler als 36rem ziehen, um das Bild inline im geöffneten Punkt zu sehen:</p>
+    <div class="ncss-accordion-split-container">
+      <div class="ncss-accordion-split">
+        <div class="ncss-accordion-split-list">
+          <details name="demo-accordion" class="ncss-accordion-split-item" open>
+            <summary>Erster Punkt</summary>
+            <div class="ncss-accordion-split-body">
+              <p>Text zum ersten Punkt.</p>
+              <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            </div>
+          </details>
+          <details name="demo-accordion" class="ncss-accordion-split-item">
+            <summary>Zweiter Punkt</summary>
+            <div class="ncss-accordion-split-body">
+              <p>Text zum zweiten Punkt.</p>
+              <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            </div>
+          </details>
+          <details name="demo-accordion" class="ncss-accordion-split-item">
+            <summary>Dritter Punkt</summary>
+            <div class="ncss-accordion-split-body">
+              <p>Text zum dritten Punkt.</p>
+              <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            </div>
+          </details>
+        </div>
+        <div class="ncss-accordion-split-media">
+          <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+          <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+          <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+        </div>
+      </div>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted">Ausführliches Beispiel inkl. reproduzierbarem Code im <a href="../docs/de/layouts.html#accordion-split">Handbuch</a>.</p>
+  </section>
+
   <!-- Grid-Spaltenzahl & Bento -->
   <section class="ncss-stack" id="grid-bento">
     <h2 class="demo-section-title">Feste Spaltenzahl, Spannweiten &amp; Bento-Grid</h2>

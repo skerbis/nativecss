@@ -1012,6 +1012,26 @@ umgestellt:
     beschreibt (`.ncss-py-* / .ncss-px-*` schloss den Kommentar vorzeitig) - per
     `grep -rn '\-\*/'` sofort gefunden, bevor es committed wurde.
 
+52. **`.ncss-accordion-split`** (components/accordion-split.css) - "transformierendes
+    Akkordeon" (bekannt von apple.com/mac): Text-Akkordeon links, dazugehöriges Bild
+    rechts wechselt automatisch mit dem geöffneten Punkt. KOMPLETT NATIV, kein JS -
+    exklusives Öffnen über `<details name="...">` (Baseline seit September 2025, per
+    WebSearch verifiziert, in Chromium/WebKit/Firefox getestet - kein `<details name>`
+    ODER `mode="single"` von `<wa-accordion>` gebraucht, das native Attribut reicht
+    inzwischen), Bildauswahl über `:has()` + `~`-Geschwister-Kombinator (dieselbe
+    Technik wie `pre:has(> code[class*="language-"])` in code-block.css, hier nur über
+    eine feste Anzahl `:nth-child()`-Positionen dupliziert - `:has()` kann nicht selbst
+    "die Nummer des offenen Punkts" auslesen, deshalb ein Selektor-PAAR pro Position,
+    bounded auf 6). Jedes Medium steht bewusst ZWEIMAL im Markup (Desktop-Spalte +
+    `.ncss-accordion-split-media-mobile`-Kopie fürs Stapeln) - ohne JS lässt sich ein
+    DOM-Knoten nicht zwischen zwei entfernten Containern verschieben, nur eine Kopie pro
+    Kontext geht rein deklarativ (dieselbe HTTP-URL wird trotzdem nur einmal geladen,
+    kein Performance-Verlust, nur mehr Markup). CSS-Selektoren zielen auf `> *`
+    (beliebiger Kindtyp), nicht `img` - funktioniert dadurch genauso mit
+    `.ncss-placeholder`-Divs (Demo) wie mit echten `<img>`. `name="..."` muss pro
+    Akkordeon-Instanz eindeutig sein (Radio-Button-Gruppen-Semantik), sonst gruppieren
+    sich mehrere Akkordeons auf derselben Seite ungewollt exklusiv miteinander.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
