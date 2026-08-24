@@ -1069,7 +1069,39 @@ umgestellt:
     ignorieren. Per Playwright mit `reducedMotion: 'reduce'` über alle drei Engines
     bestätigt: `transitionDuration` auf `::details-content` sinkt korrekt auf ~0.00001s.
 
-## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
+55. **`.ncss-marginnote`** (components/marginnote.css) - Bild/Text bricht aus der
+    Textspalte aus, landet aber NICHT am Bildschirmrand (das leistet schon
+    `.ncss-bleed-start/-end`), sondern in der Randspalte NEBEN dem Fließtext (Sidenote-
+    Muster, bekannt von Tufte CSS, hier unabhängig nachgebaut: reines CSS Grid statt
+    fester Pixel-Ränder). `.ncss-marginnote-layout` ist ein 3-Spalten-Grid (Rand/Text/
+    Rand): `grid-template-columns: 1fr min(100%, var(--ncss-container-max-narrow)) 1fr`
+    - `min(100%, ...)` sorgt dafür, dass die Textspalte auf schmalen Containern von selbst
+    100% wird, die beiden `1fr`-Randspalten schrumpfen dann OHNE eigene Media/Container
+    Query von selbst auf 0. NICHT-OFFENSICHTLICHER BUG dabei gefunden (per echtem Test,
+    nicht angenommen): eine feste `column-gap` auf `.ncss-marginnote-layout` selbst wird
+    vom Grid IMMER zwischen den Spalten reserviert, auch wenn die Randspalten auf 0
+    kollabieren - macht auf schmalen Containern einen horizontalen Overflow exakt in Höhe
+    der Summe beider Gaps (16px bei 375px Breite gemessen, optisch unauffällig, nur per
+    `scrollWidth`-Check gefunden). Fix: `column-gap` NICHT auf `.ncss-marginnote-layout`
+    selbst, sondern nur INNERHALB der Container Query setzen, die auch die Randspalten
+    aktiviert - dort ist immer genug Platz dafür eingeplant.
+    Zweiter, wichtigerer Fund (ebenfalls per echtem Test, nicht aus der Spec abgeleitet):
+    CSS Grids Auto-Placement platziert Elemente in Dokumentreihenfolge und nutzt dieselbe
+    Zeile weiter, solange die eigene Spalte darin noch frei ist ("sparse" packing, der
+    Auto-Placement-Cursor bewegt sich nur vorwärts, nie zurück) - dadurch landet eine
+    Randnotiz automatisch auf derselben Zeilenhöhe wie ein Absatz, OHNE dass sie ihre
+    eigene Position kennen müsste. ABER: die beiden Randspalten verhalten sich dabei NICHT
+    symmetrisch. Eine `.ncss-marginnote-end`-Notiz (rechte Spalte, Spaltenindex NACH der
+    Textspalte) muss im Markup DIREKT NACH dem Absatz stehen, zu dem sie gehört, um dessen
+    Zeile zu teilen. Eine `.ncss-marginnote-start`-Notiz (linke Spalte, Spaltenindex VOR
+    der Textspalte) muss dagegen DIREKT VOR ihrem Absatz stehen - weil der Auto-Placement-
+    Cursor nach Platzierung eines Absatzes (Spalte 2) bereits auf Spalte 3 steht, kann ein
+    Element mit Spalte 1 (kleiner als der Cursor) nicht mehr rückwirkend in dieselbe Zeile
+    einsortiert werden und rutscht in die NÄCHSTE Zeile - dort teilt es sich dann mit dem
+    darauffolgenden Absatz. Beim ersten Testlauf (Notiz nach ihrem Absatz für BEIDE Seiten)
+    fiel genau das auf: die `-start`-Notiz landete neben dem FALSCHEN (nächsten) Absatz.
+    Schwelle für den Sprung in die Randspalte: 60rem Grid-Breite (Text 45rem +
+    ausreichend Platz für mindestens eine ~10-15rem breite Randspalte + Gap). (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
   ODER Grid-Item schrumpft NICHT automatisch unter seine Inhaltsbreite, selbst mit

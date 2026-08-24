@@ -1,7 +1,7 @@
-<!--DESC: Drei Bausteine für Marketing-/Landingpage-Sektionen: Text neben Bild (Split), volle-Breite Farbflächen (Tile) und ein transformierendes Akkordeon - Schritt für Schritt mit Live-Beispielen.-->
+<!--DESC: Vier Bausteine für Marketing-/Landingpage-Sektionen: Text neben Bild (Split), volle-Breite Farbflächen (Tile), ein transformierendes Akkordeon und Randnotizen (Marginnote) - Schritt für Schritt mit Live-Beispielen.-->
 <section class="ncss-stack">
   <h1>Landingpage-Bausteine</h1>
-  <p class="ncss-text-lg ncss-text-muted">Drei Bausteine für typische Marketing-/Landingpage-Abschnitte: <code>.ncss-split</code> (Text neben Bild), <code>.ncss-tile</code> (volle-Breite Farbflächen, bekannt aus UIkit) und <code>.ncss-accordion-split</code> (transformierendes Akkordeon, bekannt von apple.com). Split und Tile lassen sich kombinieren - eine Tile als Hintergrundfläche, darin ein Split-Layout.</p>
+  <p class="ncss-text-lg ncss-text-muted">Vier Bausteine für typische Marketing-/Landingpage-Abschnitte: <code>.ncss-split</code> (Text neben Bild), <code>.ncss-tile</code> (volle-Breite Farbflächen, bekannt aus UIkit), <code>.ncss-accordion-split</code> (transformierendes Akkordeon, bekannt von apple.com) und <code>.ncss-marginnote</code> (Randnotizen, bekannt von Tufte CSS). Split und Tile lassen sich kombinieren - eine Tile als Hintergrundfläche, darin ein Split-Layout.</p>
 </section>
 
 <section class="ncss-stack" id="split-grundstruktur">
@@ -154,28 +154,28 @@
           <summary>Container Queries</summary>
           <div class="ncss-accordion-split-body">
             <p>Komponenten reagieren auf ihren eigenen Platz, nicht auf den Viewport.</p>
-            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            <div class="ncss-accordion-split-media-mobile"><img src="../../demo/assets/accordion-container-queries.svg" alt="Zwei Container unterschiedlicher Breite, derselbe Kartenaufbau passt sich per Container Query an" style="aspect-ratio: 4/3;"></div>
           </div>
         </details>
         <details name="doks-accordion" class="ncss-accordion-split-item">
           <summary>Cascade Layers</summary>
           <div class="ncss-accordion-split-body">
             <p>Reihenfolge statt Spezifitäts-Kämpfe - kein <code>!important</code> nötig.</p>
-            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            <div class="ncss-accordion-split-media-mobile"><img src="../../demo/assets/accordion-cascade-layers.svg" alt="Vier gestapelte, versetzte Flächen (reset, base, helpers, components) symbolisieren die Layer-Reihenfolge" style="aspect-ratio: 4/3;"></div>
           </div>
         </details>
         <details name="doks-accordion" class="ncss-accordion-split-item">
           <summary>light-dark()</summary>
           <div class="ncss-accordion-split-body">
             <p>Ein Wert pro Token deckt Hell und Dunkel ab - kein zweites Stylesheet.</p>
-            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            <div class="ncss-accordion-split-media-mobile"><img src="../../demo/assets/accordion-light-dark.svg" alt="Ein Kreis halb hell mit Sonne, halb dunkel mit Mond und Sternen" style="aspect-ratio: 4/3;"></div>
           </div>
         </details>
       </div>
       <div class="ncss-accordion-split-media">
-        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
-        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
-        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+        <img src="../../demo/assets/accordion-container-queries.svg" alt="Zwei Container unterschiedlicher Breite, derselbe Kartenaufbau passt sich per Container Query an">
+        <img src="../../demo/assets/accordion-cascade-layers.svg" alt="Vier gestapelte, versetzte Flächen (reset, base, helpers, components) symbolisieren die Layer-Reihenfolge">
+        <img src="../../demo/assets/accordion-light-dark.svg" alt="Ein Kreis halb hell mit Sonne, halb dunkel mit Mond und Sternen">
       </div>
     </div>
   </div>
@@ -199,4 +199,37 @@
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted"><code>name="..."</code> muss pro Akkordeon-Instanz auf der Seite eindeutig sein (wie eine Radio-Button-Gruppe), sonst gruppieren sich mehrere Akkordeons ungewollt miteinander. Jedes Bild steht bewusst ZWEIMAL im Markup (Desktop-Spalte + mobile Inline-Kopie) - ohne JS lässt sich ein DOM-Knoten nicht zwischen zwei entfernten Containern verschieben. Dieselbe Bild-URL wird trotzdem nur einmal geladen (normales HTTP-Caching), pro Breakpoint ist immer nur eine der beiden Kopien im Layout. Unterstützt bis zu 6 Punkte (mehr wären für dieses Muster ohnehin unüblich).</p>
+</section>
+
+<section class="ncss-stack" id="marginnote">
+  <h2 class="demo-section-title">8. Randnotizen (Marginnote)</h2>
+  <p>Bild ODER Text bricht aus der Textspalte aus, landet aber NICHT am Bildschirmrand (das leistet bereits <code>.ncss-bleed-start/-end</code>, siehe <a href="layout.html#bleed">Layout</a>), sondern in der Randspalte NEBEN dem Fließtext - Sidenote-Muster, bekannt von <a href="https://edwardtufte.github.io/tufte-css/" target="_blank" rel="noopener">Tufte CSS</a>, hier unabhängig davon nachgebaut: reines CSS Grid statt fester Pixel-Ränder. <code>.ncss-marginnote-layout</code> ist ein 3-Spalten-Grid (Randspalte / Textspalte / Randspalte); die Textspalte deckelt bei <code>--ncss-container-max-narrow</code>, die beiden Randspalten schrumpfen auf schmalen Containern von selbst auf 0 - normale Kinder (Absätze) bleiben immer in der mittleren Spalte, nur <code>.ncss-marginnote-start</code>/<code>-end</code> springen erst AB einer Mindestbreite des Grids (60rem) in die jeweilige Randspalte, darunter bleiben sie ein normaler Block im Textfluss.</p>
+  <p><strong>Warum eine Randnotiz automatisch neben dem passenden Absatz landet, ohne ihre Position selbst zu kennen:</strong> CSS Grids Auto-Placement platziert Elemente in Dokumentreihenfolge und nutzt dabei dieselbe Zeile weiter, solange die eigene Spalte darin noch frei ist. Das ergibt eine einfache, aber wichtige Markup-Regel (per echtem Test bestätigt, die beiden Randspalten verhalten sich NICHT symmetrisch):</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Randspalte</th><th scope="col">Steht im Markup ...</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-marginnote-end</code></td><td>danach (meist rechts)</td><td>DIREKT NACH dem Absatz, zu dem sie gehört</td></tr>
+        <tr><td><code>.ncss-marginnote-start</code></td><td>davor (meist links)</td><td>DIREKT VOR dem Absatz, zu dem sie gehört</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ncss-marginnote-container">
+    <div class="ncss-marginnote-layout">
+      <p>Container Queries lassen Komponenten auf ihren eigenen Platz reagieren statt auf den Viewport - dieselbe Idee, die auch dieses Marginnote-Layout selbst nutzt.</p>
+      <aside class="ncss-marginnote-end"><p>Diese Notiz steht im Markup direkt NACH dem Absatz links und landet dadurch auf gleicher Zeilenhöhe daneben.</p></aside>
+      <aside class="ncss-marginnote-start"><p>Diese Notiz steht VOR ihrem Absatz - für die linke Spalte gilt die Regel umgekehrt.</p></aside>
+      <p>Zweiter Absatz, mit einer Notiz links daneben.</p>
+      <p>Dritter Absatz ganz ohne Randnotiz - der Platz daneben bleibt einfach leer, keine eigene Regel nötig dafür.</p>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-marginnote-container"&gt;
+  &lt;div class="ncss-marginnote-layout"&gt;
+    &lt;p&gt;Text, zu dem die Randnotiz gehört ...&lt;/p&gt;
+    &lt;aside class="ncss-marginnote-end"&gt;&lt;img src="foto.jpg" alt="..."&gt;&lt;/aside&gt;
+    &lt;p&gt;Nächster Absatz ...&lt;/p&gt;
+    &lt;aside class="ncss-marginnote-start"&gt;&lt;p&gt;Eine reine Text-Randnotiz.&lt;/p&gt;&lt;/aside&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Funktioniert genauso mit einem Bild statt Text in der Randnotiz (<code>&lt;aside class="ncss-marginnote-end"&gt;&lt;img ...&gt;&lt;/aside&gt;</code>) - die Randspalte bekommt dann automatisch <code>width:100%; height:auto;</code>. Panel schmaler als 60rem ziehen, um den Fallback zu sehen: darunter stapelt jede Randnotiz einfach an ihrer Stelle im normalen Textfluss, kein kaputter/leerer Zustand.</p>
 </section>

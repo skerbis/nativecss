@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Illustration: mehrere gestapelte, versetzte Flächen symbolisieren CSS Cascade Layers">
+  <defs>
+    <linearGradient id="cl-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#4c1d95"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#cl-bg)"/>
+
+  <g transform="translate(210,110)">
+    <rect x="0" y="220" width="380" height="90" rx="14" fill="#ffffff" opacity="0.14"/>
+    <rect x="30" y="150" width="380" height="90" rx="14" fill="#ffffff" opacity="0.28"/>
+    <rect x="60" y="80" width="380" height="90" rx="14" fill="#ffffff" opacity="0.46"/>
+    <rect x="90" y="10" width="380" height="90" rx="14" fill="#ffffff" opacity="0.96"/>
+
+    <text x="120" y="62" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="24" font-weight="700" fill="#4c1d95">components</text>
+    <text x="90" y="132" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" fill="#ffffff">helpers</text>
+    <text x="60" y="202" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" fill="#ffffff">base</text>
+    <text x="30" y="272" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" fill="#ffffff">reset</text>
+  </g>
+
+  <text x="400" y="560" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" fill="#ffffff" opacity="0.9">Cascade Layers</text>
+</svg>

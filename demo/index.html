@@ -215,6 +215,7 @@
                 <li><a href="#split">Split: Text &amp; Bild</a></li>
                 <li><a href="#tile">Tile: Farbflächen</a></li>
                 <li><a href="#accordion-split">Akkordeon</a></li>
+                <li><a href="#marginnote">Randnotizen</a></li>
                 <li><a href="#formulare">Formulare</a></li>
                 <li><a href="#tabellen">Tabellen</a></li>
                 <li><a href="#slideshow">Slideshow</a></li>
@@ -690,35 +691,50 @@
       <div class="ncss-accordion-split">
         <div class="ncss-accordion-split-list">
           <details name="demo-accordion" class="ncss-accordion-split-item" open>
-            <summary>Erster Punkt</summary>
+            <summary>Container Queries</summary>
             <div class="ncss-accordion-split-body">
-              <p>Text zum ersten Punkt.</p>
-              <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+              <p>Komponenten reagieren auf ihren eigenen Platz, nicht auf den Viewport.</p>
+              <div class="ncss-accordion-split-media-mobile"><img src="assets/accordion-container-queries.svg" alt="Zwei Container unterschiedlicher Breite, derselbe Kartenaufbau passt sich per Container Query an" style="aspect-ratio: 4/3;"></div>
             </div>
           </details>
           <details name="demo-accordion" class="ncss-accordion-split-item">
-            <summary>Zweiter Punkt</summary>
+            <summary>Cascade Layers</summary>
             <div class="ncss-accordion-split-body">
-              <p>Text zum zweiten Punkt.</p>
-              <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+              <p>Reihenfolge statt Spezifitäts-Kämpfe - kein <code>!important</code> nötig.</p>
+              <div class="ncss-accordion-split-media-mobile"><img src="assets/accordion-cascade-layers.svg" alt="Vier gestapelte, versetzte Flächen (reset, base, helpers, components) symbolisieren die Layer-Reihenfolge" style="aspect-ratio: 4/3;"></div>
             </div>
           </details>
           <details name="demo-accordion" class="ncss-accordion-split-item">
-            <summary>Dritter Punkt</summary>
+            <summary>light-dark()</summary>
             <div class="ncss-accordion-split-body">
-              <p>Text zum dritten Punkt.</p>
-              <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+              <p>Ein Wert pro Token deckt Hell und Dunkel ab - kein zweites Stylesheet.</p>
+              <div class="ncss-accordion-split-media-mobile"><img src="assets/accordion-light-dark.svg" alt="Ein Kreis halb hell mit Sonne, halb dunkel mit Mond und Sternen" style="aspect-ratio: 4/3;"></div>
             </div>
           </details>
         </div>
         <div class="ncss-accordion-split-media">
-          <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
-          <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
-          <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+          <img src="assets/accordion-container-queries.svg" alt="Zwei Container unterschiedlicher Breite, derselbe Kartenaufbau passt sich per Container Query an">
+          <img src="assets/accordion-cascade-layers.svg" alt="Vier gestapelte, versetzte Flächen (reset, base, helpers, components) symbolisieren die Layer-Reihenfolge">
+          <img src="assets/accordion-light-dark.svg" alt="Ein Kreis halb hell mit Sonne, halb dunkel mit Mond und Sternen">
         </div>
       </div>
     </div>
     <p class="ncss-text-sm ncss-text-muted">Ausführliches Beispiel inkl. reproduzierbarem Code im <a href="../docs/de/layouts.html#accordion-split">Handbuch (Landingpage-Bausteine)</a>.</p>
+  </section>
+
+  <section class="ncss-stack" id="marginnote">
+    <h2 class="demo-section-title">Randnotizen (Marginnote)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Bild oder Text bricht aus der Textspalte aus, bleibt aber NEBEN dem Fließtext statt am Bildschirmrand zu landen (das leistet bereits <code>.ncss-bleed-start/-end</code>) - Sidenote-Muster, komplett nativ per CSS Grid. Panel schmaler als 60rem ziehen, um den Fallback (Randnotiz stapelt normal im Text) zu sehen:</p>
+    <div class="ncss-marginnote-container">
+      <div class="ncss-marginnote-layout">
+        <p>CSS Grids Auto-Placement platziert Elemente in Dokumentreihenfolge und nutzt dieselbe Zeile weiter, solange die eigene Spalte darin noch frei ist. Eine Randnotiz, die im Markup direkt NACH diesem Absatz steht, landet dadurch automatisch auf gleicher Höhe daneben.</p>
+        <aside class="ncss-marginnote-end"><p>Genau das passiert hier: diese Notiz steht im Markup direkt nach dem Absatz links und rutscht dadurch auf dieselbe Zeile.</p></aside>
+        <aside class="ncss-marginnote-start"><p>Diese Notiz steht dagegen VOR ihrem Absatz im Markup - für die linke Randspalte gilt die Regel umgekehrt.</p></aside>
+        <p>Zweiter Absatz, mit einer Notiz links daneben.</p>
+        <p>Dritter Absatz, ganz ohne Randnotiz - der Platz daneben bleibt einfach leer.</p>
+      </div>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted">Ausführliches Beispiel inkl. reproduzierbarem Code im <a href="../docs/de/layouts.html#marginnote">Handbuch (Landingpage-Bausteine)</a>.</p>
   </section>
 
   <!-- Grid-Spaltenzahl & Bento -->

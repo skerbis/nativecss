@@ -1,7 +1,7 @@
-<!--DESC: Three building blocks for marketing/landing-page sections: text next to image (Split), full-width color blocks (Tile), and a transforming accordion - step by step with live examples.-->
+<!--DESC: Four building blocks for marketing/landing-page sections: text next to image (Split), full-width color blocks (Tile), a transforming accordion, and margin notes (Marginnote) - step by step with live examples.-->
 <section class="ncss-stack">
   <h1>Landing Page Blocks</h1>
-  <p class="ncss-text-lg ncss-text-muted">Three building blocks for typical marketing/landing-page pieces: <code>.ncss-split</code> (text next to an image), <code>.ncss-tile</code> (full-width color blocks, known from UIkit) and <code>.ncss-accordion-split</code> (transforming accordion, known from apple.com). Split and Tile are combinable - a Tile as the background surface, a Split layout inside it.</p>
+  <p class="ncss-text-lg ncss-text-muted">Four building blocks for typical marketing/landing-page pieces: <code>.ncss-split</code> (text next to an image), <code>.ncss-tile</code> (full-width color blocks, known from UIkit), <code>.ncss-accordion-split</code> (transforming accordion, known from apple.com) and <code>.ncss-marginnote</code> (margin notes, known from Tufte CSS). Split and Tile are combinable - a Tile as the background surface, a Split layout inside it.</p>
 </section>
 
 <section class="ncss-stack" id="split-grundstruktur">
@@ -154,28 +154,28 @@
           <summary>Container Queries</summary>
           <div class="ncss-accordion-split-body">
             <p>Components react to their own available space, not the viewport.</p>
-            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            <div class="ncss-accordion-split-media-mobile"><img src="../../demo/assets/accordion-container-queries.svg" alt="Two containers of different width, the same card layout adapts via container query" style="aspect-ratio: 4/3;"></div>
           </div>
         </details>
         <details name="docs-accordion" class="ncss-accordion-split-item">
           <summary>Cascade Layers</summary>
           <div class="ncss-accordion-split-body">
             <p>Order instead of specificity fights - no <code>!important</code> needed.</p>
-            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            <div class="ncss-accordion-split-media-mobile"><img src="../../demo/assets/accordion-cascade-layers.svg" alt="Four stacked, offset panels (reset, base, helpers, components) symbolize the layer order" style="aspect-ratio: 4/3;"></div>
           </div>
         </details>
         <details name="docs-accordion" class="ncss-accordion-split-item">
           <summary>light-dark()</summary>
           <div class="ncss-accordion-split-body">
             <p>One value per token covers both light and dark - no second stylesheet.</p>
-            <div class="ncss-accordion-split-media-mobile"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+            <div class="ncss-accordion-split-media-mobile"><img src="../../demo/assets/accordion-light-dark.svg" alt="A circle half light with a sun, half dark with a moon and stars" style="aspect-ratio: 4/3;"></div>
           </div>
         </details>
       </div>
       <div class="ncss-accordion-split-media">
-        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
-        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
-        <div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div>
+        <img src="../../demo/assets/accordion-container-queries.svg" alt="Two containers of different width, the same card layout adapts via container query">
+        <img src="../../demo/assets/accordion-cascade-layers.svg" alt="Four stacked, offset panels (reset, base, helpers, components) symbolize the layer order">
+        <img src="../../demo/assets/accordion-light-dark.svg" alt="A circle half light with a sun, half dark with a moon and stars">
       </div>
     </div>
   </div>
@@ -199,4 +199,37 @@
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted"><code>name="..."</code> must be unique per accordion instance on the page (like a radio-button group), otherwise multiple accordions unintentionally group together. Each image deliberately appears TWICE in the markup (desktop column + mobile inline copy) - without JS a DOM node can't be moved between two distant containers. The same image URL is still only loaded once (normal HTTP caching), and only one of the two copies is ever in the layout at a given breakpoint. Supports up to 6 points (more would be unusual for this pattern anyway).</p>
+</section>
+
+<section class="ncss-stack" id="marginnote">
+  <h2 class="demo-section-title">8. Margin notes (Marginnote)</h2>
+  <p>An image OR text breaks out of the text column, but doesn't land at the screen edge (that's already covered by <code>.ncss-bleed-start/-end</code>, see <a href="layout.html#bleed">Layout</a>) - instead it lands in the margin NEXT to the running text - a sidenote pattern, known from <a href="https://edwardtufte.github.io/tufte-css/" target="_blank" rel="noopener">Tufte CSS</a>, rebuilt independently here: pure CSS Grid instead of fixed pixel margins. <code>.ncss-marginnote-layout</code> is a 3-column grid (margin column / text column / margin column); the text column caps at <code>--ncss-container-max-narrow</code>, the two margin columns shrink to 0 on narrow containers on their own - normal children (paragraphs) always stay in the middle column, only <code>.ncss-marginnote-start</code>/<code>-end</code> jump into their margin column once the grid is wide enough (60rem), below that they stay a normal block in the text flow.</p>
+  <p><strong>Why a margin note automatically lands next to the right paragraph without knowing its own position:</strong> CSS Grid's auto-placement lays out elements in document order and keeps reusing the same row as long as its own column is still free there. That gives a simple but important markup rule (confirmed by real testing - the two margin columns do NOT behave symmetrically):</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Margin column</th><th scope="col">Goes in the markup ...</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-marginnote-end</code></td><td>after (usually right)</td><td>DIRECTLY AFTER the paragraph it belongs to</td></tr>
+        <tr><td><code>.ncss-marginnote-start</code></td><td>before (usually left)</td><td>DIRECTLY BEFORE the paragraph it belongs to</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ncss-marginnote-container">
+    <div class="ncss-marginnote-layout">
+      <p>Container queries let components respond to their own available space instead of the viewport - the same idea this margin-note layout itself relies on.</p>
+      <aside class="ncss-marginnote-end"><p>This note comes right AFTER the paragraph on the left in the markup, and lands at the same row height next to it.</p></aside>
+      <aside class="ncss-marginnote-start"><p>This note comes BEFORE its paragraph - for the left column the rule is reversed.</p></aside>
+      <p>Second paragraph, with a note next to it on the left.</p>
+      <p>Third paragraph with no margin note at all - the space next to it simply stays empty, no extra rule needed for that.</p>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-marginnote-container"&gt;
+  &lt;div class="ncss-marginnote-layout"&gt;
+    &lt;p&gt;Text this note belongs to ...&lt;/p&gt;
+    &lt;aside class="ncss-marginnote-end"&gt;&lt;img src="photo.jpg" alt="..."&gt;&lt;/aside&gt;
+    &lt;p&gt;Next paragraph ...&lt;/p&gt;
+    &lt;aside class="ncss-marginnote-start"&gt;&lt;p&gt;A plain text margin note.&lt;/p&gt;&lt;/aside&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Works the same way with an image instead of text inside the note (<code>&lt;aside class="ncss-marginnote-end"&gt;&lt;img ...&gt;&lt;/aside&gt;</code>) - the margin column then automatically gets <code>width:100%; height:auto;</code>. Drag the panel narrower than 60rem to see the fallback: below that, every margin note simply stacks in place within the normal text flow, no broken or empty state.</p>
 </section>

@@ -1,0 +1,89 @@
+/**
+ * ncss - Marginnote-Komponente (Layer "components"): Bild ODER Text bricht aus der
+ * Textspalte aus, landet aber NICHT am Bildschirmrand (das leistet schon
+ * helpers/layout.css' .ncss-bleed-start/-end), sondern in der Randspalte NEBEN dem
+ * Fließtext - Sidenote/Marginnote-Muster (bekannt von Tufte CSS, hier unabhängig
+ * nachgebaut: reines CSS Grid statt fester Pixel-Ränder).
+ *
+ * Technik: `.ncss-marginnote-layout` ist ein 3-Spalten-Grid (Randspalte / Textspalte /
+ * Randspalte). Die Textspalte deckelt bei --ncss-container-max-narrow; `min(100%, ...)`
+ * sorgt dafür, dass sie auf schmalen Containern automatisch 100% wird - die beiden
+ * Randspalten (`1fr`) schrumpfen dann von selbst auf 0, ganz ohne eigene Media/Container
+ * Query dafür. Normale Kinder (Absätze etc.) bleiben in der mittleren Spalte,
+ * `.ncss-marginnote-start/-end` springen erst AB einer Mindestbreite des Grids (siehe
+ * Container Query unten) in die jeweilige Randspalte - darunter bleiben sie ein normaler
+ * Block in der Textspalte (kein kaputter/leerer Zustand).
+ *
+ * WICHTIG - warum eine Marginnote automatisch NEBEN dem passenden Absatz landet, ohne
+ * ihre Position selbst zu kennen: CSS Grids Auto-Placement platziert Elemente in
+ * Dokumentreihenfolge und nutzt dabei dieselbe Zeile weiter, solange die eigene Spalte
+ * darin noch frei ist (Spec: "sparse" packing, der Cursor bewegt sich nur vorwärts, nie
+ * zurück) - eine Marginnote, die im Markup DIREKT NACH dem Absatz steht, zu dem sie
+ * gehört, bekommt dadurch automatisch dieselbe Grid-Zeile wie dieser Absatz (eigene
+ * Spalte, gleiche Zeile), rein durch Dokumentreihenfolge, ganz ohne grid-row oder JS (per
+ * echtem Test bestätigt).
+ *
+ * `justify-self`/`align-self` bewusst NICHT gesetzt (Default bleibt `stretch`): die Note
+ * füllt dadurch ihre ganze Randspalte aus, ihre INNERE Kante liegt so immer exakt an der
+ * Textspalte an (column-gap sorgt für den Abstand) - unabhängig davon, ob es die linke
+ * oder rechte Randspalte ist, ganz ohne eigene start/end-Fallunterscheidung.
+ *
+ * Markup ("end" = Randspalte in Leserichtung danach, meist rechts; "start" = davor, meist
+ * links - logisch/schreibrichtungsbewusst wie bei .ncss-float-start/-end):
+ *   <div class="ncss-marginnote-container">
+ *     <div class="ncss-marginnote-layout">
+ *       <p>Text, zu dem die Randnotiz gehört ...</p>
+ *       <aside class="ncss-marginnote-end"><img src="foto.jpg" alt="..."></aside>
+ *       <p>Nächster Absatz ...</p>
+ *       <aside class="ncss-marginnote-start"><p>Eine reine Text-Randnotiz.</p></aside>
+ *     </div>
+ *   </div>
+ */
+
+.ncss-marginnote-container {
+  container-type: inline-size;
+  container-name: ncss-marginnote;
+}
+
+.ncss-marginnote-layout {
+  display: grid;
+  grid-template-columns: 1fr min(100%, var(--ncss-container-max-narrow)) 1fr;
+  row-gap: var(--ncss-space-sm);
+}
+.ncss-marginnote-layout > * {
+  grid-column: 2;
+}
+
+.ncss-marginnote-start,
+.ncss-marginnote-end {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+  align-self: start;
+}
+.ncss-marginnote-start > img,
+.ncss-marginnote-end > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--ncss-radius-md);
+}
+
+/* -- ncss container-query: marginnote-breakout (60rem) --
+   column-gap ABSICHTLICH nur hier drin (nicht in .ncss-marginnote-layout selbst) - eine
+   feste column-gap wird vom Grid IMMER zwischen den Spalten reserviert, auch wenn die
+   äußeren 1fr-Spalten mangels Inhalt auf 0 kollabieren (min(100%, ...) füllt die
+   Textspalte dann auf 100% der Container-Breite) - das hätte auf schmalen Containern
+   einen horizontalen Overflow um genau die Summe der beiden Gaps verursacht (per echtem
+   Test gefunden: 16px Overflow bei 375px Breite, obwohl visuell nichts auffiel). Der Gap
+   darf erst existieren, wenn auch tatsächlich Platz für ihn eingeplant ist. */
+@container ncss-marginnote (min-width: 60rem) {
+  .ncss-marginnote-layout {
+    column-gap: var(--ncss-space-lg);
+  }
+  .ncss-marginnote-end {
+    grid-column: 3;
+  }
+  .ncss-marginnote-start {
+    grid-column: 1;
+  }
+}
