@@ -29,6 +29,8 @@ const replacements = [
   ['href="../LICENSE"', 'href="LICENSE"'],
   ['href="../docs/', 'href="docs/'],
   ['href="../favicon.svg"', 'href="favicon.svg"'],
+  ['src="assets/', 'src="demo/assets/'],
+  ['href="assets/', 'href="demo/assets/'],
   ['href="index.html"', 'href="demo/index.html"'],
   ['href="docs.html"', 'href="demo/docs.html"'],
   ['href="product.html"', 'href="index.html"'],
@@ -45,6 +47,18 @@ for (const [from, to] of replacements) {
 // sind davon nicht betroffen, die matchen keine der obigen "../"-Muster.
 if (html.includes('="../')) {
   console.error("Nicht aufgelöste \"../\"-Referenz nach dem Rewrite gefunden - Skript prüfen.");
+  process.exit(1);
+}
+
+// Zweiter Sanity-Check: derselbe Gedanke, aber für Pfade OHNE "../"-Präfix, die trotzdem
+// nur relativ zu demo/ (product.htmls echtem Ort im Repo) funktionieren, nicht relativ zur
+// Site-Wurzel - der erste Check oben hätte genau diese Klasse nicht erfasst (kein "../"
+// vorhanden, per echtem 404 in Produktion gefunden: src="assets/js/prism-manual.js" ohne
+// "../"-Präfix, weil es innerhalb von demo/ schon vorher korrekt relativ war). Deckt aktuell
+// "assets/" ab (bislang einzige bekannte Instanz dieser Fallklasse) - bei einem neuen
+// bare-relative Pfad-Typ hier ergänzen, sobald einer auftaucht.
+if (/(?:href|src)="assets\//.test(html)) {
+  console.error("Nicht aufgelöste \"assets/\"-Referenz (ohne \"../\"-Präfix) nach dem Rewrite gefunden - Skript prüfen.");
   process.exit(1);
 }
 

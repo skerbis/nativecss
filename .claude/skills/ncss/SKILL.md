@@ -1435,6 +1435,43 @@ umgestellt:
     Demo-Seiten nutzen sie in HTML) - überschaubar genug, um die ganze Familie in einem
     Zug zu fixen statt nur die eine gemeldete Instanz.
 
+64. **`.github/scripts/build-root-index.mjs`s eigener Sanity-Check hatte einen blinden
+    Fleck** - er prüfte nur auf übrig gebliebene `="../"`-Referenzen (die Site-Wurzel
+    liegt eine Ebene über `demo/`, wo `product.html` im Repo wirklich liegt), nicht auf
+    Pfade OHNE `../`-Präfix, die innerhalb von `demo/` schon korrekt relativ waren, aber
+    an der Site-Wurzel plötzlich woanders hinzeigen (echter Live-404, User-Report:
+    "https://skerbis.github.io/nativecss/assets/js/prism-manual.js wird nicht gefunden" -
+    `src="assets/js/prism-manual.js"` in product.html, relativ zu `demo/` korrekt zu
+    `demo/assets/js/`, an der Wurzel aber gegen ein nicht existierendes `assets/`-
+    Verzeichnis direkt unter der Domain aufgelöst). Gefunden per
+    `grep -noE '(href|src)="[^".][^"]*"' demo/product.html` (zwei weitere Treffer waren
+    Fehlalarme - escapte Beispieltexte in einem `<pre><code>`-Block, keine echten HTML-
+    Attribute). Fix: zwei neue Ersetzungsregeln (`src="assets/` → `src="demo/assets/`,
+    `href="assets/` → `href="demo/assets/`) UND einen zweiten Sanity-Check ergänzt
+    (`/(?:href|src)="assets\//`), der genau diese Pfadklasse künftig hörbar abfängt statt
+    sie still durchzulassen. Lehre: ein Sanity-Check, der nur EINE Symptomform prüft
+    (hier `../`), schützt nicht automatisch vor der strukturell verwandten Form ohne
+    dieses Präfix - beim Nachbau eines Deploy-Skripts immer fragen, welche Pfadklassen
+    ÜBERHAUPT existieren, nicht nur, welche Form der zuletzt gefundene Bug hatte. Lokal
+    vor dem Ausliefern immer per rsync-Simulation geprüft (siehe README/Skill-Konvention):
+    `mkdir -p /tmp/test-site && rsync -a --exclude='.git' --exclude='.github'
+    --exclude='_site' ./ /tmp/test-site/ && node .github/scripts/build-root-index.mjs
+    /tmp/test-site`.
+
+65. **`defer` auf MEHREREN `<script>`-Tags erhält per Spec ihre relative
+    Ausführungsreihenfolge** - genutzt, um die bislang einzigen 6 synchronen `<head>`-
+    Scripts (Prism: `prism-manual.js` setzt `window.Prism={manual:true}` VOR
+    `prism-core.min.js`s Auto-Init, gefolgt von 4 Sprach-Plugins) endlich auch auf
+    `defer` umzustellen (User-Frage: "warum lädst du js im head? und nicht am ende?" -
+    alle anderen Scripts hatten längst `defer`, nur diese 6 blockierten noch synchron,
+    weil die Reihenfolge-Abhängigkeit unklar schien). Per echtem Playwright-Test VOR der
+    breiten Anwendung bestätigt (nicht nur aus der Spec angenommen) - Chromium/WebKit/
+    Firefox zeigten alle `tokenSpans>0, errors=0` mit `defer` auf allen 6 Tags. Betrifft
+    17 Dateien (product.html + 15 Demo-Seiten + docs-src/template.html). Fallstrick beim
+    Ausrollen: `for f in $FILES` mit `FILES="datei1 datei2 ..."` (unquotierter String,
+    keine Bash-Array) übergab den GESAMTEN String als EIN `$f`-Wert an `perl -pi` -
+    `declare -a FILES=(...)` + `for f in "${FILES[@]}"` (echtes Bash-Array) beheben es.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
