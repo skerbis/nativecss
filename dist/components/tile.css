@@ -9,10 +9,11 @@
  *   <section class="ncss-tile ncss-tile--brand">Marken-Fläche, automatisch heller Text</section>
  *   <section class="ncss-tile ncss-tile--brand-2">Zweitfarben-Fläche, automatisch heller Text</section>
  *
- * Für eine volle Breite bis zum Bildschirmrand zusätzlich .ncss-full-bleed kombinieren
- * (Tile selbst bricht NICHT von sich aus aus einem umgebenden .ncss-container aus -
- * beide Anliegen bleiben getrennt, dieselbe Trennung wie bei Card/Radius-Utilities:
- * eine Komponente soll nicht zwei unabhängige Entscheidungen gleichzeitig treffen).
+ * Ohne weiteres Zutun bleibt eine Tile innerhalb ihres umgebenden Containers (z.B.
+ * .ncss-container) - für volle Bildschirmbreite bis zum Bildschirmrand zusätzlich
+ * .ncss-full-bleed kombinieren. Bewusst getrennt gehalten (nicht automatisch Teil von
+ * .ncss-tile selbst), dieselbe Trennung wie bei Card/Radius-Utilities: eine Komponente
+ * soll nicht zwei unabhängige Entscheidungen gleichzeitig treffen.
  * Padding über --ncss-tile-padding-block/-inline parametrisierbar (Default
  * --ncss-space-2xl/-lg), kein eigenes Größen-Klassensystem - die bestehenden
  * padding-Utilities (helpers/layout.css) würden gegen diesen Default nicht gewinnen

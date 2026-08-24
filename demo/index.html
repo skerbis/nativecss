@@ -661,18 +661,22 @@
     <h2 class="demo-section-title">Tile: Farbflächen-Sektionen</h2>
     <p class="ncss-text-muted ncss-text-sm">Bekannt aus UIkit (<code>uk-tile-*</code>) - volle-Breite Blöcke zum Gliedern einer langen Seite. <code>--brand</code>/<code>--brand-2</code> kippen automatisch auf hellen Text, Karten/Code-Blöcke DARIN bleiben normal dunkel-auf-weiß:</p>
     <div class="ncss-tile ncss-tile--brand ncss-radius-md">
-      <h3>Marken-Fläche</h3>
+      <h3>Marken-Fläche (<code>--brand</code>)</h3>
       <p class="ncss-text-sm">Heller Text automatisch, keine eigene Klasse nötig.</p>
     </div>
+    <div class="ncss-tile ncss-tile--brand-2 ncss-radius-md">
+      <h3>Zweitfarben-Fläche (<code>--brand-2</code>)</h3>
+      <p class="ncss-text-sm">Dieselbe automatische Textumschaltung, andere Markenfarbe.</p>
+    </div>
     <div class="ncss-tile ncss-tile--muted ncss-radius-md">
-      <h3>Gedämpfte Fläche</h3>
+      <h3>Gedämpfte Fläche (<code>--muted</code>)</h3>
       <p class="ncss-text-sm ncss-text-muted"><code>--ncss-color-bg-subtle</code> als Hintergrund, normaler Text.</p>
     </div>
     <pre><code class="language-html">&lt;section class="ncss-tile ncss-tile--brand"&gt;
   &lt;h2&gt;Titel&lt;/h2&gt;
   &lt;p&gt;Text ...&lt;/p&gt;
 &lt;/section&gt;</code></pre>
-    <p class="ncss-text-sm ncss-text-muted">Für volle Bildschirmbreite zusätzlich <code>.ncss-full-bleed</code> kombinieren (Tile selbst bricht nicht von sich aus aus, siehe <a href="../docs/de/layouts.html">Handbuch</a> für ein Beispiel).</p>
+    <p class="ncss-text-sm ncss-text-muted">Ohne weiteres Zutun bleibt eine Tile innerhalb ihres Containers - für volle Bildschirmbreite bis zum Bildschirmrand zusätzlich <code>.ncss-full-bleed</code> kombinieren, siehe <a href="../docs/de/layouts.html">Handbuch</a> für ein Beispiel.</p>
   </section>
 
   <!-- Accordion-Split: transformierendes Akkordeon -->

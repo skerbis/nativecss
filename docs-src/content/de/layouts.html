@@ -94,8 +94,12 @@
   &lt;p&gt;Text ...&lt;/p&gt;
 &lt;/section&gt;</code></pre>
   <div class="ncss-tile ncss-tile--brand ncss-radius-md">
-    <h3>Marken-Fläche</h3>
+    <h3>Marken-Fläche (<code>--brand</code>)</h3>
     <p class="ncss-text-sm">Heller Text automatisch, keine eigene Klasse nötig.</p>
+  </div>
+  <div class="ncss-tile ncss-tile--brand-2 ncss-radius-md">
+    <h3>Zweitfarben-Fläche (<code>--brand-2</code>)</h3>
+    <p class="ncss-text-sm">Dieselbe automatische Textumschaltung, andere Markenfarbe.</p>
   </div>
 </section>
 
@@ -116,7 +120,7 @@
 
 <section class="ncss-stack" id="tile-kombiniert">
   <h2 class="demo-section-title">6. Kombiniert: Split innerhalb einer Tile</h2>
-  <p>Beide Bausteine sind bewusst unabhängig voneinander - eine Tile als Hintergrundfläche, darin ganz normal ein Split-Layout. Für volle Bildschirmbreite (statt nur innerhalb des aktuellen Containers) zusätzlich <code>.ncss-full-bleed</code> auf die Tile kombinieren - Tile selbst bricht nicht von sich aus aus einem umgebenden <code>.ncss-container</code> aus, das bleibt bewusst eine separate Entscheidung.</p>
+  <p>Beide Bausteine sind bewusst unabhängig voneinander - eine Tile als Hintergrundfläche, darin ganz normal ein Split-Layout. Ohne weiteres Zutun bleibt eine Tile innerhalb ihres umgebenden Containers - für volle Bildschirmbreite bis zum Bildschirmrand zusätzlich <code>.ncss-full-bleed</code> auf die Tile kombinieren, das bleibt bewusst eine separate Entscheidung.</p>
   <pre><code class="language-html">&lt;section class="ncss-tile ncss-tile--muted ncss-full-bleed"&gt;
   &lt;div class="ncss-container"&gt;
     &lt;div class="ncss-split-container"&gt;
