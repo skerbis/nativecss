@@ -1411,6 +1411,30 @@ umgestellt:
     `href="favicon.svg"`) ergänzt, LOKAL gegen eine `rsync`-Kopie des Repos genau wie im
     echten Workflow ausgeführt und verifiziert, bevor es ausgeliefert wurde.
 
+63. **Fallstrick 59/61 war NICHT vollständig - die ganze Familie `.ncss-text-brand/-brand-
+    2/-neutral/-success/-warning/-danger` (helpers/typography.css) nutzte durchgängig die
+    rohen Basisfarben statt `-on-soft`** (User-Report nach eigenem Chrome-DevTools-
+    Lighthouse-Lauf: "`<code>` in 'Wie ordnet sich NativeCSS ein?' ... grüne Schrift auf
+    grau" - `.ncss-text-success` um ein `<code>` in einer Vergleichstabellen-Zelle auf
+    `.landing-section--tinted`/`--ncss-color-bg-subtle`, product.html). Fallstrick 59
+    hatte nur `.ncss-eyebrow` gefixt, Fallstrick 61 nur die Prism-`.token.*`-Farben - beide
+    derselben Diagnose, aber diese SECHS allgemeinen Text-Utility-Klassen (deutlich
+    breiter genutzt, auch außerhalb von Code-Blöcken) blieben dabei unentdeckt, weil
+    weder das eigene Kontrast-Skript noch der erste echte Lighthouse-Lauf zufällig eine
+    Seite/Stelle traf, die sie in einer fehlschlagenden Kombination nutzte - ERST ein
+    ZWEITER, vom Nutzer selbst gefahrener Lighthouse-Lauf auf einer ANDEREN Seite/Sektion
+    deckte es auf. Lehre: eine an EINER Instanz gefixte Farbe (Eyebrow) bedeutet nicht,
+    dass alle STRUKTURELL BAUGLEICHEN Utility-Klassen (dasselbe "rohe Farbe direkt als
+    Text"-Muster) automatisch mitgefixt sind - bei einer Kontrast-Diagnose IMMER
+    prüfen, ob es eine ganze FAMILIE verwandter Klassen mit demselben Muster gibt (hier:
+    `grep -n "color: var(--ncss-color-"` in typography.css hätte alle sechs auf einen
+    Blick gezeigt), statt nur die eine konkret gemeldete Klasse zu patchen.
+    Fix: alle sechs auf ihre jeweilige `-on-soft`-Stufe umgestellt (dieselbe Herleitung
+    wie Fallstrick 59/61 - siehe dort). Blast-Radius vor dem Ändern geprüft (nur in
+    typography.css selbst definiert, keine andere CSS-Datei referenziert sie, nur 3
+    Demo-Seiten nutzen sie in HTML) - überschaubar genug, um die ganze Familie in einem
+    Zug zu fixen statt nur die eine gemeldete Instanz.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

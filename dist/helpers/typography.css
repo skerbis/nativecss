@@ -32,13 +32,25 @@
   padding-inline-start: var(--ncss-space-sm);
 }
 
+/* `-on-soft` statt der rohen Basisfarbe (User-Report: Lighthouse-Kontrast-Warnung,
+   diesmal an einer Vergleichstabelle auf product.html - "grüne Schrift auf grau",
+   `.ncss-text-success` um ein `<code>` in einer Tabellenzelle auf `.landing-section--
+   tinted`/`--ncss-color-bg-subtle`). Dieselbe Diagnose wie bei `.ncss-eyebrow` und den
+   Prism-`.token.*`-Farben (siehe dortige Kommentare für die ausführliche Begründung):
+   eine Basisfarbe ist nur in IHRER kalibrierten Kombination sicher kontrastreich, nicht
+   automatisch auch als freistehender Text auf einer hellen Fläche. Diese sechs Klassen
+   sind laut eigener Doku (siehe `.ncss-text-inherit` direkt darunter) für GENAU diesen
+   Fall gedacht - Text auf einer normalen Seiten-/Karten-Fläche, NICHT auf einer bereits
+   farbigen Surface (dafür gibt es `.ncss-surface--*` + `.ncss-text-inherit`) - `-on-soft`
+   ist also nicht nur ein Kontrast-Patch, sondern das eigentlich zu dieser Verwendung
+   passende Token. */
 .ncss-text-muted { color: var(--ncss-color-text-muted); }
-.ncss-text-brand { color: var(--ncss-color-brand); }
-.ncss-text-brand-2 { color: var(--ncss-color-brand-2); }
-.ncss-text-neutral { color: var(--ncss-color-neutral); }
-.ncss-text-success { color: var(--ncss-color-success); }
-.ncss-text-warning { color: var(--ncss-color-warning); }
-.ncss-text-danger { color: var(--ncss-color-danger); }
+.ncss-text-brand { color: var(--ncss-color-brand-on-soft); }
+.ncss-text-brand-2 { color: var(--ncss-color-brand-2-on-soft); }
+.ncss-text-neutral { color: var(--ncss-color-neutral-on-soft); }
+.ncss-text-success { color: var(--ncss-color-success-on-soft); }
+.ncss-text-warning { color: var(--ncss-color-warning-on-soft); }
+.ncss-text-danger { color: var(--ncss-color-danger-on-soft); }
 /* Für Text auf einer farbigen Fläche (z.B. .ncss-surface--brand) - übernimmt die dort
    bereits passend gesetzte Kontrastfarbe, statt sie ein zweites Mal zu benennen. */
 .ncss-text-inherit { color: inherit; }
