@@ -1061,6 +1061,29 @@ umgestellt:
     bereits ein gestyltes natives Popup (hat es nicht mehr, seit CSS es dort deaktiviert)
     und enhanct dort gar nichts - beide Stellen synchron halten, siehe components/
     select.css UND components/combobox.js.
+    ZWEITE, ENDGÜLTIGE Runde nötig - obiger Fix (base-select in WebKit deaktivieren)
+    war NICHT ausreichend, User meldete den Doppelpfeil nach dem Deploy erneut, diesmal
+    MIT Screenshot, der zeigte, dass bereits die aktualisierten Doku-Texte sichtbar waren
+    (also eindeutig die neue Version, kein Cache-Problem). User lieferte diesmal selbst
+    die entscheidende Diagnose per direktem Experiment in echtem Safari: `.ncss-select-
+    wrapper::after` (unser EIGENER Pfeil-Indikator) auskommentiert -> Doppelpfeil weg,
+    genau EIN korrekter Pfeil übrig. Tatsächliche Ursache damit real-Safari-bestätigt
+    (nicht mehr nur Hypothese): `appearance: none` unterdrückt in echtem Safari den
+    NATIVEN `<select>`-Pfeil nicht zuverlässig (anders als in Chromium/Firefox) - im
+    Fallback-Zweig (den WebKit seit obigem Fix IMMER nimmt) kam unser eigener `::after`-
+    Pfeil deshalb zusätzlich zum weiterhin sichtbaren nativen Safari-Pfeil oben drauf.
+    War kein base-select-spezifisches Problem, sondern lag schon in der einfachen
+    Fallback-Ebene - der erste Fix (base-select deaktivieren) hat WebKit überhaupt erst
+    zuverlässig in genau diesen kollidierenden Fallback-Zweig gezwungen, statt das
+    ursprüngliche (davor unklare) Problem zu lösen. Endgültiger Fix: `.ncss-select-
+    wrapper::after` zusätzlich per EIGENEM, positivem (kein `not`) WebKit-`@supports`-
+    Block auf `display: none` gesetzt - Safaris eigener nativer Pfeil bleibt als einziger
+    sichtbar (schlichter, nicht per Tokens einfärbbar, aber korrekt). Lehre für künftige
+    Fälle dieser Art: wenn ein Bug in keiner Test-Engine reproduzierbar ist UND die erste
+    plausible Diagnose sich als falsch/unvollständig erweist, ist ein gezieltes
+    Experiment DURCH DEN NUTZER in seinem echten Browser (z.B. "kommentier testweise
+    Regel X aus und sag mir, ob es dann korrekt aussieht") oft schneller und
+    zuverlässiger als eine dritte Hypothese zu raten.
 
 54. **Natives `<details>` sanft animieren (User-Report: "nicht schön animiert"), ohne JS**
     - `::details-content` (Baseline seit September 2025) ist das Pseudo-Element für ALLES

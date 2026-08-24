@@ -19,23 +19,27 @@
  * Default-Button), macht das Verhalten aber über alle Browser hinweg konsistent und
  * vorhersehbar.
  *
- * WEBKIT/SAFARI BEWUSST AUSGESCHLOSSEN (Stand August 2026): User-Report (Safari 26,
- * stabile Version, KEIN Beta) zeigte einen doppelten Pfeil bei appearance: base-select -
- * ein Pfeil knapp über dem oberen Rahmen (offensichtliches Rendering-Artefakt), einer an
- * normaler Position unten rechts. Bestand WEITERHIN, nachdem der explizite
- * <button><selectedcontent> (siehe oben) bereits auf BEIDEN betroffenen Selects vorhanden
- * war - die ursprüngliche Diagnose ("fehlender Button verursacht impliziten Fallback-
- * Button mit eigenem Pfeil") war damit widerlegt, nicht die tatsächliche Ursache. Nicht in
- * Playwrights WebKit-Build reproduzierbar (zeigt nur einen korrekten Pfeil, computed style
- * bestätigt unseren eigenen Pfeil korrekt auf display:none) - vermutlich ein echter,
- * unfertiger WebKit-Implementierungs-Bug in diesem sehr neuen Feature (Apples eigener
- * WWDC26-Blog nennt Safari 27 als Ziel-Version für die ausgereifte Umsetzung; Safari 26
- * hat offenbar schon eine frühe, noch fehlerhafte Vorstufe). Mangels Testzugang zu echtem
- * Safari nicht gezielt fixbar - Nutzer-Entscheidung: WebKit bekommt bis auf Weiteres
- * bewusst NUR das schlichte native Select mit unserem eigenen Pfeil (garantiert korrekt),
- * statt der angereicherten Optik (reiche Options-Inhalte, eigenes Popup-Styling). Sobald
- * Apple den Bug behebt (neu gegentestet werden, sobald Safari 27 uneingeschränkt
- * verfügbar ist), kann der WebKit-Ausschluss unten wieder entfernt werden.
+ * WEBKIT/SAFARI BEWUSST AUSGESCHLOSSEN (Stand August 2026, zwei Runden nötig): User-Report
+ * (Safari 26, stabile Version, KEIN Beta) zeigte einen doppelten Pfeil bei appearance:
+ * base-select. RUNDE 1: appearance: base-select in WebKit komplett deaktiviert (Diagnose
+ * damals: vermutlich ein unfertiger WebKit-Implementierungs-Bug in diesem sehr neuen
+ * Feature). Reichte NICHT - User meldete den Doppelpfeil nach Deploy erneut, diesmal mit
+ * einem direkten Experiment in echtem Safari als Beweis: `.ncss-select-wrapper::after`
+ * (unser EIGENER Pfeil-Indikator) probeweise entfernt -> nur noch EIN korrekter Pfeil
+ * übrig. TATSÄCHLICHE, jetzt real-Safari-bestätigte Ursache: `appearance: none`
+ * unterdrückt in echtem Safari den NATIVEN `<select>`-Pfeil nicht zuverlässig (anders als
+ * in Chromium/Firefox) - im Fallback-Zweig (den WebKit seit Runde 1 IMMER nimmt) kam
+ * unser eigener `::after`-Pfeil zusätzlich zum weiterhin sichtbaren nativen Safari-Pfeil
+ * oben drauf. Nicht in Playwrights WebKit-Build reproduzierbar (zeigt in BEIDEN Zuständen
+ * nur einen korrekten Pfeil) - dieselbe Lücke wie bei initial-letter (Fallstrick 9):
+ * generische Test-Engines bilden manche echten Safari-Eigenheiten nicht exakt nach, macht
+ * ein gezieltes Experiment durch den Nutzer selbst manchmal zuverlässiger als eine weitere
+ * Hypothese von hier aus. RUNDE 2 (endgültiger Fix): zusätzlich zu base-select auch
+ * unseren eigenen `::after`-Pfeil in WebKit deaktivieren (siehe eigener @supports-Block
+ * unten) - Safaris nativer Pfeil bleibt als einziger sichtbar (schlichter, nicht per
+ * Tokens einfärbbar, aber korrekt). Sobald Apple beide Ursachen behebt (neu gegentestet
+ * werden, sobald Safari 27 reguläre Unterstützung bekommt), können BEIDE WebKit-
+ * Ausschlüsse in dieser Datei wieder entfernt werden.
  *
  * WebKit-Erkennung per Feature-Kombination, die (Stand jetzt) nur in WebKit gleichzeitig
  * zutrifft, kein User-Agent-Sniffing (per echtem Test in Chromium/WebKit/Firefox
@@ -70,6 +74,23 @@
   appearance: none;
   padding-inline-end: var(--ncss-space-lg);
   width: 100%;
+}
+
+/* WebKit/Safari bekommt NICHT unseren eigenen Pfeil-Indikator - per Nutzer-Test direkt
+   bestätigt (nicht nur vermutet): `appearance: none` unterdrückt in echtem Safari den
+   NATIVEN Pfeil des <select> nicht zuverlässig (anders als in Chromium/Firefox, wo das
+   zuverlässig funktioniert) - unser eigener `::after`-Pfeil kam oben drauf, das ergab den
+   ursprünglich gemeldeten Doppelpfeil. War NICHT der eigentlich vermutete base-select-
+   Bug (siehe @supports-Block unten, dessen WebKit-Ausschluss allein den Doppelpfeil NICHT
+   behoben hat) - Ursache lag schon in der einfachen Fallback-Ebene, unabhängig von
+   base-select. Fix: in WebKit unseren Pfeil komplett weglassen, Safaris eigener nativer
+   Pfeil bleibt als einziger sichtbar (schlichter, nicht per Tokens einfärbbar, aber
+   garantiert korrekt und einfach). Dieselbe WebKit-Erkennung wie beim base-select-
+   Ausschluss oben, hier aber POSITIV (kein `not`) - */
+@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+  .ncss-select-wrapper::after {
+    display: none;
+  }
 }
 
 /* Nur dort aktiv, wo appearance:base-select tatsächlich unterstützt wird UND es nicht
