@@ -55,3 +55,67 @@
     pointer-events: auto;
   }
 }
+
+/**
+ * --- Klassischer Escape Hatch: feste Viewport-Breakpoints (siehe tokens.css für die
+ * Werte) --------------------------------------------------------------------------------
+ * Nur benutzen, wenn ein echter, fester Sprung nötig ist (z.B. Navigation), nicht als
+ * Standardweg für responsive Layouts - dafür immer zuerst .ncss-grid/Container Queries
+ * (helpers/layout.css) erwägen.
+ */
+/* Bewusst KEIN "display: revert" zum Zurücksetzen (unterschiedliche UA-Display-Defaults
+   je Element, hier nicht vorhersehbar - siehe uikit_theme_builder diese Session, wo genau
+   das per echtem Playwright-Test als unsicher bestätigt wurde). Stattdessen zwei
+   eigenständige Klassen, je eine pro Richtung. */
+/* -- ncss breakpoint: md (768px) -- */
+@media (max-width: 767px) {
+  .ncss-hide-below-md {
+    display: none;
+  }
+}
+@media (min-width: 768px) {
+  .ncss-hide-from-md {
+    display: none;
+  }
+}
+
+/* --- Container-basierte Sichtbarkeit ----------------------------------------------------
+   Wie .ncss-hide-below-md/-from-md oben, aber reagiert auf die Breite des ELTERN-CONTAINERS
+   (nächster Vorfahre mit container-name: ncss-container, siehe .ncss-container in
+   layout.css), nicht auf den Viewport - dieselbe Karte zeigt/versteckt ein Element je
+   nach eigener Spaltenbreite, unabhängig davon, wie breit der Bildschirm gerade ist (z.B.
+   eine Sidebar-Variante vs. Hauptspalten-Variante derselben Komponente). Dieselben vier
+   Schwellenwerte wie .ncss-grid--cols-2/3/4/6 (24/36/48/56rem) - ein Projekt, das sich an
+   diese Zahlen schon gewöhnt hat, muss sich keine zweite Reihe merken. Genau dasselbe
+   Zwei-Klassen-Muster wie beim Viewport-Pendant oben (KEIN "revert" zum Zurücksetzen,
+   unvorhersehbarer UA-Display-Default je Elementtyp) - zwei eigenständige Klassen, je
+   Richtung, jede nur innerhalb ihrer eigenen @container-Bedingung unconditional
+   display:none, nie ein- und wieder ausgeschaltet. */
+/* -- ncss container-query: ncss-container, sm (24rem) -- */
+@container ncss-container (max-width: 23.99rem) {
+  .ncss-hide-below-container-sm { display: none; }
+}
+@container ncss-container (min-width: 24rem) {
+  .ncss-hide-from-container-sm { display: none; }
+}
+/* -- ncss container-query: ncss-container, md (36rem) -- */
+@container ncss-container (max-width: 35.99rem) {
+  .ncss-hide-below-container-md { display: none; }
+}
+@container ncss-container (min-width: 36rem) {
+  .ncss-hide-from-container-md { display: none; }
+}
+/* -- ncss container-query: ncss-container, lg (48rem) -- */
+@container ncss-container (max-width: 47.99rem) {
+  .ncss-hide-below-container-lg { display: none; }
+}
+@container ncss-container (min-width: 48rem) {
+  .ncss-hide-from-container-lg { display: none; }
+}
+/* -- ncss container-query: ncss-container, xl (56rem) -- */
+@container ncss-container (max-width: 55.99rem) {
+  .ncss-hide-below-container-xl { display: none; }
+}
+@container ncss-container (min-width: 56rem) {
+  .ncss-hide-from-container-xl { display: none; }
+}

@@ -1,7 +1,7 @@
-<!--DESC: Container, grid, stack and cluster - the layout building blocks from helpers/layout.css.-->
+<!--DESC: Container, grid, flex, flex-grid with width fractions, and container-based visibility - the layout building blocks from helpers/layout.css.-->
 <section class="ncss-stack">
   <h1>Layout</h1>
-  <p class="ncss-text-lg ncss-text-muted">A few composable layout primitives instead of a utility matrix - <code>helpers/layout.css</code>.</p>
+  <p class="ncss-text-lg ncss-text-muted">A few composable layout primitives instead of a utility matrix - <code>helpers/layout.css</code>. Live/interactive (drag to resize the container): <a href="../../demo/layout.html">Layout demo</a>.</p>
 </section>
 
 <section class="ncss-stack" id="container">
@@ -10,7 +10,7 @@
     <table>
       <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
       <tbody>
-        <tr><td><code>.ncss-container</code></td><td>Centered, width-limited column with side padding</td></tr>
+        <tr><td><code>.ncss-container</code></td><td>Centered, width-limited column with side padding. Also establishes the named container <code>ncss-container</code> - the basis for every container-query class on this page</td></tr>
         <tr><td><code>.ncss-container--narrow</code></td><td>Modifier, ONLY together with <code>.ncss-container</code> - narrower <code>max-width</code></td></tr>
         <tr><td><code>.ncss-full-bleed</code></td><td>Breaks out of a container to the edge of the screen</td></tr>
       </tbody>
@@ -19,9 +19,90 @@
 </section>
 
 <section class="ncss-stack" id="grid">
-  <h2 class="demo-section-title">Grid</h2>
-  <p><code>.ncss-grid</code> - automatically responsive grid with no media queries (<code>repeat(auto-fit, minmax(...))</code>), minimum column width parametrized via a custom property:</p>
-  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-grid" style="--ncss-grid-min: 16rem;"&gt;...&lt;/div&gt;</code></pre>
+  <h2 class="demo-section-title">Grid: intrinsic (the default path)</h2>
+  <p><code>.ncss-grid</code> - automatically responsive grid with no media queries (<code>repeat(auto-fit, minmax(...))</code>), minimum column width parametrized via a custom property. Equal row height happens automatically (a CSS Grid default):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-grid" style="--ncss-grid-min: 16rem;"&gt;
+  &lt;div&gt;Card 1&lt;/div&gt;
+  &lt;div&gt;Card 2&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>--ncss-grid-max</code> additionally caps column growth (default <code>1fr</code>, unbounded) - against absurdly wide columns when there are few items on a very wide screen. <code>.ncss-grid--align-start</code> disables row stretching, if cards of different heights should NOT be stretched to match.</p>
+</section>
+
+<section class="ncss-stack" id="grid-cols">
+  <h2 class="demo-section-title">Grid: fixed column count (escape hatch)</h2>
+  <p>For a genuinely FIXED, editorially chosen column count instead of <code>.ncss-grid</code>'s automatic count - <code>.ncss-grid--cols-2</code>/<code>-3</code>/<code>-4</code>/<code>-6</code>, collapses to 1 column below the respective threshold. Needs an ancestor with <code>.ncss-container</code> (or another element carrying <code>container-name: ncss-container</code>):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-container"&gt;
+  &lt;div class="ncss-grid--cols-3"&gt;
+    &lt;div&gt;1&lt;/div&gt;&lt;div&gt;2&lt;/div&gt;&lt;div&gt;3&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Threshold (container width)</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-grid--cols-2</code></td><td>24rem</td></tr>
+        <tr><td><code>.ncss-grid--cols-3</code></td><td>36rem</td></tr>
+        <tr><td><code>.ncss-grid--cols-4</code></td><td>48rem</td></tr>
+        <tr><td><code>.ncss-grid--cols-6</code></td><td>56rem</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Unequal tile widths: combine children with <code>.ncss-col-span-2</code>/<code>-3</code>/<code>.ncss-row-span-2</code>/<code>-3</code> as well (also usable with <code>.ncss-bento</code> below). Mixed tile sizes with no fixed grid at all: <code>.ncss-bento</code> (<code>grid-auto-flow: dense</code>, fills gaps automatically). Column-based fallback masonry with progressive enhancement to true row-accurate <code>display: grid-lanes</code> once available: <code>.ncss-masonry</code>.</p>
+</section>
+
+<section class="ncss-stack" id="flex">
+  <h2 class="demo-section-title">Flex helpers</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-flex</code></td><td><code>display: flex</code> + a default <code>gap</code></td></tr>
+        <tr><td><code>.ncss-flex--wrap</code></td><td>Allow wrapping</td></tr>
+        <tr><td><code>.ncss-flex--center</code></td><td>Centered on both axes</td></tr>
+        <tr><td><code>.ncss-flex--between</code></td><td><code>space-between</code>, vertically centered</td></tr>
+        <tr><td><code>.ncss-flex--column</code></td><td>Vertical instead of horizontal direction</td></tr>
+        <tr><td><code>.ncss-flex-1</code> (child)</td><td>Grows/shrinks, shares the available space (<code>flex: 1 1 0%</code>)</td></tr>
+        <tr><td><code>.ncss-flex-auto</code> (child)</td><td>Stays at its own content width (<code>flex: 0 0 auto</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><code>.ncss-stack</code>/<code>.ncss-cluster</code> (see above) are already calibrated flex patterns for the two most common cases (vertical rhythm/horizontally flowing group) - <code>.ncss-flex</code> is for everything else.</p>
+</section>
+
+<section class="ncss-stack" id="flex-grid">
+  <h2 class="demo-section-title">Flex grid with width fractions</h2>
+  <p>For the one case <code>.ncss-grid</code> does NOT cover: a FIXED column count where an incomplete last row should be CENTERED instead of hanging left-aligned (e.g. 5 cards - 3 in row 1, 2 in row 2, centered rather than stuck to the edge). CSS Grid can't do this (every column stays part of the fixed track structure) - a wrapping flex container with explicit child widths can, because each row flows independently:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-flex-grid ncss-flex-grid--center"&gt;
+  &lt;div class="ncss-width-1-3"&gt;1&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;2&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;3&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;4&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;5&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p><code>.ncss-flex-grid</code> establishes its OWN named container (<code>ncss-flex-grid</code>) - independent of whether an ancestor is already <code>.ncss-container</code>. Each width class reacts to the width of <code>.ncss-flex-grid</code> ITSELF via <code>@container</code>: ONE class name per fraction, no "class × breakpoint" matrix like UIkit/Tailwind-style systems typically use - always starts at 100% (stacked) until the fraction's own threshold is reached (the same four values as <code>.ncss-grid--cols-*</code> above, plus two more for fifths/sixths):</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Fraction</th><th scope="col">Threshold</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-width-1-2</code></td><td>1/2</td><td>24rem</td></tr>
+        <tr><td><code>.ncss-width-1-3</code> / <code>.ncss-width-2-3</code></td><td>1/3 / 2/3</td><td>36rem</td></tr>
+        <tr><td><code>.ncss-width-1-4</code> / <code>.ncss-width-3-4</code></td><td>1/4 / 3/4</td><td>48rem</td></tr>
+        <tr><td><code>.ncss-width-1-5</code></td><td>1/5 (intermediate: 1/2 from 48rem)</td><td>52rem</td></tr>
+        <tr><td><code>.ncss-width-1-6</code></td><td>1/6</td><td>56rem</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><code>.ncss-flex-grid--center</code> centers an incomplete last row (<code>justify-content: center</code>) - the actual reason this building block exists. Internally compensated via <code>calc()</code> for the <code>gap</code> share (a plain percentage width would wrap too early in a wrapping flex container with <code>gap</code>, since <code>gap</code> is NOT automatically subtracted from a percentage basis, unlike CSS Grid's <code>fr</code> units - confirmed via a real test). Combinable with <code>.ncss-card</code>: any <code>.ncss-width-*</code> element can itself be a card or wrap one.</p>
+</section>
+
+<section class="ncss-stack" id="container-sichtbarkeit">
+  <h2 class="demo-section-title">Container-based visibility</h2>
+  <p>Like <code>.ncss-hide-below-md</code>/<code>-from-md</code> (a fixed viewport breakpoint, <code>helpers/visibility.css</code> - see <a href="scroll.html">Scroll &amp; Visibility</a>), but reacts to the width of the parent <code>.ncss-container</code>, not the viewport - the same component shows/hides an element depending on its own column width (e.g. a sidebar vs. main-column variant), independent of screen size:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-container"&gt;
+  &lt;p class="ncss-hide-below-container-md"&gt;Only visible from 36rem container width&lt;/p&gt;
+  &lt;p class="ncss-hide-from-container-md"&gt;Only visible below 36rem container width&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Four thresholds, the same ones used throughout this page: <code>-sm</code> (24rem), <code>-md</code> (36rem), <code>-lg</code> (48rem), <code>-xl</code> (56rem). For any OTHER property (not just visibility) at a given container width - use the same <code>@container ncss-container (min-width: ...)</code> technique directly in your own CSS, see <a href="custom-components.html">Build Your Own Components</a>.</p>
 </section>
 
 <section class="ncss-stack" id="stack-cluster">
@@ -45,5 +126,5 @@
 
 <section class="ncss-stack" id="siehe-auch">
   <h2 class="demo-section-title">See also</h2>
-  <p>For whole landing-page pieces (not just individual building blocks): <a href="layouts.html">Landing Page Blocks</a> - text &amp; image (Split), color-block sections (Tile), transforming accordion (Accordion-Split). All container-query-responsive, combinable with <code>.ncss-container</code>/<code>.ncss-full-bleed</code> from above.</p>
+  <p>For whole landing-page pieces (not just individual building blocks): <a href="layouts.html">Landing Page Blocks</a> - text &amp; image (Split), color-block sections (Tile), transforming accordion (Accordion-Split). For cards themselves (header/body/footer/media, horizontal/flush): <a href="cards.html">Cards</a>. All container-query-responsive, combinable with <code>.ncss-container</code>/<code>.ncss-full-bleed</code> from above.</p>
 </section>

@@ -353,6 +353,96 @@
 .ncss-flex > .ncss-flex-1 { flex: 1 1 0%; }
 .ncss-flex > .ncss-flex-auto { flex: 0 0 auto; }
 
+/* --- Flex-Grid mit Fraktionsbreiten -----------------------------------------------------
+   Für den Fall, den .ncss-grid NICHT abdeckt: eine FESTE Anzahl Spalten, bei der eine
+   unvollständige letzte Zeile ZENTRIERT statt linksbündig hängen bleiben soll (z.B. 5
+   Karten - 3 in Zeile 1, 2 in Zeile 2, mittig statt am linken Rand klebend). CSS Grid
+   kann eine unvollständige letzte Zeile nicht zentrieren (jede Spalte bleibt Teil des
+   festen Spalten-Rasters); ein wrappender Flex-Container mit expliziten Kind-Breiten
+   dagegen schon, weil jede Zeile für sich normal fließt - genau das macht diesen Baustein
+   grundverschieden von .ncss-grid, kein Ersatz dafür. Etabliert einen EIGENEN, benannten
+   Container - unabhängig davon, ob ein Vorfahre bereits .ncss-container ist. */
+.ncss-flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-grid-gap, var(--ncss-space-md));
+  container-type: inline-size;
+  container-name: ncss-flex-grid;
+}
+/* Unvollständige letzte Zeile mittig statt linksbündig - der eigentliche Grund, warum es
+   .ncss-flex-grid neben .ncss-grid gibt. */
+.ncss-flex-grid--center {
+  justify-content: center;
+}
+
+/* Breiten als Kind von .ncss-flex-grid, EIN Wert pro Fraktion (kein "Klasse x Breakpoint"-
+   Raster wie sonst bei Utility-Frameworks üblich) - jede Klasse reagiert per @container
+   SELBST auf die Breite von .ncss-flex-grid, startet aber immer bei 100% (gestapelt), bis
+   der zur Fraktion passende Schwellenwert erreicht ist. Dieselben Schwellenwerte wie
+   .ncss-grid--cols-2/3/4/6 oben (24/36/48/56rem) - ein Projekt, das sich an DIESE Werte
+   schon gewöhnt hat, muss sich keine zweite Zahlenreihe merken.
+   Prozent-Breite ALLEIN würde bei einem wrappenden Flex-Container mit gap zu früh
+   umbrechen (gap wird NICHT automatisch von einer Prozent-Basis abgezogen, anders als bei
+   CSS Grids fr-Einheiten) - per echtem Test bestätigt: 3× 33.3% + 1rem gap brach schon bei
+   2 Elementen pro Zeile um. Fix: calc(Fraktion - Lücken-Anteil), Lücken-Anteil = gap *
+   (Spalten-1)/Spalten - bei N gleich breiten Elementen in einer Zeile gibt es genau N-1
+   Lücken, die sich alle Elemente zu gleichen Teilen "abziehen" müssen. */
+.ncss-width-1-2,
+.ncss-width-1-3, .ncss-width-2-3,
+.ncss-width-1-4, .ncss-width-3-4,
+.ncss-width-1-5,
+.ncss-width-1-6 {
+  flex: 0 1 100%;
+  max-width: 100%;
+}
+/* -- ncss container-query: ncss-flex-grid, halbe Breite (24rem) -- */
+@container ncss-flex-grid (min-width: 24rem) {
+  .ncss-width-1-2 {
+    flex-basis: calc(50% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 2));
+    max-width: calc(50% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 2));
+  }
+}
+/* -- ncss container-query: ncss-flex-grid, Drittel (36rem) -- */
+@container ncss-flex-grid (min-width: 36rem) {
+  .ncss-width-1-3 {
+    flex-basis: calc(33.3333% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 2 / 3));
+    max-width: calc(33.3333% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 2 / 3));
+  }
+  .ncss-width-2-3 {
+    flex-basis: calc(66.6667% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 3));
+    max-width: calc(66.6667% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 3));
+  }
+}
+/* -- ncss container-query: ncss-flex-grid, Viertel (48rem) -- */
+@container ncss-flex-grid (min-width: 48rem) {
+  .ncss-width-1-4 {
+    flex-basis: calc(25% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 3 / 4));
+    max-width: calc(25% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 3 / 4));
+  }
+  .ncss-width-3-4 {
+    flex-basis: calc(75% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 4));
+    max-width: calc(75% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 4));
+  }
+  .ncss-width-1-5 {
+    flex-basis: calc(50% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 2));
+    max-width: calc(50% - (var(--ncss-grid-gap, var(--ncss-space-md)) / 2));
+  }
+}
+/* -- ncss container-query: ncss-flex-grid, Fünftel (52rem) -- */
+@container ncss-flex-grid (min-width: 52rem) {
+  .ncss-width-1-5 {
+    flex-basis: calc(20% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 4 / 5));
+    max-width: calc(20% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 4 / 5));
+  }
+}
+/* -- ncss container-query: ncss-flex-grid, Sechstel (56rem) -- */
+@container ncss-flex-grid (min-width: 56rem) {
+  .ncss-width-1-6 {
+    flex-basis: calc(16.6667% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 5 / 6));
+    max-width: calc(16.6667% - (var(--ncss-grid-gap, var(--ncss-space-md)) * 5 / 6));
+  }
+}
+
 /* --- Container Queries: component-lokale Responsivität statt Viewport-Breakpoints ------
    Beispiel-Nutzung: eine Karte in .ncss-container zeigt Bild+Text nebeneinander, sobald
    IHR Container (nicht der Viewport!) genug Platz hat - dieselbe Karte bleibt in einer
@@ -364,24 +454,7 @@
   }
 }
 
-/**
- * --- Klassischer Escape Hatch: feste Breakpoints (siehe tokens.css für die Werte) ------
- * Nur benutzen, wenn ein echter, fester Sprung nötig ist (z.B. Navigation), nicht als
- * Standardweg für responsive Layouts - dafür immer zuerst .ncss-grid/Container Queries
- * oben erwägen.
- */
-/* Bewusst KEIN "display: revert" zum Zurücksetzen (unterschiedliche UA-Display-Defaults
-   je Element, hier nicht vorhersehbar - siehe uikit_theme_builder diese Session, wo genau
-   das per echtem Playwright-Test als unsicher bestätigt wurde). Stattdessen zwei
-   eigenständige Klassen, je eine pro Richtung. */
-/* -- ncss breakpoint: md (768px) -- */
-@media (max-width: 767px) {
-  .ncss-hide-below-md {
-    display: none;
-  }
-}
-@media (min-width: 768px) {
-  .ncss-hide-from-md {
-    display: none;
-  }
-}
+/* Feste Viewport-Breakpoints als Sichtbarkeits-Escape-Hatch (.ncss-hide-below-md,
+   .ncss-hide-from-md) und deren container-basierte Pendants (.ncss-hide-below-container-,
+   .ncss-hide-from-container-) sind reine "zeig/verstecke"-Klassen, kein Seiten-LAYOUT -
+   leben deshalb bewusst in helpers/visibility.css, nicht hier (siehe dort). */

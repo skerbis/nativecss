@@ -1579,6 +1579,83 @@ umgestellt:
       direkt nach `components` in der "components"-Gruppe einsortiert (Referenz zuerst,
       dann "wie baue ich selbst" direkt danach).
 
+68. **Flex-Grid mit Breiten-Fraktionen + container-basierte Sichtbarkeit ergänzt**
+    (User-Vorgabe, mit drei UIkit-Doku-Seiten als Referenz: getuikit.com/docs/grid,
+    /flex, /card) - konkreter Auslöser: "ich habe 5 Cards. In der ersten Zeile werden
+    ggf. 3 gezeigt und in der 2. die restlichen 2 - jetzt sollen die aber nicht links
+    pappen sondern zentriert" + "gebräuchliche Breiten angeben" + "visibility ... bei
+    Bildschirmgrößen / Containerbreiten festlegen". UIkit löst genau das mit
+    `class@breakpoint`-Suffixen (`.uk-child-width-1-3@m`) - bewusst NICHT übernommen
+    (widerspricht ncss' eigenem "kein Utility-Klassen-Wildwuchs"-Prinzip), stattdessen
+    JEDE Klasse SELBST per `@container` responsiv gemacht (ein Klassenname pro Fraktion,
+    kein Klasse-×-Breakpoint-Raster):
+    - `.ncss-flex-grid` (neu, `helpers/layout.css`): eigener `container-type:inline-size`
+      + `container-name: ncss-flex-grid` (unabhängig von einem `.ncss-container`-
+      Vorfahren). `.ncss-flex-grid--center` (`justify-content:center`) zentriert eine
+      unvollständige letzte Zeile - das eigentliche Problem, das `.ncss-grid` (festes
+      Spalten-Raster) strukturell nicht lösen kann, ein wrappender Flex-Container mit
+      expliziten Kind-Breiten aber schon, weil jede Zeile unabhängig fließt.
+    - `.ncss-width-1-2/-1-3/-2-3/-1-4/-3-4/-1-5/-1-6`: je EIN Klassenname, aktiviert sich
+      selbst per `@container ncss-flex-grid (min-width: ...)` - startet immer bei 100%
+      (gestapelt), Schwellenwerte identisch zu `.ncss-grid--cols-2/3/4/6` (24/36/48/56rem)
+      wiederverwendet statt einer zweiten Zahlenreihe. **Kritischer, per echtem Test
+      gefundener Fallstrick**: reine Prozent-`flex-basis` + `gap` in einem wrappenden
+      Flex-Container bricht zu früh um - `gap` wird NICHT automatisch von einer Prozent-
+      Basis abgezogen (anders als bei CSS Grids `fr`-Einheiten). Naiver Test (3×33.3% +
+      1rem gap) brach schon bei 2 Elementen pro Zeile um, bestätigt per Playwright-
+      `getBoundingClientRect()`-Zeilenzählung VOR dem Schreiben der echten Datei. Fix:
+      `calc(Fraktion% - (gap * (Spalten-1)/Spalten))` - bei N gleich breiten Elementen
+      gibt es N-1 Lücken, die sich alle Elemente zu gleichen Teilen "abziehen" müssen.
+      Nach dem Fix per selbem Test bestätigt: exakt 3 pro Zeile, `row2CenterOffsetAbs`
+      ~0 (Zeile 2 tatsächlich zentriert, nicht nur optisch plausibel).
+    - Container-basierte Sichtbarkeit (`.ncss-hide-below-container-sm/md/lg/xl` +
+      `-from-container-*`, `helpers/visibility.css`): dieselben vier Schwellenwerte,
+      spiegelt `.ncss-hide-below-md`/`-from-md` (Viewport), aber gegen den
+      `ncss-container`-Layer-Namen. EIGENER Fehler beim ersten Versuch: eine Zeile
+      versuchte `display: revert` zum "Zurückschalten" derselben Klasse zu nutzen -
+      widerspricht direkt der eigenen, schon dokumentierten Regel weiter oben in
+      dieser Datei ("kein revert, unvorhersehbarer UA-Display-Default"), per
+      `grep`-Selbstkontrolle VOR dem Testen gefunden, nicht erst durch einen
+      fehlschlagenden Playwright-Test. Fix: exakt das etablierte Zwei-Klassen-Muster
+      übernommen (jede Klasse nur EIN unconditionales `display:none` innerhalb ihrer
+      eigenen `@container`-Bedingung, nie ein- UND wieder ausgeschaltet).
+    - **Aufräumen als Nebeneffekt** (User-Nachfrage per IDE-Selektion: "sollten solche
+      viewport-basierten visibility classes nicht in eine eigene CSS-Datei?", am
+      Beispiel `.ncss-hide-from-md` in `layout.css`): `.ncss-hide-below-md`/`-from-md`
+      lagen seit jeher in `layout.css`, obwohl `helpers/visibility.css`s eigener
+      Datei-Kopfkommentar SCHON VORHER explizit sagt, wofür die Datei da ist
+      ("Sichtbarkeits-Helper - eigenständig statt in layout.css versteckt") - ein
+      Inkonsistenz-Rest von VOR der Aufteilung in `layout.css`/`visibility.css`. Beide
+      Klassen zu `visibility.css` verschoben, direkt vor die neuen container-basierten
+      Pendants (Viewport-Fall zuerst, Container-Fall direkt danach - derselbe Vergleich
+      liest sich dadurch an einer Stelle). Reine Verschiebung (kein `@import` in
+      `ncss.css` zu ändern - beide Dateien liegen ohnehin im selben Layer `helpers`).
+    - **Eigene Landmine per Selbstkontrolle gefunden, nicht per IDE-Fehler**: beim
+      Verschieben ein neuer Kommentar mit `-below-container-*/-from-container-*` -
+      exakt Fallstrick 14 (`*/` mitten im Kommentar beendet ihn sofort). Per
+      `grep -c '/\*'` vs `'\*/'`-Zählung VOR dem Testen gefunden (40 vs. 41 -
+      Diskrepanz), nicht erst durch das IDE selbst (das allerdings unabhängig eine
+      `css-lcurlyexpected`-Diagnose lieferte, die denselben Bruch bestätigte) - beide
+      Signale stimmten überein, Lehre bleibt dieselbe: nach JEDER Kommentar-Änderung
+      mit Wildcard-Klassennamen `grep -rn '\-\*/' *.css helpers/*.css` prüfen.
+    - Neue Demo-Seite `demo/layout.html`: jedes Beispiel steckt in einem `resize:
+      horizontal; overflow:auto`-Rahmen (reines CSS, kein JS) - Ziehgriff unten rechts
+      macht Container Queries SICHTBAR/interaktiv erlebbar, ohne die Fensterbreite
+      ändern zu müssen. In die geteilte Cross-Page-Nav aller 15 betroffenen Demo-Seiten
+      eingehängt (gleiches `perl -pi`-Rollout-Muster wie bei früheren Fallstricken) -
+      `product.html`/`uikit-integration.html` bewusst ausgenommen (eigene, andersartige
+      Nav-Strukturen, siehe deren jeweilige Kommentare). Eigener Fund beim ersten
+      Screenshot-Review (nicht durch einen automatisierten Test, da `aria-current`
+      keine Layoutwirkung hat): die aus `media.html` kopierte Vorlage hatte noch
+      `aria-current="page"` auf "Demo" stehen UND die neue "Layout" bekam ihr eigenes -
+      zwei aktive Nav-Punkte gleichzeitig sichtbar markiert. Lehre: beim Kopieren einer
+      Seiten-Vorlage IMMER gezielt nach `aria-current="page"` greppen, nicht nur den
+      neuen Eintrag hinzufügen und den alten unverändert lassen.
+    - Bestehende `docs-src/content/{de,en}/layout.html` (vorher dünn, deckte nicht
+      einmal `.ncss-grid--cols-*`/Bento/Masonry/Flex ab) auf die volle Breite von
+      `helpers/layout.css` erweitert, `scroll.html`s Kurzreferenz von
+      `helpers/visibility.css` um die neuen Klassen ergänzt, gegenseitig verlinkt.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Layout: Grid, Flex, Karten</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../dist/ncss.css">
+<link rel="stylesheet" href="../dist/page-transitions.css">
+<script src="assets/js/prism-manual.js" defer></script>
+<script src="../vendor/prismjs/prism-core.min.js" defer></script>
+<script src="../vendor/prismjs/prism-markup.min.js" defer></script>
+<script src="../vendor/prismjs/prism-css.min.js" defer></script>
+<script src="../vendor/prismjs/prism-clike.min.js" defer></script>
+<script src="../vendor/prismjs/prism-javascript.min.js" defer></script>
+<script src="../dist/js/code-block.js" defer></script>
+<script src="../dist/js/command-fallback.js" defer></script>
+<script src="../dist/js/nav.js" defer></script>
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  /* Ziehbarer Rahmen um jedes Live-Beispiel - macht Container Queries SICHTBAR ohne JS:
+     am Ziehgriff unten rechts die Breite verändern und live beobachten, wie Grid-Spalten/
+     Breiten-Fraktionen/Sichtbarkeits-Klassen auf GENAU DIESE Breite reagieren, nicht auf
+     die des Browserfensters. */
+  .demo-resizable {
+    resize: horizontal;
+    overflow: auto;
+    max-width: 100%;
+    min-width: 16rem;
+    border: 2px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-md);
+  }
+  .demo-card-fill {
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm) var(--ncss-space-md);
+    text-align: center;
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand" href="product.html">NativeCSS</a>
+    <nav class="ncss-nav">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="../docs/de/index.html">Handbuch</a></li>
+          <li class="ncss-nav-item"><a href="index.html">Demo</a></li>
+          <li class="ncss-nav-item" aria-hidden="true"><hr class="ncss-divider--vertical" aria-orientation="vertical"></li>
+          <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+          <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+          <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+          <li class="ncss-nav-item"><a href="layout.html" aria-current="page">Layout</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Mehr</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="webawesome.html">Web Awesome</a></li>
+                <li><a href="magazine.html">Magazin</a></li>
+                <li><a href="scroll-sections.html">Vollbild-Sektionen</a></li>
+                <li><a href="stacked-cards.html">Stacked Cards</a></li>
+                <li><a href="roadmap.html">Roadmap</a></li>
+                <li><a href="colors.html">Farben</a></li>
+                <li><a href="landing.html">Landingpage-Beispiel</a></li>
+                <li><a href="effects.html">Effekte</a></li>
+                <li><a href="theming.html">Theme anpassen</a></li>
+                <li><a href="widgets.html">Termine &amp; Downloads</a></li>
+                <li><a href="uikit-integration.html">UIkit-Integration</a></li>
+                <li><a href="guides.html">Anleitungen</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </dialog>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch ncss-container ncss-stack ncss-stack--loose ncss-py-xl">
+
+  <section class="ncss-stack">
+    <h1>Layout: Grid, Flex, Karten</h1>
+    <p class="ncss-text-muted">Jedes Beispiel unten steckt in einem ziehbaren Rahmen (Griff unten rechts) - Breite verändern und live beobachten, wie sich Grid-Spalten, Breiten-Fraktionen und Sichtbarkeit an die BREITE DIESES CONTAINERS anpassen, nicht an die des Browserfensters. Vollständige Referenz: <a href="../docs/de/layout.html">Layout</a> im Handbuch.</p>
+  </section>
+
+  <section id="grid-cols" class="ncss-stack">
+    <h2 class="demo-section-title">Grid: feste Spaltenzahl</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-grid--cols-3</code> - starr bei 3 Spalten ab 36rem Container-Breite, darunter 1 Spalte. Rahmen schmaler ziehen, um den Umbruch zu sehen:</p>
+    <div class="ncss-container demo-resizable">
+      <div class="ncss-grid--cols-3">
+        <div class="demo-card-fill">1</div>
+        <div class="demo-card-fill">2</div>
+        <div class="demo-card-fill">3</div>
+      </div>
+    </div>
+    <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-container"&gt;
+  &lt;div class="ncss-grid--cols-3"&gt;
+    &lt;div&gt;1&lt;/div&gt;&lt;div&gt;2&lt;/div&gt;&lt;div&gt;3&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="flex-grid" class="ncss-stack">
+    <h2 class="demo-section-title">Flex-Grid: unvollständige letzte Zeile zentriert</h2>
+    <p class="ncss-text-muted ncss-text-sm">5 Karten, <code>.ncss-width-1-3</code> - Zeile 1 zeigt 3, Zeile 2 die restlichen 2, ZENTRIERT statt linksbündig hängend (<code>.ncss-flex-grid--center</code>). Etwas, das <code>.ncss-grid</code> allein nicht kann.</p>
+    <div class="demo-resizable" style="width: 40rem;">
+      <div class="ncss-flex-grid ncss-flex-grid--center">
+        <div class="ncss-width-1-3 demo-card-fill">1</div>
+        <div class="ncss-width-1-3 demo-card-fill">2</div>
+        <div class="ncss-width-1-3 demo-card-fill">3</div>
+        <div class="ncss-width-1-3 demo-card-fill">4</div>
+        <div class="ncss-width-1-3 demo-card-fill">5</div>
+      </div>
+    </div>
+    <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-flex-grid ncss-flex-grid--center"&gt;
+  &lt;div class="ncss-width-1-3"&gt;1&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;2&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;3&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;4&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;5&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <p class="ncss-text-muted ncss-text-sm">Andere Fraktionen, gemischt in einer Zeile (<code>.ncss-width-1-4</code> + <code>.ncss-width-1-2</code> + <code>.ncss-width-1-4</code>):</p>
+    <div class="demo-resizable" style="width: 50rem;">
+      <div class="ncss-flex-grid">
+        <div class="ncss-width-1-4 demo-card-fill">1/4</div>
+        <div class="ncss-width-1-2 demo-card-fill">1/2</div>
+        <div class="ncss-width-1-4 demo-card-fill">1/4</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="karten" class="ncss-stack">
+    <h2 class="demo-section-title">Karten im Flex-Grid</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-width-*</code> und <code>.ncss-card</code> kombiniert - fünf Karten, dieselbe Zentrierung wie oben, jetzt mit echtem Karten-Look (<code>.ncss-border</code>/<code>.ncss-radius-lg</code>/<code>.ncss-shadow-sm</code>, siehe <a href="../docs/de/cards.html">Karten</a>):</p>
+    <div class="demo-resizable" style="width: 45rem;">
+      <div class="ncss-flex-grid ncss-flex-grid--center">
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Karte 1</h3>
+            <p class="ncss-text-sm ncss-text-muted">Beliebiger Inhalt, gleich hoch wie die Nachbarn dank Flexbox-Stretch.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Karte 2</h3>
+            <p class="ncss-text-sm ncss-text-muted">Kurzer Text.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Karte 3</h3>
+            <p class="ncss-text-sm ncss-text-muted">Ein etwas längerer Absatz, um die Höhenanpassung zu zeigen.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Karte 4</h3>
+            <p class="ncss-text-sm ncss-text-muted">Kurzer Text.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Karte 5</h3>
+            <p class="ncss-text-sm ncss-text-muted">Kurzer Text.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="sichtbarkeit" class="ncss-stack">
+    <h2 class="demo-section-title">Container-basierte Sichtbarkeit</h2>
+    <p class="ncss-text-muted ncss-text-sm">Zwei Absätze, exakt komplementär - reagieren auf die Breite des umschließenden <code>.ncss-container</code>, nicht des Browserfensters:</p>
+    <div class="demo-resizable" style="width: 20rem;">
+      <div class="ncss-container" style="padding: 0;">
+        <p class="ncss-hide-below-container-md demo-card-fill">Sichtbar AB 36rem Container-Breite</p>
+        <p class="ncss-hide-from-container-md demo-card-fill">Sichtbar UNTER 36rem Container-Breite</p>
+      </div>
+    </div>
+    <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-container"&gt;
+  &lt;p class="ncss-hide-below-container-md"&gt;Sichtbar ab 36rem&lt;/p&gt;
+  &lt;p class="ncss-hide-from-container-md"&gt;Sichtbar unter 36rem&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="flex" class="ncss-stack">
+    <h2 class="demo-section-title">Flex-Helfer</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-flex--between</code> - klassische Kopfzeile (Titel links, Aktion rechts):</p>
+    <div class="ncss-flex ncss-flex--between demo-card-fill">
+      <strong>Titel</strong>
+      <button type="button" class="ncss-btn ncss-btn--secondary">Aktion</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="demo-footer-brand">NativeCSS</strong>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="index.html">Demo</a></li>
+        <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+        <li class="ncss-nav-item"><a href="../docs/de/index.html">Handbuch</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
