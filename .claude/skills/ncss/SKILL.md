@@ -1789,6 +1789,57 @@ umgestellt:
     - Demo-Beispiel 4 in `demo/media.html#hero` nutzt denselben `sample-clip.mp4`, der
       schon für die Video-Demos weiter oben existiert - keine neue Asset-Datei nötig.
 
+73. **"Layout"-Nav-Link (Fallstrick 68) ließ die geteilte Topbar-Nav bei ~1000-1024px
+    kurz umbrechen, bevor der 64rem-Mobile-Switch greift** (User-Report: "wenn ich das
+    Fenster schmaler ziehe wird die Navi kurz untereinander sichtbar vor dem Switch zur
+    mobilen Ansicht"). Ursache gefunden, nicht angenommen: `.ncss-nav-list` hat
+    `flex-wrap: wrap` (nav.css) - GENAU EIN JS-freier Mobile-Switch bei `min-width:
+    64rem` (1024px) schaltet auf die Off-Canvas-Spalte um, aber ZWISCHEN "passt nicht
+    mehr in eine Zeile" und "1024px erreicht" liegt keine Garantie, dass beides exakt
+    zusammenfällt - hängt einzig davon ab, ob die Summe aller Item-Breiten + Gaps bei
+    1024px noch unter der verfügbaren Breite bleibt. Das 8. Top-Level-Item ("Layout")
+    kippte genau diese Rechnung auf 13 Seiten (per echtem Playwright-Test mit
+    `getBoundingClientRect()`-Zeilenzählung in 1px-Schritten von 1000-1030px lokalisiert,
+    nicht nur an einer einzelnen Breite geprüft - die Wrap-Zone kann wenige Pixel schmal
+    sein und fällt sonst leicht durchs Raster).
+    - Fix: "Layout" von allen 13 betroffenen Seiten aus der Top-Level-Nav in die
+      "Mehr"-Dropdown verschoben (an erster Stelle, vor "Web Awesome") - stellt exakt die
+      vorherige Zeilenbreite wieder her, statt den globalen 64rem-Schwellenwert
+      (betrifft ALLE Seiten, nicht nur die mit diesem einen Item-Überschuss) zu
+      verschieben oder eine Breakpoint-Sonderregel nur für diese Seiten einzuführen.
+    - **Zwei weitere, beim Debuggen gefundene Bugs derselben Ursache, unabhängig vom
+      eigentlichen User-Report**:
+      - `demo/media.html` hatte "Layout" beim ursprünglichen Rollout (Fallstrick 68)
+        komplett VERGESSEN (fehlte in der `FILES`-Bash-Array-Liste) - nachgetragen,
+        direkt in die Mehr-Dropdown statt Top-Level (kein Grund, es dort erneut riskant
+        top-level einzuführen).
+      - `demo/index.html` überlief SCHON VOR der Layout-Änderung, um nur ~9px (996px
+        benötigt vs. 987.78px verfügbar bei 1024px, per exaktem
+        `getBoundingClientRect()`-Summen-Vergleich gemessen, nicht geschätzt) - eigene,
+        längere Item-Labels ("Übersicht", "Komponenten"-Dropdown, "Formulare-Seite")
+        ließen praktisch keine Reserve. "Formulare-Seite" (152px, breitestes Item) in
+        die Mehr-Dropdown verschoben, NICHT umbenannt zu "Formulare" - Zeile 1125 hat
+        bereits ein eigenständiges `#formulare`-Anker-Item MIT genau diesem Namen
+        innerhalb der "Komponenten"-Dropdown (anderes Ziel: In-Page-Anker vs. eigene
+        Seite `forms.html`) - ein Umbenennen hätte zwei gleichnamige, aber
+        unterschiedliche Nav-Einträge erzeugt, per gezieltem `grep` VOR der Änderung
+        geprüft, nicht nur angenommen.
+      - Beim ersten `perl -0pi`-Entfernungsversuch (Regex mit führendem `\s*`) wurde
+        versehentlich der Zeilenumbruch NACH dem vorherigen `<li>` mitgefressen (zwei
+        `<li>`-Tags landeten auf einer Zeile) - rein kosmetisch (kein HTML-Fehler, `<li>`
+        ist umbruch-unabhängig gültig), beim manuellen Nacharbeiten der `index.html`-
+        Nav gleich mit korrigiert.
+    - **Separater, NICHT behobener Fund**: `demo/product.html` (eigene, nicht geteilte
+      Marketing-Nav, nie von der Layout-Änderung berührt) wrappt bei EXAKT 1024px auf
+      den letzten Pixel genau (988px benötigt == 988px verfügbar, reine
+      Rundungs-Rasur) - vorbestehend, unabhängig vom User-Report, nicht behoben (keine
+      "Mehr"-Dropdown auf dieser Seite vorhanden, eine Restrukturierung wäre eine
+      Marketing-Inhalt-Entscheidung, keine reine Bugfix-Handlung - dem Nutzer separat
+      gemeldet statt eigenmächtig umgebaut).
+    - Fix per echtem Playwright-Test auf ALLEN 15 betroffenen Seiten verifiziert (1px-
+      Schritte 1000-1030px, `flexDirection === 'row' && rowCount > 2` als Wrap-
+      Kriterium) - alle 15 "OK", bevor committet wurde.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
