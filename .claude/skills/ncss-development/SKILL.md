@@ -360,7 +360,16 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
 - Eine Komponente, die über beliebigem Hintergrund schwebt (Copy-Button über `<pre>`,
   dessen Fläche unabhängig vom Seiten-`--ncss-color-bg` sein kann): Farben aus
   `currentColor` ableiten (`color-mix(in srgb, currentColor 12%, transparent)` für die
-  Fläche), nie über einen globalen Seiten-Token einfärben.
+  Fläche), nie über einen globalen Seiten-Token einfärben. Gilt auch für Outline-/
+  Ghost-Elemente ohne eigene Füllfläche: `.ncss-btn--secondary` nutzt `color:
+  currentColor` + `border-color: color-mix(in oklch, currentColor 15%, transparent)`
+  statt fixer `--ncss-color-text`/`-border`-Tokens - sonst unlesbar (User-Report:
+  "dunkle Schrift auf dunklem Hintergrund"), sobald der Button auf einer farbigen
+  Fläche landet (Hero, CTA-Band), statt nur der normalen hellen Seitenfläche, für die
+  die festen Tokens kalibriert sind. Prozentsätze so gewählt, dass sie im Normalfall
+  (helle Fläche) den vorherigen festen Tokens optisch entsprechen - keine sichtbare
+  Änderung für bestehende Buttons auf normaler Fläche, per Vergleich der berechneten
+  Werte bestätigt, nicht nur angenommen.
 - `.ncss-text-light`/`.ncss-text-dark` (+ `-100/-300/-700/-900` Deckkraft-Stufen) für
   Flächen, deren Farbe NICHT über ncss-Tokens läuft (Foto, fester Marken-Ton) - reine
   Deckkraft-Stufen von Weiß/Schwarz, funktionieren konfliktfrei auch innerhalb von

@@ -395,13 +395,24 @@ output {
   background-color: color-mix(in srgb, var(--ncss-color-brand) 75%, black);
 }
 
+/* border-color/color/:active-Hintergrund bewusst NICHT über feste Seiten-Tokens
+   (--ncss-color-border/-text/-bg-subtle), sondern über currentColor - ein
+   --secondary-Button landet oft auf einer farbigen Fläche (Hero, CTA-Sektion,
+   dunkle Karte), auf der die festen Werte (für die normale, helle Seitenfläche
+   kalibriert) unlesbar würden (User-Report: "dunkle Schrift auf dunklem
+   Hintergrund" in einem grünen Hero). currentColor übernimmt automatisch die an
+   dieser Stelle bereits korrekte Textfarbe (z.B. weiß, wenn ein Vorfahre
+   color:#fff setzt) - keine Seiten-lokale Override-Regel mehr nötig. Prozentwerte
+   (15%/5%) so gewählt, dass sie im Standardfall (helle Seitenfläche) fast exakt
+   den bisherigen --ncss-color-border/-bg-subtle-Werten entsprechen - keine
+   sichtbare Änderung für bereits bestehende Buttons auf normaler Fläche. */
 .ncss-btn--secondary {
   background-color: transparent;
-  border-color: var(--ncss-color-border);
-  color: var(--ncss-color-text);
+  border-color: color-mix(in oklch, currentColor 15%, transparent);
+  color: currentColor;
 }
 .ncss-btn--secondary:active:not(:disabled) {
-  background-color: var(--ncss-color-bg-subtle);
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
 }
 
 /* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
@@ -413,7 +424,7 @@ output {
     background-color: color-mix(in srgb, var(--ncss-color-brand) 85%, black);
   }
   .ncss-btn--secondary:hover:not(:disabled) {
-    background-color: var(--ncss-color-bg-subtle);
+    background-color: color-mix(in oklch, currentColor 6%, transparent);
   }
 }
 

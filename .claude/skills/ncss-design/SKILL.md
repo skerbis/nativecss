@@ -77,6 +77,32 @@ technischen Details.
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).
 
+## Häufige Stolperfallen beim Komponieren
+
+- **Ein `.ncss-btn--secondary`/beliebiges Outline-Element auf farbiger Fläche** (Hero,
+  CTA-Band, dunkle Karte) übernimmt automatisch die dort bereits korrekte Textfarbe
+  (Border/Text sind `currentColor`-basiert) - funktioniert ohne Zutun, solange der
+  Vorfahre selbst eine eigene `color` setzt (z.B. `.ncss-hero { color: #fff; }`). Beim
+  Bauen eines EIGENEN, ähnlich "schwebenden" Bauteils (Rahmen/Text ohne feste Fläche)
+  dasselbe Prinzip übernehmen: `color: currentColor` +
+  `border-color: color-mix(in oklch, currentColor 15%, transparent)` statt fester
+  `--ncss-color-text`/`-border`-Tokens, sonst unlesbar auf jeder abweichend eingefärbten
+  Fläche.
+- **Eine Karten-/Kachel-Reihe wirkt zu schmal, wenn sie in `.ncss-container` steckt**
+  (max. 75rem) - für eine breitere Wirkung `.ncss-full-bleed` verwenden (eigenes
+  `padding-inline` + `max-width`/`margin-inline:auto` auf dem inneren Grid ergänzen,
+  siehe `docs/de/layout.html#bleed`), nicht den Grid-Min-Wert allein hochsetzen.
+- **`--ncss-grid-min` nach dem LÄNGSTEN erwarteten Label wählen, nicht nach einem
+  Standardwert** - ein zu kleiner Wert (z.B. 10rem) lässt zusammengesetzte deutsche
+  Begriffe ("Baden-Württemberg", "Niedersachsen-Bremen") in einer Kachel unschön
+  umbrechen oder überlaufen. Bei kurzen, aber längenvariablen Labels (Namen, Orte,
+  Kategorien) den Wert testweise gegen den längsten realen Eintrag prüfen, nicht gegen
+  den ersten/kürzesten.
+- **`.ncss-split` zentriert die beiden Spalten standardmäßig vertikal zueinander** -
+  bei deutlich unterschiedlicher Höhe (z.B. ein langes Formular neben einem kurzen
+  Kontaktblock) wirkt das schief/nicht bündig. `.ncss-split--align-start` für
+  Oben-Ausrichtung ergänzen, wenn beide Spalten an derselben Linie beginnen sollen.
+
 ## Wenn nichts Passendes existiert
 
 - Einzelne Eigenschaft einer BESTEHENDEN Komponente anders (z.B. Badges eckiger):
