@@ -6,7 +6,7 @@
  */
 
 /* :host: dieselbe Baseline gilt für den Wurzelknoten eines Shadow-DOM-Baums, wenn
-   base.css dort geladen wird (siehe components/ncss-container.js) - :host matcht sonst
+   base.css dort geladen wird (siehe js/ncss-container.js) - :host matcht sonst
    nirgends, wirkungslos für jede normale Seite ohne Shadow DOM. */
 body, :host {
   font-family: var(--ncss-font-family-base);

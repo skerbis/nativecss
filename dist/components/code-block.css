@@ -14,7 +14,7 @@
  *   <script src="vendor/prismjs/prism-css.min.js"></script>
  *   <script src="vendor/prismjs/prism-clike.min.js"></script>
  *   <script src="vendor/prismjs/prism-javascript.min.js"></script>
- *   <script src="dist/components/code-block.js" defer></script>
+ *   <script src="dist/js/code-block.js" defer></script>
  *   <link rel="stylesheet" href="dist/components/code-block.css">
  * Markup bleibt natives HTML, nur die Sprache als Klasse am <code>:
  *   <pre><code class="language-html">&lt;div class="ncss-card"&gt;...&lt;/div&gt;</code></pre>

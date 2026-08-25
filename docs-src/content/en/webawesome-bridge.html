@@ -12,10 +12,12 @@
   </ul>
   <pre><code class="language-html">&lt;link rel="stylesheet" href="vendor/webawesome/dist-cdn/styles/themes/default.css"&gt;
 &lt;link rel="stylesheet" href="dist/ncss.css"&gt;
+&lt;link rel="stylesheet" href="dist/integrations/webawesome-bridge.css"&gt;
 &lt;script type="module" src="vendor/webawesome/dist-cdn/webawesome.loader.js"
         data-webawesome="vendor/webawesome/dist-cdn"&gt;&lt;/script&gt;
 
 &lt;wa-button variant="brand"&gt;Matches .ncss-btn--primary visually&lt;/wa-button&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>dist/integrations/webawesome-bridge.css</code> is fully opt-in - <code>ncss.css</code> does NOT import it automatically, so a project without Web Awesome ships none of it. The "webawesome-bridge" layer is already registered at the right priority position regardless (see <a href="architecture.html">Architecture</a>), independent of your own <code>&lt;link&gt;</code> order.</p>
 </section>
 
 <section class="ncss-stack" id="formular-text">
@@ -30,13 +32,13 @@
     <table>
       <thead><tr><th scope="col">File</th><th scope="col">What for</th></tr></thead>
       <tbody>
-        <tr><td><code>components/wa-close-on-scroll.js</code></td><td>Closes any open <code>&lt;wa-dropdown&gt;</code>/<code>&lt;wa-popover&gt;</code> panel on scroll - if the anchor sits in a <code>position:sticky</code> header bar, repositioning can otherwise glitch visibly (among others a known iOS Safari bug)</td></tr>
-        <tr><td><code>components/hide-on-scroll-fallback.js</code></td><td><code>.ncss-hide-on-scroll</code> (<a href="scroll.html">Scroll &amp; Visibility</a>) is CSS-only and active only in Chromium (<code>container-type: scroll-state</code>). Checks via <code>CSS.supports</code> whether the native technique applies, otherwise a <code>requestAnimationFrame</code>-throttled scroll listener</td></tr>
-        <tr><td><code>components/scroll-stack-fallback.js</code></td><td>Brings the real pinned scroll-stack experience (<a href="components.html">Component Reference</a>, <code>.ncss-stack-section</code>) to Firefox/older Safari too, instead of just the guaranteed-working but unanimated <code>@supports not()</code> fallback. Checks via <code>CSS.supports("view-timeline-name", ...)</code>, respects <code>prefers-reduced-motion</code></td></tr>
+        <tr><td><code>js/wa-close-on-scroll.js</code></td><td>Closes any open <code>&lt;wa-dropdown&gt;</code>/<code>&lt;wa-popover&gt;</code> panel on scroll - if the anchor sits in a <code>position:sticky</code> header bar, repositioning can otherwise glitch visibly (among others a known iOS Safari bug)</td></tr>
+        <tr><td><code>js/hide-on-scroll-fallback.js</code></td><td><code>.ncss-hide-on-scroll</code> (<a href="scroll.html">Scroll &amp; Visibility</a>) is CSS-only and active only in Chromium (<code>container-type: scroll-state</code>). Checks via <code>CSS.supports</code> whether the native technique applies, otherwise a <code>requestAnimationFrame</code>-throttled scroll listener</td></tr>
+        <tr><td><code>js/scroll-stack-fallback.js</code></td><td>Brings the real pinned scroll-stack experience (<a href="components.html">Component Reference</a>, <code>.ncss-stack-section</code>) to Firefox/older Safari too, instead of just the guaranteed-working but unanimated <code>@supports not()</code> fallback. Checks via <code>CSS.supports("view-timeline-name", ...)</code>, respects <code>prefers-reduced-motion</code></td></tr>
       </tbody>
     </table>
   </div>
-  <pre><code class="language-html">&lt;script src="components/wa-close-on-scroll.js" defer&gt;&lt;/script&gt;
-&lt;script src="components/hide-on-scroll-fallback.js" defer&gt;&lt;/script&gt;
-&lt;script src="components/scroll-stack-fallback.js" defer&gt;&lt;/script&gt;</code></pre>
+  <pre><code class="language-html">&lt;script src="js/wa-close-on-scroll.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/hide-on-scroll-fallback.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/scroll-stack-fallback.js" defer&gt;&lt;/script&gt;</code></pre>
 </section>

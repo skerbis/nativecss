@@ -9,7 +9,8 @@
   <pre class="ncss-radius-lg ncss-border"><code class="language-css">wa-native, wa-base, wa-utilities, wa-color-palette, wa-color-variant, wa-theme,
 wa-theme-dimension, wa-theme-overrides,   ← Web Awesome's own layers (if included)
 tokens, reset, base, helpers, components, ← NativeCSS itself
-webawesome-bridge,                        ← overrides Web Awesome's default theme selectively
+webawesome-bridge,                        ← position for integrations/webawesome-bridge.css
+                                             (opt-in, see below - the layer stays reserved)
 browser-fixes                             ← isolated browser/engine workarounds, last</code></pre>
   <p><code>@layer</code> controls priority EXPLICITLY instead of via selector specificity/<code>!important</code>. A rule in a LATER layer always wins over a rule in an earlier layer - regardless of selector specificity. Unlayered CSS (e.g. <code>theme.css</code>, inline styles) ALWAYS beats every layered rule.</p>
 </section>
@@ -23,21 +24,26 @@ browser-fixes                             ← isolated browser/engine workaround
   reset.css                 Minimal reset
   base.css                  Unstyled native elements get sensible defaults
   browser-fixes.css         Isolated browser/engine-specific workarounds
-  webawesome-bridge.css     Maps ncss tokens onto Web Awesome's --wa-* variables
   theme.css                 Included example theme
   page-transitions.css      Opt-in page transitions
   helpers/                  Utility classes (layout, typography, forms, media, ...)
-  components/               Ready-made components (nav, card, modal, badge, ...) + JS fallbacks
+  components/               Ready-made component CSS (nav, card, modal, badge, ...)
+  js/                       Component JS, collected in one place - only include what a
+                             component you actually use needs (see components.html for
+                             the component ↔ file mapping)
+  integrations/             Opt-in bridges to external libraries, NOT part of ncss.css -
+                             webawesome-bridge.css, fontawesome-font-display-fix.css
 demo/                     All demo/documentation pages
 vendor/                   Self-hosted Web Awesome + Font Awesome (optional)</code></pre>
 </section>
 
 <section class="ncss-stack" id="theme-mechanik">
   <h2 class="demo-section-title">Why theming runs unlayered</h2>
-  <p>Theming runs through <code>theme.css</code> (load after <code>ncss.css</code>) - a single, deliberately UNLAYERED file with all the important seed values (brand colors, base surfaces, fonts, radii, shadows, motion). Unlayered CSS always wins against any layered rule, no <code>!important</code> needed. Details: <a href="theming.html">Theming</a>.</p>
+  <p>Theming runs through <code>theme.css</code> (load after <code>ncss.css</code>) - a single, deliberately UNLAYERED file with all the important seed values (brand colors, base surfaces, fonts, radii, shadows, motion). Unlayered CSS always wins against any layered rule, no <code>!important</code> needed. Details: <a href="theming.html">Theming</a>, step-by-step walkthrough: <a href="custom-theme.html">Build Your Own Theme</a>.</p>
 </section>
 
 <section class="ncss-stack" id="cherry-picking">
   <h2 class="demo-section-title">Cherry-picking instead of all-or-nothing</h2>
-  <p>Every component is its own small file (<code>components/card.css</code>, <code>components/modal.css</code>, ...) - include only what's needed by copying <code>ncss.css</code> and removing the <code>@import</code> lines you don't need. No bundler that has to purge unused CSS after the fact - the file is only ever as large as intended from the start.</p>
+  <p>Every component is its own small file (<code>components/card.css</code>, <code>components/modal.css</code>, ...) - include only what's needed by copying <code>ncss.css</code> into your own project as a starting point and removing the <code>@import</code> lines you don't need. That copied, project-owned file IS the project's manifest - no bundler that has to purge unused CSS after the fact, the file is only ever as large as intended from the start.</p>
+  <p><code>integrations/</code> takes the same idea one step further: <code>webawesome-bridge.css</code> and <code>fontawesome-font-display-fix.css</code> are NOT in <code>ncss.css</code>'s import manifest - a project without Web Awesome/Font Awesome ships none of it. Only projects that actually load the respective library add the matching integration file themselves (see <a href="webawesome-bridge.html">Web Awesome Bridge</a>).</p>
 </section>

@@ -11,7 +11,7 @@
  *    gelöst, siehe select.css - diese Datei greift dort NICHT ein).
  *
  * Beide brauchen zwingend JS für ein wirklich gestyltes Popup - reines CSS kann diese
- * Lücke nicht schließen. `components/combobox.js` baut in beiden Fällen dieselbe custom
+ * Lücke nicht schließen. `js/combobox.js` baut in beiden Fällen dieselbe custom
  * Dropdown-Liste (hier gestylt), original-Markup bleibt unverändert (data-src bei input,
  * <option>-Kinder bei select) - ohne das Script bleibt die native, voll funktionsfähige
  * Basisversion bestehen (progressive enhancement, kein Funktionsverlust ohne JS).

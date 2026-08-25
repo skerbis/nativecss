@@ -3,7 +3,11 @@
  *
  * Aufbau (in genau dieser Reihenfolge geladen und in Cascade Layers dieser Priorität,
  * niedrig -> hoch): tokens < reset < base < helpers < components < webawesome-bridge <
- * browser-fixes.
+ * browser-fixes. Der Layer "webawesome-bridge" bleibt HIER registriert, auch wenn diese
+ * Datei selbst nichts mehr hineinlädt (siehe unten, Web Awesome ist komplett opt-in) -
+ * die Layer-ORDER ist seitenweit global, ein Projekt, das integrations/
+ * webawesome-bridge.css später selbst einbindet, landet automatisch an genau dieser
+ * Prioritätsposition, unabhängig von der eigenen <link>-Reihenfolge.
  *
  * @layer regelt die Priorität EXPLIZIT statt über Selektor-Spezifität/!important zu
  * kämpfen (siehe uikit_theme_builder diese Session: genau das war die Ursache mehrerer
@@ -17,7 +21,7 @@
  * eigenen Layer gesetzt, damit die Priorität GARANTIERT unabhängig von der <link>-
  * Reihenfolge im HTML ist (die Layer-Order ist seitenweit global, nicht pro Stylesheet -
  * ohne diese Zeile würde gewinnen, welche Bibliothek zufällig zuerst geladen wird). So
- * schlägt components/webawesome-bridge.css IMMER Web Awesomes eigenes Default-Theme,
+ * schlägt integrations/webawesome-bridge.css IMMER Web Awesomes eigenes Default-Theme,
  * ganz ohne !important.
  */
 
@@ -75,14 +79,22 @@
 @import url("components/events.css") layer(components);
 @import url("components/downloads.css") layer(components);
 /* Weitere Komponenten (Tabs, Accordion, ...) folgen hier, je eine Datei.
-   components/command-fallback.js separat einbinden
-   (<script src="ncss/components/command-fallback.js">) - generischer Fallback für
+   JS liegt gesammelt unter js/, nicht neben dem jeweiligen Komponenten-CSS - separat
+   einbinden (<script src="ncss/js/command-fallback.js">) - generischer Fallback für
    command/commandfor (Modal/Off-Canvas/Nav), nur nötig für Browser ohne native
    Unterstützung, siehe die Datei selbst. */
 
-/* Nur einbinden, wenn Web Awesome auf der Seite tatsächlich geladen wird - siehe
-   webawesome-bridge.css für das Token-Mapping. */
-@import url("webawesome-bridge.css") layer(webawesome-bridge);
+/* Web Awesome/Font Awesome sind komplett OPT-IN - ncss.css importiert dafür bewusst
+   NICHTS (auch nicht die Bridge), damit ein Projekt ohne Web Awesome keine Zeile davon
+   ausliefert. Wird Web Awesome tatsächlich genutzt, integrations/webawesome-bridge.css
+   selbst zusätzlich laden (NACH ncss.css, wegen der Layer-Reihenfolge unten - die
+   @layer-Deklaration registriert "webawesome-bridge" bereits an der richtigen Stelle,
+   unabhängig davon, welche Datei tatsächlich etwas in diesen Layer einträgt):
+     <link rel="stylesheet" href="ncss.css">
+     <link rel="stylesheet" href="integrations/webawesome-bridge.css">
+   Siehe integrations/webawesome-bridge.css für das Token-Mapping,
+   integrations/fontawesome-font-display-fix.css für den separaten Font-Awesome-Fix
+   (ebenfalls opt-in, gleicher Ordner). */
 
 /* Browser-spezifische Workarounds, immer zuletzt geladen (höchste Priorität) - siehe
    browser-fixes.css für die Begründung, warum das eine eigene Datei ist. */

@@ -1,12 +1,12 @@
 <!--DESC: Run ncss isolated inside a foreign page - a custom element with real Shadow DOM encapsulation.-->
 <section class="ncss-stack">
   <h1>&lt;ncss-container&gt;</h1>
-  <p class="ncss-text-lg ncss-text-muted"><code>components/ncss-container.js</code> encapsulates ncss content in a real Shadow DOM tree, so it can run inside a page built on a FOREIGN framework/CSS system (Bootstrap, UIkit, Tailwind, a CMS theme, ...) without styles leaking in either direction.</p>
+  <p class="ncss-text-lg ncss-text-muted"><code>js/ncss-container.js</code> encapsulates ncss content in a real Shadow DOM tree, so it can run inside a page built on a FOREIGN framework/CSS system (Bootstrap, UIkit, Tailwind, a CMS theme, ...) without styles leaking in either direction.</p>
 </section>
 
 <section class="ncss-stack" id="einbindung">
   <h2 class="demo-section-title">Setup</h2>
-  <pre><code class="language-html">&lt;script src="components/ncss-container.js" defer&gt;&lt;/script&gt;
+  <pre><code class="language-html">&lt;script src="js/ncss-container.js" defer&gt;&lt;/script&gt;
 &lt;ncss-container src="dist/ncss.css"&gt;
   &lt;div class="ncss-card"&gt;
     &lt;div class="ncss-card-body"&gt;Isolated content&lt;/div&gt;

@@ -146,7 +146,7 @@
 
 <section class="ncss-stack" id="accordion-split">
   <h2 class="demo-section-title">7. Transforming accordion</h2>
-  <p>Known from apple.com - a text accordion whose associated image on the right automatically switches with whichever point is currently open. Completely native, NO JavaScript needed: exclusive open/close via <code>&lt;details name="..."&gt;</code> (Baseline since September 2025), the matching image is selected via <code>:has()</code> - the same technique already used by <code>pre:has(&gt; code[class*="language-"])</code> for the code blocks on this page. Opening/closing itself is already smoothly animated (<code>::details-content</code>). For a soft transition on the IMAGE SWAP itself (instead of a hard cut), optionally include <code>components/view-transitions.js</code> - see below.</p>
+  <p>Known from apple.com - a text accordion whose associated image on the right automatically switches with whichever point is currently open. Completely native, NO JavaScript needed: exclusive open/close via <code>&lt;details name="..."&gt;</code> (Baseline since September 2025), the matching image is selected via <code>:has()</code> - the same technique already used by <code>pre:has(&gt; code[class*="language-"])</code> for the code blocks on this page. Opening/closing itself is already smoothly animated (<code>::details-content</code>). For a soft transition on the IMAGE SWAP itself (instead of a hard cut), optionally include <code>js/view-transitions.js</code> - see below.</p>
   <div class="ncss-accordion-split-container">
     <div class="ncss-accordion-split">
       <div class="ncss-accordion-split-list">
@@ -201,14 +201,14 @@
   <p class="ncss-text-sm ncss-text-muted"><code>name="..."</code> must be unique per accordion instance on the page (like a radio-button group), otherwise multiple accordions unintentionally group together. Each image deliberately appears TWICE in the markup (desktop column + mobile inline copy) - without JS a DOM node can't be moved between two distant containers. The same image URL is still only loaded once (normal HTTP caching), and only one of the two copies is ever in the layout at a given breakpoint. Supports up to 6 points (more would be unusual for this pattern anyway).</p>
 
   <h3>Smooth image transition (opt-in)</h3>
-  <p><code>components/view-transitions.js</code> uses same-document <a href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API" target="_blank" rel="noopener">View Transitions</a> (Chrome/Edge 111+, Safari 18+, Firefox 133+) to animate the image swap smoothly instead of a hard cut - a cross-fade is the default (no markup needed), <code>data-transition="slide"</code>/<code>"3d"</code> on <code>.ncss-accordion-split-container</code> switch to a slide or a 3D flip instead. Without the script, or in browsers without View Transitions support, the native, instant swap stays intact - no loss of function. The example above already uses the live cross-fade.</p>
-  <pre><code class="language-html">&lt;script src="components/view-transitions.js" defer&gt;&lt;/script&gt;
+  <p><code>js/view-transitions.js</code> uses same-document <a href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API" target="_blank" rel="noopener">View Transitions</a> (Chrome/Edge 111+, Safari 18+, Firefox 133+) to animate the image swap smoothly instead of a hard cut - a cross-fade is the default (no markup needed), <code>data-transition="slide"</code>/<code>"3d"</code> on <code>.ncss-accordion-split-container</code> switch to a slide or a 3D flip instead. Without the script, or in browsers without View Transitions support, the native, instant swap stays intact - no loss of function. The example above already uses the live cross-fade.</p>
+  <pre><code class="language-html">&lt;script src="js/view-transitions.js" defer&gt;&lt;/script&gt;
 
 &lt;div class="ncss-accordion-split-container" data-transition="slide"&gt;
   &lt;!-- ... --&gt;
 &lt;/div&gt;</code></pre>
-  <p class="ncss-text-sm ncss-text-muted">Technical background (including why it intercepts the click on <code>&lt;summary&gt;</code> instead of a <code>beforetoggle</code> event, and how <code>view-transition-class</code> distinguishes multiple instances on the same page) in the <a href="https://github.com/skerbis/nativecss/blob/main/dist/components/view-transitions.js" target="_blank" rel="noopener">source comment</a>.</p>
-  <script src="../../dist/components/view-transitions.js" defer></script>
+  <p class="ncss-text-sm ncss-text-muted">Technical background (including why it intercepts the click on <code>&lt;summary&gt;</code> instead of a <code>beforetoggle</code> event, and how <code>view-transition-class</code> distinguishes multiple instances on the same page) in the <a href="https://github.com/skerbis/nativecss/blob/main/dist/js/view-transitions.js" target="_blank" rel="noopener">source comment</a>.</p>
+  <script src="../../dist/js/view-transitions.js" defer></script>
 </section>
 
 <section class="ncss-stack" id="marginnote">

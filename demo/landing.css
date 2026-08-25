@@ -11,7 +11,7 @@
    Nachfahre betroffen, siehe .ncss-gpu-boost/--ncss-gpu-hint in helpers/animations.css
    für dasselbe Prinzip an anderer Stelle) - reine Vorsichtsmaßnahme gegen bekannte
    WebKit-Repaint-Eigenheiten rund um backdrop-filter, nicht weil das nachweislich die
-   Ursache des früheren Scroll-Glitches war (das war components/wa-close-on-scroll.js
+   Ursache des früheren Scroll-Glitches war (das war js/wa-close-on-scroll.js
    vorbehalten, siehe SKILL.md Punkt 21). */
 .landing-topbar-backdrop {
   position: absolute;

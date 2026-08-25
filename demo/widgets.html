@@ -13,12 +13,12 @@
 <script src="../vendor/prismjs/prism-css.min.js" defer></script>
 <script src="../vendor/prismjs/prism-clike.min.js" defer></script>
 <script src="../vendor/prismjs/prism-javascript.min.js" defer></script>
-<script src="../dist/components/code-block.js" defer></script>
-<script src="../dist/components/command-fallback.js" defer></script>
-<script src="../dist/components/nav.js" defer></script>
-<script src="../dist/components/ics.js" defer></script>
-<script src="../dist/components/events.js" defer></script>
-<script src="../dist/components/downloads.js" defer></script>
+<script src="../dist/js/code-block.js" defer></script>
+<script src="../dist/js/command-fallback.js" defer></script>
+<script src="../dist/js/nav.js" defer></script>
+<script src="../dist/js/ics.js" defer></script>
+<script src="../dist/js/events.js" defer></script>
+<script src="../dist/js/downloads.js" defer></script>
 <style>
   .demo-section-title {
     border-block-end: 1px solid var(--ncss-color-border);
@@ -76,7 +76,7 @@
 
   <div class="ncss-stack ncss-stack--tight">
     <h1>Termine &amp; Downloads</h1>
-    <p class="ncss-text-lg ncss-text-muted">Datengetriebene Widgets (JSON oder .ics) als native HTML-Alternative zur iframe-Einbettung - durchsuchbar, per CSS themebar, kein Cross-Origin-/Höhenproblem. Alles opt-in: <code>components/ics.js</code>, <code>components/events.js</code>, <code>components/downloads.js</code>, jeweils nur auf Seiten einbinden, die sie wirklich nutzen.</p>
+    <p class="ncss-text-lg ncss-text-muted">Datengetriebene Widgets (JSON oder .ics) als native HTML-Alternative zur iframe-Einbettung - durchsuchbar, per CSS themebar, kein Cross-Origin-/Höhenproblem. Alles opt-in: <code>js/ics.js</code>, <code>js/events.js</code>, <code>js/downloads.js</code>, jeweils nur auf Seiten einbinden, die sie wirklich nutzen.</p>
   </div>
 
   <section class="ncss-stack" id="monat">
@@ -105,7 +105,7 @@
 
   <section class="ncss-stack" id="downloads">
     <h2 class="demo-section-title">Downloads</h2>
-    <p class="ncss-text-muted ncss-text-sm"><code>components/downloads.js</code> - Datei-Liste aus <code>data/downloads.json</code>, Icon/Größe automatisch aus <code>type</code>/<code>size</code> bzw. der Datei-Endung.</p>
+    <p class="ncss-text-muted ncss-text-sm"><code>js/downloads.js</code> - Datei-Liste aus <code>data/downloads.json</code>, Icon/Größe automatisch aus <code>type</code>/<code>size</code> bzw. der Datei-Endung.</p>
     <div class="ncss-downloads" data-src="data/downloads.json"></div>
   </section>
 
@@ -117,7 +117,7 @@
     "location": "Raum A", "description": "...", "url": "https://..." },
   { "title": "Feiertag", "start": "2026-10-03", "allDay": true }
 ]</code></pre>
-    <p class="ncss-text-muted ncss-text-sm">.ics-Dateien (Google-/Outlook-/Apple-Export) werden ebenfalls unterstützt (<code>data-ics</code> statt <code>data-src</code>) - siehe <code>components/ics.js</code> für den abgedeckten <code>RRULE</code>-Umfang.</p>
+    <p class="ncss-text-muted ncss-text-sm">.ics-Dateien (Google-/Outlook-/Apple-Export) werden ebenfalls unterstützt (<code>data-ics</code> statt <code>data-src</code>) - siehe <code>js/ics.js</code> für den abgedeckten <code>RRULE</code>-Umfang.</p>
   </section>
 
 </main>

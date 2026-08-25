@@ -6,7 +6,7 @@
  * in Chrome/Firefox/Safari verifiziert), das passende Bild wird per `:has()` ausgewählt
  * (dieselbe Technik, die schon `pre:has(> code[class*="language-"])` in
  * components/code-block.css nutzt) - dabei bleibt der Bildwechsel selbst ein harter
- * display:none/block-Schnitt. `components/view-transitions.js` (separates, optionales
+ * display:none/block-Schnitt. `js/view-transitions.js` (separates, optionales
  * Opt-in-Skript, NICHT Teil dieser Datei) macht diesen Wechsel zusätzlich weich
  * (Kreuzblende/Slide/3D-Flip per Same-Document View Transitions) - siehe die
  * `::view-transition-*`-Regeln weiter unten für die zugehörigen Presets.
@@ -179,7 +179,7 @@
   }
 }
 
-/* --- View-Transitions-Presets für components/view-transitions.js (opt-in) --------------
+/* --- View-Transitions-Presets für js/view-transitions.js (opt-in) --------------
    Gehört inhaltlich zur Komponente, obwohl das Skript separat bleibt (JS ist optional,
    diese Regeln greifen nur, wenn `view-transition-class` per JS tatsächlich gesetzt
    wurde - ohne Skript keine Wirkung, kein toter Code, nur ungenutzte Selektoren).

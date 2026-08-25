@@ -12,10 +12,12 @@
   </ul>
   <pre><code class="language-html">&lt;link rel="stylesheet" href="vendor/webawesome/dist-cdn/styles/themes/default.css"&gt;
 &lt;link rel="stylesheet" href="dist/ncss.css"&gt;
+&lt;link rel="stylesheet" href="dist/integrations/webawesome-bridge.css"&gt;
 &lt;script type="module" src="vendor/webawesome/dist-cdn/webawesome.loader.js"
         data-webawesome="vendor/webawesome/dist-cdn"&gt;&lt;/script&gt;
 
 &lt;wa-button variant="brand"&gt;Passt optisch zu .ncss-btn--primary&lt;/wa-button&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>dist/integrations/webawesome-bridge.css</code> ist komplett opt-in - <code>ncss.css</code> importiert sie NICHT automatisch, damit ein Projekt ohne Web Awesome keine Zeile davon ausliefert. Der Layer "webawesome-bridge" ist trotzdem schon an der richtigen Prioritätsposition registriert (siehe <a href="architecture.html">Architektur</a>), unabhängig von der eigenen <code>&lt;link&gt;</code>-Reihenfolge.</p>
 </section>
 
 <section class="ncss-stack" id="formular-text">
@@ -30,13 +32,13 @@
     <table>
       <thead><tr><th scope="col">Datei</th><th scope="col">Wofür</th></tr></thead>
       <tbody>
-        <tr><td><code>components/wa-close-on-scroll.js</code></td><td>Schließt jedes offene <code>&lt;wa-dropdown&gt;</code>/<code>&lt;wa-popover&gt;</code>-Panel beim Scrollen - sitzt der Anker in einer <code>position:sticky</code>-Kopfleiste, kann die Neupositionierung sonst sichtbar glitchen (u.a. ein bekannter iOS-Safari-Bug)</td></tr>
-        <tr><td><code>components/hide-on-scroll-fallback.js</code></td><td><code>.ncss-hide-on-scroll</code> (<a href="scroll.html">Scroll &amp; Sichtbarkeit</a>) ist rein CSS-basiert nur in Chromium aktiv (<code>container-type: scroll-state</code>). Prüft per <code>CSS.supports</code>, ob die native Technik greift, sonst ein <code>requestAnimationFrame</code>-gedrosselter Scroll-Listener</td></tr>
-        <tr><td><code>components/scroll-stack-fallback.js</code></td><td>Bringt das echte gepinnte Scroll-Stapel-Erlebnis (<a href="components.html">Komponenten-Referenz</a>, <code>.ncss-stack-section</code>) auch nach Firefox/älterem Safari, statt nur des garantiert funktionierenden, aber unanimierten <code>@supports not()</code>-Fallbacks. Prüft per <code>CSS.supports("view-timeline-name", ...)</code>, respektiert <code>prefers-reduced-motion</code></td></tr>
+        <tr><td><code>js/wa-close-on-scroll.js</code></td><td>Schließt jedes offene <code>&lt;wa-dropdown&gt;</code>/<code>&lt;wa-popover&gt;</code>-Panel beim Scrollen - sitzt der Anker in einer <code>position:sticky</code>-Kopfleiste, kann die Neupositionierung sonst sichtbar glitchen (u.a. ein bekannter iOS-Safari-Bug)</td></tr>
+        <tr><td><code>js/hide-on-scroll-fallback.js</code></td><td><code>.ncss-hide-on-scroll</code> (<a href="scroll.html">Scroll &amp; Sichtbarkeit</a>) ist rein CSS-basiert nur in Chromium aktiv (<code>container-type: scroll-state</code>). Prüft per <code>CSS.supports</code>, ob die native Technik greift, sonst ein <code>requestAnimationFrame</code>-gedrosselter Scroll-Listener</td></tr>
+        <tr><td><code>js/scroll-stack-fallback.js</code></td><td>Bringt das echte gepinnte Scroll-Stapel-Erlebnis (<a href="components.html">Komponenten-Referenz</a>, <code>.ncss-stack-section</code>) auch nach Firefox/älterem Safari, statt nur des garantiert funktionierenden, aber unanimierten <code>@supports not()</code>-Fallbacks. Prüft per <code>CSS.supports("view-timeline-name", ...)</code>, respektiert <code>prefers-reduced-motion</code></td></tr>
       </tbody>
     </table>
   </div>
-  <pre><code class="language-html">&lt;script src="components/wa-close-on-scroll.js" defer&gt;&lt;/script&gt;
-&lt;script src="components/hide-on-scroll-fallback.js" defer&gt;&lt;/script&gt;
-&lt;script src="components/scroll-stack-fallback.js" defer&gt;&lt;/script&gt;</code></pre>
+  <pre><code class="language-html">&lt;script src="js/wa-close-on-scroll.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/hide-on-scroll-fallback.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/scroll-stack-fallback.js" defer&gt;&lt;/script&gt;</code></pre>
 </section>

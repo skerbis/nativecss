@@ -336,7 +336,7 @@
   }
 }
 
-/* --- JS-Fallback-Unterstützung (components/scroll-stack-fallback.js, opt-in) --------------
+/* --- JS-Fallback-Unterstützung (js/scroll-stack-fallback.js, opt-in) --------------
    Das Script prüft SELBST per CSS.supports(), ob animation-timeline fehlt, und setzt in dem
    Fall diese Klasse auf .ncss-stack-section - stellt exakt dieselbe Bühnen-/Absolut-Stapel-
    Struktur wieder her wie der native @supports(view-timeline-name)-Block oben, NUR ohne

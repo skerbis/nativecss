@@ -10,18 +10,21 @@
      nötig) - liefert sowohl die <i class="fa-solid ..."> Webfont-Icons hier direkt im
      Markup als auch die SVGs, auf die unten <wa-icon> zeigt (setIconPath). -->
 <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
-<link rel="stylesheet" href="../dist/fontawesome-font-display-fix.css">
+<link rel="stylesheet" href="../dist/integrations/fontawesome-font-display-fix.css">
 
 <!-- Web Awesome Free, selbst gehostet unter vendor/webawesome (npm-Paket @awesome.me/
      webawesome, dist-cdn). Nur das Default-Theme (Komponenten-Grundgerüst) laden - Farben/
-     Radien/Schriften kommen aus unserer eigenen Bridge (siehe webawesome-bridge.css, Layer
-     "webawesome-bridge", höchste Priorität), nicht aus Web Awesomes eigenem Theme-Layer.
-     styles/native.css (WAs eigener Reset) und styles/utilities.css bewusst NICHT geladen -
-     NativeCSS hat bereits reset.css/base.css/helpers/, ein zweites Reset-System würde nur
-     konkurrieren statt ergänzen. -->
+     Radien/Schriften kommen aus unserer eigenen Bridge (dist/integrations/
+     webawesome-bridge.css, Layer "webawesome-bridge", höchste Priorität), nicht aus Web
+     Awesomes eigenem Theme-Layer. Die Bridge ist komplett opt-in (ncss.css importiert sie
+     NICHT automatisch) - hier unten explizit NACH ncss.css eingebunden, siehe dort für die
+     Begründung. styles/native.css (WAs eigener Reset) und styles/utilities.css bewusst
+     NICHT geladen - NativeCSS hat bereits reset.css/base.css/helpers/, ein zweites
+     Reset-System würde nur konkurrieren statt ergänzen. -->
 <link rel="stylesheet" href="../vendor/webawesome/dist-cdn/styles/themes/default.css">
 
 <link rel="stylesheet" href="../dist/ncss.css">
+<link rel="stylesheet" href="../dist/integrations/webawesome-bridge.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 <!-- Eigenes Übergangs-Preset für diese Seite - komplette @view-transition-Regel
      wiederholt (siehe Kommentar in page-transitions.css, warum komplett statt nur
@@ -42,11 +45,11 @@
 <script src="../vendor/prismjs/prism-css.min.js" defer></script>
 <script src="../vendor/prismjs/prism-clike.min.js" defer></script>
 <script src="../vendor/prismjs/prism-javascript.min.js" defer></script>
-<script src="../dist/components/code-block.js" defer></script>
-<script src="../dist/components/command-fallback.js" defer></script>
-<script src="../dist/components/nav.js" defer></script>
-<script src="../dist/components/wa-close-on-scroll.js" defer></script>
-<script src="../dist/components/sparkline.js" defer></script>
+<script src="../dist/js/code-block.js" defer></script>
+<script src="../dist/js/command-fallback.js" defer></script>
+<script src="../dist/js/nav.js" defer></script>
+<script src="../dist/js/wa-close-on-scroll.js" defer></script>
+<script src="../dist/js/sparkline.js" defer></script>
 
 <!-- setIconPath() MUSS laufen, bevor <wa-icon> zum ersten Mal verbunden wird (siehe
      Kommentar in vendor/webawesome/dist-cdn/utilities/base-path.d.ts) - deshalb ein
@@ -79,7 +82,7 @@
      wurde - der Glitch betraf aber nachweislich AUCH das Glocken-<wa-popover> (keine
      Nähe zum Glass-Hintergrund), tatsächliche Ursache war Web Awesomes eigenes
      Repositionierungsverhalten kombiniert mit einem iOS-Safari-Rendering-Bug (siehe
-     SKILL.md Punkt 21), jetzt behoben über components/wa-close-on-scroll.js - Glass
+     SKILL.md Punkt 21), jetzt behoben über js/wa-close-on-scroll.js - Glass
      war nie die Ursache, kann also wieder bedenkenlos genutzt werden. -->
 <header class="ncss-topbar">
   <div class="ncss-glass landing-topbar-backdrop" aria-hidden="true"></div>
@@ -326,7 +329,7 @@
         </div>
       </article>
     </div>
-    <p class="ncss-text-sm ncss-text-muted">Die ersten drei Karten haben ihre <code>&lt;polyline&gt;</code>-Koordinaten von Hand gesetzt - die vierte übergibt nur <code>data-values</code>, <code>components/sparkline.js</code> (opt-in) rechnet Punkte/Fläche selbst aus UND legt daneben eine für Screenreader lesbare, visuell versteckte Tabelle mit den echten Werten an (das SVG selbst ist rein dekorativ, <code>aria-hidden</code>).</p>
+    <p class="ncss-text-sm ncss-text-muted">Die ersten drei Karten haben ihre <code>&lt;polyline&gt;</code>-Koordinaten von Hand gesetzt - die vierte übergibt nur <code>data-values</code>, <code>js/sparkline.js</code> (opt-in) rechnet Punkte/Fläche selbst aus UND legt daneben eine für Screenreader lesbare, visuell versteckte Tabelle mit den echten Werten an (das SVG selbst ist rein dekorativ, <code>aria-hidden</code>).</p>
   </section>
 
   <!-- Pricing-Beispiel: bewusst NICHT NativeCSS' eigene Preise (das Projekt ist frei/quelloffen) -

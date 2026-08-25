@@ -68,9 +68,9 @@
    Fehlerzustand) - siehe SKILL.md für das vollständige Diagnose-Protokoll.
 
    Für Firefox/Safari gibt es trotzdem einen Weg, nur eben nicht CSS-only: das optionale,
-   separat einzubindende components/hide-on-scroll-fallback.js - derselbe "kleine, opt-in
-   JS-Datei nur für Seiten, die es brauchen"-Ansatz wie components/wa-close-on-scroll.js
-   (dort: Web-Awesome-Popup-Positionierungsbug) und components/command-fallback.js (dort:
+   separat einzubindende js/hide-on-scroll-fallback.js - derselbe "kleine, opt-in
+   JS-Datei nur für Seiten, die es brauchen"-Ansatz wie js/wa-close-on-scroll.js
+   (dort: Web-Awesome-Popup-Positionierungsbug) und js/command-fallback.js (dort:
    Invoker-Commands-API). Das Skript prüft selbst per CSS.supports(), ob die native
    scroll-state-Technik bereits greift, und tut in dem Fall NICHTS (kein doppelt
    arbeitender Mechanismus, kein Konflikt) - deshalb reicht EIN gemeinsames translate/

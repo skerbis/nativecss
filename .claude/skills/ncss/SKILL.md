@@ -7,22 +7,29 @@ description: Arbeiten mit dem ncss Design System (public/ncss/) - natives CSS, k
 
 `public/ncss/` ist ein eigenständiges, natives CSS-Design-System - kein UIkit-Erbe, kein
 LESS/Sass, kein Build-Schritt. Web Awesome (Free) und Font Awesome (Free) sind selbst
-gehostet unter `public/ncss/vendor/` und über `webawesome-bridge.css` an ncss-Tokens
-gekoppelt. Das vollständige Handbuch (dogfooded, im Browser lesbar, mehrsprachig) liegt
-unter `public/ncss/docs/de/index.html` (Quelle: `docs-src/`, per `docs-src/build.mjs`
+gehostet unter `public/ncss/vendor/` und über `dist/integrations/webawesome-bridge.css`
+(komplett OPT-IN, siehe Fallstrick 66) an ncss-Tokens gekoppelt. Das vollständige
+Handbuch (dogfooded, im Browser lesbar, mehrsprachig) liegt unter
+`public/ncss/docs/de/index.html` (Quelle: `docs-src/`, per `docs-src/build.mjs`
 generiert - siehe Fallstrick 35) - dieses Skill-Dokument ist die kondensierte Fassung für
 schnelle Arbeit plus die Fallstricke, die man sich sonst mühsam erneut erarbeiten müsste.
 Die alte einseitige `demo/docs.html`-Variante wurde entfernt, seit die Doku-Website
-vollständig ist (siehe Fallstrick 35).
+vollständig ist (siehe Fallstrick 35). README.md ist bewusst KURZ (Konzept/Warum/Lizenz,
+kein Referenz-Dump mehr) - jede Detail-Referenz gehört in die Doku-Website, nicht ins
+README (siehe Fallstrick 66).
 
-**Repo-Struktur (seit dem Aufräumen des Hauptordners)**: die eigentliche Bibliothek
-(`ncss.css` + alles, was sie importiert - `tokens.css`/`colors.css`/`reset.css`/
-`base.css`/`webawesome-bridge.css`/`browser-fixes.css`, plus `helpers/`, `components/`,
-plus die opt-in `theme.css`/`page-transitions.css`) liegt unter `public/ncss/dist/`, NICHT
-mehr direkt unter `public/ncss/`. `demo/*.html` bindet sie entsprechend über
-`../dist/ncss.css` (statt vorher `../ncss.css`) ein. `vendor/` bleibt bewusst EIN eigener
-Ordner auf oberster Ebene (reiner Drittanbieter-Code, kein Teil von `dist/` - `ncss.css`
-funktioniert vollständig ohne Web Awesome). Die frühere `index.html` (Repo-Root,
+**Repo-Struktur (seit dem Aufräumen des Hauptordners, zuletzt erweitert um Fallstrick
+66)**: die eigentliche Bibliothek (`ncss.css` + alles, was sie importiert -
+`tokens.css`/`colors.css`/`reset.css`/`base.css`/`browser-fixes.css`, plus `helpers/`,
+`components/` NUR CSS, plus die opt-in `theme.css`/`page-transitions.css`) liegt unter
+`public/ncss/dist/`, NICHT mehr direkt unter `public/ncss/`. Komponenten-JS liegt
+GESAMMELT unter `dist/js/` (nicht mehr neben dem jeweiligen Komponenten-CSS in
+`components/`), Brücken zu externen Bibliotheken (`webawesome-bridge.css`,
+`fontawesome-font-display-fix.css`) unter `dist/integrations/` - beide NICHT Teil von
+`ncss.css`s Import-Manifest, siehe Fallstrick 66. `demo/*.html` bindet sie entsprechend
+über `../dist/ncss.css` (statt vorher `../ncss.css`) ein. `vendor/` bleibt bewusst EIN
+eigener Ordner auf oberster Ebene (reiner Drittanbieter-Code, kein Teil von `dist/` -
+`ncss.css` funktioniert vollständig ohne Web Awesome). Die frühere `index.html` (Repo-Root,
 Produkt-/Marketingseite) ist umgezogen nach `demo/product.html` - `demo/index.html`
 selbst ist eine ANDERE, schon vorher existierende Datei (die Demo-Übersicht/Kitchen-Sink,
 von 14+ anderen Demo-Seiten als Nav-Link referenziert - deshalb der andere Dateiname für
@@ -77,11 +84,16 @@ wa-native..wa-theme-overrides (Web Awesomes eigene Layer, niedrigste Priorität)
 tokens < reset < base < helpers < components < webawesome-bridge (höchste Priorität)
 ```
 
-Die `wa-*`-Layer werden HIER (nicht in Web Awesomes eigenen Dateien) deklariert, damit
-`webawesome-bridge.css` garantiert gegen Web Awesomes Default-Theme gewinnt - unabhängig
-von der `<link>`-Reihenfolge im HTML (Cascade-Layer-Order ist seitenweit global, nicht pro
-Stylesheet). Beim Hinzufügen einer neuen Web-Awesome-Ressource NICHT die Layer-Deklaration
-in `ncss.css` vergessen, falls sie neue `@layer`-Namen mitbringt.
+Die `wa-*`-Layer UND der Name `webawesome-bridge` werden HIER (in `ncss.css`, nicht in
+Web Awesomes eigenen Dateien oder in `dist/integrations/webawesome-bridge.css` selbst)
+deklariert, obwohl `ncss.css` seit Fallstrick 66 NICHTS mehr in den Layer
+`webawesome-bridge` importiert - die Registrierung allein reicht, damit ein Projekt, das
+`dist/integrations/webawesome-bridge.css` später selbst einbindet, garantiert an der
+richtigen Prioritätsposition landet und gegen Web Awesomes Default-Theme gewinnt,
+unabhängig von der eigenen `<link>`-Reihenfolge im HTML (Cascade-Layer-Order ist
+seitenweit global, nicht pro Stylesheet). Beim Hinzufügen einer neuen Web-Awesome-
+Ressource NICHT die Layer-Deklaration in `ncss.css` vergessen, falls sie neue
+`@layer`-Namen mitbringt.
 
 **Theme-Anpassung läuft über `theme.css`** (`dist/theme.css`, NACH `ncss.css` laden) - eine
 einzige, bewusst UNLAYERED Datei mit allen wichtigen Seed-Werten (Markenfarben,
@@ -969,7 +981,7 @@ umgestellt:
     `unsafe-inline` bräuchte sonst pro Seite gepflegte Nonces) - jede Seiten-JS-Logik
     lebt als externe Datei unter `demo/assets/js/`, referenziert per `<script src="...">`
     (synchron, wo Timing zählt - z.B. `docs-sidebar.js`, siehe Punkt 48 - sonst `defer`).
-    `dist/components/` bleibt reserviert für tatsächlich ausgelieferte, wiederverwendbare
+    `dist/js/` bleibt reserviert für tatsächlich ausgelieferte, wiederverwendbare
     ncss-Bibliotheksfeatures - Seiten-eigene Interaktionen (Theme-/Paletten-Umschalter,
     Live-Farbeditor, Landingpage-Formulare, Sidebar-Umschalter) gehören NICHT dorthin,
     auch wenn sie technisch genauso funktionieren würden. Ein Modul-Script (`type=
@@ -1471,6 +1483,62 @@ umgestellt:
     Ausrollen: `for f in $FILES` mit `FILES="datei1 datei2 ..."` (unquotierter String,
     keine Bash-Array) übergab den GESAMTEN String als EIN `$f`-Wert an `perl -pi` -
     `declare -a FILES=(...)` + `for f in "${FILES[@]}"` (echtes Bash-Array) beheben es.
+
+66. **`dist/` neu strukturiert - JS gesammelt, Web-Awesome-Bridge/Font-Awesome-Fix
+    echtes Opt-in, README auf das Wesentliche gekürzt** (User-Vorgabe: "sämtliches JS in
+    einen eigenen Ordner", "webawesome-bridge.css gehören irgendwie auch nicht im root
+    der dist... die Nutzung ist ja optional und muss in der eigenen css eingebunden
+    werden", "jedes eigene Projekt braucht eine boot.css... weil das Konzept auf
+    Cherry-Picking beruht"). Drei unabhängige Änderungen in einem Zug:
+    - Alle 13 Komponenten-JS-Dateien von `dist/components/*.js` nach `dist/js/*.js`
+      verschoben (`git mv`, History bleibt erhalten) - CSS und JS waren vorher in
+      `components/` vermischt, jetzt eine klare Trennung nach Dateityp.
+    - `webawesome-bridge.css` und `fontawesome-font-display-fix.css` nach
+      `dist/integrations/` verschoben UND `ncss.css`s bisherigen `@import
+      url("webawesome-bridge.css") layer(webawesome-bridge);` ENTFERNT - vorher wurde die
+      Bridge IMMER automatisch mitgeladen, auch für Projekte ohne jedes Web Awesome
+      (trotz eines schon vorher vorhandenen, aber irreführenden Kommentars "Nur
+      einbinden, wenn Web Awesome tatsächlich geladen wird", der die Realität nicht
+      korrekt beschrieb). Die `@layer`-NAMENS-Deklaration (`webawesome-bridge` als Layer-
+      Name in der globalen `@layer`-Zeile) bleibt trotzdem unverändert in `ncss.css`
+      stehen - eine Layer-Position ist seitenweit registriert, sobald der Name IRGENDWO
+      im `@layer`-Statement auftaucht, unabhängig davon, ob dieselbe Datei auch etwas
+      hineinimportiert. Ein Projekt, das `dist/integrations/webawesome-bridge.css` jetzt
+      selbst NACH `ncss.css` einbindet, landet dadurch automatisch an der exakt gleichen,
+      garantiert gewinnenden Prioritätsposition wie vorher - per echtem Playwright-Test
+      bestätigt (`--wa-color-brand-fill-loud` löst auf `demo/webawesome.html`/
+      `demo/landing.html` korrekt auf, ist auf `demo/product.html`, das kein Web Awesome
+      lädt, dagegen komplett LEER - echtes Opt-in, nicht nur kosmetisch verschoben).
+    - Betroffene Pfade in ALLEN HTML-Dateien aktualisiert (`grep`-Inventur VOR der
+      Änderung, um jede Fundstelle zu kennen statt blind zu ersetzen): echte
+      `<script src>`/`<link href>` in 15+ Demo-Seiten + `docs-src/template.html` +
+      `docs-src/content/{de,en}/layouts.html` (eigenes, seitenlokales Script außerhalb
+      des Templates), UND escapte Beispiel-Pfade in `<pre><code>`-Dokublöcken
+      (`docs-src/content/{de,en}/{ncss-container,layouts,widgets,forms,
+      webawesome-bridge}.html`, `demo/uikit-integration.html`) sowie Pfad-Erwähnungen in
+      CSS-Kommentaren selbst (`dist/base.css`, `dist/helpers/scroll.css`,
+      `dist/components/{accordion-split,code-block,combobox,scroll-stack}.css`,
+      `demo/landing.css`) - ALLE drei Kategorien gehören zur selben Inventur, eine reine
+      `<script src>`-Suche hätte die letzten beiden übersehen.
+    - Reiner Ordner-Verschub OHNE Pfad-Anpassung hätte einen zweiten, unabhängigen Bug
+      erzeugt: `dist/fontawesome-font-display-fix.css` selbst enthält `url("../vendor/
+      fontawesome/webfonts/...")` - ein Verzeichnis TIEFER (`dist/integrations/` statt
+      `dist/`) macht daraus einen zusätzlichen 404, nur per vollem
+      `full_regress24.mjs`-Lauf (nicht per bloßem Augenschein) gefunden, denn der
+      Copy-Button/Highlighting selbst funktionierte weiterhin sichtbar korrekt, nur die
+      Font-Icons fehlten. Fix: `../vendor/` → `../../vendor/` in genau dieser einen
+      Datei. Lehre: bei JEDEM Datei-Umzug in ein tieferes Verzeichnis IMMER auch die
+      Datei selbst auf eigene relative `url()`-Referenzen prüfen, nicht nur externe
+      Referenzen AUF die verschobene Datei.
+    - README.md von ~1165 auf ~70 Zeilen gekürzt (User-Vorgabe: nur Konzept/Warum/Lizenz,
+      keine Referenz-Dopplung zur Doku-Website) - die komplette Klassen-/Token-Referenz
+      lebt jetzt AUSSCHLIESSLICH in der Doku-Website (`docs-src/content/`), nicht mehr
+      zusätzlich im README. Lizenz (MIT, siehe `LICENSE`) + Links auf
+      github.com/skerbis + github.com/klxm ergänzt.
+    - `docs-src/content/{de,en}/architecture.html` (Dateistruktur-Baum + Cherry-Picking-
+      Abschnitt) entsprechend erweitert - der Cherry-Picking-Abschnitt existierte
+      inhaltlich schon vorher, wurde um den `integrations/`-Gedanken ergänzt statt neu
+      erfunden.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

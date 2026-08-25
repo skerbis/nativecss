@@ -13,10 +13,10 @@
 <script src="../vendor/prismjs/prism-css.min.js" defer></script>
 <script src="../vendor/prismjs/prism-clike.min.js" defer></script>
 <script src="../vendor/prismjs/prism-javascript.min.js" defer></script>
-<script src="../dist/components/code-block.js" defer></script>
-<script src="../dist/components/combobox.js" defer></script>
-<script src="../dist/components/command-fallback.js" defer></script>
-<script src="../dist/components/nav.js" defer></script>
+<script src="../dist/js/code-block.js" defer></script>
+<script src="../dist/js/combobox.js" defer></script>
+<script src="../dist/js/command-fallback.js" defer></script>
+<script src="../dist/js/nav.js" defer></script>
 <style>
   .demo-section-title {
     border-block-end: 1px solid var(--ncss-color-border);
@@ -110,7 +110,7 @@
             <option>Option B</option>
           </select>
         </span>
-        <span class="ncss-field-hint">Popup gestylt via <code>appearance: base-select</code> (Chrome/Edge) - auf Browsern ohne diese Unterstützung (Firefox) UND bewusst auch in Safari (bekannter Rendering-Bug, siehe <a href="../docs/de/components.html">Komponenten-Referenz</a>) übernimmt automatisch <code>components/combobox.js</code>.</span>
+        <span class="ncss-field-hint">Popup gestylt via <code>appearance: base-select</code> (Chrome/Edge) - auf Browsern ohne diese Unterstützung (Firefox) UND bewusst auch in Safari (bekannter Rendering-Bug, siehe <a href="../docs/de/components.html">Komponenten-Referenz</a>) übernimmt automatisch <code>js/combobox.js</code>.</span>
       </div>
       <div class="ncss-field">
         <label class="ncss-label" for="demoSelectRich">Lieblingsobst (reicher Options-Inhalt)</label>
@@ -248,7 +248,7 @@
         </datalist>
       </div>
     </div>
-    <p class="ncss-text-muted ncss-text-sm"><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code> - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel, da es generisch auf jedes <code>&lt;input&gt;</code> zutrifft. Die native Vorschlagsliste selbst ist reine Browser-UI - in keinem Browser per CSS stylebar. Mit dem opt-in <code>components/combobox.js</code> (hier eingebunden) wird sie durch eine echte, gestylte Dropdown-Liste ersetzt (Original-Markup unverändert, volle native Funktion bleibt ohne JS erhalten).</p>
+    <p class="ncss-text-muted ncss-text-sm"><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code> - editierbares Textfeld MIT Auswahlliste (anders als <code>&lt;select&gt;</code>, das nur Auswahl ohne freie Eingabe erlaubt). <code>.ncss-input</code> greift ohne Sonderregel, da es generisch auf jedes <code>&lt;input&gt;</code> zutrifft. Die native Vorschlagsliste selbst ist reine Browser-UI - in keinem Browser per CSS stylebar. Mit dem opt-in <code>js/combobox.js</code> (hier eingebunden) wird sie durch eine echte, gestylte Dropdown-Liste ersetzt (Original-Markup unverändert, volle native Funktion bleibt ohne JS erhalten).</p>
   </section>
 
   <section id="fieldset" class="ncss-stack">
