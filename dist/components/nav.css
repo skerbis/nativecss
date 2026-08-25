@@ -143,7 +143,16 @@
   margin-block-end: 0;
 }
 
-.ncss-nav-item > a,
+/* :not(.ncss-btn) auf jedem .ncss-nav-item > a-Selektor hier: ein Nav-Item ist oft ein
+   normaler Link, kann aber auch ein echter .ncss-btn sein (z.B. ein CTA-Button "Jetzt
+   anfragen" in der Topbar, häufiges Muster). Ohne die Ausnahme gewinnt diese Regel
+   (Layer "components") gegen .ncss-btn--primary/-secondary's eigene Farblogik (Layer
+   "helpers", verliert per Layer-Reihenfolge unabhängig von Spezifität) - der Button
+   bekam dadurch IMMER --ncss-color-text als Textfarbe statt seiner eigenen
+   Kontrastfarbe, unlesbar sowohl auf einer kräftigen Marken-Fläche (dunkler Text auf
+   dunklem Grund) als auch im Dark Mode (heller Text auf ohnehin schon hellem
+   Button-Grund) - per echtem User-Report an zwei Farbschemata gefunden. */
+.ncss-nav-item > a:not(.ncss-btn),
 .ncss-nav-dropdown > summary {
   display: block;
   padding: var(--ncss-space-2xs) var(--ncss-space-xs);
@@ -152,14 +161,14 @@
   text-decoration: none;
   cursor: pointer;
 }
-.ncss-nav-item > a:focus-visible,
+.ncss-nav-item > a:not(.ncss-btn):focus-visible,
 .ncss-nav-dropdown > summary:focus-visible {
   background-color: var(--ncss-color-bg-subtle);
 }
 /* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
    kein :hover". :focus-visible oben (Tastatur-Fokus) bleibt bewusst UNGATED. */
 @media (hover: hover) and (pointer: fine) {
-  .ncss-nav-item > a:hover,
+  .ncss-nav-item > a:not(.ncss-btn):hover,
   .ncss-nav-dropdown > summary:hover {
     background-color: var(--ncss-color-bg-subtle);
   }
@@ -172,7 +181,7 @@
    keine Interaktions-Rückmeldung, gilt unabhängig vom Zeigegerät genau wie
    :focus-visible oben. Eigene, kräftigere Fläche + Markenfarbe statt nur eines Rahmens -
    muss auch auf einen Blick in einer langen Sidebar-Liste auffallen. */
-.ncss-nav-item > a[aria-current="page"],
+.ncss-nav-item > a:not(.ncss-btn)[aria-current="page"],
 .ncss-nav-dropdown > summary[aria-current="page"] {
   background-color: var(--ncss-color-brand-100);
   color: var(--ncss-color-brand-on-soft);
