@@ -47,16 +47,34 @@
 ncss-nav-drilldown {
   display: contents;
 }
+/* Die vom JS injizierte Track-Hülle bekommt HIER (unconditional) denselben
+   display:contents-Passthrough wie <ncss-nav-drilldown> selbst - ohne diese Regel
+   fällt sie auf den UA-Default eines <div> zurück (display:block), sobald das JS sie
+   einfügt, UNABHÄNGIG von der Viewport-Breite. Auf Desktop (wo BEIDE .ncss-nav-panel
+   UND <ncss-nav-drilldown> bereits display:contents sind) wurde dieser unstylte
+   Wrapper-Div dadurch selbst zum echten Flex-Item von .ncss-nav statt der
+   .ncss-nav-list dahinter - sichtbar als kaputtes Desktop-Layout (User-Report: "Demo
+   ist auf Desktop weiterhin drill down", per echtem Live-Test bestätigt live auf
+   GitHub Pages reproduziert, in lokalen Tests zuvor übersehen, weil dort nie geprüft
+   wurde, WAS GENAU als Flex-Item bei Desktop-Breite tatsächlich in .ncss-nav landet,
+   nur OB der Toggle-Button/Panel-display korrekt umschalten - beides tat es, das
+   eigentliche Problem lag eine Ebene tiefer). Erst im Mobile-Block unten (wo der Track
+   tatsächlich als eigene, positionierte Box gebraucht wird) zurückgenommen. */
+.ncss-nav-drill-track {
+  display: contents;
+}
 @media (max-width: 63.99rem) {
   ncss-nav-drilldown:defined {
     display: block;
     height: 100%;
   }
-  /* Die vom JS injizierte Track-Hülle - gemeinsamer position:relative-Bezugsrahmen für
-     Wurzel-Liste UND jedes Untermenü, unabhängig von deren tatsächlicher
-     DOM-Verschachtelungstiefe (position:absolute bezieht sich auf den NÄCHSTEN
-     positionierten Vorfahren, nicht auf direkte Elternschaft). */
+  /* Gemeinsamer position:relative-Bezugsrahmen für Wurzel-Liste UND jedes Untermenü,
+     unabhängig von deren tatsächlicher DOM-Verschachtelungstiefe (position:absolute
+     bezieht sich auf den NÄCHSTEN positionierten Vorfahren, nicht auf direkte
+     Elternschaft) - hier erst zu einer echten Box, display:contents oben gilt nur
+     außerhalb dieser Media Query. */
   .ncss-nav-drill-track {
+    display: block;
     position: relative;
     height: 100%;
     overflow: clip;

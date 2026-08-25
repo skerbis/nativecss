@@ -32,15 +32,24 @@
  * Optionale Attribute auf <ncss-nav-priority>: `more-text="Mehr"` (Label),
  * `more-label="Weitere Punkte"` (aria-label für Screenreader).
  *
- * Läuft NUR oberhalb der nav-collapse-Schwelle (64rem, siehe nav.css) - unterhalb
- * (Off-Canvas-Ansicht) werden alle zuvor ins "Mehr"-Menü verschobenen Punkte
- * automatisch zurückgeholt; die vertikale Liste zeigt dort ohnehin alle Punkte
- * (Scrollen statt Kollabieren nötig).
+ * Funktioniert bei JEDER Breite, KEIN fester Breakpoint im Code (User-Vorgabe, siehe
+ * Doku-Kommentar oben) - anders als eine normale .ncss-nav übernimmt eine .ncss-nav,
+ * die <ncss-nav-priority> enthält, die volle Verantwortung für JEDE Bildschirmbreite
+ * selbst; der normale Toggle-Button/Off-Canvas-Mechanismus von nav.css (für "keine
+ * Priority-Nav vorhanden") wird dafür unconditional deaktiviert, nicht nur oberhalb
+ * einer Schwelle - kein Hamburger-Handoff, auch nicht auf sehr schmalen Bildschirmen
+ * (dort kollabiert es einfach bis auf 0 sichtbare Punkte + "Mehr", das JS behandelt
+ * diesen Fall bereits). ERSTE Fassung hatte hier einen `matchMedia`-Bypass unterhalb
+ * 1024px (auf die normale Off-Canvas-Ansicht umgeschaltet) - per User-Feedback wieder
+ * entfernt: die Doku versprach von Anfang an "funktioniert für jede Punktzahl, kein
+ * fester Breakpoint", der Bypass widersprach dem.
  *
  * OHNE JS (oder bevor customElements die Definition geladen hat): reiner
  * Passthrough (`display: contents`), keine Funktionseinbuße - .ncss-nav-list zeigt
  * alle Punkte normal per flex-wrap in mehreren Zeilen (unverändertes
- * Standard-.ncss-nav-Verhalten, siehe nav.css).
+ * Standard-.ncss-nav-Verhalten, siehe nav.css) - EINZIGE Ausnahme ohne JS: der
+ * Toggle-Button bleibt trotzdem sichtbar (unten), weil die :has()-Regel dafür an
+ * :defined hängt, nicht am bloßen Vorhandensein des (noch unverbundenen) Elements.
  */
 ncss-nav-priority {
   display: contents;
@@ -58,7 +67,27 @@ ncss-nav-priority:defined {
 /* Sobald das JS übernimmt, übernimmt es auch die volle Verantwortung für "was
    passiert bei Platzmangel" - natives flex-wrap würde sonst VOR der JS-Berechnung
    schon in eine zweite Zeile umbrechen (kurzes Doppelzeilen-Aufblitzen, bevor das
-   Skript den Punkt stattdessen ins Mehr-Menü verschiebt). */
+   Skript den Punkt stattdessen ins Mehr-Menü verschiebt). Die generelle Mobile-Regel
+   in nav.css (`@media max-width:63.99rem { .ncss-nav-list { flex-direction:column;
+   ...} }`) trifft JEDE .ncss-nav-list unconditional, auch diese - alle vier
+   betroffenen Eigenschaften hier selbst zurücksetzen (Spezifität allein reicht nicht,
+   entscheidet nur pro Eigenschaft, nicht über eine ganze Regel hinweg - dieselbe
+   Falle wie bei .ncss-nav--scroll, siehe dortiger Kommentar in nav.css). */
 ncss-nav-priority:defined > .ncss-nav-list {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  margin-block-start: 0;
   flex-wrap: nowrap;
+}
+/* Der normale Toggle-Button/Off-Canvas-Mechanismus (nav.css) ist für ".ncss-nav OHNE
+   eigene Priority-Lösung" gedacht - hier unconditional (nicht nur unterhalb einer
+   Schwelle) abgeschaltet, siehe Doku-Kommentar oben. :has() statt eines
+   JS-Toggle-Callbacks - rein deklarativ, reagiert automatisch auf :defined, ohne
+   dass das JS selbst etwas an .ncss-nav-toggle/-panel ändern muss. */
+.ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-toggle {
+  display: none;
+}
+.ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-panel {
+  display: contents;
 }

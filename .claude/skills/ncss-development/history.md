@@ -1975,6 +1975,25 @@ umgestellt:
       Tastatur-Navigation (Tab bis zum "Mehr"/"Zurück"-Punkt, Enter zum Öffnen),
       wiederholtem Rein-/Rausdrillen (testet die Umhängen-Logik auf Wiederholbarkeit),
       und der vollen 280-Kombinationen-Regressionssuite (0 Fehler) vor dem Commit.
+    - **NACHTRAG, per echtem User-Test AUF DER LIVE-SEITE gefunden** (lokale Tests
+      hatten es übersehen): Desktop-Ansicht des Drilldown-Demos blieb kaputt ("Demo
+      ist auf Desktop weiterhin drill down") - Ursache war NICHT der Toggle-Button
+      oder `.ncss-nav-panel` (beide schalteten schon korrekt um, genau das hatten die
+      lokalen Tests geprüft), sondern eine Ebene TIEFER: die vom JS injizierte
+      `.ncss-nav-drill-track`-Hülle bekam NUR innerhalb der Mobile-Media-Query eine
+      `display`-Regel - außerhalb (Desktop) fiel sie auf den UA-Default eines `<div>`
+      zurück (`display:block`), obwohl das JS sie UNABHÄNGIG von der Viewport-Breite
+      einfügt. Auf Desktop sind sowohl `.ncss-nav-panel` als auch `<ncss-nav-drilldown>`
+      selbst bereits `display:contents` (Passthrough) - der unstylte Track-Div dazwischen
+      wurde dadurch SELBST zum echten Flex-Item von `.ncss-nav`, statt dass die
+      `.ncss-nav-list` dahinter direkt teilnahm - sichtbar als kaputtes Desktop-Layout.
+      Lehre: bei einem Custom Element, das selbst `display:contents` per Default trägt
+      UND per JS einen NEUEN Wrapper injiziert, braucht dieser injizierte Wrapper
+      GENAU DIESELBE unconditional-contents-Regel wie das Custom Element selbst - sonst
+      bricht die Passthrough-Kette an dieser einen, leicht übersehenen Stelle, ohne dass
+      Toggle-Button oder Panel-Sichtbarkeit (die naheliegenden Prüfpunkte) etwas davon
+      zeigen. Fix + Re-Test (inkl. tatsächlicher Flex-Kinder-Liste von `.ncss-nav`, nicht
+      nur `display`-Werte einzeln geprüft) auf allen drei Engines bestätigt.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

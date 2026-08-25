@@ -10,16 +10,14 @@
  * verschieben - robuster gegen akkumulierte Fehlzustände über mehrere Resizes hinweg,
  * für eine normale Nav-Punktzahl (Dutzende, nicht Tausende) performant genug.
  *
- * Läuft NUR oberhalb der nav-collapse-Schwelle (siehe components/nav.css) - per
- * matchMedia gegen DIESELBE Bedingung wie nav.css' eigene Media Query, damit beide
- * Mechanismen exakt an derselben Breite umschalten. Unterhalb (Off-Canvas-Ansicht)
- * werden alle zuvor verschobenen Punkte zurückgeholt - die vertikale Liste zeigt dort
- * ohnehin alle Punkte per Scroll, kein Kollabieren nötig.
+ * Funktioniert bei JEDER Breite, KEIN fester Breakpoint (siehe components/nav-
+ * priority.css für die vollständige Begründung) - läuft NICHT mehr, wie in einer
+ * ersten Fassung, unterhalb der nav-collapse-Schwelle auf die normale Off-Canvas-
+ * Ansicht hinaus; die CSS-Datei deaktiviert den Toggle-Button/das Off-Canvas-Panel
+ * dafür unconditional selbst.
  */
 (function () {
   "use strict";
-
-  var MOBILE_QUERY = "(max-width: 63.99rem)";
 
   function collectItems(list, moreItem) {
     return Array.prototype.filter.call(list.children, function (el) {
@@ -40,11 +38,8 @@
         this._moreSummary = null;
         this._moreSubmenu = null;
 
-        this._mq = window.matchMedia(MOBILE_QUERY);
-        this._onChange = this._layout.bind(this);
-        this._mq.addEventListener("change", this._onChange);
-
-        this._ro = new ResizeObserver(this._onChange);
+        this._onResize = this._layout.bind(this);
+        this._ro = new ResizeObserver(this._onResize);
         this._ro.observe(this);
 
         this._layout();
@@ -53,9 +48,6 @@
       disconnectedCallback() {
         if (this._ro) {
           this._ro.disconnect();
-        }
-        if (this._mq) {
-          this._mq.removeEventListener("change", this._onChange);
         }
       }
 
@@ -114,10 +106,6 @@
             dropdown.classList.remove("ncss-nav-dropdown--nested");
           }
           this._list.appendChild(this._items[i]);
-        }
-
-        if (this._mq.matches) {
-          return;
         }
 
         var available = this.getBoundingClientRect().width;

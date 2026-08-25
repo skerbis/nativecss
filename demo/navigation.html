@@ -249,7 +249,7 @@
     ... (beliebig viele weitere)
   &lt;/ul&gt;
 &lt;/ncss-nav-priority&gt;</code></pre>
-    <p class="ncss-text-sm ncss-text-muted">Live - Regler ziehen, um den Rahmen schmaler/breiter zu machen (ein <code>&lt;iframe&gt;</code> spannt seinen EIGENEN Viewport auf, deshalb per Regler statt das ganze Browserfenster verkleinern zu müssen). Bei ca. 1024px Breite übernimmt die normale mobile Off-Canvas-Ansicht (☰-Button):</p>
+    <p class="ncss-text-sm ncss-text-muted">Live - Regler ziehen, um den Rahmen schmaler/breiter zu machen (ein <code>&lt;iframe&gt;</code> spannt seinen EIGENEN Viewport auf, deshalb per Regler statt das ganze Browserfenster verkleinern zu müssen). Läuft bei JEDER Breite ohne Umschalten auf einen ☰-Button - "Mehr" wächst weiter, je schmaler der Rahmen wird:</p>
     <div class="ncss-stack ncss-stack--tight">
       <label for="navPriorityWidthSlider" class="ncss-text-sm ncss-text-muted">Rahmen-Breite: <output id="navPriorityWidthOutput">1100px</output></label>
       <input type="range" id="navPriorityWidthSlider" min="320" max="1100" value="1100" step="10" style="width: min(100%, 40rem);">
@@ -309,7 +309,7 @@
 &lt;/ncss-nav-drilldown&gt;</code></pre>
     <p class="ncss-text-sm ncss-text-muted">Live - immer im mobilen Off-Canvas-Modus (eigener, schmaler <code>&lt;iframe&gt;</code>-Viewport): ☰ antippen, dann "Produkte" antippen.</p>
     <div style="overflow: hidden; width: min(100%, 24rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
-      <iframe src="assets/nav-drilldown-demo.html" style="display: block; width: 100%; height: 20rem; border: 0;" title="Slide-Drilldown, live testbar"></iframe>
+      <iframe src="assets/nav-drilldown-demo.html" style="display: block; width: 100%; height: 34rem; border: 0;" title="Slide-Drilldown, live testbar"></iframe>
     </div>
   </section>
 
