@@ -236,6 +236,21 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   geschützt, slotted Elemente bleiben Light-DOM. `document.querySelectorAll(...)` in
   einem Opt-in-Script durchquert KEINE Shadow-DOM-Grenzen - eigene rekursive
   `deepQueryAll()`-Hilfsfunktion nötig.
+- Ein Element, das JEMALS `display: contents` war, darf auf DEMSELBEN Element später
+  KEINE `allow-discrete`-Transition auf `display` selbst bekommen (z.B. über eine per
+  Media Query neu aktivierte `transition: display ... allow-discrete`) - der Wert bleibt
+  dauerhaft auf `contents` hängen (`getComputedStyle` meldet das unbegrenzt weiter,
+  obwohl Geschwister-Deklarationen in derselben Media Query normal greifen), sobald ein
+  ECHTER, schrittweiser Resize (mehrere `setViewportSize`-Aufrufe wie ein echtes Ziehen
+  am Fensterrand) die Media Query live kippt - ein reiner Neuladen bei derselben Breite
+  zeigt den Fehler NICHT, nur die Live-Transition. Reproduziert unabhängig von Timing/
+  Reihenfolge, in Chrome UND Safari. Betraf `.ncss-nav-panel` (`display:contents` auf
+  Desktop, `display:none/block` auf Mobil) kombiniert mit `.ncss-offcanvas`s
+  `allow-discrete`-Transition auf `display`/`overlay` - sichtbar als kurzes Aufblitzen/
+  dauerhaftes Hängenbleiben der Nav beim Wechsel Desktop→Mobil. Fix:
+  `display`/`overlay` aus der Transition-Liste ausschließen (nur `translate`/`opacity`
+  animieren) für jedes Element, das an anderer Stelle `display:contents` wird - Öffnen
+  bleibt animiert, Schließen verschwindet dafür sofort statt auszublenden.
 
 ## Container Queries & Responsive Layout
 

@@ -1845,6 +1845,64 @@ umgestellt:
       Schritte 1000-1030px, `flexDirection === 'row' && rowCount > 2` als Wrap-
       Kriterium) - alle 15 "OK", bevor committet wurde.
 
+74. **`.ncss-nav-panel` blieb beim Wechsel Desktop→Mobil dauerhaft im kaputten Zustand
+    hängen (Nav "blitzt kurz untereinander auf" und erholt sich nicht)** - User-Report,
+    ein Verbraucherprojekt (ojvdemo, eigener Bundesverband-Auftritt), reproduziert in
+    Chrome UND Safari. WICHTIG: kein neuer Bug durch eine Session-Änderung dieses Tages -
+    vorbestehend, nur erstmals sauber isoliert.
+    - Erste Hypothese (verworfen): `display: revert-layer` löse in WebKit nicht korrekt
+      über die Layer-Kette auf. Per `grep` bestätigt, dass keine andere Layer-Regel
+      `display` für `.ncss-nav-panel` setzt, `revert`/`revert-layer` also identisch
+      auflösen MÜSSTEN - trotzdem als erste, unverifizierte Sicherheitsmaßnahme zu
+      `revert` vereinfacht (weniger Kaskaden-Maschinerie). Per Playwright/WebKit NICHT
+      reproduzierbar (kein echtes Resize-Timing dort) - ehrlich als unverifiziert an den
+      Nutzer kommuniziert, bevor der eigentliche Fund kam.
+    - User meldete danach: Problem tritt AUCH in Chrome auf, nicht nur Safari - Hinweis,
+      dass es kein Safari-spezifischer Kaskaden-Bug ist, sondern etwas Grundsätzlicheres.
+      Root Cause erst per echtem, WIEDERHOLTEM (nicht einmaligem) Playwright-Test
+      gefunden: `getComputedStyle(...).display` NACH einer SEQUENZ mehrerer
+      `page.setViewportSize()`-Aufrufe (wie ein echtes Ziehen am Fensterrand) blieb auf
+      `"contents"` hängen, obwohl `window.matchMedia(...).matches` korrekt `true` zeigte
+      UND Geschwister-Deklarationen in DERSELBEN Media Query (`.ncss-nav-list`s
+      `flex-direction: column`, `.ncss-nav-toggle`s `display: flex`) ganz normal
+      griffen. Ein reiner Neuladen bei GLEICHER Endbreite (kein Resize-Verlauf) lieferte
+      dagegen das korrekte Ergebnis - der Fehler klebt an der LIVE-Transition durch die
+      Breakpoint-Schwelle, nicht am Endzustand.
+    - Per Reihe minimaler, isolierter Reproduktionen (eigene `<dialog>`-Testdateien,
+      NICHT das Live-Projekt) eingegrenzt: weder `display:contents` allein noch
+      `revert`/explizite `[open]`/`:not([open])`-Werte allein reproduzieren es. Der
+      Auslöser ist die KOMBINATION mit `.ncss-offcanvas`s (off-canvas.css)
+      `transition: ... display ... allow-discrete, overlay ... allow-discrete` - fürs
+      sanfte Ausblenden beim Schließen gedacht, auf `.ncss-nav-panel` aber unconditional
+      mitgeerbt, weil dieselbe Klasse beide Rollen trägt (Desktop: `display:contents`-
+      Passthrough, Mobil: echtes Off-Canvas-Dialog). SOBALD ein Element JEMALS
+      `display:contents` war, bleibt eine allow-discrete-Transition auf `display`
+      GENAU DIESES Elements beim späteren Wertwechsel dauerhaft hängen -
+      unabhängig davon, ob die Transition VOR oder GLEICHZEITIG mit dem
+      Display-Wechsel aktiviert wird (per gestaffeltem Breakpoint-Test widerlegt, dass
+      es ein Timing-/Reihenfolge-Problem ist).
+    - Fix: `display`/`overlay` aus der Transition-Liste NUR für `.ncss-nav-panel`
+      ausschließen (nav.css, mobile Media Query), `translate`/`opacity` bleiben
+      animiert. Öffnen bleibt ein sanftes Einschieben, Schließen verschwindet dafür
+      sofort statt auszublenden - kein rein-CSS-Weg gefunden, der beide Richtungen
+      animiert UND das Hängenbleiben vermeidet (mehrere Varianten durchprobiert:
+      `transition:none` auf Desktop + volle Wiederherstellung mobil, gestaffelte
+      Breakpoints für Transition-Aktivierung vs. Display-Wechsel - keine davon behob es,
+      nur das Entfernen von `display`/`overlay` aus der Liste half). Andere
+      `.ncss-offcanvas`-Verbraucher (nicht mit `display:contents` kombiniert, z.B. ein
+      eigenständiges Cart-/Filter-Panel) sind unverändert, behalten die volle
+      Fade-Animation.
+    - Per Playwright über alle 280 Demo-/Doku-Kombinationen UND gezielt mit einer
+      1px-Resize-Sequenz durch die Breakpoint-Schwelle (1030→1000px) verifiziert, dazu
+      Open/Close-Verhalten in Chromium/Firefox/WebKit einzeln bestätigt, bevor committet
+      wurde. Live auf GitHub Pages nach Deploy per identischer Resize-Sequenz
+      nachverifiziert (nicht nur der Demo-Server).
+    - Separater, NICHT behobener Fund beim Debuggen: `.ncss-nav-list` wrappt in ojvdemo
+      (Verbraucherprojekt) schon bei 1400px auf 2 Zeilen - eigene Breitenbudget-Frage
+      dieses Projekts (langer zweizeiliger Markenname + `.ncss-btn`-Pille als Nav-Item),
+      dieselbe Ursachen-Kategorie wie Fallstrick 73, aber nicht Teil des gemeldeten
+      Bugs - dem Nutzer separat mitgeteilt statt eigenmächtig umgebaut.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
