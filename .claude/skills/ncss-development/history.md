@@ -1,9 +1,14 @@
----
-name: ncss
-description: Arbeiten mit dem ncss Design System (public/ncss/) - natives CSS, kein Build-Schritt, Web-Awesome/Font-Awesome-Bridge. Beim Anlegen/Ändern von Tokens, Komponenten, Demo-Seiten oder der Web-Awesome-Bridge unter public/ncss/ verwenden.
----
+# ncss - Entstehungsverlauf (Archiv, kein aktiver Skill)
 
-# ncss Design System
+Dies ist die frühere, chronologische Langfassung von `SKILL.md` (Debugging-Geschichte,
+verworfene Ansätze, User-Zitate) - archiviert, weil ein Skill laut
+[Claude-Code-Doku](https://code.claude.com/docs/de/skills) unter 500 Zeilen bleiben und
+sagen soll WAS zu tun ist, nicht WIE/WARUM es entdeckt wurde. Die destillierten Regeln
+daraus stehen jetzt in `SKILL.md`. Diese Datei wird NICHT automatisch geladen (kein
+Skill-Frontmatter mehr) - nur bei Bedarf gezielt lesen, wenn der volle Kontext eines
+konkreten historischen Fundes gebraucht wird.
+
+# ncss Design System (Archiv-Fassung, siehe SKILL.md für die aktuelle)
 
 `public/ncss/` ist ein eigenständiges, natives CSS-Design-System - kein UIkit-Erbe, kein
 LESS/Sass, kein Build-Schritt. Web Awesome (Free) und Font Awesome (Free) sind selbst
