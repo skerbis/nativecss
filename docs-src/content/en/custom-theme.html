@@ -70,6 +70,20 @@ cp -r dist/ my-project/assets/ncss/</code></pre>
   <p>For multiple brands/domains on the same codebase: repeat the same setup in another file (e.g. <code>theme-project-b.css</code>) and load it instead of <code>theme.css</code> depending on the domain - details and the attribute-driven <code>[data-palette]</code> alternative under <a href="theming.html#mehrere-themes">Multiple themes in parallel</a>.</p>
 </section>
 
+<section class="ncss-stack" id="schritt-7">
+  <h2 class="demo-section-title">Step 7 - Tune individual components to your taste</h2>
+  <p><code>theme.css</code> changes seed values GLOBALLY - every card, every button, every badge follows automatically. Sometimes that's not enough: only the badges should be sharper-cornered, only the button shadow should feel bolder, without touching the rest of the page. That needs no copy of the ncss file and no <code>!important</code> - a single rule in your own UNLAYERED CSS file (the same trick as <code>theme.css</code> itself, see <a href="theming.html">Theming</a>) is enough, because unlayered CSS always wins against any layered rule per spec:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">/* mine.css - load after theme.css */
+.ncss-badge {
+  border-radius: var(--ncss-radius-sm); /* instead of the full pill shape */
+}
+.ncss-card {
+  box-shadow: var(--ncss-shadow-lg); /* bolder shadow than the default */
+}</code></pre>
+  <p>Which properties a component actually has and which modifier classes (<code>--primary</code>, <code>--horizontal</code>, ...) already exist is documented in the <a href="components.html">Component Reference</a> - check there BEFORE hard-overriding a property: often there's already an intended variant or token for it (e.g. <code>--ncss-radius-*</code> instead of a fixed <code>px</code> value), which then keeps following <code>theme.css</code> automatically instead of needing to be re-applied by hand at the next brand update.</p>
+  <p class="ncss-text-sm ncss-text-muted">Still not enough - a completely new, custom piece that doesn't exist in ncss at all: <a href="custom-components.html">Build Your Own Components</a>.</p>
+</section>
+
 <section class="ncss-stack" id="checkliste">
   <h2 class="demo-section-title">Checklist</h2>
   <ul>
@@ -77,6 +91,6 @@ cp -r dist/ my-project/assets/ncss/</code></pre>
     <li>Your own <code>theme.css</code> loaded after <code>ncss.css</code>, brand/secondary color set</li>
     <li>Dark mode checked (DevTools emulation or system toggle)</li>
     <li>Contrast checked with real Lighthouse</li>
-    <li>If needed: your own font, multiple themes</li>
+    <li>If needed: your own font, multiple themes, individual component tweaks</li>
   </ul>
 </section>

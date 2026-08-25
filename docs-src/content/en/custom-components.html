@@ -1,0 +1,113 @@
+<!--DESC: Build a completely new, custom component in the ncss style - naming, tokens, cascade layer, container queries.-->
+<section class="ncss-stack">
+  <h1>Build Your Own Components</h1>
+  <p class="ncss-text-lg ncss-text-muted">For a piece that doesn't exist in ncss at all yet (not just a variant of an existing one - for that, <a href="custom-theme.html#schritt-7">Tune individual components</a> is enough). Four decisions make a custom component feel built-in instead of bolted-on.</p>
+</section>
+
+<section class="ncss-stack" id="namenskonvention">
+  <h2 class="demo-section-title">1. Your own prefix, not ncss-</h2>
+  <p>The <code>ncss-</code> prefix is reserved for the library itself - a later ncss version could introduce a new class called <code>ncss-stat-card</code> at any time, colliding with an identically named class of your own. Use a short, project-specific prefix instead (e.g. <code>mp-</code> for "My Project"):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="mp-stat-card"&gt;...&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Modifier classes in the same style as ncss itself: <code>mp-stat-card--compact</code> (double dash for a variant, like <code>.ncss-btn--primary</code>) - not required, but recognizable to anyone already working with ncss.</p>
+</section>
+
+<section class="ncss-stack" id="tokens">
+  <h2 class="demo-section-title">2. Use ncss tokens instead of raw values</h2>
+  <p>Color, spacing, radius, font, shadow, motion - pull these from <code>var(--ncss-*)</code> instead of inventing your own values. A custom component then follows <code>theme.css</code> automatically (see <a href="custom-theme.html">Build Your Own Theme</a>), without ever needing to be touched again:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">.mp-stat-card {
+  padding: var(--ncss-space-md);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+  box-shadow: var(--ncss-shadow-sm);
+  color: var(--ncss-color-text);
+}</code></pre>
+  <p>Full token list (colors, spacing, radii, shadows, motion, breakpoint convention): <a href="tokens.html">Design Tokens</a>.</p>
+</section>
+
+<section class="ncss-stack" id="layer">
+  <h2 class="demo-section-title">3. Hook into the existing components layer</h2>
+  <p>ncss.css already declares the cascade layer order page-wide (<code>tokens &lt; reset &lt; base &lt; helpers &lt; components &lt; ...</code>, see <a href="architecture.html">Architecture</a>) - a custom component simply hooks into that ALREADY EXISTING layer name via <code>@layer components { ... }</code>, regardless of which file or <code>&lt;link&gt;</code> order that happens in (layer order is global, not per stylesheet):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">/* mp-stat-card.css - load after ncss.css */
+@layer components {
+  .mp-stat-card {
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-sm);
+  }
+}</code></pre>
+  <p>This makes the custom component behave EXACTLY like a built-in one: general ncss utilities from <code>helpers/</code> (<code>.ncss-border</code>, <code>.ncss-radius-*</code>, <code>.ncss-shadow-*</code>, see <a href="components.html">Component Reference</a>) combine with it freely, because <code>helpers</code> comes BEFORE <code>components</code> in the layer order - a later layer rule always wins over an earlier one, regardless of selector specificity. The reverse does NOT hold: a <code>helpers</code> utility cannot override a same-named property from <code>components</code>, even if the utility class appears after the component class in the markup (layer order beats source order).</p>
+  <div class="ncss-field ncss-callout ncss-radius-md ncss-border" style="padding: var(--ncss-space-md); background-color: var(--ncss-color-bg-subtle);">
+    <strong>Unlayered only for one-off overrides, not for whole components</strong>
+    <p class="ncss-text-sm">The <code>theme.css</code> trick (unlayered CSS, always wins) suits individual properties of an EXISTING component (see <a href="custom-theme.html#schritt-7">Step 7</a>). Declaring a brand-new, custom component unlayered works too, but prevents anyone from later combining/adjusting it with an ncss <code>helpers</code> utility - unlayered wins against EVERYTHING, including utilities that are specifically meant to override something.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="container-queries">
+  <h2 class="demo-section-title">4. Container queries instead of viewport breakpoints</h2>
+  <p>ncss components respond to the width of their OWN container, not the viewport - follow the same convention for a custom component so it behaves consistently wherever it lands, whether in a narrow sidebar or a wide main column:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">@layer components {
+  .mp-stat-card {
+    container-type: inline-size;
+    container-name: mp-stat-card;
+    padding: var(--ncss-space-md);
+  }
+
+  @container mp-stat-card (min-width: 20rem) {
+    .mp-stat-card {
+      display: flex;
+      align-items: center;
+      gap: var(--ncss-space-md);
+    }
+  }
+}</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Give each component its own <code>container-name</code> (not a generic name shared with some foreign container) - otherwise a nested foreign component could accidentally match your container query. Details: <a href="layout.html">Layout</a>.</p>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Full example</h2>
+  <p>All four points together - a small stat card (value + label) that switches from stacked to side-by-side above a given width:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="mp-stat-card"&gt;
+  &lt;span class="mp-stat-card-value"&gt;128&lt;/span&gt;
+  &lt;span class="mp-stat-card-label"&gt;New Orders&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">@layer components {
+  .mp-stat-card {
+    container-type: inline-size;
+    container-name: mp-stat-card;
+    display: grid;
+    gap: var(--ncss-space-3xs);
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-sm);
+  }
+  .mp-stat-card-value {
+    font-size: var(--ncss-font-size-xl);
+    font-weight: 700;
+    color: var(--ncss-color-brand-on-soft);
+  }
+  .mp-stat-card-label {
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+
+  @container mp-stat-card (min-width: 16rem) {
+    .mp-stat-card {
+      grid-template-columns: auto 1fr;
+      align-items: baseline;
+      gap: var(--ncss-space-sm);
+    }
+  }
+}</code></pre>
+  <p>Freely combinable with ncss utilities, because <code>components</code> comes after <code>helpers</code> in the layer order: <code>class="mp-stat-card ncss-border ncss-shadow-hover-md"</code> adds a border + hover shadow without touching a single line of your own file.</p>
+</section>
+
+<section class="ncss-stack" id="datei-organisation">
+  <h2 class="demo-section-title">File organization</h2>
+  <p>Organize custom component files the same way ncss does - one file per component, e.g. <code>assets/components/stat-card.css</code>, loaded AFTER <code>ncss.css</code>/<code>theme.css</code> in the HTML (a pure readability convention, not technically required, since layer order is already fixed page-wide by <code>ncss.css</code>'s <code>@layer</code> line, independent of <code>&lt;link&gt;</code> order):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
+&lt;link rel="stylesheet" href="theme.css"&gt;
+&lt;link rel="stylesheet" href="components/stat-card.css"&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">General enough for other projects? Pull requests welcome at <a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">github.com/skerbis/nativecss</a> - using the <code>ncss-</code> prefix instead of your own project prefix in that case.</p>
+</section>

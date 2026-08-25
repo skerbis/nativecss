@@ -1,0 +1,113 @@
+<!--DESC: Eine komplett neue, eigene Komponente im ncss-Stil bauen - Namenskonvention, Tokens, Cascade Layer, Container Queries.-->
+<section class="ncss-stack">
+  <h1>Eigene Komponenten erstellen</h1>
+  <p class="ncss-text-lg ncss-text-muted">Für ein Bauteil, das es in ncss noch gar nicht gibt (nicht nur eine Variante eines bestehenden - dafür reicht <a href="custom-theme.html#schritt-7">Einzelne Komponenten anpassen</a>). Vier Entscheidungen machen eine eigene Komponente, die sich anfühlt wie eingebaut, statt wie ein Fremdkörper.</p>
+</section>
+
+<section class="ncss-stack" id="namenskonvention">
+  <h2 class="demo-section-title">1. Eigenes Präfix statt ncss-</h2>
+  <p>Das Präfix <code>ncss-</code> ist für die Bibliothek selbst reserviert - eine spätere ncss-Version könnte jederzeit eine neue Klasse namens <code>ncss-stat-card</code> einführen, die dann mit einer eigenen, gleichnamigen Klasse kollidiert. Eigenes, kurzes Projekt-Kürzel verwenden (z.B. <code>mp-</code> für "Mein Projekt"):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="mp-stat-card"&gt;...&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Modifier-Klassen im selben Stil wie ncss selbst: <code>mp-stat-card--compact</code> (doppelter Bindestrich für eine Variante, wie <code>.ncss-btn--primary</code>), nicht zwingend, aber wiedererkennbar für alle, die schon mit ncss selbst arbeiten.</p>
+</section>
+
+<section class="ncss-stack" id="tokens">
+  <h2 class="demo-section-title">2. ncss-Tokens verwenden statt roher Werte</h2>
+  <p>Farbe, Abstand, Radius, Schrift, Schatten, Bewegung - über <code>var(--ncss-*)</code> beziehen statt eigene Werte zu erfinden. Eine eigene Komponente zieht dadurch automatisch mit <code>theme.css</code> um (siehe <a href="custom-theme.html">Eigenes Theme erstellen</a>), ohne dass sie selbst je wieder angefasst werden muss:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">.mp-stat-card {
+  padding: var(--ncss-space-md);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+  box-shadow: var(--ncss-shadow-sm);
+  color: var(--ncss-color-text);
+}</code></pre>
+  <p>Volle Token-Liste (Farben, Abstände, Radien, Schatten, Bewegung, Breakpoint-Konvention): <a href="tokens.html">Design Tokens</a>.</p>
+</section>
+
+<section class="ncss-stack" id="layer">
+  <h2 class="demo-section-title">3. In den bestehenden components-Layer einhängen</h2>
+  <p>ncss.css deklariert die Cascade-Layer-Reihenfolge bereits seitenweit (<code>tokens &lt; reset &lt; base &lt; helpers &lt; components &lt; ...</code>, siehe <a href="architecture.html">Architektur</a>) - eine eigene Komponente hängt sich per <code>@layer components { ... }</code> einfach in den SCHON VORHANDENEN Layer-Namen ein, egal in welcher Datei oder <code>&lt;link&gt;</code>-Reihenfolge das passiert (Layer-Order ist global, nicht pro Stylesheet):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">/* mp-stat-card.css - nach ncss.css laden */
+@layer components {
+  .mp-stat-card {
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-sm);
+  }
+}</code></pre>
+  <p>Dadurch verhält sich die eigene Komponente GENAU wie eine eingebaute: allgemeine ncss-Utilities aus <code>helpers/</code> (<code>.ncss-border</code>, <code>.ncss-radius-*</code>, <code>.ncss-shadow-*</code>, siehe <a href="components.html">Komponenten-Referenz</a>) lassen sich frei damit kombinieren, weil <code>helpers</code> VOR <code>components</code> in der Layer-Reihenfolge steht - eine spätere Layer-Regel gewinnt immer gegen eine frühere, unabhängig von Selektor-Spezifität. Genau umgekehrt gilt das NICHT: eine <code>helpers</code>-Utility kann eine gleichnamige Eigenschaft aus <code>components</code> nicht überschreiben, selbst wenn die Utility-Klasse im Markup nach der Komponenten-Klasse steht (Layer-Reihenfolge schlägt Quelltext-Reihenfolge).</p>
+  <div class="ncss-field ncss-callout ncss-radius-md ncss-border" style="padding: var(--ncss-space-md); background-color: var(--ncss-color-bg-subtle);">
+    <strong>Unlayered nur für punktuelle Overrides, nicht für ganze Komponenten</strong>
+    <p class="ncss-text-sm">Der <code>theme.css</code>-Trick (unlayered CSS, gewinnt immer) eignet sich für einzelne Eigenschaften einer BESTEHENDEN Komponente (siehe <a href="custom-theme.html#schritt-7">Schritt 7</a>). Eine komplett neue, eigene Komponente unlayered zu deklarieren funktioniert zwar auch, verhindert aber, dass jemand sie später mit einer ncss-<code>helpers</code>-Utility kombiniert/anpasst - unlayered gewinnt gegen ALLES, auch gegen Utilities, die eigentlich gezielt etwas überschreiben sollen.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="container-queries">
+  <h2 class="demo-section-title">4. Container Queries statt Viewport-Breakpoints</h2>
+  <p>ncss-Komponenten reagieren auf die Breite ihres EIGENEN Containers, nicht des Viewports - dieselbe Konvention für eine eigene Komponente übernehmen, damit sie sich überall gleich verhält, egal ob sie in einer schmalen Sidebar oder einer breiten Hauptspalte landet:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">@layer components {
+  .mp-stat-card {
+    container-type: inline-size;
+    container-name: mp-stat-card;
+    padding: var(--ncss-space-md);
+  }
+
+  @container mp-stat-card (min-width: 20rem) {
+    .mp-stat-card {
+      display: flex;
+      align-items: center;
+      gap: var(--ncss-space-md);
+    }
+  }
+}</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Eigener <code>container-name</code> pro Komponente (nicht der generische Name eines fremden Containers) - sonst könnte eine verschachtelte fremde Komponente versehentlich auf die eigene Container-Query anspringen. Details: <a href="layout.html">Layout</a>.</p>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Vollständiges Beispiel</h2>
+  <p>Alle vier Punkte zusammen - eine kleine Kennzahl-Karte (Wert + Label + Trend-Icon), die sich ab einer bestimmten Breite von gestapelt auf nebeneinander umschaltet:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="mp-stat-card"&gt;
+  &lt;span class="mp-stat-card-value"&gt;128&lt;/span&gt;
+  &lt;span class="mp-stat-card-label"&gt;Neue Bestellungen&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">@layer components {
+  .mp-stat-card {
+    container-type: inline-size;
+    container-name: mp-stat-card;
+    display: grid;
+    gap: var(--ncss-space-3xs);
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-sm);
+  }
+  .mp-stat-card-value {
+    font-size: var(--ncss-font-size-xl);
+    font-weight: 700;
+    color: var(--ncss-color-brand-on-soft);
+  }
+  .mp-stat-card-label {
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+
+  @container mp-stat-card (min-width: 16rem) {
+    .mp-stat-card {
+      grid-template-columns: auto 1fr;
+      align-items: baseline;
+      gap: var(--ncss-space-sm);
+    }
+  }
+}</code></pre>
+  <p>Mit ncss-Utilities frei kombinierbar, weil <code>components</code> nach <code>helpers</code> in der Layer-Reihenfolge steht: <code>class="mp-stat-card ncss-border ncss-shadow-hover-md"</code> ergänzt Rahmen + Hover-Schatten, ohne eine Zeile der eigenen Datei anzufassen.</p>
+</section>
+
+<section class="ncss-stack" id="datei-organisation">
+  <h2 class="demo-section-title">Datei-Organisation</h2>
+  <p>Eigene Komponenten-Dateien nach demselben Muster wie ncss selbst - eine Datei pro Komponente, z.B. <code>assets/components/stat-card.css</code>, im HTML NACH <code>ncss.css</code>/<code>theme.css</code> laden (reine Lesbarkeits-Konvention, technisch nicht zwingend, da Layer-Reihenfolge bereits durch <code>ncss.css</code>s <code>@layer</code>-Zeile seitenweit fixiert ist, unabhängig von <code>&lt;link&gt;</code>-Reihenfolge):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
+&lt;link rel="stylesheet" href="theme.css"&gt;
+&lt;link rel="stylesheet" href="components/stat-card.css"&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Allgemein genug für andere Projekte? Als Pull Request auf <a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">github.com/skerbis/nativecss</a> willkommen - dann mit <code>ncss-</code>-Präfix statt des eigenen Projekt-Kürzels.</p>
+</section>

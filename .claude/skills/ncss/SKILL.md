@@ -1540,6 +1540,45 @@ umgestellt:
       inhaltlich schon vorher, wurde um den `integrations/`-Gedanken ergänzt statt neu
       erfunden.
 
+67. **Zwei neue Doku-Seiten ergänzt: "Einzelne Komponenten anpassen" (Schritt 7 in
+    `custom-theme.html`) und "Eigene Komponenten erstellen" (`custom-components.html`,
+    neue Seite)** - User-Vorgabe direkt im Anschluss an Fallstrick 66: "wichtig für uns
+    auch wie ändere ich Eigenschaften der Komponenten nach meinem Geschmack. Wie erstelle
+    ich eigene Komponenten für mein Projekt." Zwei UNTERSCHIEDLICHE Fragen, zwei
+    UNTERSCHIEDLICHE Antworten, bewusst nicht vermischt:
+    - **Einzelne Eigenschaft einer BESTEHENDEN Komponente anpassen** (z.B. Badges
+      eckiger) → derselbe unlayered-Trick wie `theme.css` selbst, eine Regel in einer
+      eigenen unlayered Datei genügt, kein `!important`. Als Schritt 7 direkt an die
+      `custom-theme.html`-Tutorial-Reihe angehängt statt als eigene Seite, weil es
+      inhaltlich derselbe Mechanismus ist (nur der Erklärung nach dem letzten Schritt
+      hinzugefügt), nicht weil das Thema trivial wäre.
+    - **Komplett NEUE, eigene Komponente bauen** (gibt es in ncss noch gar nicht) →
+      eigene, neue Seite `custom-components.html`, vier Entscheidungen: (1) eigenes
+      Präfix statt `ncss-` (Kollisionsschutz mit künftigen ncss-Versionen), (2)
+      `var(--ncss-*)`-Tokens statt roher Werte (zieht automatisch mit `theme.css` um),
+      (3) `@layer components { ... }` in der eigenen Datei statt unlayered - hängt sich
+      dadurch in den SCHON VORHANDENEN, von `ncss.css` bereits deklarierten Layer-Namen
+      ein (Layer-Order ist seitenweit global, unabhängig von Datei/`<link>`-Reihenfolge),
+      verhält sich dadurch identisch zu einer eingebauten Komponente: `helpers/`-
+      Utilities (`.ncss-border`, `.ncss-radius-*`, ...) lassen sich frei kombinieren
+      (helfen steht VOR components in der Reihenfolge), aber eine `helpers`-Utility kann
+      umgekehrt eine `components`-Eigenschaft NICHT überschreiben (dieselbe Asymmetrie,
+      die schon in den alten "Bekannte Grenzen" des früheren, langen READMEs stand, jetzt
+      hier als aktive Anleitung statt nur als Fallstrick-Notiz). Unlayered explizit NUR
+      für Punkt-Overrides empfohlen (Schritt 7 oben), NICHT für eine ganze neue
+      Komponente - sonst kann niemand sie später per `helpers`-Utility kombinieren/
+      anpassen, unlayered gewinnt gegen ALLES. (4) `container-type`/`container-name`
+      + `@container` statt Viewport-Breakpoints, mit eigenem `container-name` pro
+      Komponente (nicht generisch), damit eine verschachtelte fremde Komponente nicht
+      versehentlich mitreagiert. Ein vollständiges, durchgehendes Beispiel (`.mp-stat-
+      card`) demonstriert alle vier Punkte zusammen statt nur isolierter Schnipsel.
+    - Beide Seiten queren sich gegenseitig UND von der bestehenden `components.html`-
+      Referenz aus verlinkt (dort ergänzt: "eine Komponente passt nicht ganz →..."),
+      damit jemand, der die Referenz durchsucht und nichts Passendes findet, sofort den
+      nächsten Schritt sieht, statt an einer Sackgasse zu landen. `nav.json`: neue Seite
+      direkt nach `components` in der "components"-Gruppe einsortiert (Referenz zuerst,
+      dann "wie baue ich selbst" direkt danach).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

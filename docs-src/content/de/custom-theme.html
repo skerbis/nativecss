@@ -70,6 +70,20 @@ cp -r dist/ mein-projekt/assets/ncss/</code></pre>
   <p>Für mehrere Marken/Domains auf derselben Codebasis: denselben Aufbau in einer weiteren Datei wiederholen (z.B. <code>theme-projekt-b.css</code>) und je nach Domain statt <code>theme.css</code> laden - Details und die attributgesteuerte <code>[data-palette]</code>-Alternative unter <a href="theming.html#mehrere-themes">Mehrere Themes parallel</a>.</p>
 </section>
 
+<section class="ncss-stack" id="schritt-7">
+  <h2 class="demo-section-title">Schritt 7 - Einzelne Komponenten nach eigenem Geschmack anpassen</h2>
+  <p><code>theme.css</code> ändert Seed-Werte GLOBAL - jede Karte, jeder Button, jedes Badge zieht automatisch mit. Manchmal reicht das nicht: nur die Badges sollen eckiger sein, nur der Button-Schatten soll kräftiger wirken, ohne den Rest der Seite anzufassen. Dafür braucht es keine Kopie der ncss-Datei und kein <code>!important</code> - eine einzige Regel in der eigenen, UNLAYERED CSS-Datei (derselbe Trick wie <code>theme.css</code> selbst, siehe <a href="theming.html">Theme anpassen</a>) reicht, weil unlayered CSS in der Spec immer gegen jede Layer-Regel gewinnt:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">/* eigene.css - nach theme.css laden */
+.ncss-badge {
+  border-radius: var(--ncss-radius-sm); /* statt der vollen Pille */
+}
+.ncss-card {
+  box-shadow: var(--ncss-shadow-lg); /* kräftigerer Schatten als der Default */
+}</code></pre>
+  <p>Welche Eigenschaften eine Komponente überhaupt hat und welche Modifier-Klassen (<code>--primary</code>, <code>--horizontal</code>, ...) es schon gibt, steht in der <a href="components.html">Komponenten-Referenz</a> - dort auch nachsehen, BEVOR eine Eigenschaft hart überschrieben wird: oft gibt es bereits eine vorgesehene Variante oder ein Token dafür (z.B. <code>--ncss-radius-*</code> statt eines festen <code>px</code>-Werts), das automatisch mit <code>theme.css</code> mitzieht, statt bei der nächsten Marken-Anpassung erneut von Hand nachgezogen werden zu müssen.</p>
+  <p class="ncss-text-sm ncss-text-muted">Reicht das noch nicht - ein komplett neues, eigenes Bauteil, das es in ncss gar nicht gibt: <a href="custom-components.html">Eigene Komponenten erstellen</a>.</p>
+</section>
+
 <section class="ncss-stack" id="checkliste">
   <h2 class="demo-section-title">Checkliste</h2>
   <ul>
@@ -77,6 +91,6 @@ cp -r dist/ mein-projekt/assets/ncss/</code></pre>
     <li>Eigene <code>theme.css</code> nach <code>ncss.css</code> geladen, Marke/Zweitfarbe gesetzt</li>
     <li>Dark Mode geprüft (DevTools-Emulation oder System umschalten)</li>
     <li>Kontrast mit echtem Lighthouse geprüft</li>
-    <li>Bei Bedarf: eigene Schriftart, mehrere Themes</li>
+    <li>Bei Bedarf: eigene Schriftart, mehrere Themes, einzelne Komponenten-Eigenschaften</li>
   </ul>
 </section>
