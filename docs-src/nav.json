@@ -7,7 +7,8 @@
       "pages": [
         { "slug": "index", "de": "Überblick", "en": "Overview" },
         { "slug": "architecture", "de": "Architektur", "en": "Architecture" },
-        { "slug": "theming", "de": "Theme anpassen", "en": "Theming" }
+        { "slug": "theming", "de": "Theme anpassen", "en": "Theming" },
+        { "slug": "custom-theme", "de": "Eigenes Theme erstellen", "en": "Build Your Own Theme" }
       ]
     },
     {

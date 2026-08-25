@@ -1,0 +1,82 @@
+<!--DESC: Step by step: bring ncss into your own project and build your own theme.css from scratch.-->
+<section class="ncss-stack">
+  <h1>Build Your Own Theme</h1>
+  <p class="ncss-text-lg ncss-text-muted">This page is the practical path from an empty project to a fully-branded page - step by step, with a ready-to-copy <code>theme.css</code>. The mechanism BEHIND it (cascade layers, seed values vs. derived scale) is explained separately under <a href="theming.html">Theming</a>.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-1">
+  <h2 class="demo-section-title">Step 1 - Copy the files into your project</h2>
+  <p>ncss needs no build step and no npm package - the whole <code>dist/</code> folder is already finished, ready-to-serve CSS/JS. Just copy it:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-bash"># Copy dist/ into your own project, e.g. to assets/ncss/
+cp -r dist/ my-project/assets/ncss/</code></pre>
+  <p>Two lines in the HTML head - <code>ncss.css</code> first, your own <code>theme.css</code> right after it (that file doesn't exist until step 2, but the base system already works fine without it):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="assets/ncss/ncss.css"&gt;
+&lt;link rel="stylesheet" href="assets/ncss/theme.css"&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Add Web Awesome/Font Awesome only if you actually need them - see <a href="webawesome-bridge.html">Web Awesome Bridge</a>; most projects are entirely fine with native CSS/HTML.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-2">
+  <h2 class="demo-section-title">Step 2 - Create your own theme.css</h2>
+  <p>The bundled <code>dist/theme.css</code> holds NativeCSS' own brand values (this site's bold blue) - as a starting point for your own project, use this block instead and replace the marked spots. Anything NOT overridden here simply stays at the ncss default:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">/* theme.css - your own brand values, load after ncss.css */
+:root, :host {
+  /* Primary brand (buttons, links, focus ring) - LIGHT, DARK */
+  --ncss-color-brand: light-dark(#4f46e5, #a5b4fc);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #1a1533);
+
+  /* Secondary color (accents, secondary buttons) */
+  --ncss-color-brand-2: light-dark(#0f766e, #5eead4);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #04211d);
+
+  /* Page background and text colors - defaults are neutral/white, only change if needed */
+  --ncss-color-bg: light-dark(#ffffff, #0f1115);
+  --ncss-color-surface: light-dark(#ffffff, #1a1d24);
+  --ncss-color-text: light-dark(#1a1a1a, #eef2f8);
+
+  /* Font - system-ui needs no load time, enter your own web font here */
+  --ncss-font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Corners - 0 for sharp, larger values for rounder */
+  --ncss-radius-sm: 0.25rem;
+  --ncss-radius-md: 0.5rem;
+  --ncss-radius-lg: 1rem;
+}</code></pre>
+  <p>That's already enough: buttons, badges, card borders, the focus ring and the entire color scale (100/300/700/900, <code>-on-soft</code>) pick up the new brand automatically - ncss computes the scale from exactly these few values via <code>color-mix()</code>, see <a href="theming.html#seed-werte">Only seed values, no derivations</a>. Every other value (status colors, shadows, motion, layout widths) is documented in full in <code>dist/theme.css</code> - only add what you actually need, don't copy everything preemptively.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-3">
+  <h2 class="demo-section-title">Step 3 - Test dark mode for free</h2>
+  <p>Every <code>light-dark(...)</code> value above automatically covers both color schemes - no second stylesheet, no hand-written <code>prefers-color-scheme</code> media query needed. To test it, just switch light/dark at the OS level or in browser DevTools (Chrome: DevTools → Rendering → "Emulate CSS media feature prefers-color-scheme") and check that both values in each <code>light-dark()</code> pair actually work together - enough contrast, no glaring surface in dark mode.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-4">
+  <h2 class="demo-section-title">Step 4 - Check contrast</h2>
+  <p>A new brand color automatically shifts buttons, links, badges and the whole Web Awesome bridge - worth a quick check with real Lighthouse (Chrome DevTools → Lighthouse → Accessibility), not just eyeballing it:</p>
+  <ul>
+    <li>White/light text on <code>--ncss-color-brand</code> (button labels) needs at least 4.5:1 contrast for body text, 3:1 for large text.</li>
+    <li>If contrast falls just short, darken/saturate the brand color itself rather than patching individual text colors afterward - see <a href="accessibility.html">Accessibility</a>.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="schritt-5">
+  <h2 class="demo-section-title">Step 5 - Switch fonts (optional)</h2>
+  <p>Load your own web font (e.g. self-hosted <code>@font-face</code> or a font provider), then just enter the name in <code>theme.css</code> - the entire fluid size scale (<code>clamp()</code>-based, see <a href="typography.html">Typography</a>) stays untouched:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">--ncss-font-family-base: "Inter", system-ui, sans-serif;
+--ncss-font-family-heading: "Fraunces", serif;</code></pre>
+</section>
+
+<section class="ncss-stack" id="schritt-6">
+  <h2 class="demo-section-title">Step 6 - Multiple themes (optional)</h2>
+  <p>For multiple brands/domains on the same codebase: repeat the same setup in another file (e.g. <code>theme-project-b.css</code>) and load it instead of <code>theme.css</code> depending on the domain - details and the attribute-driven <code>[data-palette]</code> alternative under <a href="theming.html#mehrere-themes">Multiple themes in parallel</a>.</p>
+</section>
+
+<section class="ncss-stack" id="checkliste">
+  <h2 class="demo-section-title">Checklist</h2>
+  <ul>
+    <li><code>dist/</code> copied into the project, <code>ncss.css</code> included</li>
+    <li>Your own <code>theme.css</code> loaded after <code>ncss.css</code>, brand/secondary color set</li>
+    <li>Dark mode checked (DevTools emulation or system toggle)</li>
+    <li>Contrast checked with real Lighthouse</li>
+    <li>If needed: your own font, multiple themes</li>
+  </ul>
+</section>

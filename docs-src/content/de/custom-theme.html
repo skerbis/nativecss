@@ -1,0 +1,82 @@
+<!--DESC: Schritt für Schritt: ncss in ein eigenes Projekt einbinden und eine eigene theme.css von Grund auf aufbauen.-->
+<section class="ncss-stack">
+  <h1>Eigenes Theme erstellen</h1>
+  <p class="ncss-text-lg ncss-text-muted">Diese Seite ist der praktische Weg von einem leeren Projekt zu einer fertig eingefärbten Seite - Schritt für Schritt, mit einer fertigen <code>theme.css</code> zum Kopieren. Die technische Erklärung DAHINTER (Cascade Layers, Seed-Werte vs. abgeleitete Skala) steht separat unter <a href="theming.html">Theme anpassen</a>.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-1">
+  <h2 class="demo-section-title">Schritt 1 - Dateien ins eigene Projekt kopieren</h2>
+  <p>ncss braucht keinen Build-Schritt und kein npm-Paket - der ganze <code>dist/</code>-Ordner ist bereits fertig ausgeliefertes CSS/JS. Einfach kopieren:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-bash"># dist/ komplett ins eigene Projekt kopieren, z.B. nach assets/ncss/
+cp -r dist/ mein-projekt/assets/ncss/</code></pre>
+  <p>Im HTML-Head zwei Zeilen - <code>ncss.css</code> zuerst, die eigene <code>theme.css</code> direkt danach (die gibt es erst nach Schritt 2, das Grundgerüst funktioniert aber schon jetzt ohne sie):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="assets/ncss/ncss.css"&gt;
+&lt;link rel="stylesheet" href="assets/ncss/theme.css"&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Web Awesome/Font Awesome nur bei Bedarf ergänzen - siehe <a href="webawesome-bridge.html">Web Awesome Bridge</a>, für die meisten Projekte reicht natives CSS/HTML völlig aus.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-2">
+  <h2 class="demo-section-title">Schritt 2 - Die eigene theme.css anlegen</h2>
+  <p>Die mitgelieferte <code>dist/theme.css</code> enthält NativeCSS' eigene Markenwerte (das kräftige Blau dieser Seite) - als Startpunkt für ein eigenes Projekt lieber diesen Block nehmen und die markierten Stellen ersetzen. Alles, was hier NICHT überschrieben wird, bleibt beim ncss-Standard:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">/* theme.css - eigene Markenwerte, nach ncss.css laden */
+:root, :host {
+  /* Hauptmarke (Buttons, Links, Fokus-Ring) - HELL, DUNKEL */
+  --ncss-color-brand: light-dark(#4f46e5, #a5b4fc);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #1a1533);
+
+  /* Zweitfarbe (Akzente, sekundäre Buttons) */
+  --ncss-color-brand-2: light-dark(#0f766e, #5eead4);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #04211d);
+
+  /* Seitenhintergrund und Textfarben - Defaults sind neutral/weiß, hier nur bei Bedarf ändern */
+  --ncss-color-bg: light-dark(#ffffff, #0f1115);
+  --ncss-color-surface: light-dark(#ffffff, #1a1d24);
+  --ncss-color-text: light-dark(#1a1a1a, #eef2f8);
+
+  /* Schriftart - system-ui braucht keine Ladezeit, eigene Web-Font hier eintragen */
+  --ncss-font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Ecken - 0 für eckig, größere Werte für runder */
+  --ncss-radius-sm: 0.25rem;
+  --ncss-radius-md: 0.5rem;
+  --ncss-radius-lg: 1rem;
+}</code></pre>
+  <p>Das reicht bereits: Buttons, Badges, Karten-Rahmen, Fokus-Ring und die komplette Farbskala (100/300/700/900, <code>-on-soft</code>) übernehmen die neue Marke automatisch - ncss berechnet die Skala aus genau diesen wenigen Werten per <code>color-mix()</code>, siehe <a href="theming.html#seed-werte">Nur Seed-Werte, keine Ableitungen</a>. Alle weiteren Werte (Statusfarben, Schatten, Bewegung, Layout-Breiten) stehen in der vollständigen Referenz in <code>dist/theme.css</code> - nur bei konkretem Bedarf ergänzen, nicht vorsorglich alles kopieren.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-3">
+  <h2 class="demo-section-title">Schritt 3 - Dark Mode gratis testen</h2>
+  <p>Jeder <code>light-dark(...)</code>-Wert oben deckt automatisch beide Farbschemata ab - kein zweites Stylesheet, kein <code>prefers-color-scheme</code>-Media-Query von Hand nötig. Zum Testen einfach im Betriebssystem oder in den Browser-DevTools zwischen Hell/Dunkel umschalten (Chrome: DevTools → Rendering → "Emulate CSS media feature prefers-color-scheme") und prüfen, ob beide Werte in jedem <code>light-dark()</code>-Paar zueinander passen - hell genug Kontrast, keine grelle Fläche im Dark Mode.</p>
+</section>
+
+<section class="ncss-stack" id="schritt-4">
+  <h2 class="demo-section-title">Schritt 4 - Kontrast prüfen</h2>
+  <p>Eine neue Markenfarbe verschiebt automatisch Buttons, Links, Badges und die komplette Web-Awesome-Bridge - lohnt sich, das kurz mit echtem Lighthouse zu prüfen (Chrome DevTools → Lighthouse → Accessibility), nicht nur mit bloßem Auge:</p>
+  <ul>
+    <li>Weißer/heller Text auf <code>--ncss-color-brand</code> (Button-Beschriftung) braucht mindestens 4.5:1 Kontrast für Fließtext, 3:1 für große Schrift.</li>
+    <li>Passt der Kontrast knapp nicht, eher die Marke selbst dunkler/kräftiger sättigen als nachträglich einzelne Textfarben zu patchen - siehe <a href="accessibility.html">Barrierefreiheit</a>.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="schritt-5">
+  <h2 class="demo-section-title">Schritt 5 - Schriften wechseln (optional)</h2>
+  <p>Eigene Web-Font einbinden (z.B. selbst gehostetes <code>@font-face</code> oder ein Font-Provider), dann in <code>theme.css</code> nur den Namen eintragen - die komplette fluide Größen-Skala (<code>clamp()</code>-basiert, siehe <a href="typography.html">Typografie</a>) bleibt unverändert bestehen:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">--ncss-font-family-base: "Inter", system-ui, sans-serif;
+--ncss-font-family-heading: "Fraunces", serif;</code></pre>
+</section>
+
+<section class="ncss-stack" id="schritt-6">
+  <h2 class="demo-section-title">Schritt 6 - Mehrere Themes (optional)</h2>
+  <p>Für mehrere Marken/Domains auf derselben Codebasis: denselben Aufbau in einer weiteren Datei wiederholen (z.B. <code>theme-projekt-b.css</code>) und je nach Domain statt <code>theme.css</code> laden - Details und die attributgesteuerte <code>[data-palette]</code>-Alternative unter <a href="theming.html#mehrere-themes">Mehrere Themes parallel</a>.</p>
+</section>
+
+<section class="ncss-stack" id="checkliste">
+  <h2 class="demo-section-title">Checkliste</h2>
+  <ul>
+    <li><code>dist/</code> ins Projekt kopiert, <code>ncss.css</code> eingebunden</li>
+    <li>Eigene <code>theme.css</code> nach <code>ncss.css</code> geladen, Marke/Zweitfarbe gesetzt</li>
+    <li>Dark Mode geprüft (DevTools-Emulation oder System umschalten)</li>
+    <li>Kontrast mit echtem Lighthouse geprüft</li>
+    <li>Bei Bedarf: eigene Schriftart, mehrere Themes</li>
+  </ul>
+</section>
