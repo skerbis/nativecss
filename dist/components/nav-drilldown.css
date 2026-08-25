@@ -110,11 +110,37 @@ ncss-nav-drilldown {
     translate: 0 0;
   }
   /* Verschachtelte Optik zurücksetzen - im normalen Inline-Dropdown ist ein Untermenü
-     eingerückt/randlos, hier ist es sein EIGENER Vollbild-Screen, braucht wieder die
-     "Erstebene"-Optik. */
+     eingerückt/randlos, hier ist es sein EIGENER Vollbild-Screen. KEIN eigenes Padding
+     hier (User-Report: "wenn ich zu Unterpunkten wechsle sitzt die neue Ansicht
+     tiefer") - .ncss-offcanvas (off-canvas.css) setzt bereits `padding:
+     var(--ncss-space-md)` auf das GESAMTE Panel, gilt für Wurzel-Liste UND
+     Untermenü-Screen gleichermaßen (beide sitzen im selben gepolsterten Track). Ein
+     zusätzliches eigenes Padding hier verschob den Untermenü-Inhalt um genau diesen
+     Betrag tiefer als die Wurzel-Liste, die keins hatte. */
   .ncss-nav-drill-track .ncss-nav-submenu {
     margin: 0;
-    padding: var(--ncss-space-sm);
+    padding: 0;
+  }
+  /* Rechtspfeil statt Auf/Zu-Chevron für JEDEN Drill-Trigger auf Wurzel-Ebene (User-
+     Feedback: "du nutzt noch Pfeile nach oben/unten, beim Slide wäre eher rechts/
+     links" - berechtigt: dieser Trigger klappt nicht mehr inline auf, sondern schiebt
+     einen GANZEN Screen nach links weg, ein Rechtspfeil kommuniziert "führt weiter"
+     passender als das sonst übliche Auf/Zu-Chevron). Selektor bewusst nur auf DIREKTE
+     Kinder der Wurzel-Liste beschränkt - ein Dropdown der dritten Ebene (INNERHALB
+     eines bereits gezeigten Untermenüs) klappt weiterhin normal inline auf (siehe
+     Datei-Kopfkommentar, v1-Grenze) und behält dafür bewusst den normalen Auf/Zu-
+     Chevron. Gleiche Randseiten wie der Standard-Chevron (nav.css), nur die Drehung
+     invertiert (+45deg → -45deg dreht denselben Eckenwinkel von "zeigt runter" auf
+     "zeigt rechts") - und bewusst OHNE die [open]-Gegenregel: dieser Pfeil bleibt
+     IMMER rechts zeigend, unabhängig vom (für die Optik hier irrelevanten)
+     nativen open-Zustand des <details>. */
+  .ncss-nav-drill-track > .ncss-nav-list > .ncss-nav-item > .ncss-nav-dropdown > summary::after {
+    rotate: -45deg;
+    translate: 0 0;
+  }
+  .ncss-nav-drill-track > .ncss-nav-list > .ncss-nav-item > .ncss-nav-dropdown[open] > summary::after {
+    rotate: -45deg;
+    translate: 0 0;
   }
   /* Vom JS einmalig eingefügter "Zurück"-Punkt, oben in jedem Untermenü-Screen. Eigener
      Chevron nach LINKS (gespiegelt zum normalen Auf/Zu-Chevron) statt eines neuen

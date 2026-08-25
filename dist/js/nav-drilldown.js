@@ -112,9 +112,21 @@
            auf, siehe Datei-Kommentar). */
         this._originalParent = submenu.parentNode;
         this._originalNextSibling = submenu.nextSibling;
+        details.open = true;
         this._track.appendChild(submenu);
 
-        details.open = true;
+        /* Erzwungenes Reflow (Lesen von offsetWidth) VOR dem eigentlichen
+           Zustandswechsel - ohne das verschmilzt der Browser das Umhängen (Zeile
+           oben) und den Klassenwechsel (unten) oft zu EINEM einzigen Styling-Durchlauf,
+           dann gibt es keinen beobachtbaren "Vorher"-Zustand, von dem aus animiert
+           werden könnte - die Transition übersprang sich selbst (User-Report: "aktuell
+           slided nichts"). Das erzwungene Lesen zwingt den Browser, den
+           Zwischenzustand (frisch umgehängt, noch bei der Default-Position
+           translate:100%) tatsächlich zu berechnen/committen, BEVOR unten die
+           Ziel-Klasse (translate:0) gesetzt wird - erst DAS macht die Transition
+           beobachtbar. */
+        void submenu.offsetWidth;
+
         submenu.classList.add("ncss-nav-drill-active");
         this._track.setAttribute("data-drilled-in", "");
         this._list.setAttribute("inert", "");
@@ -133,18 +145,53 @@
         }
         var details = this._activeDetails;
         var submenu = this._activeSubmenu;
+        var originalParent = this._originalParent;
+        var originalNextSibling = this._originalNextSibling;
+
         submenu.classList.remove("ncss-nav-drill-active");
         this._track.removeAttribute("data-drilled-in");
         this._list.removeAttribute("inert");
         this._activeSubmenu = null;
         this._activeDetails = null;
-        if (this._originalParent) {
-          this._originalParent.insertBefore(submenu, this._originalNextSibling);
-          this._originalParent = null;
-          this._originalNextSibling = null;
+        this._originalParent = null;
+        this._originalNextSibling = null;
+
+        /* Umhängen + details.open=false ERST NACH der Slide-Zurück-Transition, nicht
+           synchron mit der Klassen-Entfernung oben: <details open=false> versteckt
+           nicht-summary-Kinder NATIV sofort (UA-Stylesheet, unabhängig von eigenem
+           CSS) - würde das Untermenü mitten in der eigentlich noch laufenden
+           Transition ausblenden, dieselbe Ursache wie beim Reflow-Fix in _drillInto
+           (kein beobachtbarer Übergang, Sprung statt Gleiten). transitionend
+           abwarten, PLUS großzügiger Timeout-Fallback (falls z.B. eine weitere
+           schnelle Interaktion die Transition unterbricht und transitionend nie
+           feuert) - `done`-Flag verhindert Doppelausführung, falls beide feuern. */
+        var done = false;
+        function finish() {
+          if (done) {
+            return;
+          }
+          done = true;
+          if (originalParent) {
+            originalParent.insertBefore(submenu, originalNextSibling);
+          }
+          if (details) {
+            details.open = false;
+          }
         }
+        if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+          submenu.addEventListener("transitionend", function handler(event) {
+            if (event.target !== submenu || event.propertyName !== "translate") {
+              return;
+            }
+            submenu.removeEventListener("transitionend", handler);
+            finish();
+          });
+          setTimeout(finish, 500);
+        } else {
+          finish();
+        }
+
         if (details) {
-          details.open = false;
           var summary = details.querySelector(":scope > summary");
           if (summary) {
             summary.focus();

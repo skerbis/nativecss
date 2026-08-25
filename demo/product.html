@@ -6,6 +6,21 @@
 <title>NativeCSS - Natives CSS Design System ohne Build-Schritt</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <meta name="description" content="NativeCSS: ein CSS-Design-System auf Cascade Layers, Container Queries, light-dark() und nativem HTML - kein Sass, kein Bundler, kein Build-Schritt.">
+<!-- Preload statt nur Prefetch: fontawesome-font-display-fix.css nutzt bewusst
+     font-display:optional (siehe dortiger Kommentar) - kürzestes, spec-mindestes
+     Ladefenster, danach gibt der Browser bei einem NOCH NICHT gecachten Font (jeder
+     erste Seitenaufruf) endgültig auf und zeigt für diesen Aufruf GAR KEIN Icon mehr,
+     auch nicht verzögert (User-Report: GitHub-Icon fehlt initial komplett). Preload
+     verschafft dem Font einen Vorsprung parallel zum CSS/Icon-Font-Stylesheet selbst,
+     statt erst NACH dessen Parsing entdeckt zu werden - macht "Font trifft innerhalb
+     des kurzen optional-Fensters ein" beim ersten, ungecachten Besuch deutlich
+     wahrscheinlicher, ohne die bewusste optional-Entscheidung selbst zurückzunehmen.
+     crossorigin PFLICHT bei einem Font-Preload (auch same-origin) - Fonts werden
+     grundsätzlich im "anonymous"-CORS-Modus geladen, ohne das Attribut matcht der
+     Preload die tatsächliche Anfrage nicht und verpufft wirkungslos. Nur die auf
+     DIESER Seite tatsächlich genutzten Schnitte (fa-brands/-solid, kein fa-regular). -->
+<link rel="preload" as="font" type="font/woff2" href="../vendor/fontawesome/webfonts/fa-brands-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../vendor/fontawesome/webfonts/fa-solid-900.woff2" crossorigin>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/theme.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">

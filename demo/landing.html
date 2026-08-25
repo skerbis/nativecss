@@ -9,6 +9,15 @@
 <!-- Font Awesome Free, selbst gehostet unter vendor/fontawesome (kein CDN/Kit-Account
      nötig) - liefert sowohl die <i class="fa-solid ..."> Webfont-Icons hier direkt im
      Markup als auch die SVGs, auf die unten <wa-icon> zeigt (setIconPath). -->
+<!-- Preload statt nur Prefetch: fontawesome-font-display-fix.css nutzt bewusst
+     font-display:optional - kürzestes Ladefenster, danach gibt der Browser bei einem
+     NOCH NICHT gecachten Font (erster Seitenaufruf) endgültig auf und zeigt gar kein
+     Icon mehr für diesen Aufruf (User-Report auf product.html, gleiche Ursache/Fix
+     hier: siehe dortiger Kommentar). Nur die auf DIESER Seite tatsächlich genutzten
+     Schnitte (fa-regular/-solid, kein fa-brands). crossorigin PFLICHT bei einem
+     Font-Preload, auch same-origin (Fonts laden immer im "anonymous"-CORS-Modus). -->
+<link rel="preload" as="font" type="font/woff2" href="../vendor/fontawesome/webfonts/fa-regular-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../vendor/fontawesome/webfonts/fa-solid-900.woff2" crossorigin>
 <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
 <link rel="stylesheet" href="../dist/integrations/fontawesome-font-display-fix.css">
 
