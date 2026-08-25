@@ -180,12 +180,23 @@
    Seiten-lokales CSS mehr nötig. Bewusst NICHT hover-gated: ein Zustands-Indikator ist
    keine Interaktions-Rückmeldung, gilt unabhängig vom Zeigegerät genau wie
    :focus-visible oben. Eigene, kräftigere Fläche + Markenfarbe statt nur eines Rahmens -
-   muss auch auf einen Blick in einer langen Sidebar-Liste auffallen. */
+   muss auch auf einen Blick in einer langen Sidebar-Liste auffallen.
+   KEIN echtes font-weight: die meisten Fonts sind nicht monospaced-per-Gewicht - ein
+   fetterer Schnitt ist BREITER als der reguläre, wodurch der Nav-Punkt beim Aktivieren
+   sichtbar aufspringt und alle nachfolgenden Punkte mitverschiebt (User-Report:
+   "Navigationspunkte zappeln... wird breiter"). text-shadow simuliert stattdessen ein
+   dezentes Fett (4 x 0.3px-Versatz ohne Weichzeichnung) - text-shadow nimmt NIE am
+   Boxmodell/Layout teil, die Spaltenbreite bleibt dadurch garantiert unverändert,
+   unabhängig von Font/Zeichensatz. */
 .ncss-nav-item > a:not(.ncss-btn)[aria-current="page"],
 .ncss-nav-dropdown > summary[aria-current="page"] {
   background-color: var(--ncss-color-brand-100);
   color: var(--ncss-color-brand-on-soft);
-  font-weight: 600;
+  text-shadow:
+    0.3px 0 currentColor,
+    -0.3px 0 currentColor,
+    0 0.3px currentColor,
+    0 -0.3px currentColor;
 }
 
 /* Native Summary-Markierung (Dreieck) entfernen, eigenen Chevron per ::after nachbauen -
@@ -238,11 +249,16 @@
   }
 }
 /* Gleicher Zustand wie .ncss-nav-item > a[aria-current="page"] oben, hier für Einträge
-   INNERHALB eines Untermenüs/einer Sidebar-Unterliste. */
+   INNERHALB eines Untermenüs/einer Sidebar-Unterliste - gleiche text-shadow-statt-
+   font-weight-Begründung (kein Aufspring-Effekt beim Aktivieren). */
 .ncss-nav-submenu a[aria-current="page"] {
   background-color: var(--ncss-color-brand-100);
   color: var(--ncss-color-brand-on-soft);
-  font-weight: 600;
+  text-shadow:
+    0.3px 0 currentColor,
+    -0.3px 0 currentColor,
+    0 0.3px currentColor,
+    0 -0.3px currentColor;
 }
 
 /* Desktop: Untermenü schwebt als Panel unter dem Elternpunkt. */

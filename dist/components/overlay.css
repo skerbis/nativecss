@@ -20,6 +20,17 @@
  *       <p class="ncss-text-light">Bildunterschrift</p>
  *     </div>
  *   </div>
+ *
+ * Portraitkarte (Team/Cast/Referenzen) - dieselbe Komponente, kombiniert mit bereits
+ * vorhandenen Utilities statt einer eigenen Karten-Variante: .ncss-ratio-portrait
+ * (helpers/media.css) für das Seitenverhältnis, .ncss-radius-lg (helpers/elevation.css)
+ * für runde Ecken, .ncss-overlay-container--zoom (unten) für den optionalen Hover-Effekt:
+ *   <div class="ncss-overlay-container ncss-overlay-container--zoom ncss-ratio-portrait ncss-radius-lg">
+ *     <img src="person.jpg" alt="Name">
+ *     <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
+ *       <p class="ncss-text-light"><strong>Name</strong><br><span class="ncss-text-light-700">Rolle</span></p>
+ *     </div>
+ *   </div>
  */
 .ncss-overlay-container {
   position: relative;
@@ -65,4 +76,47 @@
    die ganze Kachel abdeckt, nicht nur einen Rand. */
 .ncss-overlay--tint {
   background-color: var(--ncss-color-overlay);
+}
+
+/* --- Zoom-Modifier (optional, .ncss-overlay-container--zoom) -------------------------
+   Bild startet dezent entsättigt, wird bei Hover/Fokus auf volle Farbe + einen leichten
+   Zoom "geweckt" - wiederkehrendes Editorial-/Portraitkarten-Muster (Team-/Cast-/
+   Referenz-Kacheln). Eigener Modifier statt Standardverhalten von
+   .ncss-overlay-container: Filter/Transform sind eine gestalterische Entscheidung,
+   keine strukturelle Eigenschaft der Komponente (dasselbe Prinzip wie bei Rahmen/
+   Schatten, siehe helpers/elevation.css - Card bringt nur Struktur, Optik kommt separat).
+   --ncss-overlay-zoom-grayscale/--ncss-overlay-zoom-scale pro Instanz überschreibbar.
+
+   Entsättigen UND Hover-Skalierung bewusst NUR unter (hover:hover) and (pointer:fine) -
+   auf Touch-Geräten (kein zuverlässiges :hover, siehe README "Touch-Geräte haben kein
+   :hover") gäbe es sonst KEINEN Weg, das Foto je in Farbe zu sehen; dort bleibt es
+   stattdessen immer normal farbig (kein Effekt, aber auch keine Einschränkung).
+   :focus-within bleibt bewusst UNGATED (wie :focus-visible in components/nav.css) -
+   Tastatur-Fokus auf einem verschachtelten Link/Button zeigt die volle Farbe unabhängig
+   vom Zeigegerät. */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-overlay-container--zoom > img,
+  .ncss-overlay-container--zoom > video {
+    filter: grayscale(var(--ncss-overlay-zoom-grayscale, 45%));
+  }
+  .ncss-overlay-container--zoom:hover > img,
+  .ncss-overlay-container--zoom:hover > video {
+    filter: grayscale(0%);
+  }
+}
+.ncss-overlay-container--zoom:focus-within > img,
+.ncss-overlay-container--zoom:focus-within > video {
+  filter: grayscale(0%);
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .ncss-overlay-container--zoom > img,
+  .ncss-overlay-container--zoom > video {
+    transition: filter 0.25s ease, scale 0.25s ease;
+  }
+  .ncss-overlay-container--zoom:hover > img,
+  .ncss-overlay-container--zoom:hover > video,
+  .ncss-overlay-container--zoom:focus-within > img,
+  .ncss-overlay-container--zoom:focus-within > video {
+    scale: var(--ncss-overlay-zoom-scale, 1.05);
+  }
 }
