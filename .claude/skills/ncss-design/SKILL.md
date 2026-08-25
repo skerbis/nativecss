@@ -73,6 +73,14 @@ technischen Details.
 - Aufzählungen/Definitionslisten: `components/lists.css` (`.ncss-list--dot`/`-dash`/
   `-icon`/`-divided`/`-steps`, `.ncss-dl`/`-inline`/`-stats`) statt eigener
   Marker-Regeln - Details: `docs/de/lists.html`.
+- Nav mit VIELEN Punkten: `.ncss-nav--scroll` (reines CSS, horizontal scrollbare
+  Pill-Reihe) für kurze Tags/Kategorien; `<ncss-nav-priority>` (Opt-in Custom Element,
+  `components/nav-priority.css` + `js/nav-priority.js`) für lange Punktlisten, die
+  automatisch ins "Mehr"-Menü kollabieren, statt ein manuelles Punkte-Budget zu raten.
+  Mobiles Untermenü als Slide-Screen statt Inline-Aufklappen:
+  `<ncss-nav-drilldown>` (`components/nav-drilldown.css` + `js/nav-drilldown.js`),
+  identisches Markup zum normalen `.ncss-nav-dropdown`. Details: `docs/de/
+  components.html#navigation`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).

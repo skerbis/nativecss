@@ -1903,6 +1903,79 @@ umgestellt:
       dieselbe Ursachen-Kategorie wie Fallstrick 73, aber nicht Teil des gemeldeten
       Bugs - dem Nutzer separat mitgeteilt statt eigenmächtig umgebaut.
 
+75. **Drei neue, optionale Nav-Varianten für "viele Navigationspunkte"** (User-Vorgabe:
+    "moderne Varianten... dürfen auch JS empowered sein, ggf. als Custom Web Component,
+    kompatibel"): `.ncss-nav--scroll` (reines CSS, horizontal scrollbare Pill-Reihe mit
+    Fade-Maske), `<ncss-nav-priority>` (Custom Element, ResizeObserver-basiertes
+    "Mehr"-Overflow-Menü), `<ncss-nav-drilldown>` (Custom Element, iOS-artiges
+    Slide-in-Untermenü), plus ein reiner Markup-Trick (Elternpunkt zusätzlich als eigene
+    Seite aufrufbar, echter `<a>` in `<summary>`, kein JS nötig). Alle drei/vier bewusst
+    OPT-IN (eigene `<link>`/`<script>`-Dateien, NICHT Teil von `ncss.css`s
+    Standard-Import) und bewusst OHNE Shadow DOM (Light-DOM-Custom-Elements wie
+    `<ncss-container>` es NICHT macht - hier soll die Seiten-eigene ncss.css/theme.css
+    ganz normal durchgreifen, keine Isolation gewünscht).
+    - **`.ncss-nav--scroll`**: `flex-wrap:nowrap` + `overflow-x:auto` + `mask-image`-
+      Fade + `scroll-snap-type:x proximity`. ERSTER Bug (per echtem Test gefunden):
+      die generelle Mobile-Regel (`@media max-width:63.99rem { .ncss-nav-list {
+      flex-direction:column; ...} }`) trifft JEDE `.ncss-nav-list` unconditional,
+      inklusive dieser Variante - Punkte stapelten sich beim Verkleinern des Viewports
+      untereinander statt zu scrollen. Fix: `.ncss-nav--scroll .ncss-nav-list` muss
+      ALLE vier betroffenen Eigenschaften (`flex-direction`, `align-items`, `gap`,
+      `margin-block-start`) selbst zurücksetzen - höhere Spezifität allein reicht
+      NICHT, Spezifität entscheidet nur pro EIGENSCHAFT, nicht über alle Eigenschaften
+      einer Regel hinweg.
+    - **Elternpunkt zusätzlich als eigene Seite**: ein echter `<a>` in `<summary>`
+      statt reinen Texts. Per echtem Test in Chromium/Firefox/WebKit bestätigt (VOR der
+      Implementierung, nicht danach angenommen): ein Klick auf den Linktext navigiert
+      UND lässt `<details>` geschlossen (kein Doppel-Effekt), ein Klick auf den Chevron
+      daneben (`::after`, gehört zu `<summary>`, nicht zum `<a>`) togglet wie gewohnt,
+      ohne zu navigieren - der Browser trennt beide Default-Aktionen bereits selbst,
+      weil sie unterschiedliche Klick-Ziele treffen. Kein JS nötig. Einzige nötige
+      CSS-Ergänzung: `<a>` auf Umgebungsfarbe zurücksetzen (`.ncss-nav-item > a`
+      trifft dieses verschachtelte `<a>` nicht, kein direktes Kind).
+    - **`<ncss-nav-priority>`**: rechnet bei JEDEM Layout-Durchlauf von einem sauberen
+      Ausgangszustand neu (alle Punkte zurück in die Hauptliste, DANN neu verteilen)
+      statt inkrementell zu verschieben. Aktueller Punkt (`aria-current="page"`) wird
+      nötigenfalls mit dem letzten sichtbaren Punkt GETAUSCHT statt versteckt, damit
+      die aktuelle Seite im sichtbaren Bereich bleibt. Layout wird übersprungen, während
+      der Fokus INNERHALB der Nav liegt (`this.contains(document.activeElement)`) -
+      sonst würde ein Resize während offener Tastatur-Navigation den Fokus verlieren.
+      Läuft nur oberhalb der nav-collapse-Schwelle (`matchMedia` gegen dieselbe
+      Bedingung wie nav.css); unterhalb werden alle verschobenen Punkte zurückgeholt.
+    - **`<ncss-nav-drilldown>`**: v1-Grenze bewusst auf EINE Ebene tief begrenzt
+      (Wurzel-Liste ↔ ein Untermenü-Screen) - ein Elternpunkt INNERHALB eines bereits
+      gezeigten Untermenüs klappt normal inline auf statt weiter zu drillen, deckt die
+      weit überwiegende Mehrheit realer Navigationen ab ohne einen vollen
+      Breadcrumb-Stack für beliebige Tiefe. ZWEI Runden Containing-Block-Bugs beim
+      Bauen gefunden (siehe SKILL.md-Regel zu `transform`/`translate`, ausführlicher
+      hier): (1) die Wurzel-Liste zunächst selbst `position:absolute` gegeben - dadurch
+      wurde SIE zum Bezugsrahmen für ihr eigenes verschachteltes Untermenü statt des
+      äußeren Tracks, Fix: Liste bleibt `position:static`, nur `width/height:100%`.
+      (2) NACH diesem Fix landete das Untermenü IMMER NOCH außerhalb des Bildschirms -
+      Ursache war `.ncss-nav-dropdown`s eigene, UNCONDITIONALE `position:relative`
+      (nav.css, für das schwebende Desktop-Panel gedacht) auf dem `<details>`
+      dazwischen, im Drilldown-Kontext per `.ncss-nav-drill-track .ncss-nav-dropdown {
+      position:static }` gezielt zurückgesetzt. (3) SELBST DANACH noch falsch
+      positioniert - der eigentliche, am längsten verborgene Grund: die Liste hat
+      `translate:-100%` (fürs Wegschieben), und `translate` erzeugt einen NEUEN
+      Containing Block für JEDEN `position:absolute`-Nachfahren, VÖLLIG UNABHÄNGIG
+      davon, dass die Liste selbst `position:static` ist (per drei aufeinanderfolgenden,
+      gezielten Playwright-Geometrie-Checks - nicht Vermutung - bis zur Wurzel
+      zurückverfolgt: `getComputedStyle` an JEDEM Vorfahren einzeln geprüft, bis der
+      tatsächliche Bezugsrahmen gefunden war). Endgültiger Fix: das Untermenü wird beim
+      Reindrillen per `appendChild` ECHTER Geschwisterknoten des Tracks (physisch
+      umgehängt, nicht nur visuell versucht auszubrechen), beim Zurückgehen an die
+      per `parentNode`/`nextSibling` gemerkte Original-Position zurückgehängt - wichtig
+      auch für die native `<details>`-Semantik und verschachtelte dritte-Ebene-Dropdowns
+      (bleiben an ihrer echten Stelle, klappen dort normal inline auf).
+    - Alle vier Bausteine (drei CSS/JS-Varianten + der Markup-Trick) einzeln UND im
+      Zusammenspiel (Linked-Parent-Trick funktioniert unverändert INNERHALB von
+      `<ncss-nav-drilldown>`, per echtem Test bestätigt: Klick auf Linktext navigiert,
+      Klick auf Chevron drillt) in Chromium/WebKit/Firefox getestet, inkl.
+      Tastatur-Navigation (Tab bis zum "Mehr"/"Zurück"-Punkt, Enter zum Öffnen),
+      wiederholtem Rein-/Rausdrillen (testet die Umhängen-Logik auf Wiederholbarkeit),
+      und der vollen 280-Kombinationen-Regressionssuite (0 Fehler) vor dem Commit.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

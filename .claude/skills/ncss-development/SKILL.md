@@ -223,12 +223,23 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   als Fallback davor für alte Browser), `dvh` (lebt live mit der Adressleiste mit),
   `lvh` (stabil wie klassisches `vh` - für Werte, die WÄHREND des Scrollens NICHT
   springen dürfen, z.B. eine Bühnenhöhe, die in `view-timeline-inset` einfließt).
-- `backdrop-filter`/`filter`/`transform`/`perspective`/`will-change` erzeugen einen
-  NEUEN containing block für `position:fixed`-Nachfahren - ein Floating-UI-Element
-  (`<wa-dropdown>`/`<wa-popover>`, intern `position:fixed`) als Nachfahre eines
-  gefilterten Elements zuckt beim Scrollen. `.ncss-glass` nie direkt auf einen
-  Vorfahren von `<wa-dropdown>`/`<wa-popover>`/`<dialog>` setzen - stattdessen ein
-  eigenes, dekoratives Element davor.
+- `backdrop-filter`/`filter`/`transform`/`translate`/`perspective`/`will-change`
+  erzeugen einen NEUEN containing block für `position:fixed`/`-absolute`-Nachfahren -
+  UNABHÄNGIG davon, ob das transformierte Element SELBST `position:static` ist (per
+  echtem Test bestätigt: eine `<ncss-nav-drilldown>`-Liste mit `translate:-100%` fürs
+  Wegschieben wurde dadurch selbst zum Bezugsrahmen für ein verschachteltes
+  `position:absolute`-Untermenü, obwohl die Liste nirgends `position` gesetzt hatte -
+  das Untermenü positionierte sich relativ zur - inzwischen wegtranslatierten - Liste
+  statt zum eigentlich gewünschten äußeren Track, landete sichtbar außerhalb des
+  Bildschirms). Ein Floating-UI-Element (`<wa-dropdown>`/`<wa-popover>`, intern
+  `position:fixed`) als Nachfahre eines gefilterten Elements zuckt beim Scrollen
+  genauso - `.ncss-glass` nie direkt auf einen Vorfahren von
+  `<wa-dropdown>`/`<wa-popover>`/`<dialog>` setzen, stattdessen ein eigenes,
+  dekoratives Element davor. Wenn ein absolut positioniertes Element sich WIRKLICH
+  gegen einen ENTFERNTEN Vorfahren positionieren soll, DER ABER selbst (oder ein
+  Zwischenelement) transformiert wird: das Kind per JS physisch dorthin umhängen
+  (`appendChild`, echte Geschwisterschaft), nicht auf reine CSS-Positionierung durch
+  eine transformierte Zwischenebene hindurch verlassen.
 - `:root`/`body`-Selektoren treffen NIE einen Shadow Host. Jede Token-Deklaration, die
   auch innerhalb eines Shadow Roots (z.B. `<ncss-container>`) funktionieren soll,
   braucht `:root, :host { ... }`. `<slot>` reicht NICHT für Stil-Isolation - nur

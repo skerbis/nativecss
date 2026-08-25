@@ -1,0 +1,64 @@
+/**
+ * ncss - Priority-Navigation (Custom Element <ncss-nav-priority>, Layer "components").
+ * OPT-IN Erweiterung von components/nav.css für VIELE Navigationspunkte, die nicht
+ * mehr in eine Zeile passen: Punkte werden automatisch, per ResizeObserver, in ein
+ * "Mehr"-Dropdown verschoben - dasselbe .ncss-nav-dropdown/-submenu-Markup, das
+ * nav.css bereits für gewöhnliche Untermenüs stylt, kein neues Optik-System nötig.
+ * Für kurze Pills/Tags ohne Kollabier-Bedarf siehe stattdessen die reine CSS-Variante
+ * `.ncss-nav--scroll` in nav.css.
+ *
+ * Einbindung (zusätzlich zu ncss.css/theme.css, NICHT Teil von ncss.css selbst - wie
+ * page-transitions.css oder combobox.js ein bewusst separates Opt-in):
+ *   <link rel="stylesheet" href="dist/components/nav-priority.css">
+ *   <script src="dist/js/nav-priority.js" defer></script>
+ *
+ * Markup: identisch zur normalen .ncss-nav (siehe components/nav.css), nur die
+ * bestehende <ul class="ncss-nav-list"> zusätzlich in <ncss-nav-priority> wrappen:
+ *   <nav class="ncss-nav">
+ *     <button type="button" class="ncss-nav-toggle" command="show-modal"
+ *             commandfor="navPanel" aria-label="Menü öffnen">☰</button>
+ *     <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+ *       <button type="button" class="ncss-dialog-close" command="close"
+ *               commandfor="navPanel" aria-label="Menü schließen">&times;</button>
+ *       <ncss-nav-priority>
+ *         <ul class="ncss-nav-list">
+ *           <li class="ncss-nav-item"><a href="/">Start</a></li>
+ *           <li class="ncss-nav-item"><a href="/a">Punkt A</a></li>
+ *           ... (beliebig viele weitere - funktioniert für JEDE Anzahl)
+ *         </ul>
+ *       </ncss-nav-priority>
+ *     </dialog>
+ *   </nav>
+ * Optionale Attribute auf <ncss-nav-priority>: `more-text="Mehr"` (Label),
+ * `more-label="Weitere Punkte"` (aria-label für Screenreader).
+ *
+ * Läuft NUR oberhalb der nav-collapse-Schwelle (64rem, siehe nav.css) - unterhalb
+ * (Off-Canvas-Ansicht) werden alle zuvor ins "Mehr"-Menü verschobenen Punkte
+ * automatisch zurückgeholt; die vertikale Liste zeigt dort ohnehin alle Punkte
+ * (Scrollen statt Kollabieren nötig).
+ *
+ * OHNE JS (oder bevor customElements die Definition geladen hat): reiner
+ * Passthrough (`display: contents`), keine Funktionseinbuße - .ncss-nav-list zeigt
+ * alle Punkte normal per flex-wrap in mehreren Zeilen (unverändertes
+ * Standard-.ncss-nav-Verhalten, siehe nav.css).
+ */
+ncss-nav-priority {
+  display: contents;
+}
+/* Erst NACH der Custom-Element-Definition eine eigene Box - ResizeObserver kann ein
+   display:contents-Element nicht messen (kein eigenes Boxmodell), das JS braucht
+   also zwingend eine echte Box, sobald es aktiv ist. flex:1 1 auto + min-width:0
+   spiegelt exakt .ncss-topbar-inner > nav (components/topbar.css) - dieselbe
+   "darf innerhalb der Zeile schrumpfen"-Notwendigkeit. */
+ncss-nav-priority:defined {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Sobald das JS übernimmt, übernimmt es auch die volle Verantwortung für "was
+   passiert bei Platzmangel" - natives flex-wrap würde sonst VOR der JS-Berechnung
+   schon in eine zweite Zeile umbrechen (kurzes Doppelzeilen-Aufblitzen, bevor das
+   Skript den Punkt stattdessen ins Mehr-Menü verschiebt). */
+ncss-nav-priority:defined > .ncss-nav-list {
+  flex-wrap: nowrap;
+}

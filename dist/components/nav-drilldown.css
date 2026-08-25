@@ -1,0 +1,146 @@
+/**
+ * ncss - Slide-Drilldown-Navigation (Custom Element <ncss-nav-drilldown>, Layer
+ * "components"). OPT-IN Erweiterung von components/nav.css/off-canvas.css für tief
+ * verschachtelte mobile Menüs: statt eines Untermenüs, das INLINE aufklappt (Standard-
+ * .ncss-nav-dropdown-Verhalten), schiebt sich beim Antippen eines Elternpunkts das
+ * GANZE Panel auf die Kindpunkte um (wie iOS-Einstellungen/native App-Menüs), mit
+ * einem "Zurück"-Punkt oben, der wieder zurückschiebt.
+ *
+ * Einbindung (zusätzlich zu ncss.css/theme.css):
+ *   <link rel="stylesheet" href="dist/components/nav-drilldown.css">
+ *   <script src="dist/js/nav-drilldown.js" defer></script>
+ *
+ * Markup: IDENTISCH zum normalen verschachtelten Dropdown (siehe components/nav.css) -
+ * nur die bestehende <ul class="ncss-nav-list"> zusätzlich in <ncss-nav-drilldown>
+ * wrappen, sonst keine Änderung:
+ *   <dialog class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+ *     <button class="ncss-dialog-close" command="close" commandfor="navPanel" ...>...</button>
+ *     <ncss-nav-drilldown>
+ *       <ul class="ncss-nav-list">
+ *         <li class="ncss-nav-item"><a href="/">Start</a></li>
+ *         <li class="ncss-nav-item">
+ *           <details class="ncss-nav-dropdown">
+ *             <summary>Produkte</summary>
+ *             <ul class="ncss-nav-submenu">
+ *               <li><a href="/produkte/a">Produkt A</a></li>
+ *               <li><a href="/produkte/b">Produkt B</a></li>
+ *             </ul>
+ *           </details>
+ *         </li>
+ *       </ul>
+ *     </ncss-nav-drilldown>
+ *   </dialog>
+ * Elternpunkt zusätzlich als eigene Seite aufrufbar: genau wie bei der normalen
+ * Dropdown-Komponente einen echten <a> in <summary> setzen (siehe Kommentar dort) -
+ * funktioniert hier unverändert mit, ein Klick auf den Link navigiert normal, ein Klick
+ * auf den Chevron drillt rein.
+ *
+ * NUR für die MOBILE Off-Canvas-Ansicht relevant - auf Desktop (wo .ncss-nav-panel
+ * display:contents ist, siehe nav.css) bleibt die Struktur ein normaler, inline
+ * aufklappender Dropdown, kein Slide-Verhalten (ergibt dort auch keinen Sinn, genug
+ * horizontaler Platz vorhanden).
+ *
+ * OHNE JS (oder bevor die Definition geladen ist): reiner Passthrough, keine
+ * Funktionseinbuße - die verschachtelten <details>/<summary> klappen normal INLINE
+ * auf, wie es components/nav.css ohnehin schon vorsieht.
+ */
+ncss-nav-drilldown {
+  display: contents;
+}
+@media (max-width: 63.99rem) {
+  ncss-nav-drilldown:defined {
+    display: block;
+    height: 100%;
+  }
+  /* Die vom JS injizierte Track-Hülle - gemeinsamer position:relative-Bezugsrahmen für
+     Wurzel-Liste UND jedes Untermenü, unabhängig von deren tatsächlicher
+     DOM-Verschachtelungstiefe (position:absolute bezieht sich auf den NÄCHSTEN
+     positionierten Vorfahren, nicht auf direkte Elternschaft). */
+  .ncss-nav-drill-track {
+    position: relative;
+    height: 100%;
+    overflow: clip;
+  }
+  /* .ncss-nav-dropdown (nav.css, Zeile ~311) ist UNCONDITIONAL position:relative -
+     Bezugsrahmen für das schwebende Desktop-Panel (siehe dort). Genau wie die Liste
+     selbst (Kommentar unten) würde das den `<details>`, der zwischen Track und
+     Untermenü liegt, zum "nächsten positionierten Vorfahren" machen statt des
+     Tracks - per echtem Test gefunden (Untermenü landete sichtbar außerhalb des
+     Bildschirms). Hier IM DRILLDOWN-KONTEXT gezielt zurückgesetzt, nicht global -
+     außerhalb eines Tracks bleibt das schwebende Desktop-Panel unverändert. */
+  .ncss-nav-drill-track .ncss-nav-dropdown {
+    position: static;
+  }
+  /* NUR das Untermenü bekommt position:absolute - die Wurzel-Liste bleibt bewusst
+     position:static (normaler Fluss), sonst würde SIE selbst zum "nächsten
+     positionierten Vorfahren" für das verschachtelte Untermenü werden (per echtem
+     Test gefunden: das Untermenü positionierte sich dann relativ zur - inzwischen
+     wegtranslatierten - Liste statt relativ zum Track, landete dadurch sichtbar
+     außerhalb des Bildschirms). width/height:100% hält die Liste trotzdem exakt auf
+     Track-Größe, .ncss-nav-drill-track's eigenes overflow:clip verhindert jedes
+     Durchscheinen während der Verschiebung. */
+  .ncss-nav-drill-track > .ncss-nav-list {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: var(--ncss-color-surface);
+  }
+  .ncss-nav-drill-track .ncss-nav-submenu {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    background-color: var(--ncss-color-surface);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ncss-nav-drill-track > .ncss-nav-list,
+    .ncss-nav-drill-track .ncss-nav-submenu {
+      transition: translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+    }
+  }
+  .ncss-nav-drill-track > .ncss-nav-list {
+    translate: 0 0;
+  }
+  .ncss-nav-drill-track .ncss-nav-submenu {
+    translate: 100% 0;
+  }
+  .ncss-nav-drill-track[data-drilled-in] > .ncss-nav-list {
+    translate: -100% 0;
+  }
+  .ncss-nav-submenu.ncss-nav-drill-active {
+    translate: 0 0;
+  }
+  /* Verschachtelte Optik zurücksetzen - im normalen Inline-Dropdown ist ein Untermenü
+     eingerückt/randlos, hier ist es sein EIGENER Vollbild-Screen, braucht wieder die
+     "Erstebene"-Optik. */
+  .ncss-nav-drill-track .ncss-nav-submenu {
+    margin: 0;
+    padding: var(--ncss-space-sm);
+  }
+  /* Vom JS einmalig eingefügter "Zurück"-Punkt, oben in jedem Untermenü-Screen. Eigener
+     Chevron nach LINKS (gespiegelt zum normalen Auf/Zu-Chevron) statt eines neuen
+     Icon-Sets - dieselbe Grundform, nur gedreht. */
+  .ncss-nav-drill-back {
+    display: flex;
+    align-items: center;
+    gap: var(--ncss-space-2xs);
+    width: 100%;
+    padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+    margin-block-end: var(--ncss-space-2xs);
+    border: none;
+    border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+    background: none;
+    color: var(--ncss-color-text-muted);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+  .ncss-nav-drill-back::before {
+    content: "";
+    display: inline-block;
+    width: 0.4em;
+    height: 0.4em;
+    border-inline-start: 2px solid currentColor;
+    border-block-start: 2px solid currentColor;
+    rotate: -45deg;
+  }
+}

@@ -233,6 +233,86 @@
     <p class="ncss-text-muted ncss-text-sm">Der Menü-Button oben rechts in der Topbar (Fenster schmaler als 64rem ziehen, oder direkt am Handy) öffnet dasselbe Panel als Off-Canvas-Sidebar - eine Nav-Struktur, zwei Darstellungen, siehe components/nav.css.</p>
   </section>
 
+  <!-- Priority-Navigation -->
+  <section id="priority" class="ncss-stack">
+    <h2 class="demo-section-title">Viele Punkte: Priority-Navigation (Opt-in, JS)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>&lt;ncss-nav-priority&gt;</code> (Custom Element, <code>components/nav-priority.css</code> +
+      <code>js/nav-priority.js</code>) verschiebt Punkte, die nicht mehr in eine Zeile passen, automatisch
+      per <code>ResizeObserver</code> in ein "Mehr"-Dropdown - funktioniert für jede Punktzahl, kein fester
+      Breakpoint im Code. Ohne JS reiner Passthrough (normales <code>flex-wrap</code>).
+    </p>
+    <pre><code class="language-html">&lt;ncss-nav-priority&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/"&gt;Start&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/a"&gt;Punkt A&lt;/a&gt;&lt;/li&gt;
+    ... (beliebig viele weitere)
+  &lt;/ul&gt;
+&lt;/ncss-nav-priority&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Live - Regler ziehen, um den Rahmen schmaler/breiter zu machen (ein <code>&lt;iframe&gt;</code> spannt seinen EIGENEN Viewport auf, deshalb per Regler statt das ganze Browserfenster verkleinern zu müssen). Bei ca. 1024px Breite übernimmt die normale mobile Off-Canvas-Ansicht (☰-Button):</p>
+    <div class="ncss-stack ncss-stack--tight">
+      <label for="navPriorityWidthSlider" class="ncss-text-sm ncss-text-muted">Rahmen-Breite: <output id="navPriorityWidthOutput">1100px</output></label>
+      <input type="range" id="navPriorityWidthSlider" min="320" max="1100" value="1100" step="10" style="width: min(100%, 40rem);">
+    </div>
+    <div style="overflow: hidden; width: min(100%, 68rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe id="navPriorityFrame" src="assets/nav-priority-demo.html" style="display: block; width: 1100px; max-width: 100%; height: 4rem; border: 0;" title="Priority-Navigation, live testbar"></iframe>
+    </div>
+    <script src="assets/js/nav-priority-demo.js" defer></script>
+  </section>
+
+  <!-- Horizontal scrollbare Nav -->
+  <section id="scroll" class="ncss-stack">
+    <h2 class="demo-section-title">Viele Punkte: Horizontal scrollbar (reines CSS)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-nav--scroll</code> für viele KURZE Punkte (Tags, Kategorie-Pills) - zeigt alle gleichzeitig, keiner versteckt sich, dafür scrollt die Zeile. Randloser Fade-Verlauf, <code>scroll-snap</code>, kein JS.</p>
+    <pre><code class="language-html">&lt;nav class="ncss-nav ncss-nav--scroll"&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="#tag1"&gt;Tag Eins&lt;/a&gt;&lt;/li&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+    <nav class="ncss-nav ncss-nav--scroll" style="max-width: 24rem;">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#scroll">Naturschutz</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Waldbau</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Wildmanagement</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Jagdrecht</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Ausbildung</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Veranstaltungen</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Presse</a></li>
+      </ul>
+    </nav>
+  </section>
+
+  <!-- Slide-Drilldown -->
+  <section id="drilldown" class="ncss-stack">
+    <h2 class="demo-section-title">Slide-Drilldown für mobile Untermenüs (Opt-in, JS)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>&lt;ncss-nav-drilldown&gt;</code> (<code>components/nav-drilldown.css</code> +
+      <code>js/nav-drilldown.js</code>) - statt inline aufzuklappen, schiebt sich beim Antippen eines
+      Elternpunkts das GANZE Panel auf die Kindpunkte um (wie iOS-Einstellungen), mit einem
+      "Zurück"-Punkt oben. Nur mobil relevant, IDENTISCHES Markup wie der normale verschachtelte
+      Dropdown - ohne JS klappt es normal inline auf. Ein Elternpunkt bleibt zusätzlich als eigene
+      Seite aufrufbar, wenn <code>&lt;summary&gt;</code> einen echten <code>&lt;a&gt;</code> enthält
+      (siehe "Produkte" unten) - ein Klick auf den Linktext navigiert, ein Klick auf den Chevron drillt rein.
+    </p>
+    <pre><code class="language-html">&lt;ncss-nav-drilldown&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;
+      &lt;details class="ncss-nav-dropdown"&gt;
+        &lt;summary&gt;&lt;a href="/produkte"&gt;Produkte&lt;/a&gt;&lt;/summary&gt;
+        &lt;ul class="ncss-nav-submenu"&gt;
+          &lt;li&gt;&lt;a href="/produkte/a"&gt;Produkt A&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/ncss-nav-drilldown&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Live - immer im mobilen Off-Canvas-Modus (eigener, schmaler <code>&lt;iframe&gt;</code>-Viewport): ☰ antippen, dann "Produkte" antippen.</p>
+    <div style="overflow: hidden; width: min(100%, 24rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe src="assets/nav-drilldown-demo.html" style="display: block; width: 100%; height: 20rem; border: 0;" title="Slide-Drilldown, live testbar"></iframe>
+    </div>
+  </section>
+
   <!-- Breadcrumb -->
   <section id="breadcrumb" class="ncss-stack">
     <h2 class="demo-section-title">Breadcrumb</h2>

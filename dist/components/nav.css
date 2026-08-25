@@ -244,6 +244,33 @@
   translate: 0 0.15em;
 }
 
+/* --- Optional: Elternpunkt gleichzeitig als eigene Seite aufrufbar -------------------
+   Standardmäßig ist ein Elternpunkt mit Kindern NUR ein Toggle, keine eigene Seite
+   (siehe Markup-Kommentar oben: "Übersicht"-Eintrag als erstes Kind stattdessen).
+   Wer eine eigene Elternseite trotzdem braucht: einfach einen ECHTEN <a> statt reinen
+   Texts in <summary> setzen -
+     <summary><a href="/produkte">Produkte</a></summary>
+   - funktioniert nativ, KEIN JS nötig (per echtem Test in Chromium/Firefox/WebKit
+     bestätigt): ein Klick auf den Link-Text navigiert und lässt <details> geschlossen
+     (kein Doppel-Effekt), ein Klick auf den Chevron daneben (::after, gehört zu
+     <summary>, nicht zum <a>) togglet wie gewohnt, ohne zu navigieren - der Browser
+     behandelt beide Default-Aktionen bereits getrennt, weil sie unterschiedliche
+     Klick-Ziele treffen. Einzig nötig: <a> hier auf die Umgebungsfarbe zurücksetzen
+     (der bereits vorhandene `.ncss-nav-item > a`-Selektor trifft dieses verschachtelte
+     <a> NICHT, es ist kein direktes Kind von .ncss-nav-item). */
+.ncss-nav-dropdown > summary a {
+  color: inherit;
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-nav-dropdown > summary a:hover {
+    text-decoration: underline;
+  }
+}
+.ncss-nav-dropdown > summary a:focus-visible {
+  text-decoration: underline;
+}
+
 .ncss-nav-submenu {
   list-style: none;
   margin: var(--ncss-space-2xs) 0 0;
@@ -447,4 +474,55 @@
   border: none;
   background: none;
   padding-inline-start: var(--ncss-space-md);
+}
+
+/* --- Variante: horizontal scrollbare Liste statt Umbruch/Kollabieren -------------------
+   Für VIELE, aber KURZE Punkte (Tags, Kategorie-Pills, Kapitel-Sprungmarken) - zeigt
+   ALLE Punkte gleichzeitig, keiner versteckt sich, dafür scrollt die Zeile statt
+   umzubrechen. Reines CSS, kein JS - für "viele lange Punkte" (echte Seitentitel)
+   stattdessen die JS-gestützte <ncss-nav-priority> (components/nav-priority.css)
+   verwenden, die statt Scrollen automatisch ins "Mehr"-Menü kollabiert.
+   Randloser Fade-Verlauf per mask-image signalisiert "hier geht's weiter" ohne Pfeil-
+   Buttons. `proximity` (nicht `mandatory`) - rastet ein, erzwingt aber kein hartes
+   Einschnappen bei jedem kleinen Scroll-Versuch, angenehmer für eine Pill-Reihe als
+   der striktere `mandatory`-Wert von helpers/scroll.css' `.ncss-scroll-snap-x`.
+   Markup: <nav class="ncss-nav ncss-nav--scroll"><ul class="ncss-nav-list">...</ul></nav>
+   (ohne Toggle-Button/Dialog-Panel - immer direkt sichtbar, kein Mobile-Kollabieren). */
+.ncss-nav--scroll .ncss-nav-list {
+  /* Die generelle Mobile-Regel oben (@media max-width:63.99rem) trifft JEDE
+     .ncss-nav-list unconditional (flex-direction:column, gap, margin-block-start)
+     - für die normale Off-Canvas-Nav richtig, für diese IMMER horizontale/scrollbare
+     Variante nicht gewollt (per echtem Test gefunden: Punkte stapelten sich
+     untereinander statt zu scrollen, sobald der Viewport unter 1024px fiel).
+     .ncss-nav--scroll hat höhere Spezifität (zwei Klassen) und gewinnt automatisch,
+     MUSS aber jede der vier betroffenen Eigenschaften selbst zurücksetzen -
+     Spezifität entscheidet nur pro EIGENSCHAFT, keine über Eigenschaften hinweg. */
+  flex-direction: row;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  margin-block-start: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--ncss-space-md);
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--ncss-space-md),
+    black calc(100% - var(--ncss-space-md)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--ncss-space-md),
+    black calc(100% - var(--ncss-space-md)),
+    transparent 100%
+  );
+}
+.ncss-nav--scroll .ncss-nav-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
 }

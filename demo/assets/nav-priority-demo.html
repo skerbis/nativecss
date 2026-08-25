@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../../dist/theme.css">
+<link rel="stylesheet" href="../../dist/components/nav-priority.css">
+<script src="../../dist/js/nav-priority.js" defer></script>
+<style>
+  body { margin: 0; padding: var(--ncss-space-sm); }
+</style>
+</head>
+<body class="ncss-page-shell">
+  <nav class="ncss-nav">
+    <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+    <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <ncss-nav-priority>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="#a">Start</a></li>
+          <li class="ncss-nav-item"><a href="#b">Über uns</a></li>
+          <li class="ncss-nav-item"><a href="#c">Leistungen</a></li>
+          <li class="ncss-nav-item"><a href="#d">Referenzen</a></li>
+          <li class="ncss-nav-item"><a href="#e">Karriere</a></li>
+          <li class="ncss-nav-item"><a href="#f">Presse</a></li>
+          <li class="ncss-nav-item"><a href="#g" aria-current="page">Kontakt</a></li>
+        </ul>
+      </ncss-nav-priority>
+    </dialog>
+  </nav>
+</body>
+</html>
