@@ -89,4 +89,11 @@
       </tbody>
     </table>
   </div>
+  <h3 class="ncss-text-sm ncss-text-muted">Hintergrund-Video statt Bild</h3>
+  <p class="ncss-text-muted ncss-text-sm">Dasselbe <code>.ncss-hero-media</code>, jetzt mit einem echten <code>&lt;video&gt;</code>-Kind statt <code>background-image</code> - <code>object-fit: cover</code> funktioniert bei <code>&lt;video&gt;</code> zuverlässig (anders als bei <code>&lt;iframe&gt;</code>, siehe <a href="#cover">Cover</a> oben), kein Zuschnitt-Sonderfall nötig:</p>
+  <pre><code class="language-html">&lt;div class="ncss-hero-media"&gt;
+  &lt;video src="clip.mp4" autoplay muted loop playsinline poster="frame.jpg"&gt;&lt;/video&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><code>autoplay</code> BRAUCHT <code>muted</code> (sonst blockieren praktisch alle Browser den Autostart), <code>playsinline</code> verhindert Vollbild-Übernahme auf iOS Safari, <code>poster</code> zeigt ein Standbild vor dem Laden. Für <code>prefers-reduced-motion</code>: reines CSS kann eine <code>&lt;video&gt;</code>-Wiedergabe nicht steuern (anders als <code>animation-timeline</code> bei <code>--parallax</code> oben) - <code>js/hero-video-motion.js</code> (opt-in, nur bei tatsächlichem Hintergrund-Video einbinden) entfernt <code>autoplay</code> und pausiert das Video, wenn die Einstellung aktiv ist, das Video bleibt sichtbar (Poster/letztes Bild), nur ohne automatische Bewegung:</p>
+  <pre><code class="language-html">&lt;script src="js/hero-video-motion.js" defer&gt;&lt;/script&gt;</code></pre>
 </section>

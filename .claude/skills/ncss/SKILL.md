@@ -1761,6 +1761,34 @@ umgestellt:
       kleinere, media-lokale Variante desselben "Inhalt über Bild"-Grundprinzips, das
       Hero auf ganze Seitenabschnitte anwendet.
 
+72. **Hintergrund-Video für `.ncss-hero` ergänzt** (Punkt 5, letzter der größeren
+    Anfrage, siehe Fallstricke 66-71 für die vorherigen vier) - KEINE neue Komponente,
+    sondern `components/hero.css` selbst erweitert: `.ncss-hero-media` (bisher nur
+    `background-image`) akzeptiert jetzt zusätzlich ein echtes `<video>`-Kind
+    (`object-fit: cover` statt `background-size: cover`) - Scrim/Parallax/Content-
+    Overlay bleiben komplett unverändert, weil sie nur die Box von `.ncss-hero-media`
+    kennen, nicht deren Inhalt.
+    - `object-fit` funktioniert bei `<video>` zuverlässig (anders als bei `<iframe>` in
+      Fallstrick 70/`components/cover.css`) - kein Zuschnitt-Sonderfall, kein
+      `min-width/min-height`-Trick nötig, einfacher als Cover.
+    - `autoplay` BRAUCHT `muted` (sonst blockieren praktisch alle Browser den
+      Autostart) + `playsinline` (verhindert Vollbild-Übernahme auf iOS Safari) - beide
+      im Doku-Beispiel von Anfang an gesetzt, nicht als nachträglicher Hinweis.
+    - **`prefers-reduced-motion` braucht hier - anders als beim bereits vorhandenen
+      `.ncss-hero--parallax` (reines CSS via `@media`/`@supports`) - echtes JS**: CSS
+      hat keine Möglichkeit, eine `<video>`-Wiedergabe zu pausieren oder das
+      `autoplay`-HTML-Attribut bedingt zu entfernen. Neue, kleine Opt-in-Datei
+      `js/hero-video-motion.js` (nur einbinden, wer tatsächlich ein Hintergrund-Video
+      nutzt, exakt dasselbe Muster wie die bereits vorhandenen Opt-in-Fallback-Scripts
+      unter `js/`) - entfernt `autoplay` und pausiert das Video bei aktivem
+      `prefers-reduced-motion: reduce`, Video bleibt sichtbar (Poster/letztes Bild),
+      nur ohne automatische Bewegung. Per echtem Playwright-Test mit ZWEI
+      `browser.newPage({ reducedMotion: ... })`-Kontexten bestätigt (normale Einstellung:
+      `autoplay` bleibt gesetzt, Video läuft; `reduce`: `autoplay` entfernt, Video
+      pausiert) - nicht nur der Code gelesen und für richtig gehalten.
+    - Demo-Beispiel 4 in `demo/media.html#hero` nutzt denselben `sample-clip.mp4`, der
+      schon für die Video-Demos weiter oben existiert - keine neue Asset-Datei nötig.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

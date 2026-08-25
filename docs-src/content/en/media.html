@@ -89,4 +89,11 @@
       </tbody>
     </table>
   </div>
+  <h3 class="ncss-text-sm ncss-text-muted">Background video instead of an image</h3>
+  <p class="ncss-text-muted ncss-text-sm">The same <code>.ncss-hero-media</code>, now with a real <code>&lt;video&gt;</code> child instead of <code>background-image</code> - <code>object-fit: cover</code> works reliably for <code>&lt;video&gt;</code> (unlike <code>&lt;iframe&gt;</code>, see <a href="#cover">Cover</a> above), no special cropping needed:</p>
+  <pre><code class="language-html">&lt;div class="ncss-hero-media"&gt;
+  &lt;video src="clip.mp4" autoplay muted loop playsinline poster="frame.jpg"&gt;&lt;/video&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><code>autoplay</code> NEEDS <code>muted</code> (otherwise virtually every browser blocks autostart), <code>playsinline</code> prevents fullscreen takeover on iOS Safari, <code>poster</code> shows a still frame before loading. For <code>prefers-reduced-motion</code>: pure CSS can't control <code>&lt;video&gt;</code> playback (unlike the <code>animation-timeline</code> used by <code>--parallax</code> above) - <code>js/hero-video-motion.js</code> (opt-in, only include it on pages with an actual background video) removes <code>autoplay</code> and pauses the video when that preference is active; the video stays visible (poster/last frame), just without automatic motion:</p>
+  <pre><code class="language-html">&lt;script src="js/hero-video-motion.js" defer&gt;&lt;/script&gt;</code></pre>
 </section>

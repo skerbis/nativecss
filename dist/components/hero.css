@@ -51,6 +51,24 @@
   background-position: var(--ncss-focus-point);
   background-repeat: no-repeat;
 }
+/* Video statt Hintergrundbild - dasselbe .ncss-hero-media, jetzt mit einem echten
+   <video>-Kind statt background-image. object-fit:cover funktioniert für <video>
+   zuverlässig (anders als bei <iframe>, siehe components/cover.css) - kein
+   Zuschnitt-Sonderfall nötig. Markup:
+     <div class="ncss-hero-media">
+       <video src="clip.mp4" autoplay muted loop playsinline poster="frame.jpg"></video>
+     </div>
+   autoplay BRAUCHT muted (sonst blockieren praktisch alle Browser den Autostart),
+   playsinline verhindert Vollbild-Übernahme auf iOS Safari, poster zeigt ein
+   Standbild, bevor das Video geladen ist/falls Autoplay verhindert wird. Für
+   prefers-reduced-motion siehe js/hero-video-motion.js (opt-in, unterdrückt
+   Autoplay dort - CSS allein kann eine <video>-Wiedergabe nicht steuern). */
+.ncss-hero-media > video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--ncss-focus-point);
+}
 /* Lesbarkeits-Verlauf: dunkelt den unteren Bildbereich ab, unabhängig vom Motiv - trägt vor
    allem die --transparent-Inhaltsvariante (dort direkt auf dem Bild liegender Text), stört
    bei --filled (Text sitzt ohnehin auf blickdichter Fläche) nicht weiter. */

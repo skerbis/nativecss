@@ -16,6 +16,7 @@
 <script src="../dist/js/code-block.js" defer></script>
 <script src="../dist/js/command-fallback.js" defer></script>
 <script src="../dist/js/nav.js" defer></script>
+<script src="../dist/js/hero-video-motion.js" defer></script>
 <style>
   .demo-section-title {
     border-block-end: 1px solid var(--ncss-color-border);
@@ -245,6 +246,17 @@
           unterstützt). Ohne Unterstützung oder bei reduzierter Bewegung bleibt es einfach
           ein statisches Hero-Bild wie oben.
         </p>
+      </div>
+    </section>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>4.</strong> Hintergrund-Video statt Bild (<code>&lt;video&gt;</code> in <code>.ncss-hero-media</code>)</p>
+    <section class="ncss-hero">
+      <div class="ncss-hero-media">
+        <video src="assets/sample-clip.mp4" autoplay muted loop playsinline poster="assets/sample-poster.jpg"></video>
+      </div>
+      <div class="ncss-hero-content ncss-hero-content--transparent">
+        <h3 class="ncss-text-inherit">Video-Hero</h3>
+        <p class="ncss-text-inherit"><code>object-fit: cover</code> statt <code>background-size</code> - funktioniert bei <code>&lt;video&gt;</code> zuverlässig. <code>js/hero-video-motion.js</code> (unten eingebunden) unterdrückt <code>autoplay</code> bei <code>prefers-reduced-motion: reduce</code>.</p>
       </div>
     </section>
   </section>
