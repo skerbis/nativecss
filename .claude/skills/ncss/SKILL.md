@@ -1724,6 +1724,43 @@ umgestellt:
       netzwerkfrei/selbst-gehostet, konsistent mit dem Rest des Projekts (kein externes
       CDN/Drittanbieter-Aufruf in einer Demo-Seite).
 
+71. **Neue Komponente `components/overlay.css`** (Punkt 4 der größeren Anfrage,
+    getuikit.com/docs/overlay als Referenz) - Panel über einem Bild/Video
+    (Bildunterschrift, CTA, Verlaufs-Blende). Bewusst KLEIN gehalten: nur Positionierung
+    (`.ncss-overlay` + `--top`/`--bottom`/`--center`) und zwei Hintergrund-Varianten
+    (`--scrim`/`--tint`) - für alles Weitere DREI bereits vorhandene ncss-Bausteine
+    kombiniert statt sie zu duplizieren (UIkits Doku macht dasselbe, verweist z.B. auf
+    die eigene Position-/Inverse-Komponente statt alles in Overlay selbst zu bauen):
+    - `.ncss-reveal-on-hover` (`helpers/visibility.css`) für "nur beim Hover sichtbar" -
+      funktioniert UNVERÄNDERT, weil `.ncss-overlay` per Markup-Konvention ein DIREKTES
+      Kind von `.ncss-overlay-container` ist (die Selektor-Bedingung dort, `:hover >
+      .ncss-reveal-on-hover`, trifft genau diese Eltern-Kind-Beziehung) - per echtem
+      Playwright-Test VOR dem Schreiben der Doku bestätigt (Opacity 0→1 beim Hover,
+      `pointer-events` korrekt mitgeschaltet), nicht nur angenommen.
+    - `.ncss-text-light`/`-dark` (`helpers/typography.css`) für Text, der unabhängig
+      vom Bildinhalt lesbar bleiben soll - keine eigene Overlay-Textfarbe erfunden.
+    - `--ncss-color-overlay`/`-overlay-strong` (`colors.css`, bereits vorhanden, bisher
+      nur für `.ncss-modal`/Off-Canvas-Backdrops genutzt) für `--tint`/`--scrim` wieder-
+      verwendet statt neuer Token.
+    - **Verschachtelte Kombination per echtem Test verifiziert** (nicht nur die
+      einzelnen Bausteine isoliert): `.ncss-overlay--center` INNERHALB eines
+      `.ncss-overlay--tint.ncss-reveal-on-hover` (Demo: Bild mit Hover-CTA-Button,
+      mittig, erscheint nur beim Hover) - geprüft, dass (1) die Opacity-Kette korrekt
+      vom äußeren auf den inneren Button durchschlägt, (2) `.ncss-overlay--center`s
+      eigene `position:absolute`-Zentrierung korrekt gegen den äußeren (ebenfalls
+      `position:absolute`) Overlay als nächsten positionierten Vorfahren rechnet, UND
+      (3) der Button trotz `pointer-events:none` im Ruhezustand des äußeren Elements
+      tatsächlich klickbar wird, sobald `:hover` `pointer-events:auto` zurückgibt - ein
+      Playwright `.click()` auf den Button bestätigte das, nicht nur die berechnete
+      `pointer-events`-Eigenschaft selbst (ein falsch geschachteltes `pointer-events`
+      könnte den Wert korrekt melden und trotzdem einen Klick durch ein anderes,
+      darüberliegendes Element abfangen lassen - der reale Klick-Test deckt das ab,
+      eine reine Style-Prüfung nicht).
+    - Doku-Abschnitt in `media.html` (nicht in `cards.html`, obwohl Overlay oft AUF
+      Karten-Media landet) - direkt neben "Cover" und vor "Hero" einsortiert, als die
+      kleinere, media-lokale Variante desselben "Inhalt über Bild"-Grundprinzips, das
+      Hero auf ganze Seitenabschnitte anwendet.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

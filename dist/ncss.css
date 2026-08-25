@@ -75,6 +75,7 @@
 @import url("components/breadcrumb.css") layer(components);
 @import url("components/lists.css") layer(components);
 @import url("components/cover.css") layer(components);
+@import url("components/overlay.css") layer(components);
 @import url("components/footer.css") layer(components);
 @import url("components/effects.css") layer(components);
 @import url("components/code-block.css") layer(components);

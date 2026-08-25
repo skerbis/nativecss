@@ -146,6 +146,31 @@
 &lt;/div&gt;</code></pre>
   </section>
 
+  <section id="overlay" class="ncss-stack">
+    <h2 class="demo-section-title">Overlay: Panel über Bild</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>components/overlay.css</code> - Bildunterschrift (<code>--bottom --scrim</code>,
+      immer sichtbar) und ein CTA, das erst beim Hover erscheint (<code>--center</code>,
+      kombiniert mit <code>.ncss-reveal-on-hover</code>):
+    </p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-overlay-container ncss-radius-md">
+        <img src="assets/art-direction-desktop.jpg" alt="Beispielbild">
+        <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
+          <p class="ncss-text-light">Immer sichtbar</p>
+        </div>
+      </div>
+      <div class="ncss-overlay-container ncss-radius-md">
+        <img src="assets/art-direction-desktop.jpg" alt="Beispielbild">
+        <div class="ncss-overlay ncss-overlay--tint ncss-reveal-on-hover">
+          <div class="ncss-overlay ncss-overlay--center">
+            <button type="button" class="ncss-btn ncss-btn--primary">Ansehen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="art-direction" class="ncss-stack">
     <h2 class="demo-section-title">Bilder: Art Direction (&lt;picture&gt;)</h2>
     <p class="ncss-text-muted ncss-text-sm">

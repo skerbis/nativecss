@@ -1,0 +1,68 @@
+/**
+ * ncss - Overlay-Komponente (Layer "components"). Ein Panel legt sich über ein Bild/
+ * Video (Bildunterschrift, CTA, Verlaufs-Blende) - position:relative auf dem Container,
+ * position:absolute auf dem Panel, klassisches Muster.
+ *
+ * Bewusst KLEIN gehalten (positionieren + zwei Hintergrund-Varianten) - für alles
+ * Weitere bereits vorhandene, allgemeine ncss-Bausteine kombinieren statt sie hier zu
+ * duplizieren:
+ *   - Nur beim Hover/Fokus sichtbar: .ncss-reveal-on-hover (helpers/visibility.css)
+ *     zusätzlich auf .ncss-overlay setzen - funktioniert unverändert, weil .ncss-overlay
+ *     ein DIREKTES Kind von .ncss-overlay-container ist (die Selektor-Bedingung dort,
+ *     ":hover > .ncss-reveal-on-hover", trifft genau diese Eltern-Kind-Beziehung).
+ *   - Lesbarer Text unabhängig vom Bildinhalt: .ncss-text-light/-dark
+ *     (helpers/typography.css) statt einer festen Textfarbe hier.
+ *
+ * Markup:
+ *   <div class="ncss-overlay-container">
+ *     <img src="foto.jpg" alt="...">
+ *     <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-reveal-on-hover">
+ *       <p class="ncss-text-light">Bildunterschrift</p>
+ *     </div>
+ *   </div>
+ */
+.ncss-overlay-container {
+  position: relative;
+  overflow: hidden;
+}
+.ncss-overlay-container > img,
+.ncss-overlay-container > video {
+  display: block;
+  width: 100%;
+}
+
+/* Default: deckt die komplette Fläche ab (wie .ncss-overlay--scrim/--tint oft gebraucht
+   werden) - --top/--bottom/--center schränken das gezielt auf einen Rand/die Mitte ein. */
+.ncss-overlay {
+  position: absolute;
+  inset: 0;
+  padding: var(--ncss-space-md);
+}
+.ncss-overlay--top {
+  inset-block-end: auto;
+}
+.ncss-overlay--bottom {
+  inset-block-start: auto;
+}
+.ncss-overlay--center {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  padding: 0;
+}
+
+/* Verlaufs-Blende von unten - klassisches "Text auf Foto bleibt lesbar"-Muster
+   (dasselbe Prinzip wie .ncss-hero-media::after in components/hero.css). Für --top
+   dieselbe Regel gespiegelt (Verlauf von oben statt unten). */
+.ncss-overlay--scrim {
+  background: linear-gradient(to top, var(--ncss-color-overlay-strong), transparent 60%);
+}
+.ncss-overlay--scrim.ncss-overlay--top {
+  background: linear-gradient(to bottom, var(--ncss-color-overlay-strong), transparent 60%);
+}
+/* Gleichmäßige, halbtransparente Fläche statt eines Verlaufs - z.B. für ein CTA, das
+   die ganze Kachel abdeckt, nicht nur einen Rand. */
+.ncss-overlay--tint {
+  background-color: var(--ncss-color-overlay);
+}

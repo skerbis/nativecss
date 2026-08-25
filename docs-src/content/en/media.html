@@ -1,7 +1,7 @@
 <!--DESC: Images, video, audio and hero sections - aspect ratio, object-fit, art direction and parallax without JS.-->
 <section class="ncss-stack">
   <h1>Media</h1>
-  <p class="ncss-text-lg ncss-text-muted">Image, video, audio and hero sections - <code>helpers/media.css</code>, <code>components/video.css</code>, <code>components/audio.css</code>, <code>components/hero.css</code>, <code>components/cover.css</code>.</p>
+  <p class="ncss-text-lg ncss-text-muted">Image, video, audio and hero sections - <code>helpers/media.css</code>, <code>components/video.css</code>, <code>components/audio.css</code>, <code>components/hero.css</code>, <code>components/cover.css</code>, <code>components/overlay.css</code>.</p>
 </section>
 
 <section class="ncss-stack" id="bilder">
@@ -42,6 +42,30 @@
       </tbody>
     </table>
   </div>
+</section>
+
+<section class="ncss-stack" id="overlay">
+  <h2 class="demo-section-title">Overlay (panel over image/video)</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/overlay.css</code> - a panel over an image (caption, CTA, gradient scrim). For an entire page section with a background image: <a href="#hero">Hero Section</a> below - Overlay is the smaller, media-local variant of the same underlying principle.</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-overlay-container"&gt;
+  &lt;img src="photo.jpg" alt="..."&gt;
+  &lt;div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim"&gt;
+    &lt;p class="ncss-text-light"&gt;Caption&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-overlay</code></td><td>Default: covers the whole area (<code>inset: 0</code>)</td></tr>
+        <tr><td><code>.ncss-overlay--top</code> / <code>--bottom</code></td><td>Only the top/bottom edge instead of the whole area</td></tr>
+        <tr><td><code>.ncss-overlay--center</code></td><td>Centered, at its own size (no <code>padding</code>) - e.g. for a centered play icon</td></tr>
+        <tr><td><code>.ncss-overlay--scrim</code></td><td>Gradient scrim (dark → transparent) - readable text over varying photo content, mirrors automatically with <code>--top</code></td></tr>
+        <tr><td><code>.ncss-overlay--tint</code></td><td>Even, semi-transparent fill instead of a gradient (<code>--ncss-color-overlay</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Combines with existing ncss building blocks instead of duplicating them: <code>.ncss-reveal-on-hover</code> (<a href="scroll.html">Scroll &amp; Visibility</a>) for "only visible on hover" - works unchanged, because <code>.ncss-overlay</code> is a direct child of <code>.ncss-overlay-container</code>. <code>.ncss-text-light</code>/<code>-dark</code> (<a href="typography.html">Typography</a>) for text that should stay readable regardless of the image content.</p>
 </section>
 
 <section class="ncss-stack" id="hero">
