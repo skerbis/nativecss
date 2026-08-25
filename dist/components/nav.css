@@ -69,6 +69,25 @@
      eine kurze Aktions-Sidebar. Weiterhin bei 85vw gedeckelt (siehe off-canvas.css), bricht
      also auch auf sehr schmalen Geräten nicht über den Viewport hinaus. */
   --ncss-offcanvas-width: 24rem;
+  /* .ncss-offcanvas (off-canvas.css, dieselbe Klasse trägt .ncss-nav-panel zusätzlich)
+     deklariert "transition: ... display ... allow-discrete" für die Öffnen/Schließen-
+     Animation. In Kombination mit display:contents (Desktop, hier) per echtem,
+     wiederholtem Playwright-Test isoliert bestätigt: SOBALD ein Element jemals
+     display:contents WAR, bleibt eine spätere allow-discrete-Transition auf "display" für
+     dasselbe Element beim Wechsel in einen anderen Wert dauerhaft hängen -
+     getComputedStyle meldet unbegrenzt weiter "contents", obwohl die Media Query korrekt
+     auf "matches" steht und andere Deklarationen im selben Media-Query-Block (z.B.
+     .ncss-nav-list' flex-direction) ganz normal greifen. Reproduziert unabhängig davon,
+     ob die Transition VOR oder GLEICHZEITIG mit dem display-Wechsel aktiviert wird -
+     kein Timing-/Reihenfolge-Problem, sondern eine grundsätzliche Unverträglichkeit
+     zwischen display:contents und allow-discrete-Transitions auf genau dieser
+     Eigenschaft. Deckt sich mit dem User-Report ("Nav blitzt beim Wechsel Desktop→Mobil
+     kurz untereinander auf", bestätigt in Chrome UND Safari). Fix: "display"/"overlay"
+     hier komplett von der Transition ausschließen (siehe Mobile-Block unten) - translate/
+     opacity bleiben animiert (Öffnen bleibt ein sanftes Einschieben), das Schließen
+     verschwindet dafür sofort statt auszublenden. Kein reiner CSS-Weg gefunden, der BEIDE
+     Richtungen animiert UND das Hängenbleiben vermeidet - ein sofortiges statt
+     ausblendendes Schließen ist der sichere Kompromiss. */
 }
 .ncss-nav-panel .ncss-dialog-close {
   display: none;
@@ -292,10 +311,29 @@
   .ncss-nav-toggle {
     display: inline-flex;
   }
+  /* display:contents zurücknehmen - jetzt greift die native <dialog>-Logik normal
+     (position:fixed, Slide-in-Animation, Backdrop aus components/off-canvas.css).
+     EXPLIZITE [open]/:not([open])-Werte statt `revert`/`revert-layer`: robuster/direkter,
+     keine Kaskaden-Auflösung über Layer-Grenzen und das UA-Stylesheet zur Laufzeit nötig. */
+  .ncss-nav-panel:not([open]) {
+    display: none;
+  }
+  .ncss-nav-panel[open] {
+    display: block;
+  }
+  /* .ncss-offcanvas (off-canvas.css) animiert "display"/"overlay" selbst per
+     allow-discrete (fürs sanfte Ausblenden beim Schließen, siehe dortiger Kommentar).
+     Für .ncss-nav-panel hier bewusst OHNE die beiden - display:contents (Desktop-Regel
+     oben) verträgt sich nicht mit einer späteren allow-discrete-Transition auf "display"
+     (siehe dortiger Kommentar für die vollständige Ursachenanalyse: display bleibt sonst
+     dauerhaft auf "contents" hängen, sobald der Mobile-Breakpoint erreicht wird - genau
+     der gemeldete Nav-Flash-Bug). translate/opacity bleiben animiert (sanftes Einschieben
+     beim Öffnen), das Schließen verschwindet dafür sofort statt auszublenden - der
+     sichere Kompromiss ohne das Hängenbleiben. */
   .ncss-nav-panel {
-    /* display:contents zurücknehmen - jetzt greift components/off-canvas.css normal
-       (position:fixed, Slide-in-Animation, Backdrop). */
-    display: revert-layer;
+    transition:
+      translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
   }
   .ncss-nav-panel .ncss-dialog-close {
     display: block;
