@@ -1692,6 +1692,38 @@ umgestellt:
       `.ncss-list--dot`-Kommentar: VoiceOver+Safari entfernt sonst die Listen-SEMANTIK,
       nicht nur die Optik).
 
+70. **Neue Komponente `components/cover.css`** (Punkt 3 der größeren Anfrage, mit
+    getuikit.com/docs/cover als Referenz). Für `<img>`/`<video>` gibt es dafür bereits
+    die einfachere native Lösung (`object-fit:cover`, `.ncss-img-cover`/`.ncss-video`) -
+    diese Komponente ist speziell für `<iframe>`-Embeds (YouTube/Vimeo/Maps), wo
+    `object-fit` in den meisten Browsern NICHT auf das eingebettete Dokument wirkt.
+    **Zwei per echtem Test gefundene, nicht-offensichtliche Fallstricke unterwegs**:
+    - Der naheliegende erste Versuch (das klassische `position:absolute` + zentriert +
+      `min-width/min-height:100%` + `width/height:auto`-Zuschnitt-Muster, verlassend auf
+      die `width`/`height`-HTML-Attribute des `<iframe>` als Seitenverhältnis-Quelle -
+      genau das, was UIkits eigene Doku beschreibt) lieferte in Chromium ein
+      VERZERRTES, nicht seitenverhältnis-treues Ergebnis (z.B. 304×304 statt der
+      erwarteten ~533×300 bei einem 560×315-Embed in einem 300×300-Container) - per
+      `getBoundingClientRect()`-Test VOR dem Schreiben der echten Datei gefunden, nicht
+      erst durch einen visuellen Bug-Report. Fix: eine EXPLIZITE CSS-`aspect-ratio` auf
+      dem Element selbst statt sich auf HTML-`width`/`height`-Attribute zu verlassen -
+      für ein absolut positioniertes Replaced Element ist `aspect-ratio` die
+      zuverlässige Ratio-Quelle, HTML-Attribute sind es (zumindest in Kombination mit
+      `min-width/min-height:100%`+`auto`) nicht. Nach dem Fix per selbem Test bestätigt,
+      in beiden Zuschnitt-Richtungen (breiter UND schmaler Container).
+    - `max-width: none` bewusst gesetzt, obwohl `reset.css`s `max-width:100%`-Regel
+      `<iframe>` GAR NICHT betrifft (Selektorliste dort: `img, picture, video, canvas,
+      svg` - kein `iframe`, per gezieltem `grep` VOR dem Schreiben geprüft, nicht
+      angenommen). Trotzdem behalten: falls `.ncss-cover` künftig auch auf `<video>`/
+      `<img>` angewendet wird (beide SIND in dieser reset.css-Liste), würde
+      `max-width:100%` das `width:auto`-Zuschnitt-Wachstum sonst kappen - defensiv
+      korrekt für den ganzen Anwendungsbereich der Klasse, nicht nur den dokumentierten
+      iframe-Fall.
+    - Demo: zwei `<iframe srcdoc="...">`-Beispiele in `demo/media.html#cover` (Farbverlauf
+      + "16:9"-Text als Testmuster) statt eines echten YouTube-Embeds - bleibt
+      netzwerkfrei/selbst-gehostet, konsistent mit dem Rest des Projekts (kein externes
+      CDN/Drittanbieter-Aufruf in einer Demo-Seite).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

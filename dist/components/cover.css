@@ -1,0 +1,45 @@
+/**
+ * ncss - Cover-Komponente (Layer "components"). Ein eingebettetes Element füllt seinen
+ * Container VOLLSTÄNDIG aus, unabhängig vom eigenen Seitenverhältnis - überschüssiger
+ * Bildinhalt wird beschnitten, nie gestaucht/verzerrt. Für <img>/<video> gibt es dafür
+ * bereits die einfachere, native Lösung (object-fit:cover - siehe .ncss-img-cover in
+ * helpers/media.css, .ncss-video in components/video.css) - DIESE Komponente ist
+ * speziell für <iframe> gedacht (YouTube/Vimeo/Google-Maps-Embeds), wo object-fit in
+ * den meisten Browsern NICHT zuverlässig auf das eingebettete Dokument wirkt.
+ *
+ * Technik: das klassische "min-width/min-height:100% + width/height:auto + zentriert"-
+ * Muster - KEIN object-fit. Wichtig, per echtem Test bestätigt: das Element braucht eine
+ * EXPLIZITE aspect-ratio (hier: --ncss-aspect-video als Default, pro Instanz mit
+ * style="aspect-ratio: ..." überschreibbar) - sich auf die width/height-HTML-Attribute
+ * eines <iframe> zu verlassen (der übliche erste Versuch) lieferte bei einem absolut
+ * positionierten Element KEIN seitenverhältnis-treues Ergebnis (quadratisch verzerrt
+ * statt zugeschnitten, in Chromium nachgestellt) - eine CSS-aspect-ratio ist die
+ * zuverlässige Ratio-Quelle für dieses Muster, keine HTML-Attribute.
+ *
+ * Markup:
+ *   <div class="ncss-cover-container" style="height: 20rem;">
+ *     <iframe class="ncss-cover" src="https://www.youtube.com/embed/..." title="..."
+ *             allowfullscreen></iframe>
+ *   </div>
+ * Höhe kommt vom CONTAINER (fixe Höhe, %, oder z.B. innerhalb eines .ncss-hero) - anders
+ * als bei .ncss-ratio-video (das die Höhe selbst aus der Breite ABLEITET), braucht
+ * .ncss-cover-container eine eigene, von außen kommende Höhe, weil das eingebettete
+ * Element seinerseits beschnitten wird, nicht das Seitenverhältnis vorgibt.
+ */
+.ncss-cover-container {
+  position: relative;
+  overflow: hidden;
+}
+.ncss-cover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: var(--ncss-aspect-video);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  border: none;
+}
