@@ -1,0 +1,221 @@
+/**
+ * ncss - Listen-Komponente (Layer "components"). Fertige, dekorative Varianten für
+ * native <ul>/<ol>/<dl> statt des nackten Browser-Default-Markers - reines CSS, kein
+ * Markup-Umbau nötig (eine Ausnahme: role="list", siehe unten).
+ *
+ * WICHTIG: list-style:none entfernt in einigen Screenreadern (bestätigter alter VoiceOver/
+ * Safari-Bug) die Listen-SEMANTIK selbst, nicht nur die visuelle Markierung - jede Variante
+ * hier, die list-style:none setzt, braucht deshalb zusätzlich role="list" im Markup (siehe
+ * jeweiliges Beispiel in den Kommentaren unten).
+ */
+
+/* --- ul: Punkt-Liste -----------------------------------------------------------------
+ * Dezenter, eingefärbter Punkt statt des nackten Browser-Markers.
+ * Markup: <ul class="ncss-list--dot" role="list"><li>Punkt eins</li>...</ul>
+ */
+.ncss-list--dot {
+  list-style: none;
+  padding-inline-start: 0;
+  display: grid;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-list--dot li {
+  position: relative;
+  padding-inline-start: var(--ncss-space-sm);
+}
+.ncss-list--dot li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.6em;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background-color: var(--ncss-color-brand);
+}
+
+/* --- ul: Gedankenstrich-Liste ----------------------------------------------------------
+ * Ruhiger als .ncss-list--dot - reiner Text-Marker statt einer Form, passt zu Fließtext-
+ * lastigen Listen (z.B. in einem Artikel statt einer Feature-Aufzählung).
+ * Markup: <ul class="ncss-list--dash" role="list"><li>Punkt eins</li>...</ul>
+ */
+.ncss-list--dash {
+  list-style: none;
+  padding-inline-start: 0;
+  display: grid;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-list--dash li {
+  position: relative;
+  padding-inline-start: var(--ncss-space-md);
+}
+.ncss-list--dash li::before {
+  content: "\2013";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--ncss-color-text-muted);
+}
+
+/* --- ul: Icon-Liste ----------------------------------------------------------------------
+ * Bewusst OHNE fest eingebackenes Icon (anders als -dot/-dash oben, die reines CSS
+ * zeichnen) - das Icon kommt aus dem MARKUP (ncss' eigenes .ncss-icon-* aus helpers/
+ * icons.css ODER Font Awesome), dieselbe Austauschbarkeit wie bei icons.css selbst
+ * dokumentiert. Diese Klasse übernimmt nur das Layout (Ausrichtung, Abstand, Größe),
+ * nicht die Icon-Quelle - vermeidet eine feste "Häkchen"/"Pfeil"/... Variante pro
+ * denkbarem Icon, die ohnehin nur exemplarisch sein könnte.
+ * Markup: <ul class="ncss-list--icon" role="list">
+ *   <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> Enthalten</li>
+ * </ul>
+ */
+.ncss-list--icon {
+  list-style: none;
+  padding-inline-start: 0;
+  display: grid;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-list--icon li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-list--icon li > .ncss-icon,
+.ncss-list--icon li > i {
+  flex: 0 0 auto;
+  margin-block-start: 0.2em;
+  color: var(--ncss-color-brand);
+}
+
+/* --- ul: geteilte Liste -----------------------------------------------------------------
+ * Keine Markierung, stattdessen eine horizontale Trennlinie zwischen den Einträgen - für
+ * Einstellungs-/Menü-artige Listen (Zeile = ein Eintrag), nicht für Aufzählungen.
+ * Markup: <ul class="ncss-list--divided" role="list"><li>Zeile 1</li>...</ul>
+ */
+.ncss-list--divided {
+  list-style: none;
+  padding-inline-start: 0;
+}
+.ncss-list--divided li {
+  padding-block: var(--ncss-space-sm);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.ncss-list--divided li:last-child {
+  border-block-end: none;
+}
+
+/* --- ul: reine Liste --------------------------------------------------------------------
+ * Kein Marker, kein Abstand, keine Trennlinie - nackter Ausgangspunkt für ein eigenes
+ * Layout (z.B. Kombination mit .ncss-cluster/.ncss-flex), ohne den Browser-Default-Marker
+ * erst manuell wegräumen zu müssen.
+ * Markup: <ul class="ncss-list--plain" role="list">...</ul>
+ */
+.ncss-list--plain {
+  list-style: none;
+  padding-inline-start: 0;
+  margin: 0;
+}
+
+/* --- ol: Schritte-Liste -----------------------------------------------------------------
+ * Nummer in einem farbigen Kreis statt der nackten Browser-Ziffer - für Anleitungen/
+ * Ablaufschritte. Eigener CSS-Zähler statt list-style-type, damit die Zahl frei in eine
+ * eigene, gestylte Fläche (::before) gesetzt werden kann - list-style selbst erlaubt keine
+ * Hintergrundfarbe/Radius um die Ziffer.
+ * Markup: <ol class="ncss-list--steps" role="list"><li>Schritt eins</li>...</ol>
+ */
+.ncss-list--steps {
+  list-style: none;
+  padding-inline-start: 0;
+  counter-reset: ncss-steps;
+  display: grid;
+  gap: var(--ncss-space-sm);
+}
+.ncss-list--steps li {
+  counter-increment: ncss-steps;
+  display: flex;
+  align-items: baseline;
+  gap: var(--ncss-space-sm);
+}
+.ncss-list--steps li::before {
+  content: counter(ncss-steps);
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.75em;
+  block-size: 1.75em;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+}
+
+/* --- dl: Definitionsliste, Standard -------------------------------------------------------
+ * dt fett, dd gedämpft und leicht eingerückt - kein role="list" nötig, <dl> hat kein
+ * list-style-Reset-Problem (list-style betrifft nur <ul>/<ol>).
+ * Markup: <dl class="ncss-dl"><dt>Begriff</dt><dd>Erklärung</dd>...</dl>
+ */
+.ncss-dl {
+  display: grid;
+  gap: var(--ncss-space-3xs);
+}
+.ncss-dl dt {
+  font-weight: 700;
+}
+.ncss-dl dd {
+  margin-inline-start: 0;
+  padding-inline-start: var(--ncss-space-sm);
+  color: var(--ncss-color-text-muted);
+  margin-block-end: var(--ncss-space-xs);
+}
+.ncss-dl dd:last-child {
+  margin-block-end: 0;
+}
+
+/* --- dl: inline (Label/Wert-Zeilen) ------------------------------------------------------
+ * dt/dd nebeneinander statt gestapelt - für Metadaten/Spezifikationstabellen ohne
+ * <table> ("Label: Wert" je Zeile). dt bekommt eine feste Mindestbreite, dd füllt den
+ * Rest - beide erwarten in derselben Reihenfolge im Markup zu stehen wie sie erscheinen
+ * sollen, CSS Grid ordnet dt/dd-Paare nicht eigenständig um.
+ * Markup: <dl class="ncss-dl--inline"><dt>Version</dt><dd>2.0</dd>...</dl>
+ */
+.ncss-dl--inline {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  gap: var(--ncss-space-2xs) var(--ncss-space-md);
+}
+.ncss-dl--inline dt {
+  font-weight: 700;
+}
+.ncss-dl--inline dd {
+  margin-inline-start: 0;
+  color: var(--ncss-color-text-muted);
+}
+
+/* --- dl: Kennzahlen-Kacheln --------------------------------------------------------------
+ * dt als kleines Label ÜBER einer großen dd-Zahl, mehrere Paare als Kachel-Raster -
+ * klassisches "Statistik"-Muster (siehe auch das .mp-stat-card-Beispiel in "Eigene
+ * Komponenten erstellen" - hier als fertige, eingebaute Variante statt Marke in Eigenbau).
+ * Nutzt .ncss-grid intern (intrinsisch, keine Breakpoints nötig).
+ * Markup: <dl class="ncss-dl--stats">
+ *   <div><dt>Nutzer</dt><dd>1.204</dd></div>...
+ * </dl>
+ * dt/dd IMMER in einem gemeinsamen Wrapper-<div> pro Kachel - <dl> selbst ist per Spec
+ * nur ein direkter Elternknoten für dt/dd (optional gruppiert per <div>, siehe HTML-Spec),
+ * das Grid unten braucht diesen Wrapper als eigenes Grid-Item.
+ */
+.ncss-dl--stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
+  gap: var(--ncss-space-md);
+}
+.ncss-dl--stats dt {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+  margin-block-end: var(--ncss-space-3xs);
+}
+.ncss-dl--stats dd {
+  margin-inline-start: 0;
+  font-size: var(--ncss-font-size-xl);
+  font-weight: 700;
+  color: var(--ncss-color-brand-on-soft);
+}

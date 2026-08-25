@@ -1,0 +1,69 @@
+<!--DESC: Fertige Varianten für ul/ol/dl - Punkt, Gedankenstrich, Icon, geteilt, Schritte, Definitionslisten.-->
+<section class="ncss-stack">
+  <h1>Listen</h1>
+  <p class="ncss-text-lg ncss-text-muted">Fertige, dekorative Varianten für native <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code> - <code>components/lists.css</code>. Live: <a href="../../demo/index.html#listen">Demo</a>.</p>
+</section>
+
+<section class="ncss-stack" id="a11y">
+  <h2 class="demo-section-title">Wichtig: role="list"</h2>
+  <p><code>list-style: none</code> entfernt in einigen Screenreadern (bestätigter älterer VoiceOver/Safari-Bug) die Listen-SEMANTIK selbst, nicht nur die visuelle Markierung. Jede Variante unten, die <code>list-style: none</code> setzt (alle außer den <code>dl</code>-Varianten - <code>&lt;dl&gt;</code> hat kein <code>list-style</code>), braucht deshalb zusätzlich <code>role="list"</code> im Markup, siehe die Beispiele.</p>
+</section>
+
+<section class="ncss-stack" id="ul">
+  <h2 class="demo-section-title">ul-Varianten</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-list--dot</code></td><td>Dezenter, eingefärbter Punkt statt des nackten Browser-Markers</td></tr>
+        <tr><td><code>.ncss-list--dash</code></td><td>Gedankenstrich - ruhiger als <code>--dot</code>, passt zu Fließtext-lastigen Listen</td></tr>
+        <tr><td><code>.ncss-list--icon</code></td><td>Icon aus dem Markup (kein fest eingebackenes) - reine Layout-Klasse, siehe unten</td></tr>
+        <tr><td><code>.ncss-list--divided</code></td><td>Horizontale Trennlinie statt Marker - Einstellungs-/Menü-artige Listen</td></tr>
+        <tr><td><code>.ncss-list--plain</code></td><td>Kein Marker, kein Abstand - nackter Ausgangspunkt für eigenes Layout</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ul class="ncss-list--dot" role="list"&gt;
+  &lt;li&gt;Punkt eins&lt;/li&gt;
+  &lt;li&gt;Punkt zwei&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>.ncss-list--icon</code> bringt bewusst KEIN fest eingebackenes Icon mit (anders als <code>--dot</code>/<code>--dash</code>, die reines CSS zeichnen) - das Icon kommt aus dem Markup, ncss' eigenes <code>.ncss-icon-*</code> (<a href="icons.html">Icons</a>) oder Font Awesome, dieselbe Austauschbarkeit wie beim Icon-System selbst:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ul class="ncss-list--icon" role="list"&gt;
+  &lt;li&gt;&lt;span class="ncss-icon ncss-icon-check" aria-hidden="true"&gt;&lt;/span&gt; Enthalten&lt;/li&gt;
+  &lt;li&gt;&lt;span class="ncss-icon ncss-icon-check" aria-hidden="true"&gt;&lt;/span&gt; Auch enthalten&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="ol">
+  <h2 class="demo-section-title">ol-Variante: Schritte</h2>
+  <p><code>.ncss-list--steps</code> - Nummer in einem farbigen Kreis statt der nackten Browser-Ziffer, für Anleitungen/Abläufe. Eigener CSS-Zähler (<code>counter-reset</code>/<code>counter-increment</code>) statt <code>list-style-type</code>, damit die Zahl in eine eigene, gestylte Fläche (<code>::before</code>) gesetzt werden kann:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ol class="ncss-list--steps" role="list"&gt;
+  &lt;li&gt;Dateien kopieren&lt;/li&gt;
+  &lt;li&gt;theme.css anpassen&lt;/li&gt;
+  &lt;li&gt;Fertig&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="dl">
+  <h2 class="demo-section-title">dl-Varianten</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-dl</code></td><td>Standard - <code>dt</code> fett, <code>dd</code> gedämpft und eingerückt, gestapelt</td></tr>
+        <tr><td><code>.ncss-dl--inline</code></td><td><code>dt</code>/<code>dd</code> nebeneinander je Zeile ("Label: Wert") - Metadaten ohne <code>&lt;table&gt;</code></td></tr>
+        <tr><td><code>.ncss-dl--stats</code></td><td><code>dt</code> als kleines Label ÜBER einer großen <code>dd</code>-Zahl, mehrere Paare als Kachel-Raster (Statistik-Muster)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;dl class="ncss-dl--inline"&gt;
+  &lt;dt&gt;Version&lt;/dt&gt;&lt;dd&gt;2.0&lt;/dd&gt;
+  &lt;dt&gt;Lizenz&lt;/dt&gt;&lt;dd&gt;MIT&lt;/dd&gt;
+&lt;/dl&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>.ncss-dl--stats</code> braucht einen gemeinsamen Wrapper-<code>&lt;div&gt;</code> pro <code>dt</code>/<code>dd</code>-Paar (<code>&lt;dl&gt;</code> erlaubt das per Spec zur Gruppierung) - das interne <code>.ncss-grid</code> (intrinsisch, keine Breakpoints nötig) braucht diesen Wrapper als eigenes Grid-Item:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;dl class="ncss-dl--stats"&gt;
+  &lt;div&gt;&lt;dt&gt;Nutzer&lt;/dt&gt;&lt;dd&gt;1.204&lt;/dd&gt;&lt;/div&gt;
+  &lt;div&gt;&lt;dt&gt;Downloads&lt;/dt&gt;&lt;dd&gt;328&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Für dasselbe Kacheln-Muster mit BELIEBIGEM eigenem Inhalt (nicht nur Label+Zahl) statt <code>&lt;dl&gt;</code>: <a href="custom-components.html">Eigene Komponenten erstellen</a>.</p>
+</section>

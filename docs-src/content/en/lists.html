@@ -1,0 +1,69 @@
+<!--DESC: Ready-made variants for ul/ol/dl - dot, dash, icon, divided, steps, definition lists.-->
+<section class="ncss-stack">
+  <h1>Lists</h1>
+  <p class="ncss-text-lg ncss-text-muted">Ready-made, decorative variants for native <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code> - <code>components/lists.css</code>. Live: <a href="../../demo/index.html#listen">Demo</a>.</p>
+</section>
+
+<section class="ncss-stack" id="a11y">
+  <h2 class="demo-section-title">Important: role="list"</h2>
+  <p><code>list-style: none</code> removes list SEMANTICS itself in some screen readers (a confirmed older VoiceOver/Safari bug), not just the visual marker. Every variant below that sets <code>list-style: none</code> (all except the <code>dl</code> variants - <code>&lt;dl&gt;</code> has no <code>list-style</code> to begin with) therefore also needs <code>role="list"</code> in the markup, see the examples.</p>
+</section>
+
+<section class="ncss-stack" id="ul">
+  <h2 class="demo-section-title">ul variants</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-list--dot</code></td><td>Subtle, colored dot instead of the bare browser marker</td></tr>
+        <tr><td><code>.ncss-list--dash</code></td><td>Dash - calmer than <code>--dot</code>, suits prose-heavy lists</td></tr>
+        <tr><td><code>.ncss-list--icon</code></td><td>Icon from the markup (none baked in) - a pure layout class, see below</td></tr>
+        <tr><td><code>.ncss-list--divided</code></td><td>Horizontal divider instead of a marker - settings/menu-style lists</td></tr>
+        <tr><td><code>.ncss-list--plain</code></td><td>No marker, no spacing - a bare starting point for your own layout</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ul class="ncss-list--dot" role="list"&gt;
+  &lt;li&gt;Point one&lt;/li&gt;
+  &lt;li&gt;Point two&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>.ncss-list--icon</code> deliberately ships with NO baked-in icon (unlike <code>--dot</code>/<code>--dash</code>, which draw pure CSS) - the icon comes from the markup, either ncss' own <code>.ncss-icon-*</code> (<a href="icons.html">Icons</a>) or Font Awesome, the same substitutability as the icon system itself:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ul class="ncss-list--icon" role="list"&gt;
+  &lt;li&gt;&lt;span class="ncss-icon ncss-icon-check" aria-hidden="true"&gt;&lt;/span&gt; Included&lt;/li&gt;
+  &lt;li&gt;&lt;span class="ncss-icon ncss-icon-check" aria-hidden="true"&gt;&lt;/span&gt; Also included&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="ol">
+  <h2 class="demo-section-title">ol variant: steps</h2>
+  <p><code>.ncss-list--steps</code> - a number in a colored circle instead of the bare browser digit, for instructions/sequences. Its own CSS counter (<code>counter-reset</code>/<code>counter-increment</code>) instead of <code>list-style-type</code>, so the number can sit inside its own styled shape (<code>::before</code>):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ol class="ncss-list--steps" role="list"&gt;
+  &lt;li&gt;Copy the files&lt;/li&gt;
+  &lt;li&gt;Adjust theme.css&lt;/li&gt;
+  &lt;li&gt;Done&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="dl">
+  <h2 class="demo-section-title">dl variants</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-dl</code></td><td>Default - <code>dt</code> bold, <code>dd</code> muted and indented, stacked</td></tr>
+        <tr><td><code>.ncss-dl--inline</code></td><td><code>dt</code>/<code>dd</code> side by side per row ("label: value") - metadata without a <code>&lt;table&gt;</code></td></tr>
+        <tr><td><code>.ncss-dl--stats</code></td><td><code>dt</code> as a small label ABOVE a large <code>dd</code> figure, several pairs as a tile grid (stats pattern)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;dl class="ncss-dl--inline"&gt;
+  &lt;dt&gt;Version&lt;/dt&gt;&lt;dd&gt;2.0&lt;/dd&gt;
+  &lt;dt&gt;License&lt;/dt&gt;&lt;dd&gt;MIT&lt;/dd&gt;
+&lt;/dl&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>.ncss-dl--stats</code> needs a shared wrapper <code>&lt;div&gt;</code> per <code>dt</code>/<code>dd</code> pair (<code>&lt;dl&gt;</code> allows this for grouping, per spec) - the internal <code>.ncss-grid</code> (intrinsic, no breakpoints needed) needs that wrapper as its own grid item:</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;dl class="ncss-dl--stats"&gt;
+  &lt;div&gt;&lt;dt&gt;Users&lt;/dt&gt;&lt;dd&gt;1,204&lt;/dd&gt;&lt;/div&gt;
+  &lt;div&gt;&lt;dt&gt;Downloads&lt;/dt&gt;&lt;dd&gt;328&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">For the same tile pattern with ANY custom content (not just label+number) instead of <code>&lt;dl&gt;</code>: <a href="custom-components.html">Build Your Own Components</a>.</p>
+</section>

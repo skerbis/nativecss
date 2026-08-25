@@ -1656,6 +1656,42 @@ umgestellt:
       `helpers/layout.css` erweitert, `scroll.html`s Kurzreferenz von
       `helpers/visibility.css` um die neuen Klassen ergänzt, gegenseitig verlinkt.
 
+69. **Neue Komponente `components/lists.css`** (User-Vorgabe, explizit als EIGENE
+    Komponente gewünscht statt weiterer Utility-Klassen in `helpers/typography.css`) -
+    Punkt 2 der größeren Anfrage nach Fallstrick 68. `ul`: `--dot` (verschoben, siehe
+    unten), `--dash` (reiner Text-Marker), `--icon` (bewusst OHNE fest eingebackenes
+    Icon - Layout-Klasse, Icon kommt aus dem Markup via `.ncss-icon-*`/Font Awesome,
+    dieselbe Austauschbarkeit wie `helpers/icons.css` selbst dokumentiert, statt eine
+    feste `--check`/`--arrow`-Variante pro denkbarem Icon zu backen), `--divided`
+    (Trennlinie statt Marker, Einstellungs-/Menü-Listen), `--plain` (nackter
+    Ausgangspunkt). `ol`: `--steps` (Nummer in farbigem Kreis via `counter-reset`/
+    `counter-increment` + `::before` - `list-style-type` erlaubt keine Hintergrundfarbe/
+    Radius um die Ziffer, deshalb eigener Zähler statt Marker). `dl`: `.ncss-dl`
+    (Standard, gestapelt), `--inline` (Label/Wert-Zeilen, `dt`/`dd` nebeneinander per
+    Grid), `--stats` (Kennzahl-Kacheln - dieselbe Idee wie das `.mp-stat-card`-Beispiel
+    aus Fallstrick 67, hier als fertige, eingebaute Variante).
+    - **`.ncss-list--dot` verschoben, nicht neu erfunden**: existierte schon in
+      `helpers/typography.css` - dorthin `git mv`-äquivalent (Cut+Paste, Klassenname
+      unverändert) in die neue Komponente überführt, damit "Listen sind eine eigene
+      Komponente" auch für die BESTEHENDE Variante gilt, nicht nur für neue. Drei
+      Fundstellen dabei korrigiert, die den alten Dateipfad noch benannten: ein
+      CSS-Kommentar in `demo/product.html` ("kommt jetzt aus helpers/typography.css"),
+      ein Eintrag in der `.ncss-eyebrow`/`.ncss-lead-quote`-Aufzählung in
+      `docs-src/content/{de,en}/typography.html` (ersetzt durch einen Verweis auf die
+      neue `lists.html`-Seite). Reine Markup-NUTZUNGEN der Klasse (z.B. in
+      `known-limitations.html`, `accessibility.html`) brauchten KEINE Änderung - der
+      Klassenname selbst blieb gleich, nur die Definitions-Datei zog um.
+    - Neue Doku-Seite `lists.html` (DE/EN), in der "components"-Nav-Gruppe direkt nach
+      `custom-components` einsortiert, plus eine neue Zeile in der
+      `components.html`-Referenztabelle. Demo-Abschnitt in `demo/index.html#listen`
+      (kein eigenes neues Demo-File - Listen sind klein genug, um im bestehenden
+      Kitchen-Sink mitzulaufen, anders als das umfangreichere Layout-Thema aus
+      Fallstrick 68, das eine eigene Seite rechtfertigte) - `role="list"` konsequent in
+      jedem Beispiel gesetzt, wo `list-style:none` gesetzt wird (siehe `base.css`s
+      `[role="list"]`-Konvention, dieselbe Begründung wie beim ursprünglichen
+      `.ncss-list--dot`-Kommentar: VoiceOver+Safari entfernt sonst die Listen-SEMANTIK,
+      nicht nur die Optik).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

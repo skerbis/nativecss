@@ -52,6 +52,7 @@
       "pages": [
         { "slug": "components", "de": "Komponenten-Referenz", "en": "Component Reference" },
         { "slug": "custom-components", "de": "Eigene Komponenten erstellen", "en": "Build Your Own Components" },
+        { "slug": "lists", "de": "Listen", "en": "Lists" },
         { "slug": "cards", "de": "Karten", "en": "Cards" },
         { "slug": "layouts", "de": "Landingpage-Bausteine", "en": "Landing Page Blocks" },
         { "slug": "webawesome-bridge", "de": "Web Awesome Bridge", "en": "Web Awesome Bridge" },
