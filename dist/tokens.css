@@ -107,6 +107,13 @@
   --ncss-motion-duration: 200ms;
   --ncss-motion-duration-slow: 400ms;
   --ncss-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Betont abbremsende Kurve für Elemente, die ins Bild HEREINKOMMEN (z.B. ein
+     Modal, das aus einer Richtung hereinschiebt) - anders als die neutrale
+     Standardkurve oben startet sie schnell und bremst dann lange, spürbar aus,
+     wirkt dadurch bewusst "weicher"/gewichtiger beim Ankommen. Kombiniert am besten
+     mit `-duration-slow`, nicht der normalen Dauer - bei 200ms bleibt für das lange
+     Ausbremsen kaum sichtbare Zeit. */
+  --ncss-motion-easing-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* GPU-Compositing-Hinweis (translateZ(0)) - bewusst OHNE Default-Wert hier definiert,
      anders als jeder andere Token in diesem Block. Ein zusätzlicher Compositor-Layer kostet

@@ -2057,6 +2057,40 @@ umgestellt:
       Redirect-Meta) + `-design.html` (bewusst ohne, zeigt den reinen Fallback) -
       als iframe eingebettet in `demo/index.html` neben den drei neuen
       Einblendvarianten-Buttons.
+    - **NACHTRAG 1, User-Feedback nach dem ersten Deploy**: "hätte gerne auch
+      gerne langsamere bezier animationen von oben unten links und rechts" - zwei
+      Nachbesserungen. (a) `--slide-left`/`--slide-right` ergänzt (bis dahin nur
+      `--slide-up`/`--slide-down`), identisches Muster, nur `translate` auf der
+      X- statt Y-Achse. (b) Neuer Token `--ncss-motion-easing-emphasized:
+      cubic-bezier(0.16, 1, 0.3, 1)` (tokens.css) - eine stark abbremsende
+      "Emphasized"-Kurve (Material-Design-Terminologie), NUR für Elemente
+      gedacht, die ins Bild HEREINKOMMEN, nicht als Ersatz für die neutrale
+      `--ncss-motion-easing` überall. Alle vier Slide-Varianten (+ die
+      `::backdrop`-Gegenstücke) bekamen dafür eine EIGENE, vollständige
+      `transition`-Deklaration mit `--ncss-motion-duration-slow` (400ms statt
+      200ms) + der neuen Kurve - eine Shorthand-Eigenschaft wie `transition`
+      lässt sich nicht teilweise überschreiben, nur komplett neu deklarieren
+      (dieselbe Notwendigkeit wie beim ursprünglichen `--3d`).
+    - **NACHTRAG 2, direkt im Anschluss**: "auch weitere 3d varianten" - zwei
+      neue 3D-Varianten nach demselben `perspective()`-als-eigene-transform-
+      Funktion-Muster wie `--3d` (siehe dortige Begründung: `<dialog>` rendert
+      im Top Layer, eine `perspective`-Eigenschaft auf einem Vorfahren würde
+      dort nicht zuverlässig respektiert). `--3d-flip` dreht symmetrisch um die
+      eigene Hochachse (`rotateY(90deg)→0deg`, `transform-origin` bleibt beim
+      Default 50% 50%) wie eine Karte. `--3d-swing` ist praktisch dieselbe
+      Rotation, aber mit `transform-origin: 0% 50%` (linke Kante statt Mitte) -
+      genau dieser eine Unterschied macht den kompletten Unterschied zwischen
+      "symmetrischer Flip" und "Tür am Scharnier"-Gefühl, `rotateY(-100deg)`
+      (leicht über 90° hinaus) für einen Hauch wahrnehmbaren Schwung. Beide
+      nutzen ebenfalls die neue `--ncss-motion-easing-emphasized`-Kurve für ein
+      zum Rest der neuen Varianten passendes, gewichtiges Gefühl. Alle sechs
+      neuen/geänderten Varianten (4× Slide, 2× neue 3D) per echtem
+      Zwischenwert-Sampling erneut bestätigt (`translate`/`transform` je
+      35-38 unterscheidbare Zwischenwerte über die 400ms) - der oben
+      beschriebene fehlende-Property-in-der-transition-Liste-Bug (Haupttext
+      dieses Eintrags) trat hier nicht erneut auf, weil `--3d-flip`/`--3d-swing`
+      dieselbe vollständige, selbst deklarierte `transition`-Liste wie `--3d`
+      verwenden (nie inkrementell auf die Basisregel verlassen).
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 

@@ -580,22 +580,39 @@
       </div>
     </dialog>
 
-    <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog3d">Dialog mit 3D-Tiefeneffekt öffnen</button>
+    <p class="ncss-text-muted ncss-text-sm">3D-Varianten: <code>perspective()</code> als Transform-Funktion in der eigenen <code>transform</code>-Kette (kein <code>perspective</code> auf einem Elternelement nötig/wirksam, <code>&lt;dialog&gt;</code> rendert im Top Layer).</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog3d">--3d</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog3dFlip">--3d-flip</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog3dSwing">--3d-swing</button>
+    </div>
     <dialog id="demoDialog3d" class="ncss-modal ncss-modal--3d">
       <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialog3d" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
       <div class="ncss-modal-header"><h3>.ncss-modal--3d</h3></div>
       <div class="ncss-modal-body">
-        <p>Kippt beim Öffnen wie aus der Tiefe nach vorne herein, statt nur zu faden/skalieren - <code>perspective()</code> als Transform-Funktion direkt in der eigenen <code>transform</code>-Kette (kein <code>perspective</code> auf einem Elternelement nötig/wirksam, <code>&lt;dialog&gt;</code> rendert im Top Layer).</p>
+        <p>Kippt beim Öffnen wie aus der Tiefe nach vorne herein, statt nur zu faden/skalieren.</p>
       </div>
       <div class="ncss-modal-footer">
         <button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="demoDialog3d">Schließen</button>
       </div>
     </dialog>
+    <dialog id="demoDialog3dFlip" class="ncss-modal ncss-modal--3d-flip">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialog3dFlip" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--3d-flip</h3></div>
+      <div class="ncss-modal-body"><p>Dreht sich beim Öffnen einmal um die eigene Hochachse herein, wie eine Karte.</p></div>
+    </dialog>
+    <dialog id="demoDialog3dSwing" class="ncss-modal ncss-modal--3d-swing">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialog3dSwing" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--3d-swing</h3></div>
+      <div class="ncss-modal-body"><p>Schwingt wie eine Tür um ein Scharnier an der linken Kante herein.</p></div>
+    </dialog>
 
-    <p class="ncss-text-muted ncss-text-sm">Einblendvarianten: statt der Standard-Skalierung slidet/wächst das Modal aus einer Richtung heran.</p>
+    <p class="ncss-text-muted ncss-text-sm">Einblendvarianten: statt der Standard-Skalierung slidet/wächst das Modal aus einer Richtung heran (langsamere, deutlich abbremsende Bezier-Kurve statt der neutralen Standardkurve).</p>
     <div class="ncss-cluster">
       <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideUp">--slide-up</button>
       <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideDown">--slide-down</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideLeft">--slide-left</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideRight">--slide-right</button>
       <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogZoom">--zoom</button>
     </div>
     <dialog id="demoDialogSlideUp" class="ncss-modal ncss-modal--slide-up">
@@ -607,6 +624,16 @@
       <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideDown" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
       <div class="ncss-modal-header"><h3>.ncss-modal--slide-down</h3></div>
       <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von oben herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogSlideLeft" class="ncss-modal ncss-modal--slide-left">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideLeft" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-left</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von rechts herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogSlideRight" class="ncss-modal ncss-modal--slide-right">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideRight" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-right</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von links herein.</p></div>
     </dialog>
     <dialog id="demoDialogZoom" class="ncss-modal ncss-modal--zoom">
       <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogZoom" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>

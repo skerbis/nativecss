@@ -1,12 +1,17 @@
 /**
  * ncss - AJAX-Modal-Router (opt-in, reines JS, kein eigenes CSS-File - nutzt ein
  * normales .ncss-modal, siehe components/modal.css, plus ggf. eine der dortigen
- * Einblendvarianten --slide-up/--slide-down/--zoom).
+ * Einblendvarianten --slide-up/--slide-down/--slide-left/--slide-right/--zoom).
  *
- * Trigger-Links behalten ihr echtes href (Progressive-Enhancement-Fallback - ohne
- * JS/bei Fehler navigiert der Link ganz normal zur eigenständigen Zielseite) und
- * bekommen zusätzlich `data-modal-router-trigger="#idDesDialogs"`. Klick lädt die
- * Zielseite per fetch() nach, extrahiert daraus einen Ausschnitt (Standard-Selektor
+ * BRAUCHT ZWINGEND JAVASCRIPT für die AJAX-/Modal-Funktion selbst - ohne JS (Skript
+ * blockiert/deaktiviert) oder bevor es geladen hat, ist ein Trigger-Link einfach ein
+ * GANZ NORMALER Link: Klick navigiert zur eigenständigen Zielseite, kompletter
+ * Seitenwechsel, kein Modal. Das ist ABSICHT (Progressive-Enhancement-Fallback, siehe
+ * Markup unten) und funktioniert nur, weil jede Zielseite auch als vollständige,
+ * eigenständige Seite existieren MUSS - keine JS-only-Inhalte, die es sonst nirgends
+ * gibt. Trigger-Links behalten ihr echtes href deshalb immer und bekommen zusätzlich
+ * `data-modal-router-trigger="#idDesDialogs"`. Klick lädt die Zielseite per fetch()
+ * nach, extrahiert daraus einen Ausschnitt (Standard-Selektor
  * "main", überschreibbar über `data-modal-router-content` auf dem <dialog>) und
  * zeigt ihn im Modal - die URL wandert dabei per history.pushState() mit, das Modal
  * bleibt dadurch verlink-/teilbar (Adressleiste zeigt die echte Ziel-URL, ohne dass

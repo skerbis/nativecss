@@ -174,7 +174,32 @@
    deklariert statt sich auf den ererbten Startwert `none` zu verlassen - dokumentiert
    den Bewegungspfad an Ort und Stelle, statt ihn nur aus der geschlossenen Gegenseite
    zu erschließen. Kombinierbar mit --fullscreen/--dark (unterschiedliche Eigenschaften,
-   keine Kollision), NICHT mit --3d (beide beanspruchen dieselbe Transform-Achse). */
+   keine Kollision), NICHT mit --3d (beide beanspruchen dieselbe Transform-Achse).
+
+   Eigene, LANGSAMERE `transition`-Deklaration (überschreibt die Basisregel ganz oben
+   komplett, wie --3d es schon vormacht - ein Custom-Property-Shorthand wie `transition`
+   lässt sich nicht teilweise überschreiben, nur als Ganzes neu deklarieren) mit
+   `--ncss-motion-duration-slow` statt der normalen Dauer und der eigens dafür
+   angelegten `--ncss-motion-easing-emphasized`-Kurve (tokens.css) statt der neutralen
+   Standardkurve - startet zügig, bremst dann spürbar lang aus, wirkt dadurch
+   gewichtiger/weicher als der knappe Standard-Fade (User-Vorgabe: "langsamere bezier
+   animationen"). */
+.ncss-modal--slide-up,
+.ncss-modal--slide-down,
+.ncss-modal--slide-left,
+.ncss-modal--slide-right,
+.ncss-modal--slide-up::backdrop,
+.ncss-modal--slide-down::backdrop,
+.ncss-modal--slide-left::backdrop,
+.ncss-modal--slide-right::backdrop {
+  transition:
+    opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    scale var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    display var(--ncss-motion-duration-slow) allow-discrete,
+    overlay var(--ncss-motion-duration-slow) allow-discrete;
+}
+
 .ncss-modal--slide-up:not(:modal) {
   scale: 1;
   translate: 0 1.5rem;
@@ -200,6 +225,34 @@
   .ncss-modal--slide-down:modal {
     scale: 1;
     translate: 0 -1.5rem;
+  }
+}
+
+.ncss-modal--slide-left:not(:modal) {
+  scale: 1;
+  translate: 1.5rem 0;
+}
+.ncss-modal--slide-left:modal {
+  translate: 0 0;
+}
+@starting-style {
+  .ncss-modal--slide-left:modal {
+    scale: 1;
+    translate: 1.5rem 0;
+  }
+}
+
+.ncss-modal--slide-right:not(:modal) {
+  scale: 1;
+  translate: -1.5rem 0;
+}
+.ncss-modal--slide-right:modal {
+  translate: 0 0;
+}
+@starting-style {
+  .ncss-modal--slide-right:modal {
+    scale: 1;
+    translate: -1.5rem 0;
   }
 }
 
@@ -251,6 +304,74 @@
       opacity: 0;
       scale: 1;
       transform: perspective(75rem) rotateX(12deg) translateZ(var(--ncss-modal-3d-depth));
+    }
+  }
+}
+
+/* --- Variante: Karten-Flip um die Hochachse -----------------------------------------------
+   Dreht sich beim Öffnen einmal um die eigene Y-Achse herein (90deg = exakt kantig/
+   unsichtbar, wie eine Karte, die man von der Seite betrachtet - deckt sich ohnehin mit
+   opacity:0 im selben Zustand, der genaue Winkel ist optisch also nicht kritisch).
+   `transform-origin` bewusst NICHT gesetzt (bleibt beim Default 50% 50%, mittig) - der
+   Unterschied zu --3d-swing unten ist genau diese Drehachse: mittig = symmetrischer
+   Flip, Kante = Tür-Scharnier-Gefühl. Dieselbe langsamere `--ncss-motion-easing-
+   emphasized`-Kurve wie die Slide-Varianten oben (User-Vorgabe: "langsamere bezier
+   animationen"). */
+.ncss-modal--3d-flip {
+  scale: 1;
+  transform: perspective(75rem) rotateY(0deg);
+  transition:
+    opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    transform var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    display var(--ncss-motion-duration-slow) allow-discrete,
+    overlay var(--ncss-motion-duration-slow) allow-discrete;
+
+  &::backdrop {
+    transition: opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized);
+  }
+  &:not(:modal) {
+    opacity: 0;
+    scale: 1;
+    transform: perspective(75rem) rotateY(90deg);
+  }
+  @starting-style {
+    &:modal {
+      opacity: 0;
+      scale: 1;
+      transform: perspective(75rem) rotateY(90deg);
+    }
+  }
+}
+
+/* --- Variante: Tür-Scharnier um die linke Kante -------------------------------------------
+   Wie --3d-flip oben, aber `transform-origin: 0% 50%` (linke Kante statt Mitte) - dreht
+   sich dadurch wie eine Tür um ein Scharnier herein statt symmetrisch um die eigene
+   Mitte zu kippen. Etwas über 90deg hinaus (100deg) für einen Hauch Schwung beim
+   Aufschwingen, rein optisch motiviert (bei genau 90deg wäre die Kante exakt auf der
+   Drehachse, wirkt weniger nach Bewegung). */
+.ncss-modal--3d-swing {
+  scale: 1;
+  transform-origin: 0% 50%;
+  transform: perspective(75rem) rotateY(0deg);
+  transition:
+    opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    transform var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    display var(--ncss-motion-duration-slow) allow-discrete,
+    overlay var(--ncss-motion-duration-slow) allow-discrete;
+
+  &::backdrop {
+    transition: opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized);
+  }
+  &:not(:modal) {
+    opacity: 0;
+    scale: 1;
+    transform: perspective(75rem) rotateY(-100deg);
+  }
+  @starting-style {
+    &:modal {
+      opacity: 0;
+      scale: 1;
+      transform: perspective(75rem) rotateY(-100deg);
     }
   }
 }
