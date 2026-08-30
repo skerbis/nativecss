@@ -33,7 +33,8 @@
   <div class="ncss-table-scroll">
     <table>
       <tbody>
-        <tr><td><code>modal.css</code></td><td><code>.ncss-modal</code>, <code>-header</code>, <code>-footer</code> (+ <code>--fullscreen</code>, <code>--dark</code>, <code>--3d</code>)</td><td>Centered dialog modal; <code>--fullscreen</code>+<code>--dark</code> yields a lightbox. <code>--3d</code> tilts in from depth on open.</td></tr>
+        <tr><td><code>modal.css</code></td><td><code>.ncss-modal</code>, <code>-header</code>, <code>-footer</code> (+ <code>--fullscreen</code>, <code>--dark</code>, <code>--3d</code>, <code>--slide-up</code>, <code>--slide-down</code>, <code>--zoom</code>)</td><td>Centered dialog modal; <code>--fullscreen</code>+<code>--dark</code> yields a lightbox. <code>--3d</code> tilts in from depth on open, <code>--slide-up</code>/<code>--slide-down</code> slide in from a direction, <code>--zoom</code> grows in more noticeably than the default fade - all entrance variants are plain CSS, swappable via the class on the <code>&lt;dialog&gt;</code>.</td></tr>
+        <tr><td><code>js/modal-router.js</code></td><td>Attributes <code>data-modal-router</code>, <code>-trigger</code>, <code>-target</code>, <code>-content</code>, <code>-home</code>, <code>-redirect</code></td><td>Opt-in - AJAX modal router: trigger links keep a real <code>href</code> (no-JS fallback) and fetch their target into a shared <code>.ncss-modal</code>, the address bar follows along via <code>history.pushState()</code> so the open modal stays link-/shareable. <code>&lt;meta name="ncss-modal-router-redirect" content="..."&gt;</code> on the standalone target page bounces a genuinely fresh visit to its URL back to the listing page with the modal already open. No CSS of its own, uses <code>.ncss-modal</code> directly.</td></tr>
         <tr><td><code>dialog-close.css</code></td><td><code>.ncss-dialog-close</code></td><td>Shared close button for modal/off-canvas/nav panel</td></tr>
         <tr><td><code>disclosure.css</code></td><td><code>.ncss-disclosure</code></td><td>FAQ-box look for <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code></td></tr>
       </tbody>
@@ -47,6 +48,7 @@
   &lt;div class="ncss-modal-body"&gt;Content&lt;/div&gt;
 &lt;/dialog&gt;
 &lt;button type="button" command="show-modal" commandfor="d"&gt;Open&lt;/button&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">AJAX modal router live: <a href="../../demo/assets/modal-router-demo.html">standalone example</a> (three cards, one shared modal, watch the address bar).</p>
 </section>
 
 <section class="ncss-stack" id="karten">

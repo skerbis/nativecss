@@ -75,12 +75,20 @@
 }
 
 /* Fade+Scale beim Öffnen/Schließen - identische @starting-style/allow-discrete-Mechanik
-   wie components/lightbox.css (siehe dort für die ausführliche Erklärung). */
+   wie components/lightbox.css (siehe dort für die ausführliche Erklärung). `translate`
+   steht mit in der Liste, obwohl die Basisregel selbst keinen Wert dafür setzt (wie
+   `scale` bereits zuvor auch auf ::backdrop wirkungslos mitläuft) - die Einblendvarianten
+   --slide-up/--slide-down weiter unten setzen NUR den Wert, keine eigene transition-
+   Deklaration, sie brauchen dafür aber `translate` bereits hier in der Property-Liste
+   (sonst springt der Wert ohne Zwischenschritt direkt zum Ziel, per echtem Test mit
+   Zwischenwert-Sampling gefunden - `opacity` animierte sauber, `translate` blieb die
+   ganze Zeit beim bereits fertigen Wert). */
 .ncss-modal,
 .ncss-modal::backdrop {
   transition:
     opacity var(--ncss-motion-duration) var(--ncss-motion-easing),
     scale var(--ncss-motion-duration) var(--ncss-motion-easing),
+    translate var(--ncss-motion-duration) var(--ncss-motion-easing),
     display var(--ncss-motion-duration) allow-discrete,
     overlay var(--ncss-motion-duration) allow-discrete;
 }
@@ -154,6 +162,58 @@
 .ncss-modal--dark::backdrop {
   background-color: var(--ncss-color-overlay-strong);
   backdrop-filter: blur(4px);
+}
+
+/* --- Einblendvarianten: Slide statt Skalierung -----------------------------------------
+   Ersetzt die Standard-Skalierungsbewegung (ganz oben: scale 0.95 → 1) durch eine
+   Verschiebung aus einer Richtung, Fade bleibt in allen Varianten unverändert von der
+   Basisregel geerbt (Layer-Kaskade - hier wird NUR scale/translate überschrieben).
+   scale bewusst auf 1 fixiert (keine Kombination aus Skalierung UND Verschiebung -
+   dieselbe Überlegung wie bei --3d oben, zwei parallel wirkende Bewegungs-Eigenschaften
+   lesen sich unruhig). Die geöffnete Position (`:modal { translate: 0 0; }`) explizit
+   deklariert statt sich auf den ererbten Startwert `none` zu verlassen - dokumentiert
+   den Bewegungspfad an Ort und Stelle, statt ihn nur aus der geschlossenen Gegenseite
+   zu erschließen. Kombinierbar mit --fullscreen/--dark (unterschiedliche Eigenschaften,
+   keine Kollision), NICHT mit --3d (beide beanspruchen dieselbe Transform-Achse). */
+.ncss-modal--slide-up:not(:modal) {
+  scale: 1;
+  translate: 0 1.5rem;
+}
+.ncss-modal--slide-up:modal {
+  translate: 0 0;
+}
+@starting-style {
+  .ncss-modal--slide-up:modal {
+    scale: 1;
+    translate: 0 1.5rem;
+  }
+}
+
+.ncss-modal--slide-down:not(:modal) {
+  scale: 1;
+  translate: 0 -1.5rem;
+}
+.ncss-modal--slide-down:modal {
+  translate: 0 0;
+}
+@starting-style {
+  .ncss-modal--slide-down:modal {
+    scale: 1;
+    translate: 0 -1.5rem;
+  }
+}
+
+/* Deutlichere Skalierung als der Standard-Fade (0.95 → 1) - für Einstiege, die mehr
+   "aus dem Nichts heranwachsen" sollen statt nur sanft einzublenden. Braucht keine
+   eigene translate-Regel, keine eigene :modal-Regel - beides erbt unverändert von der
+   Basisregel ganz oben (nur der geschlossene/startende scale-Wert wird hier ersetzt). */
+.ncss-modal--zoom:not(:modal) {
+  scale: 0.8;
+}
+@starting-style {
+  .ncss-modal--zoom:modal {
+    scale: 0.8;
+  }
 }
 
 /* --- Variante: 3D-Tiefeneffekt beim Öffnen/Schließen --------------------------------------

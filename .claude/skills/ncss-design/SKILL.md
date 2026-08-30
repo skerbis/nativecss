@@ -81,6 +81,12 @@ technischen Details.
   `<ncss-nav-drilldown>` (`components/nav-drilldown.css` + `js/nav-drilldown.js`),
   identisches Markup zum normalen `.ncss-nav-dropdown`. Details: `docs/de/
   components.html#navigation`.
+- Modal-Einblendvarianten statt der Standard-Skalierung: `.ncss-modal--slide-up`/
+  `--slide-down`/`--zoom` (reines CSS, `components/modal.css`, wie `--fullscreen`/
+  `--dark`/`--3d` einfach als zusätzliche Klasse am `<dialog>`). Modal-Inhalt per AJAX
+  nachladen + Adresse verlink-/teilbar halten (Trigger-Link mit echtem `href`, kein
+  eigenes Modal-Markup pro Ziel nötig): `js/modal-router.js` (Opt-in, kein eigenes
+  CSS). Details: `docs/de/components.html#dialoge`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).

@@ -1995,6 +1995,69 @@ umgestellt:
       zeigen. Fix + Re-Test (inkl. tatsächlicher Flex-Kinder-Liste von `.ncss-nav`, nicht
       nur `display`-Werte einzeln geprüft) auf allen drei Engines bestätigt.
 
+76. **Modal-Einblendvarianten + neuer opt-in AJAX-Modal-Router** (User-Vorgabe, nach
+    Vorbild klxm.de/leistungen/: "hier gibt es schöne modals, die via ajax befüllt
+    werden... solche Einblendvarianten wären toll und auch eine ajax.js, sie soll
+    sicherstellen dass das modal auch via URL aufgerufen werden kann").
+    - **`.ncss-modal--slide-up`/`--slide-down`/`--zoom`** (components/modal.css):
+      dieselbe `@starting-style`/`allow-discrete`-Mechanik wie die bestehende
+      Fade+Scale-Basisregel, nur andere `scale`/`translate`-Werte pro Variante -
+      keine eigene `transition`-Deklaration nötig, erben die geteilte Property-Liste.
+      BUG per echtem Zwischenwert-Sampling gefunden (nicht nur Vorher/Nachher-
+      Screenshot): `translate` fehlte in der geteilten `transition:`-Liste auf
+      `.ncss-modal, .ncss-modal::backdrop` (die bis dahin nur `opacity`/`scale`/
+      `display`/`overlay` listete) - `opacity` animierte sauber über 21
+      Zwischenwerte, `translate` sprang OHNE jeden Zwischenschritt sofort zum
+      Zielwert. Fix: `translate` zur geteilten Liste hinzugefügt (wirkungslos auf
+      `::backdrop`, genau wie `scale` dort schon vorher). Re-Test in Chromium
+      bestätigt alle drei Varianten mit echten Zwischenwerten (`--slide-up`: 21
+      Frames 24px→0px, `--slide-down`: 21 Frames -24px→0px, `--zoom`: 21 Frames
+      scale 0.8→1).
+    - **`js/modal-router.js`** (neu, opt-in, kein eigenes CSS - nutzt `.ncss-modal`
+      direkt): Trigger-Links (`data-modal-router-trigger="#dialogId"`) behalten ihr
+      echtes `href` als Progressive-Enhancement-Fallback, Klick lädt die Zielseite
+      per `fetch()` nach, extrahiert per `DOMParser` einen Ausschnitt (Standard-
+      Selektor `main`, überschreibbar über `data-modal-router-content` am
+      `<dialog>`), zeigt ihn im geteilten Modal, schreibt die Adresse per
+      `history.pushState()` mit. Schließen (natives `close`-Event am `<dialog>`)
+      schreibt die Adresse per weiterem `pushState` auf `data-modal-router-home`
+      zurück. `popstate` UND ein `DOMContentLoaded`-Check gleichen die Adresse mit
+      den registrierten Triggern ab (öffnet/schließt passend) - deckt Browser-Zurück
+      UND einen Reload WÄHREND die Adresse per pushState auf eine Ziel-URL zeigt ab.
+      Nur SAME-ORIGIN-Ziele werden abgefangen (`event.preventDefault()` unterbleibt
+      sonst) - kein versehentliches Cross-Origin-`fetch()`/Content-Injection-Risiko.
+    - **Bewusste Grenze, per echtem Reload-Test gefunden**: ein `page.reload()`
+      WÄHREND die Adresse per pushState auf eine Ziel-URL zeigt, lädt NICHT die
+      Listing-Seite mit offenem Modal neu, sondern (korrekt, Browser-Verhalten) die
+      TATSÄCHLICHE, eigenständige Zielseite frisch vom Server - pushState ändert nur
+      die Adressleiste, nie den tatsächlich geladenen Dokumentinhalt. Erster
+      Testlauf ohne Redirect-Mechanismus schlug deshalb an dieser Stelle fehl
+      (`[data-modal-router-target]` existiert auf der eigenständigen Zielseite gar
+      nicht). Geschlossen per zweitem, opt-in Baustein IN DERSELBEN Datei: die
+      Zielseite bindet `modal-router.js` ebenfalls ein und trägt zusätzlich `<meta
+      name="ncss-modal-router-redirect" content="listing-seite.html">` - eine Seite
+      OHNE eigenes `[data-modal-router]`-Element gilt als "Zielseite", findet sie
+      dieses Meta-Tag, springt sie per `location.replace()` sofort zurück zur
+      Listing-Seite (Ziel-Pfad als `?ncssModal=...`-Parameter angehängt, NIE ein
+      neuer History-Eintrag). Die Listing-Seite erkennt den Parameter beim Laden,
+      öffnet das passende Modal, schreibt die Adresse per `history.replaceState()`
+      wieder auf die saubere Ziel-URL zurück - der Parameter selbst taucht nie
+      sichtbar auf. Da `fetch()` eine Seite nur als Text/DOMParser-Baum lädt
+      (Skripte darin laufen NIE aus), kann der Redirect nie fälschlich während eines
+      normalen AJAX-Nachladens greifen - kein Sonderfall zwischen den beiden
+      Aufrufarten nötig. Per Playwright bestätigt: Klick→Öffnen→URL-Wechsel, Klick
+      auf Schließen→URL-Rücksprung, Reload während gepushter URL→Redirect-Loop→Modal
+      erneut offen MIT sauberer URL, komplett frischer zweiter Browser-Tab direkt auf
+      eine Ziel-URL→derselbe Redirect-Loop, UND eine Zielseite bewusst OHNE das
+      Meta-Tag→bleibt einfach für sich stehen (reiner Fallback, kein Rücksprung) -
+      alle vier Fälle sowohl in Chromium als auch WebKit grün, keine
+      Konsolenfehler/fehlgeschlagenen Requests.
+    - Live-Beispiel: `demo/assets/modal-router-demo.html` (drei Karten, ein
+      gemeinsames Modal) + `modal-router-demo-druck.html`/`-web.html` (mit
+      Redirect-Meta) + `-design.html` (bewusst ohne, zeigt den reinen Fallback) -
+      als iframe eingebettet in `demo/index.html` neben den drei neuen
+      Einblendvarianten-Buttons.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

@@ -262,6 +262,36 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   `display`/`overlay` aus der Transition-Liste ausschließen (nur `translate`/`opacity`
   animieren) für jedes Element, das an anderer Stelle `display:contents` wird - Öffnen
   bleibt animiert, Schließen verschwindet dafür sofort statt auszublenden.
+- Eine NEUE Einblendvariante (z.B. `.ncss-modal--slide-up`), die einen bislang
+  ungenutzten Eigenschaftswert animieren soll (hier `translate`, die Basisregel
+  transitionierte bis dahin nur `opacity`/`scale`), bewegt sich OHNE sichtbaren
+  Zwischenschritt, wenn die Eigenschaft nicht auch in der GETEILTEN
+  `transition:`-Property-Liste steht - der Browser springt beim `@starting-style`→
+  `:modal`-Wechsel direkt zum Zielwert, keine Fehlermeldung, `getComputedStyle` zeigt
+  scheinbar korrekt den Endwert (per echtem Zwischenwert-Sampling gefunden:
+  `opacity` durchlief sauber 21 Zwischenwerte, `translate` blieb die GESAMTE
+  Animationsdauer bei `0px`, dem bereits fertigen Zielwert). Jede Eigenschaft, die
+  IRGENDEINE Modal-/Dialog-Variante animieren soll, muss in der gemeinsamen gemeinsam
+  genutzten `transition:`-Liste auf `.ncss-modal, .ncss-modal::backdrop` stehen -
+  auch wenn die Basisregel selbst keinen Wert dafür setzt (genau wie `scale` dort
+  bereits vorher wirkungslos auf `::backdrop` mitlief).
+- Ein rein clientseitiger AJAX-Modal-Router (Trigger-Link mit echtem `href` + `fetch()`
+  ins Modal + `history.pushState()`) kann eine GANZ FRISCHE/direkte Navigation zur
+  Ziel-URL NICHT von sich aus als "Listing-Seite mit offenem Modal" ausliefern - ein
+  Server liefert dafür ohne eigene Weiche einfach die eigenständige Zielseite normal
+  aus (das ist auch der gewünschte Progressive-Enhancement-Fallback). Schließt den
+  Kreis trotzdem rein clientseitig: die Zielseite bindet dieselbe Router-Datei
+  zusätzlich ein und trägt ein `<meta name="ncss-modal-router-redirect"
+  content="listing-url">` - eine Seite OHNE eigenes `[data-modal-router]`-Element gilt
+  als Zielseite, findet sie dieses Meta-Tag, springt sie per `location.replace()`
+  sofort zur Listing-Seite (Ziel-Pfad als Query-Parameter angehängt) zurück, die ihn
+  erkennt, das Modal öffnet und die Adresse per `history.replaceState()` wieder auf
+  die saubere Ziel-URL zurückschreibt - der Parameter selbst taucht nie sichtbar auf.
+  Ein `fetch()` lädt die Zielseite nur als Text (DOMParser, Skripte laufen nie aus) -
+  der Redirect greift dadurch garantiert nur bei einer ECHTEN Navigation, kein
+  Sonderfall zwischen AJAX-Nachladen und direktem Aufruf nötig. Bewusst in Kauf
+  genommen: ein kurzes Aufblitzen der rohen Zielseite vor dem Rücksprung (ohne
+  Server-Mitwirkung clientseitig nicht vermeidbar).
 
 ## Container Queries & Responsive Layout
 

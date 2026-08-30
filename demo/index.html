@@ -591,6 +591,33 @@
         <button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="demoDialog3d">Schließen</button>
       </div>
     </dialog>
+
+    <p class="ncss-text-muted ncss-text-sm">Einblendvarianten: statt der Standard-Skalierung slidet/wächst das Modal aus einer Richtung heran.</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideUp">--slide-up</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideDown">--slide-down</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogZoom">--zoom</button>
+    </div>
+    <dialog id="demoDialogSlideUp" class="ncss-modal ncss-modal--slide-up">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideUp" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-up</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von unten herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogSlideDown" class="ncss-modal ncss-modal--slide-down">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideDown" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-down</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von oben herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogZoom" class="ncss-modal ncss-modal--zoom">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogZoom" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--zoom</h3></div>
+      <div class="ncss-modal-body"><p>Wächst beim Öffnen deutlicher aus der Mitte heran als der Standard-Fade.</p></div>
+    </dialog>
+
+    <p class="ncss-text-muted ncss-text-sm">AJAX-Modal-Router (<code>js/modal-router.js</code>, opt-in): Trigger-Links mit echtem <code>href</code> laden ihr Ziel per <code>fetch()</code> in ein geteiltes Modal nach, die Adresse wandert per <code>history.pushState()</code> mit (<a href="assets/modal-router-demo.html">eigenständig öffnen</a>):</p>
+    <div style="overflow: hidden; width: 100%; border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe src="assets/modal-router-demo.html" title="AJAX-Modal-Router, live testbar" style="display: block; width: 100%; height: 20rem; border: 0;" loading="lazy"></iframe>
+    </div>
   </section>
 
   <!-- Cards -->

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- BEWUSST OHNE ../../dist/theme.css: siehe nav-priority-demo.html für die
+     Begründung (ncss' eigenes Marken-Theme mit dunkelblauem Hero-Hintergrund als
+     --ncss-color-bg, keine neutrale Demo-Palette). -->
+<link rel="stylesheet" href="../../dist/ncss.css">
+<script src="../../dist/js/modal-router.js" defer></script>
+<style>
+  body { margin: 0; padding: var(--ncss-space-md); }
+</style>
+</head>
+<body class="ncss-page-shell">
+  <div class="ncss-stack">
+    <div class="ncss-grid" style="--ncss-grid-min: 12rem;">
+      <div class="ncss-card ncss-border ncss-radius-md">
+        <div class="ncss-card-body ncss-stack">
+          <h3>Druck</h3>
+          <p class="ncss-text-muted ncss-text-sm">Flyer, Plakate, Broschüren.</p>
+          <a href="modal-router-demo-druck.html" data-modal-router-trigger="#ajaxModal" class="ncss-btn ncss-btn--primary">Mehr erfahren</a>
+        </div>
+      </div>
+      <div class="ncss-card ncss-border ncss-radius-md">
+        <div class="ncss-card-body ncss-stack">
+          <h3>Web</h3>
+          <p class="ncss-text-muted ncss-text-sm">Websites, Shops, Apps.</p>
+          <a href="modal-router-demo-web.html" data-modal-router-trigger="#ajaxModal" class="ncss-btn ncss-btn--primary">Mehr erfahren</a>
+        </div>
+      </div>
+      <div class="ncss-card ncss-border ncss-radius-md">
+        <div class="ncss-card-body ncss-stack">
+          <h3>Design</h3>
+          <p class="ncss-text-muted ncss-text-sm">Corporate Design, Branding.</p>
+          <a href="modal-router-demo-design.html" data-modal-router-trigger="#ajaxModal" class="ncss-btn ncss-btn--primary">Mehr erfahren</a>
+        </div>
+      </div>
+    </div>
+    <p class="ncss-text-muted ncss-text-sm">Klick öffnet als Modal, URL wandert mit
+      (Adressleiste zeigt die echte Ziel-URL). "Druck"/"Web" springen bei einem
+      direkten/frischen Aufruf ihrer eigenen URL automatisch zu dieser Übersicht mit
+      offenem Modal zurück (Meta-Tag <code>ncss-modal-router-redirect</code>);
+      "Design" bewusst ohne dieses Meta-Tag - dort zeigt ein direkter Aufruf einfach
+      die eigenständige Seite selbst (reiner Progressive-Enhancement-Fallback ohne
+      Rücksprung).</p>
+  </div>
+
+  <dialog id="ajaxModal" class="ncss-modal ncss-modal--slide-up" data-modal-router data-modal-router-content="main" data-modal-router-home="modal-router-demo.html">
+    <button type="button" class="ncss-dialog-close" command="close" commandfor="ajaxModal" aria-label="Schließen">&times;</button>
+    <div class="ncss-modal-body" data-modal-router-target></div>
+  </dialog>
+</body>
+</html>
