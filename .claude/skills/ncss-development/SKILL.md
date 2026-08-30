@@ -172,6 +172,21 @@ ein `theme.css`-Override auf `:root` selbst berechnet die ganze Skala frisch.
   sich als falsch erweist: ein gezieltes Experiment DURCH DEN NUTZER im echten Browser
   ("kommentier testweise Regel X aus, sag mir ob es dann korrekt aussieht") ist oft
   schneller als eine weitere Hypothese zu raten.
+- Ein rein deklarativ ausgelöstes Browser-Feature (z.B. `@view-transition {
+  navigation: auto }` in `page-transitions.css`, "kein JavaScript nötig" als
+  bewusstes Verkaufsargument) hat strukturell KEINE JS-Referenz auf das intern vom
+  Browser verwaltete Objekt/die Promise - ein `.catch()` auf eine bekannte,
+  spec-konforme aber ungefangene Ablehnung (Beispiel: `ViewTransition.ready` lehnt
+  beim Überspringen einer Transition ab, sichtbar als "Unhandled Promise Rejection:
+  AbortError: Skipping view transition...", WebKit-Bug bugs.webkit.org #289078)
+  lässt sich trotzdem oft nachrüsten, OHNE die Datei selbst JS-abhängig zu machen:
+  der zugehörige Lifecycle-Event (hier `pageswap`, `PageSwapEvent.viewTransition`)
+  legt genau dafür eine Referenz offen. Als bewusst SEPARATER, opt-in Begleiter
+  ausliefern (`js/page-transitions-quiet.js`), nicht in die deklarative Datei selbst
+  integrieren - siehe history.md Eintrag 77 für die volle Recherche/Quellen. Ein
+  lokal/per Playwright nicht reproduzierbarer Timing-Bug ist kein Grund, eine per
+  Spec/MDN/Bug-Tracker klar begründete Mitigation zurückzuhalten - nur transparent
+  als "nicht empirisch nachgestellt" kommunizieren.
 
 ## Kommentar-Landmine (kritisch, eigener Abschnitt)
 

@@ -31,4 +31,5 @@
   <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
 &lt;link rel="stylesheet" href="page-transitions.css"&gt;</code></pre>
   <p>Pure CSS (<code>@view-transition { navigation: auto; }</code>), no JavaScript needed. Currently not Baseline (Chromium family) - no effect on older browsers, an unknown <code>@</code>-rule is simply ignored during parsing, no <code>@supports</code> needed. Four presets are included: cross-fade (default), <code>slide</code>, <code>zoom</code>, <code>wipe</code> - enabled via the <code>types</code> descriptor.</p>
+  <p class="ncss-text-muted ncss-text-sm">Known console message in some browsers (not an ncss bug, currently mainly WebKit/Safari during back/forward navigation while a transition is running): <code>"AbortError: Skipping view transition because skipTransition() was called"</code> - expected per spec, the navigation itself still works normally. Optional companion that only suppresses this console message: <code>&lt;script src="js/page-transitions-quiet.js" defer&gt;&lt;/script&gt;</code>.</p>
 </section>

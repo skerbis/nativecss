@@ -16,6 +16,16 @@
  * @supports nötig, keine Auswirkung auf ältere Browser: die Navigation bleibt dort
  * schlicht der normale, sofortige Seitenwechsel von vorher, kein Darstellungsfehler.
  *
+ * Bekannte Konsolen-Meldung (kein ncss-Bug): "Unhandled Promise Rejection: AbortError:
+ * Skipping view transition because skipTransition() was called" - tritt (Stand jetzt
+ * v.a. in WebKit/Safari, bugs.webkit.org #289078) auf, wenn eine laufende Transition
+ * durch eine weitere Navigation übersprungen wird (typisch: schneller Zurück-/
+ * Vorwärts-Klick), spec-bedingt erwartet, betrifft die eigentliche Navigation nicht.
+ * Weil diese Datei bewusst rein deklarativ bleibt, hat die Seite selbst keine
+ * Referenz auf die Transition, um die Meldung per `.catch()` abzufangen - optionaler,
+ * separater Begleiter dafür: js/page-transitions-quiet.js (siehe dortiger
+ * Kommentar für die vollständige Erklärung/Quellen).
+ *
  * NUR unter prefers-reduced-motion:no-preference aktiv - anders als die meisten
  * Animationen hier (die global über reset.css gedrosselt werden) reagiert die View-
  * Transitions-API NICHT von selbst auf prefers-reduced-motion, das @media-Gate hier ist

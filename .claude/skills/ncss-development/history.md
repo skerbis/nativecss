@@ -2092,6 +2092,60 @@ umgestellt:
       dieselbe vollständige, selbst deklarierte `transition`-Liste wie `--3d`
       verwenden (nie inkrementell auf die Basisregel verlassen).
 
+77. **"Unhandled Promise Rejection: AbortError: Skipping view transition because
+    skipTransition() was called" auf der Live-Demo** (User-Report, zweites Mal
+    - beim ersten Mal in diesem Zusammenhang wurde die Ursache nur mündlich
+    erklärt, nie tatsächlich dokumentiert oder behoben, deshalb hier
+    nachgeholt). Per WebSearch verifiziert statt aus dem Training geraten (Stand
+    August 2026): offener WebKit-Bug bugs.webkit.org #289078 ("History
+    back/forward button navigation throws..."), UND dieselbe Problemklasse wird
+    aktuell in der CSSWG selbst diskutiert (github.com/w3c/csswg-drafts Issue
+    13726, "noisy unhandled rejections in transition navigations") - kein
+    ncss-spezifischer Bug, betrifft grundsätzlich jede Seite mit Cross-Document
+    View Transitions. Mechanik (per MDN bestätigt): wird eine bereits laufende
+    Transition durch eine weitere Navigation übersprungen (typisch: schneller
+    Zurück-/Vorwärts-Klick), lehnt `ViewTransition.ready` ab (`.finished`
+    dagegen löst normal auf) - laut Spec ERWARTETES Verhalten, aber ungefangen,
+    solange niemand `.catch()` darauf aufruft.
+    - Der eigentliche Grund, warum `page-transitions.css` das bis dahin nicht
+      selbst abfing: die Datei ist ABSICHTLICH rein deklarativ (`@view-
+      transition { navigation: auto }`, "kein JavaScript nötig" ist ihr
+      zentrales Verkaufsargument) - eine solche Seite bekommt vom Browser
+      NIE eine JS-Referenz auf die intern verwaltete Transition, kann also
+      strukturell gar kein `.catch()` platzieren, ohne diese Reinheit
+      aufzugeben.
+    - Lösung, per Recherche gefunden (nicht offensichtlich, extra Suche nötig):
+      das native `pageswap`-Ereignis (feuert auf dem VERLASSENEN Dokument kurz
+      vor einer Cross-Document-Navigation) legt genau für diesen Zweck
+      `PageSwapEvent.viewTransition` offen - EXTRA als Erweiterungspunkt für
+      rein deklarative `@view-transition`-Seiten vorgesehen. Neuer, bewusst
+      SEPARATER opt-in Begleiter `js/page-transitions-quiet.js` (nicht in
+      `page-transitions.css` selbst integriert, um deren "reines CSS"-
+      Eigenschaft nicht zu verwässern): hängt bei `pageswap` einen leeren
+      `.catch()` an `event.viewTransition.ready`, ändert an der Transition
+      selbst NICHTS (kein eigener `skipTransition()`-Aufruf), unterdrückt nur
+      die Konsolen-Meldung für den erwarteten, harmlosen Fall.
+      Feature-Detection über `typeof PageSwapEvent === "undefined"`.
+    - In alle 17 Demo-Seiten eingebunden, die bereits `page-transitions.css`
+      laden (identischer relativer Pfad `../dist/` in jeder, per gezieltem
+      exact-line-Grep vor dem Bulk-Insert bestätigt - siehe
+      Bash-/Rollout-Fallstricke unten für die generelle Vorsichtsregel bei
+      Mehrdateien-Migrationen).
+    - **Nicht empirisch reproduzierbar in diesem Test-Setup**: mehrere Anläufe,
+      die Race Condition gezielt auszulösen (schnelle Navigationsfolgen in
+      echtem WebKit via Playwright, lokal UND mit `page.goto()`-Ketten) haben
+      die ursprüngliche Konsolen-Meldung NICHT reproduziert - vermutlich weil
+      `page.goto()` selbst navigationsabschließend wartet, bevor die nächste
+      Navigation startet, während der reale Bug einen echten, nutzergetriebenen
+      Navigations-Wettlauf braucht (schneller Klick MITTEN in einer laufenden
+      Transition), den ein lokaler PHP-Server mit seiner kurzen Round-Trip-Zeit
+      zusätzlich unwahrscheinlicher macht als ein echter Netzwerk-Request.
+      Der Fix selbst bleibt trotzdem sicher/inert (fügt nur einen No-op-`.catch()`
+      auf eine sonst ungenutzte Promise hinzu, ändert kein sichtbares Verhalten)
+      - Korrektheit hier auf Spec/MDN/Bug-Tracker-Quellen gestützt, nicht auf
+      einen lokal reproduzierten Vorher/Nachher-Vergleich wie sonst in diesem
+      Dokument üblich. Dem Nutzer transparent so kommuniziert.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
