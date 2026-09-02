@@ -1,0 +1,164 @@
+<!--DESC: Porting typical UIkit3 layouts to ncss - class equivalents for grid, card, button, navbar, off-canvas, modal, accordion.-->
+<section class="ncss-stack">
+  <h1>From UIkit3 to ncss</h1>
+  <p class="ncss-text-lg ncss-text-muted">ncss deliberately does NOT ship a class shim for UIkit3 (reasoning below) - instead this overview helps port typical UIkit3 layouts to ncss by hand. To combine both systems on the SAME page (instead of a full migration), see <a href="../../demo/uikit-integration.html">&lt;ncss-container&gt; in UIkit3</a> instead - there ncss runs isolated in the Shadow DOM alongside existing UIkit3 markup, without either system interfering with the other.</p>
+</section>
+
+<section class="ncss-stack" id="warum-kein-shim">
+  <h2 class="demo-section-title">Why not a 1:1 class shim</h2>
+  <p class="ncss-text-muted ncss-text-sm">A shim that makes e.g. <code>.uk-button</code> visually look like <code>.ncss-btn</code> would be feasible for purely visual/static classes (grid, card, button, text utilities). Two structural reasons argue against shipping it as a complete system:</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>JS-bound components.</strong> Off-canvas, modal, accordion, tab, slider, sticky, scrollspy run on UIkit3's own attribute-driven JS (<code>uk-toggle</code>, <code>uk-offcanvas</code>, <code>uk-modal</code>, ...). A plain CSS class can't reproduce that behavior - ncss uses native <code>&lt;dialog&gt;</code>/<code>&lt;details&gt;</code> instead, with a FUNDAMENTALLY different markup structure (see below), no 1:1 class-name substitute possible.</li>
+    <li><strong>Breakpoint-suffix system.</strong> UIkit3's <code>class@s</code>/<code>@m</code>/<code>@l</code>/<code>@xl</code> grid contradicts ncss' own core principle of <a href="architecture.html">"no <code>class@breakpoint</code> matrix"</a> - ncss relies on intrinsic grid (<code>.ncss-grid</code>, <code>auto-fit</code>) or container queries instead. A shim for that would undermine ncss' own architecture.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="container-grid">
+  <h2 class="demo-section-title">Container &amp; Grid</h2>
+  <p class="ncss-text-muted ncss-text-sm">UIkit3's <code>uk-grid</code> is an attribute with either a fixed column width per child (<code>uk-width-1-2</code>) or evenly distributed widths (<code>uk-child-width-1-3</code>), usually combined with a breakpoint suffix (<code>uk-child-width-1-2@s uk-child-width-1-3@m</code>). <code>.ncss-grid</code> needs NO breakpoint suffix for this - <code>auto-fit</code>/<code>minmax()</code> makes the wrapping decision itself, based on available space.</p>
+  <div class="ncss-grid" style="--ncss-grid-min: 20rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>UIkit3</strong></p>
+      <pre><code class="language-html">&lt;div class="uk-child-width-1-2@s uk-child-width-1-3@m" uk-grid&gt;
+  &lt;div&gt;
+    &lt;div class="uk-card uk-card-default uk-card-body"&gt;Item&lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/div&gt;</code></pre>
+    </div>
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>ncss</strong></p>
+      <pre><code class="language-html">&lt;div class="ncss-grid" style="--ncss-grid-min: 16rem;"&gt;
+  &lt;div class="ncss-card ncss-border ncss-radius-md"&gt;
+    &lt;div class="ncss-card-body"&gt;Item&lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/div&gt;</code></pre>
+    </div>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">A GENUINELY fixed column count (no intrinsic wrapping): <code>.ncss-grid--cols-2</code>/<code>-3</code>/<code>-4</code>/<code>-6</code> (needs an ancestor with <code>.ncss-container</code>, see <a href="layout.html">Layout</a>). An incomplete last row CENTERED instead of left-aligned: <code>.ncss-flex-grid</code> + <code>.ncss-width-1-2</code>/<code>-1-3</code>/... (details: <a href="layout.html">Layout</a>). <code>uk-container</code> → <code>.ncss-container</code> (<code>.ncss-container--narrow</code> for UIkit3's <code>uk-container-small</code> equivalent).</p>
+</section>
+
+<section class="ncss-stack" id="card-button">
+  <h2 class="demo-section-title">Card &amp; Button</h2>
+  <div class="ncss-grid" style="--ncss-grid-min: 20rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>UIkit3</strong></p>
+      <pre><code class="language-html">&lt;div class="uk-card uk-card-default"&gt;
+  &lt;div class="uk-card-body"&gt;
+    &lt;h3 class="uk-card-title"&gt;Title&lt;/h3&gt;
+    &lt;p&gt;Text&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;button class="uk-button uk-button-primary"&gt;Submit&lt;/button&gt;</code></pre>
+    </div>
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>ncss</strong></p>
+      <pre><code class="language-html">&lt;div class="ncss-card ncss-border ncss-radius-md ncss-shadow-sm"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Title&lt;/h3&gt;
+    &lt;p&gt;Text&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;button class="ncss-btn ncss-btn--primary"&gt;Submit&lt;/button&gt;</code></pre>
+    </div>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Border/corners/shadow are deliberately NOT part of <code>.ncss-card</code>'s default (unlike <code>uk-card-default</code>) - separate, freely combinable utilities from <code>helpers/elevation.css</code>, see <a href="cards.html">Cards</a>. <code>uk-button-secondary</code>/<code>-danger</code> → <code>.ncss-btn--secondary</code>/<code>--danger</code>.</p>
+</section>
+
+<section class="ncss-stack" id="navbar">
+  <h2 class="demo-section-title">Navbar</h2>
+  <div class="ncss-grid" style="--ncss-grid-min: 20rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>UIkit3</strong></p>
+      <pre><code class="language-html">&lt;nav class="uk-navbar-container" uk-navbar&gt;
+  &lt;div class="uk-navbar-left"&gt;
+    &lt;ul class="uk-navbar-nav"&gt;
+      &lt;li class="uk-active"&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+    </div>
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>ncss</strong></p>
+      <pre><code class="language-html">&lt;nav class="ncss-nav"&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="#" aria-current="page"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+    </div>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm"><code>uk-active</code> has no direct class equivalent - ncss uses the semantic <code>aria-current="page"</code> attribute instead of a purely visual marker class (styled by <code>nav.css</code> itself). A <code>uk-navbar-container</code> with its own logo/actions area → <code>.ncss-topbar</code> (<code>-inner</code>/<code>-brand</code>/<code>-actions</code>), see <a href="components.html#navigation">Component Reference</a>. Many nav items that no longer fit in one row: <code>&lt;ncss-nav-priority&gt;</code> instead of hand-rolling UIkit3's <code>uk-navbar-toggle-icon</code> + dropdown, see <a href="components.html#navigation">Priority navigation</a>.</p>
+</section>
+
+<section class="ncss-stack" id="offcanvas-modal">
+  <h2 class="demo-section-title">Off-Canvas &amp; Modal</h2>
+  <p class="ncss-text-muted ncss-text-sm">The biggest structural difference: UIkit3 activates off-canvas/modal via a <code>uk-offcanvas</code>/<code>uk-modal</code> ATTRIBUTE plus UIkit3's own JS, driven by <code>uk-toggle="target: #id"</code>. ncss uses the native <code>&lt;dialog&gt;</code> element for this - <code>showModal()</code>/<code>close()</code> come straight from the browser, no component JS needed. Opening/closing runs through the native <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/command"><code>command</code>/<code>commandfor</code></a> attribute pair (Baseline in current browsers, <code>js/command-fallback.js</code> as an opt-in polyfill for older ones).</p>
+  <div class="ncss-grid" style="--ncss-grid-min: 22rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>UIkit3 (off-canvas)</strong></p>
+      <pre><code class="language-html">&lt;a href="#panel" uk-toggle&gt;Menu&lt;/a&gt;
+&lt;div id="panel" uk-offcanvas&gt;
+  &lt;div class="uk-offcanvas-bar"&gt;
+    &lt;button class="uk-offcanvas-close" uk-close&gt;&lt;/button&gt;
+    ...
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>ncss (native dialog)</strong></p>
+      <pre><code class="language-html">&lt;button command="show-modal" commandfor="panel"&gt;Menu&lt;/button&gt;
+&lt;dialog id="panel" class="ncss-offcanvas ncss-offcanvas--start"&gt;
+  &lt;button class="ncss-dialog-close" command="close" commandfor="panel"&gt;&amp;times;&lt;/button&gt;
+  ...
+&lt;/dialog&gt;</code></pre>
+    </div>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Same for modal: <code>uk-modal</code>/<code>uk-modal-dialog</code>/<code>-header</code>/<code>-body</code>/<code>-footer</code>/<code>-close-default</code> → <code>&lt;dialog class="ncss-modal"&gt;</code>/<code>.ncss-modal-header</code>/<code>-body</code>/<code>-footer</code>/<code>.ncss-dialog-close</code>. Details including entrance-animation variants (<code>--slide-up</code> etc.): <a href="components.html#dialoge">Component Reference</a>.</p>
+</section>
+
+<section class="ncss-stack" id="accordion-tab">
+  <h2 class="demo-section-title">Accordion &amp; Tab</h2>
+  <div class="ncss-grid" style="--ncss-grid-min: 20rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>UIkit3</strong></p>
+      <pre><code class="language-html">&lt;ul uk-accordion&gt;
+  &lt;li&gt;
+    &lt;a class="uk-accordion-title" href&gt;Question&lt;/a&gt;
+    &lt;div class="uk-accordion-content"&gt;Answer&lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+    </div>
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm"><strong>ncss</strong></p>
+      <pre><code class="language-html">&lt;details class="ncss-disclosure"&gt;
+  &lt;summary&gt;Question&lt;/summary&gt;
+  &lt;p&gt;Answer&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+    </div>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Native <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> instead of UIkit3's JS component - no <code>uk-accordion</code> init needed, works without JS. For "only one open at a time" (UIkit3's <code>multiple: false</code> option): <code>&lt;details name="group"&gt;</code> (native attribute, closes siblings automatically). <code>uk-tab</code> has NO direct 1:1 equivalent as a plain CSS/HTML component - depending on the need, either the same <code>&lt;details name="..."&gt;</code> group (reads as tabs when laid out horizontally via <code>.ncss-nav--scroll</code>) or Web Awesome's <code>&lt;wa-tab-group&gt;</code> (see <a href="webawesome-bridge.html">Web Awesome Bridge</a>) if genuine ARIA tab behavior is needed.</p>
+</section>
+
+<section class="ncss-stack" id="utilities">
+  <h2 class="demo-section-title">Text &amp; spacing utilities</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">UIkit3</th><th scope="col">ncss</th></tr></thead>
+      <tbody>
+        <tr><td><code>uk-text-center</code>/<code>-left</code>/<code>-right</code></td><td><code>.ncss-text-center</code>/<code>-start</code>/<code>-end</code></td></tr>
+        <tr><td><code>uk-text-muted</code></td><td><code>.ncss-text-muted</code></td></tr>
+        <tr><td><code>uk-text-lead</code></td><td><code>.ncss-text-lead</code></td></tr>
+        <tr><td><code>uk-text-small</code></td><td><code>.ncss-text-sm</code></td></tr>
+        <tr><td><code>uk-margin</code>/<code>uk-margin-small-top</code> etc.</td><td><code>.ncss-mb-md</code>/<code>-sm</code>/<code>-lg</code>/<code>-xl</code> (<code>margin-block-end</code>, logical instead of physical direction)</td></tr>
+        <tr><td><code>uk-grid-small</code>/<code>-medium</code> (grid gap)</td><td><code>.ncss-gap-sm</code>/<code>-md</code>/<code>-lg</code>/<code>-xl</code></td></tr>
+        <tr><td><code>uk-flex</code>/<code>uk-flex-middle</code>/<code>-between</code></td><td><code>.ncss-cluster</code> (horizontal, wrapping) or <code>.ncss-flex</code>/<code>--center</code>/<code>--between</code>, see <a href="layout.html">Layout</a></td></tr>
+        <tr><td><code>uk-hidden</code></td><td><code>.ncss-hidden</code></td></tr>
+        <tr><td><code>uk-visible@m</code>/<code>uk-hidden@s</code></td><td><code>.ncss-hide-below-md</code>/<code>-from-md</code> (viewport) - see the note below on breakpoints</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">The biggest mindset difference is in the visibility utilities: UIkit3's <code>@s</code>/<code>@m</code>/<code>@l</code>/<code>@xl</code> suffixes allow ARBITRARY combinations (<code>uk-hidden@s uk-hidden@m</code>), ncss deliberately offers only the fixed <code>-below</code>/<code>-from</code> split per threshold (<code>sm</code>/<code>md</code>/<code>lg</code>/<code>xl</code>) instead - enough for most layouts; for a genuinely exotic breakpoint pattern, a rule of your own in your own, unlayered theme file remains the right answer (see <a href="custom-theme.html#schritt-7">Tune individual components</a>), rather than adding a whole extra utility matrix.</p>
+</section>

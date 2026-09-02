@@ -2200,6 +2200,41 @@ umgestellt:
       {de,en}/tokens.html`) - ergänzt.
     - Volle 288-Kombinationen-Regressionssuite nach allen Fixes erneut grün.
 
+79. **"Von UIkit3 nach ncss"-Migrationsleitfaden** (User-Vorgabe, nach der
+    Ablehnung eines vollen UIkit3-Klassen-Shims: "Evtl. aber eine Hilfedatei
+    mitliefern die bei der Migration hilft für typische uikit3 layouts
+    umschreiben?"). Begründung, warum KEIN Shim (im Leitfaden selbst als eigener
+    Abschnitt dokumentiert, nicht nur mündlich beantwortet): (1) UIkit3s JS-
+    gebundene Komponenten (Off-Canvas/Modal/Accordion/Tab/Slider/Sticky/
+    Scrollspy) laufen über eigenes, attributgesteuertes JS (`uk-toggle` u.a.) -
+    eine reine CSS-Klasse kann dieses Verhalten nicht nachbilden. (2) UIkit3s
+    `klasse@s/@m/@l/@xl`-Breakpoint-Suffix-Raster widerspricht ncss' eigenem
+    Grundprinzip "kein `klasse@breakpoint`-Raster" direkt - ein Shim dafür würde
+    ncss' eigene Architektur unterlaufen, kein sinnvoller Kompromiss möglich.
+    - Neue Doku-Seite `docs-src/content/{de,en}/uikit-migration.html`, in
+      nav.json in der Gruppe "components"/"Komponenten" registriert (54 statt 52
+      Seiten nach dem Build, 27 statt 26 pro Sprache). Deckt die Layouts ab, die
+      bei einer typischen UIkit3-Seite am häufigsten vorkommen: Container/Grid,
+      Card/Button, Navbar, Off-Canvas/Modal, Accordion/Tab, Text-/Abstands-
+      Utilities - je mit Vorher/Nachher-Markup-Vergleich (zwei `<pre>`-Blöcke in
+      einem `.ncss-grid`, kein neues CSS dafür nötig).
+    - ALLE zitierten UIkit3-Markup-Beispiele per WebFetch gegen die echte,
+      aktuelle UIkit-Dokumentation (getuikit.com/docs/...) verifiziert, nicht aus
+      dem Training übernommen - u.a. bestätigt: `uk-grid`/`uk-navbar`/
+      `uk-offcanvas`/`uk-modal`/`uk-accordion` sind ATTRIBUTE (nicht nur
+      Klassen) auf dem jeweiligen Wrapper-Element, `uk-toggle="target: #id"` ist
+      der Öffnen-Mechanismus für Off-Canvas/Modal.
+    - Cross-Referenz zur bereits bestehenden `demo/uikit-integration.html`
+      (zeigt `<ncss-container>` NEBEN bestehendem UIkit3-Markup, Shadow-DOM-
+      isoliert) ergänzt - bewusst als ALTERNATIVE zum vollen Migrationsleitfaden
+      verlinkt, für den Fall "beide Systeme sollen koexistieren", nicht "UIkit3
+      komplett ersetzen".
+    - Alle internen Links/Anker der neuen Seite (7 Ziel-Seiten + 2 Anker) per
+      Grep gegen die tatsächlich vorhandenen Dateien/`id`-Attribute geprüft, alle
+      referenzierten ncss-Klassennamen (`.ncss-mb-md`, `.ncss-gap-sm`,
+      `.ncss-btn--danger` u.a.) per Grep gegen die echten CSS-Definitionen
+      bestätigt, statt aus dem Gedächtnis zu vertrauen.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
