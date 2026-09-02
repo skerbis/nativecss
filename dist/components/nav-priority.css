@@ -44,12 +44,17 @@
  * entfernt: die Doku versprach von Anfang an "funktioniert für jede Punktzahl, kein
  * fester Breakpoint", der Bypass widersprach dem.
  *
- * OHNE JS (oder bevor customElements die Definition geladen hat): reiner
- * Passthrough (`display: contents`), keine Funktionseinbuße - .ncss-nav-list zeigt
- * alle Punkte normal per flex-wrap in mehreren Zeilen (unverändertes
- * Standard-.ncss-nav-Verhalten, siehe nav.css) - EINZIGE Ausnahme ohne JS: der
- * Toggle-Button bleibt trotzdem sichtbar (unten), weil die :has()-Regel dafür an
- * :defined hängt, nicht am bloßen Vorhandensein des (noch unverbundenen) Elements.
+ * OHNE JS (oder bevor customElements die Definition geladen hat), UND OHNE
+ * ResizeObserver (js/nav-priority.js registriert die Custom-Element-Definition
+ * gezielt gar nicht erst, wenn `ResizeObserver` fehlt - sonst würde die Definition
+ * trotzdem erfolgreich sein, `:defined` also greifen, nur ohne die Layout-Logik,
+ * die den dadurch entstehenden display:block-Zustand wieder sinnvoll füllt):
+ * reiner Passthrough (`display: contents`), keine Funktionseinbuße - .ncss-nav-list
+ * zeigt alle Punkte normal per flex-wrap in mehreren Zeilen (unverändertes
+ * Standard-.ncss-nav-Verhalten, siehe nav.css) - EINZIGE Ausnahme in jedem dieser
+ * Fälle: der Toggle-Button bleibt trotzdem sichtbar (unten), weil die :has()-Regel
+ * dafür an :defined hängt, nicht am bloßen Vorhandensein des (noch unverbundenen)
+ * Elements.
  */
 ncss-nav-priority {
   display: contents;

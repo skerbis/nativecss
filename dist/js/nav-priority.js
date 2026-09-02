@@ -19,6 +19,20 @@
 (function () {
   "use strict";
 
+  /* Ohne ResizeObserver (älterer Browser, siehe SKILL.md-Regel zu customElements.define
+     als Feature-Gate) gar nicht erst registrieren, statt in connectedCallback() zu
+     crashen: components/nav-priority.css schaltet AUSSCHLIESSLICH über die
+     :defined-Pseudoklasse von display:contents (Passthrough) auf display:block um - ein
+     Absturz MITTEN in connectedCallback() würde das Element trotzdem als :defined
+     markieren (customElements.define() selbst ist bereits erfolgreich gewesen), nur
+     eben ohne die Layout-Logik, die den dadurch entstehenden Flex-Item-Zustand wieder
+     einfängt. Wird `define()` hier komplett übersprungen, bleibt die CSS-Regel
+     unconditional bei display:contents - exakt derselbe "ohne JS: reiner
+     Passthrough"-Zustand, den die Komponente ohnehin verspricht. */
+  if (typeof ResizeObserver === "undefined") {
+    return;
+  }
+
   function collectItems(list, moreItem) {
     return Array.prototype.filter.call(list.children, function (el) {
       return el !== moreItem;

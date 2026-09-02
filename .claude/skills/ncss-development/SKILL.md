@@ -296,7 +296,7 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   Server liefert dafür ohne eigene Weiche einfach die eigenständige Zielseite normal
   aus (das ist auch der gewünschte Progressive-Enhancement-Fallback). Schließt den
   Kreis trotzdem rein clientseitig: die Zielseite bindet dieselbe Router-Datei
-  zusätzlich ein und trägt ein `<meta name="ncss-modal-router-redirect"
+  zusätzlich ein und trägt ein `<meta name="modal-router-redirect"
   content="listing-url">` - eine Seite OHNE eigenes `[data-modal-router]`-Element gilt
   als Zielseite, findet sie dieses Meta-Tag, springt sie per `location.replace()`
   sofort zur Listing-Seite (Ziel-Pfad als Query-Parameter angehängt) zurück, die ihn
@@ -463,6 +463,24 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   Mechanismus. Ein Feature, das auf zwei Pfaden ausgeliefert wird (nativ + JS-Fallback),
   muss auf BEIDEN Pfaden dieselbe Fähigkeit tragen (z.B. reiche `<option>`-Inhalte, kein
   Rückfall auf `textContent`).
+- Jedes opt-in JS, das eine BROWSER-API voraussetzt, die NICHT bereits durch eine
+  ältere, verbreitetere API mitgesichert ist (z.B. `fetch()`/`DOMParser` bei
+  `modal-router.js`, `ResizeObserver` bei `nav-priority.js`), braucht einen frühen
+  Feature-Detection-`return`, GANZ AM ANFANG der Datei, VOR jeder Event-Registrierung -
+  zwei unterschiedliche Fallstricke ohne diesen Guard: (1) Ein Klick-Handler, der
+  `event.preventDefault()` VOR dem eigentlichen API-Aufruf setzt, stürzt danach mit
+  ungefangenem Fehler ab - der Link tut dann GAR NICHTS mehr (schlimmer als kein JS,
+  weil die normale Navigation bereits unterdrückt wurde). (2) Ein Custom Element ohne
+  Guard um `customElements.define(...)`: `connectedCallback()` kann zur Laufzeit
+  abstürzen, die Registrierung selbst war aber trotzdem erfolgreich - `:defined` in
+  CSS greift dadurch TROTZDEM, oft mit einem `display:block`-Umschalten ohne die
+  zugehörige Layout-Logik dahinter (schlechter als der dokumentierte "ohne JS"-
+  Zustand). Bei einem Custom Element deshalb NICHT nur innerhalb von
+  `connectedCallback()` prüfen, sondern die GESAMTE `customElements.define(...)`-
+  Anweisung überspringen, wenn die Abhängigkeit fehlt - das Element bleibt dann für
+  immer `:not(:defined)`, CSS bleibt beim unconditionalen Default. Beide Fälle per
+  echtem Playwright-Test verifizieren (die jeweilige API per
+  `page.addInitScript(() => delete window.X)` entfernen, NICHT nur lesend beurteilen).
 - Seiteneigene, aber generell nützliche Klassen gehören ins geteilte System, nicht in
   eine einzelne Seite - beim Aufräumen einer neuen Seite prüfen, ob eine gerade
   erfundene Seiten-Klasse eigentlich ein fehlendes System-Teil ist, und Duplikate nach

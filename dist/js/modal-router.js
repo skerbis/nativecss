@@ -4,7 +4,11 @@
  * Einblendvarianten --slide-up/--slide-down/--slide-left/--slide-right/--zoom).
  *
  * BRAUCHT ZWINGEND JAVASCRIPT für die AJAX-/Modal-Funktion selbst - ohne JS (Skript
- * blockiert/deaktiviert) oder bevor es geladen hat, ist ein Trigger-Link einfach ein
+ * blockiert/deaktiviert), bevor es geladen hat, ODER in einem sehr alten Browser ohne
+ * `fetch()`/`DOMParser` (früher, unbedingter `return` unten - verhindert, dass ein
+ * Klick per `preventDefault()` "hängen bleibt": ohne die Guard würde der spätere
+ * `fetch()`-Aufruf einen ReferenceError werfen, NACHDEM die normale Navigation schon
+ * unterdrückt wurde - schlimmer als gar kein JS), ist ein Trigger-Link einfach ein
  * GANZ NORMALER Link: Klick navigiert zur eigenständigen Zielseite, kompletter
  * Seitenwechsel, kein Modal. Das ist ABSICHT (Progressive-Enhancement-Fallback, siehe
  * Markup unten) und funktioniert nur, weil jede Zielseite auch als vollständige,
@@ -38,7 +42,7 @@
  * dieser Sitzung - eingegebene Adresse, Lesezeichen, Reload) tatsächlich als
  * geöffnetes Modal ankommt, statt nur als eigenständige Seite: dieselbe Datei auf
  * der EIGENSTÄNDIGEN Zielseite einbinden UND dort zusätzlich
- * <meta name="ncss-modal-router-redirect" content="/listing-seite/"> setzen. Eine
+ * <meta name="modal-router-redirect" content="/listing-seite/"> setzen. Eine
  * Seite ohne eigenes [data-modal-router]-Dialog-Element gilt als "Zielseite" -
  * findet sie dieses Meta-Tag, springt sie beim Laden per location.replace() sofort
  * zur Listing-Seite zurück (?ncssModal=<eigener Pfad> angehängt), die IHRERSEITS
@@ -55,6 +59,16 @@
  */
 (function () {
   "use strict";
+
+  /* Ohne fetch()/DOMParser (sehr alter Browser) MUSS das Skript hier abbrechen, statt
+     später beim ersten Klick zu crashen: der Klick-Handler ruft `event.preventDefault()`
+     VOR dem eigentlichen fetch()-Aufruf - ein danach geworfener ReferenceError würde den
+     Link funktionslos machen (kein Modal, aber auch keine normale Navigation mehr,
+     schlimmer als gar kein JS). Mit diesem frühen Return bleibt jeder Trigger-Link ein
+     ganz normaler Link, echte Navigation zur eigenständigen Zielseite, wie ohne JS. */
+  if (!window.fetch || typeof DOMParser === "undefined") {
+    return;
+  }
 
   var REDIRECT_PARAM = "ncssModal";
 
@@ -112,12 +126,18 @@
     var target = getTarget(dialog);
     var url = resolve(href);
     var selector = dialog.getAttribute("data-modal-router-content") || "main";
+    /* Cache-Schlüssel bewusst (href + Selektor), nicht nur href: mehrere
+       [data-modal-router]-Dialoge auf derselben Seite könnten theoretisch dieselbe
+       Ziel-URL mit UNTERSCHIEDLICHEM data-modal-router-content ansteuern - reine
+       href-Schlüsselung hätte dem zweiten Dialog fälschlich den für den ersten
+       extrahierten Ausschnitt untergeschoben. */
+    var cacheKey = selector + "|" + href;
 
     dialog.dataset.modalRouterUrl = href;
     target.setAttribute("aria-live", "polite");
 
-    if (cache[href]) {
-      target.innerHTML = cache[href];
+    if (cache[cacheKey]) {
+      target.innerHTML = cache[cacheKey];
       target.removeAttribute("aria-busy");
     } else {
       target.setAttribute("aria-busy", "true");
@@ -132,7 +152,7 @@
       history.pushState({ modalRouterHref: href }, "", href);
     }
 
-    if (cache[href]) {
+    if (cache[cacheKey]) {
       return;
     }
 
@@ -147,7 +167,7 @@
         var doc = new DOMParser().parseFromString(html, "text/html");
         var content = doc.querySelector(selector);
         var markup = content ? content.innerHTML : html;
-        cache[href] = markup;
+        cache[cacheKey] = markup;
         /* Zwischenzeitlich könnte ein SCHNELLERER zweiter Klick (anderer Trigger)
            dasselbe Modal bereits mit anderem Ziel weiterverwendet haben - nur
            anwenden, wenn die Antwort noch zur aktuell angezeigten URL passt. */
@@ -209,7 +229,7 @@
     if (document.querySelector("[data-modal-router]")) {
       return false;
     }
-    var meta = document.querySelector('meta[name="ncss-modal-router-redirect"]');
+    var meta = document.querySelector('meta[name="modal-router-redirect"]');
     if (!meta) {
       return false;
     }

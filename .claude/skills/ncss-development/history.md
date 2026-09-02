@@ -2035,7 +2035,7 @@ umgestellt:
       (`[data-modal-router-target]` existiert auf der eigenständigen Zielseite gar
       nicht). Geschlossen per zweitem, opt-in Baustein IN DERSELBEN Datei: die
       Zielseite bindet `modal-router.js` ebenfalls ein und trägt zusätzlich `<meta
-      name="ncss-modal-router-redirect" content="listing-seite.html">` - eine Seite
+      name="modal-router-redirect" content="listing-seite.html">` - eine Seite
       OHNE eigenes `[data-modal-router]`-Element gilt als "Zielseite", findet sie
       dieses Meta-Tag, springt sie per `location.replace()` sofort zurück zur
       Listing-Seite (Ziel-Pfad als `?ncssModal=...`-Parameter angehängt, NIE ein
@@ -2145,6 +2145,60 @@ umgestellt:
       - Korrektheit hier auf Spec/MDN/Bug-Tracker-Quellen gestützt, nicht auf
       einen lokal reproduzierten Vorher/Nachher-Vergleich wie sonst in diesem
       Dokument üblich. Dem Nutzer transparent so kommuniziert.
+
+78. **Konsistenz-/Fallback-/Logik-Audit** (User-Vorgabe: "checke auf Unstimmigkeiten,
+    wo können wir noch Fallbacks zu alten Techniken liefern... checke die Konsistenz
+    des Namings und die Logik... checke die Dokumentation") über alle in dieser
+    Sitzung neu gebauten Teile (Modal-Varianten, `modal-router.js`,
+    `page-transitions-quiet.js`, `nav-priority`/`nav-drilldown`). Vier echte Funde:
+    - **`modal-router.js` hatte KEIN Feature-Gate für `fetch()`/`DOMParser`** - in
+      einem sehr alten Browser ohne beides hätte der Klick-Handler
+      `event.preventDefault()` aufgerufen (Navigation unterdrückt) und wäre DANACH
+      mit einem ReferenceError abgestürzt - schlimmer als gar kein JS (Link tut gar
+      nichts mehr, statt normal zu navigieren). Fix: früher, unbedingter
+      `if (!window.fetch || typeof DOMParser === "undefined") return;` GANZ am
+      Anfang der Datei, vor jeder Event-Registrierung. Per echtem Playwright-Test
+      bestätigt (`window.fetch` per `addInitScript` entfernt): Klick navigiert
+      danach ganz normal zur eigenständigen Zielseite, keine Fehler.
+    - **`nav-priority.js` hatte KEIN Feature-Gate für `ResizeObserver`** -
+      `customElements.define()` lief unconditional; ohne `ResizeObserver` wäre
+      `connectedCallback()` beim Konstruieren einer Instanz abgestürzt, das Element
+      wäre aber (die Registrierung selbst war ja erfolgreich) trotzdem `:defined`
+      geworden - `components/nav-priority.css`s `:defined`-Regel hätte dadurch auf
+      `display:block` mit `flex-wrap:nowrap` und OHNE jede Umverteilungs-Logik
+      umgeschaltet: Punkte hätten unsichtbar über den Rand hinaus gestanden, KEIN
+      "Mehr"-Fallback - schlechter als der dokumentierte "ohne JS: reiner
+      Passthrough"-Zustand. Fix: `customElements.define(...)` komplett überspringen,
+      wenn `typeof ResizeObserver === "undefined"` - das Element bleibt dann für
+      immer undefiniert, CSS bleibt beim unconditionalen `display:contents`-Default,
+      exakt der dokumentierte No-JS-Zustand. Per echtem Playwright-Test bestätigt
+      (`ResizeObserver` per `addInitScript` entfernt): alle 7 Punkte normal per
+      flex-wrap sichtbar, `display:contents`, keine Fehler - UND der Normalfall
+      (mit ResizeObserver) läuft unverändert weiter (Mehr-Menü entsteht wie vorher).
+    - **`modal-router.js`s Cache war nur nach `href` geschlüsselt, nicht nach
+      `(Selektor, href)`** - zwei VERSCHIEDENE `[data-modal-router]`-Dialoge auf
+      derselben Seite mit unterschiedlichem `data-modal-router-content`, aber
+      zufällig überlappender Ziel-URL, hätten sich gegenseitig den falschen
+      extrahierten Ausschnitt untergeschoben (der zweite Dialog hätte den für den
+      ERSTEN Dialog passenden Cache-Eintrag bekommen). Seltener Fall, aber
+      kostenloser Fix: Cache-Schlüssel auf `selector + "|" + href` umgestellt.
+    - **Naming-Inkonsistenz**: das Redirect-Meta-Tag hieß
+      `<meta name="ncss-modal-router-redirect">`, während alle GESCHWISTER-
+      Attribute derselben Komponente (`data-modal-router-trigger`/`-target`/
+      `-content`/`-home`) BEWUSST OHNE `ncss-`-Präfix auskommen (Codebase-weite,
+      bislang nirgends explizit ausformulierte Konvention, per Grep über alle
+      `data-*`-Attribute bestätigt: das `ncss-`-Präfix taucht NUR dort auf, wo der
+      Name allein zu generisch/kollisionsträchtig wäre, z.B. `data-ncss-src`/
+      `data-ncss-combobox` in `ncss-container.js`/`combobox.js` - "modal-router-*"
+      ist als Compound-Name bereits selbst hinreichend eindeutig). Umbenannt zu
+      `modal-router-redirect` (Meta-Tag) für interne Konsistenz - der URL-
+      Query-Parameter `ncssModal` behält sein Präfix bewusst, weil DER tatsächlich
+      mit einem echten, generischen Parameternamen einer fremden Seite kollidieren
+      könnte (andere Risikoklasse als ein Attribut-Name im eigenen Markup).
+    - Dokumentations-Lücke gefunden + geschlossen: `--ncss-motion-easing-emphasized`
+      (neu in tokens.css) fehlte in der Tokens-Referenzseite (`docs-src/content/
+      {de,en}/tokens.html`) - ergänzt.
+    - Volle 288-Kombinationen-Regressionssuite nach allen Fixes erneut grün.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
