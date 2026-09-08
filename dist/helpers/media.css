@@ -42,3 +42,36 @@
   flex-direction: column;
   gap: var(--ncss-space-2xs);
 }
+
+/* --- Breite/Ausrichtung eines einzelnen Bildes im Fliesstext -----------------------------
+   Fuer ein freistehendes Bild (typischerweise in ein <figure> gewrapt, z.B. aus einem
+   Rich-Text-Editor) mitten in normalem Textfluss - bewusst getrennt von den
+   .ncss-width-1-2/-1-3/etc.-Klassen in helpers/layout.css, die für Geschwister-Kacheln
+   in einem .ncss-flex-grid gedacht sind (kein Textumfluss, kein Fliesstext-Kontext).
+   Markup: <figure class="ncss-figure ncss-figure--width-50 ncss-figure--align-left">
+   <img src="..." alt="..."><figcaption>...</figcaption></figure> */
+.ncss-figure--width-25 { width: 25%; }
+.ncss-figure--width-50 { width: 50%; }
+.ncss-figure--width-75 { width: 75%; }
+.ncss-figure--width-full { width: 100%; }
+
+/* float statt Grid/Flexbox: Text soll um das Bild herumfliessen, nicht daneben stehen -
+   derselbe technische Grund wie bei .ncss-float-start/-end in helpers/float.css (siehe
+   dortiger Docblock). Bewusst OHNE Container-Query-Schwelle (anders als
+   .ncss-float-start/-end): eine Bildbreiten-Auswahl ist bereits eine explizite
+   redaktionelle Entscheidung, kein automatisches Zusammenbrechen auf schmalen
+   Bildschirmen noetig/gewuenscht. */
+.ncss-figure--align-left {
+  float: inline-start;
+  margin-inline-end: var(--ncss-space-md);
+  margin-block-end: var(--ncss-space-sm);
+}
+.ncss-figure--align-right {
+  float: inline-end;
+  margin-inline-start: var(--ncss-space-md);
+  margin-block-end: var(--ncss-space-sm);
+}
+.ncss-figure--align-center {
+  margin-inline: auto;
+  margin-block-end: var(--ncss-space-sm);
+}
