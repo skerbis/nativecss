@@ -40,6 +40,20 @@
  * Kehrseite: kein automatisches Nachziehen bei späteren dynamischen DOM-Änderungen im
  * Original-Markup (das Original ist ja bereits umgezogen) - für den Zielfall (ein fertig
  * eingebetteter Inhaltsblock) kein praktischer Nachteil.
+ *
+ * Timing-Falle (per echtem Test gefunden, nicht nur theoretisch): wird <ncss-container>
+ * vom HTML-PARSER selbst erzeugt (server-gerendertes Markup, kein späteres innerHTML/
+ * appendChild per JS), ruft der Browser connectedCallback() SOFORT beim Einfügen des
+ * öffnenden Tags auf, express bevor der Parser die nachfolgenden Kind-Knoten überhaupt
+ * gelesen/angehängt hat - this.firstChild ist zu diesem Zeitpunkt noch null, das
+ * Verschieben läuft ins Leere, das Element bleibt dauerhaft ohne Inhalt im Shadow Root
+ * (Light-DOM-Kinder erscheinen zwar kurz danach, werden aber nie nachgezogen, siehe
+ * "kein automatisches Nachziehen" oben). Fix: der Verschiebe-Schritt läuft über
+ * requestAnimationFrame (läuft nach dem aktuellen Parser-Tick, zuverlässiger als ein
+ * einzelnes Microtask/queueMicrotask bei tief verschachteltem Parser-Batching) - bei
+ * regulärer, bereits vollständiger JS-Einfügung (Konstruktor/appendChild eines fertigen
+ * Fragments) ist das firstChild schon beim ersten Callback-Aufruf vorhanden, der
+ * zusätzliche Frame-Versatz ist dort unsichtbar/unschädlich.
  */
 (function () {
   "use strict";
@@ -84,10 +98,19 @@
 
         var content = document.createElement("div");
         content.className = "ncss-container-content";
-        while (this.firstChild) {
-          content.appendChild(this.firstChild);
-        }
         shadow.appendChild(content);
+
+        var el = this;
+        function moveChildren() {
+          while (el.firstChild) {
+            content.appendChild(el.firstChild);
+          }
+        }
+        if (el.firstChild) {
+          moveChildren();
+        } else {
+          requestAnimationFrame(moveChildren);
+        }
       }
     }
   );
