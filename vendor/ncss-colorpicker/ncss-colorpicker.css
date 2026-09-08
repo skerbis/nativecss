@@ -1,0 +1,218 @@
+/* ncss Colorpicker - eigenstaendige Vanilla-JS-Komponente, kein Framework, kein Build.
+   Eigenes Praefix "ncp-" (Kollisionsvermeidung, unabhaengig von ncss selbst nutzbar). */
+
+.ncp-swatch {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-block;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgb(0 0 0 / 15%);
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  position: relative;
+}
+
+.ncp-swatch-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.ncp-swatch:focus-visible {
+  outline: 2px solid #3399ff;
+  outline-offset: 2px;
+}
+
+.ncp-popover {
+  all: initial;
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 2147483002;
+  width: 17rem;
+  background: #fff;
+  color: #1a1a1a;
+  border-radius: 0.5rem;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
+  font: 400 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  padding: 0.75rem;
+}
+
+.ncp-popover * {
+  box-sizing: border-box;
+}
+
+.ncp-popover[hidden] {
+  display: none;
+}
+
+.ncp-sv {
+  position: relative;
+  width: 100%;
+  height: 8rem;
+  border-radius: 0.35rem;
+  margin-block-end: 0.6rem;
+  cursor: crosshair;
+  background-image:
+    linear-gradient(to top, #000, transparent),
+    linear-gradient(to right, #fff, transparent);
+}
+
+.ncp-sv-thumb {
+  position: absolute;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 40%), 0 1px 3px rgb(0 0 0 / 40%);
+  transform: translate(-50%, 50%);
+  pointer-events: none;
+}
+
+.ncp-hue,
+.ncp-alpha {
+  position: relative;
+  width: 100%;
+  height: 0.85rem;
+  border-radius: 999px;
+  margin-block-end: 0.6rem;
+  cursor: pointer;
+}
+
+.ncp-hue {
+  background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+}
+
+.ncp-alpha {
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+}
+
+.ncp-alpha-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.ncp-hue-thumb,
+.ncp-alpha-thumb {
+  position: absolute;
+  top: 50%;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 40%), 0 1px 3px rgb(0 0 0 / 40%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ncp-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-block-end: 0.5rem;
+}
+
+.ncp-tabs button {
+  all: unset;
+  cursor: pointer;
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0.3rem 0;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+  background: #f3f4f6;
+}
+
+.ncp-tabs button[aria-pressed="true"] {
+  background: #154a86;
+  color: #fff;
+}
+
+.ncp-fields {
+  display: flex;
+  gap: 0.35rem;
+  margin-block-end: 0.6rem;
+}
+
+.ncp-fields > div {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.ncp-fields label {
+  display: block;
+  font-size: 0.65rem;
+  color: #5a5f6a;
+  text-align: center;
+  margin-block-end: 0.15rem;
+}
+
+.ncp-fields input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.3rem 0.25rem;
+  border: 1px solid #d7e3f3;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+  text-align: center;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+}
+
+.ncp-fields[data-mode="hex"] input {
+  text-align: left;
+}
+
+.ncp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ncp-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: #5a5f6a;
+}
+
+.ncp-preview-swatch {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.3rem;
+  border: 1px solid rgb(0 0 0 / 15%);
+}
+
+.ncp-reset {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: #154a86;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+}
+
+.ncp-reset:hover {
+  background: #eaf3ff;
+}
+
+.ncp-reset:disabled {
+  color: #a9b4c4;
+  cursor: default;
+  pointer-events: none;
+}
