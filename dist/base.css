@@ -11,6 +11,7 @@
 body, :host {
   font-family: var(--ncss-font-family-base);
   font-size: var(--ncss-font-size-base);
+  font-weight: var(--ncss-font-weight-body);
   color: var(--ncss-color-text);
   background-color: var(--ncss-color-bg);
   /* Passt Strichstärke/Proportionen automatisch an die aktuelle Schriftgröße an - nur
@@ -24,7 +25,7 @@ body, :host {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--ncss-font-family-heading);
   line-height: var(--ncss-line-height-tight);
-  font-weight: var(--ncss-font-weight-bold);
+  font-weight: var(--ncss-font-weight-heading);
   text-wrap: balance; /* verhindert hässliche Ein-Wort-Zeilenumbrüche in Überschriften */
   margin-block-end: var(--ncss-space-2xs);
   /* text-box-trim: schneidet den unsichtbaren Leerraum weg, den Schriften oberhalb der

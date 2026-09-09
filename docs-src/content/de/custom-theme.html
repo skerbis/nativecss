@@ -63,6 +63,10 @@ cp -r dist/ mein-projekt/assets/ncss/</code></pre>
   <p>Eigene Web-Font einbinden (z.B. selbst gehostetes <code>@font-face</code> oder ein Font-Provider), dann in <code>theme.css</code> nur den Namen eintragen - die komplette fluide Größen-Skala (<code>clamp()</code>-basiert, siehe <a href="typography.html">Typografie</a>) bleibt unverändert bestehen:</p>
   <pre class="ncss-radius-lg ncss-border"><code class="language-css">--ncss-font-family-base: "Inter", system-ui, sans-serif;
 --ncss-font-family-heading: "Fraunces", serif;</code></pre>
+  <p>Überschriften-Gewicht und Fließtext-Gewicht sind zwei eigene, semantische Tokens (<code>--ncss-font-weight-heading</code>/<code>-body</code>) statt fest auf die Skalenstufen (<code>-normal/-medium/-semibold/-bold</code>) verdrahtet zu sein - nützlich, wenn eine gewählte Schrift nur bestimmte Gewichte anbietet (z.B. eine Variable Font mit nur 300/600):</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-css">--ncss-font-weight-heading: var(--ncss-font-weight-semibold); /* statt -bold */
+--ncss-font-weight-body: var(--ncss-font-weight-normal);</code></pre>
+  <p><code>&lt;strong&gt;</code>/<code>&lt;b&gt;</code> bleiben davon unberührt (referenzieren weiterhin direkt <code>--ncss-font-weight-bold</code>) - "fett hervorgehoben" soll unabhängig davon bleiben, welches Gewicht eine Überschrift gerade nutzt.</p>
 </section>
 
 <section class="ncss-stack" id="schritt-6">

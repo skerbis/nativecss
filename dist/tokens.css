@@ -46,6 +46,14 @@
   --ncss-font-weight-semibold: 600;
   --ncss-font-weight-bold: 700;
 
+  /* Semantische Zuordnung (wie --ncss-color-heading auf eine Basisfarbe zeigt):
+     base.css liest NUR diese beiden Tokens, nie die rohen Skalenstufen oben direkt -
+     ein Theme kann so die Ueberschriften-/Fliesstext-Staerke unabhaengig von der
+     Skala selbst austauschen (z.B. bei einer variablen Schrift mit nur 300/600
+     verfuegbaren Gewichten), ohne die Skala-Tokens selbst umzudefinieren. */
+  --ncss-font-weight-heading: var(--ncss-font-weight-bold);
+  --ncss-font-weight-body: var(--ncss-font-weight-normal);
+
   /* --- Laufweite (letter-spacing) -------------------------------------------------
      em-basiert statt px/rem: dieselbe Laufweite soll bei einer 3rem-Überschrift breiter
      wirken als bei 0.8rem Fließtext, in einer fixen absoluten Einheit bliebe sie dagegen
