@@ -2323,6 +2323,16 @@ umgestellt:
       bisherigen Umschalter (index.html, colors.html) laufen über
       `data-ncss-theme-toggle="cycle"`. Root-Rewrite (`build-root-index.mjs`) per
       rsync-Simulation geprüft: `../dist/js/...` wird korrekt zu `dist/js/...`.
+84. **Skip-Link ragte bei großer Schrift ins Bild** (`helpers/a11y.css`) - im
+    Galerie-Relaunch aufgefallen (Theme mit größerer Grundschrift und Zeilenhöhe 1.65:
+    oben links blitzte ein Streifen in Markenfarbe auf). Gemessen auf `main`:
+    Default-Höhe 48px bei `top:-3rem` = 0,5px Reserve; größere Schrift +9,8px sichtbar,
+    200 % Textzoom +7,7px sichtbar (WCAG 1.4.4). Fix: `inset-block-start:0` +
+    `translate: 0 calc(-100% - var(--ncss-space-sm))`, Fokus `translate: 0
+    var(--ncss-space-sm)` - unabhängig von der Linkhöhe. Mess-Falle dabei: im selben
+    Browser-Kontext lieferte Chromium die per `@import` geladene `a11y.css` trotz
+    `Network.setCacheDisabled` weiter aus dem Speicher-Cache (alte Regel,
+    `translate: none`) - erst ein frischer `browser.newContext()` zeigte den Fix.
 
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
