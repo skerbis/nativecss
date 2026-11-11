@@ -67,6 +67,36 @@
   <p class="ncss-text-muted ncss-text-sm"><code>js/combobox.js</code> repliziert denselben reichen Inhalt für den JS-Fallback-Pfad (Firefox und aktuell auch Safari) - <code>&lt;option&gt;</code>-Kind-Elemente werden 1:1 in die custom Dropdown-Liste geklont statt nur der zusammengequetschte Text. Optisch identisches Ergebnis, per echtem Test in Chromium (nativ) sowie WebKit und Firefox (beide JS-Fallback) bestätigt.</p>
 </section>
 
+<section class="ncss-stack" id="live-suche">
+  <h2 class="demo-section-title">Live-Suche (opt-in)</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/livesearch.css</code> + <code>js/livesearch.js</code> zeigen schon während der Eingabe Treffer an - gruppiert (z.B. „Seiten“, „Personen“), mit markiertem Suchbegriff. Anders als <code>js/combobox.js</code>, das eine vorhandene <code>&lt;datalist&gt;</code> filtert, kommen die Treffer hier per <code>fetch()</code> vom Server. Muster: WAI-ARIA Combobox mit Listbox - der Fokus bleibt im Eingabefeld, <code>aria-activedescendant</code> zeigt auf die gewählte Option, eine Statusmeldung nennt die Trefferzahl. Ohne JavaScript bleibt es ein ganz normales Suchformular (Absenden führt zur Ergebnisseite).</p>
+  <pre><code class="language-html">&lt;form class="ncss-livesearch" action="/suche/" role="search" data-ncss-livesearch="/api/suche"&gt;
+  &lt;label class="ncss-visually-hidden" for="q"&gt;Suche&lt;/label&gt;
+  &lt;input id="q" class="ncss-input" type="search" name="q"&gt;
+  &lt;div class="ncss-livesearch-results" hidden&gt;&lt;/div&gt;
+&lt;/form&gt;
+&lt;script src="js/livesearch.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Antwort-Format</strong> des Endpoints (<code>GET /api/suche?q=…</code>, bereits gefiltert):</p>
+  <pre><code class="language-javascript">{
+  "groups": [
+    { "label": "Seiten", "items": [ { "title": "Kontakt", "url": "/kontakt/", "text": "Anfahrt und Öffnungszeiten" } ] }
+  ],
+  "all": "/suche/?q=..."
+}</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <tbody>
+        <tr><td><code>data-ncss-livesearch</code></td><td>Endpoint (Pflicht)</td></tr>
+        <tr><td><code>data-param</code></td><td>Name des Suchparameters, Default <code>q</code></td></tr>
+        <tr><td><code>data-min</code> / <code>data-delay</code></td><td>Mindestlänge (Default 2) und Wartezeit nach dem letzten Tastendruck (Default 180&nbsp;ms); ältere Anfragen werden per <code>AbortController</code> abgebrochen, Antworten pro Suchbegriff zwischengespeichert</td></tr>
+        <tr><td><code>data-mode="client"</code></td><td>Endpoint ist eine STATISCHE JSON-Datei im selben Format (ungefiltert): einmal laden, im Browser filtern - für kleine Datenmengen ohne Server-Logik</td></tr>
+        <tr><td><code>data-text-empty</code>/<code>-all</code>/<code>-status</code></td><td>Texte überschreiben (Platzhalter <code>{q}</code>, <code>{n}</code>); Default Deutsch/Englisch nach <code>&lt;html lang&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Kombinierbar mit <code>.ncss-search</code> (wachsendes Suchfeld) und <code>.ncss-input-group</code>. Innerhalb eines <code>&lt;dialog&gt;</code> schließt Esc zuerst nur die Trefferliste, nicht den Dialog. Danach gilt wieder das Browser-Verhalten: ein <code>type="search"</code>-Feld leert beim nächsten Esc zuerst seinen Inhalt, erst das folgende Esc schließt den Dialog. Live: <a href="../../demo/forms.html#live-suche">Demo</a>.</p>
+</section>
+
 <section class="ncss-stack" id="checkbox-radio">
   <h2 class="demo-section-title">Checkbox, Radio & Switch</h2>
   <div class="ncss-table-scroll">

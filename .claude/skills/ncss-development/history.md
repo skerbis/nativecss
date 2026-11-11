@@ -2235,6 +2235,28 @@ umgestellt:
       `.ncss-btn--danger` u.a.) per Grep gegen die echten CSS-Definitionen
       bestätigt, statt aus dem Gedächtnis zu vertrauen.
 
+82. **Live-Suche (`components/livesearch.css` + `js/livesearch.js`)** - aus dem
+    Galerie-Relaunch (Suche über Künstler, Ausstellungen und Seiten direkt im
+    Such-Overlay der Kopfzeile).
+    - Abgegrenzt gegen `js/combobox.js`: dort filtert JS eine VORHANDENE
+      `<datalist>`/`<select>`-Liste, hier kommen die Treffer erst per `fetch()` -
+      gemeinsames ARIA-Muster (Combobox + Listbox, Fokus bleibt im Input,
+      `aria-activedescendant`), aber andere Datenquelle, deshalb eigene Datei.
+    - Feature-Detection (`fetch`, `AbortController`) GANZ AM ANFANG (SKILL-Regel
+      "früher Feature-Detection-return") - ohne sie bliebe das Formular trotzdem
+      voll funktionsfähig, weil das Script nirgends `preventDefault()` vor einem
+      API-Aufruf setzt.
+    - Esc innerhalb eines `<dialog>`: `preventDefault()` + `stopPropagation()` auf
+      dem keydown schließt NUR die Trefferliste, das native Close-Request des
+      Dialogs entfällt. Per Playwright nachgemessen: danach leert ein
+      `type="search"`-Feld beim nächsten Esc zuerst seinen Inhalt (Browser-
+      Standard), erst das dritte Esc schließt den Dialog - nicht "zweites Esc
+      schließt", wie zuerst angenommen.
+    - `data-mode="client"` für statische JSON-Dateien (Demo selbst, kleine Sites
+      ohne Server-Logik) - gleiche Datenstruktur, Filterung im Browser (alle
+      Begriffe müssen in Titel oder Text vorkommen).
+    - Alle Inhalte escaped, `<mark>` erst nach dem Escapen eingefügt.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

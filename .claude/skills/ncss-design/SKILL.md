@@ -87,6 +87,10 @@ technischen Details.
   nachladen + Adresse verlink-/teilbar halten (Trigger-Link mit echtem `href`, kein
   eigenes Modal-Markup pro Ziel nötig): `js/modal-router.js` (Opt-in, kein eigenes
   CSS). Details: `docs/de/components.html#dialoge`.
+- Suche mit Vorschlägen schon während der Eingabe (Server-Endpoint oder statische
+  JSON-Datei): `.ncss-livesearch` + `js/livesearch.js` auf einem normalen
+  Suchformular - nicht `js/combobox.js`, das nur vorhandene `<datalist>`-Optionen
+  filtert. Details: `docs/de/forms.html#live-suche`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).

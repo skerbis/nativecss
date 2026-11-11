@@ -1,0 +1,106 @@
+/**
+ * ncss - Live-Suche (Layer "components"): Suchfeld mit Trefferliste vom Server während der
+ * Eingabe, gruppiert (z.B. "Seiten", "Personen", "Termine"), komplett per Tastatur
+ * bedienbar. Muster: WAI-ARIA Combobox mit Listbox-Popup
+ * (https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) - anders als js/combobox.js, das
+ * eine VORHANDENE <datalist>/<select>-Optionsliste filtert, kommen die Treffer hier erst
+ * per fetch() vom Server (oder aus einer statischen JSON-Datei, siehe data-mode="client").
+ *
+ * Markup - ein normales Suchformular; ohne JS bleibt es genau das (Absenden führt zur
+ * Ergebnisseite, kein Funktionsverlust):
+ * <form class="ncss-livesearch" action="/suche/" role="search"
+ *       data-ncss-livesearch="/api/suche">
+ *   <label class="ncss-visually-hidden" for="q">Suche</label>
+ *   <input id="q" class="ncss-input" type="search" name="q" autocomplete="off">
+ *   <div class="ncss-livesearch-results" hidden></div>
+ * </form>
+ * <script src="js/livesearch.js" defer></script>
+ *
+ * Kombinierbar mit dem wachsenden Suchfeld aus search.css (.ncss-search) - die
+ * Trefferliste ist mindestens so breit wie dessen ausgeklappter Zustand.
+ */
+.ncss-livesearch {
+  position: relative;
+}
+.ncss-livesearch-results {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(100% + var(--ncss-space-3xs));
+  z-index: var(--ncss-topbar-z);
+  min-width: min(var(--ncss-search-expanded-width), calc(100vw - 2 * var(--ncss-space-sm)));
+  max-height: var(--ncss-livesearch-max-height);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: var(--ncss-space-3xs);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-lg);
+  text-align: start;
+}
+/* [hidden] ausdrücklich respektieren - die eigene display-freie Regel oben würde es zwar
+   nicht überschreiben, eine spätere Projekt-Regel mit display aber schon. */
+.ncss-livesearch-results[hidden] {
+  display: none;
+}
+.ncss-livesearch-group {
+  margin: 0;
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm) var(--ncss-space-3xs);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  letter-spacing: var(--ncss-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ncss-color-text-muted);
+}
+.ncss-livesearch-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ncss-livesearch-option > a {
+  display: block;
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  color: inherit;
+  text-decoration: none;
+}
+.ncss-livesearch-title {
+  display: block;
+  font-weight: var(--ncss-font-weight-medium);
+}
+.ncss-livesearch-text {
+  display: block;
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-livesearch-option mark {
+  padding: 0;
+  color: inherit;
+  background-color: var(--ncss-color-brand-100);
+}
+/* Per Tastatur gewählte Option (aria-selected, Fokus bleibt im Eingabefeld) und Maus. */
+.ncss-livesearch-option[aria-selected="true"] > a {
+  background-color: var(--ncss-color-bg-subtle);
+  box-shadow: inset 3px 0 0 var(--ncss-color-brand);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-livesearch-option > a:hover {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+.ncss-livesearch-option > a:active {
+  background-color: var(--ncss-color-brand-100);
+}
+.ncss-livesearch-empty,
+.ncss-livesearch-footer {
+  margin: 0;
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  font-size: var(--ncss-font-size-sm);
+}
+.ncss-livesearch-empty {
+  color: var(--ncss-color-text-muted);
+}
+.ncss-livesearch-footer {
+  margin-block-start: var(--ncss-space-3xs);
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
