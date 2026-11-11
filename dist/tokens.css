@@ -163,6 +163,9 @@
   --ncss-columns-width: 20rem;
   --ncss-float-max-width: 16rem;
   --ncss-search-expanded-width: 16rem;
+  /* Live-Suche (components/livesearch.css): maximale Höhe der Trefferliste, danach
+     scrollt sie in sich selbst statt über den Viewport hinauszuwachsen. */
+  --ncss-livesearch-max-height: min(70vh, 34rem);
   --ncss-offcanvas-width: 20rem;
   --ncss-sticky-offset: 0;
   --ncss-sticky-z: 10;

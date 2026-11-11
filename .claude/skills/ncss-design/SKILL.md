@@ -97,6 +97,10 @@ technischen Details.
   `data-ncss-lightbox="gruppe"` (+ optional `data-caption`) und `js/lightbox.js` - nutzt
   die Modal-Lightbox (`--fullscreen --dark`), kein eigenes Dialog-Markup nötig. Details:
   `docs/de/components.html#dialoge`.
+- Suche mit Vorschlägen schon während der Eingabe (Server-Endpoint oder statische
+  JSON-Datei): `.ncss-livesearch` + `js/livesearch.js` auf einem normalen
+  Suchformular - nicht `js/combobox.js`, das nur vorhandene `<datalist>`-Optionen
+  filtert. Details: `docs/de/forms.html#live-suche`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).
