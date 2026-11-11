@@ -78,6 +78,7 @@
 @import url("components/overlay.css") layer(components);
 @import url("components/footer.css") layer(components);
 @import url("components/effects.css") layer(components);
+@import url("components/backdrop.css") layer(components);
 @import url("components/code-block.css") layer(components);
 @import url("components/events.css") layer(components);
 @import url("components/downloads.css") layer(components);

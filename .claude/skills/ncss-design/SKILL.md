@@ -87,6 +87,12 @@ technischen Details.
   nachladen + Adresse verlink-/teilbar halten (Trigger-Link mit echtem `href`, kein
   eigenes Modal-Markup pro Ziel nötig): `js/modal-router.js` (Opt-in, kein eigenes
   CSS). Details: `docs/de/components.html#dialoge`.
+- Foto-Hintergrund hinter Glasflächen (Galerie, Hotel, Portfolio): `.ncss-backdrop`
+  (`components/backdrop.css` + Opt-in `js/backdrop.js`) - mehrere Bilder überblenden mit
+  sanftem Zoom, seitenweit fixiert (direkt in `<body>`, kein Vorfahre mit
+  `transform`/`filter`) oder per `--contained` nur in einer Sektion. Nie
+  `background-attachment:fixed` dafür nehmen (iOS ignoriert es). Details:
+  `docs/de/components.html#effekte`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).
