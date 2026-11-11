@@ -17,6 +17,7 @@
 <script src="../vendor/prismjs/prism-javascript.min.js" defer></script>
 <script src="../dist/js/code-block.js" defer></script>
 <script src="../dist/js/combobox.js" defer></script>
+<script src="../dist/js/livesearch.js" defer></script>
 <script src="../dist/js/command-fallback.js" defer></script>
 <script src="../dist/js/nav.js" defer></script>
 <style>
@@ -178,6 +179,32 @@
   &lt;input class="ncss-input" aria-label="Vorname" placeholder="Vorname"&gt;
   &lt;input class="ncss-input" aria-label="Nachname" placeholder="Nachname"&gt;
 &lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="live-suche" class="ncss-stack">
+    <h2 class="demo-section-title">Live-Suche</h2>
+    <p class="ncss-text-muted ncss-text-sm">Vorschläge schon während der Eingabe, gruppiert und per Tastatur bedienbar (Pfeiltasten, Enter, Esc) - <code>components/livesearch.css</code> + <code>js/livesearch.js</code>, WAI-ARIA-Combobox-Muster. Diese Demo nutzt eine statische JSON-Datei im Client-Modus (<code>data-mode="client"</code>); im Normalfall liefert ein Server-Endpoint bereits gefilterte Treffer. Ohne JS bleibt es ein normales Suchformular. Probier z.B. „nav“, „farb“ oder „glass“.</p>
+    <form class="ncss-livesearch demo-narrow-form" action="#live-suche" role="search" data-ncss-livesearch="assets/livesearch-demo.json" data-mode="client">
+      <label class="ncss-visually-hidden" for="demoLiveSearch">Demo-Seiten und Handbuch durchsuchen</label>
+      <div class="ncss-input-group">
+        <input class="ncss-input" type="search" id="demoLiveSearch" name="q" placeholder="Suchbegriff…">
+        <button type="submit" class="ncss-btn ncss-btn--primary">Suchen</button>
+      </div>
+      <div class="ncss-livesearch-results" hidden></div>
+    </form>
+    <pre><code class="language-html">&lt;form class="ncss-livesearch" action="/suche/" role="search" data-ncss-livesearch="/api/suche"&gt;
+  &lt;label class="ncss-visually-hidden" for="q"&gt;Suche&lt;/label&gt;
+  &lt;input id="q" class="ncss-input" type="search" name="q"&gt;
+  &lt;div class="ncss-livesearch-results" hidden&gt;&lt;/div&gt;
+&lt;/form&gt;
+&lt;script src="dist/js/livesearch.js" defer&gt;&lt;/script&gt;</code></pre>
+    <pre><code class="language-javascript">// Antwort des Endpoints (GET /api/suche?q=...)
+{
+  "groups": [
+    { "label": "Seiten", "items": [ { "title": "Kontakt", "url": "/kontakt/", "text": "Anfahrt und Öffnungszeiten" } ] }
+  ],
+  "all": "/suche/?q=..."
+}</code></pre>
   </section>
 
   <section id="switch" class="ncss-stack">

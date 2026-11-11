@@ -163,6 +163,9 @@
   --ncss-columns-width: 20rem;
   --ncss-float-max-width: 16rem;
   --ncss-search-expanded-width: 16rem;
+  /* Live-Suche (components/livesearch.css): maximale Höhe der Trefferliste, danach
+     scrollt sie in sich selbst statt über den Viewport hinauszuwachsen. */
+  --ncss-livesearch-max-height: min(70vh, 34rem);
   --ncss-offcanvas-width: 20rem;
   --ncss-sticky-offset: 0;
   --ncss-sticky-z: 10;
@@ -177,6 +180,12 @@
   --ncss-topbar-height: 3.5rem;
   --ncss-topbar-z: 50;
   --ncss-slideshow-item-width: 85%;
+  /* Backdrop (components/backdrop.css): Überblenddauer, Startskalierung des langsamen
+     Auszooms (1 = kein Zoom) und optionaler Schleier über dem Bild - z.B. per
+     light-dark() im Dark Mode abdunkeln, damit Inhaltsflächen darüber ruhig bleiben. */
+  --ncss-backdrop-fade: 1.6s;
+  --ncss-backdrop-zoom: 1.08;
+  --ncss-backdrop-tint: transparent;
   --ncss-bleed-amount: 2rem;
   --ncss-bento-min: 12rem;
   --ncss-bento-row-height: 12rem;
