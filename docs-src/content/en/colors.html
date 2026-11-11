@@ -56,4 +56,19 @@
 <section class="ncss-stack" id="theme-override">
   <h2 class="demo-section-title">Manual Theme Override</h2>
   <p><code>[data-theme="light"]</code>/<code>[data-theme="dark"]</code> on <code>&lt;html&gt;</code> forces a color scheme independent of the system setting (e.g. for a UI toggle). Locally on a single element: <code>.ncss-scheme-dark</code>/<code>-light</code> (<code>helpers/surfaces.css</code>).</p>
+  <h3 id="theme-umschalter">Toggle with a remembered choice (opt-in)</h3>
+  <p><code>js/theme-toggle.js</code> + <code>components/theme-toggle.css</code> turn this into a ready-made toggle: the choice is stored in <code>localStorage</code> (“ncss-theme”); without a choice the system setting applies (live, if it changes). <code>js/theme-toggle-early.js</code> - loaded synchronously in the <code>&lt;head&gt;</code> BEFORE the CSS - applies the choice before the page is painted, so nothing flashes; it is a separate file instead of an inline snippet so a strict CSP without <code>'unsafe-inline'</code> keeps working. Both also set <code>[data-theme-resolved]</code> = the actually active mode (also for “System”), e.g. to show the matching icon.</p>
+  <pre><code class="language-html">&lt;script src="dist/js/theme-toggle-early.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="dist/ncss.css"&gt;
+&lt;script src="dist/js/theme-toggle.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- icon button: light &lt;-&gt; dark --&gt;
+&lt;button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle&gt;
+  &lt;span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- cycle: system -&gt; light -&gt; dark --&gt;
+&lt;button type="button" data-ncss-theme-toggle="cycle"&gt;Theme: &lt;span data-ncss-theme-label&gt;System&lt;/span&gt;&lt;/button&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">The icon button gets <code>aria-pressed</code> and a changing <code>aria-label</code> (“Switch to dark theme”/“Switch to light theme”, German by <code>&lt;html lang&gt;</code>, overridable via <code>data-label-dark</code>/<code>-light</code>). If the new choice equals the system setting again, the stored choice is removed. Colors only cross-fade while switching (<code>.ncss-theme-switching</code>, off under <code>prefers-reduced-motion</code>). Live: <a href="../../demo/colors.html#theme-umschalter">demo</a>.</p>
 </section>

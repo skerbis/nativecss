@@ -101,6 +101,11 @@ technischen Details.
   JSON-Datei): `.ncss-livesearch` + `js/livesearch.js` auf einem normalen
   Suchformular - nicht `js/combobox.js`, das nur vorhandene `<datalist>`-Optionen
   filtert. Details: `docs/de/forms.html#live-suche`.
+- Hell/Dunkel-Umschalter für eine Website: `js/theme-toggle-early.js` (synchron im
+  `<head>` vor dem CSS) + `js/theme-toggle.js` + Button mit `data-ncss-theme-toggle`
+  (Icon-Variante `.ncss-theme-toggle` mit `ncss-icon-moon`/`-sun`) - Wahl bleibt
+  gespeichert, kein Aufblitzen. Nie einen eigenen zweiten Mechanismus neben
+  `[data-theme]` bauen. Details: `docs/de/colors.html#theme-umschalter`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).

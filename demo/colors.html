@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NativeCSS - Farben</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../dist/js/theme-toggle-early.js"></script>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 <script src="../dist/js/page-transitions-quiet.js" defer></script>
@@ -17,6 +18,7 @@
 <script src="../dist/js/code-block.js" defer></script>
 <script src="../dist/js/command-fallback.js" defer></script>
 <script src="../dist/js/nav.js" defer></script>
+<script src="../dist/js/theme-toggle.js" defer></script>
 <style>
   .demo-section-title {
     border-block-end: 1px solid var(--ncss-color-border);
@@ -187,8 +189,8 @@
       <button type="button" class="ncss-btn ncss-btn--secondary" id="paletteToggle">
         Palette: <span id="paletteLabel">Standard</span>
       </button>
-      <button type="button" class="ncss-btn ncss-btn--secondary" id="themeToggle">
-        Theme: <span id="themeLabel">System</span>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-theme-toggle="cycle">
+        Theme: <span data-ncss-theme-label>System</span>
       </button>
     </div>
   </div>
@@ -411,6 +413,33 @@
     <p class="ncss-text-sm ncss-text-muted"><code>.ncss-text-gradient-brand</code> - nur für große, auffällige Überschriften gedacht, nicht für Fließtext.</p>
   </section>
 
+
+  <section id="theme-umschalter" class="ncss-stack">
+    <h2 class="demo-section-title">Hell/Dunkel-Umschalter</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>js/theme-toggle.js</code> + <code>components/theme-toggle.css</code> setzen <code>[data-theme]</code> am <code>&lt;html&gt;</code> (wirkt über <code>light-dark()</code> in colors.css) und merken sich die Wahl. <code>js/theme-toggle-early.js</code> synchron im <code>&lt;head&gt;</code> verhindert das Aufblitzen des falschen Modus beim Laden. Zwei Varianten - beide hier aktiv, sie schalten denselben Zustand:</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle>
+        <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+        <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+      </button>
+      <span class="ncss-text-sm ncss-text-muted">Icon-Button: Hell &harr; Dunkel</span>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-theme-toggle="cycle">Theme: <span data-ncss-theme-label>System</span></button>
+      <span class="ncss-text-sm ncss-text-muted">Zyklus: System &rarr; Hell &rarr; Dunkel</span>
+    </div>
+    <pre><code class="language-html">&lt;head&gt;
+  &lt;script src="dist/js/theme-toggle-early.js"&gt;&lt;/script&gt;   &lt;!-- synchron, vor dem CSS --&gt;
+  &lt;link rel="stylesheet" href="dist/ncss.css"&gt;
+  &lt;script src="dist/js/theme-toggle.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle&gt;
+  &lt;span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;button type="button" data-ncss-theme-toggle="cycle"&gt;Theme: &lt;span data-ncss-theme-label&gt;System&lt;/span&gt;&lt;/button&gt;</code></pre>
+  </section>
+
 </main>
 
 <footer class="ncss-footer">
@@ -429,7 +458,6 @@
   </div>
 </footer>
 
-<script src="assets/js/theme-toggle.js"></script>
 <script src="assets/js/colors-palette-toggle.js"></script>
 <script src="assets/js/colors-live-editor.js"></script>
 

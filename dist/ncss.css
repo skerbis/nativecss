@@ -64,6 +64,7 @@
 @import url("components/marginnote.css") layer(components);
 @import url("components/slideshow.css") layer(components);
 @import url("components/dialog-close.css") layer(components);
+@import url("components/theme-toggle.css") layer(components);
 @import url("components/modal.css") layer(components);
 @import url("components/lightbox.css") layer(components);
 @import url("components/scroll-progress.css") layer(components);
