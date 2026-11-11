@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NativeCSS - Demo</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../dist/js/theme-toggle-early.js"></script>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 <script src="../dist/js/page-transitions-quiet.js" defer></script>
@@ -17,6 +18,7 @@
 <script src="../dist/js/code-block.js" defer></script>
 <script src="../dist/js/command-fallback.js" defer></script>
 <script src="../dist/js/nav.js" defer></script>
+<script src="../dist/js/theme-toggle.js" defer></script>
 <script src="../dist/js/view-transitions.js" defer></script>
 <style>
   /* Nur für diese Demo-Seite selbst (Layout des Showcase-Rahmens) - kein Teil von NativeCSS. */
@@ -259,8 +261,8 @@
       </dialog>
     </nav>
     <div class="ncss-topbar-actions">
-      <button type="button" class="ncss-btn ncss-btn--secondary" id="themeToggle">
-        Theme: <span id="themeLabel">System</span>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-theme-toggle="cycle">
+        Theme: <span data-ncss-theme-label>System</span>
       </button>
     </div>
   </div>
@@ -1188,7 +1190,6 @@
   </div>
 </footer>
 
-<script src="assets/js/theme-toggle.js"></script>
 <script src="assets/js/index-animations.js"></script>
 
 </body>

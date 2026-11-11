@@ -56,4 +56,19 @@
 <section class="ncss-stack" id="theme-override">
   <h2 class="demo-section-title">Manueller Theme-Override</h2>
   <p><code>[data-theme="light"]</code>/<code>[data-theme="dark"]</code> auf <code>&lt;html&gt;</code> erzwingt ein Farbschema unabhängig von der Systemeinstellung (z.B. für einen UI-Umschalter). Lokal auf ein einzelnes Element: <code>.ncss-scheme-dark</code>/<code>-light</code> (<code>helpers/surfaces.css</code>).</p>
+  <h3 id="theme-umschalter">Umschalter mit gespeicherter Wahl (opt-in)</h3>
+  <p><code>js/theme-toggle.js</code> + <code>components/theme-toggle.css</code> machen daraus einen fertigen Umschalter: die Wahl bleibt in <code>localStorage</code> („ncss-theme“) gespeichert, ohne Wahl gilt das System (auch live, wenn es sich ändert). <code>js/theme-toggle-early.js</code> - synchron im <code>&lt;head&gt;</code> VOR dem CSS - setzt die Wahl, bevor die Seite gezeichnet wird, damit nichts aufblitzt; als eigene Datei statt Inline-Snippet, damit eine strenge CSP ohne <code>'unsafe-inline'</code> funktioniert. Beide setzen zusätzlich <code>[data-theme-resolved]</code> = den tatsächlich aktiven Modus (auch bei „System“), z.B. für das passende Icon.</p>
+  <pre><code class="language-html">&lt;script src="dist/js/theme-toggle-early.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="dist/ncss.css"&gt;
+&lt;script src="dist/js/theme-toggle.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- Icon-Button: Hell &lt;-&gt; Dunkel --&gt;
+&lt;button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle&gt;
+  &lt;span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Zyklus: System -&gt; Hell -&gt; Dunkel --&gt;
+&lt;button type="button" data-ncss-theme-toggle="cycle"&gt;Theme: &lt;span data-ncss-theme-label&gt;System&lt;/span&gt;&lt;/button&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Der Icon-Button bekommt <code>aria-pressed</code> und ein wechselndes <code>aria-label</code> („Dunkles Design einschalten“/„Helles Design einschalten“, Englisch nach <code>&lt;html lang&gt;</code>, überschreibbar per <code>data-label-dark</code>/<code>-light</code>). Entspricht die neue Wahl wieder dem System, wird die gespeicherte Wahl gelöscht. Der Farbwechsel blendet nur während des Umschaltens weich über (<code>.ncss-theme-switching</code>, abgeschaltet bei <code>prefers-reduced-motion</code>). Live: <a href="../../demo/colors.html#theme-umschalter">Demo</a>.</p>
 </section>

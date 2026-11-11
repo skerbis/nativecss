@@ -1,0 +1,62 @@
+/**
+ * ncss - Hell/Dunkel-Umschalter (Layer "components"): Darstellung zu js/theme-toggle.js.
+ * Die eigentliche Farbumschaltung leistet colors.css ([data-theme] + light-dark()), hier
+ * nur zwei Dinge: das passende Icon zeigen und den Wechsel weich machen.
+ *
+ * Markup (Icon-Button, z.B. in .ncss-topbar-actions):
+ * <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle>
+ *   <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+ *   <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+ * </button>
+ * Sichtbar ist jeweils das Icon des Modus, in den der Klick WECHSELT (Mond im hellen,
+ * Sonne im dunklen Zustand) - gesteuert über [data-theme-resolved], das beide Scripts
+ * setzen. Ohne JS (kein data-theme-resolved) bleibt der Mond sichtbar.
+ */
+.ncss-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ncss-space-lg);
+  height: var(--ncss-space-lg);
+  padding: 0;
+  border: none;
+  border-radius: var(--ncss-radius-full);
+  background: none;
+  color: inherit;
+  font-size: var(--ncss-font-size-md);
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-theme-toggle:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 10%, transparent);
+  }
+}
+.ncss-theme-toggle:active {
+  background-color: color-mix(in oklch, currentColor 18%, transparent);
+}
+.ncss-theme-icon-light {
+  display: none;
+}
+:root[data-theme-resolved="dark"] .ncss-theme-icon-light {
+  display: inline-block;
+}
+:root[data-theme-resolved="dark"] .ncss-theme-icon-dark {
+  display: none;
+}
+
+/* Weicher Wechsel NUR während des Umschaltens (.ncss-theme-switching setzt das Script für
+   350ms) - eine dauerhafte Transition auf allen Elementen würde jede Hover-/Fokus-
+   Änderung der Seite träge machen. Bewusst OHNE !important (Grundprinzip): Elemente mit
+   eigener, spezifischerer transition-Deklaration behalten ihre - sie wechseln dann eben
+   ohne Überblendung, kein Darstellungsfehler. */
+@media (prefers-reduced-motion: no-preference) {
+  .ncss-theme-switching,
+  .ncss-theme-switching *,
+  .ncss-theme-switching *::before,
+  .ncss-theme-switching *::after {
+    transition:
+      background-color var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      color var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      border-color var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+}

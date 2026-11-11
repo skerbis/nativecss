@@ -87,6 +87,11 @@ technischen Details.
   nachladen + Adresse verlink-/teilbar halten (Trigger-Link mit echtem `href`, kein
   eigenes Modal-Markup pro Ziel nötig): `js/modal-router.js` (Opt-in, kein eigenes
   CSS). Details: `docs/de/components.html#dialoge`.
+- Hell/Dunkel-Umschalter für eine Website: `js/theme-toggle-early.js` (synchron im
+  `<head>` vor dem CSS) + `js/theme-toggle.js` + Button mit `data-ncss-theme-toggle`
+  (Icon-Variante `.ncss-theme-toggle` mit `ncss-icon-moon`/`-sun`) - Wahl bleibt
+  gespeichert, kein Aufblitzen. Nie einen eigenen zweiten Mechanismus neben
+  `[data-theme]` bauen. Details: `docs/de/colors.html#theme-umschalter`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).

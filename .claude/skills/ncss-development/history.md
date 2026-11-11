@@ -2235,6 +2235,31 @@ umgestellt:
       `.ncss-btn--danger` u.a.) per Grep gegen die echten CSS-Definitionen
       bestätigt, statt aus dem Gedächtnis zu vertrauen.
 
+83. **Hell/Dunkel-Umschalter als Bibliotheksteil (`js/theme-toggle.js`,
+    `js/theme-toggle-early.js`, `components/theme-toggle.css`)** - vorher nur als
+    Demo-Script (`demo/assets/js/theme-toggle.js`, System/Hell/Dunkel ohne
+    Speichern), im Galerie-Relaunch als echter Kopfzeilen-Umschalter gebraucht.
+    - Speichern in `localStorage` + frühes, SYNCHRONES Script im `<head>` VOR dem
+      CSS gegen das Aufblitzen des falschen Modus. Als eigene Datei statt
+      Inline-Snippet (CSP-Regel "keine Inline-Scripts" dieses Projekts). Per
+      Playwright geprüft: `data-theme` steht bereits bei `readyState ===
+      "interactive"`.
+    - `[data-theme-resolved]` zusätzlich zu `[data-theme]`: bei "System" fehlt
+      `data-theme`, CSS kann ohne aufgelösten Modus nicht das passende Icon wählen
+      (`prefers-color-scheme`-Media-Query allein ignoriert die manuelle Wahl).
+    - Entspricht die neue Wahl wieder dem System, wird der gespeicherte Wert
+      gelöscht - sonst "friert" ein einmaliger Klick die Seite dauerhaft ein, auch
+      wenn das System später wechselt.
+    - Weicher Wechsel nur über eine kurzlebige Klasse (`.ncss-theme-switching`,
+      350ms) statt dauerhafter Transitions auf allen Elementen - ohne `!important`
+      (Grundprinzip), Elemente mit eigener spezifischerer Transition wechseln dann
+      eben hart.
+    - Das frühe Script steht jetzt auf allen Demo-Seiten und im Doku-Template, damit
+      eine Wahl seitenübergreifend gilt; das alte Demo-Script ist entfernt, beide
+      bisherigen Umschalter (index.html, colors.html) laufen über
+      `data-ncss-theme-toggle="cycle"`. Root-Rewrite (`build-root-index.mjs`) per
+      rsync-Simulation geprüft: `../dist/js/...` wird korrekt zu `dist/js/...`.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-
