@@ -2235,6 +2235,28 @@ umgestellt:
       `.ncss-btn--danger` u.a.) per Grep gegen die echten CSS-Definitionen
       bestätigt, statt aus dem Gedächtnis zu vertrauen.
 
+81. **Lightbox-Galerie (`components/lightbox.css` + `js/lightbox.js`)** - aus dem
+    Galerie-Relaunch-Projekt (Werk-/Ausstellungsgalerien mit dutzenden Bildern).
+    - Bewusst KEIN zweiter Dialog-Typ (modal.css' Grundsatz bleibt): das Script
+      erzeugt ein `<dialog>` mit `ncss-modal ncss-modal--fullscreen ncss-modal--dark`
+      plus `ncss-lightbox`, `lightbox.css` ordnet nur das Innenleben (Grid statt
+      Flex-Zentrierung, gewinnt bei gleicher Spezifität per Import-Reihenfolge NACH
+      modal.css). Animation, Backdrop, dunkle Darstellung, Fokus-Trap und Esc kommen
+      unverändert aus modal.css bzw. vom nativen `<dialog>`.
+    - Der Dateiname `components/lightbox.css` war in modal.css/off-canvas.css noch
+      als Verweis auf eine längst entfernte Datei (inkl. "lightbox.js deckt beide
+      ab") stehen geblieben - diese veralteten Verweise jetzt korrigiert (zeigen auf
+      modal.css bzw. `js/command-fallback.js`).
+    - Vor/Zurück nutzen das vorhandene Chevron-Icon gedreht statt neuer Icons.
+    - Tastatur: Fokus landet beim Öffnen im Dialog (nativ), Pfeiltasten blättern,
+      Esc schließt, Fokus kehrt zum auslösenden Link zurück (per Playwright geprüft).
+      Strg/Cmd/Shift-Klick bleibt ein normaler Link.
+    - Playwright-Falle: ein Screenshot direkt nach `keyboard.press("Enter")` auf einem
+      Link mitten in einer langen Seite zeigte den Dialog scheinbar 40px nach unten
+      verschoben, ohne Leiste - tatsächlich lief nur noch ein Scroll-Vorgang, die
+      gemessene Geometrie (`getBoundingClientRect`) war korrekt. Erst messen, dann aus
+      dem Screenshot Schlüsse ziehen.
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

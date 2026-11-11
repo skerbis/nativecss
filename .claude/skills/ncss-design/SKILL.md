@@ -87,6 +87,10 @@ technischen Details.
   nachladen + Adresse verlink-/teilbar halten (Trigger-Link mit echtem `href`, kein
   eigenes Modal-Markup pro Ziel nötig): `js/modal-router.js` (Opt-in, kein eigenes
   CSS). Details: `docs/de/components.html#dialoge`.
+- Bildergalerie mit Großansicht zum Durchblättern: Links mit
+  `data-ncss-lightbox="gruppe"` (+ optional `data-caption`) und `js/lightbox.js` - nutzt
+  die Modal-Lightbox (`--fullscreen --dark`), kein eigenes Dialog-Markup nötig. Details:
+  `docs/de/components.html#dialoge`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).
