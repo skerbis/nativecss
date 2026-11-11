@@ -2235,6 +2235,94 @@ umgestellt:
       `.ncss-btn--danger` u.a.) per Grep gegen die echten CSS-Definitionen
       bestätigt, statt aus dem Gedächtnis zu vertrauen.
 
+80. **Backdrop-Komponente (`components/backdrop.css` + `js/backdrop.js`)** - aus
+    einem echten Kundenprojekt (Galerie-Website, Relaunch von UIkit3 auf ncss)
+    übernommen, wo ein seitenweiter Bildwechsel-Hintergrund hinter Glasflächen das
+    Erscheinungsbild trägt (vorher ein jQuery-Plugin). Funde dabei:
+    - `background-attachment: fixed` ist auf iOS wirkungslos, das alte Plugin hatte
+      deshalb auf Mobil einen MITSCROLLENDEN Hintergrund - und darunter einen weißen
+      Streifen, sobald die Adressleiste einfuhr. Lösung: echtes `position:fixed`-
+      Element mit `height: 100lvh` (größte Viewport-Höhe, siehe SKILL "drei
+      Viewport-Einheiten") statt `100vh`/`100svh`.
+    - Ein Vorfahre mit `backdrop-filter`/`transform` macht `position:fixed` zum
+      Mitscrollen (neuer containing block, siehe SKILL) - deshalb im Kommentar
+      ausdrücklich "direkt in `<body>`".
+    - Erstes Bild ohne JS sichtbar über `:not([data-ready]) > :first-child`, mit JS
+      übernimmt `.is-active` - kein doppeltes Einblenden beim Start.
+    - Zoom-Dauer per JS = Intervall + 2s, sonst endet der Zoom vor der nächsten
+      Überblendung und das Bild "steht" kurz still bzw. springt.
+    - Bei `prefers-reduced-motion`: KEIN automatischer Wechsel (nicht nur kein Zoom) -
+      ein Bildwechsel im Hintergrund ist selbst Bewegung. Per Playwright mit echtem
+      Neuladen geprüft (ein `goto` auf dieselbe URL nur mit anderem `#hash` lädt NICHT
+      neu - der alte Timer lief weiter und täuschte einen Fehler vor).
+    - `--contained`-Variante für Hero-Sektionen und für die Demo selbst (ein
+      seitenweiter Backdrop auf der Kitchen-Sink-Seite würde alles andere überdecken).
+81. **Lightbox-Galerie (`components/lightbox.css` + `js/lightbox.js`)** - aus dem
+    Galerie-Relaunch-Projekt (Werk-/Ausstellungsgalerien mit dutzenden Bildern).
+    - Bewusst KEIN zweiter Dialog-Typ (modal.css' Grundsatz bleibt): das Script
+      erzeugt ein `<dialog>` mit `ncss-modal ncss-modal--fullscreen ncss-modal--dark`
+      plus `ncss-lightbox`, `lightbox.css` ordnet nur das Innenleben (Grid statt
+      Flex-Zentrierung, gewinnt bei gleicher Spezifität per Import-Reihenfolge NACH
+      modal.css). Animation, Backdrop, dunkle Darstellung, Fokus-Trap und Esc kommen
+      unverändert aus modal.css bzw. vom nativen `<dialog>`.
+    - Der Dateiname `components/lightbox.css` war in modal.css/off-canvas.css noch
+      als Verweis auf eine längst entfernte Datei (inkl. "lightbox.js deckt beide
+      ab") stehen geblieben - diese veralteten Verweise jetzt korrigiert (zeigen auf
+      modal.css bzw. `js/command-fallback.js`).
+    - Vor/Zurück nutzen das vorhandene Chevron-Icon gedreht statt neuer Icons.
+    - Tastatur: Fokus landet beim Öffnen im Dialog (nativ), Pfeiltasten blättern,
+      Esc schließt, Fokus kehrt zum auslösenden Link zurück (per Playwright geprüft).
+      Strg/Cmd/Shift-Klick bleibt ein normaler Link.
+    - Playwright-Falle: ein Screenshot direkt nach `keyboard.press("Enter")` auf einem
+      Link mitten in einer langen Seite zeigte den Dialog scheinbar 40px nach unten
+      verschoben, ohne Leiste - tatsächlich lief nur noch ein Scroll-Vorgang, die
+      gemessene Geometrie (`getBoundingClientRect`) war korrekt. Erst messen, dann aus
+      dem Screenshot Schlüsse ziehen.
+82. **Live-Suche (`components/livesearch.css` + `js/livesearch.js`)** - aus dem
+    Galerie-Relaunch (Suche über Künstler, Ausstellungen und Seiten direkt im
+    Such-Overlay der Kopfzeile).
+    - Abgegrenzt gegen `js/combobox.js`: dort filtert JS eine VORHANDENE
+      `<datalist>`/`<select>`-Liste, hier kommen die Treffer erst per `fetch()` -
+      gemeinsames ARIA-Muster (Combobox + Listbox, Fokus bleibt im Input,
+      `aria-activedescendant`), aber andere Datenquelle, deshalb eigene Datei.
+    - Feature-Detection (`fetch`, `AbortController`) GANZ AM ANFANG (SKILL-Regel
+      "früher Feature-Detection-return") - ohne sie bliebe das Formular trotzdem
+      voll funktionsfähig, weil das Script nirgends `preventDefault()` vor einem
+      API-Aufruf setzt.
+    - Esc innerhalb eines `<dialog>`: `preventDefault()` + `stopPropagation()` auf
+      dem keydown schließt NUR die Trefferliste, das native Close-Request des
+      Dialogs entfällt. Per Playwright nachgemessen: danach leert ein
+      `type="search"`-Feld beim nächsten Esc zuerst seinen Inhalt (Browser-
+      Standard), erst das dritte Esc schließt den Dialog - nicht "zweites Esc
+      schließt", wie zuerst angenommen.
+    - `data-mode="client"` für statische JSON-Dateien (Demo selbst, kleine Sites
+      ohne Server-Logik) - gleiche Datenstruktur, Filterung im Browser (alle
+      Begriffe müssen in Titel oder Text vorkommen).
+    - Alle Inhalte escaped, `<mark>` erst nach dem Escapen eingefügt.
+83. **Hell/Dunkel-Umschalter als Bibliotheksteil (`js/theme-toggle.js`,
+    `js/theme-toggle-early.js`, `components/theme-toggle.css`)** - vorher nur als
+    Demo-Script (`demo/assets/js/theme-toggle.js`, System/Hell/Dunkel ohne
+    Speichern), im Galerie-Relaunch als echter Kopfzeilen-Umschalter gebraucht.
+    - Speichern in `localStorage` + frühes, SYNCHRONES Script im `<head>` VOR dem
+      CSS gegen das Aufblitzen des falschen Modus. Als eigene Datei statt
+      Inline-Snippet (CSP-Regel "keine Inline-Scripts" dieses Projekts). Per
+      Playwright geprüft: `data-theme` steht bereits bei `readyState ===
+      "interactive"`.
+    - `[data-theme-resolved]` zusätzlich zu `[data-theme]`: bei "System" fehlt
+      `data-theme`, CSS kann ohne aufgelösten Modus nicht das passende Icon wählen
+      (`prefers-color-scheme`-Media-Query allein ignoriert die manuelle Wahl).
+    - Entspricht die neue Wahl wieder dem System, wird der gespeicherte Wert
+      gelöscht - sonst "friert" ein einmaliger Klick die Seite dauerhaft ein, auch
+      wenn das System später wechselt.
+    - Weicher Wechsel nur über eine kurzlebige Klasse (`.ncss-theme-switching`,
+      350ms) statt dauerhafter Transitions auf allen Elementen - ohne `!important`
+      (Grundprinzip), Elemente mit eigener spezifischerer Transition wechseln dann
+      eben hart.
+    - Das frühe Script steht jetzt auf allen Demo-Seiten und im Doku-Template, damit
+      eine Wahl seitenübergreifend gilt; das alte Demo-Script ist entfernt, beide
+      bisherigen Umschalter (index.html, colors.html) laufen über
+      `data-ncss-theme-toggle="cycle"`. Root-Rewrite (`build-root-index.mjs`) per
+      rsync-Simulation geprüft: `../dist/js/...` wird korrekt zu `dist/js/...`.
 84. **Skip-Link ragte bei großer Schrift ins Bild** (`helpers/a11y.css`) - im
     Galerie-Relaunch aufgefallen (Theme mit größerer Grundschrift und Zeilenhöhe 1.65:
     oben links blitzte ein Streifen in Markenfarbe auf). Gemessen auf `main`:

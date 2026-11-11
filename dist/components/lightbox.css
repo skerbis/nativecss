@@ -1,0 +1,165 @@
+/**
+ * ncss - Lightbox-Galerie (Layer "components"): Galerie-Navigation für die bestehende
+ * Modal-Lightbox (.ncss-modal--fullscreen + --dark, siehe modal.css). KEIN zweiter
+ * Dialog-Typ - das Grundprinzip aus modal.css ("eine Lightbox ist nur ein Modal mit
+ * anderer Darstellung") bleibt bestehen; diese Datei ergänzt nur, was ein einzelnes Bild-
+ * Modal nicht kann: mehrere Bilder einer Gruppe durchblättern (Vor/Zurück, Pfeiltasten,
+ * Wischgeste), Zähler, Bildunterschrift.
+ *
+ * Markup - nur die Auslöser-Links, das <dialog> erzeugt js/lightbox.js einmalig:
+ * <a href="gross-1.jpg" data-ncss-lightbox="ausstellung" data-caption="Titel, 2024">
+ *   <img src="klein-1.jpg" alt="Titel, 2024">
+ * </a>
+ * Gleicher Wert in data-ncss-lightbox = eine Gruppe. Ohne JavaScript öffnet der Link
+ * einfach das große Bild (Progressive Enhancement, kein Funktionsverlust).
+ *
+ * Das erzeugte <dialog> trägt "ncss-modal ncss-modal--fullscreen ncss-modal--dark
+ * ncss-lightbox" - Öffnen/Schließen-Animation, Backdrop, dunkle Darstellung unabhängig vom
+ * Seiten-Theme und der Fokus-Trap kommen damit unverändert aus modal.css bzw. vom nativen
+ * <dialog>, hier wird nur das Innenleben angeordnet.
+ */
+
+/* Raster statt des Flex-Zentrierens aus .ncss-modal--fullscreen:modal: Bildfläche oben,
+   Leiste (Bildunterschrift + Zähler) unten. Gleiche Spezifität wie die Fullscreen-Regel,
+   gewinnt per Quelltext-Reihenfolge (lightbox.css wird nach modal.css importiert). */
+.ncss-lightbox {
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+.ncss-lightbox:modal {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.ncss-lightbox-figure {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  margin: 0;
+  padding: var(--ncss-space-lg) var(--ncss-space-2xl) 0;
+  /* Vertikal bleibt Scrollen/Zoomen dem Browser überlassen, horizontal gehört die Geste
+     der Lightbox (Wischen = Blättern). */
+  touch-action: pan-y pinch-zoom;
+}
+.ncss-lightbox-figure img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--ncss-radius-md);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.ncss-lightbox-figure img.is-loading {
+  opacity: 0.25;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ncss-lightbox-figure img {
+    transition: opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
+  }
+}
+
+.ncss-lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ncss-space-sm);
+  min-height: var(--ncss-space-xl);
+  /* Untere Kante: Home-Indicator auf iPhones nicht überdecken. */
+  padding: var(--ncss-space-2xs) var(--ncss-space-md) max(var(--ncss-space-xs), env(safe-area-inset-bottom));
+  font-size: var(--ncss-font-size-sm);
+  text-align: center;
+}
+.ncss-lightbox-caption {
+  max-width: 60ch;
+}
+.ncss-lightbox-count {
+  color: var(--ncss-color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Vor/Zurück: dieselbe runde Fläche wie .ncss-dialog-close (Geschwister-Optik), das Icon
+   ist das vorhandene Chevron, gedreht - kein neues Icon nötig. */
+.ncss-lightbox-prev,
+.ncss-lightbox-next {
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ncss-space-xl);
+  height: var(--ncss-space-xl);
+  border: none;
+  border-radius: var(--ncss-radius-full);
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+  color: inherit;
+  font-size: var(--ncss-font-size-lg);
+  cursor: pointer;
+}
+.ncss-lightbox-prev {
+  inset-inline-start: var(--ncss-space-xs);
+}
+.ncss-lightbox-next {
+  inset-inline-end: var(--ncss-space-xs);
+}
+.ncss-lightbox-prev .ncss-icon {
+  rotate: 90deg;
+}
+.ncss-lightbox-next .ncss-icon {
+  rotate: -90deg;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-lightbox-prev:hover:not(:active),
+  .ncss-lightbox-next:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 22%, transparent);
+  }
+}
+.ncss-lightbox-prev:active,
+.ncss-lightbox-next:active {
+  background-color: color-mix(in oklch, currentColor 30%, transparent);
+  transition-duration: var(--ncss-motion-duration-fast);
+}
+.ncss-lightbox-prev:focus-visible,
+.ncss-lightbox-next:focus-visible {
+  outline: var(--ncss-focus-ring-width) solid currentColor;
+  outline-offset: 2px;
+}
+/* Ein einzelnes Bild: keine Navigation, kein Zähler. */
+.ncss-lightbox[data-single] .ncss-lightbox-prev,
+.ncss-lightbox[data-single] .ncss-lightbox-next,
+.ncss-lightbox[data-single] .ncss-lightbox-count {
+  display: none;
+}
+
+/* Schmale Geräte: Pfeile in die untere Leiste statt über das Bild - dort verdecken sie
+   sonst einen guten Teil des ohnehin kleinen Bildes. -- ncss breakpoint: md -- */
+@media (max-width: 47.99rem) {
+  .ncss-lightbox-figure {
+    padding: var(--ncss-space-xl) var(--ncss-space-2xs) 0;
+  }
+  .ncss-lightbox-prev,
+  .ncss-lightbox-next {
+    inset-block: auto max(var(--ncss-space-3xs), env(safe-area-inset-bottom));
+    translate: none;
+    width: var(--ncss-space-lg);
+    height: var(--ncss-space-lg);
+  }
+  .ncss-lightbox-bar {
+    padding-inline: var(--ncss-space-xl);
+  }
+}
+
+/* Auslöser: Zoom-Cursor als Hinweis, ruhiges Abdunkeln bei Hover. */
+[data-ncss-lightbox] {
+  display: block;
+  cursor: zoom-in;
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-ncss-lightbox]:hover img {
+    opacity: 0.88;
+  }
+}

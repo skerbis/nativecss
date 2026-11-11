@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "label": "Demo-Seiten",
+      "items": [
+        { "title": "Komponenten (Kitchen-Sink)", "url": "index.html", "text": "Alle Komponenten auf einer Seite: Karten, Listen, Slideshow, Modal, Off-Canvas" },
+        { "title": "Navigation", "url": "navigation.html", "text": "Dropdowns, Mega-Menü, Baumnavigation, Drilldown und Priority-Nav" },
+        { "title": "Formulare", "url": "forms.html", "text": "Basis-Felder, Input-Group, Switch, Range, Datei-Upload, Live-Suche" },
+        { "title": "Medien", "url": "media.html", "text": "Video, Audio, Art Direction, Bild-Utilities" },
+        { "title": "Effekte", "url": "effects.html", "text": "Glow-Border, Glass, Stamped, Grain, Blend-Modi" },
+        { "title": "Farben", "url": "colors.html", "text": "Farbfamilien, Flächen, Hell/Dunkel-Umschalter" }
+      ]
+    },
+    {
+      "label": "Handbuch",
+      "items": [
+        { "title": "Design Tokens", "url": "../docs/de/tokens.html", "text": "Fließende Typografie, Abstände, Radien, Schatten, Bewegung" },
+        { "title": "Layout", "url": "../docs/de/layout.html", "text": "Container, Grid, Stack, Cluster, Masonry, Container Queries" },
+        { "title": "Barrierefreiheit", "url": "../docs/de/accessibility.html", "text": "Skip-Link, Fokus, reduzierte Bewegung, Screenreader" },
+        { "title": "Komponenten-Referenz", "url": "../docs/de/components.html", "text": "Alle Komponenten-Dateien und Klassen im Überblick" }
+      ]
+    }
+  ]
+}

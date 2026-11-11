@@ -49,6 +49,7 @@
 
 @import url("components/hero.css") layer(components);
 @import url("components/search.css") layer(components);
+@import url("components/livesearch.css") layer(components);
 @import url("components/select.css") layer(components);
 @import url("components/input-group.css") layer(components);
 @import url("components/combobox.css") layer(components);
@@ -63,7 +64,9 @@
 @import url("components/marginnote.css") layer(components);
 @import url("components/slideshow.css") layer(components);
 @import url("components/dialog-close.css") layer(components);
+@import url("components/theme-toggle.css") layer(components);
 @import url("components/modal.css") layer(components);
+@import url("components/lightbox.css") layer(components);
 @import url("components/scroll-progress.css") layer(components);
 @import url("components/scroll-stack.css") layer(components);
 @import url("components/roadmap.css") layer(components);
@@ -78,6 +81,7 @@
 @import url("components/overlay.css") layer(components);
 @import url("components/footer.css") layer(components);
 @import url("components/effects.css") layer(components);
+@import url("components/backdrop.css") layer(components);
 @import url("components/code-block.css") layer(components);
 @import url("components/events.css") layer(components);
 @import url("components/downloads.css") layer(components);

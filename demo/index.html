@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NativeCSS - Demo</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../dist/js/theme-toggle-early.js"></script>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 <script src="../dist/js/page-transitions-quiet.js" defer></script>
@@ -17,7 +18,9 @@
 <script src="../dist/js/code-block.js" defer></script>
 <script src="../dist/js/command-fallback.js" defer></script>
 <script src="../dist/js/nav.js" defer></script>
+<script src="../dist/js/theme-toggle.js" defer></script>
 <script src="../dist/js/view-transitions.js" defer></script>
+<script src="../dist/js/lightbox.js" defer></script>
 <style>
   /* Nur für diese Demo-Seite selbst (Layout des Showcase-Rahmens) - kein Teil von NativeCSS. */
   .demo-swatch {
@@ -156,6 +159,13 @@
     border: none;
     cursor: zoom-in;
   }
+  .demo-lightbox-gallery img {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--ncss-aspect-square);
+    object-fit: cover;
+    border-radius: var(--ncss-radius-md);
+  }
   .demo-lightbox-size {
     width: 24rem;
     max-width: 100%;
@@ -228,6 +238,7 @@
                 <li><a href="#slideshow">Slideshow</a></li>
                 <li><a href="#modal-demo">Modal</a></li>
                 <li><a href="#lightbox">Modal (Lightbox)</a></li>
+                <li><a href="#lightbox-galerie">Lightbox-Galerie</a></li>
                 <li><a href="#offcanvas-demo">Off-Canvas</a></li>
               </ul>
             </details>
@@ -259,8 +270,8 @@
       </dialog>
     </nav>
     <div class="ncss-topbar-actions">
-      <button type="button" class="ncss-btn ncss-btn--secondary" id="themeToggle">
-        Theme: <span id="themeLabel">System</span>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-theme-toggle="cycle">
+        Theme: <span data-ncss-theme-label>System</span>
       </button>
     </div>
   </div>
@@ -1076,6 +1087,22 @@
     </dialog>
   </section>
 
+  <!-- Lightbox-Galerie -->
+  <section class="ncss-stack" id="lightbox-galerie">
+    <h2 class="demo-section-title">Lightbox-Galerie (data-ncss-lightbox)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Mehrere Bilder einer Gruppe durchblättern - Pfeiltasten, Vor/Zurück, Wischen, Zähler, Bildunterschrift. Baut auf der Modal-Lightbox oben auf (<code>components/lightbox.css</code> + <code>js/lightbox.js</code>), ohne JavaScript öffnet der Link einfach das große Bild.</p>
+    <ul class="ncss-grid demo-lightbox-gallery" role="list" style="--ncss-grid-min: 9rem;">
+      <li><a href="assets/slide-1.jpg" data-ncss-lightbox="demo" data-caption="Erstes Bild - Bildunterschrift aus data-caption"><img src="assets/slide-1.jpg" alt="Beispielbild 1"></a></li>
+      <li><a href="assets/slide-2.jpg" data-ncss-lightbox="demo" data-caption="Zweites Bild"><img src="assets/slide-2.jpg" alt="Beispielbild 2"></a></li>
+      <li><a href="assets/slide-3.jpg" data-ncss-lightbox="demo" data-caption="Drittes Bild"><img src="assets/slide-3.jpg" alt="Beispielbild 3"></a></li>
+      <li><a href="assets/art-direction-desktop.jpg" data-ncss-lightbox="demo"><img src="assets/art-direction-mobile.jpg" alt="Querformat - ohne data-caption dient dieser alt-Text als Bildunterschrift"></a></li>
+    </ul>
+    <pre><code class="language-html">&lt;a href="gross-1.jpg" data-ncss-lightbox="ausstellung" data-caption="Titel, 2024"&gt;
+  &lt;img src="klein-1.jpg" alt="Titel, 2024"&gt;
+&lt;/a&gt;
+&lt;script src="dist/js/lightbox.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
   <!-- Breakpoint-Escape-Hatch -->
   <section class="ncss-stack">
     <h2 class="demo-section-title">Klassischer Breakpoint-Escape-Hatch</h2>
@@ -1188,7 +1215,6 @@
   </div>
 </footer>
 
-<script src="assets/js/theme-toggle.js"></script>
 <script src="assets/js/index-animations.js"></script>
 
 </body>

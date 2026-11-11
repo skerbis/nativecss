@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NativeCSS - Effekte</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../dist/js/theme-toggle-early.js"></script>
 <link rel="stylesheet" href="../dist/ncss.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 <script src="../dist/js/page-transitions-quiet.js" defer></script>
@@ -17,6 +18,7 @@
 <script src="../dist/js/code-block.js" defer></script>
 <script src="../dist/js/command-fallback.js" defer></script>
 <script src="../dist/js/nav.js" defer></script>
+<script src="../dist/js/backdrop.js" defer></script>
 <style>
   .demo-section-title {
     border-block-end: 1px solid var(--ncss-color-border);
@@ -84,6 +86,23 @@
     inset-inline-end: var(--ncss-space-md);
     inset-block-end: var(--ncss-space-md);
     background-color: var(--ncss-color-brand-2);
+  }
+
+  /* Nur fürs Demo: Bühne für die eingebettete Backdrop-Variante (--contained). Im echten
+     Einsatz sitzt .ncss-backdrop direkt in <body> und füllt den ganzen Viewport. */
+  .demo-backdrop-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 24rem;
+    padding: var(--ncss-space-lg);
+    border-radius: var(--ncss-radius-lg);
+    overflow: hidden;
+  }
+  .demo-backdrop-stage > .ncss-glass {
+    position: relative;
+    z-index: 1;
+    max-width: 28rem;
   }
 </style>
 </head>
@@ -200,6 +219,33 @@
 &lt;!-- Unschärfe/Farbe anpassen --&gt;
 &lt;div class="ncss-glass" style="--ncss-glass-blur: 20px;"&gt;...&lt;/div&gt;</code></pre>
     <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-glass-bg</code>, <code>--ncss-glass-border</code>, <code>--ncss-glass-blur</code> (Default 12px).</p>
+  </section>
+
+  <!-- Backdrop -->
+  <section id="backdrop" class="ncss-stack">
+    <h2 class="demo-section-title">Backdrop (Hintergrund-Bildwechsel)</h2>
+    <p class="ncss-text-muted">Bilder überblenden langsam ineinander und zoomen dabei sanft aus - typisch als seitenweiter, fixierter Hintergrund hinter Glasflächen (<code>components/backdrop.css</code> + <code>js/backdrop.js</code>). Hier als eingebettete Variante <code>.ncss-backdrop--contained</code>; bei <code>prefers-reduced-motion</code> bleibt es beim ersten Bild, ohne Zoom.</p>
+    <div class="demo-backdrop-stage">
+      <div class="ncss-backdrop ncss-backdrop--contained" data-ncss-backdrop data-interval="4000" aria-hidden="true">
+        <img class="ncss-backdrop-item" src="assets/slide-1.jpg" alt="">
+        <img class="ncss-backdrop-item" src="assets/slide-2.jpg" alt="" loading="lazy">
+        <img class="ncss-backdrop-item" src="assets/slide-3.jpg" alt="" loading="lazy">
+      </div>
+      <div class="ncss-glass demo-glass-card">
+        <h3>Inhalt über dem Bild</h3>
+        <p class="ncss-text-sm">Glasflächen bleiben lesbar, das Bild trägt die Atmosphäre. Wechsel alle 4 Sekunden, pausiert in Hintergrund-Tabs.</p>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;!-- seitenweit, direkt in &lt;body&gt; --&gt;
+&lt;div class="ncss-backdrop" data-ncss-backdrop data-interval="6000" aria-hidden="true"&gt;
+  &lt;img class="ncss-backdrop-item" src="a.jpg" alt="" fetchpriority="high"&gt;
+  &lt;img class="ncss-backdrop-item" src="b.jpg" alt="" loading="lazy"&gt;
+&lt;/div&gt;
+&lt;script src="dist/js/backdrop.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- nur eine Sektion füllen: Vorfahre mit position:relative --&gt;
+&lt;div class="ncss-backdrop ncss-backdrop--contained" data-ncss-backdrop&gt;...&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-backdrop-fade</code> (Überblendung, Default 1.6s), <code>--ncss-backdrop-zoom</code> (Startskalierung, Default 1.08, <code>1</code> = kein Zoom), <code>--ncss-backdrop-tint</code> (Schleier, z.B. <code>light-dark(transparent, rgb(0 0 0 / 50%))</code> für ruhigere Flächen im Dark Mode).</p>
   </section>
 
   <!-- Stamped -->

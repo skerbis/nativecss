@@ -87,6 +87,25 @@ technischen Details.
   nachladen + Adresse verlink-/teilbar halten (Trigger-Link mit echtem `href`, kein
   eigenes Modal-Markup pro Ziel nötig): `js/modal-router.js` (Opt-in, kein eigenes
   CSS). Details: `docs/de/components.html#dialoge`.
+- Foto-Hintergrund hinter Glasflächen (Galerie, Hotel, Portfolio): `.ncss-backdrop`
+  (`components/backdrop.css` + Opt-in `js/backdrop.js`) - mehrere Bilder überblenden mit
+  sanftem Zoom, seitenweit fixiert (direkt in `<body>`, kein Vorfahre mit
+  `transform`/`filter`) oder per `--contained` nur in einer Sektion. Nie
+  `background-attachment:fixed` dafür nehmen (iOS ignoriert es). Details:
+  `docs/de/components.html#effekte`.
+- Bildergalerie mit Großansicht zum Durchblättern: Links mit
+  `data-ncss-lightbox="gruppe"` (+ optional `data-caption`) und `js/lightbox.js` - nutzt
+  die Modal-Lightbox (`--fullscreen --dark`), kein eigenes Dialog-Markup nötig. Details:
+  `docs/de/components.html#dialoge`.
+- Suche mit Vorschlägen schon während der Eingabe (Server-Endpoint oder statische
+  JSON-Datei): `.ncss-livesearch` + `js/livesearch.js` auf einem normalen
+  Suchformular - nicht `js/combobox.js`, das nur vorhandene `<datalist>`-Optionen
+  filtert. Details: `docs/de/forms.html#live-suche`.
+- Hell/Dunkel-Umschalter für eine Website: `js/theme-toggle-early.js` (synchron im
+  `<head>` vor dem CSS) + `js/theme-toggle.js` + Button mit `data-ncss-theme-toggle`
+  (Icon-Variante `.ncss-theme-toggle` mit `ncss-icon-moon`/`-sun`) - Wahl bleibt
+  gespeichert, kein Aufblitzen. Nie einen eigenen zweiten Mechanismus neben
+  `[data-theme]` bauen. Details: `docs/de/colors.html#theme-umschalter`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).
