@@ -2235,6 +2235,49 @@ umgestellt:
       `.ncss-btn--danger` u.a.) per Grep gegen die echten CSS-Definitionen
       bestätigt, statt aus dem Gedächtnis zu vertrauen.
 
+80. **Backdrop-Komponente (`components/backdrop.css` + `js/backdrop.js`)** - aus
+    einem echten Kundenprojekt (Galerie-Website, Relaunch von UIkit3 auf ncss)
+    übernommen, wo ein seitenweiter Bildwechsel-Hintergrund hinter Glasflächen das
+    Erscheinungsbild trägt (vorher ein jQuery-Plugin). Funde dabei:
+    - `background-attachment: fixed` ist auf iOS wirkungslos, das alte Plugin hatte
+      deshalb auf Mobil einen MITSCROLLENDEN Hintergrund - und darunter einen weißen
+      Streifen, sobald die Adressleiste einfuhr. Lösung: echtes `position:fixed`-
+      Element mit `height: 100lvh` (größte Viewport-Höhe, siehe SKILL "drei
+      Viewport-Einheiten") statt `100vh`/`100svh`.
+    - Ein Vorfahre mit `backdrop-filter`/`transform` macht `position:fixed` zum
+      Mitscrollen (neuer containing block, siehe SKILL) - deshalb im Kommentar
+      ausdrücklich "direkt in `<body>`".
+    - Erstes Bild ohne JS sichtbar über `:not([data-ready]) > :first-child`, mit JS
+      übernimmt `.is-active` - kein doppeltes Einblenden beim Start.
+    - Zoom-Dauer per JS = Intervall + 2s, sonst endet der Zoom vor der nächsten
+      Überblendung und das Bild "steht" kurz still bzw. springt.
+    - Bei `prefers-reduced-motion`: KEIN automatischer Wechsel (nicht nur kein Zoom) -
+      ein Bildwechsel im Hintergrund ist selbst Bewegung. Per Playwright mit echtem
+      Neuladen geprüft (ein `goto` auf dieselbe URL nur mit anderem `#hash` lädt NICHT
+      neu - der alte Timer lief weiter und täuschte einen Fehler vor).
+    - `--contained`-Variante für Hero-Sektionen und für die Demo selbst (ein
+      seitenweiter Backdrop auf der Kitchen-Sink-Seite würde alles andere überdecken).
+81. **Lightbox-Galerie (`components/lightbox.css` + `js/lightbox.js`)** - aus dem
+    Galerie-Relaunch-Projekt (Werk-/Ausstellungsgalerien mit dutzenden Bildern).
+    - Bewusst KEIN zweiter Dialog-Typ (modal.css' Grundsatz bleibt): das Script
+      erzeugt ein `<dialog>` mit `ncss-modal ncss-modal--fullscreen ncss-modal--dark`
+      plus `ncss-lightbox`, `lightbox.css` ordnet nur das Innenleben (Grid statt
+      Flex-Zentrierung, gewinnt bei gleicher Spezifität per Import-Reihenfolge NACH
+      modal.css). Animation, Backdrop, dunkle Darstellung, Fokus-Trap und Esc kommen
+      unverändert aus modal.css bzw. vom nativen `<dialog>`.
+    - Der Dateiname `components/lightbox.css` war in modal.css/off-canvas.css noch
+      als Verweis auf eine längst entfernte Datei (inkl. "lightbox.js deckt beide
+      ab") stehen geblieben - diese veralteten Verweise jetzt korrigiert (zeigen auf
+      modal.css bzw. `js/command-fallback.js`).
+    - Vor/Zurück nutzen das vorhandene Chevron-Icon gedreht statt neuer Icons.
+    - Tastatur: Fokus landet beim Öffnen im Dialog (nativ), Pfeiltasten blättern,
+      Esc schließt, Fokus kehrt zum auslösenden Link zurück (per Playwright geprüft).
+      Strg/Cmd/Shift-Klick bleibt ein normaler Link.
+    - Playwright-Falle: ein Screenshot direkt nach `keyboard.press("Enter")` auf einem
+      Link mitten in einer langen Seite zeigte den Dialog scheinbar 40px nach unten
+      verschoben, ohne Leiste - tatsächlich lief nur noch ein Scroll-Vorgang, die
+      gemessene Geometrie (`getBoundingClientRect`) war korrekt. Erst messen, dann aus
+      dem Screenshot Schlüsse ziehen.
 82. **Live-Suche (`components/livesearch.css` + `js/livesearch.js`)** - aus dem
     Galerie-Relaunch (Suche über Künstler, Ausstellungen und Seiten direkt im
     Such-Overlay der Kopfzeile).

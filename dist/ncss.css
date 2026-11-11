@@ -65,6 +65,7 @@
 @import url("components/slideshow.css") layer(components);
 @import url("components/dialog-close.css") layer(components);
 @import url("components/modal.css") layer(components);
+@import url("components/lightbox.css") layer(components);
 @import url("components/scroll-progress.css") layer(components);
 @import url("components/scroll-stack.css") layer(components);
 @import url("components/roadmap.css") layer(components);
@@ -79,6 +80,7 @@
 @import url("components/overlay.css") layer(components);
 @import url("components/footer.css") layer(components);
 @import url("components/effects.css") layer(components);
+@import url("components/backdrop.css") layer(components);
 @import url("components/code-block.css") layer(components);
 @import url("components/events.css") layer(components);
 @import url("components/downloads.css") layer(components);

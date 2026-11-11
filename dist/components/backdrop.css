@@ -1,0 +1,94 @@
+/**
+ * ncss - Backdrop-Komponente (Layer "components"): Hintergrund aus einem oder mehreren
+ * Bildern, die langsam überblenden und dabei sanft auszoomen ("Ken Burns"). Inhalt
+ * (Karten, .ncss-glass-Flächen) liegt darüber - typisch für Galerie-, Hotel- oder
+ * Portfolio-Seiten, auf denen das Foto selbst die Atmosphäre trägt.
+ *
+ * Zwei Varianten:
+ * 1. .ncss-backdrop (Standard) - seitenweit, fixiert hinter dem gesamten Inhalt.
+ * 2. .ncss-backdrop--contained - füllt nur den nächsten positionierten Vorfahren (z.B.
+ *    eine Hero-Sektion mit position:relative) statt den ganzen Viewport.
+ *
+ * Markup:
+ * <div class="ncss-backdrop" data-ncss-backdrop data-interval="6000" aria-hidden="true">
+ *   <img class="ncss-backdrop-item" src="a.jpg" alt="" fetchpriority="high">
+ *   <img class="ncss-backdrop-item" src="b.jpg" alt="" loading="lazy">
+ * </div>
+ * <script src="js/backdrop.js" defer></script>
+ *
+ * Ohne JavaScript bleibt das erste Bild stehen (kein leerer Hintergrund) - ein einzelnes
+ * Bild braucht gar kein Script. Die Bilder sind reine Dekoration (alt="" +
+ * aria-hidden am Container), Bildinhalte mit Aussage gehören nicht hierher.
+ *
+ * Warum position:fixed + 100lvh statt background-attachment:fixed: iOS ignoriert
+ * background-attachment:fixed komplett, und 100vh/100svh lässt beim Ein-/Ausblenden der
+ * mobilen Adressleiste einen leeren Streifen am unteren Rand frei - 100lvh (größte
+ * Viewport-Höhe, siehe SKILL "drei Viewport-Einheiten") deckt in jedem Zustand ab.
+ *
+ * Wichtig: kein Vorfahre darf transform/filter/backdrop-filter tragen - sonst wird er zum
+ * Bezugsrahmen für position:fixed (siehe SKILL "neuer containing block"), der Backdrop
+ * scrollt dann mit. Den Container deshalb direkt in <body> setzen.
+ *
+ * Anpassbar (Defaults in tokens.css, pro Instanz per style="--..." überschreibbar):
+ *   --ncss-backdrop-fade   Dauer der Überblendung
+ *   --ncss-backdrop-zoom   Startskalierung des Auszooms (1 = kein Zoom)
+ *   --ncss-backdrop-tint   Schleier über dem Bild
+ * Die Zoom-Dauer setzt js/backdrop.js passend zum Wechselintervall.
+ */
+.ncss-backdrop {
+  position: fixed;
+  inset: 0 0 auto 0;
+  /* 100vh als Fallback für Browser ohne lvh, 100lvh überschreibt direkt danach. */
+  height: 100vh;
+  height: 100lvh;
+  z-index: -1;
+  overflow: hidden;
+  background-color: var(--ncss-color-bg);
+  pointer-events: none;
+  contain: strict;
+}
+.ncss-backdrop--contained {
+  position: absolute;
+  inset: 0;
+  height: auto;
+  z-index: 0;
+}
+/* Schleier: eigener Layer über den Bildern, Farbe frei per Token. */
+.ncss-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ncss-backdrop-tint);
+}
+.ncss-backdrop-item {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--ncss-focus-point);
+  opacity: 0;
+  transition: opacity var(--ncss-backdrop-fade) ease-in-out;
+}
+/* Ohne JS: erstes Bild sichtbar. Mit JS ([data-ready]) übernimmt .is-active - so gibt es
+   beim Start kein Doppel-Einblenden des ersten Bildes. */
+.ncss-backdrop:not([data-ready]) > .ncss-backdrop-item:first-child,
+.ncss-backdrop-item.is-active {
+  opacity: 1;
+}
+/* Zoom nur ohne Bewegungsreduktion - reset.css drosselt Animationen zwar global, eine
+   ruhige Fläche ohne jede Bewegung ist hier aber das eigentliche Ziel, nicht nur eine
+   verkürzte Dauer. */
+@media (prefers-reduced-motion: no-preference) {
+  .ncss-backdrop-item.is-active {
+    animation: ncss-backdrop-zoom var(--ncss-backdrop-duration, 8s) linear both;
+  }
+}
+@keyframes ncss-backdrop-zoom {
+  from {
+    scale: var(--ncss-backdrop-zoom);
+  }
+  to {
+    scale: 1;
+  }
+}

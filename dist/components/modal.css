@@ -7,7 +7,9 @@
  *
  * KEINE eigene Lightbox-Komponente: eine Lightbox ist konzeptionell nur ein Modal mit
  * anderer Darstellung (Vollbild, dunkel) - siehe .ncss-modal--fullscreen/--dark unten,
- * statt eine zweite, fast identische <dialog>-Komponente zu pflegen.
+ * statt eine zweite, fast identische <dialog>-Komponente zu pflegen. Mehrere Bilder
+ * durchblättern (Galerie): components/lightbox.css + js/lightbox.js setzen genau auf
+ * diese beiden Varianten auf, ohne eigenen Dialog-Typ.
  *
  * Markup (Standard):
  * <button type="button" command="show-modal" commandfor="modal1">Öffnen</button>
@@ -74,8 +76,8 @@
   margin-block-start: var(--ncss-space-md);
 }
 
-/* Fade+Scale beim Öffnen/Schließen - identische @starting-style/allow-discrete-Mechanik
-   wie components/lightbox.css (siehe dort für die ausführliche Erklärung). `translate`
+/* Fade+Scale beim Öffnen/Schließen per @starting-style + allow-discrete (display/overlay
+   bleiben während der Schließen-Animation erhalten, siehe Kommentar zu position oben). `translate`
    steht mit in der Liste, obwohl die Basisregel selbst keinen Wert dafür setzt (wie
    `scale` bereits zuvor auch auf ::backdrop wirkungslos mitläuft) - die Einblendvarianten
    --slide-up/--slide-down weiter unten setzen NUR den Wert, keine eigene transition-
