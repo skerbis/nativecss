@@ -93,6 +93,10 @@ technischen Details.
   `transform`/`filter`) oder per `--contained` nur in einer Sektion. Nie
   `background-attachment:fixed` dafür nehmen (iOS ignoriert es). Details:
   `docs/de/components.html#effekte`.
+- Bildergalerie mit Großansicht zum Durchblättern: Links mit
+  `data-ncss-lightbox="gruppe"` (+ optional `data-caption`) und `js/lightbox.js` - nutzt
+  die Modal-Lightbox (`--fullscreen --dark`), kein eigenes Dialog-Markup nötig. Details:
+  `docs/de/components.html#dialoge`.
 - Referenz für die volle Klassenliste: `docs/de/components.html`. Lebende Beispiele:
   `demo/index.html` (Kitchen-Sink) und die jeweilige eigene Demo-Seite (siehe
   Doku-Sidebar).
