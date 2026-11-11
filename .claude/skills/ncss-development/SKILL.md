@@ -410,6 +410,13 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
 - Ein `<svg>`-Chart (z.B. Sparkline) bleibt `aria-hidden` (reine Formen sind keine
   sinnvolle Screenreader-Ansage) - daneben eine `.ncss-visually-hidden`-`<table>` mit
   den ECHTEN Werten einfügen, nicht nur eine vage Trend-Beschreibung.
+- Elemente, die per festem negativem Abstand "aus dem Bild" geschoben werden
+  (früher `.ncss-skip-link` mit `top:-3rem`), skalieren nicht mit Schriftgröße/
+  Zeilenhöhe/Textzoom - bei 200 % Textzoom ragte der Skip-Link sichtbar herein. Immer
+  per `translate: 0 calc(-100% - Abstand)` (bezieht sich auf die EIGENE Höhe)
+  verstecken. Beim Messen per Playwright frischen Browser-Kontext nehmen: per
+  `@import` geladene Dateien kamen trotz Cache-Bypass der Seite noch aus dem
+  Speicher-Cache (alte Regel, `translate: none`).
 - `placeholder` ist KEIN Label-Ersatz. Bei mehreren visuell verschmolzenen Feldern ohne
   Platz für ein Sibling-`<label>` je Feld: `aria-label` direkt am `<input>`.
 - Ein `.ncss-dialog-close`-artiger `position:absolute`-Button reserviert keinen Platz -
