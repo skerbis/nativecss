@@ -2235,6 +2235,29 @@ umgestellt:
       `.ncss-btn--danger` u.a.) per Grep gegen die echten CSS-Definitionen
       bestätigt, statt aus dem Gedächtnis zu vertrauen.
 
+80. **Backdrop-Komponente (`components/backdrop.css` + `js/backdrop.js`)** - aus
+    einem echten Kundenprojekt (Galerie-Website, Relaunch von UIkit3 auf ncss)
+    übernommen, wo ein seitenweiter Bildwechsel-Hintergrund hinter Glasflächen das
+    Erscheinungsbild trägt (vorher ein jQuery-Plugin). Funde dabei:
+    - `background-attachment: fixed` ist auf iOS wirkungslos, das alte Plugin hatte
+      deshalb auf Mobil einen MITSCROLLENDEN Hintergrund - und darunter einen weißen
+      Streifen, sobald die Adressleiste einfuhr. Lösung: echtes `position:fixed`-
+      Element mit `height: 100lvh` (größte Viewport-Höhe, siehe SKILL "drei
+      Viewport-Einheiten") statt `100vh`/`100svh`.
+    - Ein Vorfahre mit `backdrop-filter`/`transform` macht `position:fixed` zum
+      Mitscrollen (neuer containing block, siehe SKILL) - deshalb im Kommentar
+      ausdrücklich "direkt in `<body>`".
+    - Erstes Bild ohne JS sichtbar über `:not([data-ready]) > :first-child`, mit JS
+      übernimmt `.is-active` - kein doppeltes Einblenden beim Start.
+    - Zoom-Dauer per JS = Intervall + 2s, sonst endet der Zoom vor der nächsten
+      Überblendung und das Bild "steht" kurz still bzw. springt.
+    - Bei `prefers-reduced-motion`: KEIN automatischer Wechsel (nicht nur kein Zoom) -
+      ein Bildwechsel im Hintergrund ist selbst Bewegung. Per Playwright mit echtem
+      Neuladen geprüft (ein `goto` auf dieselbe URL nur mit anderem `#hash` lädt NICHT
+      neu - der alte Timer lief weiter und täuschte einen Fehler vor).
+    - `--contained`-Variante für Hero-Sektionen und für die Demo selbst (ein
+      seitenweiter Backdrop auf der Kitchen-Sink-Seite würde alles andere überdecken).
+
 ## Zwei klassische CSS-Fallen (per echtem Test gefunden, components/nav.css + off-canvas.css)
 
 - **`min-width: auto`-Falle - gilt für Flex- UND Grid-Items gleichermaßen.** Ein Flex-

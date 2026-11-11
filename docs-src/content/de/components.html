@@ -132,8 +132,9 @@
         <tr><td></td><td><code>.ncss-glass</code></td><td>Glassmorphism (<code>backdrop-filter</code>, <code>@supports</code>-abgesichert). Nicht auf ein Element mit Floating-UI-Nachfahren setzen (<code>&lt;wa-dropdown&gt;</code> u.ä.) - <code>backdrop-filter</code> erzeugt einen neuen Containing Block für <code>position:fixed</code></td></tr>
         <tr><td></td><td><code>.ncss-stamped</code> (+ <code>--press</code>)</td><td>Hauchdünner, zweifarbiger "gravierter" Rahmen, funktioniert auf jeder Fläche</td></tr>
         <tr><td></td><td><code>.ncss-grain</code></td><td>Feines SVG-Rauschen per <code>::after</code> + <code>mix-blend-mode</code></td></tr>
+        <tr><td><code>backdrop.css</code> + <code>js/backdrop.js</code></td><td><code>.ncss-backdrop</code>, <code>-item</code> (+ <code>--contained</code>), Attribute <code>data-ncss-backdrop</code>, <code>data-interval</code></td><td>Hintergrund aus mehreren Bildern, die langsam überblenden und sanft auszoomen. Standard seitenweit fixiert (<code>100lvh</code>, kein Leerstreifen bei mobiler Adressleiste, kein <code>background-attachment:fixed</code>, das iOS ignoriert), <code>--contained</code> füllt nur den nächsten positionierten Vorfahren. Ohne JS bleibt das erste Bild stehen; das Script lädt vor, pausiert in Hintergrund-Tabs und wechselt bei <code>prefers-reduced-motion</code> gar nicht. Tokens <code>--ncss-backdrop-fade</code>, <code>-zoom</code>, <code>-tint</code>. Kein Vorfahre mit <code>transform</code>/<code>filter</code> - sonst scrollt der fixierte Hintergrund mit.</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="ncss-text-muted ncss-text-sm">Rein dekorativ, bewusst optional - keine dieser Klassen ist Bestandteil von <code>.ncss-card</code>/<code>-btn</code>.</p>
+  <p class="ncss-text-muted ncss-text-sm">Rein dekorativ, bewusst optional - keine dieser Klassen ist Bestandteil von <code>.ncss-card</code>/<code>-btn</code>. Live: <a href="../../demo/effects.html#backdrop">Backdrop-Demo</a>.</p>
 </section>
