@@ -574,6 +574,17 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   dort per Template-CSS auf Spaltenbreite begrenzt. `<fieldset>` hat UA-`min-inline-size:
   min-content` - in Grid-Spalten mit langen Code-Zeilen auf 0 setzen.
 - Kopfleiste darf nie umbrechen: nach jeder Änderung 320-1920px in 10px-Schritten prüfen.
+- Live-Beispiele aus `docs-src/demos/` per `<!--MERGE: fragment-->` (bzw. `#section`) in die
+  passenden Handbuch-Abschnitte einweben (gleiche ID mit Präfix `live-` oder gleiche h2),
+  nicht als zweiten Block anhängen - sonst steht jedes Thema doppelt da. EN-Fassungen der
+  Fragmente unter `demos/en/` (vollständig übersetzt).
+- Barrierefreiheits-Block je Komponenten-Seite kommt aus `docs-src/a11y.json` (Tastatur ·
+  Screenreader · Einstellungen · Ohne JS), Rechtliches/Website-Seiten aus `nav.json` "legal".
+- Kopfleiste + `.ncss-subnav` sind EIN Sticky-Container (`[data-ncss-sticky-header]`) - nie
+  die Leiste einzeln mit fester Topbar-Höhe kleben (verrutscht, sobald die Kopfleiste
+  wächst: Schriftzug, Zoom). `js/subnav.js` misst den Container -> `--ncss-scroll-offset`.
+- Website-eigene Klassen nie mit `ncss-`-Präfix (z.B. `demo-wordmark`); Markup-Prüfung:
+  `node tools/index.mjs && node llms/hooks/check-classes.mjs docs/*/*.html demo/*.html`.
 
 ## Bash-/Rollout-Fallstricke
 
