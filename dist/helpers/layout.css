@@ -278,10 +278,33 @@
    Auf ein Kind von .ncss-grid/.ncss-grid--cols-.../.ncss-bento gesetzt - lässt EIN Element
    mehrere Spalten/Zeilen einnehmen statt nur einer. Kombinierbar: eine 1/3-Karte neben einer
    2/3-Karte in einem .ncss-grid--cols-3 ist einfach eine normale Karte neben einer mit
-   .ncss-col-span-2. Wirkt erst, sobald der Grid-Kontext tatsächlich genug Spalten hat (auf
-   1 Spalte reduziert sich span automatisch auf die volle Breite). */
+   .ncss-col-span-2.
+   ACHTUNG: Hat das Raster gerade weniger Spalten als die Spannweite, legt der Browser
+   eine zusätzliche (implizite) Spalte an - samt Abstand, die Seite läuft seitlich über
+   (per Test bei 330px gefunden). In .ncss-grid--cols-N und .ncss-bento wird die
+   Spannweite deshalb erst ab genug Spalten aktiv (siehe unten bzw. Bento-Abschnitt).
+   Im intrinsischen .ncss-grid (auto-fit) lässt sich die Spaltenzahl per CSS nicht
+   abfragen - dort für ungleich breite Spalten lieber .ncss-grid--cols-N nehmen. */
 .ncss-col-span-2 { grid-column: span 2; }
 .ncss-col-span-3 { grid-column: span 3; }
+:is(.ncss-grid--cols-2, .ncss-grid--cols-3, .ncss-grid--cols-4, .ncss-grid--cols-6) > :is(.ncss-col-span-2, .ncss-col-span-3) {
+  grid-column: auto;
+}
+@container ncss-container (min-width: 24rem) {
+  .ncss-grid--cols-2 > :is(.ncss-col-span-2, .ncss-col-span-3) { grid-column: span 2; }
+}
+@container ncss-container (min-width: 36rem) {
+  .ncss-grid--cols-3 > .ncss-col-span-2 { grid-column: span 2; }
+  .ncss-grid--cols-3 > .ncss-col-span-3 { grid-column: span 3; }
+}
+@container ncss-container (min-width: 48rem) {
+  .ncss-grid--cols-4 > .ncss-col-span-2 { grid-column: span 2; }
+  .ncss-grid--cols-4 > .ncss-col-span-3 { grid-column: span 3; }
+}
+@container ncss-container (min-width: 56rem) {
+  .ncss-grid--cols-6 > .ncss-col-span-2 { grid-column: span 2; }
+  .ncss-grid--cols-6 > .ncss-col-span-3 { grid-column: span 3; }
+}
 .ncss-row-span-2 { grid-row: span 2; }
 .ncss-row-span-3 { grid-row: span 3; }
 
