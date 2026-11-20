@@ -3,7 +3,7 @@ name: Release (npm + GitHub-Release mit ZIP)
 # Veröffentlicht NativeCSS bei npm, sobald ein Versions-Tag gepusht wird:
 #   git tag v1.1.0 && git push origin v1.1.0
 # Anmeldung bei npm per "Trusted Publishing" (OIDC) - KEIN Token, kein Secret.
-# Voraussetzung (einmalig): auf npmjs.com unter Paket "nativecss" → Settings → Trusted Publisher
+# Voraussetzung (einmalig): auf npmjs.com unter Paket "@skerbis/nativecss" → Settings → Trusted Publisher
 #   GitHub Actions · Owner: skerbis · Repository: nativecss · Workflow: npm-publish.yml
 # (npm schränkt Tokens, die 2FA umgehen, ab Jan 2027 für direktes Veröffentlichen ein.)
 # Das Paket enthält nur dist/, LICENSE, README.md, CHANGELOG.md (siehe "files" in package.json) -

@@ -93,8 +93,8 @@ Stelle für eigene Markenwerte (Farben, Schriften, Radien). Scripts liegen einze
 |---|---|
 | Release-ZIP | [Neuestes Release](https://github.com/skerbis/nativecss/releases/latest) herunterladen, `dist/` ins Projekt kopieren |
 | Git | `git clone https://github.com/skerbis/nativecss.git` und `dist/` nehmen |
-| npm | `npm i nativecss`, dann `import "nativecss"` (= `dist/ncss.css`) |
-| CDN | `https://cdn.jsdelivr.net/npm/nativecss@1/dist/ncss.css` |
+| npm | `npm i @skerbis/nativecss`, dann `import "@skerbis/nativecss"` (= `dist/ncss.css`) |
+| CDN | `https://cdn.jsdelivr.net/npm/@skerbis/nativecss@1/dist/ncss.css` |
 
 Komponenten mit externen Dateien (Phosphor-Icons für `<ncss-icon>`, MapLibre für
 `<ncss-map>`) liegen in `vendor/` - im ZIP und per Git enthalten, bei npm per

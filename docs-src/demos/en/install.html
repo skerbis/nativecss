@@ -57,17 +57,17 @@
   <article class="demo-install-card">
     <h3><span class="demo-install-step" aria-hidden="true">2</span>CDN</h3>
     <p>Load straight from jsDelivr, no download.</p>
-    <pre><code class="language-html">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nativecss@1/dist/ncss.css"&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nativecss@1/dist/theme.css"&gt;</code></pre>
-    <p>In production pin a version, e.g. <code>nativecss@1.1.0</code>.</p>
+    <pre><code class="language-html">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@skerbis/nativecss@1/dist/ncss.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@skerbis/nativecss@1/dist/theme.css"&gt;</code></pre>
+    <p>In production pin a version, e.g. <code>@skerbis/nativecss@1.1.0</code>.</p>
   </article>
   <article class="demo-install-card">
     <h3><span class="demo-install-step" aria-hidden="true">3</span>npm (optional)</h3>
     <p>For projects that already use a bundler.</p>
-    <pre><code class="language-javascript">npm i nativecss
+    <pre><code class="language-javascript">npm i @skerbis/nativecss
 
-import "nativecss";              // JS entry
-@import "nativecss/ncss.css";    /* or in CSS */</code></pre>
+import "@skerbis/nativecss";              // JS entry
+@import "@skerbis/nativecss/dist/ncss.css";    /* or in CSS */</code></pre>
   </article>
   <article class="demo-install-card demo-install-cms">
     <h3><span class="demo-install-step" aria-hidden="true">4</span><a href="integration-cms.html">With a CMS</a></h3>

@@ -1,5 +1,5 @@
 {
-  "name": "nativecss",
+  "name": "@skerbis/nativecss",
   "version": "1.1.0",
   "description": "Natives CSS-Designsystem ohne Build-Schritt: Cascade Layers, Container Queries, light-dark(), native Elemente und Light-DOM-Web-Components. Einzeln einbindbar.",
   "keywords": [
@@ -47,5 +47,8 @@
   "sideEffects": [
     "*.css",
     "dist/js/*.js"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

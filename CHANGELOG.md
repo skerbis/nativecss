@@ -26,7 +26,7 @@ Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versio
 
 - Website komplett neu: eine generierte Shell für Start, Handbuch und Beispiele, Suche (⌘K), Code-Inspektor mit Erklärungen, Live-Beispiele direkt im Handbuch, neue Beispiel-Websites (Gemeinde, Hotel, ImmoDesk-Backend), Tour durch alle Funktionen, Impressum und Datenschutz, „Unterstützen“ in der Kopfleiste.
 - Lokaler Entwicklungs-Router `docs-src/dev-router.php` mit Range-Support für Video/Audio.
-- Veröffentlichung bei npm (`npm i nativecss`) zusätzlich zu Kopieren und CDN - weiterhin ohne Build-Schritt nutzbar.
+- Veröffentlichung bei npm (`npm i @skerbis/nativecss`) zusätzlich zu Kopieren und CDN - weiterhin ohne Build-Schritt nutzbar.
 
 ### Konventionen
 

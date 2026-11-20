@@ -13,10 +13,10 @@
     </div></div>
     <div class="ncss-card ncss-border ncss-radius-lg"><div class="ncss-card-body ncss-stack">
       <h3>With a bundler (Vite, Astro …)</h3>
-      <pre><code class="language-javascript">// npm i nativecss
-import "nativecss";            // = dist/ncss.css
-import "nativecss/theme.css";
-import "nativecss/dist/js/tabs.js"; // only the scripts you need</code></pre>
+      <pre><code class="language-javascript">// npm i @skerbis/nativecss
+import "@skerbis/nativecss";            // = dist/ncss.css
+import "@skerbis/nativecss/theme.css";
+import "@skerbis/nativecss/dist/js/tabs.js"; // only the scripts you need</code></pre>
     </div></div>
   </div>
 </section>
@@ -37,7 +37,7 @@ import "nativecss/dist/js/tabs.js"; // only the scripts you need</code></pre>
 
 &lt;!-- usage --&gt;
 &lt;x-card title="Hello"&gt;Content&lt;/x-card&gt;</code></pre>
-  <p class="ncss-text-sm ncss-text-muted">With Vite: <code>npm i nativecss</code> and <code>import "nativecss"</code> in <code>resources/js/app.js</code>.</p>
+  <p class="ncss-text-sm ncss-text-muted">With Vite: <code>npm i @skerbis/nativecss</code> and <code>import "@skerbis/nativecss"</code> in <code>resources/js/app.js</code>.</p>
 </section>
 
 <section class="ncss-stack" id="symfony">
@@ -51,7 +51,7 @@ import "nativecss/dist/js/tabs.js"; // only the scripts you need</code></pre>
 <section class="ncss-stack" id="astro-ssg">
   <h2 class="demo-section-title">Astro, Eleventy, Hugo</h2>
   <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
-    <li><strong>Astro</strong>: <code>import "nativecss";</code> in the layout frontmatter (or files in <code>public/</code> + <code>&lt;link&gt;</code>); component scripts via <code>&lt;script src="…/dist/js/tabs.js"&gt;</code> only in the components that need them.</li>
+    <li><strong>Astro</strong>: <code>import "@skerbis/nativecss";</code> in the layout frontmatter (or files in <code>public/</code> + <code>&lt;link&gt;</code>); component scripts via <code>&lt;script src="…/dist/js/tabs.js"&gt;</code> only in the components that need them.</li>
     <li><strong>Eleventy / Hugo</strong>: serve <code>dist/</code> via passthrough copy (11ty) or from <code>static/</code> (Hugo), two <code>&lt;link&gt;</code> lines in the base layout, shortcodes/partials output NativeCSS markup.</li>
   </ul>
 </section>
