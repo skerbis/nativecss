@@ -6,9 +6,10 @@
 <title>__TITLE__</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <meta name="description" content="__DESCRIPTION__">
-<script src="../../dist/js/theme-toggle-early.js"></script>
+<script src="../../dist/js/preferences-early.js"></script>
 <link rel="stylesheet" href="../../dist/ncss.css">
 <link rel="stylesheet" href="../../dist/page-transitions.css">
+<link rel="stylesheet" href="../../dist/components/preferences-fonts.css">
 <link rel="stylesheet" href="../../demo/assets/inspector.css">
 <link rel="stylesheet" href="../../demo/assets/site-cards.css">
 <script src="../../dist/js/page-transitions-quiet.js" defer></script>
@@ -22,6 +23,7 @@
 <script src="../../dist/js/command-fallback.js" defer></script>
 <script src="../../dist/js/nav.js" defer></script>
 <script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/preferences.js" defer></script>
 <script src="../../dist/js/subnav.js" defer></script>
 <script src="../../dist/js/command-palette.js" defer></script>
 <script src="../../dist/js/dialog-light-dismiss.js" defer></script>
@@ -116,6 +118,43 @@
     }
     .site-topbar .ncss-topbar-actions {
       gap: var(--ncss-space-3xs);
+    }
+  }
+  /* Darstellung (<ncss-preferences>) in der Kopfleiste: unter 48rem nur das Symbol -
+     der Text bleibt für Screenreader als Name des Buttons erhalten. */
+  .site-prefs .ncss-preferences-toggle {
+    min-block-size: 2.5rem;
+  }
+  @media (max-width: 47.99rem) {
+    .site-prefs .ncss-preferences-toggle {
+      padding-inline: 0.55rem;
+    }
+    .site-prefs .ncss-preferences-toggle > span:not(.ncss-preferences-icon) {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+  /* Mobil-Menü: Darstellung als eigener Punkt (aufklappbar, Bedienfeld direkt darin) */
+  .site-panel-prefs {
+    margin-block: var(--ncss-space-sm) 0;
+    padding-block-start: var(--ncss-space-sm);
+    border-block-start: 1px solid var(--ncss-color-border);
+  }
+  .site-panel-prefs > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    min-block-size: 2.75rem;
+    padding-inline: var(--ncss-space-xs);
+    font-weight: 600;
+  }
+  @media (min-width: 64rem) {
+    .site-panel-prefs {
+      display: none;
     }
   }
   .docs-layout {

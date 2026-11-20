@@ -331,6 +331,10 @@ function buildTopbar(lang, page) {
     `        <div class="ncss-nav--tree site-panel-tree">`,
     buildTree(lang, page.slug, "          ", true),
     `        </div>`,
+    `        <details class="site-panel-prefs">`,
+    `          <summary><span class="ncss-icon ncss-icon-accessibility" aria-hidden="true"></span>${s.prefsLabel}</summary>`,
+    `          <ncss-preferences inline></ncss-preferences>`,
+    `        </details>`,
     `      </dialog>`,
     `    </nav>`,
   ].join("\n");
@@ -344,10 +348,8 @@ function buildActions(lang, slug) {
     // Sehr schmal (unter 24rem) nur das Sprachkürzel, sonst bricht die Leiste um.
     lines.push(`      <a class="demo-topbar-lang" href="../${other}/${slug}.html" hreflang="${other}" lang="${other}" aria-label="${s.otherLangName}"><span class="demo-topbar-lang-long">${s.otherLangName}</span><span class="demo-topbar-lang-short" aria-hidden="true">${other.toUpperCase()}</span></a>`);
   }
-  lines.push(`      <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="${s.themeLabel}">`);
-  lines.push(`        <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>`);
-  lines.push(`        <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>`);
-  lines.push(`      </button>`);
+  // Darstellung (Farbschema, Kontrast, Bewegung, Schrift …) ersetzt den Hell/Dunkel-Knopf
+  lines.push(`      <ncss-preferences class="site-prefs"></ncss-preferences>`);
   return lines.join("\n");
 }
 

@@ -2,6 +2,7 @@
   "de": {
     "skipLink": "Zum Inhalt springen",
     "menuLabel": "Menü öffnen",
+    "prefsLabel": "Darstellung",
     "closeLabel": "Menü schließen",
     "navLabel": "Hauptnavigation",
     "navStart": "Start",
@@ -52,6 +53,7 @@
   "en": {
     "skipLink": "Skip to content",
     "menuLabel": "Open menu",
+    "prefsLabel": "Display",
     "closeLabel": "Close menu",
     "navLabel": "Main navigation",
     "navStart": "Home",
