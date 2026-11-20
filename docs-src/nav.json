@@ -198,7 +198,8 @@
         {
           "slug": "lists",
           "de": "Listen",
-          "en": "Lists"
+          "en": "Lists",
+          "new": true
         },
         {
           "slug": "timeline",
@@ -209,7 +210,8 @@
         {
           "slug": "tables",
           "de": "Tabellen",
-          "en": "Tables"
+          "en": "Tables",
+          "new": true
         },
         {
           "slug": "forms",
@@ -249,7 +251,8 @@
         {
           "slug": "overlays",
           "de": "Modal, Off-Canvas & Lightbox",
-          "en": "Modal, Off-Canvas & Lightbox"
+          "en": "Modal, Off-Canvas & Lightbox",
+          "new": true
         }
       ]
     },

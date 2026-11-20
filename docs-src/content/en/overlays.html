@@ -1,7 +1,146 @@
 <!--DESC: Modal, off-canvas sidebar and lightbox gallery - all a native dialog element with focus, Esc and backdrop handled by the browser.-->
+<!--FOOT: <script src="~/dist/js/dropdown.js"></script>-->
 <section class="ncss-stack">
   <h1>Modal, Off-Canvas &amp; Lightbox</h1>
   <p class="ncss-text-lg ncss-text-muted">Every overlay is a native <code>&lt;dialog&gt;</code>: opened via <code>command="show-modal"</code>/<code>commandfor</code> (with a small fallback script for older browsers); focus trap, Esc key and <code>::backdrop</code> come from the browser. Components: <code>components/modal.css</code>, <code>components/off-canvas.css</code>, <code>components/lightbox.css</code> + <code>js/lightbox.js</code>. Class reference: <a href="components.html">Component Reference</a>.</p>
 </section>
 
 <!--INCLUDE: overlays-->
+
+<section class="ncss-stack" id="dropdown" data-subnav-label="Dropdown / action menu">
+  <h2 class="demo-section-title">Dropdown / action menu <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p>Small pop-up menus outside the main navigation: the “⋯” menu on a table row, “Sort by …” or the user menu. The menu is a native <code>popover</code> - clicking outside and <kbd class="ncss-kbd">Esc</kbd> close it, it sits in the top layer above everything and is placed below its trigger with CSS anchor positioning (flipped when space runs out). <code>components/dropdown.css</code> + <code>js/dropdown.js</code>, needs only colors/tokens/reset/base.</p>
+  <p><strong>Which pattern?</strong> If an entry triggers an action on the page or picks an option (edit, delete, sort order), it is a <em>menu</em> following the WAI-ARIA APG “Menu Button” pattern: <code>role="menu"</code> with <code>menuitem</code>/<code>menuitemradio</code>/<code>menuitemcheckbox</code>, operated with the arrow keys - <code>&lt;ncss-dropdown&gt;</code> handles that. If the entries lead to other pages (user menu), it is a <em>link list</em> (disclosure) <strong>without</strong> <code>role="menu"</code>: links stay links, Tab moves through them, screen readers list them among the page links. This variant works without JavaScript. For the main navigation use <a href="navigation.html">.ncss-nav-dropdown</a> (a <code>&lt;details&gt;</code> in the nav flow).</p>
+  <div class="docs-live" role="group" aria-label="Live example: Dropdown / action menu">
+    <div class="ncss-cluster">
+      <ncss-dropdown class="ncss-dropdown">
+        <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon ncss-dropdown-toggle ncss-dropdown-toggle--plain"
+                popovertarget="dd-row" aria-label="More actions for invoice 2026-114"><span aria-hidden="true">⋯</span></button>
+        <div class="ncss-dropdown-menu" id="dd-row" popover role="menu" aria-label="Actions for invoice 2026-114">
+          <button type="button" class="ncss-dropdown-item" role="menuitem"><span class="ncss-icon ncss-icon-edit" aria-hidden="true"></span>Edit</button>
+          <button type="button" class="ncss-dropdown-item" role="menuitem"><span class="ncss-icon ncss-icon-copy" aria-hidden="true"></span>Duplicate<span class="ncss-dropdown-hint" aria-hidden="true">Ctrl+D</span></button>
+          <button type="button" class="ncss-dropdown-item" role="menuitem"><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span>Download PDF</button>
+          <button type="button" class="ncss-dropdown-item" role="menuitem" aria-disabled="true"><span class="ncss-icon ncss-icon-mail" aria-hidden="true"></span>Send again</button>
+          <hr class="ncss-dropdown-divider">
+          <button type="button" class="ncss-dropdown-item ncss-dropdown-item--danger" role="menuitem"><span class="ncss-icon ncss-icon-trash" aria-hidden="true"></span>Delete</button>
+        </div>
+      </ncss-dropdown>
+
+      <ncss-dropdown class="ncss-dropdown">
+        <button type="button" class="ncss-btn ncss-btn--secondary ncss-dropdown-toggle" popovertarget="dd-sort">Sort by …</button>
+        <div class="ncss-dropdown-menu" id="dd-sort" popover role="menu" aria-label="Sort and view">
+          <div role="group" aria-labelledby="dd-sort-h1">
+            <span class="ncss-dropdown-heading" id="dd-sort-h1" aria-hidden="true">Sort by</span>
+            <button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="true" data-value="date">Date</button>
+            <button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="false" data-value="name">Name</button>
+            <button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="false" data-value="amount">Amount</button>
+          </div>
+          <hr class="ncss-dropdown-divider">
+          <div role="group" aria-labelledby="dd-sort-h2">
+            <span class="ncss-dropdown-heading" id="dd-sort-h2" aria-hidden="true">View</span>
+            <button type="button" class="ncss-dropdown-item" role="menuitemcheckbox" aria-checked="true">Show paid</button>
+            <button type="button" class="ncss-dropdown-item" role="menuitemcheckbox" aria-checked="false">Compact rows</button>
+          </div>
+        </div>
+      </ncss-dropdown>
+
+      <ncss-dropdown class="ncss-dropdown">
+        <button type="button" class="ncss-btn ncss-btn--secondary ncss-dropdown-toggle" popovertarget="dd-account">
+          <span class="ncss-icon ncss-icon-user" aria-hidden="true"></span>Ada Lovelace</button>
+        <nav class="ncss-dropdown-menu ncss-dropdown-menu--end" id="dd-account" popover aria-label="Account">
+          <ul role="list">
+            <li><a class="ncss-dropdown-item" href="#dropdown"><span class="ncss-icon ncss-icon-user" aria-hidden="true"></span>Profile</a></li>
+            <li><a class="ncss-dropdown-item" href="#dropdown"><span class="ncss-icon ncss-icon-settings" aria-hidden="true"></span>Settings</a></li>
+            <li><hr class="ncss-dropdown-divider"></li>
+            <li><a class="ncss-dropdown-item" href="#dropdown"><span class="ncss-icon ncss-icon-logout" aria-hidden="true"></span>Sign out</a></li>
+          </ul>
+        </nav>
+      </ncss-dropdown>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-cluster"&gt;
+  &lt;ncss-dropdown class="ncss-dropdown"&gt;
+    &lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon ncss-dropdown-toggle ncss-dropdown-toggle--plain"
+            popovertarget="dd-row" aria-label="More actions for invoice 2026-114"&gt;&lt;span aria-hidden="true"&gt;⋯&lt;/span&gt;&lt;/button&gt;
+    &lt;div class="ncss-dropdown-menu" id="dd-row" popover role="menu" aria-label="Actions for invoice 2026-114"&gt;
+      &lt;button type="button" class="ncss-dropdown-item" role="menuitem"&gt;&lt;span class="ncss-icon ncss-icon-edit" aria-hidden="true"&gt;&lt;/span&gt;Edit&lt;/button&gt;
+      &lt;button type="button" class="ncss-dropdown-item" role="menuitem"&gt;&lt;span class="ncss-icon ncss-icon-copy" aria-hidden="true"&gt;&lt;/span&gt;Duplicate&lt;span class="ncss-dropdown-hint" aria-hidden="true"&gt;Ctrl+D&lt;/span&gt;&lt;/button&gt;
+      &lt;button type="button" class="ncss-dropdown-item" role="menuitem"&gt;&lt;span class="ncss-icon ncss-icon-download" aria-hidden="true"&gt;&lt;/span&gt;Download PDF&lt;/button&gt;
+      &lt;button type="button" class="ncss-dropdown-item" role="menuitem" aria-disabled="true"&gt;&lt;span class="ncss-icon ncss-icon-mail" aria-hidden="true"&gt;&lt;/span&gt;Send again&lt;/button&gt;
+      &lt;hr class="ncss-dropdown-divider"&gt;
+      &lt;button type="button" class="ncss-dropdown-item ncss-dropdown-item--danger" role="menuitem"&gt;&lt;span class="ncss-icon ncss-icon-trash" aria-hidden="true"&gt;&lt;/span&gt;Delete&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/ncss-dropdown&gt;
+
+  &lt;ncss-dropdown class="ncss-dropdown"&gt;
+    &lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-dropdown-toggle" popovertarget="dd-sort"&gt;Sort by …&lt;/button&gt;
+    &lt;div class="ncss-dropdown-menu" id="dd-sort" popover role="menu" aria-label="Sort and view"&gt;
+      &lt;div role="group" aria-labelledby="dd-sort-h1"&gt;
+        &lt;span class="ncss-dropdown-heading" id="dd-sort-h1" aria-hidden="true"&gt;Sort by&lt;/span&gt;
+        &lt;button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="true" data-value="date"&gt;Date&lt;/button&gt;
+        &lt;button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="false" data-value="name"&gt;Name&lt;/button&gt;
+        &lt;button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="false" data-value="amount"&gt;Amount&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;hr class="ncss-dropdown-divider"&gt;
+      &lt;div role="group" aria-labelledby="dd-sort-h2"&gt;
+        &lt;span class="ncss-dropdown-heading" id="dd-sort-h2" aria-hidden="true"&gt;View&lt;/span&gt;
+        &lt;button type="button" class="ncss-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;Show paid&lt;/button&gt;
+        &lt;button type="button" class="ncss-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;Compact rows&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/ncss-dropdown&gt;
+
+  &lt;ncss-dropdown class="ncss-dropdown"&gt;
+    &lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-dropdown-toggle" popovertarget="dd-account"&gt;
+      &lt;span class="ncss-icon ncss-icon-user" aria-hidden="true"&gt;&lt;/span&gt;Ada Lovelace&lt;/button&gt;
+    &lt;nav class="ncss-dropdown-menu ncss-dropdown-menu--end" id="dd-account" popover aria-label="Account"&gt;
+      &lt;ul role="list"&gt;
+        &lt;li&gt;&lt;a class="ncss-dropdown-item" href="#dropdown"&gt;&lt;span class="ncss-icon ncss-icon-user" aria-hidden="true"&gt;&lt;/span&gt;Profile&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a class="ncss-dropdown-item" href="#dropdown"&gt;&lt;span class="ncss-icon ncss-icon-settings" aria-hidden="true"&gt;&lt;/span&gt;Settings&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;hr class="ncss-dropdown-divider"&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a class="ncss-dropdown-item" href="#dropdown"&gt;&lt;span class="ncss-icon ncss-icon-logout" aria-hidden="true"&gt;&lt;/span&gt;Sign out&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/ncss-dropdown&gt;
+&lt;/div&gt;
+&lt;script src="dist/js/dropdown.js" defer&gt;&lt;/script&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;ncss-dropdown&gt;</code>, <code>.ncss-dropdown</code></td><td>Wrapper around trigger and menu (inline). Only needed for <code>role="menu"</code> or for positioning without anchor positioning.</td></tr>
+        <tr><td><code>popovertarget</code> + <code>popover</code></td><td>Connects trigger and menu - opening, closing and light dismiss are handled by the browser.</td></tr>
+        <tr><td><code>.ncss-dropdown-toggle</code></td><td>Trigger with an arrow that turns while open; <code>--plain</code> without arrow (icon button).</td></tr>
+        <tr><td><code>.ncss-dropdown-menu</code></td><td>The menu. <code>--end</code>: align with the trigger's end edge, <code>--up</code>: open above.</td></tr>
+        <tr><td><code>.ncss-dropdown-item</code></td><td>Entry (<code>&lt;button&gt;</code> or <code>&lt;a&gt;</code>); a first <code>aria-hidden</code> child is the icon. <code>--danger</code>: destructive action.</td></tr>
+        <tr><td><code>.ncss-dropdown-divider</code>, <code>.ncss-dropdown-heading</code>, <code>.ncss-dropdown-hint</code></td><td>Divider (<code>&lt;hr&gt;</code>), group heading, end-aligned extra (e.g. a shortcut).</td></tr>
+        <tr><td><code>role="menuitemradio"</code> / <code>"menuitemcheckbox"</code> + <code>aria-checked</code></td><td>Choice entries with a check mark; radios are mutually exclusive per <code>role="group"</code>.</td></tr>
+        <tr><td><code>aria-disabled="true"</code></td><td>Entry stays focusable (APG) but cannot be chosen.</td></tr>
+        <tr><td><code>data-value</code></td><td>Value in <code>ncss-dropdown-select</code> (otherwise <code>value</code> or text).</td></tr>
+        <tr><td>Events</td><td><code>ncss-dropdown-select</code> <code>{ item, value, checked }</code>, <code>ncss-dropdown-show</code>, <code>ncss-dropdown-hide</code>; methods <code>el.show()</code>, <code>el.hide()</code>.</td></tr>
+        <tr><td><code>--ncss-dropdown-min-width</code>, <code>--ncss-dropdown-offset</code></td><td>Minimum width (12rem) and gap to the trigger.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard (role="menu")</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd> / <kbd class="ncss-kbd">↓</kbd></td><td>On the trigger: opens, focus on the first entry. <kbd class="ncss-kbd">↑</kbd>: on the last one.</td></tr>
+        <tr><td><kbd class="ncss-kbd">↓</kbd> / <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Home</kbd> / <kbd class="ncss-kbd">End</kbd></td><td>Next/previous entry (wrapping), first/last.</td></tr>
+        <tr><td>Letter</td><td>Jumps to the next entry starting with it (typeahead).</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd></td><td>Chooses and closes, focus returns to the trigger.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Space</kbd></td><td>On radio/checkbox entries: toggles, the menu stays open.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd> / <kbd class="ncss-kbd">Tab</kbd></td><td>Closes; Esc returns focus to the trigger, Tab moves on.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen readers</h4>
+    <p>The trigger reports <code>aria-haspopup="menu"</code> and <code>aria-expanded</code>. An icon-only button (“⋯”) needs an <code>aria-label</code> saying <em>what</em> the actions are for (“More actions for invoice 2026-114”). Group headings label their <code>role="group"</code> via <code>aria-labelledby</code> and are <code>aria-hidden</code> themselves, so they are not read twice. The link list is a named <code>&lt;nav&gt;</code>.</p>
+    <h4>Preferences</h4>
+    <p>Colours from tokens (light/dark), fading only without reduced motion, borders and focus in system colours in forced colors mode. Focus inside the menu is always visible, even after a mouse click.</p>
+    <h4>Without JS</h4>
+    <p>Link list: fully usable (native popover). <code>role="menu"</code>: opens and closes but is only operable with Tab - so always load <code>js/dropdown.js</code>.</p>
+  </div>
+</section>

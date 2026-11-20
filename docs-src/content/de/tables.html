@@ -1,4 +1,5 @@
 <!--DESC: Zwei Strategien für Tabellen auf schmalen Screens - horizontales Scrollen oder Karten-Stapel.-->
+<!--FOOT: <script src="~/dist/js/table-sort.js"></script>-->
 <section class="ncss-stack">
   <h1>Tabellen</h1>
   <p class="ncss-text-lg ncss-text-muted"><code>helpers/tables.css</code> - zwei Strategien für schmale Screens.</p>
@@ -18,5 +19,109 @@
   <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;td data-label="Name"&gt;Ada Lovelace&lt;/td&gt;</code></pre>
 </section>
 
+
+<section class="ncss-stack" id="tabelle-sortieren" data-subnav-label="Sortierbare Tabelle">
+  <h2 class="demo-section-title">Sortierbare Tabelle <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>&lt;ncss-table-sort&gt;</code> um eine Tabelle - oder <code>data-ncss-sort</code> direkt an der <code>&lt;table&gt;</code> - macht die Spaltenköpfe zu Schaltflächen (Muster WAI-ARIA APG „Sortable Table“). Ein Klick sortiert aufsteigend, der nächste absteigend. Zahlen („1.250 €“, „4,8“), Datumsangaben (<code>2026-11-20</code>, <code>20.11.2026</code>, <code>&lt;time datetime&gt;</code>) und Text werden je Spalte automatisch erkannt, <code>data-sort-value</code> an einer Zelle legt den Wert fest. Die Sortierung ist stabil: gleiche Werte behalten ihre bisherige Reihenfolge. <code>components/table-sort.css</code> + <code>js/table-sort.js</code>, passt zu <code>.ncss-table-scroll</code> und <code>.ncss-table--compact</code>. Ohne JavaScript bleibt es eine normale Tabelle.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Sortierbare Tabelle">
+    <ncss-table-sort>
+      <div class="ncss-table-scroll" role="region" aria-labelledby="ts-caption" tabindex="0">
+        <table>
+          <caption id="ts-caption">Zimmer im Hotel Seeblick</caption>
+          <thead>
+            <tr>
+              <th scope="col">Zimmer</th>
+              <th scope="col">Preis pro Nacht</th>
+              <th scope="col">Größe</th>
+              <th scope="col">Frei ab</th>
+              <th scope="col" data-sort="false">Aktion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Zimmer 12</td><td data-sort-value="189">ab 189 €</td><td>28 m²</td><td><time datetime="2026-12-03">3. Dez.</time></td><td><a href="#tabelle-sortieren">Buchen</a></td></tr>
+            <tr><td>Zimmer 2</td><td data-sort-value="119">ab 119 €</td><td>22 m²</td><td><time datetime="2026-11-28">28. Nov.</time></td><td><a href="#tabelle-sortieren">Buchen</a></td></tr>
+            <tr><td>Suite Alpenglühen</td><td data-sort-value="1250">ab 1.250 €</td><td>64 m²</td><td><time datetime="2027-01-15">15. Jan.</time></td><td><a href="#tabelle-sortieren">Buchen</a></td></tr>
+            <tr><td>Zimmer 10</td><td data-sort-value="119">ab 119 €</td><td>22 m²</td><td><time datetime="2026-12-20">20. Dez.</time></td><td><a href="#tabelle-sortieren">Buchen</a></td></tr>
+            <tr><td>Ärztezimmer</td><td data-sort-value="95">ab 95 €</td><td>18 m²</td><td></td><td><a href="#tabelle-sortieren">Buchen</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </ncss-table-sort>
+
+    <div class="ncss-table-scroll" role="region" aria-label="Downloads" tabindex="0">
+      <table class="ncss-table--compact" data-ncss-sort>
+        <caption>Downloads (per <code>data-ncss-sort</code>)</caption>
+        <thead><tr><th scope="col">Datei</th><th scope="col">Größe (MB)</th><th scope="col">Stand</th></tr></thead>
+        <tbody>
+          <tr><td>Hausprospekt.pdf</td><td>4,8</td><td>20.11.2026</td></tr>
+          <tr><td>Anfahrt.pdf</td><td>0,9</td><td>02.03.2026</td></tr>
+          <tr><td>Speisekarte.pdf</td><td>12,25</td><td>14.10.2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;ncss-table-sort&gt;
+  &lt;div class="ncss-table-scroll" role="region" aria-labelledby="ts-caption" tabindex="0"&gt;
+    &lt;table&gt;
+      &lt;caption id="ts-caption"&gt;Zimmer im Hotel Seeblick&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Zimmer&lt;/th&gt;
+          &lt;th scope="col"&gt;Preis pro Nacht&lt;/th&gt;
+          &lt;th scope="col"&gt;Größe&lt;/th&gt;
+          &lt;th scope="col"&gt;Frei ab&lt;/th&gt;
+          &lt;th scope="col" data-sort="false"&gt;Aktion&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt;Zimmer 12&lt;/td&gt;&lt;td data-sort-value="189"&gt;ab 189 €&lt;/td&gt;&lt;td&gt;28 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2026-12-03"&gt;3. Dez.&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#tabelle-sortieren"&gt;Buchen&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Zimmer 2&lt;/td&gt;&lt;td data-sort-value="119"&gt;ab 119 €&lt;/td&gt;&lt;td&gt;22 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2026-11-28"&gt;28. Nov.&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#tabelle-sortieren"&gt;Buchen&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Suite Alpenglühen&lt;/td&gt;&lt;td data-sort-value="1250"&gt;ab 1.250 €&lt;/td&gt;&lt;td&gt;64 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2027-01-15"&gt;15. Jan.&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#tabelle-sortieren"&gt;Buchen&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Zimmer 10&lt;/td&gt;&lt;td data-sort-value="119"&gt;ab 119 €&lt;/td&gt;&lt;td&gt;22 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2026-12-20"&gt;20. Dez.&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#tabelle-sortieren"&gt;Buchen&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Ärztezimmer&lt;/td&gt;&lt;td data-sort-value="95"&gt;ab 95 €&lt;/td&gt;&lt;td&gt;18 m²&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#tabelle-sortieren"&gt;Buchen&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/ncss-table-sort&gt;
+
+&lt;div class="ncss-table-scroll" role="region" aria-label="Downloads" tabindex="0"&gt;
+  &lt;table class="ncss-table--compact" data-ncss-sort&gt;
+    &lt;caption&gt;Downloads (per &lt;code&gt;data-ncss-sort&lt;/code&gt;)&lt;/caption&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;Datei&lt;/th&gt;&lt;th scope="col"&gt;Größe (MB)&lt;/th&gt;&lt;th scope="col"&gt;Stand&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;&lt;td&gt;Hausprospekt.pdf&lt;/td&gt;&lt;td&gt;4,8&lt;/td&gt;&lt;td&gt;20.11.2026&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Anfahrt.pdf&lt;/td&gt;&lt;td&gt;0,9&lt;/td&gt;&lt;td&gt;02.03.2026&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Speisekarte.pdf&lt;/td&gt;&lt;td&gt;12,25&lt;/td&gt;&lt;td&gt;14.10.2026&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+&lt;script src="dist/js/table-sort.js" defer&gt;&lt;/script&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Attribut / Klasse</th><th scope="col">Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;ncss-table-sort&gt;</code> / <code>table[data-ncss-sort]</code></td><td>Macht alle Köpfe der letzten <code>&lt;thead&gt;</code>-Zeile sortierbar. Neu eingefügte <code>data-ncss-sort</code>-Tabellen per <code>ncss-content-change</code>.</td></tr>
+        <tr><td><code>th[data-sort="false"]</code></td><td>Spalte nicht sortierbar (z. B. Aktionen).</td></tr>
+        <tr><td><code>th[data-sort-type]</code></td><td><code>number</code>, <code>date</code> oder <code>text</code> erzwingen statt automatisch erkennen.</td></tr>
+        <tr><td><code>th[data-sort-default="descending"]</code></td><td>Erster Klick sortiert absteigend (z. B. „Neueste zuerst“).</td></tr>
+        <tr><td><code>th[aria-sort]</code> im Markup</td><td>Tabelle ist bereits so sortiert - nur der Zustand wird übernommen.</td></tr>
+        <tr><td><code>td[data-sort-value]</code></td><td>Sortierwert der Zelle (z. B. „ab 189 €“ → <code>189</code>).</td></tr>
+        <tr><td><code>data-label-sorted</code>, <code>-ascending</code>, <code>-descending</code>, <code>-hint</code></td><td>Texte der Ansage („Sortiert nach {column}, {direction}“) und des Hinweises in der <code>&lt;caption&gt;</code> (leer = kein Hinweis).</td></tr>
+        <tr><td>Event / Methode</td><td><code>ncss-table-sort-change</code> <code>{ column, index, direction, type }</code>; <code>el.sort(index, "descending")</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <p>Jeder sortierbare Kopf ist ein echter <code>&lt;button&gt;</code>: <kbd class="ncss-kbd">Tab</kbd> erreicht ihn, <kbd class="ncss-kbd">Enter</kbd>/<kbd class="ncss-kbd">Leertaste</kbd> sortiert. Der Fokus bleibt auf dem Kopf.</p>
+    <h4>Screenreader</h4>
+    <p><code>aria-sort="ascending"</code>/<code>"descending"</code> steht nur am gerade sortierten <code>&lt;th&gt;</code> (die ARIA-Spezifikation empfiehlt höchstens einen Kopf; fehlt das Attribut, gilt „none“). Nach dem Sortieren sagt eine Live-Region höflich „Sortiert nach Preis pro Nacht, aufsteigend“. Die <code>&lt;caption&gt;</code> bekommt einen nur vorgelesenen Hinweis, dass Köpfe mit Schaltfläche sortierbar sind. Der Pfeil im Kopf ist <code>aria-hidden</code>.</p>
+    <h4>Einstellungen</h4>
+    <p>Pfeil und Hover aus Tokens (hell/dunkel); im Forced-Colors-Modus Pfeile in Systemfarben, die sortierte Spalte in <code>Highlight</code>. Der Zustand steckt nie nur in der Farbe: der Pfeil wechselt seine Form.</p>
+    <h4>Ohne JS</h4>
+    <p>Normale Tabelle in der Reihenfolge des Markups. Bei <code>.ncss-table-stacked</code> ist der Kopf auf schmalen Screens ausgeblendet - dort gibt es keine Sortier-Schaltflächen.</p>
+  </div>
+</section>
 
 <!--MERGE: all-components#tabellen-->

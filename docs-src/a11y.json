@@ -15,16 +15,16 @@
   },
   "lists": {
     "de": {
-      "keyboard": "Nicht zutreffend - Listen sind nicht interaktiv, enthaltene Links folgen der normalen Tab-Reihenfolge.",
+      "keyboard": "Listen sind nicht interaktiv, enthaltene Links folgen der normalen Tab-Reihenfolge. Ausnahme <code>&lt;ncss-sortable&gt;</code>: Griff fokussieren, <kbd>Leertaste</kbd> aufnehmen, Pfeiltasten verschieben, <kbd>Leertaste</kbd> ablegen, <kbd>Esc</kbd> bricht ab - oder die Hoch/Runter-Schaltflächen.",
       "screenreader": "Alle Varianten mit <code>list-style: none</code> brauchen <code>role=\"list\"</code>, sonst verliert VoiceOver/Safari die Listensemantik. Icons in <code>.ncss-list--icon</code> mit <code>aria-hidden=\"true\"</code> versehen, die Bedeutung steht im Text.",
       "prefs": "Die Punkte von <code>.ncss-list--dot</code> sind per Hintergrundfarbe gezeichnet und können im Forced-Colors-Modus verschwinden; Schritt-Nummern und <code>.ncss-list--dash</code> bleiben als Text sichtbar.",
-      "nojs": "Reines CSS, alles funktioniert ohne JavaScript."
+      "nojs": "Reines CSS, alles funktioniert ohne JavaScript. Nur <code>&lt;ncss-sortable&gt;</code> braucht <code>js/sortable.js</code> - ohne bleibt eine normale Liste."
     },
     "en": {
-      "keyboard": "Not applicable - lists are not interactive; links inside follow the normal tab order.",
+      "keyboard": "Lists are not interactive; links inside follow the normal tab order. Exception <code>&lt;ncss-sortable&gt;</code>: focus the handle, <kbd>Space</kbd> picks up, arrow keys move, <kbd>Space</kbd> drops, <kbd>Esc</kbd> cancels - or use the up/down buttons.",
       "screenreader": "Every variant with <code>list-style: none</code> needs <code>role=\"list\"</code>, otherwise VoiceOver/Safari drops the list semantics. Mark icons in <code>.ncss-list--icon</code> with <code>aria-hidden=\"true\"</code>; the meaning lives in the text.",
       "prefs": "The dots of <code>.ncss-list--dot</code> are painted as background colour and may vanish in forced colors mode; step numbers and <code>.ncss-list--dash</code> stay visible as text.",
-      "nojs": "Pure CSS, everything works without JavaScript."
+      "nojs": "Pure CSS, everything works without JavaScript. Only <code>&lt;ncss-sortable&gt;</code> needs <code>js/sortable.js</code> - without it a normal list remains."
     }
   },
   "tables": {
@@ -32,13 +32,13 @@
       "keyboard": "<code>.ncss-table-scroll</code> ist nur per Tastatur scrollbar, wenn der Container fokussierbar ist - dafür <code>tabindex=\"0\"</code> im Markup setzen, danach scrollen die Pfeiltasten.",
       "screenreader": "Den Scroll-Container mit <code>role=\"region\"</code> und <code>aria-label</code> benennen; die Tabelle behält ihre volle Semantik. <code>.ncss-table-stacked</code> bricht die Tabellensemantik bewusst, <code>data-label</code> pro <code>&lt;td&gt;</code> ist Pflicht.",
       "prefs": "Rahmen und Flächen aus Farb-Tokens, folgen Hell/Dunkel und werden im Forced-Colors-Modus zu Systemfarben. Keine Animation.",
-      "nojs": "Reines CSS, beide Strategien funktionieren ohne JavaScript."
+      "nojs": "Reines CSS, beide Strategien funktionieren ohne JavaScript. Die Sortierung (<code>js/table-sort.js</code>) ist eine Ergänzung - ohne sie bleibt die Tabelle in der Reihenfolge des Markups."
     },
     "en": {
       "keyboard": "<code>.ncss-table-scroll</code> can only be scrolled by keyboard when the container is focusable - add <code>tabindex=\"0\"</code> in the markup, then the arrow keys scroll it.",
       "screenreader": "Name the scroll container with <code>role=\"region\"</code> and <code>aria-label</code>; the table keeps its full semantics. <code>.ncss-table-stacked</code> deliberately breaks table semantics and requires <code>data-label</code> on every <code>&lt;td&gt;</code>.",
       "prefs": "Borders and fills come from colour tokens, follow light/dark and turn into system colours in forced colors mode. No animation.",
-      "nojs": "Pure CSS, both strategies work without JavaScript."
+      "nojs": "Pure CSS, both strategies work without JavaScript. Sorting (<code>js/table-sort.js</code>) is an enhancement - without it the table keeps its markup order."
     }
   },
   "forms": {
@@ -102,13 +102,13 @@
       "keyboard": "Native <code>&lt;dialog&gt;</code>: Fokus wandert hinein, <kbd>Tab</kbd> bleibt gefangen, <kbd>Esc</kbd> schließt, danach kehrt der Fokus zum Auslöser zurück. Die Lightbox blättert mit <kbd>←</kbd>/<kbd>→</kbd>.",
       "screenreader": "Dialog per <code>aria-labelledby</code> (Überschrift) oder <code>aria-label</code> benennen, Schließen-Buttons brauchen <code>aria-label</code>. Die Lightbox nimmt <code>data-caption</code> oder das <code>alt</code> des Vorschaubilds als Bildtext und sagt die Unterschrift über <code>aria-live=\"polite\"</code> an.",
       "prefs": "Ein-/Ausblend- und 3D-Animationen werden bei <code>prefers-reduced-motion</code> global gekappt, die Lightbox animiert nur bei <code>no-preference</code>. Der <code>::backdrop</code> nutzt ein halbtransparentes Token mit leichtem Blur.",
-      "nojs": "Modal und Off-Canvas öffnen über <code>command=\"show-modal\"</code>/<code>commandfor</code> ganz ohne JS; ältere Browser brauchen <code>js/command-fallback.js</code>. Ohne <code>js/lightbox.js</code> öffnet der Link einfach das große Bild."
+      "nojs": "Modal und Off-Canvas öffnen über <code>command=\"show-modal\"</code>/<code>commandfor</code> ganz ohne JS; ältere Browser brauchen <code>js/command-fallback.js</code>. Ohne <code>js/lightbox.js</code> öffnet der Link einfach das große Bild. Ein Dropdown als Link-Liste funktioniert ohne JS, ein Aktionsmenü (<code>role=\"menu\"</code>) braucht <code>js/dropdown.js</code> für die Pfeiltasten."
     },
     "en": {
       "keyboard": "Native <code>&lt;dialog&gt;</code>: focus moves inside, <kbd>Tab</kbd> stays trapped, <kbd>Esc</kbd> closes and focus returns to the trigger. The lightbox pages with <kbd>←</kbd>/<kbd>→</kbd>.",
       "screenreader": "Name the dialog with <code>aria-labelledby</code> (its heading) or <code>aria-label</code>; close buttons need an <code>aria-label</code>. The lightbox uses <code>data-caption</code> or the thumbnail's <code>alt</code> as image text and announces the caption via <code>aria-live=\"polite\"</code>.",
       "prefs": "Fade and 3D animations are cut globally under <code>prefers-reduced-motion</code>; the lightbox only animates with <code>no-preference</code>. The <code>::backdrop</code> uses a semi-transparent token with a light blur.",
-      "nojs": "Modal and off-canvas open via <code>command=\"show-modal\"</code>/<code>commandfor</code> without any JS; older browsers need <code>js/command-fallback.js</code>. Without <code>js/lightbox.js</code> the link simply opens the large image."
+      "nojs": "Modal and off-canvas open via <code>command=\"show-modal\"</code>/<code>commandfor</code> without any JS; older browsers need <code>js/command-fallback.js</code>. Without <code>js/lightbox.js</code> the link simply opens the large image. A dropdown link list works without JS, an action menu (<code>role=\"menu\"</code>) needs <code>js/dropdown.js</code> for the arrow keys."
     }
   },
   "media": {

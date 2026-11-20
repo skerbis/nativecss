@@ -135,6 +135,9 @@
 @import url("components/app-shell.css") layer(components);
 @import url("components/preferences.css") layer(components);
 @import url("components/map.css") layer(components);
+@import url("components/dropdown.css") layer(components);
+@import url("components/table-sort.css") layer(components);
+@import url("components/sortable.css") layer(components);
 /* Weitere Komponenten folgen hier, je eine Datei.
    JS liegt gesammelt unter js/, nicht neben dem jeweiligen Komponenten-CSS - separat
    einbinden (<script src="ncss/js/command-fallback.js">) - generischer Fallback für

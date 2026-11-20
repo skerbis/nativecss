@@ -1,0 +1,260 @@
+/**
+ * ncss - Dropdown / Aktionsmenü (Layer "components"): kleines Aufklapp-Menü AUSSERHALB der
+ * Hauptnavigation - "⋯"-Menü an einer Zeile, Benutzer-Menü, "Sortieren nach …". Das Menü
+ * ist ein natives [popover] (Top Layer, Light Dismiss: Klick daneben und Esc schließen,
+ * kein z-index-Kampf), positioniert per CSS Anchor Positioning unter dem Auslöser.
+ *
+ * Für die Hauptnavigation gibt es .ncss-nav-dropdown (components/nav.css) - das ist ein
+ * <details> im Nav-Fluss (absolut positioniert, auf Mobil eingeklappt im Off-Canvas) und
+ * lässt sich deshalb nicht als freies Overlay wiederverwenden. Positionierung und
+ * Ein-/Ausblendung folgen hier bewusst demselben Muster wie components/hovercard.css.
+ *
+ * Zwei Varianten - welche passt, entscheidet der Inhalt (WAI-ARIA APG):
+ *
+ * 1. Aktionsmenü (role="menu", APG "Menu Button"): Befehle, die auf der Seite etwas tun
+ *    (Bearbeiten, Duplizieren, Löschen) oder eine Auswahl (menuitemradio/-checkbox).
+ *    Braucht js/dropdown.js - Pfeiltasten, Pos1/Ende, Tippsuche, Esc zurück zum Auslöser.
+ *    <ncss-dropdown class="ncss-dropdown">
+ *      <button type="button" class="ncss-btn ncss-dropdown-toggle" popovertarget="dd-1"
+ *              aria-haspopup="menu">Aktionen</button>
+ *      <div class="ncss-dropdown-menu" id="dd-1" popover role="menu" aria-label="Aktionen">
+ *        <button type="button" class="ncss-dropdown-item" role="menuitem">Bearbeiten</button>
+ *        <hr class="ncss-dropdown-divider">
+ *        <div role="group" aria-labelledby="dd-1-sort">
+ *          <span class="ncss-dropdown-heading" id="dd-1-sort" aria-hidden="true">Sortieren nach</span>
+ *          <button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="true">Datum</button>
+ *          <button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="false">Name</button>
+ *        </div>
+ *        <button type="button" class="ncss-dropdown-item ncss-dropdown-item--danger" role="menuitem">Löschen</button>
+ *      </div>
+ *    </ncss-dropdown>
+ *
+ * 2. Link-Liste (Disclosure, KEIN role="menu"): Navigation zu anderen Seiten, z. B. das
+ *    Benutzer-Menü (Profil, Einstellungen, Abmelden). APG rät hier ausdrücklich vom
+ *    Menü-Muster ab - Links bleiben Links, Tab/Umschalt+Tab bewegt sich durch die Liste,
+ *    Screenreader zeigen sie in der Linkliste. Funktioniert schon OHNE JavaScript.
+ *    <button type="button" class="ncss-btn ncss-dropdown-toggle" popovertarget="dd-user">Konto</button>
+ *    <div class="ncss-dropdown-menu ncss-dropdown-menu--end" id="dd-user" popover>
+ *      <ul role="list"><li><a class="ncss-dropdown-item" href="/profil">Profil</a></li> …</ul>
+ *    </div>
+ *
+ * Klassen: .ncss-dropdown (Hülle, inline), .ncss-dropdown-toggle (Pfeil am Auslöser),
+ *   .ncss-dropdown-menu (+ --end: rechtsbündig unter dem Auslöser, --up: darüber),
+ *   .ncss-dropdown-item (+ --danger), .ncss-dropdown-divider, .ncss-dropdown-heading,
+ *   .ncss-dropdown-hint (rechtsbündiger Zusatz, z. B. Tastenkürzel).
+ *   Icons: beliebiges aria-hidden-Element als erstes Kind im Eintrag (z. B. .ncss-icon).
+ *   Ein Eintrag mit aria-checked="true" bekommt ein Häkchen.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base). Optional
+ * js/dropdown.js (nötig für role="menu"; ohne Anchor Positioning rechnet es die Position).
+ *
+ * Tokens: --ncss-dropdown-min-width (Default 12rem), --ncss-dropdown-offset (Abstand zum
+ * Auslöser, Default --ncss-space-3xs).
+ */
+.ncss-dropdown,
+ncss-dropdown {
+  display: inline-block;
+}
+
+/* Pfeil am Auslöser - dreht sich, solange das Menü offen ist. */
+.ncss-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-dropdown-toggle:not(.ncss-dropdown-toggle--plain)::after {
+  content: "";
+  flex: none;
+  inline-size: 0.6em;
+  block-size: 0.6em;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 9l7 7 7-7'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: rotate var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-dropdown-toggle[aria-expanded="true"]::after,
+.ncss-dropdown-toggle:has(+ .ncss-dropdown-menu:popover-open)::after {
+  rotate: 180deg;
+}
+
+.ncss-dropdown-menu {
+  --ncss-dropdown-min-width: 12rem;
+  --ncss-dropdown-offset: var(--ncss-space-3xs);
+  min-inline-size: min(var(--ncss-dropdown-min-width), calc(100vw - 2 * var(--ncss-space-xs)));
+  max-inline-size: calc(100vw - 2 * var(--ncss-space-xs));
+  max-block-size: min(70vh, 28rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--ncss-space-3xs);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-lg);
+  font-size: var(--ncss-font-size-sm);
+  line-height: 1.4;
+  text-align: start;
+}
+.ncss-dropdown-menu:not([popover]) {
+  display: none;
+}
+.ncss-dropdown-menu > ul,
+.ncss-dropdown-menu [role="group"] {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Ein-/Ausblenden wie bei .ncss-hovercard - reduce-motion setzt die Dauer global auf ~0. */
+.ncss-dropdown-menu[popover] {
+  opacity: 0;
+  translate: 0 -0.25rem;
+  transition:
+    opacity var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+    translate var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+    display var(--ncss-motion-duration-fast) allow-discrete,
+    overlay var(--ncss-motion-duration-fast) allow-discrete;
+}
+.ncss-dropdown-menu[popover]:popover-open {
+  display: block;
+  opacity: 1;
+  translate: 0 0;
+}
+@starting-style {
+  .ncss-dropdown-menu[popover]:popover-open {
+    opacity: 0;
+    translate: 0 -0.25rem;
+  }
+}
+
+/* Anchor Positioning: unter dem Auslöser, an seiner Anfangskante (--end: Endkante), bei
+   Platzmangel automatisch gespiegelt. Der Auslöser per popovertarget ist in Chromium
+   bereits der implizite Anker; js/dropdown.js setzt zusätzlich explizite Anker-Namen. Ohne
+   Anchor Positioning und ohne JS bleibt die UA-Vorgabe (mittig im Viewport) - bedienbar. */
+@supports (position-area: bottom) {
+  .ncss-dropdown-menu[popover] {
+    position: fixed;
+    inset: auto;
+    margin: var(--ncss-dropdown-offset) 0;
+    position-area: bottom span-right;
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  }
+  .ncss-dropdown-menu--end[popover] {
+    position-area: bottom span-left;
+  }
+  .ncss-dropdown-menu--up[popover] {
+    position-area: top span-right;
+  }
+  .ncss-dropdown-menu--up.ncss-dropdown-menu--end[popover] {
+    position-area: top span-left;
+  }
+}
+/* Ohne Anchor Positioning setzt js/dropdown.js top/left selbst. */
+.ncss-dropdown-menu[data-ncss-dropdown-fallback] {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+}
+
+/* --- Einträge ---------------------------------------------------------------------- */
+.ncss-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  inline-size: 100%;
+  min-block-size: 2.25rem;
+  padding: var(--ncss-space-3xs) var(--ncss-space-xs);
+  border: 0;
+  border-radius: var(--ncss-radius-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ncss-dropdown-item > [aria-hidden="true"]:first-child:not(:only-child) {
+  flex: none;
+  color: var(--ncss-color-text-muted);
+}
+@media (hover: hover) {
+  .ncss-dropdown-item:hover {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+.ncss-dropdown-item:focus-visible {
+  outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+  outline-offset: calc(-1 * var(--ncss-focus-ring-width));
+  background-color: var(--ncss-color-bg-subtle);
+}
+/* Menü per Pfeiltaste: der Fokus soll IMMER sichtbar sein, auch wenn der Browser einen
+   per Skript gesetzten Fokus nach Mausklick nicht als :focus-visible wertet. */
+[role="menu"] .ncss-dropdown-item:focus {
+  background-color: var(--ncss-color-bg-subtle);
+  outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+  outline-offset: calc(-1 * var(--ncss-focus-ring-width));
+}
+.ncss-dropdown-item[aria-current="page"] {
+  font-weight: var(--ncss-font-weight-bold);
+}
+.ncss-dropdown-item:is(:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.ncss-dropdown-item--danger {
+  color: var(--ncss-color-danger);
+}
+@media (hover: hover) {
+  .ncss-dropdown-item--danger:hover {
+    background-color: var(--ncss-color-danger-100);
+    color: var(--ncss-color-danger-on-soft);
+  }
+}
+
+/* Auswahl-Einträge: Platz für das Häkchen immer reservieren, damit die Texte fluchten. */
+.ncss-dropdown-item:is([role="menuitemradio"], [role="menuitemcheckbox"])::before {
+  content: "";
+  flex: none;
+  inline-size: 1em;
+  block-size: 1em;
+}
+.ncss-dropdown-item[aria-checked="true"]::before {
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.5l5 5 10-11'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.ncss-dropdown-hint {
+  margin-inline-start: auto;
+  padding-inline-start: var(--ncss-space-sm);
+  color: var(--ncss-color-text-muted);
+  font-size: 0.9em;
+}
+
+.ncss-dropdown-divider {
+  margin: var(--ncss-space-3xs) calc(-1 * var(--ncss-space-3xs));
+  border: 0;
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+
+.ncss-dropdown-heading {
+  display: block;
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs) var(--ncss-space-3xs);
+  color: var(--ncss-color-text-muted);
+  font-size: 0.85em;
+  font-weight: var(--ncss-font-weight-bold);
+  letter-spacing: 0.02em;
+}
+
+@media (forced-colors: active) {
+  .ncss-dropdown-menu {
+    border-color: CanvasText;
+  }
+  .ncss-dropdown-item:focus,
+  .ncss-dropdown-item:focus-visible {
+    outline-color: Highlight;
+  }
+  .ncss-dropdown-toggle::after,
+  .ncss-dropdown-item[aria-checked="true"]::before {
+    background-color: CanvasText;
+  }
+}
