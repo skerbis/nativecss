@@ -1,0 +1,132 @@
+/**
+ * ncss - Aurora- & Mesh-Hintergründe (Layer "components"): weiche, langsam treibende
+ * Farbfelder aus den Markenfarben hinter einer Sektion. Rein dekorativ, opt-in.
+ *
+ * Markup:
+ * <section class="ncss-aurora">...Inhalt...</section>
+ * <section class="ncss-aurora ncss-aurora--vivid">...</section>
+ * <section class="ncss-mesh">...</section>
+ *
+ * Technik: die Farbflecken sind radial-gradient()-Hintergründe auf ::before/::after (KEIN
+ * filter:blur - teuer und ruckelig auf großen Flächen), bewegt ausschließlich per
+ * transform. transform/opacity laufen auf dem Compositor, kein Repaint pro Frame.
+ * isolation:isolate + z-index:-1 hält die Ebenen hinter dem Inhalt, overflow:clip schneidet
+ * die übergroßen Ebenen (inset negativ) an der Sektionskante ab.
+ *
+ * Lesbarkeit: die Farben werden mit der Seitenfläche (--ncss-color-bg) gemischt, Text
+ * bleibt die normale --ncss-color-text - in Hell UND Dunkel (Markenfarben sind bereits
+ * light-dark()-Paare, die Mischung zieht automatisch mit). --vivid nur hinter großen
+ * Überschriften/kurzen Texten einsetzen.
+ *
+ * Bewegung: prefers-reduced-motion schaltet die Animation hier ausdrücklich ab (statisches
+ * Bild, nicht nur der globale 1-Frame-Cap aus reset.css). Forced Colors: Effekt aus,
+ * normale Systemfläche.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base).
+ *
+ * Tokens: --ncss-aurora-1/-2/-3 (Farben, Default aus brand/brand-2/success),
+ * --ncss-aurora-opacity (Default 0.7), --ncss-aurora-speed (Grunddauer, Default 14s),
+ * --ncss-mesh-speed (Default 28s).
+ */
+.ncss-aurora,
+.ncss-mesh {
+  --ncss-aurora-1: color-mix(in oklch, var(--ncss-color-brand) 60%, var(--ncss-color-bg));
+  --ncss-aurora-2: color-mix(in oklch, var(--ncss-color-brand-2) 60%, var(--ncss-color-bg));
+  --ncss-aurora-3: color-mix(in oklch, var(--ncss-color-success) 50%, var(--ncss-color-bg));
+  --ncss-aurora-opacity: 0.7;
+  --ncss-aurora-speed: 14s;
+  --ncss-mesh-speed: 28s;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-bg);
+}
+
+.ncss-aurora--vivid {
+  --ncss-aurora-opacity: 1;
+}
+
+/* Aurora: zwei Ebenen mit je zwei Flecken, gegenläufig treibend */
+.ncss-aurora::before,
+.ncss-aurora::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -25%;
+  opacity: var(--ncss-aurora-opacity);
+  background-repeat: no-repeat;
+  pointer-events: none;
+  will-change: transform;
+}
+.ncss-aurora::before {
+  background-image:
+    radial-gradient(closest-side, var(--ncss-aurora-1), transparent),
+    radial-gradient(closest-side, var(--ncss-aurora-2), transparent);
+  background-size: 60% 70%, 55% 65%;
+  background-position: 10% 20%, 90% 80%;
+  animation: ncss-aurora-a var(--ncss-aurora-speed) ease-in-out infinite alternate;
+}
+.ncss-aurora::after {
+  background-image:
+    radial-gradient(closest-side, var(--ncss-aurora-3), transparent),
+    radial-gradient(closest-side, var(--ncss-aurora-1), transparent);
+  background-size: 50% 60%, 40% 45%;
+  background-position: 85% 15%, 20% 85%;
+  animation: ncss-aurora-b calc(var(--ncss-aurora-speed) * 1.3) ease-in-out infinite alternate;
+}
+
+@keyframes ncss-aurora-a {
+  0% { transform: translate(-8%, -4%) rotate(0deg) scale(1); }
+  50% { transform: translate(10%, 6%) rotate(12deg) scale(1.15); }
+  100% { transform: translate(-4%, 10%) rotate(-8deg) scale(0.95); }
+}
+@keyframes ncss-aurora-b {
+  0% { transform: translate(8%, 6%) rotate(0deg) scale(1.1); }
+  50% { transform: translate(-12%, -6%) rotate(-14deg) scale(0.9); }
+  100% { transform: translate(4%, -10%) rotate(10deg) scale(1.2); }
+}
+
+/* Mesh: vier weiche Felder, die sich langsam drehen. Die Ebene ist doppelt so groß wie
+   die Sektion (inset -50 %), sichtbar ist nur ihr mittlerer Bereich. */
+.ncss-mesh::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -50%;
+  background:
+    radial-gradient(22% 22% at 36% 36%, var(--ncss-aurora-1), transparent),
+    radial-gradient(22% 22% at 64% 34%, var(--ncss-aurora-2), transparent),
+    radial-gradient(24% 24% at 66% 64%, var(--ncss-aurora-3), transparent),
+    radial-gradient(22% 22% at 34% 66%, var(--ncss-aurora-2), transparent);
+  opacity: var(--ncss-aurora-opacity);
+  pointer-events: none;
+  will-change: transform;
+  animation: ncss-mesh-turn var(--ncss-mesh-speed) linear infinite;
+}
+.ncss-mesh--static::before {
+  animation: none;
+}
+
+@keyframes ncss-mesh-turn {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.15); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ncss-aurora::before,
+  .ncss-aurora::after,
+  .ncss-mesh::before {
+    animation: none;
+    will-change: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .ncss-aurora::before,
+  .ncss-aurora::after,
+  .ncss-mesh::before {
+    display: none;
+  }
+}

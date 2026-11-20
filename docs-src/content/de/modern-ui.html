@@ -1,0 +1,161 @@
+<!--DESC: Bento-Raster, Spotlight, Vorher/Nachher-Vergleich, Aufklapp-Panels, Befehlspalette, Hovercards, Benachrichtigungen und Aurora-Hintergründe - je eine Datei, einzeln einbindbar.-->
+<section class="ncss-stack">
+  <h1>Moderne UI</h1>
+  <p class="ncss-text-lg ncss-text-muted">Acht moderne Bausteine - jeder als eigene CSS-Datei (plus höchstens ein Script), lauffähig allein mit <code>colors.css</code>/<code>tokens.css</code>/<code>reset.css</code>/<code>base.css</code>. Interaktive Teile sind Light-DOM-Custom-Elements um natives Markup: ohne JavaScript bleibt immer ein sinnvoller Grundzustand.</p>
+  <p><a href="../../demo/modern-ui.html">Live-Demo ansehen</a></p>
+</section>
+
+<section class="ncss-stack" id="uebersicht">
+  <h2 class="demo-section-title">Übersicht</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Baustein</th><th scope="col">CSS</th><th scope="col">JS</th><th scope="col">Ohne JS</th></tr></thead>
+      <tbody>
+        <tr><td>Bento-Raster</td><td><code>helpers/layout.css</code></td><td>-</td><td>vollständig</td></tr>
+        <tr><td>Spotlight</td><td><code>components/spotlight.css</code></td><td><code>js/spotlight.js</code> (Attribut)</td><td>Licht mittig bei Hover/Fokus</td></tr>
+        <tr><td>Vorher/Nachher</td><td><code>components/compare.css</code></td><td><code>js/compare.js</code> - <code>&lt;ncss-compare&gt;</code></td><td>statischer 50/50-Vergleich</td></tr>
+        <tr><td>Aufklapp-Panels</td><td><code>components/expand-panels.css</code></td><td>-</td><td>vollständig</td></tr>
+        <tr><td>Befehlspalette</td><td><code>components/command-palette.css</code></td><td><code>js/command-palette.js</code> - <code>&lt;ncss-command-palette&gt;</code></td><td>Dialog mit normaler Link-/Button-Liste</td></tr>
+        <tr><td>Hovercards</td><td><code>components/hovercard.css</code></td><td><code>js/hovercard.js</code> - <code>&lt;ncss-hovercard&gt;</code></td><td>nativ per <code>interestfor</code> (Chromium), sonst nur der Link</td></tr>
+        <tr><td>Benachrichtigungen</td><td><code>components/notification.css</code></td><td><code>js/notification.js</code> - <code>&lt;ncss-toast-region&gt;</code> + <code>ncss.notify()</code></td><td>Markup-Meldungen bleiben stehen</td></tr>
+        <tr><td>Aurora &amp; Mesh</td><td><code>components/aurora.css</code></td><td>-</td><td>vollständig</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Ladezustände deckt bereits <code>.ncss-skeleton</code> ab (<a href="animations.html">Animationen</a>). Alle Bausteine respektieren <code>prefers-reduced-motion</code> und schalten in Forced Colors (Windows-Kontrastmodus) dekorative Effekte ab bzw. auf Systemfarben um.</p>
+</section>
+
+<section class="ncss-stack" id="bento">
+  <h2 class="demo-section-title">Bento-Raster</h2>
+  <p><code>.ncss-bento</code> ist sein eigener Container: wird das Raster zu schmal für eine Spannweite (<code>.ncss-col-span-2</code>/<code>-3</code>), fällt sie weg, statt seitlich überzulaufen. Jede Kachel ist ebenfalls ein Container - in sehr schmalen Kacheln werden Überschriften kleiner und trennen nach Sprachregeln (<code>lang</code> setzen). Zeilen wachsen mit dem Inhalt (<code>minmax(--ncss-bento-row-height, auto)</code>). Vorlagen ohne Klassen an den Kacheln: <code>.ncss-bento--hero</code> (1. Kachel 2×2, 4. hoch, jede 6. ab der 5. breit) und <code>.ncss-bento--mosaic</code>.</p>
+  <pre><code class="language-html">&lt;div class="ncss-bento ncss-bento--hero"&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;...&lt;/article&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;...&lt;/article&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Schwellen: 1 Spalte unter 26rem, Spannweite 3 wird unter 40rem zur vollen Zeile - passend zum Default <code>--ncss-bento-min: 12rem</code>. <code>grid-auto-flow: dense</code> ändert nur die visuelle, nicht die Tab-Reihenfolge.</p>
+</section>
+
+<section class="ncss-stack" id="spotlight">
+  <h2 class="demo-section-title">Spotlight</h2>
+  <p>Ein Lichtkegel folgt dem Mauszeiger, dazu leuchtet das Rand-Segment nahe am Zeiger auf (Masken-Ring-Technik wie <code>.ncss-glow-border</code>). <code>data-ncss-spotlight</code> an einer Gruppe: ein Listener für alle Flächen, Nachbarn fangen den Rand des Lichts auf. Touch wird ignoriert.</p>
+  <pre><code class="language-html">&lt;div class="ncss-grid" data-ncss-spotlight&gt;
+  &lt;article class="ncss-card ncss-spotlight"&gt;...&lt;/article&gt;
+  &lt;article class="ncss-card ncss-spotlight ncss-spotlight--strong"&gt;...&lt;/article&gt;
+&lt;/div&gt;
+&lt;script src="ncss/js/spotlight.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-spotlight-color</code>, <code>--ncss-spotlight-border</code>, <code>--ncss-spotlight-size</code> (24rem). Attribut <code>data-reach</code> (px, Default 160) für die Nachbar-Reichweite.</p>
+</section>
+
+<section class="ncss-stack" id="vergleich">
+  <h2 class="demo-section-title">Vorher/Nachher-Vergleich</h2>
+  <p><code>&lt;ncss-compare&gt;</code> legt einen echten <code>&lt;input type="range"&gt;</code> über zwei Bilder: Maus, Touch (waagerecht ziehen, senkrecht scrollt weiter), Tastatur und Screenreader kommen vom Browser. Das Script setzt nur <code>--ncss-compare-position</code> und <code>aria-valuetext</code> ("30 % vorher").</p>
+  <pre><code class="language-html">&lt;ncss-compare style="--ncss-compare-ratio: 4 / 3"&gt;
+  &lt;img class="ncss-compare-before" src="vorher.jpg" alt="Küche vor der Renovierung"&gt;
+  &lt;img class="ncss-compare-after" src="nachher.jpg" alt="Küche nach der Renovierung"&gt;
+  &lt;span class="ncss-compare-label" aria-hidden="true"&gt;Vorher&lt;/span&gt;
+  &lt;span class="ncss-compare-label ncss-compare-label--end" aria-hidden="true"&gt;Nachher&lt;/span&gt;
+  &lt;input class="ncss-compare-range" type="range" min="0" max="100" value="50"
+         aria-label="Trennlinie verschieben: links vorher, rechts nachher"&gt;
+&lt;/ncss-compare&gt;
+&lt;script src="ncss/js/compare.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Attribut <code>value-text</code> (z.B. <code>"{n} % alt"</code>), Event <code>ncss-compare-change</code> (<code>detail.value</code>), Eigenschaft <code>el.value</code>. Ohne JS ist der Regler ausgeblendet (ein Regler, der die Bilder nicht mitnimmt, wäre irreführend).</p>
+</section>
+
+<section class="ncss-stack" id="panels">
+  <h2 class="demo-section-title">Aufklapp-Panels</h2>
+  <p>Reines CSS: das überfahrene oder fokussierte Panel wächst (<code>flex-grow</code>), sonst das aktive (<code>.ncss-expand-panel--active</code> oder <code>aria-current</code>). Unter 36rem Containerbreite stapeln sich die Panels und wachsen in der Höhe. Panels sind Links oder Buttons - per Tab erreichbar.</p>
+  <pre><code class="language-html">&lt;div class="ncss-expand-panels"&gt;
+  &lt;a class="ncss-expand-panel ncss-expand-panel--active" href="/alpen"&gt;
+    &lt;span class="ncss-expand-panel-media"&gt;&lt;img src="alpen.jpg" alt=""&gt;&lt;/span&gt;
+    &lt;span class="ncss-expand-panel-title"&gt;Alpen&lt;/span&gt;
+    &lt;span class="ncss-expand-panel-body"&gt;Sechs Touren über 3000 m.&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-expand-height</code> (24rem), <code>--ncss-expand-grow</code> (4), <code>--ncss-expand-collapsed</code>/<code>-expanded</code> (gestapelte Höhen).</p>
+</section>
+
+<section class="ncss-stack" id="befehlspalette">
+  <h2 class="demo-section-title">Befehlspalette</h2>
+  <p><code>&lt;ncss-command-palette&gt;</code> um einen <code>&lt;dialog class="ncss-command"&gt;</code>. WAI-ARIA Combobox + Listbox wie bei der <a href="forms.html#live-suche">Live-Suche</a>: Fokus bleibt im Feld, <kbd>↑</kbd>/<kbd>↓</kbd> wählt, <kbd>Enter</kbd> führt aus (Link folgt seinem <code>href</code>, Button wird geklickt), <kbd>Esc</kbd> schließt. Das Kürzel <kbd>⌘K</kbd> / <kbd>Strg</kbd>+<kbd>K</kbd> ist opt-in per <code>shortcut="k"</code>.</p>
+  <pre><code class="language-html">&lt;button type="button" command="show-modal" commandfor="cmd"&gt;Befehle&lt;/button&gt;
+&lt;ncss-command-palette shortcut="k"&gt;
+  &lt;dialog id="cmd" class="ncss-command" aria-label="Befehlspalette" closedby="any"&gt;
+    &lt;div class="ncss-command-search"&gt;
+      &lt;input class="ncss-command-input" type="text" aria-label="Befehl suchen"&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-command-list" aria-label="Befehle"&gt;
+      &lt;div class="ncss-command-group"&gt;
+        &lt;p class="ncss-command-group-label"&gt;Seiten&lt;/p&gt;
+        &lt;a class="ncss-command-item" href="/" data-keywords="start home"&gt;Startseite&lt;/a&gt;
+        &lt;button class="ncss-command-item" type="button"&gt;Dunkles Design&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p class="ncss-command-empty" hidden&gt;Keine Treffer&lt;/p&gt;
+  &lt;/dialog&gt;
+&lt;/ncss-command-palette&gt;
+&lt;script src="ncss/js/command-palette.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Events: <code>ncss-command-select</code> (abbrechbar, <code>detail.item</code>), <code>ncss-command-show</code>/<code>-hide</code>. Methoden: <code>show()</code>, <code>hide()</code>, <code>toggle()</code>, <code>filter(text)</code>. Fehlt natives <code>command</code>/<code>commandfor</code>, öffnet das Script den Dialog selbst - <code>js/command-fallback.js</code> ist nicht nötig.</p>
+</section>
+
+<section class="ncss-stack" id="hovercards">
+  <h2 class="demo-section-title">Hovercards</h2>
+  <p><code>&lt;ncss-hovercard&gt;</code>: erstes Kind ist der Link, <code>.ncss-hovercard</code> die Karte (<code>popover="hint"</code>, Top Layer, Anchor Positioning mit automatischem Umklappen). Mit <code>interestfor</code> (Chromium) übernimmt der Browser Hover, Fokus, Verzögerung, <kbd>Esc</kbd> und Long-Press ganz ohne JS. Sonst öffnet das Script nach 400 ms bei Hover oder Tastatur-Fokus, hält die Karte offen, solange Zeiger oder Fokus darin sind (WCAG 1.4.13), und schließt mit <kbd>Esc</kbd>. Ohne Anchor Positioning rechnet es die Position selbst.</p>
+  <pre><code class="language-html">&lt;ncss-hovercard&gt;
+  &lt;a href="/team/ada" interestfor="hc-ada"&gt;Ada Lovelace&lt;/a&gt;&lt;span id="hc-ada" class="ncss-hovercard" popover="hint"&gt;
+    &lt;span class="ncss-hovercard-header"&gt;
+      &lt;span class="ncss-hovercard-avatar" aria-hidden="true"&gt;AL&lt;/span&gt;
+      &lt;span&gt;&lt;strong class="ncss-hovercard-title"&gt;Ada Lovelace&lt;/strong&gt;
+            &lt;span class="ncss-hovercard-meta"&gt;Mathematikerin&lt;/span&gt;&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="ncss-hovercard-text"&gt;...&lt;/span&gt;
+  &lt;/span&gt;&lt;/ncss-hovercard&gt;
+&lt;script src="ncss/js/hovercard.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">In Fließtext ein <code>&lt;span&gt;</code> als Karte verwenden und keinen Zeilenumbruch zwischen <code>&lt;/a&gt;</code>, Karte und <code>&lt;/ncss-hovercard&gt;</code> lassen - sonst bleibt ein Leerzeichen vor dem folgenden Satzzeichen. Attribute <code>delay</code>/<code>hide-delay</code> (ms), Events <code>ncss-hovercard-show</code>/<code>-hide</code>. Die Karte nur für Zusatzinfos nutzen - Touch-Nutzer ohne <code>interestfor</code> sehen sie nicht.</p>
+</section>
+
+<section class="ncss-stack" id="benachrichtigungen">
+  <h2 class="demo-section-title">Benachrichtigungen</h2>
+  <p><code>ncss.notify()</code> erzeugt eine Meldung in einer <code>&lt;ncss-toast-region&gt;</code> (entsteht automatisch, eine pro Position). Statusfarben <code>brand</code>/<code>success</code>/<code>warning</code>/<code>danger</code>, sechs Positionen (<code>top-start</code> … <code>bottom-end</code>), Schließen-Button, Timer mit Pause bei Hover, Fokus oder Hintergrund-Tab (Restzeit läuft weiter). Fehler bleiben standardmäßig stehen. Die Region ist <code>aria-live="polite"</code>, <code>danger</code>/<code>warning</code> zusätzlich <code>role="alert"</code>; als <code>popover="manual"</code> liegt sie im Top Layer, auch über modalen Dialogen.</p>
+  <pre><code class="language-javascript">ncss.notify("Gespeichert", { status: "success" });
+ncss.notify({ title: "Upload fehlgeschlagen", message: "Datei zu groß", status: "danger" });
+ncss.notify("Kopiert", { position: "bottom-end", stack: true, timeout: 8000 });
+// ohne globales Objekt:
+document.dispatchEvent(new CustomEvent("ncss-notify", { detail: { message: "Hallo" } }));</code></pre>
+  <pre><code class="language-html">&lt;button type="button" data-ncss-notify="Gespeichert" data-status="success"&gt;Speichern&lt;/button&gt;
+
+&lt;!-- serverseitig, bleibt ohne JS einfach stehen --&gt;
+&lt;ncss-toast-region position="top-end" stack&gt;
+  &lt;div class="ncss-notification ncss-notification--success" data-timeout="6000"&gt;
+    &lt;p class="ncss-notification-title"&gt;Gespeichert&lt;/p&gt;
+    &lt;p&gt;Deine Änderungen sind online.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/ncss-toast-region&gt;
+&lt;script src="ncss/js/notification.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Gestapelt</strong> (Attribut <code>stack</code> bzw. Option <code>stack: true</code>): ältere Meldungen liegen als Stapel hinter der neuesten und fächern sich bei Hover oder Tastatur-Fokus auf. Nachrichtentext wird immer als Text eingefügt (kein HTML) - für eigenes Markup einen DOM-Knoten übergeben.</p>
+</section>
+
+<section class="ncss-stack" id="aurora">
+  <h2 class="demo-section-title">Aurora &amp; Mesh</h2>
+  <p>Weiche, treibende Farbfelder aus den Markenfarben hinter einer Sektion - radiale Verläufe, bewegt nur per <code>transform</code> (kein Blur-Filter). Text bleibt <code>--ncss-color-text</code> auf einer mit der Seitenfläche gemischten Farbe, in Hell und Dunkel.</p>
+  <pre><code class="language-html">&lt;section class="ncss-aurora"&gt;...&lt;/section&gt;
+&lt;section class="ncss-aurora ncss-aurora--vivid"&gt;...&lt;/section&gt;
+&lt;section class="ncss-mesh"&gt;...&lt;/section&gt;
+&lt;section class="ncss-mesh ncss-mesh--static"&gt;...&lt;/section&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-aurora-1</code>/<code>-2</code>/<code>-3</code>, <code>--ncss-aurora-opacity</code>, <code>--ncss-aurora-speed</code> (14s), <code>--ncss-mesh-speed</code> (28s). Bei reduzierter Bewegung statisch, in Forced Colors aus.</p>
+</section>
+
+<section class="ncss-stack" id="browser">
+  <h2 class="demo-section-title">Browser-Unterstützung</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Technik</th><th scope="col">Wo nativ</th><th scope="col">Sonst</th></tr></thead>
+      <tbody>
+        <tr><td><code>interestfor</code> (Hovercards)</td><td>Chromium</td><td><code>js/hovercard.js</code> mit Hover/Fokus/Esc</td></tr>
+        <tr><td><code>popover="hint"</code></td><td>Chromium, WebKit (getestet)</td><td>Script nutzt <code>popover="manual"</code></td></tr>
+        <tr><td>Anchor Positioning</td><td>Chromium, Safari 26+</td><td>Script rechnet Position selbst</td></tr>
+        <tr><td><code>command</code>/<code>commandfor</code></td><td>Chromium, Safari 26+</td><td>Befehlspalette öffnet selbst</td></tr>
+        <tr><td><code>@starting-style</code></td><td>alle aktuellen</td><td>ohne Einblend-Animation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

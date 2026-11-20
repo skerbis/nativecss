@@ -1,0 +1,111 @@
+/**
+ * ncss - Spotlight (Layer "components"): ein weicher Lichtkegel folgt dem Mauszeiger über
+ * eine Fläche (Karte, Kachel, Button), dazu ein aufleuchtendes Rand-Segment nahe am Zeiger.
+ * Rein dekorativ, opt-in - eigene Klasse zum Zukombinieren wie .ncss-glow-border
+ * (components/effects.css), kein Bestandteil von .ncss-card.
+ *
+ * Markup - einzelne Fläche:
+ * <article class="ncss-card ncss-spotlight" data-ncss-spotlight>...</article>
+ *
+ * Markup - Gruppe (EIN Listener für alle; Nachbarn fangen den Rand des Lichtkegels auf,
+ * wenn der Zeiger in der Nähe ist):
+ * <div class="ncss-bento" data-ncss-spotlight>
+ *   <article class="ncss-card ncss-spotlight">...</article>
+ *   <article class="ncss-card ncss-spotlight">...</article>
+ * </div>
+ * <script src="js/spotlight.js" defer></script>
+ *
+ * js/spotlight.js schreibt NUR --ncss-spotlight-x/-y (px, relativ zur jeweiligen Fläche)
+ * und setzt [data-ncss-spotlight-active]. Ohne JS (und bei Tastatur-Fokus) steht das
+ * Licht in der Mitte und erscheint bei Hover/Fokus - kein kaputter Zustand, nur statisch.
+ *
+ * Technik: ::before = Lichtkegel (radial-gradient), ::after = Rand-Segment über dieselbe
+ * Masken-Ring-Technik wie .ncss-glow-border (padding als Ringdicke + mask-composite:
+ * exclude schneidet die content-box heraus, siehe effects.css). isolation:isolate macht die
+ * Fläche zum eigenen Stacking-Kontext - ::before mit z-index:-1 malt dadurch ÜBER dem
+ * eigenen Hintergrund der Fläche, aber UNTER ihrem Inhalt (Text bleibt unberührt lesbar).
+ *
+ * Tokens (pro Instanz überschreibbar):
+ *   --ncss-spotlight-color   Farbe des Lichtkegels (Default: Markenfarbe, halbtransparent)
+ *   --ncss-spotlight-border  Farbe des Rand-Segments (Default: Markenfarbe)
+ *   --ncss-spotlight-size    Durchmesser des Lichtkegels (Default 24rem)
+ * .ncss-spotlight--strong    kräftigeres Licht
+ *
+ * Touch: kein Zeiger, der "über" etwas schwebt - das Script ignoriert Touch-Eingaben,
+ * :hover ist wie überall in ncss auf (hover:hover) and (pointer:fine) begrenzt.
+ * Forced Colors: Effekt aus (rein dekorativ, keine Information).
+ */
+.ncss-spotlight {
+  --ncss-spotlight-color: color-mix(in oklch, var(--ncss-color-brand) 22%, transparent);
+  --ncss-spotlight-border: var(--ncss-color-brand);
+  --ncss-spotlight-size: 24rem;
+  position: relative;
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+
+  /* Lichtkegel */
+  &::before {
+    z-index: -1;
+    background: radial-gradient(
+      var(--ncss-spotlight-size) circle at var(--ncss-spotlight-x, 50%) var(--ncss-spotlight-y, 50%),
+      var(--ncss-spotlight-color),
+      transparent 70%
+    );
+  }
+
+  /* Rand-Segment nahe am Zeiger - kleinerer Kegel, nur im Ring sichtbar */
+  &::after {
+    z-index: 1;
+    padding: max(var(--ncss-border-width), 2px);
+    background: radial-gradient(
+      calc(var(--ncss-spotlight-size) * 0.6) circle at var(--ncss-spotlight-x, 50%) var(--ncss-spotlight-y, 50%),
+      var(--ncss-spotlight-border),
+      transparent 70%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+
+  /* Tastatur-Fokus (im Element oder auf einem Link darin) - unabhängig vom Zeigegerät,
+     deshalb bewusst NICHT im Hover-Gate unten. */
+  &:focus-visible::before,
+  &:focus-visible::after,
+  &:has(:focus-visible)::before,
+  &:has(:focus-visible)::after,
+  &[data-ncss-spotlight-active]::before,
+  &[data-ncss-spotlight-active]::after {
+    opacity: 1;
+  }
+}
+
+/* Nur Geräte mit echtem Zeigegerät (Maus/Trackpad) - siehe README "Touch-Geräte haben
+   kein :hover". Deckt den Fall OHNE JS ab (dann zentriertes Licht beim Überfahren). */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-spotlight:hover::before,
+  .ncss-spotlight:hover::after {
+    opacity: 1;
+  }
+}
+
+.ncss-spotlight--strong {
+  --ncss-spotlight-color: color-mix(in oklch, var(--ncss-color-brand) 38%, transparent);
+}
+
+@media (forced-colors: active) {
+  .ncss-spotlight::before,
+  .ncss-spotlight::after {
+    display: none;
+  }
+}

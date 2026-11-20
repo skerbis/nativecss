@@ -1,0 +1,290 @@
+/**
+ * ncss - Benachrichtigungen / Toasts (Layer "components"): <ncss-toast-region> ist der
+ * feste Bereich am Bildschirmrand, .ncss-notification eine einzelne Meldung. Statusfarben,
+ * sechs Positionen, Auto-Schließen mit Pause bei Hover/Fokus, Schließen-Button, Ansage per
+ * aria-live. Optional gestapelt ("Sonner-Stil", Attribut stack): ältere Meldungen liegen
+ * als Stapel hinter der neuesten und fächern sich bei Hover/Fokus auf.
+ *
+ * Meist per Script erzeugt (js/notification.js):
+ *   ncss.notify("Gespeichert", { status: "success" });
+ *   ncss.notify("Upload fehlgeschlagen", { status: "danger", timeout: 0 });
+ *   <button type="button" data-ncss-notify="Gespeichert" data-status="success">...</button>
+ * Die Region entsteht dabei automatisch (eine pro Position). Selbst im Markup gesetzt -
+ * z.B. für serverseitige Hinweise nach einem Formular-Absenden:
+ * <ncss-toast-region position="top-end" stack>
+ *   <div class="ncss-notification ncss-notification--success" data-timeout="6000">
+ *     <p class="ncss-notification-title">Gespeichert</p>
+ *     <p>Deine Änderungen sind online.</p>
+ *   </div>
+ * </ncss-toast-region>
+ * Ohne JS bleibt so eine Meldung einfach sichtbar stehen (kein Schließen, kein Timer).
+ *
+ * Positionen (Attribut position): top-start, top-center, top-end (Default), bottom-start,
+ * bottom-center, bottom-end - logisch (start/end), in RTL also gespiegelt.
+ * Status: .ncss-notification--brand/--success/--warning/--danger (farbiger Akzentstreifen
+ * + Symbolfarbe aus der jeweiligen Familie, Text bleibt --ncss-color-text).
+ *
+ * Top Layer: das Script macht die Region zu einem popover="manual" - Meldungen erscheinen
+ * damit auch ÜBER einem offenen modalen <dialog>, ohne z-index.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base); das
+ * Schließen-Symbol ist eine eigene Maske, keine Abhängigkeit von helpers/icons.css.
+ *
+ * Tokens: --ncss-notification-width (Default 24rem), --ncss-notification-offset (Abstand
+ * zum Rand, Default --ncss-space-sm), --ncss-notification-gap (Default --ncss-space-2xs),
+ * --ncss-toast-peek (sichtbare Kante gestapelter Meldungen, Default 0.75rem).
+ */
+ncss-toast-region {
+  --ncss-notification-width: 24rem;
+  --ncss-notification-offset: var(--ncss-space-sm);
+  --ncss-notification-gap: var(--ncss-space-2xs);
+  --ncss-toast-peek: 0.75rem;
+  --ncss-toast-dir: 1;
+  position: fixed;
+  inset: var(--ncss-notification-offset) var(--ncss-notification-offset) auto auto;
+  /* Ohne Popover-API (sehr alte Browser) bleibt nur z-index - im Top Layer egal. */
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-notification-gap);
+  width: min(var(--ncss-notification-width), calc(100vw - 2 * var(--ncss-notification-offset)));
+  max-height: calc(100vh - 2 * var(--ncss-notification-offset));
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: none;
+  color: var(--ncss-color-text);
+  /* Die Fläche zwischen den Meldungen lässt Klicks zur Seite darunter durch */
+  pointer-events: none;
+
+  &:empty {
+    display: none;
+  }
+}
+/* Popover-UA-Stil zentriert die Box - auf die eigene Position zurücksetzen */
+ncss-toast-region:popover-open {
+  inset: var(--ncss-notification-offset) var(--ncss-notification-offset) auto auto;
+}
+ncss-toast-region:is([position="top-start"], [position="bottom-start"]) {
+  inset-inline: var(--ncss-notification-offset) auto;
+}
+ncss-toast-region:is([position="top-end"], [position="bottom-end"], :not([position])) {
+  inset-inline: auto var(--ncss-notification-offset);
+}
+ncss-toast-region:is([position="top-center"], [position="bottom-center"]) {
+  inset-inline: 0;
+  margin-inline: auto;
+}
+ncss-toast-region:is([position="bottom-start"], [position="bottom-center"], [position="bottom-end"]) {
+  --ncss-toast-dir: -1;
+  inset-block: auto var(--ncss-notification-offset);
+}
+
+/* --- Meldung ------------------------------------------------------------------------- */
+.ncss-notification {
+  --ncss-notification-accent: var(--ncss-color-neutral);
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: var(--ncss-space-2xs);
+  padding: var(--ncss-space-xs) var(--ncss-space-xs) var(--ncss-space-xs) var(--ncss-space-sm);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-lg), inset 4px 0 0 var(--ncss-notification-accent);
+  font-size: var(--ncss-font-size-base);
+  line-height: 1.4;
+  pointer-events: auto;
+  transition:
+    opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    scale var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    height var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized);
+
+  & p {
+    margin: 0;
+  }
+}
+/* Statusfarbe: Akzentstreifen (inset-Schatten statt border, damit die Ecke rund bleibt)
+   + Punkt vor dem Text. Der Punkt ist zusätzlich zur Farbe nur Deko - die Bedeutung
+   steckt im Text selbst (und bei danger/warning in role="alert"). */
+.ncss-notification::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-block-start: 0.45em;
+  border-radius: 50%;
+  background-color: var(--ncss-notification-accent);
+}
+.ncss-notification--brand { --ncss-notification-accent: var(--ncss-color-brand); }
+.ncss-notification--success { --ncss-notification-accent: var(--ncss-color-success); }
+.ncss-notification--warning { --ncss-notification-accent: var(--ncss-color-warning); }
+.ncss-notification--danger { --ncss-notification-accent: var(--ncss-color-danger); }
+
+.ncss-notification-body {
+  min-width: 0;
+}
+.ncss-notification-title {
+  font-weight: var(--ncss-font-weight-semibold);
+}
+.ncss-notification-body > :not(.ncss-notification-title) {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+
+/* Einblenden: von der Kante her, an der die Region sitzt */
+@starting-style {
+  .ncss-notification {
+    opacity: 0;
+    translate: 0 calc(var(--ncss-toast-dir) * -1rem);
+  }
+}
+.ncss-notification--leaving {
+  opacity: 0;
+  translate: 0 calc(var(--ncss-toast-dir) * -0.75rem);
+  scale: 0.96;
+}
+
+/* --- Schließen (immer sichtbar - Touch und Tastatur haben kein Hover) ------------------ */
+.ncss-notification-close {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin: -0.25rem -0.15rem 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ncss-radius-md);
+  background: none;
+  color: var(--ncss-color-text-muted);
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    width: 0.9rem;
+    height: 0.9rem;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  &:focus-visible {
+    outline-offset: 0;
+    color: var(--ncss-color-text);
+  }
+  &:active {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-notification-close:hover:not(:active) {
+    color: var(--ncss-color-text);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+
+/* --- Gestapelt (Attribut stack) -------------------------------------------------------
+   Alle Meldungen liegen in DERSELBEN Grid-Zelle übereinander. js/notification.js setzt pro
+   Meldung --ncss-toast-index (0 = neueste) und --ncss-toast-offset (Summe der Höhen der
+   neueren Meldungen + Abstände) sowie an der Region --ncss-toast-front-height.
+   Zusammengeklappt: ältere Meldungen um je "peek" versetzt, kleiner, Inhalt ausgeblendet,
+   ab der 4. ganz unsichtbar. Aufgefächert (Hover/Fokus in der Region): jede an ihrer
+   echten Position, volle Größe - transform/opacity/height, kein Layout-Sprung der Seite. */
+ncss-toast-region[stack]:defined:not(:empty) {
+  display: grid;
+  grid-template: "stack" auto / 100%;
+  align-items: start;
+}
+ncss-toast-region[stack]:defined:is([position="bottom-start"], [position="bottom-center"], [position="bottom-end"]) {
+  align-items: end;
+}
+ncss-toast-region[stack]:defined > .ncss-notification {
+  --ncss-toast-i: var(--ncss-toast-index, 0);
+  grid-area: stack;
+  z-index: calc(100 - var(--ncss-toast-i));
+  box-sizing: border-box;
+  height: var(--ncss-toast-front-height, auto);
+  overflow: hidden;
+  transform-origin: 50% 0;
+  translate: 0 calc(var(--ncss-toast-dir) * var(--ncss-toast-i) * var(--ncss-toast-peek));
+  scale: calc(1 - var(--ncss-toast-i) * 0.05);
+  opacity: clamp(0, 3 - var(--ncss-toast-i), 1);
+
+  & > * {
+    transition: opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
+  }
+  &:not([data-ncss-toast-front]) > * {
+    opacity: 0;
+  }
+  &:not([data-ncss-toast-front])::before {
+    opacity: 0;
+  }
+
+  /* Unsichtbare Brücke über den Abstand zur nächsten Meldung - sonst verlässt der Zeiger
+     beim Wechsel zwischen aufgefächerten Meldungen kurz die Region und alles klappt zu. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    height: calc(var(--ncss-notification-gap) + 2px);
+  }
+}
+ncss-toast-region[stack]:defined:is([position="bottom-start"], [position="bottom-center"], [position="bottom-end"]) > .ncss-notification {
+  transform-origin: 50% 100%;
+
+  &::after {
+    top: auto;
+    bottom: 100%;
+  }
+}
+/* Overflow: hidden würde den Brücken-::after abschneiden - im aufgefächerten Zustand
+   wieder sichtbar, dort ist ohnehin jede Meldung in voller Höhe. */
+ncss-toast-region[stack]:defined:is(:focus-within, [data-ncss-toast-expanded]) > .ncss-notification {
+  height: auto;
+  overflow: visible;
+  translate: 0 calc(var(--ncss-toast-dir) * var(--ncss-toast-offset, 0px));
+  scale: 1;
+  opacity: 1;
+
+  & > *,
+  &::before {
+    opacity: 1;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  ncss-toast-region[stack]:defined:hover > .ncss-notification {
+    height: auto;
+    overflow: visible;
+    translate: 0 calc(var(--ncss-toast-dir) * var(--ncss-toast-offset, 0px));
+    scale: 1;
+    opacity: 1;
+
+    & > *,
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+/* Ausblenden schlägt jeden Stapel-Zustand (auch aufgefächert) - doppelte Klasse statt
+   :hover in dieser Regel, damit das Hover-Gate oben die einzige :hover-Stelle bleibt. */
+ncss-toast-region[stack]:defined > .ncss-notification.ncss-notification--leaving.ncss-notification--leaving {
+  opacity: 0;
+  scale: 0.94;
+}
+
+@media (forced-colors: active) {
+  .ncss-notification {
+    border-color: CanvasText;
+  }
+  .ncss-notification::before {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+  .ncss-notification-close::before {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+}

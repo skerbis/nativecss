@@ -82,6 +82,13 @@
 @import url("components/overlay.css") layer(components);
 @import url("components/footer.css") layer(components);
 @import url("components/effects.css") layer(components);
+@import url("components/spotlight.css") layer(components);
+@import url("components/compare.css") layer(components);
+@import url("components/expand-panels.css") layer(components);
+@import url("components/command-palette.css") layer(components);
+@import url("components/hovercard.css") layer(components);
+@import url("components/notification.css") layer(components);
+@import url("components/aurora.css") layer(components);
 @import url("components/backdrop.css") layer(components);
 @import url("components/code-block.css") layer(components);
 @import url("components/events.css") layer(components);

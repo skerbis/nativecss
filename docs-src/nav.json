@@ -55,6 +55,7 @@
         { "slug": "custom-components", "de": "Eigene Komponenten erstellen", "en": "Build Your Own Components" },
         { "slug": "lists", "de": "Listen", "en": "Lists" },
         { "slug": "cards", "de": "Karten", "en": "Cards" },
+        { "slug": "modern-ui", "de": "Moderne UI", "en": "Modern UI" },
         { "slug": "layouts", "de": "Landingpage-Bausteine", "en": "Landing Page Blocks" },
         { "slug": "webawesome-bridge", "de": "Web Awesome Bridge", "en": "Web Awesome Bridge" },
         { "slug": "widgets", "de": "Termine & Downloads", "en": "Events & Downloads" },

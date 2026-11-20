@@ -288,13 +288,67 @@
    <div class="ncss-bento">
      <article class="ncss-card ncss-col-span-2 ncss-row-span-2">Große Kachel</article>
      <article class="ncss-card">Normale Kachel</article>
-   </div> */
+   </div>
+
+   Eigener Container (container-name ncss-bento) - die Kacheln fragen damit die Breite IHRES
+   Rasters ab, nicht die des Viewports: ist das Raster zu schmal für eine Spannweite, fällt
+   sie weg (statt implizite Zusatzspalten zu erzeugen, die seitlich überlaufen - per echtem
+   Test bei 360px gefunden: .ncss-col-span-2 in einem 1-spaltigen Raster erzeugte eine
+   zweite, abgeschnittene Spalte). Schwellen passend zum Default --ncss-bento-min (12rem)
+   + größtem Gap: 2 Spalten ab ca. 26rem, 3 Spalten ab ca. 40rem - bei einem stark
+   abweichenden --ncss-bento-min die Schwellen unten mit anpassen (Container Queries
+   können keine var() auswerten).
+   grid-auto-rows als minmax(Zeilenhöhe, auto): die Zeilenhöhe bleibt das gemeinsame
+   Grundmaß, längerer Inhalt wird aber nicht mehr abgeschnitten, die Zeile wächst mit.
+
+   Vorlagen ohne Klassen an den Kacheln (Spannweiten nach Position):
+   .ncss-bento--hero    1. Kachel groß (2×2), 4. hoch, jede 6. ab der 5. breit
+   .ncss-bento--mosaic  wiederholt sich alle 5 Kacheln (hoch, breit, normal, breit, normal) */
 .ncss-bento {
+  container: ncss-bento / inline-size;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(var(--ncss-bento-min), 100%), var(--ncss-bento-max, 1fr)));
-  grid-auto-rows: var(--ncss-bento-row-height);
+  grid-auto-rows: minmax(var(--ncss-bento-row-height), auto);
   grid-auto-flow: dense;
   gap: var(--ncss-grid-gap, var(--ncss-space-md));
+}
+.ncss-bento--hero > :nth-child(1) { grid-column: span 2; grid-row: span 2; }
+.ncss-bento--hero > :nth-child(4) { grid-row: span 2; }
+.ncss-bento--hero > :nth-child(6n + 5) { grid-column: span 2; }
+.ncss-bento--mosaic > :nth-child(5n + 1) { grid-row: span 2; }
+.ncss-bento--mosaic > :nth-child(5n + 2),
+.ncss-bento--mosaic > :nth-child(5n + 4) { grid-column: span 2; }
+
+/* Jede Kachel ist selbst ein Container: in einer schmalen Kachel (viele Spalten, kleines
+   --ncss-bento-min) wird die Überschrift kleiner und darf nach Sprachregeln trennen
+   (hyphens braucht ein lang-Attribut) - statt dass overflow-wrap:break-word aus base.css
+   als letzter Ausweg MITTEN im Wort ohne Trennstrich bricht (per echtem Test bei 1440px
+   gefunden: "Kompone|nte" in 5 Spalten à 12rem). */
+.ncss-bento > * {
+  container: ncss-bento-tile / inline-size;
+  min-width: 0;
+}
+/* -- ncss container-query: bento-Kachel schmal (15rem) -- */
+@container ncss-bento-tile (width < 15rem) {
+  .ncss-bento > * :is(h2, h3, h4) {
+    font-size: var(--ncss-font-size-md);
+    hyphens: auto;
+  }
+}
+
+/* -- ncss container-query: bento span-3 (40rem) -- */
+@container ncss-bento (width < 40rem) {
+  .ncss-bento > .ncss-col-span-3 { grid-column: 1 / -1; }
+}
+/* -- ncss container-query: bento 1 Spalte (26rem) -- */
+@container ncss-bento (width < 26rem) {
+  .ncss-bento > :is(.ncss-col-span-2, .ncss-col-span-3),
+  .ncss-bento:is(.ncss-bento--hero, .ncss-bento--mosaic) > * {
+    grid-column: auto;
+  }
+  .ncss-bento:is(.ncss-bento--hero, .ncss-bento--mosaic) > * {
+    grid-row: auto;
+  }
 }
 
 /* --- Masonry ----------------------------------------------------------------------------
