@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll-Effekte – NativeCSS-Rundgang</title>
+<meta name="description" content="Reveal-Formen, Morphing, gepinnte Bühnen, Scrollytelling, Stacked Cards, Bildsequenz, Laufband, Count-up und Animations-Helfer – live und fast ganz ohne JavaScript.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="alternate" hreflang="en" href="scroll-en.html">
+<script src="../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../../dist/components/nav-priority.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<link rel="stylesheet" href="../assets/examples/showcase/showcase.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/nav.js" defer></script>
+<script src="../../dist/js/nav-priority.js" defer></script>
+<script src="../../dist/js/subnav.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/reveal.js" defer></script>
+<script src="../../dist/js/count-up.js" defer></script>
+<script src="../../dist/js/marquee.js" defer></script>
+<script src="../../dist/js/scroll-horizontal.js" defer></script>
+<script src="../../dist/js/scroll-stack-fallback.js" defer></script>
+<script src="../../dist/js/scrolly.js" defer></script>
+<script src="../../dist/js/scroll-frames.js" defer></script>
+<script src="../../dist/js/view-transitions.js" defer></script>
+<script src="../assets/js/showcase-scroll.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+<style>
+  /* Nur Kapitel-eigene demo-Klassen (nie ncss-Namen). Gemeinsames: showcase.css */
+  .demo-bleed { margin-block-start: var(--ncss-space-md); }
+
+  /* Reveal-Kacheln */
+  .demo-reveal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: var(--ncss-space-md);
+  }
+  .demo-reveal-tile { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ncss-space-2xs); }
+  .demo-reveal-tile img,
+  .demo-reveal-tile > .ncss-reveal {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-reveal-tile figcaption { font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
+  .demo-reveal-panel {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-2xs);
+    padding: var(--ncss-space-md);
+    text-align: center;
+  }
+  .demo-reveal-panel p { margin: 0; }
+  .demo-expand {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-xs);
+    min-block-size: 60svh;
+    padding: var(--ncss-space-xl) var(--ncss-space-md);
+    text-align: center;
+  }
+  .demo-expand .ncss-eyebrow { color: inherit; }
+  .demo-expand h3 { font-size: var(--ncss-font-size-xl); text-wrap: balance; }
+
+  /* Reveal-Pin */
+  .demo-pin-intro { font-size: var(--ncss-font-size-xl); font-weight: 700; text-wrap: balance; }
+
+  /* Text-Reveal */
+  .demo-big-text {
+    font-size: var(--ncss-font-size-xl);
+    font-weight: 600;
+    line-height: 1.25;
+    max-inline-size: 40rem;
+    text-wrap: pretty;
+  }
+
+  /* Count-up */
+  .demo-stat {
+    display: grid;
+    gap: var(--ncss-space-3xs);
+    padding: var(--ncss-space-md);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-stat-value {
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ncss-color-brand-on-soft);
+  }
+
+  /* Marquee */
+  .demo-ticker {
+    padding: var(--ncss-space-2xs) var(--ncss-space-md);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-surface);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .demo-ticker time { color: var(--ncss-color-brand-on-soft); margin-inline-end: 0.4em; }
+  .demo-marquee-photo img {
+    display: block;
+    inline-size: 12rem;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-marquee-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ncss-space-sm); }
+
+  /* Horizontal-Scroll */
+  .demo-room {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: clip;
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-md);
+  }
+  .demo-room img { inline-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .demo-room-body { display: grid; align-content: start; gap: var(--ncss-space-2xs); padding: var(--ncss-space-md); }
+  .demo-room-body h3, .demo-room-body p { margin: 0; }
+  .demo-room-price { font-weight: 700; color: var(--ncss-color-brand-on-soft); }
+
+  /* Scroll-Stack */
+  .demo-package {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ncss-space-sm);
+    align-content: center;
+    text-align: center;
+    box-shadow: var(--ncss-shadow-lg);
+  }
+  .demo-package img {
+    justify-self: center;
+    inline-size: min(100%, 18rem);
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-package h3, .demo-package p { margin: 0; color: inherit; }
+  .demo-package-tag { font-size: var(--ncss-font-size-sm); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* Scrollytelling */
+  .demo-scrolly-figure { margin: 0; }
+  .demo-scrolly-figure img {
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-scrolly-log { font-size: var(--ncss-font-size-sm); }
+
+  /* Scroll-Frames */
+  .demo-frames-overlay {
+    align-self: end;
+    justify-self: start;
+    margin: var(--ncss-space-md);
+    padding: var(--ncss-space-sm) var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: color-mix(in oklab, var(--ncss-color-bg) 82%, transparent);
+    max-inline-size: 22rem;
+  }
+  .demo-frames-overlay h3, .demo-frames-overlay p { margin: 0; }
+
+  /* Curtain */
+  .demo-curtain-section {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-xl) var(--ncss-space-md);
+    text-align: center;
+  }
+  .demo-curtain-section .ncss-eyebrow { color: inherit; }
+  .demo-curtain-section h3 { font-size: var(--ncss-font-size-xl); }
+  .demo-curtain-section p { max-inline-size: 36rem; margin-inline: auto; }
+  .demo-curtain-photo {
+    justify-self: center;
+    inline-size: min(100%, 28rem);
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-lg);
+  }
+
+  /* Roadmap */
+  .demo-roadmap-date { font-size: var(--ncss-font-size-sm); font-weight: 700; color: var(--ncss-color-brand-on-soft); }
+  .demo-roadmap-wrap { max-inline-size: 44rem; }
+
+  /* Scroll-Snap */
+  .demo-snap-row { padding-block-end: var(--ncss-space-xs); }
+  .demo-snap-card { flex: none; inline-size: min(78%, 17rem); margin: 0; }
+  .demo-snap-card img { inline-size: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--ncss-radius-md); }
+  .demo-snap-card figcaption { margin-block-start: var(--ncss-space-3xs); font-size: var(--ncss-font-size-sm); }
+  .demo-snap-box {
+    block-size: 22rem;
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-snap-box > .ncss-snap-section { block-size: 100%; text-align: center; gap: var(--ncss-space-xs); }
+  .demo-snap-box h4 { font-size: var(--ncss-font-size-lg); margin: 0; color: inherit; }
+  .demo-snap-box p { margin: 0; max-inline-size: 30rem; color: inherit; }
+  .demo-sticky-box {
+    --ncss-sticky-container-max-height: 20rem;
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-sticky-head, .demo-sticky-foot {
+    padding: var(--ncss-space-xs) var(--ncss-space-md);
+    background-color: var(--ncss-color-surface);
+    font-weight: 700;
+    margin: 0;
+  }
+  .demo-sticky-head { border-block-end: var(--ncss-border-width) solid var(--ncss-color-border); }
+  .demo-sticky-foot { border-block-start: var(--ncss-border-width) solid var(--ncss-color-border); }
+  .demo-sticky-list { margin: 0; padding: var(--ncss-space-sm) var(--ncss-space-md); display: grid; gap: var(--ncss-space-xs); }
+  .demo-sticky-list strong { font-weight: 700; margin-inline-end: 0.5em; }
+  .demo-two-col {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--ncss-space-lg);
+    align-items: start;
+  }
+
+  /* Animationen */
+  .demo-anim-card { padding: var(--ncss-space-sm) var(--ncss-space-md); font-weight: 600; text-align: center; }
+  .demo-loop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    gap: var(--ncss-space-md);
+    align-items: start;
+  }
+  .demo-loop {
+    display: grid;
+    justify-items: start;
+    gap: var(--ncss-space-2xs);
+    padding: var(--ncss-space-md);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-loop .ncss-btn, .demo-loop button { white-space: nowrap; }
+  .demo-anim-note { padding: var(--ncss-space-sm) var(--ncss-space-md); margin-block-start: var(--ncss-space-sm); }
+  .demo-loop code { font-size: 0.8rem; color: var(--ncss-color-text-muted); }
+  .demo-live-badge { display: inline-flex; align-items: center; gap: 0.5em; font-weight: 600; }
+  .demo-live-dot { inline-size: 0.75rem; block-size: 0.75rem; border-radius: var(--ncss-radius-full); background-color: var(--ncss-color-danger); }
+  .demo-spin { font-size: 1.75rem; color: var(--ncss-color-brand); }
+  .demo-skeleton-line { block-size: 0.9rem; inline-size: 100%; border-radius: var(--ncss-radius-sm); }
+  .demo-skeleton-line--short { inline-size: 60%; }
+  .demo-glow-btn {
+    padding: var(--ncss-space-xs) var(--ncss-space-md);
+    border: 0;
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    font-weight: 600;
+    --ncss-glow-radius: var(--ncss-radius-full);
+  }
+  .demo-micro { display: flex; flex-wrap: wrap; gap: var(--ncss-space-sm); align-items: center; }
+  .demo-micro .ncss-card { min-inline-size: 9rem; }
+  .demo-field-shake { max-inline-size: 18rem; }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<!-- example-bar:start -->
+<aside class="demo-example-bar" aria-label="Beispiel: NativeCSS" data-demo-inspect-ignore>
+  <a class="demo-example-bar-brand" href="../../docs/de/start.html"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
+  <span class="demo-example-bar-label"><span aria-hidden="true">·</span> Beispiel: NativeCSS-Rundgang</span>
+  <nav class="demo-example-bar-links" aria-label="NativeCSS">
+    <a href="../../docs/de/examples.html">← Alle Beispiele</a>
+    <a href="../../docs/de/index.html">Handbuch</a>
+  </nav>
+</aside>
+<button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="Code-Inspektor: Element anklicken, um HTML, Erklärung und Quelldateien zu sehen (Alt+I)"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> Inspect <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>
+<!-- example-bar:end -->
+
+<div class="ncss-scroll-progress ncss-gradient-brand" aria-hidden="true"></div>
+<div class="ncss-scroll-progress ncss-scroll-progress--vertical ncss-scroll-progress--end ncss-surface--brand-2" aria-hidden="true"></div>
+
+<div class="demo-sticky-header" data-ncss-sticky-header>
+  <header class="ncss-topbar">
+    <div class="ncss-topbar-inner">
+      <a class="ncss-topbar-brand demo-brand" href="index.html">NativeCSS<small>Rundgang</small></a>
+      <nav class="ncss-nav" aria-label="Kapitel">
+        <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="chapterNav" aria-label="Kapitel-Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+        <dialog id="chapterNav" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Kapitel">
+          <button type="button" class="ncss-dialog-close" command="close" commandfor="chapterNav" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+          <ncss-nav-priority more-text="Mehr" more-label="Mehr Kapitel">
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="layout.html">Layout</a></li>
+              <li class="ncss-nav-item"><a href="content.html">Inhalt</a></li>
+              <li class="ncss-nav-item"><a href="navigation.html">Navigation</a></li>
+              <li class="ncss-nav-item"><a href="forms.html">Formulare</a></li>
+              <li class="ncss-nav-item"><a href="overlays.html">Overlays</a></li>
+              <li class="ncss-nav-item"><a href="media.html">Medien</a></li>
+              <li class="ncss-nav-item"><a href="scroll.html" aria-current="true">Scroll-Effekte</a></li>
+              <li class="ncss-nav-item"><a href="modern.html">Moderne UI</a></li>
+              <li class="ncss-nav-item"><a href="app-ui.html">App-UI</a></li>
+              <li class="ncss-nav-item"><a href="icons.html">Icons</a></li>
+              <li class="ncss-nav-item"><a href="a11y.html">Barrierefreiheit</a></li>
+            </ul>
+          </ncss-nav-priority>
+        </dialog>
+      </nav>
+      <div class="ncss-topbar-actions">
+        <a class="demo-lang" href="scroll-en.html" hreflang="en" lang="en"><span class="demo-topbar-lang-long">English</span><span class="demo-topbar-lang-short">EN</span></a>
+        <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Dunkles Design einschalten">
+          <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+          <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <nav class="ncss-subnav" aria-label="Auf dieser Seite" data-ncss-subnav>
+    <div class="ncss-subnav-inner">
+      <span class="ncss-subnav-label" aria-hidden="true">Auf dieser Seite</span>
+      <ul class="ncss-subnav-list" role="list">
+        <li><a href="#reveal">Reveal</a></li>
+        <li><a href="#reveal-pin">Reveal-Pin</a></li>
+        <li><a href="#morph">Morphing</a></li>
+        <li><a href="#text-reveal">Text-Reveal</a></li>
+        <li><a href="#count-up">Count-up</a></li>
+        <li><a href="#marquee">Laufband</a></li>
+        <li><a href="#horizontal">Horizontal</a></li>
+        <li><a href="#stack">Stacked Cards</a></li>
+        <li><a href="#scrolly">Scrollytelling</a></li>
+        <li><a href="#frames">Bildsequenz</a></li>
+        <li><a href="#curtain">Curtain</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#progress">Fortschritt</a></li>
+        <li><a href="#snap">Snap &amp; Sticky</a></li>
+        <li><a href="#animations">Animationen</a></li>
+        <li><a href="#transitions">Übergänge</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<main id="main" class="ncss-stretch">
+
+  <header class="demo-chapter ncss-container ncss-stack">
+    <p class="ncss-eyebrow">Kapitel 7 von 11</p>
+    <h1>Scroll-Effekte</h1>
+    <p class="demo-chapter-lead">Alles auf dieser Seite hängt an der Scroll-Position – gerechnet vom Browser über <code>animation-timeline</code>, JavaScript nur als kleiner Helfer für Fokus, Zustand oder ältere Browser. Einfach langsam scrollen; mit dem Inspect-Knopf unten rechts (oder Alt+I) und einem Klick auf einen Block siehst du Markup und Quelldateien. Bei reduzierter Bewegung steht jeder Effekt ruhig und vollständig lesbar da.</p>
+  </header>
+
+  <!-- Reveal -->
+  <section class="demo-feature" id="reveal" aria-labelledby="reveal-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="reveal-h">Reveal-Formen</h2>
+          <p>Bilder, Karten oder ganze Sektionen öffnen sich beim Hereinscrollen – als Iris, Wischkante, Vorhang oder Zoom. Standardmäßig folgt der Effekt dem Scrollen (zurückscrollen spult zurück); mit <code>--once</code> spielt er einmal ab.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>--zoom</code> gehört auf einen Wrapper um das Bild, nicht auf das <code>&lt;img&gt;</code> selbst.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-reveal</code></li>
+            <li><code>--circle</code></li>
+            <li><code>--wipe-*</code></li>
+            <li><code>--inset</code></li>
+            <li><code>--split</code></li>
+            <li><code>--diagonal</code></li>
+            <li><code>--zoom</code></li>
+            <li><code>--expand</code></li>
+            <li><code>--once</code></li>
+            <li><code>data-ncss-reveal</code></li>
+            <li><code>js/reveal.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#reveal">Im Handbuch<span class="ncss-visually-hidden">: Reveal-Formen</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-live-label">Gescrubbt (folgt dem Scrollen)</h3>
+        <div class="demo-reveal-grid">
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--circle" data-ncss-reveal src="../assets/examples/hotel/see-panorama-thumb.webp" width="640" height="427" loading="lazy" alt="Bergsee mit klarem, türkisem Wasser vor bewaldeten Hängen"><figcaption><code>--circle</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-right" data-ncss-reveal src="../assets/examples/hotel/steg-morgennebel-thumb.webp" width="640" height="427" loading="lazy" alt="Steg im Morgennebel, die Sonne steht tief über dem See"><figcaption><code>--wipe-right</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-left" data-ncss-reveal src="../assets/examples/hotel/haus-am-see-thumb.webp" width="480" height="640" loading="lazy" alt="Haus am See mit Liegestühlen auf der Wiese"><figcaption><code>--wipe-left</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-up" data-ncss-reveal src="../assets/examples/hotel/see-daemmerung-thumb.webp" width="640" height="480" loading="lazy" alt="See in der Abenddämmerung vor Bergkulisse"><figcaption><code>--wipe-up</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-down" data-ncss-reveal src="../assets/examples/hotel/ruderboot-abend-thumb.webp" width="480" height="717" loading="lazy" alt="Ruderboot auf dem stillen See am Abend"><figcaption><code>--wipe-down</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--inset" data-ncss-reveal src="../assets/examples/hotel/spa-pool-thumb.webp" width="480" height="640" loading="lazy" alt="Hallenbad mit Marmorboden und hohen Sprossenfenstern"><figcaption><code>--inset</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--split" data-ncss-reveal src="../assets/examples/hotel/fruehstueck-thumb.webp" width="640" height="427" loading="lazy" alt="Gedeckter Frühstückstisch mit Kaffee und Gebäck"><figcaption><code>--split</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--diagonal" data-ncss-reveal src="../assets/examples/hotel/restaurant-thumb.webp" width="480" height="720" loading="lazy" alt="Restaurant in warmen Holztönen mit gedeckten Tischen"><figcaption><code>--diagonal</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><div class="ncss-reveal ncss-reveal--zoom" data-ncss-reveal><img src="../assets/examples/hotel/sauna-thumb.webp" width="480" height="720" loading="lazy" alt="Holzsauna mit Bänken und warmem Licht"></div><figcaption><code>--zoom</code> (auf dem Wrapper)</figcaption></figure>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-live-label">Einmal-Modus (<code>--once</code>)</h3>
+        <div class="demo-reveal-grid">
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--circle ncss-reveal--once" data-ncss-reveal src="../assets/examples/hotel/zimmer-classic-thumb.webp" width="640" height="427" loading="lazy" alt="Doppelzimmer mit Holzwand und hellem Bettzeug"><figcaption><code>--circle --once</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal src="../assets/examples/hotel/suite-dach-thumb.webp" width="640" height="427" loading="lazy" alt="Dachsuite mit Schrägen und Sitzecke"><figcaption><code>--split --once</code></figcaption></figure>
+          <figure class="demo-reveal-tile"><div class="ncss-reveal ncss-reveal--slide-up ncss-reveal--once ncss-surface--brand demo-reveal-panel" data-ncss-reveal><p><strong>Frühbucher-Rabatt</strong></p><p>10 % auf alle Sommerwochen bis 31. März.</p></div><figcaption><code>--slide-up --once</code> auf einem Panel</figcaption></figure>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-live-label">Wächst zur vollen Fläche (<code>--expand</code>)</h3>
+        <div class="ncss-reveal ncss-reveal--expand ncss-surface--brand-2 demo-expand" data-ncss-reveal>
+          <p class="ncss-eyebrow">Hotel Seeblick</p>
+          <h3>Ihr Sommer beginnt am Steg</h3>
+          <p>Die eingerückte Karte zieht beim Scrollen auf volle Breite auf – auf einer vollbreiten Sektion wird daraus Full-Bleed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reveal-Pin -->
+  <section class="demo-feature" id="reveal-pin" aria-labelledby="reveal-pin-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="reveal-pin-h">Reveal-Pin</h2>
+          <p>Eine gepinnte Bühne: das Bild wächst von einer Karte auf den ganzen Bildschirm, die Überschrift geht, am Ende kommt ein Panel. Reines CSS, ideal als großer Auftakt einer Seite.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Mit <code>&lt;video autoplay&gt;</code> statt Bild zusätzlich <code>js/hero-video-motion.js</code> laden – CSS kann ein Video bei reduzierter Bewegung nicht anhalten.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-reveal-pin</code></li>
+            <li><code>-stage</code></li>
+            <li><code>-intro</code></li>
+            <li><code>-content</code></li>
+            <li><code>--ncss-reveal-pin-length</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#reveal-pin">Im Handbuch<span class="ncss-visually-hidden">: Reveal-Pin</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="demo-bleed ncss-reveal-pin" style="--ncss-reveal-pin-length: 220vh">
+      <div class="ncss-reveal-pin-stage">
+        <p class="ncss-reveal-pin-intro demo-pin-intro">Ein See, der den ganzen Raum nimmt.</p>
+        <img src="../assets/examples/hotel/see-panorama.webp" width="1600" height="1068" loading="lazy" alt="Walchensee: türkises Wasser, bewaldete Ufer und Berge unter blauem Himmel">
+        <div class="ncss-reveal-pin-content">
+          <h3>Angekommen</h3>
+          <p>Zwei Minuten zu Fuß vom Hotel Seeblick zum Ufer – das Panel erscheint erst, wenn das Bild den Bildschirm füllt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Morphing -->
+  <section class="demo-feature" id="morph" aria-labelledby="morph-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="morph-h">Morphing</h2>
+          <p>Ein Bild startet in voller Breite, schrumpft beim Scrollen an den Rand und macht Platz für Text, der daneben hereingleitet – reines CSS. <code>--start</code> schickt das Medium nach links, <code>--card</code> und <code>--circle</code> ändern zusätzlich die Form.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Den Text kürzer als eine Bildschirmhöhe halten; in schmalen Containern steht das Bild einfach über dem Text.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-morph</code></li>
+            <li><code>-stage</code></li>
+            <li><code>-media</code></li>
+            <li><code>-content</code></li>
+            <li><code>--start</code></li>
+            <li><code>--reverse</code></li>
+            <li><code>--card</code></li>
+            <li><code>--circle</code></li>
+            <li><code>--ncss-morph-top</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#morph">Im Handbuch<span class="ncss-visually-hidden">: Morphing</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-container">
+    <section class="ncss-morph" aria-label="Haus am See" style="--ncss-morph-top: var(--ncss-scroll-offset, 0px)">
+      <div class="ncss-morph-stage">
+        <div class="ncss-morph-media"><img src="../assets/examples/hotel/haus-am-see.webp" width="1125" height="1500" loading="lazy" alt="Haus am See mit Liegestühlen auf der Wiese am Ufer"></div>
+        <div class="ncss-morph-content">
+          <p class="ncss-eyebrow">Standard: ans Ende</p>
+          <h3>Das Haus am See</h3>
+          <p>Zwölf Zimmer im alten Bootshaus, die Liegewiese reicht bis ans Wasser. Zurückscrollen spult den Morph zurück.</p>
+        </div>
+      </div>
+    </section>
+    <section class="ncss-morph ncss-morph--start ncss-morph--card" aria-label="Steg im Morgennebel" style="--ncss-morph-top: var(--ncss-scroll-offset, 0px)">
+      <div class="ncss-morph-stage">
+        <div class="ncss-morph-media"><img src="../assets/examples/hotel/steg-morgennebel.webp" width="1600" height="1066" loading="lazy" alt="Steg im Morgennebel, die Sonne geht über dem See auf"></div>
+        <div class="ncss-morph-content">
+          <p class="ncss-eyebrow"><code>--start --card</code></p>
+          <h3>Morgens am Steg</h3>
+          <p>Das Bild wandert nach links und wird zur Karte mit Schatten – der Text kommt von rechts.</p>
+        </div>
+      </div>
+    </section>
+    </div>
+  </section>
+
+  <!-- Text-Reveal -->
+  <section class="demo-feature" id="text-reveal" aria-labelledby="text-reveal-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="text-reveal-h">Text-Reveal</h2>
+          <p>Ein großer Satz startet blass und wird beim Lesen hell – Zeile für Zeile oder im Lesefluss, beides ohne JS; Wort für Wort geht mit <code>data-ncss-text-reveal</code> + <code>js/text-reveal.js</code>. Gut für ein Statement zwischen zwei Abschnitten, nicht für Fließtext.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>--flow</code> braucht den ganzen Text in genau einem <code>&lt;span&gt;</code>.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-text-reveal</code></li>
+            <li><code>--flow</code></li>
+            <li><code>data-ncss-text-reveal</code></li>
+            <li><code>js/text-reveal.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#text-reveal">Im Handbuch<span class="ncss-visually-hidden">: Text-Reveal</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-stack">
+        <h3 class="demo-live-label">Zeilen (Standard, ohne JS)</h3>
+        <p class="ncss-text-reveal demo-big-text">Morgens liegt Nebel über dem Wasser. Wer früh aufsteht, hat den Steg für sich allein – und den ersten Kaffee mit Blick auf die Berge.</p>
+        <h3 class="demo-live-label">Fluss (<code>--flow</code>, ohne JS)</h3>
+        <p class="ncss-text-reveal ncss-text-reveal--flow demo-big-text"><span>Im Fluss wandert die Helligkeit in Leserichtung über die Zeilen, als wäre der ganze Absatz eine einzige lange Zeile.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Count-up -->
+  <section class="demo-feature" id="count-up" aria-labelledby="count-up-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="count-up-h">Count-up</h2>
+          <p>Kennzahlen zählen hoch, sobald sie ins Bild kommen. Die echte, formatierte Zahl steht im HTML – Screenreader, Suchmaschinen und Kopieren sehen immer den fertigen Wert.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Der Zielwert kommt als ganze Zahl in <code>--ncss-count-to</code>; ohne JS fehlen während des Zählens die Tausenderpunkte.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-count-up</code></li>
+            <li><code>--ncss-count-to</code></li>
+            <li><code>--ncss-count-from</code></li>
+            <li><code>--ncss-count-suffix</code></li>
+            <li><code>js/count-up.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#count-up">Im Handbuch<span class="ncss-visually-hidden">: Count-up</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 12rem">
+          <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 42">42</span></span><span class="ncss-text-muted">Zimmer &amp; Suiten</span></div>
+          <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 1200; --ncss-count-suffix: ' m²'">1.200 m²</span></span><span class="ncss-text-muted">Spa und Ruheräume</span></div>
+          <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 98; --ncss-count-suffix: ' %'">98 %</span></span><span class="ncss-text-muted">würden wiederkommen</span></div>
+          <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 1912; --ncss-count-from: 1850">1912</span></span><span class="ncss-text-muted">Gründungsjahr</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <section class="demo-feature" id="marquee" aria-labelledby="marquee-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="marquee-h">Laufband (Marquee)</h2>
+          <p>Ein Endlos-Band für Termine, Logos oder Bilder. Es hält bei Hover und Fokus an; für Inhalte mit Aussage gehört ein Pause-Knopf dazu, den das Script verdrahtet.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Nur eine Gruppe ins Markup schreiben – <code>js/marquee.js</code> erzeugt die für Screenreader versteckte Kopie.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-marquee</code></li>
+            <li><code>.ncss-marquee-group</code></li>
+            <li><code>--fade</code></li>
+            <li><code>--reverse</code></li>
+            <li><code>--slow</code></li>
+            <li><code>data-ncss-marquee-toggle</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#marquee">Im Handbuch<span class="ncss-visually-hidden">: Laufband</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live demo-marquee-wrap">
+        <div id="seeburgTicker" class="ncss-marquee ncss-marquee--fade" data-ncss-marquee>
+          <ul class="ncss-marquee-group" role="list">
+            <li class="demo-ticker"><time datetime="2026-12-05">5. Dez.</time>Adventsmarkt auf dem Marktplatz</li>
+            <li class="demo-ticker"><time datetime="2026-12-09">9. Dez.</time>Gemeinderatssitzung, 19 Uhr</li>
+            <li class="demo-ticker"><time datetime="2026-12-12">12. Dez.</time>Laternenlauf am Ufer</li>
+            <li class="demo-ticker"><time datetime="2026-12-17">17. Dez.</time>Bürgerbüro bis 18 Uhr geöffnet</li>
+            <li class="demo-ticker"><time datetime="2027-01-06">6. Jan.</time>Neujahrsempfang im Rathaus</li>
+          </ul>
+        </div>
+        <div class="ncss-marquee ncss-marquee--reverse ncss-marquee--slow ncss-marquee--fade" data-ncss-marquee>
+          <ul class="ncss-marquee-group" role="list">
+            <li class="demo-marquee-photo"><img src="../assets/examples/gemeinde/adventsmarkt-thumb.webp" width="640" height="427" loading="lazy" alt="Beleuchtetes Karussell auf dem Marktplatz"></li>
+            <li class="demo-marquee-photo"><img src="../assets/examples/gemeinde/bootshafen-thumb.webp" width="640" height="429" loading="lazy" alt="Ruderboote am Ufer, Berge spiegeln sich im See"></li>
+            <li class="demo-marquee-photo"><img src="../assets/examples/gemeinde/wochenmarkt-thumb.webp" width="640" height="427" loading="lazy" alt="Frisches Gemüse an einem Marktstand"></li>
+            <li class="demo-marquee-photo"><img src="../assets/examples/gemeinde/wanderweg-thumb.webp" width="640" height="427" loading="lazy" alt="Wanderweg durch eine Bergwiese im Sommer"></li>
+            <li class="demo-marquee-photo"><img src="../assets/examples/gemeinde/marktplatz-thumb.webp" width="640" height="360" loading="lazy" alt="Marktplatz mit historischen Fassaden unter blauem Himmel"></li>
+          </ul>
+        </div>
+        <p><button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-ncss-marquee-toggle aria-controls="seeburgTicker">Termin-Laufband anhalten</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal-Scroll -->
+  <section class="demo-feature" id="horizontal" aria-labelledby="horizontal-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="horizontal-h">Horizontal-Scroll</h2>
+          <p>Vertikal scrollen, seitlich fahren: die Reihe gleitet durch eine klebende Bühne. Das Script passt die Strecke an die Reihe an und holt per Tab fokussierte Links ins Bild – probier es mit der Tastatur.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Sobald die Reihe Links oder Buttons enthält, ist <code>js/scroll-horizontal.js</code> Pflicht (Fokus sichtbar halten).</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-scroll-horizontal</code></li>
+            <li><code>-viewport</code></li>
+            <li><code>-track</code></li>
+            <li><code>data-ncss-scroll-horizontal</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#horizontal-scroll">Im Handbuch<span class="ncss-visually-hidden">: Horizontal-Scroll</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-scroll-horizontal" data-ncss-scroll-horizontal aria-label="Zimmer im Hotel Seeblick">
+      <div class="ncss-scroll-horizontal-viewport">
+        <div class="ncss-scroll-horizontal-track">
+          <article class="demo-room"><img src="../assets/examples/hotel/zimmer-classic-thumb.webp" width="640" height="427" loading="lazy" alt="Doppelzimmer mit Holzwand"><div class="demo-room-body"><h3>Classic</h3><p>22 m², Blick in den Garten.</p><p class="demo-room-price">ab 119 €</p><p><a href="#horizontal">Classic ansehen</a></p></div></article>
+          <article class="demo-room"><img src="../assets/examples/hotel/zimmer-seeblick-thumb.webp" width="480" height="720" loading="lazy" alt="Zimmer mit Holzwänden und großem Bett"><div class="demo-room-body"><h3>Seeblick</h3><p>28 m², Balkon zum Wasser.</p><p class="demo-room-price">ab 149 €</p><p><a href="#horizontal">Seeblick ansehen</a></p></div></article>
+          <article class="demo-room"><img src="../assets/examples/hotel/zimmer-junior-thumb.webp" width="640" height="427" loading="lazy" alt="Modernes Zimmer mit Holzpaneelen"><div class="demo-room-body"><h3>Junior-Suite</h3><p>36 m², Sitzecke und Schreibtisch.</p><p class="demo-room-price">ab 189 €</p><p><a href="#horizontal">Junior-Suite ansehen</a></p></div></article>
+          <article class="demo-room"><img src="../assets/examples/hotel/suite-dach-thumb.webp" width="640" height="427" loading="lazy" alt="Dachzimmer mit Schrägen"><div class="demo-room-body"><h3>Dachsuite</h3><p>48 m², ganz oben unterm Giebel.</p><p class="demo-room-price">ab 239 €</p><p><a href="#horizontal">Dachsuite ansehen</a></p></div></article>
+          <article class="demo-room"><img src="../assets/examples/hotel/ruheraum-thumb.webp" width="480" height="543" loading="lazy" alt="Ruheraum mit Liegen in warmem Licht"><div class="demo-room-body"><h3>Spa-Zugang</h3><p>Für alle Zimmer inklusive.</p><p class="demo-room-price">0 €</p><p><a href="#horizontal">Spa ansehen</a></p></div></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll-Stack -->
+  <section class="demo-feature" id="stack" aria-labelledby="stack-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="stack-h">Stacked Cards</h2>
+          <p>Eine Bühne bleibt stehen, Karten fahren nacheinander herein und legen sich zu einem gefächerten Stapel. Ohne Unterstützung stehen die Karten einfach untereinander.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>--ncss-stack-count</code> und jeder <code>--ncss-stack-index</code> werden von Hand gesetzt – CSS zählt die Karten nicht selbst.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-stack-section</code></li>
+            <li><code>.ncss-stack-stage</code></li>
+            <li><code>.ncss-stack-card</code></li>
+            <li><code>--ncss-stack-count</code></li>
+            <li><code>--ncss-stack-index</code></li>
+            <li><code>js/scroll-stack-fallback.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/components.html#scroll-animation">Im Handbuch<span class="ncss-visually-hidden">: Stacked Cards</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-stack-section" style="--ncss-stack-count: 4; --ncss-stack-stage-top: var(--ncss-scroll-offset, 0px); --ncss-stack-stage-height: calc(100lvh - var(--ncss-scroll-offset, 0px))">
+      <div class="ncss-stack-stage">
+        <article class="ncss-stack-card ncss-surface--brand demo-package" style="--ncss-stack-index: 0">
+          <p class="demo-package-tag">Arrangement 1</p>
+          <img src="../assets/examples/hotel/ruderboot-steg-thumb.webp" width="480" height="640" loading="lazy" alt="Ruderboot mit Rudern am Holzsteg">
+          <h3>Seezeit</h3>
+          <p>3 Nächte, Frühstück, Ruderboot für einen Tag – ab 420 €.</p>
+        </article>
+        <article class="ncss-stack-card ncss-surface--brand-2 demo-package" style="--ncss-stack-index: 1">
+          <p class="demo-package-tag">Arrangement 2</p>
+          <img src="../assets/examples/hotel/spa-pool-thumb.webp" width="480" height="640" loading="lazy" alt="Hallenbad mit Sprossenfenstern">
+          <h3>Spa-Auszeit</h3>
+          <p>2 Nächte, Massage, Sauna und Hallenbad – ab 360 €.</p>
+        </article>
+        <article class="ncss-stack-card ncss-surface--neutral demo-package" style="--ncss-stack-index: 2">
+          <p class="demo-package-tag">Arrangement 3</p>
+          <img src="../assets/examples/hotel/fruehstueck-buffet-thumb.webp" width="640" height="428" loading="lazy" alt="Frühstücksbuffet mit Croissants und Brot">
+          <h3>Genießer</h3>
+          <p>4 Nächte, Halbpension mit Menü am See – ab 610 €.</p>
+        </article>
+        <article class="ncss-stack-card ncss-surface--brand demo-package" style="--ncss-stack-index: 3">
+          <p class="demo-package-tag">Arrangement 4</p>
+          <img src="../assets/examples/hotel/haus-nacht-thumb.webp" width="640" height="400" loading="lazy" alt="Das Hotel am See bei Nacht, die Fenster leuchten">
+          <h3>Winterlicht</h3>
+          <p>2 Nächte zwischen den Jahren, Glühwein am Steg – ab 330 €.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scrollytelling -->
+  <section class="demo-feature" id="scrolly" aria-labelledby="scrolly-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="scrolly-h">Scrollytelling: <code>&lt;ncss-scrolly&gt;</code></h2>
+          <p>Text-Schritte neben einer klebenden Bildspalte: der Schritt in der Bildschirmmitte ist aktiv und zeigt sein Bild. Jeder Schritt kann eine Zeitmarke tragen, das Event meldet sie – etwa für ein mitlaufendes Video.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Genau eine <code>.ncss-scrolly-figure</code> pro Schritt, in derselben Reihenfolge.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>&lt;ncss-scrolly&gt;</code></li>
+            <li><code>.ncss-scrolly-step</code></li>
+            <li><code>.ncss-scrolly-figure</code></li>
+            <li><code>line</code></li>
+            <li><code>data-ncss-time</code></li>
+            <li><code>ncss-scrolly-step</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#scrollytelling">Im Handbuch<span class="ncss-visually-hidden">: Scrollytelling</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-scrolly-log">Letztes Event: <output id="scrollyLog" data-demo-scrolly-log="seeburgScrolly" for="seeburgScrolly">–</output></p>
+        <ncss-scrolly id="seeburgScrolly" style="--ncss-scrolly-top: var(--ncss-scroll-offset, 0px)">
+          <div class="ncss-scrolly-steps">
+            <div class="ncss-scrolly-step" data-ncss-time="0"><div><h3>1. Ankommen in Seeburg</h3><p>Das Dorf liegt direkt am Wasser – der Rundgang beginnt am Ufer, wo sich die Häuser im See spiegeln.</p></div></div>
+            <div class="ncss-scrolly-step" data-ncss-time="2.5"><div><h3>2. Das Rathaus</h3><p>Fachwerk aus dem 17. Jahrhundert, heute Bürgerbüro und Trauzimmer.</p></div></div>
+            <div class="ncss-scrolly-step" data-ncss-time="5"><div><h3>3. Kirche am See</h3><p>Der Turm ist von jedem Punkt des Ufers zu sehen – und im Sommer Treffpunkt für Konzerte.</p></div></div>
+            <div class="ncss-scrolly-step" data-ncss-time="7.5"><div><h3>4. Der Badesteg</h3><p>Ende des Rundgangs: Schuhe aus, Füße ins Wasser.</p></div></div>
+          </div>
+          <div class="ncss-scrolly-media">
+            <figure class="ncss-scrolly-figure demo-scrolly-figure"><img src="../assets/examples/gemeinde/seeburg-ufer.webp" width="1600" height="1067" loading="lazy" alt="Dorf am spiegelnden See"></figure>
+            <figure class="ncss-scrolly-figure demo-scrolly-figure"><img src="../assets/examples/gemeinde/rathaus-thumb.webp" width="480" height="720" loading="lazy" alt="Historisches Fachwerk-Rathaus im Sommer"></figure>
+            <figure class="ncss-scrolly-figure demo-scrolly-figure"><img src="../assets/examples/gemeinde/kirche-am-see.webp" width="1600" height="1067" loading="lazy" alt="Kirche mit Turm am Seeufer"></figure>
+            <figure class="ncss-scrolly-figure demo-scrolly-figure"><img src="../assets/examples/gemeinde/badesteg-thumb.webp" width="480" height="720" loading="lazy" alt="Holzsteg, der in den See hinausführt"></figure>
+          </div>
+        </ncss-scrolly>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll-Frames -->
+  <section class="demo-feature" id="frames" aria-labelledby="frames-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="frames-h">Bildsequenz: <code>&lt;ncss-scroll-frames&gt;</code></h2>
+          <p>72 Einzelbilder auf einem Canvas, passend zur Scroll-Position gezeichnet – spult in jedem Browser butterweich, weil nichts dekodiert werden muss. Geladen wird erst kurz vorher, grob zuerst, dann verfeinert.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Das <code>&lt;img&gt;</code> ist Fallback und Alternativtext zugleich – ohne JS, bei reduzierter Bewegung oder Datensparmodus bleibt nur dieses Standbild.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>&lt;ncss-scroll-frames&gt;</code></li>
+            <li><code>src</code></li>
+            <li><code>count</code></li>
+            <li><code>length</code></li>
+            <li><code>.ncss-scroll-frames-stage</code></li>
+            <li><code>-poster</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/video-audio.html#scroll-frames">Im Handbuch<span class="ncss-visually-hidden">: Bildsequenz</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+    <ncss-scroll-frames class="demo-bleed" src="../assets/media/frames/f-%03d.webp" count="72" length="250" style="--ncss-scroll-frames-top: var(--ncss-scroll-offset, 0px)">
+      <div class="ncss-scroll-frames-stage">
+        <img class="ncss-scroll-frames-poster" src="../assets/media/frames/f-020.webp" width="800" height="450" loading="lazy" alt="Gestaffelte Hügel im Wechsel vom Morgen bis zur Nacht">
+        <div class="demo-frames-overlay">
+          <h3>Ein Tag über den Hügeln</h3>
+          <p>Vom Morgen bis zur Nacht, Bild für Bild.</p>
+        </div>
+      </div>
+    </ncss-scroll-frames>
+  </section>
+
+  <!-- Curtain -->
+  <section class="demo-feature" id="curtain" aria-labelledby="curtain-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="curtain-h">Curtain-Sektionen</h2>
+          <p>Jede Sektion bleibt stehen, die nächste gleitet wie ein Vorhang darüber; <code>--scale</code> lässt die bedeckte zurückweichen, <code>--dim</code> dunkelt sie ab. Auch überlange Sektionen zeigen erst ihren ganzen Inhalt.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Jede Sektion braucht einen blickdichten Hintergrund, z.&nbsp;B. eine <code>.ncss-surface--*</code>-Klasse direkt darauf.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-curtain</code></li>
+            <li><code>--scale</code></li>
+            <li><code>--dim</code></li>
+            <li><code>--ncss-curtain-height</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll-effects.html#curtain">Im Handbuch<span class="ncss-visually-hidden">: Curtain-Sektionen</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="demo-bleed ncss-curtain ncss-curtain--scale ncss-curtain--dim">
+      <section class="demo-curtain-section ncss-surface--brand" aria-label="Frühling">
+        <p class="ncss-eyebrow">Gemeinde Seeburg</p>
+        <h3>Frühling am Ufer</h3>
+        <p>Weiterscrollen – die nächste Jahreszeit schiebt sich darüber.</p>
+      </section>
+      <section class="demo-curtain-section ncss-surface--neutral" aria-label="Sommer">
+        <h3>Sommer am Badesteg</h3>
+        <img class="demo-curtain-photo" src="../assets/examples/gemeinde/badesteg-thumb.webp" width="480" height="720" loading="lazy" alt="Holzsteg am See im Sommer">
+        <p>Der Steg ist ab Juni täglich von 7 bis 21 Uhr offen, die Badeaufsicht sitzt am Wochenende im Häuschen.</p>
+      </section>
+      <section class="demo-curtain-section ncss-surface--brand-2" aria-label="Winter">
+        <h3>Winter auf dem Marktplatz</h3>
+        <p>Die letzte Sektion wird nie bedeckt – hier endet der Vorhang.</p>
+        <p><a class="ncss-btn ncss-btn--secondary" href="#roadmap">Weiter zur Roadmap</a></p>
+      </section>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section class="demo-feature" id="roadmap" aria-labelledby="roadmap-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="roadmap-h">Roadmap (selbstzeichnende Zeitleiste)</h2>
+          <p>Meilensteine an einer Linie, deren farbiger Teil sich beim Scrollen nachzeichnet – der graue Track zeigt dabei, wie weit es noch ist. Ohne Unterstützung ist die Linie einfach fertig gezeichnet.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-roadmap</code></li>
+            <li><code>-line</code></li>
+            <li><code>-line-track</code></li>
+            <li><code>-line-progress</code></li>
+            <li><code>-list</code></li>
+            <li><code>-item</code></li>
+            <li><code>-dot</code></li>
+            <li><code>-card</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/components.html#scroll-animation">Im Handbuch<span class="ncss-visually-hidden">: Roadmap</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live demo-roadmap-wrap">
+        <h3 class="demo-live-label">Neue Seepromenade Seeburg</h3>
+        <div class="ncss-roadmap">
+          <div class="ncss-roadmap-line" aria-hidden="true">
+            <div class="ncss-roadmap-line-track"></div>
+            <div class="ncss-roadmap-line-progress"></div>
+          </div>
+          <ol class="ncss-roadmap-list" role="list">
+            <li class="ncss-roadmap-item">
+              <span class="ncss-roadmap-dot"></span>
+              <div class="ncss-roadmap-card ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">
+                <time class="demo-roadmap-date" datetime="2026-03">März 2026</time>
+                <h4>Bürgerwerkstatt</h4>
+                <p>Drei Abende im Rathaus, 140 Ideen auf Zetteln und Karten.</p>
+              </div></div>
+            </li>
+            <li class="ncss-roadmap-item">
+              <span class="ncss-roadmap-dot"></span>
+              <div class="ncss-roadmap-card ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">
+                <time class="demo-roadmap-date" datetime="2026-07">Juli 2026</time>
+                <h4>Entwurf beschlossen</h4>
+                <p>Der Gemeinderat wählt den Entwurf mit Holzdeck und neuen Bänken.</p>
+              </div></div>
+            </li>
+            <li class="ncss-roadmap-item">
+              <span class="ncss-roadmap-dot"></span>
+              <div class="ncss-roadmap-card ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">
+                <time class="demo-roadmap-date" datetime="2026-11">Herbst 2026</time>
+                <h4>Bauarbeiten am Ufer</h4>
+                <p>Abschnitt zwischen Bootshafen und Badesteg, Umleitung über die Seestraße.</p>
+              </div></div>
+            </li>
+            <li class="ncss-roadmap-item">
+              <span class="ncss-roadmap-dot"></span>
+              <div class="ncss-roadmap-card ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">
+                <time class="demo-roadmap-date" datetime="2027-05">Mai 2027</time>
+                <h4>Eröffnungsfest</h4>
+                <p>Mit Musikverein, Fischbrötchen und der ersten Bootsfahrt der Saison.</p>
+              </div></div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll-Progress -->
+  <section class="demo-feature" id="progress" aria-labelledby="progress-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="progress-h">Lesefortschritt</h2>
+          <p>Schau nach ganz oben und an den rechten Rand: beide Balken zeigen, wie weit du auf dieser Seite bist – ein leeres <code>&lt;div&gt;</code>, eine Scroll-Timeline, kein Scroll-Listener. Farbe kommt aus den Flächen-Helfern, etwa <code>.ncss-gradient-brand</code>.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Der Balken liegt mit z-index 1000 über allem – eigene klebende Kopfleisten darunter einplanen.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-scroll-progress</code></li>
+            <li><code>--vertical</code></li>
+            <li><code>--end</code></li>
+            <li><code>.ncss-gradient-brand</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/components.html#scroll-animation">Im Handbuch<span class="ncss-visually-hidden">: Lesefortschritt</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll-Snap & Sticky -->
+  <section class="demo-feature" id="snap" aria-labelledby="snap-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="snap-h">Scroll-Snap &amp; Sticky</h2>
+          <p>Die Mechanik-Helfer unter allen Effekten: einrastende Reihen für Galerien, Vollbild-Sektionen, die Sektion für Sektion einrasten, und klebende Kopf- oder Fußzeilen in einer Scroll-Box. Komplett ohne JS.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>.ncss-snap-sections</code> ist eigentlich bildschirmhoch – hier zum Ausprobieren in einer 22rem hohen Box.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-scroll-snap-x</code></li>
+            <li><code>.ncss-scroll-snap-item</code></li>
+            <li><code>.ncss-snap-sections</code></li>
+            <li><code>.ncss-snap-section</code></li>
+            <li><code>.ncss-sticky-container</code></li>
+            <li><code>.ncss-sticky</code></li>
+            <li><code>--bottom</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/scroll.html#scroll-verhalten">Im Handbuch<span class="ncss-visually-hidden">: Scroll-Snap und Sticky</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-live-label">Einrastende Reihe (<code>.ncss-scroll-snap-x</code>)</h3>
+        <div class="ncss-scroll-snap-x demo-snap-row" tabindex="0" role="region" aria-label="Objekte von ImmoDesk, seitlich wischen">
+          <figure class="ncss-scroll-snap-item demo-snap-card"><img src="../assets/examples/immo/gartenstrasse-thumb.webp" width="640" height="428" loading="lazy" alt="Efeu auf gelber Hausfassade"><figcaption>Gartenstraße 12 · 3 Zimmer</figcaption></figure>
+          <figure class="ncss-scroll-snap-item demo-snap-card"><img src="../assets/examples/immo/kastanienweg-thumb.webp" width="480" height="720" loading="lazy" alt="Balkone eines Mehrfamilienhauses"><figcaption>Kastanienweg 4 · 2 Zimmer</figcaption></figure>
+          <figure class="ncss-scroll-snap-item demo-snap-card"><img src="../assets/examples/immo/rosenhoehe-thumb.webp" width="640" height="427" loading="lazy" alt="Farbige Neubau-Fassaden"><figcaption>Rosenhöhe 7 · 4 Zimmer</figcaption></figure>
+          <figure class="ncss-scroll-snap-item demo-snap-card"><img src="../assets/examples/immo/innen-wohnzimmer-thumb.webp" width="640" height="427" loading="lazy" alt="Helles, leeres Wohnzimmer mit großen Fenstern"><figcaption>Lindenallee 21 · Innenansicht</figcaption></figure>
+          <figure class="ncss-scroll-snap-item demo-snap-card"><img src="../assets/examples/immo/marktplatz-thumb.webp" width="640" height="427" loading="lazy" alt="Historische Fassaden an einem Marktplatz"><figcaption>Am Markt 3 · Gewerbe</figcaption></figure>
+        </div>
+      </div>
+      <div class="demo-live demo-two-col">
+        <div>
+          <h3 class="demo-live-label">Vollbild-Sektionen, eingebettet (<code>.ncss-snap-sections</code>)</h3>
+          <div class="ncss-snap-sections demo-snap-box" tabindex="0" role="region" aria-label="Exposé Gartenstraße 12, Abschnitte zum Durchscrollen">
+            <section class="ncss-snap-section ncss-surface--brand" aria-label="Lage"><h4>1 · Lage</h4><p>Ruhige Seitenstraße, Bäcker und Bus in fünf Minuten.</p></section>
+            <section class="ncss-snap-section ncss-surface--neutral" aria-label="Wohnung"><h4>2 · Wohnung</h4><p>78 m², drei Zimmer, Südbalkon, Dielenboden.</p></section>
+            <section class="ncss-snap-section ncss-surface--brand-2" aria-label="Besichtigung"><h4>3 · Besichtigung</h4><p>Samstags 10 bis 12 Uhr, ohne Anmeldung.</p></section>
+          </div>
+        </div>
+        <div>
+          <h3 class="demo-live-label">Klebend in einer Box (<code>.ncss-sticky</code>)</h3>
+          <div class="ncss-sticky-container demo-sticky-box" tabindex="0" role="region" aria-label="Wochenprogramm Hotel Seeblick">
+            <p class="ncss-sticky demo-sticky-head">Wochenprogramm</p>
+            <ul class="demo-sticky-list" role="list">
+              <li><strong>Mo</strong>Yoga am Steg, 7:30 Uhr</li>
+              <li><strong>Di</strong>Kräuterwanderung mit der Gärtnerin</li>
+              <li><strong>Mi</strong>Ruderboot-Kurs für Anfänger</li>
+              <li><strong>Do</strong>Saunaabend mit Aufguss</li>
+              <li><strong>Fr</strong>Fischmenü auf der Terrasse</li>
+              <li><strong>Sa</strong>Wochenmarkt in Seeburg</li>
+              <li><strong>So</strong>Langes Frühstück bis 12 Uhr</li>
+              <li><strong>täglich</strong>Fahrradverleih an der Rezeption</li>
+              <li><strong>täglich</strong>Hallenbad 7 bis 22 Uhr</li>
+            </ul>
+            <p class="ncss-sticky--bottom demo-sticky-foot">Anmeldung an der Rezeption</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Animationen -->
+  <section class="demo-feature" id="animations" aria-labelledby="animations-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="animations-h">Animations-Helfer</h2>
+          <p>Kleine, fertige Bewegungen statt einer Animations-Bibliothek: Einblenden beim Einfügen, Endlos-Schleifen für Ladezustand und Aufmerksamkeit, Mikro-Interaktionen bei Hover und Klick. Alle laufen über die Motion-Tokens und schweigen bei reduzierter Bewegung.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>.ncss-animate-shake</code> braucht einen Auslöser – Klasse setzen, nach <code>animationend</code> wieder entfernen.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-animate-*</code></li>
+            <li><code>.ncss-animate-on-scroll</code></li>
+            <li><code>.ncss-skeleton</code></li>
+            <li><code>.ncss-hover-lift</code></li>
+            <li><code>.ncss-hover-grow</code></li>
+            <li><code>.ncss-press</code></li>
+            <li><code>.ncss-glow-border</code></li>
+            <li><code>.ncss-glow-pulse</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/animations.html#ein-ausblenden">Im Handbuch<span class="ncss-visually-hidden">: Animations-Helfer</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-live-label">Einblenden</h3>
+        <div class="ncss-grid" id="animEntrance" style="--ncss-grid-min: 9rem">
+          <div class="ncss-card ncss-animate-fade-in demo-anim-card">fade-in</div>
+          <div class="ncss-card ncss-animate-slide-in-up demo-anim-card">slide-in-up</div>
+          <div class="ncss-card ncss-animate-slide-in-down demo-anim-card">slide-in-down</div>
+          <div class="ncss-card ncss-animate-slide-in-left demo-anim-card">slide-in-left</div>
+          <div class="ncss-card ncss-animate-slide-in-right demo-anim-card">slide-in-right</div>
+          <div class="ncss-card ncss-animate-scale-in demo-anim-card">scale-in</div>
+        </div>
+        <p><button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-demo-replay="animEntrance">Noch einmal abspielen</button></p>
+        <div class="ncss-card ncss-animate-on-scroll ncss-animate-on-scroll--slide-up demo-anim-note">Diese Karte gleitet beim Hereinscrollen hoch: <code>.ncss-animate-on-scroll--slide-up</code>, der schlanke Kurzweg ohne Formen.</div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-live-label">Schleifen: Laden &amp; Aufmerksamkeit</h3>
+        <div class="demo-loop-grid">
+          <div class="demo-loop"><span class="ncss-icon ncss-icon-settings ncss-animate-spin demo-spin" aria-hidden="true"></span><code>.ncss-animate-spin</code></div>
+          <div class="demo-loop"><span class="demo-live-badge"><span class="demo-live-dot ncss-animate-pulse" aria-hidden="true"></span>Live vom Steg</span><code>.ncss-animate-pulse</code></div>
+          <div class="demo-loop"><div class="ncss-skeleton demo-skeleton-line"></div><div class="ncss-skeleton demo-skeleton-line demo-skeleton-line--short"></div><code>.ncss-skeleton</code></div>
+          <div class="demo-loop">
+            <label class="ncss-label" for="demoCode">Gutschein-Code</label>
+            <input class="ncss-input demo-field-shake" id="demoCode" value="SEE-2025" aria-describedby="demoCodeHint">
+            <span class="ncss-text-sm ncss-text-muted" id="demoCodeHint">Abgelaufen – zum Testen prüfen.</span>
+            <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-demo-shake="demoCode">Code prüfen</button>
+            <code>.ncss-animate-shake</code>
+          </div>
+          <div class="demo-loop"><button type="button" class="demo-glow-btn ncss-glow-border">Concierge fragen</button><code>.ncss-glow-border</code></div>
+          <div class="demo-loop"><button type="button" class="ncss-btn ncss-btn--primary ncss-glow-pulse">Jetzt buchen</button><code>.ncss-glow-pulse</code></div>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-live-label">Mikro-Interaktionen (Hover, Klicken und Halten)</h3>
+        <div class="demo-micro">
+          <div class="ncss-card ncss-hover-lift ncss-shadow-sm ncss-shadow-hover-md demo-anim-card">hover-lift</div>
+          <div class="ncss-card ncss-hover-grow demo-anim-card">hover-grow</div>
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-press">press</button>
+          <a class="ncss-btn ncss-btn--secondary ncss-transition-colors" href="#animations">transition-colors</a>
+        </div>
+        <p class="demo-caption">Weitere: <code>.ncss-transition</code>, <code>-slow</code>, <code>-transform</code> und <code>.ncss-gpu-boost</code> gegen Ruckeln bei teuren Repaints (nur gezielt einsetzen) – <a href="../../docs/de/animations.html#mikro-interaktionen">Mikro-Interaktionen im Handbuch</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- View Transitions -->
+  <section class="demo-feature" id="transitions" aria-labelledby="transitions-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="transitions-h">View Transitions</h2>
+          <p>Das Akkordeon wechselt sein Bild nativ per <code>:has()</code>; <code>js/view-transitions.js</code> macht daraus einen weichen Übergang – hier mit <code>data-transition="slide"</code>. Für weiche Wechsel zwischen ganzen Seiten gibt es das reine CSS-Opt-in <code>page-transitions.css</code>, das Quell- und Zielseite laden müssen.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> View Transitions reagieren nicht von selbst auf reduzierte Bewegung – die NativeCSS-Dateien prüfen das deshalb selbst.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>js/view-transitions.js</code></li>
+            <li><code>data-transition</code></li>
+            <li><code>.ncss-accordion-split</code></li>
+            <li><code>page-transitions.css</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/layouts.html#accordion-split">Im Handbuch<span class="ncss-visually-hidden">: View Transitions</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-accordion-split-container" data-transition="slide">
+          <div class="ncss-accordion-split">
+            <div class="ncss-accordion-split-list">
+              <details name="seeblick-wellness" class="ncss-accordion-split-item" open>
+                <summary>Hallenbad</summary>
+                <div class="ncss-accordion-split-body">
+                  <p>Marmorbecken mit Sprossenfenstern zum Park, 29 Grad Wasser, täglich 7 bis 22 Uhr.</p>
+                  <div class="ncss-accordion-split-media-mobile"><img src="../assets/examples/hotel/spa-pool-thumb.webp" width="480" height="640" loading="lazy" alt="Hallenbad mit Marmorboden und hohen Sprossenfenstern"></div>
+                </div>
+              </details>
+              <details name="seeblick-wellness" class="ncss-accordion-split-item">
+                <summary>Sauna</summary>
+                <div class="ncss-accordion-split-body">
+                  <p>Finnische Holzsauna mit Aufgüssen am Abend, danach direkt in den See.</p>
+                  <div class="ncss-accordion-split-media-mobile"><img src="../assets/examples/hotel/sauna-thumb.webp" width="480" height="720" loading="lazy" alt="Holzsauna mit Bänken und warmem Licht"></div>
+                </div>
+              </details>
+              <details name="seeblick-wellness" class="ncss-accordion-split-item">
+                <summary>Ruheraum</summary>
+                <div class="ncss-accordion-split-body">
+                  <p>Liegen mit Decken, Tee und Blick ins Grüne – Handys bleiben draußen.</p>
+                  <div class="ncss-accordion-split-media-mobile"><img src="../assets/examples/hotel/ruheraum-thumb.webp" width="480" height="543" loading="lazy" alt="Ruheraum mit Liegen in warmem Licht"></div>
+                </div>
+              </details>
+            </div>
+            <div class="ncss-accordion-split-media">
+              <img src="../assets/examples/hotel/spa-pool.webp" width="1125" height="1500" loading="lazy" alt="Hallenbad mit Marmorboden und hohen Sprossenfenstern">
+              <img src="../assets/examples/hotel/sauna.webp" width="1000" height="1500" loading="lazy" alt="Holzsauna mit Bänken und warmem Licht">
+              <img src="../assets/examples/hotel/ruheraum.webp" width="1326" height="1500" loading="lazy" alt="Ruheraum mit Liegen in warmem Licht">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ncss-container">
+    <nav class="demo-pager" aria-label="Kapitel blättern">
+      <a class="demo-pager-prev" href="media.html" rel="prev"><small>← Vorheriges Kapitel</small> Medien</a>
+      <a class="demo-pager-next" href="modern.html" rel="next"><small>Nächstes Kapitel →</small> Moderne UI</a>
+    </nav>
+  </div>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-bottom ncss-stack ncss-stack--tight ncss-text-sm">
+    <p>NativeCSS-Rundgang · <a href="index.html">Alle Kapitel</a> · <a href="../../docs/de/index.html">Handbuch</a></p>
+    <p class="demo-credits"><strong>Bildnachweis:</strong> Fotos von Pexels (Pexels-Lizenz) – <a href="https://www.pexels.com/photo/illuminated-carousel-in-the-city-square-19480506/">Alina Chernii</a>, <a href="https://pexels.com/photo/wooden-pier-on-a-lake-in-summer-12842519/">Wolfgang Wendefeuer (Steg)</a>, <a href="https://pexels.com/photo/scenic-view-of-tranquil-lake-in-bavaria-31913082/">Branka Krnjaja</a>, <a href="https://pexels.com/photo/a-church-by-a-lake-12842511/">Wolfgang Wendefeuer (Kirche)</a>, <a href="https://www.pexels.com/photo/marktplatz-in-freudenstadt-germany-under-blue-sky-36931570/">Joerg Hartmann</a>, <a href="https://pexels.com/photo/historic-brakel-town-hall-in-summer-29511107/">Wolfgang Weiser</a>, <a href="https://www.pexels.com/photo/charming-german-village-by-reflective-lake-34577724/">Phalgunn Maharishi</a>, <a href="https://pexels.com/photo/scenic-pathway-through-alpine-meadow-in-summer-32713270/">Susanne Jutzeler (suju-foto)</a>, <a href="https://pexels.com/photo/vibrant-farmer-s-market-fresh-vegetables-display-31930012/">Magda Ehlers</a>, <a href="https://pexels.com/photo/luxurious-breakfast-buffet-with-fresh-croissants-and-bread-34307858/">Novkov Visuals</a>, <a href="https://www.pexels.com/photo/morning-breakfast-table-25781659/">Jakub Zerdzicki</a>, <a href="https://www.pexels.com/photo/serene-lakeside-retreat-in-tyrol-austria-38973729/">Petra Nesti</a>, <a href="https://pexels.com/photo/holiday-resort-by-lake-at-night-16777746/">Marek Piwnicki</a>, <a href="https://www.pexels.com/photo/elegant-hotel-dining-area-in-warm-tones-29649733/">Clément Proust</a>, <a href="https://pexels.com/photo/boat-on-the-lake-13280980/">Sebastian Odriozola</a>, <a href="https://www.pexels.com/photo/serene-boat-dock-with-oars-by-wooden-pier-33086020/">Kris Møklebust</a>, <a href="https://www.pexels.com/photo/view-of-a-brown-room-7598363/">Max Vakhtbovych (Ruheraum)</a>, <a href="https://www.pexels.com/photo/modern-wooden-sauna-interior-design-39237331/">HUUM sauna heaters</a>, <a href="https://pexels.com/photo/beautiful-lake-view-in-bavarian-alps-32168381/">Daciana Cristina Visan</a>, <a href="https://www.pexels.com/photo/scenic-view-of-walchensee-lake-in-germany-39845534/">Marek Prášil</a>, <a href="https://www.pexels.com/photo/indoor-marble-pool-with-large-windows-32797306/">Sarah O’Shea</a>, <a href="https://pexels.com/photo/metal-dock-2440257/">Lukáš Dlutko</a>, <a href="https://www.pexels.com/photo/hotel-room-with-tv-7746572/">Max Vakhtbovych (Dachzimmer)</a>, <a href="https://pexels.com/photo/hotel-bedroom-interior-design-19045885/">Luca Luperto</a>, <a href="https://www.pexels.com/photo/modern-hotel-room-interior-with-stylish-wood-paneling-39338455/">Mateusz Pielech</a>, <a href="https://pexels.com/photo/a-bed-or-beds-in-a-room-at-hotel-de-la-ville-27638174/">Alexander Mass</a>, <a href="https://www.pexels.com/photo/green-ivy-on-yellow-facade-in-freiburg-germany-34075377/">Arndt-Peter Bergfeld</a>, <a href="https://www.pexels.com/photo/empty-living-room-6835103/">Curtis Adams</a>, <a href="https://www.pexels.com/photo/concrete-balconies-of-a-low-rise-apartment-building-19820298/">Nuray</a>, <a href="https://www.pexels.com/photo/historic-bavarian-building-facades-in-regensburg-37432236/">Michaela St</a>, <a href="https://www.pexels.com/photo/colorful-modern-apartment-buildings-5505766/">Mike van Schoonderwalt</a>. Die Bildsequenz ist selbst erzeugt (MIT).</p>
+  </div>
+</footer>
+
+</body>
+</html>

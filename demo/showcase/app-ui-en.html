@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App UI – NativeCSS Tour</title>
+<meta name="description" content="App building blocks live: app shell, dense variants, avatar, tags, stats with sparkline, empty state, segmented control, rating, upload, spinner, keycaps and countdown – shown with ImmoDesk.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="alternate" hreflang="de" href="app-ui.html">
+<script src="../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../../dist/components/nav-priority.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<link rel="stylesheet" href="../assets/examples/showcase/showcase.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/nav.js" defer></script>
+<script src="../../dist/js/nav-priority.js" defer></script>
+<script src="../../dist/js/subnav.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/dismiss.js" defer></script>
+<script src="../../dist/js/dropzone.js" defer></script>
+<script src="../../dist/js/countdown.js" defer></script>
+<script src="../../dist/js/sparkline.js" defer></script>
+<script src="../../dist/js/count-up.js" defer></script>
+<script src="../assets/js/showcase-app-ui.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+<style>
+  /* Nur Kapitel-eigene demo-Klassen (nie ncss-Namen). Gemeinsames: showcase.css */
+
+  /* App-Gerüst: eigene Scroll-Box, damit die eingebettete Shell nie die Seite übernimmt
+     (klebende Kopfleiste bleibt in der Box, nicht unter der Seiten-Topbar). */
+  .demo-shell-box {
+    block-size: 32rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-bg);
+  }
+  .demo-shell-brand img { flex: none; }
+  .demo-shell-title { margin: 0; font-size: var(--ncss-font-size-md); }
+  .demo-shell-spacer { flex: 1 1 auto; }
+  .demo-shell-greeting { margin: 0 0 var(--ncss-space-2xs); font-size: var(--ncss-font-size-lg); }
+  .demo-shell-sub { margin: 0 0 var(--ncss-space-sm); color: var(--ncss-color-text-muted); font-size: var(--ncss-font-size-sm); }
+  .demo-shell-section { margin-block-start: var(--ncss-space-md); }
+  .demo-shell-section h4 { margin: 0 0 var(--ncss-space-2xs); font-size: var(--ncss-font-size-base); }
+  .demo-nav-badge { margin-inline-start: auto; }
+  .demo-num { text-align: end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .demo-person { display: inline-flex; align-items: center; gap: var(--ncss-space-2xs); white-space: nowrap; }
+  .demo-sub { display: block; font-size: 0.8em; color: var(--ncss-color-text-muted); }
+
+  /* Objektkarten (dichte Varianten) */
+  .demo-object-card .ncss-card-media img {
+    inline-size: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .demo-object-card h4 { margin: 0; font-size: var(--ncss-font-size-base); }
+
+  /* Kleine Zwischentitel im Live-Bereich */
+  .demo-live h3.demo-sub-h { margin: 0 0 var(--ncss-space-2xs); font-size: var(--ncss-font-size-md); }
+  .demo-live > * + h3.demo-sub-h { margin-block-start: var(--ncss-space-lg); }
+
+  /* Ticket-Liste mit Filter-Chips */
+  .demo-ticket-list {
+    display: grid;
+    gap: var(--ncss-space-2xs);
+    margin: var(--ncss-space-sm) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .demo-ticket-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ncss-space-2xs) var(--ncss-space-xs);
+    padding: var(--ncss-space-xs) var(--ncss-space-sm);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-ticket-list li[hidden] { display: none; }
+  .demo-ticket-title { flex: 1 1 14rem; min-inline-size: 0; }
+  .demo-ticket-title strong { display: block; }
+  .demo-count { margin: var(--ncss-space-xs) 0 0; font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
+  .demo-filter-empty { margin-block-start: var(--ncss-space-sm); }
+  .demo-filterbox { margin-block-start: var(--ncss-space-md); }
+
+  /* Avatar-Zeilen */
+  .demo-people { display: grid; gap: var(--ncss-space-xs); margin: 0; padding: 0; list-style: none; }
+  .demo-people li { display: flex; align-items: center; gap: var(--ncss-space-xs); }
+  .demo-people small { display: block; color: var(--ncss-color-text-muted); }
+
+  /* Segmente: pure-CSS-Ansichtswechsel (nur Optik dieser Demo) */
+  .demo-seg-views { margin-block-start: var(--ncss-space-sm); }
+  .demo-seg-view { display: none; }
+  .demo-seg-host:has(#seg-liste:checked) .demo-seg-view--liste,
+  .demo-seg-host:has(#seg-kacheln:checked) .demo-seg-view--kacheln { display: block; }
+  .demo-seg-host:not(:has(input:checked)) .demo-seg-view--liste { display: block; }
+  .demo-tile-photo {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-tile-name { margin: var(--ncss-space-3xs) 0 0; font-size: var(--ncss-font-size-sm); font-weight: 600; }
+
+  /* Tastenkürzel-Liste */
+  .demo-shortcuts { display: grid; gap: var(--ncss-space-2xs); margin: 0; }
+  .demo-shortcuts div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--ncss-space-2xs) var(--ncss-space-sm);
+    padding-block: var(--ncss-space-2xs);
+    border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  }
+  .demo-shortcuts dt { font-weight: 500; }
+  .demo-shortcuts dd { margin: 0; }
+
+  .demo-status { margin: 0; font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
+  .demo-spin-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ncss-space-sm); }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Skip to content</a>
+
+<!-- example-bar:start -->
+<aside class="demo-example-bar" aria-label="Example: NativeCSS" data-demo-inspect-ignore>
+  <a class="demo-example-bar-brand" href="../../docs/en/start.html"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
+  <span class="demo-example-bar-label"><span aria-hidden="true">·</span> Example: NativeCSS Tour</span>
+  <nav class="demo-example-bar-links" aria-label="NativeCSS">
+    <a href="../../docs/en/examples.html">← All examples</a>
+    <a href="../../docs/en/index.html">Docs</a>
+  </nav>
+</aside>
+<button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="Code inspector: click any element to see its HTML, an explanation and its source files (Alt+I)"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> Inspect <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>
+<!-- example-bar:end -->
+
+<div class="demo-sticky-header" data-ncss-sticky-header>
+  <header class="ncss-topbar">
+    <div class="ncss-topbar-inner">
+      <a class="ncss-topbar-brand demo-brand" href="index-en.html">NativeCSS<small>Tour</small></a>
+      <nav class="ncss-nav" aria-label="Chapters">
+        <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="chapterNav" aria-label="Open chapter menu"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+        <dialog id="chapterNav" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Chapters">
+          <button type="button" class="ncss-dialog-close" command="close" commandfor="chapterNav" aria-label="Close menu"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+          <ncss-nav-priority more-text="More" more-label="More chapters">
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="layout-en.html">Layout</a></li>
+              <li class="ncss-nav-item"><a href="content-en.html">Content</a></li>
+              <li class="ncss-nav-item"><a href="navigation-en.html">Navigation</a></li>
+              <li class="ncss-nav-item"><a href="forms-en.html">Forms</a></li>
+              <li class="ncss-nav-item"><a href="overlays-en.html">Overlays</a></li>
+              <li class="ncss-nav-item"><a href="media-en.html">Media</a></li>
+              <li class="ncss-nav-item"><a href="scroll-en.html">Scroll effects</a></li>
+              <li class="ncss-nav-item"><a href="modern-en.html">Modern UI</a></li>
+              <li class="ncss-nav-item"><a href="app-ui-en.html" aria-current="true">App UI</a></li>
+              <li class="ncss-nav-item"><a href="icons-en.html">Icons</a></li>
+              <li class="ncss-nav-item"><a href="a11y-en.html">Accessibility</a></li>
+            </ul>
+          </ncss-nav-priority>
+        </dialog>
+      </nav>
+      <div class="ncss-topbar-actions">
+        <a class="demo-lang" href="app-ui.html" hreflang="de" lang="de"><span class="demo-topbar-lang-long">Deutsch</span><span class="demo-topbar-lang-short">DE</span></a>
+        <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Switch to dark theme">
+          <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+          <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <nav class="ncss-subnav" aria-label="On this page" data-ncss-subnav>
+    <div class="ncss-subnav-inner">
+      <span class="ncss-subnav-label" aria-hidden="true">On this page</span>
+      <ul class="ncss-subnav-list" role="list">
+        <li><a href="#app-shell">App shell</a></li>
+        <li><a href="#dicht">Dense variants</a></li>
+        <li><a href="#avatar">Avatar</a></li>
+        <li><a href="#tags">Tags</a></li>
+        <li><a href="#kennzahlen">Stats</a></li>
+        <li><a href="#leerzustand">Empty state</a></li>
+        <li><a href="#segmentiert">Segmented</a></li>
+        <li><a href="#bewertung">Rating</a></li>
+        <li><a href="#upload">Upload</a></li>
+        <li><a href="#spinner">Spinner</a></li>
+        <li><a href="#tasten">Keys</a></li>
+        <li><a href="#countdown">Countdown</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<main id="main" class="ncss-stretch">
+
+  <header class="demo-chapter ncss-container ncss-stack">
+    <p class="ncss-eyebrow">Chapter 9 of 11</p>
+    <h1>App UI</h1>
+    <p class="demo-chapter-lead">Building blocks for dashboards and admin interfaces – all shown with “ImmoDesk”, the fictional property manager. Almost everything is pure CSS; upload, countdown and removable tags each bring a small script. Use the Inspect button at the bottom right (or <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Alt</kbd>+<kbd class="ncss-kbd">I</kbd></kbd>) and click any block to see its markup.</p>
+    <p class="demo-gotcha">Elsewhere in the tour: floating labels under <a href="forms-en.html">Forms</a>, “back to top” under <a href="navigation-en.html">Navigation</a>, badges under <a href="content-en.html">Content</a>.</p>
+  </header>
+
+  <!-- ============================================================ App-Gerüst -->
+  <section class="demo-feature" id="app-shell" aria-labelledby="app-shell-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="app-shell-h">App shell</h2>
+          <p>Sidebar, top bar, content – without a line of JS. The sidebar is a native <code>popover</code>: from 48rem <em>container</em> width it stands as a column, below that the same element becomes an off-canvas behind the menu button.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> Embedded like this, the shell needs its own scroll box and <code>--ncss-app-shell-height</code> set to its height – otherwise its top bar sticks to the page instead of the box.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-app-shell</code></li>
+            <li><code>-sidebar[popover]</code></li>
+            <li><code>-topbar</code></li>
+            <li><code>-content</code></li>
+            <li><code>-nav</code></li>
+            <li><code>-toggle</code></li>
+            <li><code>--ncss-app-shell-height</code></li>
+            <li><code>--ncss-app-shell-sidebar-width</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#app-shell">In the handbook<span class="ncss-visually-hidden">: App shell</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-hint"><span aria-hidden="true">↔</span> Drag the bottom-right corner narrower – below 48rem the sidebar folds away</p>
+        <div class="demo-resizable">
+          <div class="demo-shell-box">
+            <div class="ncss-app-shell" style="--ncss-app-shell-height: 32rem; --ncss-app-shell-sidebar-width: 14rem">
+              <nav class="ncss-app-shell-sidebar" id="immoShellNav" popover aria-label="ImmoDesk navigation">
+                <button type="button" class="ncss-app-shell-close" popovertarget="immoShellNav" popovertargetaction="hide" aria-label="Close navigation"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+                <a class="ncss-app-shell-brand demo-shell-brand" href="#app-shell"><img src="../assets/examples/immo/logo.svg" alt="" width="24" height="24">ImmoDesk</a>
+                <h3 class="ncss-app-shell-heading" id="shell-nav-g1">Overview</h3>
+                <ul class="ncss-app-shell-nav" role="list" aria-labelledby="shell-nav-g1">
+                  <li><a href="#app-shell" aria-current="page"><span class="ncss-icon ncss-icon-home" aria-hidden="true"></span>Dashboard</a></li>
+                </ul>
+                <h3 class="ncss-app-shell-heading" id="shell-nav-g2">Portfolio</h3>
+                <ul class="ncss-app-shell-nav" role="list" aria-labelledby="shell-nav-g2">
+                  <li><a href="#app-shell"><span class="ncss-icon ncss-icon-map-pin" aria-hidden="true"></span>Properties <span class="ncss-badge ncss-badge--neutral demo-nav-badge">6</span></a></li>
+                  <li><a href="#app-shell"><span class="ncss-icon ncss-icon-users" aria-hidden="true"></span>Tenants <span class="ncss-badge ncss-badge--danger demo-nav-badge">5<span class="ncss-visually-hidden"> overdue</span></span></a></li>
+                  <li><a href="#app-shell"><span class="ncss-icon ncss-icon-settings" aria-hidden="true"></span>Repairs <span class="ncss-badge ncss-badge--neutral demo-nav-badge">14<span class="ncss-visually-hidden"> open</span></span></a></li>
+                  <li><a href="#app-shell"><span class="ncss-icon ncss-icon-file" aria-hidden="true"></span>Documents</a></li>
+                </ul>
+              </nav>
+              <div class="ncss-app-shell-main">
+                <header class="ncss-app-shell-topbar">
+                  <button type="button" class="ncss-app-shell-toggle" popovertarget="immoShellNav" aria-label="Open navigation"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+                  <p class="demo-shell-title"><strong>Dashboard</strong></p>
+                  <span class="demo-shell-spacer"></span>
+                  <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon ncss-btn--sm" aria-label="Search"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span></button>
+                  <span class="ncss-avatar ncss-avatar--sm" role="img" aria-label="Signed in: Julia Brenner">JB</span>
+                </header>
+                <div class="ncss-app-shell-content">
+                  <p class="demo-shell-greeting"><strong>Good morning, Julia</strong></p>
+                  <p class="demo-shell-sub">Friday, 20 November 2026 · 14 open tickets</p>
+                  <div class="ncss-grid" style="--ncss-grid-min: 9rem; --ncss-grid-gap: var(--ncss-space-xs)">
+                    <div class="ncss-stat ncss-border ncss-radius-md">
+                      <p class="ncss-stat-label">Units</p>
+                      <p class="ncss-stat-value">64</p>
+                      <p class="ncss-stat-trend ncss-stat-trend--flat"><span class="ncss-visually-hidden">Unchanged</span> <span class="ncss-stat-meta">since October</span></p>
+                    </div>
+                    <div class="ncss-stat ncss-stat--inverse ncss-border ncss-radius-md">
+                      <p class="ncss-stat-label">Vacancy</p>
+                      <p class="ncss-stat-value">4.7%</p>
+                      <p class="ncss-stat-trend ncss-stat-trend--down"><span class="ncss-visually-hidden">Down by</span> 0.8 pp</p>
+                    </div>
+                    <div class="ncss-stat ncss-stat--inverse ncss-border ncss-radius-md">
+                      <p class="ncss-stat-label">Rent outstanding</p>
+                      <p class="ncss-stat-value">€18,321</p>
+                      <p class="ncss-stat-trend ncss-stat-trend--up"><span class="ncss-visually-hidden">Up by</span> 7.5%</p>
+                    </div>
+                  </div>
+                  <div class="demo-shell-section">
+                    <h4 id="shell-open-h">Rent outstanding, November</h4>
+                    <div class="ncss-table-scroll" role="region" aria-labelledby="shell-open-h" tabindex="0">
+                      <table class="ncss-table--compact">
+                        <thead><tr><th scope="col">Tenant</th><th scope="col">Unit</th><th scope="col" class="demo-num">Rent incl. heating</th><th scope="col">Status</th></tr></thead>
+                        <tbody>
+                          <tr><td><span class="demo-person"><span class="ncss-avatar ncss-avatar--sm ncss-avatar--brand-2" aria-hidden="true">SL</span>Sophie Lorenz</span></td><td>Lindenallee 12, unit 05</td><td class="demo-num">€1,135.00</td><td><span class="ncss-badge ncss-badge--warning">open</span></td></tr>
+                          <tr><td><span class="demo-person"><span class="ncss-avatar ncss-avatar--sm ncss-avatar--danger" aria-hidden="true">KS</span>Konrad Seidel</span></td><td>Am Mühlbach 4, unit 03</td><td class="demo-num">€930.00</td><td><span class="ncss-badge ncss-badge--danger">1st reminder</span></td></tr>
+                          <tr><td><span class="demo-person"><span class="ncss-avatar ncss-avatar--sm ncss-avatar--success" aria-hidden="true">FP</span>Frieda Petersen</span></td><td>Kastanienweg 7, unit 01</td><td class="demo-num">€495.00</td><td><span class="ncss-badge ncss-badge--warning">open</span></td></tr>
+                          <tr><td><span class="demo-person"><span class="ncss-avatar ncss-avatar--sm ncss-avatar--warning" aria-hidden="true">OL</span>Ole Lindner</span></td><td>Kastanienweg 7, unit 06</td><td class="demo-num">€845.00</td><td><span class="ncss-badge ncss-badge--warning">open</span></td></tr>
+                          <tr><td><span class="demo-person"><span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">AK</span>Aylin Kowalski</span></td><td>Rosenhöhe A, unit 01</td><td class="demo-num">€1,210.00</td><td><span class="ncss-badge ncss-badge--warning">open</span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Dichte Varianten -->
+  <section class="demo-feature" id="dicht" aria-labelledby="dicht-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="dicht-h">Dense variants</h2>
+          <p>Admin interfaces show a lot in little space: buttons in three sizes, square icon buttons, a compact table (see the app shell above) and cards with fixed, small padding.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> An icon button has no visible word – <code>aria-label</code> is mandatory.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-btn--sm</code></li>
+            <li><code>.ncss-btn--lg</code></li>
+            <li><code>.ncss-btn--icon</code></li>
+            <li><code>.ncss-table--compact</code></li>
+            <li><code>.ncss-card--compact</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#dicht">In the handbook<span class="ncss-visually-hidden">: Dense variants</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-sub-h">Buttons</h3>
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--sm">New ticket</button>
+          <button type="button" class="ncss-btn ncss-btn--primary">New ticket</button>
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--lg">New ticket</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Search"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span></button>
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Edit"><span class="ncss-icon ncss-icon-pencil" aria-hidden="true"></span></button>
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon ncss-btn--sm" aria-label="Copy IBAN"><span class="ncss-icon ncss-icon-copy" aria-hidden="true"></span></button>
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon ncss-btn--sm" aria-label="Export"><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span></button>
+        </div>
+        <h3 class="demo-sub-h">Compact cards</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 13rem">
+          <article class="ncss-card ncss-card--compact ncss-border ncss-radius-md demo-object-card">
+            <div class="ncss-card-media"><img src="../assets/examples/immo/lindenallee-thumb.webp" alt="Ivy-covered apartment building, Lindenallee 12" width="480" height="720" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4>Lindenallee 12</h4>
+              <p class="ncss-text-sm ncss-text-muted">12 units · built 1908</p>
+              <p><span class="ncss-badge ncss-badge--warning">1 open</span></p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-card--compact ncss-border ncss-radius-md demo-object-card">
+            <div class="ncss-card-media"><img src="../assets/examples/immo/muehlbach-thumb.webp" alt="Corner building with green shutters, Am Mühlbach 4" width="480" height="720" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4>Am Mühlbach 4</h4>
+              <p class="ncss-text-sm ncss-text-muted">8 units · built 1962</p>
+              <p><span class="ncss-badge ncss-badge--danger">Overdue</span></p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-card--compact ncss-border ncss-radius-md demo-object-card">
+            <div class="ncss-card-media"><img src="../assets/examples/immo/kastanienweg-thumb.webp" alt="Balconies of the apartment building Kastanienweg 7" width="480" height="720" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4>Kastanienweg 7</h4>
+              <p class="ncss-text-sm ncss-text-muted">10 units · built 1974</p>
+              <p><span class="ncss-badge ncss-badge--success">all paid</span></p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Avatar -->
+  <section class="demo-feature" id="avatar" aria-labelledby="avatar-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="avatar-h">Avatar</h2>
+          <p>Initials (or an image) in a circle, in four sizes and the badge colours. The group overlaps – for “who is working on this”.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> If the name is printed next to it anyway, use <code>aria-hidden="true"</code> instead of <code>role="img"</code> – otherwise it is read twice.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-avatar</code></li>
+            <li><code>--sm</code></li>
+            <li><code>--lg</code></li>
+            <li><code>--xl</code></li>
+            <li><code>--brand-2</code> … <code>--danger</code></li>
+            <li><code>.ncss-avatar-group</code></li>
+            <li><code>--ncss-avatar-ring</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#avatar">In the handbook<span class="ncss-visually-hidden">: Avatar</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 16rem">
+          <div class="demo-frame">
+            <h3 class="demo-sub-h">Sizes and colours</h3>
+            <div class="ncss-cluster">
+              <span class="ncss-avatar ncss-avatar--sm" role="img" aria-label="Julia Brenner">JB</span>
+              <span class="ncss-avatar ncss-avatar--warning" role="img" aria-label="Marco Weber">MW</span>
+              <span class="ncss-avatar ncss-avatar--lg ncss-avatar--success" role="img" aria-label="Aylin Yilmaz">AY</span>
+              <span class="ncss-avatar ncss-avatar--xl ncss-avatar--brand-2" role="img" aria-label="Hans Ott">HO</span>
+            </div>
+          </div>
+          <div class="demo-frame">
+            <h3 class="demo-sub-h">Group</h3>
+            <p class="ncss-text-sm ncss-text-muted">Ticket T-2041 · Heating failure</p>
+            <ul class="ncss-avatar-group" role="list" aria-label="Assignees">
+              <li><span class="ncss-avatar" role="img" aria-label="Julia Brenner">JB</span></li>
+              <li><span class="ncss-avatar ncss-avatar--warning" role="img" aria-label="Marco Weber">MW</span></li>
+              <li><span class="ncss-avatar ncss-avatar--danger" role="img" aria-label="Aylin Yilmaz">AY</span></li>
+              <li><span class="ncss-avatar ncss-avatar--neutral" role="img" aria-label="3 more">+3</span></li>
+            </ul>
+          </div>
+          <div class="demo-frame">
+            <h3 class="demo-sub-h">Next to the name</h3>
+            <ul class="demo-people" role="list">
+              <li><span class="ncss-avatar ncss-avatar--brand-2" aria-hidden="true">SL</span><span>Sophie Lorenz<small>Lindenallee 12, unit 05</small></span></li>
+              <li><span class="ncss-avatar ncss-avatar--success" aria-hidden="true">CN</span><span>Clara Nowak<small>Marktplatz 3, top floor</small></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Tags -->
+  <section class="demo-feature" id="tags" aria-labelledby="tags-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="tags-h">Tags &amp; chips</h2>
+          <p>A badge is a <em>status</em>, a tag is <em>content</em>: keyword, filter chip or removable value. Filter chips are buttons whose state lives only in <code>aria-pressed</code> – the styling follows the attribute.</p>
+          <p class="demo-gotcha"><strong>Try it:</strong> click “Commercial” – no ticket matches, and the empty state is announced.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-tag</code></li>
+            <li><code>--brand</code> … <code>--danger</code></li>
+            <li><code>--sm</code></li>
+            <li><code>[aria-pressed]</code></li>
+            <li><code>.ncss-tag-remove</code></li>
+            <li><code>data-ncss-dismiss</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#tags">In the handbook<span class="ncss-visually-hidden">: Tags &amp; chips</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 18rem">
+          <div class="demo-frame">
+            <h3 class="demo-sub-h">Keywords</h3>
+            <p class="ncss-text-sm ncss-text-muted">Property Lindenallee 12</p>
+            <div class="ncss-cluster">
+              <span class="ncss-tag">Period building</span>
+              <span class="ncss-tag">Lift</span>
+              <span class="ncss-tag ncss-tag--brand">Listed building</span>
+              <span class="ncss-tag ncss-tag--success ncss-tag--sm">energy retrofit</span>
+              <span class="ncss-tag ncss-tag--warning ncss-tag--sm">Roof 2027</span>
+            </div>
+          </div>
+          <div class="demo-frame">
+            <h3 class="demo-sub-h">Removable</h3>
+            <p class="ncss-text-sm ncss-text-muted">Circular to:</p>
+            <div class="ncss-cluster">
+              <span class="ncss-tag" data-ncss-dismissible>Lindenallee 12 <button type="button" class="ncss-tag-remove" data-ncss-dismiss aria-label="Remove Lindenallee 12">&times;</button></span>
+              <span class="ncss-tag" data-ncss-dismissible>Am Mühlbach 4 <button type="button" class="ncss-tag-remove" data-ncss-dismiss aria-label="Remove Am Mühlbach 4">&times;</button></span>
+              <span class="ncss-tag" data-ncss-dismissible>Kastanienweg 7 <button type="button" class="ncss-tag-remove" data-ncss-dismiss aria-label="Remove Kastanienweg 7">&times;</button></span>
+            </div>
+          </div>
+        </div>
+        <div class="demo-frame demo-filterbox" data-demo-filterbox>
+          <h3 class="demo-sub-h" id="filter-h">Filter chips</h3>
+          <div class="ncss-cluster" role="group" aria-labelledby="filter-h">
+            <button type="button" class="ncss-tag" aria-pressed="false" data-demo-filter="dringend">Urgent only</button>
+            <button type="button" class="ncss-tag" aria-pressed="false" data-demo-filter="anhang">With attachment</button>
+            <button type="button" class="ncss-tag" aria-pressed="false" data-demo-filter="gewerbe">Commercial</button>
+          </div>
+          <p class="demo-count" data-demo-filter-count data-template="{n} of {total} tickets">4 of 4 tickets</p>
+          <ul class="demo-ticket-list" role="list" aria-label="Tickets">
+            <li data-demo-ticket="dringend anhang"><span class="demo-ticket-title"><strong>Heating failure</strong><span class="demo-sub">Am Mühlbach 4 · unit 03</span></span><span class="ncss-badge ncss-badge--danger">urgent</span><span class="ncss-tag ncss-tag--sm">2 photos</span></li>
+            <li data-demo-ticket="anhang"><span class="demo-ticket-title"><strong>Water stain on the ceiling</strong><span class="demo-sub">Lindenallee 12 · unit 05</span></span><span class="ncss-tag ncss-tag--sm">1 photo</span></li>
+            <li data-demo-ticket="dringend"><span class="demo-ticket-title"><strong>Stairwell light flickering</strong><span class="demo-sub">Marktplatz 3 · stairwell</span></span><span class="ncss-badge ncss-badge--danger">urgent</span></li>
+            <li data-demo-ticket=""><span class="demo-ticket-title"><strong>Doorbell broken</strong><span class="demo-sub">Kastanienweg 7 · unit 06</span></span></li>
+          </ul>
+          <div class="ncss-empty ncss-empty--compact demo-filter-empty ncss-border ncss-radius-md" role="status" data-demo-filter-empty hidden>
+            <span class="ncss-empty-icon" aria-hidden="true"><span class="ncss-icon ncss-icon-filter"></span></span>
+            <h4 class="ncss-empty-title">No tickets match these filters</h4>
+            <div class="ncss-empty-actions">
+              <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-demo-filter-reset>Reset filters</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Kennzahlen -->
+  <section class="demo-feature" id="kennzahlen" aria-labelledby="kennzahlen-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="kennzahlen-h">Stats with sparkline</h2>
+          <p>Label, value, trend – and optionally a sparkline below. <code>js/sparkline.js</code> draws it from <code>data-values</code> or a JSON file (<code>data-src</code>) and adds the real values as a hidden table for screen readers.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> The arrow is silent – the direction (“Up by”) must be text in the markup. Where less is better (vacancy, outstanding items), <code>--inverse</code> swaps the colours.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-stat</code></li>
+            <li><code>-label</code></li>
+            <li><code>-value</code></li>
+            <li><code>-trend--up/--down/--flat</code></li>
+            <li><code>.ncss-stat--inverse</code></li>
+            <li><code>.ncss-sparkline</code></li>
+            <li><code>--success</code></li>
+            <li><code>--danger</code></li>
+            <li><code>data-ncss-count-up</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#kennzahlen">In the handbook<span class="ncss-visually-hidden">: Stats</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 13rem; --ncss-grid-gap: var(--ncss-space-sm)">
+          <div class="ncss-stat ncss-border ncss-radius-lg">
+            <p class="ncss-stat-label">Rent received, November</p>
+            <p class="ncss-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 50479; --ncss-count-prefix: '€'">€50,479</span></p>
+            <p class="ncss-stat-trend ncss-stat-trend--up"><span class="ncss-visually-hidden">Up by</span> 1.2% <span class="ncss-stat-meta">vs. October</span></p>
+            <svg class="ncss-sparkline" viewBox="0 0 200 40" preserveAspectRatio="none" data-values="47120,48050,49310,48770,49880,50479" data-label="Rent received, June to November 2026 (€)"></svg>
+          </div>
+          <div class="ncss-stat ncss-stat--inverse ncss-border ncss-radius-lg">
+            <p class="ncss-stat-label">Rent outstanding</p>
+            <p class="ncss-stat-value">€18,321</p>
+            <p class="ncss-stat-trend ncss-stat-trend--up"><span class="ncss-visually-hidden">Up by</span> 7.5% <span class="ncss-stat-meta">5 overdue</span></p>
+            <svg class="ncss-sparkline ncss-sparkline--danger" viewBox="0 0 200 40" preserveAspectRatio="none" data-src="../assets/examples/immo/kpi-mieten.json" data-label="Rent outstanding, June to November 2026 (€)"></svg>
+          </div>
+          <div class="ncss-stat ncss-stat--inverse ncss-border ncss-radius-lg">
+            <p class="ncss-stat-label">Vacancy rate</p>
+            <p class="ncss-stat-value">4.7%</p>
+            <p class="ncss-stat-trend ncss-stat-trend--down"><span class="ncss-visually-hidden">Down by</span> 0.8 pp <span class="ncss-stat-meta">3 units empty</span></p>
+            <svg class="ncss-sparkline ncss-sparkline--success" viewBox="0 0 200 40" preserveAspectRatio="none" data-src="../assets/examples/immo/kpi-leerstand.json" data-label="Vacancy rate, June to November 2026 (%)"></svg>
+          </div>
+          <div class="ncss-stat ncss-stat--inverse ncss-border ncss-radius-lg">
+            <p class="ncss-stat-label">Open tickets</p>
+            <p class="ncss-stat-value">14</p>
+            <p class="ncss-stat-trend ncss-stat-trend--down"><span class="ncss-visually-hidden">Down by</span> 1 <span class="ncss-stat-meta">vs. last week</span></p>
+            <svg class="ncss-sparkline ncss-sparkline--success" viewBox="0 0 200 40" preserveAspectRatio="none" data-src="../assets/examples/immo/kpi-tickets.json" data-label="Open tickets, June to November 2026"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Leerzustand -->
+  <section class="demo-feature" id="leerzustand" aria-labelledby="leerzustand-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="leerzustand-h">Empty state</h2>
+          <p>Instead of a silent, blank area: a short note and the next sensible action. <code>--compact</code> fits into cards and table cells (as with the filter chips above).</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> If the state only appears after an action, set <code>role="status"</code> – otherwise a screen reader notices nothing.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-empty</code></li>
+            <li><code>-icon</code></li>
+            <li><code>-title</code></li>
+            <li><code>-actions</code></li>
+            <li><code>.ncss-empty--compact</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#leerzustand">In the handbook<span class="ncss-visually-hidden">: Empty state</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 18rem">
+          <div class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-empty">
+              <span class="ncss-empty-icon" aria-hidden="true"><span class="ncss-icon ncss-icon-check-circle"></span></span>
+              <h3 class="ncss-empty-title">No open tickets</h3>
+              <p>New reports from tenants appear here automatically.</p>
+              <div class="ncss-empty-actions">
+                <a class="ncss-btn ncss-btn--primary" href="#leerzustand">New ticket</a>
+              </div>
+            </div>
+          </div>
+          <div class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-header"><strong>Documents · Rosenhöhe A</strong></div>
+            <div class="ncss-card-body">
+              <div class="ncss-empty ncss-empty--compact">
+                <span class="ncss-empty-icon" aria-hidden="true"><span class="ncss-icon ncss-icon-file"></span></span>
+                <h3 class="ncss-empty-title">No documents yet</h3>
+                <p>Leases and handover reports end up here.</p>
+                <div class="ncss-empty-actions">
+                  <a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#upload">Upload file</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Segmente -->
+  <section class="demo-feature" id="segmentiert" aria-labelledby="segmentiert-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="segmentiert-h">Segmented control</h2>
+          <p>Looks like a button bar but is a perfectly normal radio group: arrow keys, form submission and announcements (“2 of 3”) come from the browser. Here it even switches the view via <code>:has()</code> – no JS.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> Every <code>&lt;input&gt;</code> sits directly before its <code>&lt;label&gt;</code>.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-segmented</code></li>
+            <li><code>--sm</code></li>
+            <li><code>--block</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#segmentiert">In the handbook<span class="ncss-visually-hidden">: Segmented control</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="demo-frame demo-seg-host">
+          <div class="ncss-cluster">
+            <fieldset class="ncss-segmented">
+              <legend class="ncss-visually-hidden">Property view</legend>
+              <input type="radio" name="seg-ansicht" id="seg-liste" value="liste" checked>
+              <label for="seg-liste">List</label>
+              <input type="radio" name="seg-ansicht" id="seg-kacheln" value="kacheln">
+              <label for="seg-kacheln">Tiles</label>
+            </fieldset>
+            <fieldset class="ncss-segmented ncss-segmented--sm">
+              <legend class="ncss-visually-hidden">Period</legend>
+              <input type="radio" name="seg-zeit" id="seg-woche" value="woche">
+              <label for="seg-woche">Week</label>
+              <input type="radio" name="seg-zeit" id="seg-monat" value="monat" checked>
+              <label for="seg-monat">Month</label>
+              <input type="radio" name="seg-zeit" id="seg-jahr" value="jahr">
+              <label for="seg-jahr">Year</label>
+            </fieldset>
+          </div>
+          <div class="demo-seg-views">
+            <div class="demo-seg-view demo-seg-view--liste">
+              <div class="ncss-table-scroll" role="region" aria-label="Properties as a list" tabindex="0">
+                <table class="ncss-table--compact">
+                  <thead><tr><th scope="col">Property</th><th scope="col" class="demo-num">Units</th><th scope="col" class="demo-num">Vacant</th></tr></thead>
+                  <tbody>
+                    <tr><td>Marktplatz 3</td><td class="demo-num">9</td><td class="demo-num">0</td></tr>
+                    <tr><td>Rosenhöhe A</td><td class="demo-num">14</td><td class="demo-num">2</td></tr>
+                    <tr><td>Gartenstraße 21</td><td class="demo-num">11</td><td class="demo-num">1</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="demo-seg-view demo-seg-view--kacheln">
+              <ul class="ncss-grid" role="list" aria-label="Properties as tiles" style="--ncss-grid-min: 9rem; --ncss-grid-gap: var(--ncss-space-xs)">
+                <li><img class="demo-tile-photo" src="../assets/examples/immo/marktplatz-thumb.webp" alt="" width="640" height="427" loading="lazy"><p class="demo-tile-name">Marktplatz 3</p></li>
+                <li><img class="demo-tile-photo" src="../assets/examples/immo/rosenhoehe-thumb.webp" alt="" width="640" height="427" loading="lazy"><p class="demo-tile-name">Rosenhöhe A</p></li>
+                <li><img class="demo-tile-photo" src="../assets/examples/immo/gartenstrasse-thumb.webp" alt="" width="640" height="428" loading="lazy"><p class="demo-tile-name">Gartenstraße 21</p></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-live">
+          <p class="demo-live-label"><code>--block</code>: full width</p>
+          <fieldset class="ncss-segmented ncss-segmented--block">
+            <legend class="ncss-visually-hidden">Payment method</legend>
+            <input type="radio" name="seg-zahlung" id="seg-lastschrift" value="lastschrift" checked>
+            <label for="seg-lastschrift">Direct debit</label>
+            <input type="radio" name="seg-zahlung" id="seg-ueberweisung" value="ueberweisung">
+            <label for="seg-ueberweisung">Bank transfer</label>
+            <input type="radio" name="seg-zahlung" id="seg-dauerauftrag" value="dauerauftrag">
+            <label for="seg-dauerauftrag">Standing order</label>
+          </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Bewertung -->
+  <section class="demo-feature" id="bewertung" aria-labelledby="bewertung-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="bewertung-h">Rating</h2>
+          <p>Stars made of native radio buttons in natural order – arrow right means more. Filled and empty also differ in shape (★/☆), not just colour.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-rating</code></li>
+            <li><code>.ncss-rating--sm</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#bewertung">In the handbook<span class="ncss-visually-hidden">: Rating</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 18rem">
+          <div class="demo-frame">
+            <p class="ncss-text-sm ncss-text-muted">Ticket T-2041 resolved · heating, Am Mühlbach 4</p>
+            <fieldset class="ncss-rating">
+              <legend>How satisfied were you with the repair?</legend>
+              <input type="radio" name="rt-reparatur" id="rt-rep-1" value="1"><label for="rt-rep-1"><span class="ncss-visually-hidden">1 star</span></label>
+              <input type="radio" name="rt-reparatur" id="rt-rep-2" value="2"><label for="rt-rep-2"><span class="ncss-visually-hidden">2 stars</span></label>
+              <input type="radio" name="rt-reparatur" id="rt-rep-3" value="3"><label for="rt-rep-3"><span class="ncss-visually-hidden">3 stars</span></label>
+              <input type="radio" name="rt-reparatur" id="rt-rep-4" value="4" checked><label for="rt-rep-4"><span class="ncss-visually-hidden">4 stars</span></label>
+              <input type="radio" name="rt-reparatur" id="rt-rep-5" value="5"><label for="rt-rep-5"><span class="ncss-visually-hidden">5 stars</span></label>
+            </fieldset>
+          </div>
+          <div class="demo-frame">
+            <p class="ncss-text-sm ncss-text-muted">Compact, e.g. in a list of contractors</p>
+            <fieldset class="ncss-rating ncss-rating--sm">
+              <legend>Krause Plumbing</legend>
+              <input type="radio" name="rt-krause" id="rt-kr-1" value="1"><label for="rt-kr-1"><span class="ncss-visually-hidden">1 star</span></label>
+              <input type="radio" name="rt-krause" id="rt-kr-2" value="2"><label for="rt-kr-2"><span class="ncss-visually-hidden">2 stars</span></label>
+              <input type="radio" name="rt-krause" id="rt-kr-3" value="3"><label for="rt-kr-3"><span class="ncss-visually-hidden">3 stars</span></label>
+              <input type="radio" name="rt-krause" id="rt-kr-4" value="4"><label for="rt-kr-4"><span class="ncss-visually-hidden">4 stars</span></label>
+              <input type="radio" name="rt-krause" id="rt-kr-5" value="5" checked><label for="rt-kr-5"><span class="ncss-visually-hidden">5 stars</span></label>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Upload -->
+  <section class="demo-feature" id="upload" aria-labelledby="upload-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="upload-h">Upload area</h2>
+          <p><code>&lt;ncss-dropzone&gt;</code> wraps a real <code>&lt;input type="file"&gt;</code>: drag &amp; drop, a file list with preview and remove. Uploading still happens through the native field – without JS it simply stays visible.</p>
+          <p class="demo-gotcha"><strong>Try it:</strong> drag in an image or PDF – nothing leaves the browser, the demo submits no form.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>&lt;ncss-dropzone&gt;</code></li>
+            <li><code>.ncss-dropzone-area</code></li>
+            <li><code>.ncss-dropzone-hint</code></li>
+            <li><code>data-ncss-max-size</code></li>
+            <li><code>ncss-dropzone-change</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#upload">In the handbook<span class="ncss-visually-hidden">: Upload area</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <ncss-dropzone data-ncss-max-size="10MB">
+          <label class="ncss-dropzone-area">
+            <span class="ncss-dropzone-hint"><span class="ncss-icon ncss-icon-upload" aria-hidden="true"></span> <strong>Drag receipts for ticket T-2041 here</strong> or click to choose</span>
+            <span class="ncss-dropzone-hint">PDF or image, max. 10 MB</span>
+            <input type="file" name="belege" multiple accept="image/*,.pdf">
+          </label>
+        </ncss-dropzone>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Spinner -->
+  <section class="demo-feature" id="spinner" aria-labelledby="spinner-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="spinner-h">Spinner</h2>
+          <p>A ring in <code>currentColor</code> – fits into any button and onto any surface. Inside a button, the button carries the state (<code>aria-busy</code>); the spinner is just visuals. With reduced motion it stands still.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> A standalone spinner with <code>role="status"</code> is only announced if it is inserted <em>while</em> loading.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-spinner</code></li>
+            <li><code>--sm</code></li>
+            <li><code>--lg</code></li>
+            <li><code>aria-busy</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#spinner">In the handbook<span class="ncss-visually-hidden">: Spinner</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="demo-frame demo-spin-row">
+          <span class="ncss-spinner" role="status"><span class="ncss-visually-hidden">Loading …</span></span>
+          <span class="ncss-spinner ncss-spinner--lg ncss-text-brand" aria-hidden="true"></span>
+          <button type="button" class="ncss-btn ncss-btn--primary" aria-busy="true" disabled><span class="ncss-spinner ncss-spinner--sm" aria-hidden="true"></span> Saving …</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary" data-demo-save="save-status" data-busy-text="Saving …" data-done-text="Tenant details saved.">Save tenant details</button>
+          <p class="demo-status" id="save-status" role="status"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Tasten -->
+  <section class="demo-feature" id="tasten" aria-labelledby="tasten-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="tasten-h">Keycaps</h2>
+          <p><code>.ncss-kbd</code> is opt-in – a bare <code>&lt;kbd&gt;</code> stays as plain as <code>&lt;code&gt;</code>. Per the HTML spec, combinations go inside an outer <code>&lt;kbd&gt;</code>.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-kbd</code></li>
+            <li><code>.ncss-kbd-combo</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#tasten">In the handbook<span class="ncss-visually-hidden">: Keycaps</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="demo-frame">
+          <h3 class="demo-sub-h">Keyboard shortcuts in ImmoDesk</h3>
+          <dl class="demo-shortcuts">
+            <div><dt>Open search</dt><dd><kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">K</kbd></kbd> or <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd"><abbr title="Command">⌘</abbr></kbd>+<kbd class="ncss-kbd">K</kbd></kbd></dd></div>
+            <div><dt>New ticket</dt><dd><kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Alt</kbd>+<kbd class="ncss-kbd">N</kbd></kbd></dd></div>
+            <div><dt>Close dialog</dt><dd><kbd class="ncss-kbd">Esc</kbd></dd></div>
+            <div><dt>Next row</dt><dd><kbd class="ncss-kbd">↓</kbd></dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Countdown -->
+  <section class="demo-feature" id="countdown" aria-labelledby="countdown-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="countdown-h">Countdown</h2>
+          <p><code>&lt;ncss-countdown&gt;</code> counts down to a point in time; digits and units come from <code>Intl.NumberFormat</code> according to <code>lang</code> – no translation table. Without JS, the date simply stays there.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> The ticking tiles are silent for screen readers; a <code>role="timer"</code> line carries the remaining time in words, updated every minute, and the end is announced.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>&lt;ncss-countdown&gt;</code></li>
+            <li><code>datetime</code></li>
+            <li><code>.ncss-countdown--compact</code></li>
+            <li><code>data-ncss-units</code></li>
+            <li><code>data-ncss-done-text</code></li>
+            <li><code>ncss-countdown-end</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/app-ui.html#countdown">In the handbook<span class="ncss-visually-hidden">: Countdown</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 18rem">
+          <div class="demo-frame">
+            <h3 class="demo-sub-h">Owners’ meeting, Lindenallee 12</h3>
+            <ncss-countdown datetime="2026-12-03T18:00:00+01:00">
+              <time datetime="2026-12-03T18:00:00+01:00">3 December 2026, 6 pm</time>
+            </ncss-countdown>
+          </div>
+          <div class="demo-frame">
+            <h3 class="demo-sub-h">Deadline: 2025 service charge statement</h3>
+            <ncss-countdown class="ncss-countdown--compact" datetime="2026-12-31T23:59:00+01:00" data-ncss-units="days hours minutes" data-ncss-done-text="Deadline passed">
+              <time datetime="2026-12-31T23:59:00+01:00">31 December 2026</time>
+            </ncss-countdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ncss-container">
+    <nav class="demo-pager" aria-label="Chapter pages">
+      <a class="demo-pager-prev" href="modern-en.html" rel="prev"><small>← Previous chapter</small> Modern UI</a>
+      <a class="demo-pager-next" href="icons-en.html" rel="next"><small>Next chapter →</small> Icons</a>
+    </nav>
+  </div>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-bottom ncss-stack ncss-stack--tight ncss-text-sm">
+    <p>NativeCSS Tour · <a href="index-en.html">All chapters</a> · <a href="../../docs/en/index.html">Handbook</a></p>
+    <p class="demo-credits"><strong>Photo credits:</strong> photos from Pexels (Pexels license) – <a href="https://www.pexels.com/photo/ivy-covered-apartments-in-berlin-germany-33708190/">Vinay Reddy Sama</a>, <a href="https://www.pexels.com/photo/corner-of-block-of-flats-18762756/">Gül Işık</a>, <a href="https://www.pexels.com/photo/concrete-balconies-of-a-low-rise-apartment-building-19820298/">Nuray</a>, <a href="https://www.pexels.com/photo/historic-bavarian-building-facades-in-regensburg-37432236/">Michaela St</a>, <a href="https://www.pexels.com/photo/colorful-modern-apartment-buildings-5505766/">Mike van Schoonderwalt</a>, <a href="https://www.pexels.com/photo/green-ivy-on-yellow-facade-in-freiburg-germany-34075377/">Arndt-Peter Bergfeld</a>. Tenants and figures are fictional.</p>
+  </div>
+</footer>
+
+</body>
+</html>

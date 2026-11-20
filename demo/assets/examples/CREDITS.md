@@ -59,3 +59,24 @@ Dateien in `demo/assets/examples/hotel/` (je Groß- und `-thumb`-Fassung, WebP).
 | haus-nacht.webp | Hotel am See bei Nacht | Marek Piwnicki | [Pexels](https://pexels.com/photo/holiday-resort-by-lake-at-night-16777746/) |
 | boot-detail.webp | Holzboot (Detail) | Ron Lach | [Pexels](https://www.pexels.com/photo/part-of-boat-10409778/) |
 | steg-see.webp | Holzsteg im See | Nino Keller | [Pexels](https://pexels.com/photo/scenic-view-of-wooden-pier-on-tranquil-lake-38726716/) |
+
+## NativeCSS-Rundgang (demo/showcase/)
+
+Keine eigenen Fotos: Der Rundgang nutzt die Dateien der Beispiele oben aus `demo/assets/examples/hotel/`, `gemeinde/` und `immo/` (Fotograf·innen und Quellen siehe dort). Jede Kapitelseite nennt im Fuß genau die Fotos, die sie zeigt.
+
+| Seite | Genutzte Fotos |
+| --- | --- |
+| index(-en).html | hotel: see-daemmerung, spa-pool, haus-am-see, zimmer-classic, haus-nacht, see-panorama, steg-morgennebel, zimmer-junior, boot-detail, ruheraum · gemeinde: kirche-am-see · immo: lindenallee |
+| layout(-en).html | hotel: alle · gemeinde: adventsmarkt, badesteg, bootshafen, kirche-am-see, marktplatz, rathaus, seeburg-ufer, wanderweg, wochenmarkt |
+| content(-en).html | hotel: fruehstueck, fruehstueck-buffet, haus-nacht, restaurant, spa-pool, steg-morgennebel, zimmer-classic · gemeinde: adventsmarkt, badesteg, bootshafen, kirche-am-see, rathaus, seeburg-ufer, wanderweg, wochenmarkt · immo: gartenstrasse, kastanienweg, lindenallee, muehlbach, rosenhoehe |
+| navigation(-en).html | hotel: haus-am-see, see-panorama, zimmer-seeblick |
+| forms(-en).html | hotel: suite-dach, zimmer-classic, zimmer-junior |
+| overlays(-en).html | hotel: haus-nacht, see-daemmerung, see-panorama, steg-morgennebel, suite-dach, zimmer-classic, zimmer-junior |
+| media(-en).html | hotel: alle · gemeinde: alle; dazu die selbst erzeugten Videos/Audios aus `demo/assets/media/` (siehe README dort) |
+| scroll(-en).html | hotel: alle außer boot-detail und steg-see · gemeinde: alle · immo: gartenstrasse, innen-wohnzimmer, kastanienweg, marktplatz, rosenhoehe; Bildsequenz `demo/assets/media/frames/` (selbst erzeugt) |
+| modern(-en).html | hotel: fruehstueck, restaurant, ruderboot-abend, ruheraum, sauna, see-daemmerung, see-panorama, spa-pool, steg-morgennebel, suite-dach, zimmer-classic, zimmer-junior, zimmer-seeblick · gemeinde: badesteg, bootshafen, rathaus, seeburg-ufer, wochenmarkt |
+| app-ui(-en).html | immo: gartenstrasse, kastanienweg, lindenallee, marktplatz, muehlbach, rosenhoehe |
+| a11y(-en).html | hotel: fruehstueck, spa-pool |
+| icons(-en).html | keine Fotos |
+
+Die Karte im Kapitel Medien (`<ncss-map>`) lädt Kartendaten von OpenFreeMap (© OpenMapTiles, Daten © OpenStreetMap-Mitwirkende) erst nach Klick auf „Karte anzeigen“.

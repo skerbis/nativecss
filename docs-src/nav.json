@@ -402,6 +402,19 @@
   ],
   "examples": [
     {
+      "id": "showcase",
+      "href": "showcase/index.html",
+      "hrefEn": "showcase/index-en.html",
+      "new": true,
+      "accent": "var(--ncss-color-brand)",
+      "de": "NativeCSS-Rundgang",
+      "en": "NativeCSS Tour",
+      "desc": {
+        "de": "Alle Funktionen live in elf Kapiteln: Layout bis Barrierefreiheit, jeweils kurz erklärt, mit Klassen und Code-Inspektor.",
+        "en": "Every feature live in eleven chapters, from layout to accessibility, each briefly explained, with classes and code inspector."
+      }
+    },
+    {
       "id": "example-gemeinde",
       "href": "example-gemeinde.html",
       "new": true,

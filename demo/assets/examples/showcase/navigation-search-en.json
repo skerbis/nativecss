@@ -1,0 +1,124 @@
+{
+ "groups": [
+  {
+   "label": "Services",
+   "items": [
+    {
+     "title": "Apply for an ID card",
+     "url": "../example-gemeinde-service.html",
+     "text": "Citizens' office · book online, bring a biometric photo"
+    },
+    {
+     "title": "Apply for a passport",
+     "url": "../example-gemeinde.html#az-reisepass",
+     "text": "Citizens' office · express and children's passports too"
+    },
+    {
+     "title": "Register a change of address",
+     "url": "../example-gemeinde.html#az-ummeldung",
+     "text": "Citizens' office · within two weeks of moving"
+    },
+    {
+     "title": "Certificate of residence",
+     "url": "../example-gemeinde.html#az-meldebescheinigung",
+     "text": "Citizens' office · issued on the spot, €10"
+    },
+    {
+     "title": "Postal vote",
+     "url": "../example-gemeinde.html#az-briefwahl",
+     "text": "Elections office · online, by post or in person"
+    },
+    {
+     "title": "Register a dog for dog tax",
+     "url": "../example-gemeinde.html#az-hundesteuer",
+     "text": "Tax office · collect the dog tag at the citizens' office"
+    },
+    {
+     "title": "Register a business",
+     "url": "../example-gemeinde.html#az-gewerbe",
+     "text": "Public order office · register, change or close a business"
+    },
+    {
+     "title": "Submit a building application",
+     "url": "../example-gemeinde.html#az-bauantrag",
+     "text": "Building office · advice before applying recommended"
+    },
+    {
+     "title": "Boat mooring on the lake",
+     "url": "../example-gemeinde.html#az-bootsliegeplatz",
+     "text": "Property office · waiting list for jetty and buoy moorings"
+    },
+    {
+     "title": "Daycare place",
+     "url": "../example-gemeinde.html#az-kita",
+     "text": "Family office · one waiting list for all daycare centres"
+    },
+    {
+     "title": "Bulky waste collection",
+     "url": "../example-gemeinde.html#az-sperrmuell",
+     "text": "Depot · collection on the 4th Thursday of each month"
+    },
+    {
+     "title": "Waste calendar",
+     "url": "../example-gemeinde.html#az-abfall",
+     "text": "Depot · collection dates, recycling centre, green waste"
+    },
+    {
+     "title": "Getting married",
+     "url": "../example-gemeinde.html#az-eheschliessung",
+     "text": "Registry office · ceremonies in the town hall and the lakeside pavilion"
+    },
+    {
+     "title": "Lost and found",
+     "url": "../example-gemeinde.html#az-fundbuero",
+     "text": "Citizens' office · hand in or collect lost property"
+    },
+    {
+     "title": "Report a broken street light",
+     "url": "../example-gemeinde.html#az-strassenbeleuchtung",
+     "text": "Depot · online fault reporting, around the clock"
+    }
+   ]
+  },
+  {
+   "label": "Contacts",
+   "items": [
+    {
+     "title": "Citizens' office",
+     "url": "../example-gemeinde.html#kontakt",
+     "text": "Ground floor, town hall · 08821 4470-0"
+    },
+    {
+     "title": "Building office",
+     "url": "../example-gemeinde.html#kontakt",
+     "text": "1st floor, rooms 21–24 · 08821 4470-30"
+    },
+    {
+     "title": "Registry office",
+     "url": "../example-gemeinde.html#kontakt",
+     "text": "1st floor, room 14 · 08821 4470-40"
+    }
+   ]
+  },
+  {
+   "label": "Forms & bylaws",
+   "items": [
+    {
+     "title": "Dog tax registration (PDF, German)",
+     "url": "../assets/examples/gemeinde/dokumente/antrag-hundesteuer.pdf",
+     "text": "Tax office form"
+    },
+    {
+     "title": "Bulky waste request (PDF, German)",
+     "url": "../assets/examples/gemeinde/dokumente/sperrmuell-anmeldung.pdf",
+     "text": "Depot / waste management"
+    },
+    {
+     "title": "Waste calendar 2027 (PDF, German)",
+     "url": "../assets/examples/gemeinde/dokumente/abfallkalender-2027.pdf",
+     "text": "All collection dates at a glance"
+    }
+   ]
+  }
+ ]
+}

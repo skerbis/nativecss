@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layout – NativeCSS tour</title>
+<meta name="description" content="Every NativeCSS layout building block, live: container, fluid spacing, stack, grid, bento, masonry, container queries, bleed, text wrap, sticky, split, tile, accordion and margin notes – each briefly explained.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="alternate" hreflang="de" href="layout.html">
+<script src="../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../../dist/components/nav-priority.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<link rel="stylesheet" href="../assets/examples/showcase/showcase.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/nav.js" defer></script>
+<script src="../../dist/js/nav-priority.js" defer></script>
+<script src="../../dist/js/subnav.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/view-transitions.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+<style>
+  /* Kapitel Layout: nur Sichtbarmachen der Bausteine, keine eigenen Layout-Regeln. */
+  .demo-outline {
+    padding-block: var(--ncss-space-xs);
+    outline: 2px dashed var(--ncss-color-brand);
+    outline-offset: -2px;
+    border-radius: var(--ncss-radius-sm);
+    background-color: color-mix(in oklch, var(--ncss-color-brand) 8%, transparent);
+    font-size: var(--ncss-font-size-sm);
+  }
+  .demo-outline + .demo-outline { margin-block-start: var(--ncss-space-xs); }
+  .demo-outline code { font-size: 0.8rem; }
+  .demo-band { padding-block: var(--ncss-space-sm); background-color: var(--ncss-color-bg-subtle); }
+
+  .demo-space-row { display: grid; grid-template-columns: 4.5rem 1fr; align-items: center; gap: var(--ncss-space-xs); font-size: var(--ncss-font-size-sm); }
+  .demo-space-bar { block-size: 0.9rem; inline-size: var(--demo-size); border-radius: var(--ncss-radius-full); background-color: var(--ncss-color-brand); }
+
+  .demo-offer { max-inline-size: 26rem; }
+  .demo-offer img { aspect-ratio: 16 / 9; object-fit: cover; }
+  .demo-price { font-size: var(--ncss-font-size-lg); font-weight: 700; margin: 0; }
+  .demo-price small { font-size: var(--ncss-font-size-sm); font-weight: 400; color: var(--ncss-color-text-muted); }
+
+  .demo-card-img { aspect-ratio: 3 / 2; object-fit: cover; }
+  .ncss-card h3 { font-size: var(--ncss-font-size-md); margin-block-end: var(--ncss-space-3xs); }
+  .ncss-card p { margin-block-end: 0; }
+
+  .demo-tile-photo { position: relative; aspect-ratio: 4 / 3; border-radius: var(--ncss-radius-md); overflow: clip; }
+  .demo-tile-photo img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .demo-tile-photo span {
+    position: absolute; inset-inline: 0; inset-block-end: 0;
+    padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+    background: linear-gradient(to top, rgb(0 0 0 / 70%), transparent);
+    color: #fff; font-weight: 600; font-size: var(--ncss-font-size-sm);
+  }
+
+  .demo-bento { --ncss-bento-min: 14rem; --ncss-bento-row-height: 11rem; }
+  .demo-bento > * { border-radius: var(--ncss-radius-lg); overflow: clip; }
+  .demo-bento-text { display: flex; flex-direction: column; justify-content: end; gap: var(--ncss-space-3xs); padding: var(--ncss-space-sm); background-color: var(--ncss-color-surface); border: var(--ncss-border-width) solid var(--ncss-color-border); }
+  .demo-bento-text h3 { font-size: var(--ncss-font-size-md); margin: 0; }
+  .demo-bento-text p { margin: 0; font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
+  .demo-bento-text--brand { background-color: var(--ncss-color-brand); border-color: transparent; color: var(--ncss-color-brand-contrast); }
+  .demo-bento-text--brand :is(h3, p) { color: inherit; }
+  .demo-bento-photo { position: relative; }
+
+  .demo-masonry figure { margin-inline: 0; margin-block-start: 0; }
+  .demo-masonry img { inline-size: 100%; border-radius: var(--ncss-radius-md); }
+
+  .demo-cq-media img { aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--ncss-radius-md); inline-size: 100%; }
+
+  .demo-fullbleed { position: relative; isolation: isolate; padding-block: var(--ncss-space-2xl); color: #fff; }
+  .demo-fullbleed > img { position: absolute; inset: 0; z-index: -2; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .demo-fullbleed::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(10 20 28 / 85%), rgb(10 20 28 / 55%) 55%, rgb(10 20 28 / 15%)); }
+  .demo-fullbleed h3 { font-size: var(--ncss-font-size-xl); color: #fff; max-inline-size: 18ch; }
+  .demo-fullbleed p { max-inline-size: 42ch; color: rgb(255 255 255 / 90%); }
+
+  .demo-article { font-size: var(--ncss-font-size-md); }
+  .demo-article p { max-inline-size: none; }
+  .demo-article blockquote {
+    margin-block: var(--ncss-space-md);
+    padding-block: var(--ncss-space-sm);
+    border-inline-start: 0;
+    background-color: var(--ncss-color-brand-100);
+    color: var(--ncss-color-brand-on-soft);
+    font-size: var(--ncss-font-size-lg);
+    font-style: italic;
+  }
+  .demo-article blockquote p { margin: 0; }
+  .demo-article figure { margin-block: var(--ncss-space-md); }
+  .demo-article figure img { inline-size: 100%; border-radius: var(--ncss-radius-md); aspect-ratio: 21 / 9; object-fit: cover; }
+  .demo-article figcaption { font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); margin-block-start: var(--ncss-space-3xs); }
+  .demo-article .ncss-float-start, .demo-article .ncss-float-end, .demo-article .ncss-float-bleed-end { border-radius: var(--ncss-radius-md); }
+  .demo-article .ncss-float-shape-circle { aspect-ratio: 1; object-fit: cover; }
+
+  .demo-sticky-layout { display: grid; gap: var(--ncss-space-md); }
+  @container ncss-container (min-width: 44rem) {
+    .demo-sticky-layout { grid-template-columns: minmax(0, 1fr) 17rem; align-items: start; }
+  }
+  .demo-day-list { display: grid; gap: var(--ncss-space-sm); margin: 0; padding: 0; list-style: none; }
+  .demo-day-list li { display: grid; grid-template-columns: 4rem 1fr; gap: var(--ncss-space-sm); padding: var(--ncss-space-sm); border-radius: var(--ncss-radius-md); background-color: var(--ncss-color-surface); border: var(--ncss-border-width) solid var(--ncss-color-border); }
+  .demo-day-list strong { font-size: var(--ncss-font-size-lg); color: var(--ncss-color-brand-on-soft); line-height: 1.1; }
+  .demo-day-list p { margin: 0; }
+  .demo-summary { padding: var(--ncss-space-sm); border-radius: var(--ncss-radius-lg); background-color: var(--ncss-color-surface); border: var(--ncss-border-width) solid var(--ncss-color-border); box-shadow: var(--ncss-shadow-md); }
+  .demo-summary h3 { font-size: var(--ncss-font-size-md); }
+  .demo-scrollbox { border: var(--ncss-border-width) solid var(--ncss-color-border); border-radius: var(--ncss-radius-lg); background-color: var(--ncss-color-surface); }
+  .demo-scrollbox-head, .demo-scrollbox-foot { padding: var(--ncss-space-2xs) var(--ncss-space-sm); background-color: var(--ncss-color-bg-subtle); font-weight: 700; font-size: var(--ncss-font-size-sm); }
+  .demo-scrollbox-head { border-block-end: var(--ncss-border-width) solid var(--ncss-color-border); }
+  .demo-scrollbox-foot { border-block-start: var(--ncss-border-width) solid var(--ncss-color-border); }
+  .demo-scrollbox ul { margin: 0; padding: var(--ncss-space-2xs) var(--ncss-space-sm); }
+  .demo-scrollbox li { padding-block: var(--ncss-space-3xs); }
+
+  /* .ncss-page-shell als Mini-Seite: Höhe hier begrenzt statt 100svh */
+  .demo-shell-mini { min-block-size: 20rem; border: var(--ncss-border-width) solid var(--ncss-color-border); border-radius: var(--ncss-radius-lg); overflow: clip; background-color: var(--ncss-color-surface); }
+  .demo-shell-head, .demo-shell-foot { padding: var(--ncss-space-2xs) var(--ncss-space-sm); background-color: var(--ncss-color-bg-subtle); font-size: var(--ncss-font-size-sm); }
+  .demo-shell-head { font-weight: 700; border-block-end: var(--ncss-border-width) solid var(--ncss-color-border); }
+  .demo-shell-foot { border-block-start: var(--ncss-border-width) solid var(--ncss-color-border); color: var(--ncss-color-text-muted); }
+  .demo-shell-main { padding: var(--ncss-space-sm); }
+
+  .demo-split-media img { inline-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--ncss-radius-lg); }
+
+  .demo-tiles { display: grid; gap: var(--ncss-space-sm); }
+  @container ncss-container (min-width: 48rem) { .demo-tiles { grid-template-columns: repeat(3, 1fr); } }
+  .demo-tiles .ncss-tile { --ncss-tile-padding-block: var(--ncss-space-lg); --ncss-tile-padding-inline: var(--ncss-space-md); }
+  .demo-tiles h3 { font-size: var(--ncss-font-size-md); }
+  .demo-tiles p { margin-block-end: 0; }
+  .demo-tile-card { margin-block-start: var(--ncss-space-sm); }
+
+  .ncss-accordion-split-media img, .ncss-accordion-split-media-mobile img { aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--ncss-radius-lg); }
+
+  .demo-marginnote aside { font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
+  .demo-marginnote aside img { border-radius: var(--ncss-radius-md); }
+  .demo-marginnote aside p { margin: var(--ncss-space-3xs) 0 0; }
+
+  .demo-center-box { position: relative; border-radius: var(--ncss-radius-lg); overflow: clip; }
+  .demo-center-box img { inline-size: 100%; aspect-ratio: 16 / 7; object-fit: cover; }
+  .demo-center-box .ncss-transform-center { padding: var(--ncss-space-2xs) var(--ncss-space-sm); border-radius: var(--ncss-radius-full); background-color: var(--ncss-color-surface); color: var(--ncss-color-text); font-weight: 700; box-shadow: var(--ncss-shadow-lg); white-space: nowrap; }
+  .demo-toolbar { padding: var(--ncss-space-2xs) var(--ncss-space-sm); border: var(--ncss-border-width) solid var(--ncss-color-border); border-radius: var(--ncss-radius-md); background-color: var(--ncss-color-surface); font-size: var(--ncss-font-size-sm); }
+  .demo-toolbar > * { margin: 0; }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Skip to content</a>
+
+<!-- example-bar:start -->
+<aside class="demo-example-bar" aria-label="Example: NativeCSS" data-demo-inspect-ignore>
+  <a class="demo-example-bar-brand" href="../../docs/en/start.html"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
+  <span class="demo-example-bar-label"><span aria-hidden="true">·</span> Example: NativeCSS Tour</span>
+  <nav class="demo-example-bar-links" aria-label="NativeCSS">
+    <a href="../../docs/en/examples.html">← All examples</a>
+    <a href="../../docs/en/index.html">Docs</a>
+  </nav>
+</aside>
+<button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="Code inspector: click any element to see its HTML, an explanation and its source files (Alt+I)"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> Inspect <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>
+<!-- example-bar:end -->
+
+<div class="demo-sticky-header" data-ncss-sticky-header>
+  <header class="ncss-topbar">
+    <div class="ncss-topbar-inner">
+      <a class="ncss-topbar-brand demo-brand" href="index-en.html">NativeCSS<small>Tour</small></a>
+      <nav class="ncss-nav" aria-label="Chapters">
+        <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="chapterNav" aria-label="Open chapter menu"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+        <dialog id="chapterNav" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Chapters">
+          <button type="button" class="ncss-dialog-close" command="close" commandfor="chapterNav" aria-label="Close menu"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+          <ncss-nav-priority more-text="More" more-label="More chapters">
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="layout-en.html" aria-current="true">Layout</a></li>
+              <li class="ncss-nav-item"><a href="content-en.html">Content</a></li>
+              <li class="ncss-nav-item"><a href="navigation-en.html">Navigation</a></li>
+              <li class="ncss-nav-item"><a href="forms-en.html">Forms</a></li>
+              <li class="ncss-nav-item"><a href="overlays-en.html">Overlays</a></li>
+              <li class="ncss-nav-item"><a href="media-en.html">Media</a></li>
+              <li class="ncss-nav-item"><a href="scroll-en.html">Scroll effects</a></li>
+              <li class="ncss-nav-item"><a href="modern-en.html">Modern UI</a></li>
+              <li class="ncss-nav-item"><a href="app-ui-en.html">App UI</a></li>
+              <li class="ncss-nav-item"><a href="icons-en.html">Icons</a></li>
+              <li class="ncss-nav-item"><a href="a11y-en.html">Accessibility</a></li>
+            </ul>
+          </ncss-nav-priority>
+        </dialog>
+      </nav>
+      <div class="ncss-topbar-actions">
+        <a class="demo-lang" href="layout.html" hreflang="de" lang="de"><span class="demo-topbar-lang-long">Deutsch</span><span class="demo-topbar-lang-short">DE</span></a>
+        <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Switch to dark theme">
+          <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+          <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <nav class="ncss-subnav" aria-label="On this page" data-ncss-subnav>
+    <div class="ncss-subnav-inner">
+      <span class="ncss-subnav-label" aria-hidden="true">On this page</span>
+      <ul class="ncss-subnav-list" role="list">
+        <li><a href="#container">Container</a></li>
+        <li><a href="#abstaende">Spacing</a></li>
+        <li><a href="#stack-cluster">Stack &amp; Cluster</a></li>
+        <li><a href="#flex">Flex</a></li>
+        <li><a href="#grid">Grid</a></li>
+        <li><a href="#spalten">Fixed columns</a></li>
+        <li><a href="#flex-grid">Flex-Grid</a></li>
+        <li><a href="#bento">Bento</a></li>
+        <li><a href="#masonry">Masonry</a></li>
+        <li><a href="#container-queries">Container Queries</a></li>
+        <li><a href="#full-bleed">Full Bleed</a></li>
+        <li><a href="#bleed">Bleed</a></li>
+        <li><a href="#float">Text wrap</a></li>
+        <li><a href="#sticky">Sticky</a></li>
+        <li><a href="#page-shell">Page shell</a></li>
+        <li><a href="#split">Split</a></li>
+        <li><a href="#tile">Tile</a></li>
+        <li><a href="#accordion-split">Accordion</a></li>
+        <li><a href="#marginnote">Margin notes</a></li>
+        <li><a href="#kleinteile">Dividers &amp; centring</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<main id="main" class="ncss-stretch">
+
+  <header class="demo-chapter ncss-container ncss-stack">
+    <p class="ncss-eyebrow">Chapter 1 of 11</p>
+    <h1>Layout</h1>
+    <p class="demo-chapter-lead">A few composable building blocks instead of a utility matrix: most of them adapt to the space they are given through container queries, not to the window width. Use the Inspect button at the bottom right (or Alt+I) to click any block and see its code.</p>
+    <p class="demo-hint"><span aria-hidden="true">↔</span> Tip: make the window narrower, or drag the dashed frames</p>
+  </header>
+
+  <!-- 1. Container -->
+  <section class="demo-feature" id="container" aria-labelledby="container-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="container-h">Container</h2>
+          <p><code>.ncss-container</code> is the centred, width-limited column with side padding – and the reference frame for every container query inside it. <code>--narrow</code> gives a comfortable reading width for running text.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> only use <code>.ncss-container--narrow</code> together with <code>.ncss-container</code> – on its own it is not centred, and bleed classes inside it break out lopsided.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-container</code></li>
+            <li><code>.ncss-container--narrow</code></li>
+            <li><code>--ncss-container-max</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#container">In the handbook<span class="ncss-visually-hidden">: Container</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-full-bleed demo-band">
+          <div class="ncss-container demo-outline"><code>.ncss-container</code> – at most 75rem wide, centred, with fluid side padding</div>
+          <div class="ncss-container ncss-container--narrow demo-outline"><code>.ncss-container .ncss-container--narrow</code> – at most 45rem, for reading</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Abstände -->
+  <section class="demo-feature" id="abstaende" aria-labelledby="abstaende-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="abstaende-h">Fluid spacing</h2>
+          <p>All spacing tokens are <code>clamp()</code> values: they grow with the window width between a minimum and a maximum, with no breakpoints at all. The same scale drives the <code>gap</code> of stack/grid and the few spacing utilities.</p>
+          <p class="demo-gotcha"><strong>Tip:</strong> make the window narrower – the bars shrink smoothly.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Tokens and classes">
+            <li><code>--ncss-space-3xs … 2xl</code></li>
+            <li><code>.ncss-py-sm/md/lg/xl</code></li>
+            <li><code>.ncss-px-…</code></li>
+            <li><code>.ncss-mb-0 … xl</code></li>
+            <li><code>.ncss-gap-…</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/tokens.html#abstand">In the handbook<span class="ncss-visually-hidden">: Spacing</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live demo-frame ncss-stack ncss-stack--tight">
+        <div class="demo-space-row"><code>3xs</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-3xs)"></span></div>
+        <div class="demo-space-row"><code>2xs</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-2xs)"></span></div>
+        <div class="demo-space-row"><code>xs</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-xs)"></span></div>
+        <div class="demo-space-row"><code>sm</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-sm)"></span></div>
+        <div class="demo-space-row"><code>md</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-md)"></span></div>
+        <div class="demo-space-row"><code>lg</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-lg)"></span></div>
+        <div class="demo-space-row"><code>xl</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-xl)"></span></div>
+        <div class="demo-space-row"><code>2xl</code><span class="demo-space-bar" style="--demo-size: var(--ncss-space-2xl)"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Stack & Cluster -->
+  <section class="demo-feature" id="stack-cluster" aria-labelledby="stack-cluster-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="stack-cluster-h">Stack &amp; Cluster</h2>
+          <p><code>.ncss-stack</code> stacks children vertically with even spacing (instead of margins on every element), <code>.ncss-cluster</code> lines them up horizontally and wraps on its own – for tags, buttons, metadata.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-stack</code></li>
+            <li><code>.ncss-stack--tight</code></li>
+            <li><code>.ncss-stack--loose</code></li>
+            <li><code>.ncss-cluster</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#stack-cluster">In the handbook<span class="ncss-visually-hidden">: Stack and cluster</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm demo-offer">
+          <div class="ncss-card-media"><img src="../assets/examples/hotel/ruderboot-abend-thumb.webp" alt="Rowing boat on the calm lake in the evening" width="480" height="717" loading="lazy"></div>
+          <div class="ncss-card-body ncss-stack">
+            <div class="ncss-stack ncss-stack--tight">
+              <p class="ncss-eyebrow">Offer · 3 nights</p>
+              <h3>Lake time for two</h3>
+            </div>
+            <p class="ncss-text-sm ncss-text-muted">Breakfast on the jetty, an evening in the lake sauna and the rowing boat for the trip to Bird Island.</p>
+            <ul class="ncss-cluster" role="list" aria-label="Included">
+              <li class="ncss-badge">Breakfast</li>
+              <li class="ncss-badge">Lake sauna</li>
+              <li class="ncss-badge">Rowing boat</li>
+              <li class="ncss-badge">Late Check-out</li>
+            </ul>
+            <div class="ncss-cluster">
+              <p class="demo-price">from €498 <small>for two</small></p>
+              <a class="ncss-btn ncss-btn--primary" href="#stack-cluster">Enquire<span class="ncss-visually-hidden">: Lake time for two</span></a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Flex -->
+  <section class="demo-feature" id="flex" aria-labelledby="flex-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="flex-h">Flex helpers</h2>
+          <p>For everything that is neither a stack nor a flowing group: a row with a gap, optionally centred, spread or wrapping. <code>.ncss-flex-1</code> lets a child fill the remaining space, <code>.ncss-flex-auto</code> keeps it at content width.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-flex</code></li>
+            <li><code>--wrap</code></li>
+            <li><code>--center</code></li>
+            <li><code>--between</code></li>
+            <li><code>--column</code></li>
+            <li><code>.ncss-flex-1</code></li>
+            <li><code>.ncss-flex-auto</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#flex">In the handbook<span class="ncss-visually-hidden">: Flex helpers</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <div class="ncss-flex ncss-flex--between ncss-flex--wrap demo-toolbar">
+          <p><strong>Room 12</strong> · lake view, 2nd floor</p>
+          <p class="ncss-text-muted">Arrival Fri 14 Aug · 3 nights</p>
+        </div>
+        <form class="ncss-flex demo-toolbar" action="#flex" role="search" aria-label="Search rooms">
+          <label class="ncss-visually-hidden" for="flexSearch">Search rooms</label>
+          <input class="ncss-input ncss-flex-1" id="flexSearch" type="search" placeholder="e.g. balcony, lake view …">
+          <button class="ncss-btn ncss-btn--primary ncss-flex-auto" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Grid -->
+  <section class="demo-feature" id="grid" aria-labelledby="grid-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="grid-h">Intrinsic grid</h2>
+          <p>The default for tile grids: the number of columns follows from the available space and the minimum column width – not a single media query. The minimum width is a parameter right on the element.</p>
+          <p class="demo-gotcha"><strong>Good to know:</strong> cards get equal heights automatically; <code>--align-start</code> turns that off. <code>--ncss-grid-max</code> prevents overly wide columns when there are only a few tiles.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-grid</code></li>
+            <li><code>--ncss-grid-min</code></li>
+            <li><code>--ncss-grid-max</code></li>
+            <li><code>.ncss-grid--align-start</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#grid">In the handbook<span class="ncss-visually-hidden">: Grid</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-hint"><span aria-hidden="true">↔</span> Make the window narrower: 4 → 3 → 2 → 1 column</p>
+        <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+          <article class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img class="demo-card-img" src="../assets/examples/hotel/zimmer-classic-thumb.webp" alt="Double room with a wood-panelled wall and a light bed" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body"><h3>Classic</h3><p class="ncss-text-sm ncss-text-muted">24 m² · garden side · from €149</p></div>
+          </article>
+          <article class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img class="demo-card-img" src="../assets/examples/hotel/zimmer-seeblick-thumb.webp" alt="Bright room with wooden walls and a white bed" width="480" height="720" loading="lazy"></div>
+            <div class="ncss-card-body"><h3>Lake view</h3><p class="ncss-text-sm ncss-text-muted">28 m² · balcony facing the lake · from €189</p></div>
+          </article>
+          <article class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img class="demo-card-img" src="../assets/examples/hotel/zimmer-junior-thumb.webp" alt="Modern room with wood panelling and a reading light" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body"><h3>Junior Suite</h3><p class="ncss-text-sm ncss-text-muted">38 m² · up to 3 guests · from €239</p></div>
+          </article>
+          <article class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img class="demo-card-img" src="../assets/examples/hotel/suite-dach-thumb.webp" alt="Attic suite with a wooden ceiling and a large bed" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body"><h3>Attic suite</h3><p class="ncss-text-sm ncss-text-muted">52 m² · two rooms · from €289</p></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Feste Spalten -->
+  <section class="demo-feature" id="spalten" aria-labelledby="spalten-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="spalten-h">Fixed column count</h2>
+          <p>When the editors want “exactly four in a row”: <code>--cols-2/3/4/6</code> switch to that number of columns above a fixed container width and to one column below it. What is measured is the surrounding <code>.ncss-container</code>, not the window.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> needs an ancestor with <code>.ncss-container</code>. Use spans (<code>.ncss-col-span-2</code> …) in the bento grid instead – there they drop out cleanly when space runs short.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-grid--cols-2</code> (24rem)</li>
+            <li><code>--cols-3</code> (36rem)</li>
+            <li><code>--cols-4</code> (48rem)</li>
+            <li><code>--cols-6</code> (56rem)</li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#grid-cols">In the handbook<span class="ncss-visually-hidden">: Fixed column count</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-hint"><span aria-hidden="true">↔</span> Drag the handle at the bottom right: one column below a 48rem frame width</p>
+        <div class="ncss-container demo-resizable">
+          <div class="ncss-grid--cols-4">
+            <div class="demo-tile-photo"><img src="../assets/examples/gemeinde/rathaus-thumb.webp" alt="Historic half-timbered town hall" width="480" height="720" loading="lazy"><span>Town hall</span></div>
+            <div class="demo-tile-photo"><img src="../assets/examples/gemeinde/wochenmarkt-thumb.webp" alt="Fresh vegetables at a market stall" width="640" height="427" loading="lazy"><span>Weekly market</span></div>
+            <div class="demo-tile-photo"><img src="../assets/examples/gemeinde/badesteg-thumb.webp" alt="Wooden jetty leading into the lake" width="480" height="720" loading="lazy"><span>Bathing jetty</span></div>
+            <div class="demo-tile-photo"><img src="../assets/examples/gemeinde/wanderweg-thumb.webp" alt="Hiking path through a flowering alpine meadow" width="640" height="427" loading="lazy"><span>Hiking trails</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Flex-Grid -->
+  <section class="demo-feature" id="flex-grid" aria-labelledby="flex-grid-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="flex-grid-h">Flex grid with width fractions</h2>
+          <p>The one case a grid cannot do: with five tiles in thirds, the incomplete last row should sit <em>centred</em>. Each width class reacts to the flex grid’s width through its own container query – one class per fraction, no “class × breakpoint” matrix.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-flex-grid</code></li>
+            <li><code>.ncss-flex-grid--center</code></li>
+            <li><code>.ncss-width-1-2</code></li>
+            <li><code>-1-3 / -2-3</code></li>
+            <li><code>-1-4 / -3-4</code></li>
+            <li><code>-1-5 / -1-6</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#flex-grid">In the handbook<span class="ncss-visually-hidden">: Flex grid</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="demo-resizable">
+          <div class="ncss-flex-grid ncss-flex-grid--center">
+            <div class="ncss-width-1-3 demo-tile-photo"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="Church on the lakeshore" width="640" height="427" loading="lazy"><span>Lakeside church</span></div>
+            <div class="ncss-width-1-3 demo-tile-photo"><img src="../assets/examples/gemeinde/bootshafen-thumb.webp" alt="Boats in the small harbour" width="640" height="429" loading="lazy"><span>Boat harbour</span></div>
+            <div class="ncss-width-1-3 demo-tile-photo"><img src="../assets/examples/gemeinde/marktplatz-thumb.webp" alt="Market square with historic houses" width="640" height="360" loading="lazy"><span>Market square</span></div>
+            <div class="ncss-width-1-3 demo-tile-photo"><img src="../assets/examples/gemeinde/adventsmarkt-thumb.webp" alt="Illuminated carousel at the Christmas market" width="640" height="427" loading="lazy"><span>Christmas market</span></div>
+            <div class="ncss-width-1-3 demo-tile-photo"><img src="../assets/examples/gemeinde/seeburg-ufer-thumb.webp" alt="Village by the mirror-like lake" width="640" height="427" loading="lazy"><span>Lake promenade</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Bento -->
+  <section class="demo-feature" id="bento" aria-labelledby="bento-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="bento-h">Bento grid</h2>
+          <p>Tiles of different sizes in one grid: single tiles grow with <code>.ncss-col-span-2</code> / <code>.ncss-row-span-2</code>, <code>grid-auto-flow: dense</code> fills the gaps. If the grid is too narrow for a span, the span is dropped instead of overflowing.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> <code>dense</code> only changes the visual order, not the tab order. Ready-made arrangements without classes on the tiles: <a href="modern-en.html#bento"><code>--hero</code> and <code>--mosaic</code> in the Modern UI chapter</a>.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-bento</code></li>
+            <li><code>.ncss-col-span-2/3</code></li>
+            <li><code>.ncss-row-span-2/3</code></li>
+            <li><code>--ncss-bento-min</code></li>
+            <li><code>--ncss-bento-row-height</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/modern-ui.html#bento">In the handbook<span class="ncss-visually-hidden">: Bento</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-bento demo-bento">
+          <div class="ncss-col-span-2 ncss-row-span-2 demo-bento-photo"><img class="demo-photo" src="../assets/examples/hotel/spa-pool.webp" alt="Indoor pool with marble and large lattice windows" width="1125" height="1500" loading="lazy"></div>
+          <div class="demo-bento-text demo-bento-text--brand"><h3>1,200 m² spa</h3><p>Lake sauna, steam bath and a panoramic pool at 28 °C.</p></div>
+          <div class="demo-bento-photo"><img class="demo-photo" src="../assets/examples/hotel/sauna-thumb.webp" alt="Sauna benches made of light wood" width="480" height="720" loading="lazy"></div>
+          <div class="ncss-row-span-2 demo-bento-photo"><img class="demo-photo" src="../assets/examples/hotel/steg-see-thumb.webp" alt="Wooden jetty in the calm lake" width="480" height="720" loading="lazy"></div>
+          <div class="demo-bento-text"><h3>Daily 7 am – 9 pm</h3><p>Infusions at 3, 5 and 7 pm.</p></div>
+          <div class="ncss-col-span-2 demo-bento-photo"><img class="demo-photo" src="../assets/examples/hotel/ruheraum-thumb.webp" alt="Relaxation room with a wooden lounger and warm light" width="480" height="543" loading="lazy"></div>
+          <div class="demo-bento-text"><h3>Massages</h3><p>Hay baths and massages on request.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Masonry -->
+  <section class="demo-feature" id="masonry" aria-labelledby="masonry-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="masonry-h">Masonry</h2>
+          <p>Images of different heights stacked without gaps – everywhere via CSS columns, and in browsers with <code>display: grid-lanes</code> (Safari 26.4+) automatically as true, row-ordered masonry.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> in the column fallback the reading order runs column by column – fine for galleries, not for content with a fixed order.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-masonry</code></li>
+            <li><code>--ncss-masonry-column-min</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#grid-cols">In the handbook<span class="ncss-visually-hidden">: Masonry</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-masonry demo-masonry" style="--ncss-masonry-column-min: 13rem;">
+          <figure><img src="../assets/examples/hotel/haus-am-see-thumb.webp" alt="Wooden house on the lakeshore with deck chairs" width="480" height="640" loading="lazy"></figure>
+          <figure><img src="../assets/examples/hotel/fruehstueck-thumb.webp" alt="Breakfast table with croissants and coffee" width="640" height="427" loading="lazy"></figure>
+          <figure><img src="../assets/examples/hotel/restaurant-thumb.webp" alt="Restaurant in warm wood tones" width="480" height="720" loading="lazy"></figure>
+          <figure><img src="../assets/examples/hotel/see-daemmerung-thumb.webp" alt="Lake at dusk in front of mountains" width="640" height="480" loading="lazy"></figure>
+          <figure><img src="../assets/examples/hotel/boot-detail-thumb.webp" alt="Detail of a varnished wooden boat" width="480" height="720" loading="lazy"></figure>
+          <figure><img src="../assets/examples/hotel/fruehstueck-buffet-thumb.webp" alt="Breakfast buffet with croissants and bread" width="640" height="428" loading="lazy"></figure>
+          <figure><img src="../assets/examples/hotel/ruderboot-steg-thumb.webp" alt="Rowing boat with green oars at a wooden jetty" width="480" height="640" loading="lazy"></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Container Queries -->
+  <section class="demo-feature" id="container-queries" aria-labelledby="cq-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="cq-h">Container Queries</h2>
+          <p>Building blocks query the width of <em>their</em> container, not the window: the same card sits side by side in a wide main column and stacked in a narrow sidebar. Visibility can be tied to the container width the same way.</p>
+          <p class="demo-gotcha"><strong>Thresholds</strong> are the same everywhere: sm 24rem, md 36rem, lg 48rem, xl 56rem. For your own rules: <code>@container ncss-container (min-width: …)</code>.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-grid--card-row</code></li>
+            <li><code>.ncss-hide-below-container-sm/md/lg/xl</code></li>
+            <li><code>.ncss-hide-from-container-…</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#container-sichtbarkeit">In the handbook<span class="ncss-visually-hidden">: Container Queries</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-hint"><span aria-hidden="true">↔</span> Drag the frame narrower: side by side from 32rem, the label switches at 36rem</p>
+        <div class="ncss-container demo-resizable">
+          <p class="ncss-hide-from-container-md ncss-badge">Narrow container (below 36rem)</p>
+          <p class="ncss-hide-below-container-md ncss-badge ncss-badge--success">Wide container (36rem and up)</p>
+          <article class="ncss-grid ncss-grid--card-row" aria-label="Event">
+            <div class="demo-cq-media"><img src="../assets/examples/gemeinde/adventsmarkt-thumb.webp" alt="Illuminated carousel on the market square" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-stack ncss-stack--tight">
+              <p class="ncss-eyebrow">Sat 28 Nov · from 2 pm</p>
+              <h3>Seeburg Christmas market</h3>
+              <p class="ncss-text-sm ncss-text-muted">Mulled wine from the fishing club, a nativity play at 5 pm and the old carousel on the market square.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Full Bleed -->
+  <section class="demo-feature" id="full-bleed" aria-labelledby="full-bleed-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="full-bleed-h">Full Bleed</h2>
+          <p>A section reaches both edges of the screen even though it stays inside the container in the markup – ideal for image bands and coloured areas. Put a <code>.ncss-container</code> back inside so the text stays in the column.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> it calculates with <code>100vw</code> – every ancestor must be centred (as here).</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-full-bleed</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#bleed">In the handbook<span class="ncss-visually-hidden">: Full Bleed</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-full-bleed demo-fullbleed">
+          <img src="../assets/examples/hotel/see-panorama.webp" alt="" width="1600" height="1068" loading="lazy">
+          <div class="ncss-container ncss-stack">
+            <p class="ncss-eyebrow ncss-text-light-900">Lake Seeburg</p>
+            <h3>In the morning, the lake belongs to early risers</h3>
+            <p>Bathrobes are ready, the water is 22 °C in summer, and the jetty is for our guests only.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. Bleed -->
+  <section class="demo-feature" id="bleed" aria-labelledby="bleed-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="bleed-h">Bleed</h2>
+          <p>Break out to the screen edge on just <em>one</em> side (<code>-start</code>/<code>-end</code>), from the middle of the column (<code>-half-…</code>) or symmetrically by a fixed amount (<code>-center</code>). Brings rhythm to long text pages.</p>
+          <p class="demo-gotcha"><strong>Good to know:</strong> <code>.ncss-bleed-center</code> needs no centred ancestor – it grows by <code>--ncss-bleed-amount</code> relative to its own parent.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-bleed-start</code></li>
+            <li><code>.ncss-bleed-end</code></li>
+            <li><code>.ncss-bleed-half-start</code></li>
+            <li><code>.ncss-bleed-half-end</code></li>
+            <li><code>.ncss-bleed-center</code></li>
+            <li><code>--ncss-bleed-amount</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html#bleed">In the handbook<span class="ncss-visually-hidden">: Bleed</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <article class="demo-live ncss-container ncss-container--narrow demo-article" aria-label="Sample article: a hundred years by the water">
+        <p>What began in 1912 as a fishermen’s inn with three guest rooms is now a house with 32 rooms. The jetty, the rowing boats and the habit of looking at the water first thing in the morning have stayed.</p>
+        <blockquote class="ncss-bleed-start"><p>“The lake decides how the day turns out. We just prepare breakfast.”</p></blockquote>
+        <p>The quote above reaches the left edge of the screen and stays in the column on the right. The image below does the opposite.</p>
+        <figure class="ncss-bleed-end"><img src="../assets/examples/hotel/steg-morgennebel.webp" alt="Jetty in the morning mist, the sun rising over the lake" width="1600" height="1066" loading="lazy"><figcaption><code>.ncss-bleed-end</code> – to the right edge</figcaption></figure>
+        <p>Half bleed starts in the middle of the column and ends at the screen edge – good for an image that “runs out” next to the text.</p>
+        <figure class="ncss-bleed-half-end"><img src="../assets/examples/hotel/see-daemmerung-thumb.webp" alt="Lake at dusk" width="640" height="480" loading="lazy"><figcaption><code>.ncss-bleed-half-end</code></figcaption></figure>
+        <p>And when an element should be just a little wider than the text:</p>
+        <figure class="ncss-bleed-center" style="--ncss-bleed-amount: var(--ncss-space-md);"><img src="../assets/examples/hotel/haus-nacht-thumb.webp" alt="Illuminated hotel by the lake at night" width="640" height="400" loading="lazy"><figcaption><code>.ncss-bleed-center</code>, wider by <code>--ncss-space-md</code> on each side</figcaption></figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- 13. Float -->
+  <section class="demo-feature" id="float" aria-labelledby="float-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="float-h">Text wrap</h2>
+          <p>Text flows around an image – <code>float</code> is still the right tool for that. NativeCSS only floats once the container is at least 28rem wide; below that the image becomes a normal block instead of squeezing the text into a thin leftover column. <code>.ncss-float-shape-circle</code> makes the text follow the circle.</p>
+          <p class="demo-gotcha"><strong>Bleeding:</strong> <code>.ncss-float-bleed-end</code> combines wrapping with a bleed to the screen edge. Below 28rem, <code>.ncss-center-narrow</code>/<code>.ncss-full-narrow</code> control the alignment.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-float-start</code></li>
+            <li><code>.ncss-float-end</code></li>
+            <li><code>.ncss-float-shape-circle</code></li>
+            <li><code>.ncss-float-bleed-start/-end</code></li>
+            <li><code>.ncss-center-narrow</code></li>
+            <li><code>.ncss-full-narrow</code></li>
+            <li><code>.ncss-clear</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/float.html">In the handbook<span class="ncss-visually-hidden">: Text wrap</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <article class="demo-live ncss-container ncss-container--narrow demo-article" aria-label="Sample article: a day in the lake parlour">
+        <img class="ncss-float-start ncss-center-narrow" src="../assets/examples/hotel/restaurant-thumb.webp" alt="Restaurant in warm wood tones with laid tables" width="480" height="720" loading="lazy">
+        <p>The lake parlour opens at half past six. Whitefish and char come from fisherman Huber in the morning, the vegetables from our own garden behind the house. Book early and you get the window table, with the lights of Seeburg reflected on the water.</p>
+        <p>Head chef Anna Ambach cooks five courses or à la carte, always with a vegetarian menu. The wine list is short and comes from small winemakers, most of them less than two hours away.</p>
+        <img class="ncss-float-end ncss-float-shape-circle ncss-center-narrow" src="../assets/examples/hotel/fruehstueck-thumb.webp" alt="Breakfast table with croissants, coffee and flowers" width="640" height="427" loading="lazy">
+        <p>The next morning breakfast is served until half past eleven: croissants from our own bakery, honey from the neighbouring farm and eggs the way you like them. Here the text follows the round shape of the image instead of its rectangular box – <code>shape-outside</code> makes it possible.</p>
+        <p>Then it is out on the water: the rowing boats are included in the room rate, and Bird Island is twenty leisurely minutes away.</p>
+        <p class="ncss-clear">With <code>.ncss-clear</code> this paragraph starts below all images again.</p>
+        <img class="ncss-float-bleed-end ncss-full-narrow" src="../assets/examples/hotel/ruderboot-steg-thumb.webp" alt="Rowing boat with green oars at a wooden jetty" width="480" height="640" loading="lazy">
+        <p>This image floats on the right of the text and reaches the screen edge at the same time. It suits features where a photo should accompany the reading flow without interrupting it. Below a 28rem container width it becomes a perfectly normal, full-width image above the text instead.</p>
+        <p class="ncss-clear">Done – the rest of the page flows normally again.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 14. Sticky -->
+  <section class="demo-feature" id="sticky" aria-labelledby="sticky-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="sticky-h">Sticky</h2>
+          <p><code>.ncss-sticky</code> makes an element stick while scrolling – on the right, the booking summary stays put while the day list scrolls past. <code>.ncss-sticky-container</code> creates its own internally scrolling area in which the header (<code>.ncss-sticky</code>) and footer (<code>.ncss-sticky--bottom</code>) stay in place.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> if the element sticks below a fixed header, set the distance with <code>--ncss-sticky-offset</code>. An <code>overflow</code> on an ancestor prevents sticky.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-sticky</code></li>
+            <li><code>.ncss-sticky--bottom</code></li>
+            <li><code>.ncss-sticky-container</code></li>
+            <li><code>--ncss-sticky-offset</code></li>
+            <li><code>--ncss-sticky-container-max-height</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/scroll.html#scroll-verhalten">In the handbook<span class="ncss-visually-hidden">: Sticky</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live demo-sticky-layout">
+        <ol class="demo-day-list" aria-label="A day at Hotel Seeblick">
+          <li><strong>7:00</strong><p>Mist over the jetty – early risers have the lake to themselves.</p></li>
+          <li><strong>8:30</strong><p>Breakfast until midday, with honey from the neighbouring farm.</p></li>
+          <li><strong>11:00</strong><p>By rowing boat to Bird Island, twenty minutes there.</p></li>
+          <li><strong>13:00</strong><p>Snack on the terrace, then the sunbathing lawn.</p></li>
+          <li><strong>15:00</strong><p>First infusion in the lake sauna, cool down in the lake.</p></li>
+          <li><strong>17:00</strong><p>Panoramic pool at 28 °C with a view of the mountains.</p></li>
+          <li><strong>19:30</strong><p>Dinner in the lake parlour, five courses or à la carte.</p></li>
+          <li><strong>22:00</strong><p>Lights on the water, one more glass on the balcony.</p></li>
+        </ol>
+        <div class="ncss-stack">
+          <aside class="ncss-sticky demo-summary ncss-stack ncss-stack--tight" style="--ncss-sticky-offset: calc(var(--ncss-scroll-offset, 7rem) + 1rem);" aria-label="Your enquiry">
+            <h3>Your enquiry</h3>
+            <p class="ncss-text-sm">Lake-view room · 3 nights<br>14–17 August · 2 guests</p>
+            <p class="demo-price">€567 <small>incl. breakfast</small></p>
+            <a class="ncss-btn ncss-btn--primary" href="#sticky">Send a free enquiry</a>
+          </aside>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-live-label"><code>.ncss-sticky-container</code> – scroll inside:</p>
+        <div class="ncss-sticky-container demo-scrollbox" style="--ncss-sticky-container-max-height: 16rem;" tabindex="0" role="region" aria-label="Infusion schedule, scrollable">
+          <div class="ncss-sticky demo-scrollbox-head">Lake sauna infusion schedule</div>
+          <ul>
+            <li>3:00 pm · Mountain pine</li><li>3:45 pm · Lemongrass</li><li>4:30 pm · Honey and salt</li><li>5:00 pm · Birch whisk</li><li>5:45 pm · Eucalyptus</li><li>6:30 pm · Lavender</li><li>7:00 pm · Hay from the neighbouring farm</li><li>7:45 pm · Swiss pine</li><li>8:30 pm · Calm infusion</li>
+          </ul>
+          <div class="ncss-sticky--bottom demo-scrollbox-foot">Last admission 8:30 pm</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15. Page Shell -->
+  <section class="demo-feature" id="page-shell" aria-labelledby="page-shell-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="page-shell-h">Page shell</h2>
+          <p>The footer should sit at the bottom even on short pages: <code>.ncss-page-shell</code> turns <code>&lt;body&gt;</code> into a flex column at least as tall as the screen, <code>.ncss-stretch</code> lets the main content fill the rest. This page uses exactly that.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-page-shell</code></li>
+            <li><code>.ncss-stretch</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html">In the handbook<span class="ncss-visually-hidden">: Page shell</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-live-label">Mini page with little content (height limited to 20rem here instead of the screen height):</p>
+        <div class="ncss-page-shell demo-shell-mini">
+          <div class="demo-shell-head">Seeburg Municipality</div>
+          <div class="ncss-stretch demo-shell-main"><p>This page is short. The footer is still at the bottom.</p></div>
+          <div class="demo-shell-foot">© Seeburg Municipality · Legal notice</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16. Split -->
+  <section class="demo-feature" id="split" aria-labelledby="split-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="split-h">Split: text next to image</h2>
+          <p>The classic for feature sections. Left or right is decided purely by markup order – when stacked, the image then sits on top or below, and reading and focus order stay consistent. Side by side from a 36rem container width.</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> <code>.ncss-split-container</code> must be a separate wrapping element – it provides the width the split reacts to.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-split-container</code></li>
+            <li><code>.ncss-split</code></li>
+            <li><code>.ncss-split-media</code></li>
+            <li><code>.ncss-split-content</code></li>
+            <li><code>--align-start/-end/-stretch</code></li>
+            <li><code>--ncss-split-media-width</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layouts.html#split-grundstruktur">In the handbook<span class="ncss-visually-hidden">: Split</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-stack ncss-stack--loose">
+        <div class="ncss-split-container">
+          <div class="ncss-split">
+            <div class="ncss-split-media demo-split-media"><img src="../assets/examples/hotel/haus-am-see-thumb.webp" alt="Wooden house on the lakeshore with deck chairs on the lawn" width="480" height="640" loading="lazy"></div>
+            <div class="ncss-split-content ncss-stack">
+              <p class="ncss-eyebrow">Welcome</p>
+              <h3>A house by the water, family-run since 1912</h3>
+              <p>Bright, quiet and without frills: almost every room looks out over the lake, and the jetty is for our guests only.</p>
+            </div>
+          </div>
+        </div>
+        <div class="ncss-split-container">
+          <div class="ncss-split ncss-split--align-start">
+            <div class="ncss-split-content ncss-stack">
+              <p class="ncss-eyebrow">Image right, top-aligned, 60/40</p>
+              <h3>Breakfast until 11:30</h3>
+              <p>The image comes last in the markup and therefore ends up on the right. <code>--ncss-split-media-width: 40%</code> makes it narrower, <code>--align-start</code> aligns both columns at the top.</p>
+            </div>
+            <div class="ncss-split-media demo-split-media" style="--ncss-split-media-width: 40%;"><img src="../assets/examples/hotel/fruehstueck-buffet-thumb.webp" alt="Breakfast buffet with fresh croissants and bread" width="640" height="428" loading="lazy"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17. Tile -->
+  <section class="demo-feature" id="tile" aria-labelledby="tile-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="tile-h">Tile: coloured sections</h2>
+          <p>Coloured sections structure long pages. On the brand surfaces the text turns light automatically; a <code>.ncss-card</code> nested inside still stays normally readable. Combine with <code>.ncss-full-bleed</code> for edge-to-edge areas.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-tile</code></li>
+            <li><code>.ncss-tile--muted</code></li>
+            <li><code>.ncss-tile--brand</code></li>
+            <li><code>.ncss-tile--brand-2</code></li>
+            <li><code>--ncss-tile-padding-block/-inline</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layouts.html#tile-grundlagen">In the handbook<span class="ncss-visually-hidden">: Tile</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live demo-tiles">
+        <div class="ncss-tile ncss-tile--muted ncss-radius-lg"><h3>Muted</h3><p>A calm surface for secondary content such as opening hours.</p></div>
+        <div class="ncss-tile ncss-tile--brand ncss-radius-lg">
+          <h3>Brand</h3><p>Light text comes automatically.</p>
+          <article class="ncss-card ncss-radius-md ncss-shadow-sm demo-tile-card"><div class="ncss-card-body"><p class="ncss-text-sm">A card inside stays dark on light.</p></div></article>
+        </div>
+        <div class="ncss-tile ncss-tile--brand-2 ncss-radius-lg"><h3>Secondary</h3><p>For a second accent, such as an offer.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18. Accordion-Split -->
+  <section class="demo-feature" id="accordion-split" aria-labelledby="accordion-split-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="accordion-split-h">Transforming accordion</h2>
+          <p>An accordion on the left, the image for the open item on the right – entirely without JavaScript, using <code>&lt;details name&gt;</code> and <code>:has()</code>. The optional <code>js/view-transitions.js</code> smooths the image change (<code>data-transition="slide"</code>).</p>
+          <p class="demo-gotcha"><strong>Watch out:</strong> every image appears twice in the markup (desktop column and mobile copy) – on purpose, it still loads only once. <code>name</code> must be unique per accordion.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-accordion-split-container</code></li>
+            <li><code>.ncss-accordion-split</code></li>
+            <li><code>-list / -item / -body</code></li>
+            <li><code>-media / -media-mobile</code></li>
+            <li><code>data-transition</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layouts.html#accordion-split">In the handbook<span class="ncss-visually-hidden">: Accordion</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-accordion-split-container" data-transition="slide">
+          <div class="ncss-accordion-split">
+            <div class="ncss-accordion-split-list">
+              <details name="showcase-wellness" class="ncss-accordion-split-item" open>
+                <summary>Panoramic indoor pool</summary>
+                <div class="ncss-accordion-split-body">
+                  <p>28 °C, marble and large lattice windows facing the lake. Open to children until 3 pm.</p>
+                  <div class="ncss-accordion-split-media-mobile"><img src="../assets/examples/hotel/spa-pool-thumb.webp" alt="Indoor pool with marble and large lattice windows" width="480" height="640" loading="lazy"></div>
+                </div>
+              </details>
+              <details name="showcase-wellness" class="ncss-accordion-split-item">
+                <summary>Finnish lake sauna</summary>
+                <div class="ncss-accordion-split-body">
+                  <p>85 °C, mountain-pine infusions – and afterwards straight off the jetty into the lake.</p>
+                  <div class="ncss-accordion-split-media-mobile"><img src="../assets/examples/hotel/sauna-thumb.webp" alt="Sauna cabin of light wood with a sauna stove" width="480" height="720" loading="lazy"></div>
+                </div>
+              </details>
+              <details name="showcase-wellness" class="ncss-accordion-split-item">
+                <summary>Relaxation room</summary>
+                <div class="ncss-accordion-split-body">
+                  <p>Warm light, wooden loungers and one rule: phones take a break here.</p>
+                  <div class="ncss-accordion-split-media-mobile"><img src="../assets/examples/hotel/ruheraum-thumb.webp" alt="Relaxation room with a wooden lounger and warm light" width="480" height="543" loading="lazy"></div>
+                </div>
+              </details>
+            </div>
+            <div class="ncss-accordion-split-media">
+              <img src="../assets/examples/hotel/spa-pool-thumb.webp" alt="Indoor pool with marble and large lattice windows" width="480" height="640" loading="lazy">
+              <img src="../assets/examples/hotel/sauna-thumb.webp" alt="Sauna cabin of light wood with a sauna stove" width="480" height="720" loading="lazy">
+              <img src="../assets/examples/hotel/ruheraum-thumb.webp" alt="Relaxation room with a wooden lounger and warm light" width="480" height="543" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19. Marginnote -->
+  <section class="demo-feature" id="marginnote" aria-labelledby="marginnote-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="marginnote-h">Margin notes</h2>
+          <p>An image or text moves into a margin column next to the paragraph it belongs to – with no positioning at all: the note sits in the markup directly after (<code>-end</code>) or before (<code>-start</code>) its paragraph. In narrow containers it simply joins the text flow.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-marginnote-container</code></li>
+            <li><code>.ncss-marginnote-layout</code></li>
+            <li><code>.ncss-marginnote-end</code></li>
+            <li><code>.ncss-marginnote-start</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layouts.html#marginnote">In the handbook<span class="ncss-visually-hidden">: Margin notes</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-marginnote-container demo-marginnote">
+        <div class="ncss-marginnote-layout">
+          <p>The lakeside church is older than the village itself: fishermen built the first chapel around 1300 on the rock by the shore so it could be seen from the water.</p>
+          <aside class="ncss-marginnote-end"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="Church on the lakeshore" width="640" height="427" loading="lazy"><p>St Nicholas, current form from 1724.</p></aside>
+          <aside class="ncss-marginnote-start"><p><strong>Guided tours</strong> every first Sunday of the month, 2 pm, meeting point church square.</p></aside>
+          <p>Today’s baroque building dates from the 18th century. In summer there are organ concerts on Fridays; in fine weather the doors to the lake stay open.</p>
+          <p>The third paragraph has no note – the margin column simply stays empty.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20. Kleinteile -->
+  <section class="demo-feature" id="kleinteile" aria-labelledby="kleinteile-h">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="kleinteile-h">Dividers &amp; centring</h2>
+          <p><code>.ncss-divider--vertical</code> separates groups within a row and takes on its height; a plain <code>&lt;hr&gt;</code> is already styled. <code>.ncss-transform-center</code> places an element exactly in the middle of the nearest positioned ancestor – such as a label on a photo.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-divider</code></li>
+            <li><code>.ncss-divider--vertical</code></li>
+            <li><code>.ncss-transform-center</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/layout.html">In the handbook<span class="ncss-visually-hidden">: Dividers and centring</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-stack">
+        <div class="ncss-cluster demo-toolbar">
+          <span>32 rooms</span>
+          <hr class="ncss-divider--vertical" aria-orientation="vertical">
+          <span>Lake sauna</span>
+          <hr class="ncss-divider--vertical" aria-orientation="vertical">
+          <span>Private jetty</span>
+        </div>
+        <div class="demo-center-box">
+          <img src="../assets/examples/hotel/see-panorama-thumb.webp" alt="Panorama of the lake with mountains" width="640" height="427" loading="lazy">
+          <p class="ncss-transform-center">Just a 3-minute walk to the lake</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ncss-container">
+    <nav class="demo-pager" aria-label="Browse chapters">
+      <a class="demo-pager-prev" href="index-en.html" rel="prev"><small>← Previous chapter</small> Overview</a>
+      <a class="demo-pager-next" href="content-en.html" rel="next"><small>Next chapter →</small> Content &amp; typography</a>
+    </nav>
+  </div>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-bottom ncss-stack ncss-stack--tight ncss-text-sm">
+    <p>NativeCSS tour · <a href="index-en.html">All chapters</a> · <a href="../../docs/en/index.html">Handbook</a></p>
+    <p class="demo-credits"><strong>Photo credits:</strong> photos from Pexels (Pexels licence) – <a href="https://www.pexels.com/photo/scenic-view-of-walchensee-lake-in-germany-39845534/">Marek Prášil</a>, <a href="https://www.pexels.com/photo/serene-lakeside-retreat-in-tyrol-austria-38973729/">Petra Nesti</a>, <a href="https://pexels.com/photo/hotel-bedroom-interior-design-19045885/">Luca Luperto</a>, <a href="https://pexels.com/photo/a-bed-or-beds-in-a-room-at-hotel-de-la-ville-27638174/">Alexander Mass</a>, <a href="https://www.pexels.com/photo/modern-hotel-room-interior-with-stylish-wood-paneling-39338455/">Mateusz Pielech</a>, <a href="https://www.pexels.com/photo/hotel-room-with-tv-7746572/">Max Vakhtbovych (attic suite)</a>, <a href="https://www.pexels.com/photo/view-of-a-brown-room-7598363/">Max Vakhtbovych (relaxation room)</a>, <a href="https://www.pexels.com/photo/indoor-marble-pool-with-large-windows-32797306/">Sarah O’Shea</a>, <a href="https://www.pexels.com/photo/modern-wooden-sauna-interior-design-39237331/">HUUM</a>, <a href="https://www.pexels.com/photo/morning-breakfast-table-25781659/">Jakub Zerdzicki</a>, <a href="https://pexels.com/photo/luxurious-breakfast-buffet-with-fresh-croissants-and-bread-34307858/">Novkov Visuals</a>, <a href="https://www.pexels.com/photo/elegant-hotel-dining-area-in-warm-tones-29649733/">Clément Proust</a>, <a href="https://pexels.com/photo/metal-dock-2440257/">Lukáš Dlutko</a>, <a href="https://www.pexels.com/photo/serene-boat-dock-with-oars-by-wooden-pier-33086020/">Kris Møklebust</a>, <a href="https://pexels.com/photo/boat-on-the-lake-13280980/">Sebastian Odriozola</a>, <a href="https://pexels.com/photo/holiday-resort-by-lake-at-night-16777746/">Marek Piwnicki</a>, <a href="https://www.pexels.com/photo/part-of-boat-10409778/">Ron Lach</a>, <a href="https://pexels.com/photo/scenic-view-of-wooden-pier-on-tranquil-lake-38726716/">Nino Keller</a>, <a href="https://pexels.com/photo/beautiful-lake-view-in-bavarian-alps-32168381/">Daciana Cristina Visan</a>, <a href="https://www.pexels.com/photo/charming-german-village-by-reflective-lake-34577724/">Phalgunn Maharishi</a>, <a href="https://pexels.com/photo/a-church-by-a-lake-12842511/">Wolfgang Wendefeuer (church)</a>, <a href="https://pexels.com/photo/wooden-pier-on-a-lake-in-summer-12842519/">Wolfgang Wendefeuer (bathing jetty)</a>, <a href="https://pexels.com/photo/historic-brakel-town-hall-in-summer-29511107/">Wolfgang Weiser</a>, <a href="https://pexels.com/photo/vibrant-farmer-s-market-fresh-vegetables-display-31930012/">Magda Ehlers</a>, <a href="https://www.pexels.com/photo/illuminated-carousel-in-the-city-square-19480506/">Alina Chernii</a>, <a href="https://www.pexels.com/photo/marktplatz-in-freudenstadt-germany-under-blue-sky-36931570/">Joerg Hartmann</a>, <a href="https://pexels.com/photo/scenic-view-of-tranquil-lake-in-bavaria-31913082/">Branka Krnjaja</a>, <a href="https://pexels.com/photo/scenic-pathway-through-alpine-meadow-in-summer-32713270/">Susanne Jutzeler (suju-foto)</a>.</p>
+  </div>
+</footer>
+
+</body>
+</html>

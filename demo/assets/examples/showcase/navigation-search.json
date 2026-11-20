@@ -1,0 +1,154 @@
+{
+ "groups": [
+  {
+   "label": "Dienstleistungen",
+   "items": [
+    {
+     "title": "Personalausweis beantragen",
+     "url": "../example-gemeinde-service.html",
+     "text": "Bürgerbüro · Termin online buchen, biometrisches Foto mitbringen"
+    },
+    {
+     "title": "Reisepass beantragen",
+     "url": "../example-gemeinde.html#az-reisepass",
+     "text": "Bürgerbüro · auch Express-Pass und Kinderreisepass"
+    },
+    {
+     "title": "Wohnsitz an-, um- oder abmelden",
+     "url": "../example-gemeinde.html#az-ummeldung",
+     "text": "Bürgerbüro · innerhalb von zwei Wochen nach dem Umzug"
+    },
+    {
+     "title": "Meldebescheinigung",
+     "url": "../example-gemeinde.html#az-meldebescheinigung",
+     "text": "Bürgerbüro · sofort zum Mitnehmen, 10 €"
+    },
+    {
+     "title": "Führungszeugnis beantragen",
+     "url": "../example-gemeinde.html#az-fuehrungszeugnis",
+     "text": "Bürgerbüro oder online beim Bundesamt für Justiz"
+    },
+    {
+     "title": "Briefwahl beantragen",
+     "url": "../example-gemeinde.html#az-briefwahl",
+     "text": "Wahlamt · per Wahlbenachrichtigung, online oder persönlich"
+    },
+    {
+     "title": "Hundesteuer an- und abmelden",
+     "url": "../example-gemeinde.html#az-hundesteuer",
+     "text": "Steueramt · Hundemarke im Bürgerbüro abholen"
+    },
+    {
+     "title": "Grundsteuer",
+     "url": "../example-gemeinde.html#az-grundsteuer",
+     "text": "Steueramt · Bescheide, Fälligkeiten, SEPA-Lastschrift"
+    },
+    {
+     "title": "Gewerbe anmelden",
+     "url": "../example-gemeinde.html#az-gewerbe",
+     "text": "Ordnungsamt · Gewerbeanmeldung, -ummeldung und -abmeldung"
+    },
+    {
+     "title": "Bauantrag einreichen",
+     "url": "../example-gemeinde.html#az-bauantrag",
+     "text": "Bauamt · Beratung vor der Antragstellung empfohlen"
+    },
+    {
+     "title": "Bootsliegeplatz am See",
+     "url": "../example-gemeinde.html#az-bootsliegeplatz",
+     "text": "Liegenschaftsamt · Warteliste für Steg- und Bojenplätze"
+    },
+    {
+     "title": "Kita-Platz anmelden",
+     "url": "../example-gemeinde.html#az-kita",
+     "text": "Familienbüro · zentrale Vormerkung für alle Einrichtungen"
+    },
+    {
+     "title": "Sperrmüll anmelden",
+     "url": "../example-gemeinde.html#az-sperrmuell",
+     "text": "Bauhof · Abholung jeweils am 4. Donnerstag im Monat"
+    },
+    {
+     "title": "Abfallkalender und Müllabfuhr",
+     "url": "../example-gemeinde.html#az-abfall",
+     "text": "Bauhof · Abfuhrtermine, Wertstoffhof, Grüngut"
+    },
+    {
+     "title": "Eheschließung",
+     "url": "../example-gemeinde.html#az-eheschliessung",
+     "text": "Standesamt · Trauungen im Rathaus und im Pavillon am See"
+    },
+    {
+     "title": "Fundsachen",
+     "url": "../example-gemeinde.html#az-fundbuero",
+     "text": "Bürgerbüro · Fundsachen abgeben oder abholen"
+    },
+    {
+     "title": "Straßenlaterne defekt melden",
+     "url": "../example-gemeinde.html#az-strassenbeleuchtung",
+     "text": "Bauhof · Mängelmelder online, rund um die Uhr"
+    },
+    {
+     "title": "Vereinsförderung",
+     "url": "../example-gemeinde.html#az-vereinsfoerderung",
+     "text": "Kulturamt · Zuschüsse für Jugendarbeit und Veranstaltungen"
+    },
+    {
+     "title": "Wohngeld beantragen",
+     "url": "../example-gemeinde.html#az-wohngeld",
+     "text": "Sozialamt · Mietzuschuss und Lastenzuschuss"
+    }
+   ]
+  },
+  {
+   "label": "Ansprechpartner",
+   "items": [
+    {
+     "title": "Bürgerbüro",
+     "url": "../example-gemeinde.html#kontakt",
+     "text": "Erdgeschoss Rathaus · 08821 4470-0 · buergerbuero@seeburg.example"
+    },
+    {
+     "title": "Bauamt",
+     "url": "../example-gemeinde.html#kontakt",
+     "text": "1. Obergeschoss, Zimmer 21–24 · 08821 4470-30"
+    },
+    {
+     "title": "Standesamt",
+     "url": "../example-gemeinde.html#kontakt",
+     "text": "1. Obergeschoss, Zimmer 14 · 08821 4470-40"
+    },
+    {
+     "title": "Steueramt / Kämmerei",
+     "url": "../example-gemeinde.html#kontakt",
+     "text": "2. Obergeschoss, Zimmer 31 · 08821 4470-50"
+    }
+   ]
+  },
+  {
+   "label": "Formulare & Satzungen",
+   "items": [
+    {
+     "title": "Anmeldung zur Hundesteuer (PDF)",
+     "url": "../assets/examples/gemeinde/dokumente/antrag-hundesteuer.pdf",
+     "text": "Formular des Steueramts"
+    },
+    {
+     "title": "Anmeldung Sperrmüllabholung (PDF)",
+     "url": "../assets/examples/gemeinde/dokumente/sperrmuell-anmeldung.pdf",
+     "text": "Bauhof / Abfallwirtschaft"
+    },
+    {
+     "title": "Hundesteuersatzung (PDF)",
+     "url": "../assets/examples/gemeinde/dokumente/satzung-hundesteuer.pdf",
+     "text": "Satzung in der Fassung vom 1. Januar 2026"
+    },
+    {
+     "title": "Abfallkalender 2027 (PDF)",
+     "url": "../assets/examples/gemeinde/dokumente/abfallkalender-2027.pdf",
+     "text": "Alle Abfuhrtermine im Überblick"
+    }
+   ]
+  }
+ ]
+}

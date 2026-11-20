@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slide drilldown – Hotel Seeblick example</title>
+<!-- NativeCSS tour, Navigation chapter: narrow frame so the slide drilldown
+     (only active below a 64rem viewport) is visible on large screens too. -->
+<script src="../../../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../../../dist/ncss.css">
+<link rel="stylesheet" href="../../../../dist/components/nav-drilldown.css">
+<script src="../../../../dist/js/command-fallback.js" defer></script>
+<script src="../../../../dist/js/nav.js" defer></script>
+<script src="../../../../dist/js/nav-drilldown.js" defer></script>
+<style>
+  body { margin: 0; }
+  .demo-frame-hint { padding-inline: var(--ncss-space-sm); }
+</style>
+</head>
+<body class="ncss-page-shell">
+  <header class="ncss-topbar">
+    <div class="ncss-topbar-inner">
+      <a class="ncss-topbar-brand" href="#start">Hotel Seeblick</a>
+      <nav class="ncss-nav" aria-label="Hotel Seeblick main menu">
+        <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="drillPanel" aria-label="Open menu"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+        <dialog id="drillPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Main menu">
+          <button type="button" class="ncss-dialog-close" command="close" commandfor="drillPanel" aria-label="Close menu"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+          <ncss-nav-drilldown back-text="Back">
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="#start" aria-current="page">Home</a></li>
+              <li class="ncss-nav-item">
+                <details class="ncss-nav-dropdown">
+                  <summary>Rooms &amp; suites</summary>
+                  <ul class="ncss-nav-submenu">
+                    <li><a href="#zimmer">All rooms</a></li>
+                    <li><a href="#classic">Classic double</a></li>
+                    <li><a href="#junior">Junior-Suite</a></li>
+                    <li><a href="#seeblick">Lake-view room</a></li>
+                    <li><a href="#dach">Attic suite</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li class="ncss-nav-item">
+                <details class="ncss-nav-dropdown">
+                  <summary>Wellness</summary>
+                  <ul class="ncss-nav-submenu">
+                    <li><a href="#hallenbad">Indoor pool</a></li>
+                    <li><a href="#sauna">Lakeside sauna</a></li>
+                    <li><a href="#ruheraum">Relaxation room</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li class="ncss-nav-item"><a href="#restaurant">Restaurant</a></li>
+              <li class="ncss-nav-item"><a href="#anreise">Getting here</a></li>
+            </ul>
+          </ncss-nav-drilldown>
+        </dialog>
+      </nav>
+    </div>
+  </header>
+  <p class="demo-frame-hint ncss-text-sm ncss-text-muted">Tap ☰, then “Rooms &amp; suites” or “Wellness”.</p>
+</body>
+</html>
