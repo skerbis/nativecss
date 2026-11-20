@@ -61,7 +61,8 @@ Barrierefreiheitserklärung.
 - **Inhalt:** Karten (Overlay, Auswahl-Karten, Raster mit Subgrid, Skelett), Listen,
   Leader-Linien, Tabellen (sortierbar, Scroll-Schatten), Zeitleiste, Stepper, Kommentare,
   Hinweise, Badges.
-- **Navigation:** Kopfleiste, Off-Canvas, Priority-Nav, Drilldown, Breadcrumb, Tabs (mit
+- **Navigation:** Kopfleiste, die ohne festen Breakpoint genau dann zur Menü-Schaltfläche wird,
+  wenn die Punkte nicht mehr in eine Zeile passen, Off-Canvas, Priority-Nav, Drilldown, Breadcrumb, Tabs (mit
   Animationen), Pagination, Abschnitts-Navigation, Befehlspalette, Dropdown/Aktionsmenü,
   Pillen-Gruppe, Toolbar mit Split-Button.
 - **Formulare:** alle Feldtypen, Validierung, Floating Labels, Segmented (auch als

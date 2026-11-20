@@ -312,6 +312,8 @@ function buildTree(lang, currentSlug, pad, collapsible = false) {
 // (Marke auf der Startseite, Handbuch-Übersicht, Beispiele); auf jeder anderen Handbuch-Seite ist "Handbuch"
 // der aktuelle BEREICH (aria-current="true") - die Seite selbst markiert die Sidebar.
 // Im Off-Canvas-Menü (unter 64rem) folgt darunter derselbe Baum wie in der Sidebar.
+// data-ncss-nav-auto="off": Menü und Seitenleiste wechseln bewusst an DERSELBEN festen
+// Schwelle (64rem, site-shell.css) - die automatische Messung aus js/nav.js ist hier aus.
 function buildTopbar(lang, page) {
   const s = strings[lang];
   const anyNewExample = nav.examples.some((e) => e.new);
@@ -319,7 +321,7 @@ function buildTopbar(lang, page) {
     `          <li class="ncss-nav-item"><a href="${href}"${state ? ` aria-current="${state}"` : ""}>${label}${extra}</a></li>`;
   const docsState = page.kind === "docs" ? "true" : "";
   return [
-    `    <nav class="ncss-nav site-nav" aria-label="${s.navLabel}">`,
+    `    <nav class="ncss-nav site-nav" data-ncss-nav-auto="off" aria-label="${s.navLabel}">`,
     `      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="${s.menuLabel}"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>`,
     `      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="${s.navPanelLabel}">`,
     `        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="${s.closeLabel}"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>`,

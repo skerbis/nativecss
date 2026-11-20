@@ -128,7 +128,7 @@
         </ul>
       </div>
     </nav>
-    <p class="ncss-text-sm ncss-text-muted">Make the window narrower - below 64rem the mega column view automatically turns into a stacked list (the same nav-collapse convention as the regular dropdown).</p>
+    <p class="ncss-text-sm ncss-text-muted">In compact mode (off-canvas, see below) the mega column view automatically turns into a stacked list - just like the regular dropdown.</p>
   </section>
 
   <!-- Tree-Navigation -->
@@ -161,10 +161,44 @@
     </nav>
   </section>
 
-  <!-- Off-Canvas -->
+  <!-- Off-canvas + automatic compact mode -->
   <section id="offcanvas" class="ncss-stack">
-    <h2 class="demo-section-title">Off-canvas (mobile collapse)</h2>
-    <p class="ncss-text-muted ncss-text-sm">The menu button in the top bar (make the window narrower than 64rem, or use a phone) opens the same panel as an off-canvas sidebar - one nav structure, two presentations, see components/nav.css.</p>
+    <h2 class="demo-section-title">Off-canvas and automatic compact mode</h2>
+    <p class="ncss-text-muted ncss-text-sm">One nav structure, two presentations: in the row, or behind the menu button as an off-canvas panel (<code>&lt;dialog&gt;</code>). With <code>js/nav.js</code> no fixed width decides, the available space does: the script measures with <code>ResizeObserver</code> whether the list fits into <strong>one</strong> row next to brand and actions. The list never wraps into a second row - a short nav stays in the row even on a phone, a long one collapses even on desktop.</p>
+    <pre><code class="language-html">&lt;script src="js/nav.js" defer&gt;&lt;/script&gt;  &lt;!-- in &lt;head&gt;: state is known before the first paint --&gt;
+
+&lt;header class="ncss-topbar"&gt;&lt;div class="ncss-topbar-inner"&gt;
+  &lt;a class="ncss-topbar-brand" href="/"&gt;Brand&lt;/a&gt;
+  &lt;nav class="ncss-nav" aria-label="Main navigation"&gt;
+    &lt;button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Open menu"&gt;☰&lt;/button&gt;
+    &lt;dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Menu"&gt;
+      &lt;button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Close menu"&gt;&amp;times;&lt;/button&gt;
+      &lt;ul class="ncss-nav-list"&gt; ... &lt;/ul&gt;
+    &lt;/dialog&gt;
+  &lt;/nav&gt;
+  &lt;div class="ncss-topbar-actions"&gt; search, button ... &lt;/div&gt;
+&lt;/div&gt;&lt;/header&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Live - drag the slider (the frame is its own viewport). The menu button appears exactly when the items no longer fit next to search and button:</p>
+    <div class="ncss-stack ncss-stack--tight">
+      <label for="navAutoWidthSlider" class="ncss-text-sm ncss-text-muted">Frame width: <output id="navAutoWidthOutput">1100px</output></label>
+      <input type="range" id="navAutoWidthSlider" min="320" max="1100" value="1100" step="10" style="width: min(100%, 40rem);">
+    </div>
+    <div style="overflow: hidden; width: min(100%, 68rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe id="navAutoFrame" src="~/demo/assets/nav-auto-demo-en.html" style="display: block; width: 1100px; max-width: 100%; height: 22rem; border: 0;" title="Automatic compact mode, live"></iframe>
+    </div>
+    <div class="ncss-table-scroll">
+      <table class="ncss-table--compact">
+        <thead><tr><th>Markup</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>(default) with <code>js/nav.js</code></td><td>Automatic: row while it fits, otherwise menu button. The script sets <code>data-ncss-nav-auto="inline"</code> or <code>"compact"</code> and reports every switch as the event <code>ncss-nav-change</code> (<code>event.detail.compact</code>).</td></tr>
+          <tr><td><code>.ncss-nav--compact</code></td><td>Always the menu button, at any width.</td></tr>
+          <tr><td><code>data-ncss-nav-auto="off"</code></td><td>No measuring - fixed switch at 64rem (e.g. when other page CSS depends on the same threshold, like this website's top bar).</td></tr>
+          <tr><td>without JavaScript</td><td>Falls back to the media query at 64rem (above it a row that wraps when space runs out).</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted">Your own CSS for the compact state (e.g. moving elements into the panel): <code>.ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])</code> - plus the same rules in <code>@media (max-width: 63.99rem)</code> for pages without JavaScript. <code>&lt;ncss-nav-priority&gt;</code> and <code>&lt;ncss-nav-drilldown&gt;</code> have their own logic and are not measured.</p>
+    <p class="ncss-text-sm ncss-text-muted"><strong>Accessibility:</strong> the menu button needs a name (<code>aria-label</code>); <code>js/nav.js</code> adds <code>aria-controls</code> and keeps <code>aria-expanded</code> in sync with the panel. If keyboard focus is in the list when it collapses, it moves to the menu button; when there is room again an open panel closes and focus stays on the link. Focus is trapped only in the open modal panel, Escape closes it and returns focus to the button. Measuring also reacts to larger text, zoom and text spacing (WCAG 1.4.4, 1.4.10, 1.4.12) - it observes the content, not only the window width. Showing/hiding follows <code>prefers-reduced-motion</code>.</p>
   </section>
 
   <!-- Priority-Navigation -->

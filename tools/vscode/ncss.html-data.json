@@ -824,6 +824,13 @@
    }
   },
   {
+   "name": "data-ncss-nav-auto",
+   "description": {
+    "kind": "markdown",
+    "value": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem)\n\nQuelle: `components/nav.css`, `js/nav.js`"
+   }
+  },
+  {
    "name": "data-ncss-notify",
    "description": {
     "kind": "markdown",

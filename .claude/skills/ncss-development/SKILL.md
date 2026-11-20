@@ -340,8 +340,18 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   Komponente wie `.ncss-card--horizontal` braucht dafür einen separaten
   Container-Query-Wrapper (`.ncss-card-container`/`.ncss-split-container`).
 - Ein FESTER Viewport-Breakpoint (statt Container Query) bleibt als dokumentierter
-  Escape Hatch verfügbar (z.B. Nav-Umschaltung bei 64rem) - Standardweg ist trotzdem
+  Escape Hatch verfügbar (z.B. Nav-Umschaltung bei 64rem ohne JS) - Standardweg ist trotzdem
   immer zuerst Container Queries/intrinsisches Grid.
+- `.ncss-nav` schaltet seit 1.2 per `js/nav.js` nach PLATZ um (`data-ncss-nav-auto=
+  "inline|compact"`), 64rem ist nur noch der Rückfall ohne JS bzw. mit `="off"`. Seiten-CSS,
+  das sich an den Nav-Zustand hängt, braucht beide Wege: Zustands-Selektor
+  `.ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])` UND dieselben Regeln in
+  der Media Query (mit `:not([data-ncss-nav-auto="inline"])`), sonst stimmt es nur mit
+  ODER nur ohne JS. Bereichs-Selektoren in `:where()`, damit die Spezifität der Regeln
+  gleich bleibt (`.ncss-nav--scroll`/`<ncss-nav-priority>` überschreiben sie sonst nicht
+  mehr). Ein offenes modales Panel liegt im Top Layer - die Liste darin lässt sich nicht
+  als Zeile messen (display:contents greift dort nicht), deshalb schätzt nav.js dann aus
+  der zuletzt gemessenen Listenbreite.
 - `flex-wrap:wrap` auf einem Flex-Container garantiert NICHT, dass er nie mit dem
   nächsten fixen Breakpoint kollidiert - ob eine Zeile vor Erreichen eines
   JS-freien Mobile-Switches umbricht, hängt allein davon ab, ob Summe aller
