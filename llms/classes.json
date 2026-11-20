@@ -1940,6 +1940,7 @@
   "helpers/typography.css"
  ],
  "ncss-offcanvas": [
+  "components/nav.css",
   "components/off-canvas.css",
   "js/dialog-light-dismiss.js"
  ],

@@ -2126,7 +2126,7 @@ Elements.
 
 ### `components/nav.css`
 
-Klassen (17): `.ncss-btn` `.ncss-dialog-close` `.ncss-divider--vertical` `.ncss-nav` `.ncss-nav--compact` `.ncss-nav--scroll` `.ncss-nav--tree` `.ncss-nav-dropdown` `.ncss-nav-dropdown--nested` `.ncss-nav-item` `.ncss-nav-list` `.ncss-nav-mega-col` `.ncss-nav-mega-heading` `.ncss-nav-panel` `.ncss-nav-submenu` `.ncss-nav-submenu--mega` `.ncss-nav-toggle`
+Klassen (18): `.ncss-btn` `.ncss-dialog-close` `.ncss-divider--vertical` `.ncss-nav` `.ncss-nav--compact` `.ncss-nav--scroll` `.ncss-nav--tree` `.ncss-nav-dropdown` `.ncss-nav-dropdown--nested` `.ncss-nav-item` `.ncss-nav-list` `.ncss-nav-mega-col` `.ncss-nav-mega-heading` `.ncss-nav-panel` `.ncss-nav-submenu` `.ncss-nav-submenu--mega` `.ncss-nav-toggle` `.ncss-offcanvas`
 
 ```text
 ncss - Navigation-Komponente (Layer "components"). Zwei Varianten:

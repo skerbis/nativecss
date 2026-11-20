@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.2.2] - 2026-11-20
+
+### Behoben
+
+- Kompakt-Modus: Wurde `components/off-canvas.css` NACH `components/nav.css` geladen (eigenes Cherry-Picking), gewann dessen Transition auf `display` - beim automatischen Umschalten blieb das geschlossene Panel dann als `display: contents` sichtbar in der Zeile hängen. Die Regel ohne `display`-Transition gilt jetzt unabhängig von der Import-Reihenfolge.
+
 ## [1.2.1] - 2026-11-20
 
 ### Behoben
