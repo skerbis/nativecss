@@ -181,6 +181,54 @@
   .demo-bleed-live input[type="range"] {
     inline-size: min(100%, 30rem);
   }
+  /* Unterstützen (GitHub Sponsors): immer in der Kopfleiste. Unter 90rem nur das Herz,
+     der Text bleibt als Name erhalten (visuell versteckt). Im Mobil-Menü zusätzlich als Punkt. */
+  .site-sponsor {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-block-size: 2.5rem;
+    padding-inline: 0.55rem;
+    border-radius: var(--ncss-radius-sm);
+    color: var(--ncss-color-text);
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .site-sponsor .ncss-icon-heart,
+  .site-sponsor-heart {
+    color: light-dark(#c2185b, #f48fb1);
+  }
+  .site-sponsor:focus-visible {
+    outline: 2px solid var(--ncss-color-brand);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .site-sponsor:hover {
+      background-color: var(--ncss-color-bg-subtle);
+    }
+  }
+  @media (max-width: 89.99rem) {
+    .site-sponsor-label {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+  /* Ganz schmal steht "Unterstützen" nur im Menü, sonst bricht die Kopfleiste um */
+  @media (max-width: 31.24rem) {
+    .site-sponsor {
+      display: none;
+    }
+  }
+  @media (min-width: 64rem) {
+    .site-panel-only {
+      display: none;
+    }
+  }
   .docs-layout {
     display: grid;
     grid-template-columns: 15rem 1fr;

@@ -327,6 +327,7 @@ function buildTopbar(lang, page) {
     item("index.html", s.navDocs, docsState),
     item(`${nav.examplesPage.slug}.html`, s.navExamples, page.kind === "examples" ? "page" : "", anyNewExample ? newDot(lang, s.containsNewLabel) : ""),
     item(`${nav.start.slug}.html#neu`, s.navNew, "", ` <span class="ncss-badge-dot" aria-hidden="true"></span>`),
+    `          <li class="ncss-nav-item site-panel-only"><a href="${nav.start.slug}.html#${s.supportAnchor}"><span class="ncss-icon ncss-icon-heart site-sponsor-heart" aria-hidden="true"></span> ${s.sponsorShort}</a></li>`,
     `        </ul>`,
     `        <div class="ncss-nav--tree site-panel-tree">`,
     buildTree(lang, page.slug, "          ", true),
@@ -344,6 +345,8 @@ function buildActions(lang, slug) {
   const s = strings[lang];
   const other = LANGS.find((l) => l !== lang);
   const lines = [];
+  // Unterstützen: immer sichtbar in der Kopfleiste (schmal nur das Herz, Text bleibt Name)
+  lines.push(`      <a class="site-sponsor" href="${nav.start.slug}.html#${s.supportAnchor}"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span><span class="site-sponsor-label">${s.sponsorShort}</span></a>`);
   if (existsSync(join(HERE, "content", other, `${slug}.html`))) {
     // Sehr schmal (unter 24rem) nur das Sprachkürzel, sonst bricht die Leiste um.
     lines.push(`      <a class="demo-topbar-lang" href="../${other}/${slug}.html" hreflang="${other}" lang="${other}" aria-label="${s.otherLangName}"><span class="demo-topbar-lang-long">${s.otherLangName}</span><span class="demo-topbar-lang-short" aria-hidden="true">${other.toUpperCase()}</span></a>`);
