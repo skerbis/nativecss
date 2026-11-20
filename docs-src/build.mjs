@@ -279,11 +279,20 @@ function rewritePaths(html, currentSlug) {
 
 /* --- Navigation ------------------------------------------------------------------------ */
 
-function buildTree(lang, currentSlug, pad) {
+// collapsible: im Mobil-Menü jede Gruppe als <details> (aktuelle Gruppe offen) - sonst
+// ist das Panel eine endlose Liste ohne Orientierung. Desktop-Sidebar bleibt offen.
+function buildTree(lang, currentSlug, pad, collapsible = false) {
   const parts = [];
   for (const group of nav.groups) {
-    parts.push(`${pad}<div class="docs-sidebar-group">`);
-    parts.push(`${pad}  <p class="docs-sidebar-group-title">${iconSpan(group.icon)}${group[lang]}${group.new ? newDot(lang, strings[lang].containsNewLabel) : ""}</p>`);
+    const title = `${iconSpan(group.icon)}${group[lang]}${group.new ? newDot(lang, strings[lang].containsNewLabel) : ""}`;
+    if (collapsible) {
+      const open = group.pages.some((p) => p.slug === currentSlug);
+      parts.push(`${pad}<details class="docs-sidebar-group"${open ? " open" : ""}>`);
+      parts.push(`${pad}  <summary class="docs-sidebar-group-title">${title}</summary>`);
+    } else {
+      parts.push(`${pad}<div class="docs-sidebar-group">`);
+      parts.push(`${pad}  <p class="docs-sidebar-group-title">${title}</p>`);
+    }
     parts.push(`${pad}  <ul class="ncss-nav-list">`);
     for (const page of group.pages) {
       const current = page.slug === currentSlug;
@@ -292,7 +301,7 @@ function buildTree(lang, currentSlug, pad) {
       );
     }
     parts.push(`${pad}  </ul>`);
-    parts.push(`${pad}</div>`);
+    parts.push(`${pad}</${collapsible ? "details" : "div"}>`);
   }
   return parts.join("\n");
 }
@@ -320,7 +329,7 @@ function buildTopbar(lang, page) {
     item(`${nav.start.slug}.html#neu`, s.navNew, "", ` <span class="ncss-badge-dot" aria-hidden="true"></span>`),
     `        </ul>`,
     `        <div class="ncss-nav--tree site-panel-tree">`,
-    buildTree(lang, page.slug, "          "),
+    buildTree(lang, page.slug, "          ", true),
     `        </div>`,
     `      </dialog>`,
     `    </nav>`,

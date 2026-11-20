@@ -137,17 +137,83 @@
     overflow-y: auto;
     overscroll-behavior: contain;
   }
+  /* Gruppen klar getrennt: Trennlinie + Abstand, Überschrift näher an IHRER Liste als an
+     der vorherigen Gruppe (Gesetz der Nähe), Einträge kompakt. */
   .docs-sidebar-group + .docs-sidebar-group {
-    margin-block-start: var(--ncss-space-md);
+    margin-block-start: var(--ncss-space-sm);
+    padding-block-start: var(--ncss-space-sm);
+    border-block-start: 1px solid var(--ncss-color-border);
   }
   .docs-sidebar-group-title {
-    font-size: var(--ncss-font-size-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: var(--ncss-font-size-xs, 0.75rem);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     color: var(--ncss-color-text-muted);
     padding-inline: var(--ncss-space-xs);
-    margin-block-end: var(--ncss-space-3xs);
+    margin-block: 0 var(--ncss-space-3xs);
+  }
+  .docs-sidebar-group .ncss-nav-list {
+    gap: 1px;
+    margin-block-start: 0;
+  }
+  .docs-sidebar-group .ncss-nav-item > a:not(.ncss-btn) {
+    padding-block: 0.3rem;
+    min-block-size: 1.75rem; /* WCAG 2.5.8: Ziel >= 24 px */
+    line-height: 1.3;
+  }
+  /* Mobil-Menü: Gruppen aufklappbar, Überschrift als großzügige Touch-Zeile mit Pfeil */
+  .site-panel-tree .docs-sidebar-group-title {
+    justify-content: space-between;
+    min-block-size: 2.75rem;
+    margin: 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text);
+  }
+  .site-panel-tree .docs-sidebar-group-title::-webkit-details-marker {
+    display: none;
+  }
+  .site-panel-tree .docs-sidebar-group-title::after {
+    content: "";
+    margin-inline-start: auto;
+    inline-size: 0.5em;
+    block-size: 0.5em;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    rotate: -45deg;
+    transition: rotate var(--ncss-motion-duration, 0.2s);
+  }
+  .site-panel-tree details[open] > .docs-sidebar-group-title::after {
+    rotate: 45deg;
+  }
+  .site-panel-tree .docs-sidebar-group-title:focus-visible {
+    outline: 2px solid var(--ncss-color-focus, var(--ncss-color-brand));
+    outline-offset: 2px;
+    border-radius: var(--ncss-radius-sm);
+  }
+  .site-panel-tree .docs-sidebar-group {
+    margin-block-end: 0; /* base.css: details hat sonst Absatz-Abstand */
+  }
+  .site-panel-tree .docs-sidebar-group + .docs-sidebar-group {
+    margin-block-start: 0;
+    padding-block-start: 0;
+  }
+  .site-panel-tree .ncss-nav-list {
+    margin-block-end: 0;
+  }
+  .site-panel-tree .docs-sidebar-group .ncss-nav-list {
+    padding-block-end: var(--ncss-space-xs);
+  }
+  .site-panel-tree .docs-sidebar-group .ncss-nav-item > a:not(.ncss-btn) {
+    min-block-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
   }
   @media (max-width: 63.99rem) {
     .docs-layout {
