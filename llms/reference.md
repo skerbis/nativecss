@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 847 Klassen, 18 Custom Elements, 48 data-ncss-Attribute, 204 Tokens.
+Stand: 855 Klassen, 18 Custom Elements, 48 data-ncss-Attribute, 204 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -1668,6 +1668,76 @@ dismiss.js setzt das für jedes ncss-Modal/-Off-Canvas ohne eigenes closedby aut
 closedby="closerequest" (nur Esc + Buttons) oder closedby="none" (nur Buttons, z.B. lange
 Formulare). Trefferfläche: der <dialog> selbst ist das Panel, alles außerhalb seiner Box
 ist Backdrop.
+```
+
+### `components/morph.css`
+
+Klassen (9): `.ncss-morph` `.ncss-morph--card` `.ncss-morph--circle` `.ncss-morph--reverse` `.ncss-morph--start` `.ncss-morph-content` `.ncss-morph-media` `.ncss-morph-stage` `.ncss-video-bg-toggle`
+
+```text
+ncss - Morphing beim Scrollen (Layer "components"): ein großes Bild/Video/Element
+startet in voller Breite und schrumpft beim Hindurchscrollen weich auf ca. 45 %, rückt
+dabei an den Rand (Default: Ende = rechts in LTR) und macht Platz für Text daneben, der
+einblendet und hineingleitet. Rein CSS (scroll-getriebene Animation), kein JS.
+
+Markup (Medium zuerst - Lesereihenfolge Bild, dann Text; schmal steht es oben):
+  <section class="ncss-morph" aria-label="...">
+    <div class="ncss-morph-stage">
+      <div class="ncss-morph-media"><img src="..." alt="..."></div>
+      <div class="ncss-morph-content">
+        <h3>...</h3>
+        <p>...</p>
+      </div>
+    </div>
+  </section>
+
+Ebenen:
+.ncss-morph          Container (Container Query, Name ncss-morph). Trägt Modifier und
+                     Parameter.
+.ncss-morph-stage    im Scroll-Modus die hohe Strecke (--ncss-morph-height) und Subjekt
+                     der benannten view-timeline; animiert EINE typisierte
+                     Fortschrittszahl (--_ncss-morph-p, 0..1), alles andere rechnet
+                     daraus (wie scroll-horizontal.css - cqi/cqb in @keyframes rechnet
+                     WebKit falsch auf, deshalb animieren die Keyframes nur die Zahl).
+.ncss-morph-media    Spur für das Medium, im Scroll-Modus sticky und eine Viewport-Höhe.
+                     Das ERSTE Kind morpht (img, video, picture, canvas oder ein
+                     beliebiges Element).
+.ncss-morph-content  Text/Element daneben, im Scroll-Modus ebenfalls sticky, vertikal
+                     mittig. Inhalt kürzer als eine Bildschirmhöhe halten.
+Bewusst zwei sticky Spuren in EINEM Grid-Feld statt eines dritten Wrappers: die hohe
+Strecke muss ein Nachfahre des Containers sein (eine Container Query kann die Höhe des
+Containers selbst nicht umschalten - schmal soll sie entfallen).
+
+Modifier:
+  --start    Medium wandert an den Anfang (links in LTR), Text am Ende
+  --reverse  umgekehrt: startet nebeneinander, das Medium wächst auf volle Breite, der
+             Text geht
+  --card     Form-Morph zur abgerundeten Karte (größerer Radius + Schatten)
+  --circle   Form-Morph zum Kreis (z.B. Video → Kreis); Endgröße höchstens 72 % der
+             Bühnenhöhe, damit der Kreis rund bleibt
+Parameter (Custom Properties auf .ncss-morph):
+  --ncss-morph-size    Endbreite des Mediums (Default 45%, Prozent der Breite)
+  --ncss-morph-radius  Endradius (Default --ncss-radius-lg, mit --card das Doppelte;
+                       bei --circle ohne Wirkung)
+  --ncss-morph-height  Scroll-Strecke = Höhe der Bühne (Default 250vh)
+  --ncss-morph-gap     Abstand Medium/Text (Default --ncss-space-lg)
+  --ncss-morph-top     Versatz für eine sticky Kopfleiste (Default 0px), z.B.
+                       style="--ncss-morph-top: var(--ncss-topbar-height)"
+
+Video: Pause-Schalter (WCAG 2.2.2) über das vorhandene Muster aus video-bg -
+data-ncss-video-bg an .ncss-morph-media + components/video-bg.css + js/video-bg.js. Das
+Script lädt/pausiert wie dort (reduzierte Bewegung: Poster), diese Datei setzt den
+Schalter nur an die passende Stelle des Mediums (Ecke, beim Kreis innerhalb des Rands).
+
+Fallback = Endzustand, statisch: kein animation-timeline, prefers-reduced-motion ODER
+<html data-motion="reduce"> (data-motion="full" hebt ein System-"reduce" auf), Druck:
+Medium und Text nebeneinander, keine hohe Strecke, nichts klebt. Schmaler Container
+(< 40rem): Medium über dem Text, kein Morph. Der Text steht immer im DOM und ist nie
+visibility:hidden; bekommt etwas in der Bühne Tastatur-Fokus, springt sie in den
+Endzustand (Text sichtbar, Fokus nicht verdeckt).
+
+Benötigt: tokens.css, colors.css (Abstände, Radien, Schatten). Für Videos optional
+components/video-bg.css + js/video-bg.js.
 ```
 
 ### `components/nav-drilldown.css`

@@ -1,4 +1,4 @@
-<!--DESC: Scroll-getriebene Effekte - Reveal-Formen, Text-Reveal, Count-up, Marquee, Horizontal-Scroll, Scrollytelling, Curtain-Sektionen. Nativ zuerst, JS nur als Fallback.-->
+<!--DESC: Scroll-getriebene Effekte - Reveal-Formen, Text-Reveal, Count-up, Marquee, Horizontal-Scroll, Scrollytelling, Curtain-Sektionen, Morphing. Nativ zuerst, JS nur als Fallback.-->
 <section class="ncss-stack">
   <h1>Scroll-Effekte</h1>
   <p class="ncss-text-lg ncss-text-muted">Effekte, die an die Scroll-Position gekoppelt sind - nativ über <code>animation-timeline: view()</code> bzw. (Chromium) scroll-getriggerte Animationen. JavaScript nur als kleiner, opt-in Fallback oder dort, wo CSS nicht hinkommt (Tastatur-Fokus, Zustand, Events). <a href="../../demo/scroll-effects.html">Live-Demo</a>.</p>
@@ -20,6 +20,7 @@
         <tr><td>Horizontal-Scroll</td><td>CSS (+ JS für Fokus/Höhe)</td><td>dito</td><td>wischbare Snap-Reihe</td></tr>
         <tr><td>Scrollytelling</td><td colspan="3"><code>&lt;ncss-scrolly&gt;</code> (JS), ohne JS lesbarer Fluss</td></tr>
         <tr><td>Curtain / Reveal-Pin</td><td>CSS</td><td>CSS</td><td>normale Sektionen</td></tr>
+        <tr><td>Morphing</td><td>CSS</td><td>CSS</td><td>Endzustand statisch (Medium neben Text)</td></tr>
       </tbody>
     </table>
   </div>
@@ -60,6 +61,52 @@
   &lt;/div&gt;
 &lt;/section&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">Parameter: <code>--ncss-reveal-pin-length</code> (250vh), <code>--ncss-reveal-pin-inset</code> (<code>32% 14% 6%</code>), <code>--ncss-reveal-pin-radius</code>.</p>
+</section>
+
+<section class="ncss-stack" id="morph" data-subnav-label="Morphing">
+  <h2 class="demo-section-title">Morphing beim Scrollen</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/morph.css</code>, kein JS. Ein großes Bild, Video oder beliebiges Element startet in voller Breite und schrumpft beim Hindurchscrollen weich auf ca. 45&nbsp;% an den Rand - daneben wird Text (oder ein anderes Element) frei und gleitet herein. Oder andersrum. Technik: gepinnte Spuren in einer hohen Bühne, eine <code>view-timeline</code> treibt eine per <code>@property</code> typisierte Fortschrittszahl, daraus rechnen Größe, Radius und Einblendung.</p>
+  <pre><code class="language-html">&lt;section class="ncss-morph" aria-label="Das Haus"&gt;
+  &lt;div class="ncss-morph-stage"&gt;
+    &lt;div class="ncss-morph-media"&gt;&lt;img src="haus.webp" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-morph-content"&gt;
+      &lt;h3&gt;Platz für Text&lt;/h3&gt;
+      &lt;p&gt;...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Video zum Kreis, mit Pause-Schalter (video-bg.css + js/video-bg.js) --&gt;
+&lt;section class="ncss-morph ncss-morph--circle" aria-label="..."&gt;
+  &lt;div class="ncss-morph-stage"&gt;
+    &lt;div class="ncss-morph-media" data-ncss-video-bg&gt;
+      &lt;video muted loop playsinline preload="none"
+             poster="frame.jpg" aria-hidden="true"&gt;
+        &lt;source data-src="loop.webm" type="video/webm"&gt;
+      &lt;/video&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-morph-content"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse / Parameter</th><th scope="col">Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-morph</code></td><td>Container (Container Query) - trägt Modifier und Parameter</td></tr>
+        <tr><td><code>.ncss-morph-stage</code></td><td>Bühne: im Scroll-Modus die hohe Strecke, sonst ein Zwei-Spalten-Raster</td></tr>
+        <tr><td><code>.ncss-morph-media</code></td><td>Spur des Mediums - das erste Kind morpht (<code>img</code>, <code>video</code>, <code>picture</code>, <code>canvas</code> oder beliebiges Element)</td></tr>
+        <tr><td><code>.ncss-morph-content</code></td><td>Text/Element daneben (kürzer als eine Bildschirmhöhe halten)</td></tr>
+        <tr><td><code>--start</code></td><td>Medium wandert an den Anfang (links), Text am Ende</td></tr>
+        <tr><td><code>--reverse</code></td><td>umgekehrt: beginnt nebeneinander, Medium wächst auf volle Breite, Text geht</td></tr>
+        <tr><td><code>--card</code> / <code>--circle</code></td><td>Form-Morph zur abgerundeten Karte mit Schatten / zum Kreis</td></tr>
+        <tr><td><code>--ncss-morph-size</code></td><td>Endbreite des Mediums (Default <code>45%</code>)</td></tr>
+        <tr><td><code>--ncss-morph-radius</code></td><td>Endradius (Default <code>--ncss-radius-lg</code>, mit <code>--card</code> das Doppelte)</td></tr>
+        <tr><td><code>--ncss-morph-height</code></td><td>Scroll-Strecke = Höhe der Bühne (Default <code>250vh</code>)</td></tr>
+        <tr><td><code>--ncss-morph-gap</code> / <code>--ncss-morph-top</code></td><td>Abstand Medium/Text; Versatz für eine klebende Kopfleiste (z.B. <code>var(--ncss-topbar-height)</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Fallback und Barrierefreiheit: ohne <code>animation-timeline</code> (z.B. Firefox), bei <code>prefers-reduced-motion</code> oder <code>&lt;html data-motion="reduce"&gt;</code> (<a href="a11y-preferences.html">Einstellungen</a>; <code>data-motion="full"</code> hebt ein System-„reduzieren“ auf) und im Druck steht der Endzustand statisch da - Medium und Text nebeneinander, nichts klebt, keine hohe Strecke. In schmalen Containern (unter 40rem) steht das Medium über dem Text, ohne Morph. Der Text ist immer im DOM und lesbar; bekommt etwas in der Bühne Tastatur-Fokus, springt sie in den Endzustand. Videos: Pause-Schalter (WCAG 2.2.2) und Laden/Pausieren nach Bewegungs-Einstellung über <code>data-ncss-video-bg</code> + <code>js/video-bg.js</code> wie beim <a href="video-audio.html#video-bg">Hintergrundvideo</a>.</p>
 </section>
 
 <section class="ncss-stack" id="text-reveal">

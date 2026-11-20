@@ -109,6 +109,7 @@
 @import url("components/count-up.css") layer(components);
 @import url("components/marquee.css") layer(components);
 @import url("components/reveal-pin.css") layer(components);
+@import url("components/morph.css") layer(components);
 @import url("components/tabs.css") layer(components);
 @import url("components/tooltip.css") layer(components);
 @import url("components/pagination.css") layer(components);

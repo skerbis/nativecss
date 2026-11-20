@@ -1,4 +1,4 @@
-<!--DESC: Scroll-driven effects - reveal shapes, text reveal, count-up, marquee, horizontal scroll, scrollytelling, curtain sections. Native first, JS only as fallback.-->
+<!--DESC: Scroll-driven effects - reveal shapes, text reveal, count-up, marquee, horizontal scroll, scrollytelling, curtain sections, morphing. Native first, JS only as fallback.-->
 <section class="ncss-stack">
   <h1>Scroll Effects</h1>
   <p class="ncss-text-lg ncss-text-muted">Effects tied to the scroll position - native via <code>animation-timeline: view()</code> and (Chromium) scroll-triggered animations. JavaScript only as a small opt-in fallback or where CSS cannot reach (keyboard focus, state, events). <a href="../../demo/scroll-effects.html">Live demo</a>.</p>
@@ -20,6 +20,7 @@
         <tr><td>Horizontal scroll</td><td>CSS (+ JS for focus/height)</td><td>same</td><td>swipeable snap row</td></tr>
         <tr><td>Scrollytelling</td><td colspan="3"><code>&lt;ncss-scrolly&gt;</code> (JS), readable flow without JS</td></tr>
         <tr><td>Curtain / reveal pin</td><td>CSS</td><td>CSS</td><td>plain sections</td></tr>
+        <tr><td>Morphing</td><td>CSS</td><td>CSS</td><td>final state, static (media beside text)</td></tr>
       </tbody>
     </table>
   </div>
@@ -60,6 +61,52 @@
   &lt;/div&gt;
 &lt;/section&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-reveal-pin-length</code> (250vh), <code>--ncss-reveal-pin-inset</code> (<code>32% 14% 6%</code>), <code>--ncss-reveal-pin-radius</code>.</p>
+</section>
+
+<section class="ncss-stack" id="morph" data-subnav-label="Morphing">
+  <h2 class="demo-section-title">Morphing on scroll</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/morph.css</code>, no JS. A large image, video or any element starts at full width and smoothly shrinks to about 45&nbsp;% at the edge while you scroll through - text (or another element) is uncovered beside it and slides in. Or the other way round. Technique: pinned lanes in a tall stage, a <code>view-timeline</code> drives a progress number typed via <code>@property</code>, and size, radius and fade are calculated from it.</p>
+  <pre><code class="language-html">&lt;section class="ncss-morph" aria-label="The house"&gt;
+  &lt;div class="ncss-morph-stage"&gt;
+    &lt;div class="ncss-morph-media"&gt;&lt;img src="house.webp" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-morph-content"&gt;
+      &lt;h3&gt;Room for text&lt;/h3&gt;
+      &lt;p&gt;...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Video into a circle, with pause button (video-bg.css + js/video-bg.js) --&gt;
+&lt;section class="ncss-morph ncss-morph--circle" aria-label="..."&gt;
+  &lt;div class="ncss-morph-stage"&gt;
+    &lt;div class="ncss-morph-media" data-ncss-video-bg&gt;
+      &lt;video muted loop playsinline preload="none"
+             poster="frame.jpg" aria-hidden="true"&gt;
+        &lt;source data-src="loop.webm" type="video/webm"&gt;
+      &lt;/video&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-morph-content"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class / parameter</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-morph</code></td><td>Container (container query) - carries modifiers and parameters</td></tr>
+        <tr><td><code>.ncss-morph-stage</code></td><td>Stage: the tall scroll distance in scroll mode, otherwise a two-column grid</td></tr>
+        <tr><td><code>.ncss-morph-media</code></td><td>Media lane - the first child morphs (<code>img</code>, <code>video</code>, <code>picture</code>, <code>canvas</code> or any element)</td></tr>
+        <tr><td><code>.ncss-morph-content</code></td><td>Text/element beside it (keep it shorter than one screen height)</td></tr>
+        <tr><td><code>--start</code></td><td>Media moves to the start (left), text at the end</td></tr>
+        <tr><td><code>--reverse</code></td><td>The other way round: starts side by side, the media grows to full width, the text leaves</td></tr>
+        <tr><td><code>--card</code> / <code>--circle</code></td><td>Shape morph into a rounded card with shadow / into a circle</td></tr>
+        <tr><td><code>--ncss-morph-size</code></td><td>Final media width (default <code>45%</code>)</td></tr>
+        <tr><td><code>--ncss-morph-radius</code></td><td>Final radius (default <code>--ncss-radius-lg</code>, doubled with <code>--card</code>)</td></tr>
+        <tr><td><code>--ncss-morph-height</code></td><td>Scroll distance = stage height (default <code>250vh</code>)</td></tr>
+        <tr><td><code>--ncss-morph-gap</code> / <code>--ncss-morph-top</code></td><td>Gap between media and text; offset for a sticky header (e.g. <code>var(--ncss-topbar-height)</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Fallback and accessibility: without <code>animation-timeline</code> (e.g. Firefox), with <code>prefers-reduced-motion</code> or <code>&lt;html data-motion="reduce"&gt;</code> (<a href="a11y-preferences.html">preferences</a>; <code>data-motion="full"</code> lifts a system "reduce") and in print the final state is shown statically - media and text side by side, nothing sticks, no tall section. In narrow containers (below 40rem) the media sits above the text, without morphing. The text is always in the DOM and readable; when something in the stage receives keyboard focus, it jumps to the final state. Videos: pause button (WCAG 2.2.2) and loading/pausing according to the motion preference via <code>data-ncss-video-bg</code> + <code>js/video-bg.js</code>, as with the <a href="video-audio.html#video-bg">background video</a>.</p>
 </section>
 
 <section class="ncss-stack" id="text-reveal">

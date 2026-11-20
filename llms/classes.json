@@ -1565,6 +1565,30 @@
   "components/modal.css",
   "js/events.js"
  ],
+ "ncss-morph": [
+  "components/morph.css"
+ ],
+ "ncss-morph--card": [
+  "components/morph.css"
+ ],
+ "ncss-morph--circle": [
+  "components/morph.css"
+ ],
+ "ncss-morph--reverse": [
+  "components/morph.css"
+ ],
+ "ncss-morph--start": [
+  "components/morph.css"
+ ],
+ "ncss-morph-content": [
+  "components/morph.css"
+ ],
+ "ncss-morph-media": [
+  "components/morph.css"
+ ],
+ "ncss-morph-stage": [
+  "components/morph.css"
+ ],
  "ncss-nav": [
   "components/nav-priority.css",
   "components/nav.css"
@@ -2554,6 +2578,7 @@
   "js/video-bg.js"
  ],
  "ncss-video-bg-toggle": [
+  "components/morph.css",
   "components/video-bg.css",
   "js/video-bg.js"
  ],

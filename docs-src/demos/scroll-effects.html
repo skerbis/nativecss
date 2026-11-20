@@ -124,6 +124,7 @@
 <script src="~/dist/js/count-up.js" defer></script>
 <script src="~/dist/js/marquee.js" defer></script>
 <script src="~/dist/js/reveal.js" defer></script>
+<script src="~/dist/js/video-bg.js" defer></script>
 <script src="~/demo/assets/js/scroll-effects-demo.js" defer></script>
 -->
   <div class="ncss-container ncss-stack ncss-py-xl">
@@ -227,6 +228,61 @@
         <div class="ncss-reveal-pin-content">
           <h3>Angekommen</h3>
           <p>Das Panel blendet erst ein, wenn das Medium den Viewport füllt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="live-morph" aria-labelledby="morph-title">
+    <div class="ncss-container ncss-stack ncss-py-xl">
+      <h2 class="demo-section-title" id="morph-title">Morphing</h2>
+      <p class="ncss-text-muted"><code>components/morph.css</code> - das Medium startet in voller Breite, schrumpft beim Scrollen an den Rand und legt den Text daneben frei.</p>
+    </div>
+    <div class="ncss-morph" style="--ncss-morph-top: var(--ncss-scroll-offset, var(--ncss-topbar-height));">
+      <div class="ncss-morph-stage">
+        <div class="ncss-morph-media"><img src="~/demo/assets/examples/hotel/haus-am-see.webp" alt="Haus am See mit Liegestühlen auf der Wiese am Ufer" width="1125" height="1500" loading="lazy"></div>
+        <div class="ncss-morph-content">
+          <p class="ncss-eyebrow">Ende (Default)</p>
+          <h3>Platz für Text</h3>
+          <p>Das Bild rückt nach rechts und schrumpft auf 45&nbsp;% - der Text daneben blendet ein. Zurückscrollen spult zurück.</p>
+          <p class="ncss-text-sm ncss-text-muted">Foto: <a href="https://www.pexels.com/photo/serene-lakeside-retreat-in-tyrol-austria-38973729/">Petra Nesti / Pexels</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-morph ncss-morph--start ncss-morph--card" style="--ncss-morph-top: var(--ncss-scroll-offset, var(--ncss-topbar-height));">
+      <div class="ncss-morph-stage">
+        <div class="ncss-morph-media"><img src="~/demo/assets/examples/hotel/steg-morgennebel.webp" alt="Steg im Morgennebel, die Sonne geht über dem See auf" width="1600" height="1066" loading="lazy"></div>
+        <div class="ncss-morph-content">
+          <p class="ncss-eyebrow"><code>--start --card</code></p>
+          <h3>Nach links, als Karte</h3>
+          <p>Mit <code>--start</code> wandert das Medium an den Anfang, <code>--card</code> rundet es zur Karte mit Schatten.</p>
+          <p class="ncss-text-sm ncss-text-muted">Foto: <a href="https://pexels.com/photo/metal-dock-2440257/">Lukáš Dlutko / Pexels</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-morph ncss-morph--circle" style="--ncss-morph-top: var(--ncss-scroll-offset, var(--ncss-topbar-height));">
+      <div class="ncss-morph-stage">
+        <div class="ncss-morph-media" data-ncss-video-bg>
+          <video muted loop playsinline preload="none" poster="~/demo/assets/media/waves-poster.jpg" aria-hidden="true">
+            <source data-src="~/demo/assets/media/waves-loop.webm" type="video/webm">
+            <source data-src="~/demo/assets/media/waves-loop.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="ncss-morph-content">
+          <p class="ncss-eyebrow"><code>--circle</code></p>
+          <h3>Video wird zum Kreis</h3>
+          <p>Ein Loop-Video schrumpft zum Kreis. Der Pause-Schalter kommt von <code>js/video-bg.js</code> und wandert mit dem Medium mit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-morph ncss-morph--reverse" style="--ncss-morph-top: var(--ncss-scroll-offset, var(--ncss-topbar-height)); --ncss-morph-height: 200vh;">
+      <div class="ncss-morph-stage">
+        <div class="ncss-morph-media"><img src="~/demo/assets/examples/gemeinde/bootshafen.webp" alt="Ruderboote am Ufer, dahinter Bäume und Berge, die sich im See spiegeln" width="1600" height="1073" loading="lazy"></div>
+        <div class="ncss-morph-content">
+          <p class="ncss-eyebrow"><code>--reverse</code></p>
+          <h3>Und andersrum</h3>
+          <p>Klein neben dem Text beginnen, dann übernimmt das Bild die ganze Breite.</p>
+          <p class="ncss-text-sm ncss-text-muted">Foto: <a href="https://pexels.com/photo/scenic-view-of-tranquil-lake-in-bavaria-31913082/">Branka Krnjaja / Pexels</a></p>
         </div>
       </div>
     </div>

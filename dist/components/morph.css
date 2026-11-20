@@ -1,0 +1,317 @@
+/**
+ * ncss - Morphing beim Scrollen (Layer "components"): ein großes Bild/Video/Element
+ * startet in voller Breite und schrumpft beim Hindurchscrollen weich auf ca. 45 %, rückt
+ * dabei an den Rand (Default: Ende = rechts in LTR) und macht Platz für Text daneben, der
+ * einblendet und hineingleitet. Rein CSS (scroll-getriebene Animation), kein JS.
+ *
+ * Markup (Medium zuerst - Lesereihenfolge Bild, dann Text; schmal steht es oben):
+ *   <section class="ncss-morph" aria-label="...">
+ *     <div class="ncss-morph-stage">
+ *       <div class="ncss-morph-media"><img src="..." alt="..."></div>
+ *       <div class="ncss-morph-content">
+ *         <h3>...</h3>
+ *         <p>...</p>
+ *       </div>
+ *     </div>
+ *   </section>
+ *
+ * Ebenen:
+ * .ncss-morph          Container (Container Query, Name ncss-morph). Trägt Modifier und
+ *                      Parameter.
+ * .ncss-morph-stage    im Scroll-Modus die hohe Strecke (--ncss-morph-height) und Subjekt
+ *                      der benannten view-timeline; animiert EINE typisierte
+ *                      Fortschrittszahl (--_ncss-morph-p, 0..1), alles andere rechnet
+ *                      daraus (wie scroll-horizontal.css - cqi/cqb in @keyframes rechnet
+ *                      WebKit falsch auf, deshalb animieren die Keyframes nur die Zahl).
+ * .ncss-morph-media    Spur für das Medium, im Scroll-Modus sticky und eine Viewport-Höhe.
+ *                      Das ERSTE Kind morpht (img, video, picture, canvas oder ein
+ *                      beliebiges Element).
+ * .ncss-morph-content  Text/Element daneben, im Scroll-Modus ebenfalls sticky, vertikal
+ *                      mittig. Inhalt kürzer als eine Bildschirmhöhe halten.
+ * Bewusst zwei sticky Spuren in EINEM Grid-Feld statt eines dritten Wrappers: die hohe
+ * Strecke muss ein Nachfahre des Containers sein (eine Container Query kann die Höhe des
+ * Containers selbst nicht umschalten - schmal soll sie entfallen).
+ *
+ * Modifier:
+ *   --start    Medium wandert an den Anfang (links in LTR), Text am Ende
+ *   --reverse  umgekehrt: startet nebeneinander, das Medium wächst auf volle Breite, der
+ *              Text geht
+ *   --card     Form-Morph zur abgerundeten Karte (größerer Radius + Schatten)
+ *   --circle   Form-Morph zum Kreis (z.B. Video → Kreis); Endgröße höchstens 72 % der
+ *              Bühnenhöhe, damit der Kreis rund bleibt
+ * Parameter (Custom Properties auf .ncss-morph):
+ *   --ncss-morph-size    Endbreite des Mediums (Default 45%, Prozent der Breite)
+ *   --ncss-morph-radius  Endradius (Default --ncss-radius-lg, mit --card das Doppelte;
+ *                        bei --circle ohne Wirkung)
+ *   --ncss-morph-height  Scroll-Strecke = Höhe der Bühne (Default 250vh)
+ *   --ncss-morph-gap     Abstand Medium/Text (Default --ncss-space-lg)
+ *   --ncss-morph-top     Versatz für eine sticky Kopfleiste (Default 0px), z.B.
+ *                        style="--ncss-morph-top: var(--ncss-topbar-height)"
+ *
+ * Video: Pause-Schalter (WCAG 2.2.2) über das vorhandene Muster aus video-bg -
+ * data-ncss-video-bg an .ncss-morph-media + components/video-bg.css + js/video-bg.js. Das
+ * Script lädt/pausiert wie dort (reduzierte Bewegung: Poster), diese Datei setzt den
+ * Schalter nur an die passende Stelle des Mediums (Ecke, beim Kreis innerhalb des Rands).
+ *
+ * Fallback = Endzustand, statisch: kein animation-timeline, prefers-reduced-motion ODER
+ * <html data-motion="reduce"> (data-motion="full" hebt ein System-"reduce" auf), Druck:
+ * Medium und Text nebeneinander, keine hohe Strecke, nichts klebt. Schmaler Container
+ * (< 40rem): Medium über dem Text, kein Morph. Der Text steht immer im DOM und ist nie
+ * visibility:hidden; bekommt etwas in der Bühne Tastatur-Fokus, springt sie in den
+ * Endzustand (Text sichtbar, Fokus nicht verdeckt).
+ *
+ * Benötigt: tokens.css, colors.css (Abstände, Radien, Schatten). Für Videos optional
+ * components/video-bg.css + js/video-bg.js.
+ */
+
+@property --_ncss-morph-p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+.ncss-morph {
+  --_ncss-morph-size: var(--ncss-morph-size, 45%);
+  --_ncss-morph-gap: var(--ncss-morph-gap, var(--ncss-space-lg));
+  --_ncss-morph-radius: var(--ncss-morph-radius, var(--ncss-radius-lg));
+  --_ncss-morph-top: var(--ncss-morph-top, 0px);
+  container: ncss-morph / inline-size;
+}
+.ncss-morph--card {
+  --_ncss-morph-radius: var(--ncss-morph-radius, calc(var(--ncss-radius-lg) * 2));
+}
+.ncss-morph--circle {
+  --_ncss-morph-radius: 50%;
+}
+
+/* --- Basis = Fallback = Endzustand ---------------------------------------------------- */
+.ncss-morph-stage {
+  display: grid;
+  grid-template-areas: "media" "content";
+  align-items: center;
+  gap: var(--_ncss-morph-gap);
+}
+
+.ncss-morph-media {
+  grid-area: media;
+  position: relative;
+  min-inline-size: 0;
+
+  & > :first-child {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: var(--ncss-aspect-video, 16 / 9);
+    object-fit: cover;
+    object-position: var(--ncss-focus-point, center);
+    border-radius: var(--_ncss-morph-radius);
+    overflow: clip;
+  }
+  & > picture:first-child > img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: var(--ncss-focus-point, center);
+  }
+}
+.ncss-morph--card .ncss-morph-media > :first-child {
+  box-shadow: var(--ncss-shadow-lg);
+}
+.ncss-morph--circle .ncss-morph-media > :first-child {
+  aspect-ratio: 1;
+  max-inline-size: min(100%, 24rem);
+  margin-inline: auto;
+}
+
+/* Pause-Schalter (video-bg.css) beim Kreis unten mittig - in der Ecke läge er neben dem
+   Kreis. 8 % über dem Boden ist die Kreissehne breit genug für den Schalter. */
+.ncss-morph--circle .ncss-morph-media > .ncss-video-bg-toggle {
+  inset-inline: 0;
+  inset-block-end: 8%;
+  inline-size: fit-content;
+  margin-inline: auto;
+}
+
+.ncss-morph-content {
+  grid-area: content;
+  min-inline-size: 0;
+
+  & > :first-child { margin-block-start: 0; }
+  & > :last-child { margin-block-end: 0; }
+}
+
+@container ncss-morph (width >= 40rem) {
+  .ncss-morph-stage {
+    grid-template-columns: minmax(0, 1fr) var(--_ncss-morph-size);
+    grid-template-areas: "content media";
+  }
+  .ncss-morph--start .ncss-morph-stage {
+    grid-template-columns: var(--_ncss-morph-size) minmax(0, 1fr);
+    grid-template-areas: "media content";
+  }
+  .ncss-morph-media > :first-child {
+    aspect-ratio: 4 / 3;
+  }
+  .ncss-morph--circle .ncss-morph-media > :first-child {
+    aspect-ratio: 1;
+    max-inline-size: none;
+  }
+}
+
+/* --- Bewegung erlaubt? ---------------------------------------------------------------
+   Ein Schalter statt jede Regel doppelt: Systemeinstellung ohne Nutzerwahl "reduce" ODER
+   ausdrückliche Wahl data-motion="full" (js/preferences.js). Die Scroll-Regeln unten
+   fragen ihn per Style Query ab (überall vorhanden, wo view() läuft; ohne Style-Query-
+   Unterstützung bleibt der statische Endzustand - kein Fehlerzustand). */
+@media screen and (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]) .ncss-morph {
+    --_ncss-morph-motion: on;
+  }
+}
+@media screen {
+  :root[data-motion="full"] .ncss-morph {
+    --_ncss-morph-motion: on;
+  }
+}
+
+/* --- Scroll-getrieben (Progressive Enhancement) -------------------------------------- */
+@supports (animation-timeline: view()) {
+  @container ncss-morph (width >= 40rem) and style(--_ncss-morph-motion: on) {
+    .ncss-morph .ncss-morph-stage {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "stack";
+      align-items: start;
+      gap: 0;
+      block-size: var(--ncss-morph-height, 250vh);
+      /* Gleitender Text darf die Seite nie verbreitern. clip statt hidden: kein
+         Scroll-Container, sticky bleibt wirksam. */
+      overflow-x: clip;
+      view-timeline: --ncss-morph block;
+      /* Oben um die Kopfleiste verkürzt: der Fortschritt läuft exakt in der Klebe-Phase. */
+      view-timeline-inset: var(--_ncss-morph-top) 0px;
+      animation: ncss-morph linear both;
+      animation-timeline: --ncss-morph;
+      /* Morph in den ersten drei Vierteln, dann steht der Endzustand noch kurz. */
+      animation-range: contain 0% contain 75%;
+    }
+    .ncss-morph--reverse .ncss-morph-stage {
+      animation-direction: reverse;
+    }
+    /* Tastatur-Fokus in der Bühne: Endzustand, damit nichts Fokussiertes unsichtbar
+       oder vom Medium verdeckt ist (WCAG 2.4.11). */
+    .ncss-morph .ncss-morph-stage:focus-within {
+      animation: none;
+      --_ncss-morph-p: 1;
+    }
+
+    .ncss-morph .ncss-morph-stage > :is(.ncss-morph-media, .ncss-morph-content) {
+      grid-area: stack;
+      position: sticky;
+      inset-block-start: var(--_ncss-morph-top);
+      block-size: calc(100vh - var(--_ncss-morph-top));
+      block-size: calc(100svh - var(--_ncss-morph-top));
+    }
+
+    /* Medien-Spur = Größen-Container: cqi/cqb des Mediums beziehen sich auf die Spur.
+       Breite/Höhe laufen linear von voll auf das Endmaß; nur dieses eine Element ändert
+       seine Größe (object-fit: cover - nichts verzerrt, kein Text bricht neu um). */
+    .ncss-morph .ncss-morph-media {
+      --_ncss-morph-w1: var(--_ncss-morph-size);
+      --_ncss-morph-h1: 72cqb;
+      --_ncss-morph-w: calc(100cqi - var(--_ncss-morph-p) * (100cqi - var(--_ncss-morph-w1)));
+      --_ncss-morph-h: calc(100cqb - var(--_ncss-morph-p) * (100cqb - var(--_ncss-morph-h1)));
+      container-type: size;
+      z-index: 1;
+      display: grid;
+      align-items: center;
+      justify-items: end;
+      /* Die Spur ist so breit wie die Bühne und liegt über dem Text - Klicks gehen nur
+         auf das Medium selbst (und den Pause-Schalter), daneben durch auf den Text. */
+      pointer-events: none;
+
+      & > * {
+        pointer-events: auto;
+      }
+      & > :first-child {
+        inline-size: var(--_ncss-morph-w);
+        block-size: var(--_ncss-morph-h);
+        max-inline-size: none;
+        aspect-ratio: auto;
+        margin: 0;
+        border-radius: calc(var(--_ncss-morph-p) * var(--_ncss-morph-radius));
+      }
+    }
+    .ncss-morph--start .ncss-morph-media {
+      justify-items: start;
+    }
+    /* Kreis: Höhe folgt der Breite (aspect-ratio 1), gedeckelt durch die schrumpfende
+       Spurhöhe - am Ende ein Quadrat, Radius 50 % = Kreis. */
+    .ncss-morph--circle .ncss-morph-media {
+      --_ncss-morph-w1: min(var(--_ncss-morph-size), var(--_ncss-morph-h1));
+
+      & > :first-child {
+        aspect-ratio: 1;
+        block-size: auto;
+        max-block-size: var(--_ncss-morph-h);
+      }
+    }
+
+    /* Pause-Schalter (video-bg.css) wandert mit der unteren Ecke des Mediums mit. */
+    .ncss-morph .ncss-morph-media > .ncss-video-bg-toggle {
+      inset-block: auto calc((100cqb - var(--_ncss-morph-h)) / 2 + var(--ncss-space-sm));
+    }
+    .ncss-morph--start .ncss-morph-media > .ncss-video-bg-toggle {
+      inset-inline: var(--ncss-space-sm) auto;
+    }
+    /* Kreis: Ecke des Schalters auf dem Kreisrand bei 45° (0.146 = 1 - cos 45° halbiert),
+       der Schalter ragt nach innen statt über den Rand. */
+    .ncss-morph--circle .ncss-morph-media > .ncss-video-bg-toggle {
+      --_ncss-morph-d: min(var(--_ncss-morph-w), var(--_ncss-morph-h));
+      inset-block-end: calc((100cqb - var(--_ncss-morph-d)) / 2 + 0.146 * var(--_ncss-morph-d));
+      inset-inline: auto calc(0.146 * var(--_ncss-morph-d));
+      margin-inline: 0;
+    }
+    .ncss-morph--circle.ncss-morph--start .ncss-morph-media > .ncss-video-bg-toggle {
+      inset-inline: calc(0.146 * var(--_ncss-morph-d)) auto;
+    }
+
+    /* Text: feste Endbreite (kein Umbruch während des Morphs), liegt UNTER dem Medium -
+       das schrumpfende Medium legt ihn frei (nie halbtransparenter Text über einem Bild),
+       dabei blendet er ein und gleitet unter dem Medium hervor (Richtung: weg vom
+       Medium, --_ncss-morph-dir = Seite des Mediums). */
+    .ncss-morph .ncss-morph-content {
+      --_ncss-morph-dir: 1;
+      justify-self: start;
+      inline-size: calc(100% - var(--_ncss-morph-size) - var(--_ncss-morph-gap));
+      align-content: center;
+      /* Einblenden kurz und früh (p 0.2-0.5): ab halber Strecke volle Deckkraft und damit
+         voller Kontrast, das Gleiten läuft bis zum Ende weiter. */
+      opacity: clamp(0, (var(--_ncss-morph-p) - 0.2) / 0.3, 1);
+      translate: calc((1 - clamp(0, (var(--_ncss-morph-p) - 0.2) / 0.8, 1)) * var(--_ncss-morph-dir) * 3rem) 0;
+    }
+    .ncss-morph--start .ncss-morph-content {
+      --_ncss-morph-dir: -1;
+      justify-self: end;
+    }
+    .ncss-morph .ncss-morph-content:dir(rtl) {
+      --_ncss-morph-dir: -1;
+    }
+    .ncss-morph--start .ncss-morph-content:dir(rtl) {
+      --_ncss-morph-dir: 1;
+    }
+  }
+}
+
+@keyframes ncss-morph {
+  from { --_ncss-morph-p: 0; }
+  to { --_ncss-morph-p: 1; }
+}
+
+/* Forced Colors: Schatten verschwinden - eine Systemfarben-Kante hält Karte/Kreis als
+   Form erkennbar. */
+@media (forced-colors: active) {
+  :is(.ncss-morph--card, .ncss-morph--circle) .ncss-morph-media > :first-child {
+    outline: var(--ncss-border-width) solid CanvasText;
+  }
+}
