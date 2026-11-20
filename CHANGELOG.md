@@ -2,6 +2,31 @@
 
 Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.1.1] - 2026-11-20
+
+### Behoben
+
+- **Formulare:** `.ncss-field-hint`/`.ncss-field-error` in `.ncss-field` ohne den Absatz-Abstand aus `base.css` (keine doppelte Lücke unter Feldern mit Hinweis).
+- **Navigation:** `.ncss-nav--tree` ohne leeren Streifen über dem ersten Punkt auf schmalen Screens; bei `.ncss-nav--scroll` liegt der erste/letzte Punkt nicht mehr im Rand-Verlauf (Innenabstand = Verlaufsbreite, Token `--ncss-nav-scroll-fade`).
+- **Hinweise:** `.ncss-alert` mit `align-content: start` - im gedehnten Raster rücken Titel und Text nicht mehr auseinander.
+- **Termine/Downloads:** die von `events.js`/`downloads.js` erzeugten Absätze haben einen eigenen, engen Rhythmus statt der Absatz-Abstände aus `base.css`; Datumszeile im Einzeltermin mit Abstand zum Titel.
+- **Tabellen:** die `<caption>` einer gestapelten Tabelle (`.ncss-table-stacked`) läuft über die volle Breite statt auf Wortbreite zu schrumpfen; Beschriftung von Scroll-Tabellen linksbündig.
+- **Code-Blöcke:** feine Kontur um `<pre>` - auf grauen Flächen (`bg-subtle`, `.ncss-tile--muted`) war der Block sonst unsichtbar, hell wie dunkel.
+- **Termine:** `events.js` nimmt die Sprache wie `downloads.js` vom nächsten `[lang]`-Vorfahren (sonst `<html lang>`).
+- **Dialoge/Glas:** letzter Absatz in `.ncss-modal`/`.ncss-modal-body` und `.ncss-glass` ohne Endabstand (per `:where()`, überschreibbar).
+- **Darstellungs-Einstellungen:** Bewegungs-Hinweis ohne überzähligen Abstand, Gedankenstrich „–“ statt „-“ im Text.
+- **Tooltip:** Abstand zum Viewport-Rand (`--ncss-tooltip-viewport-gap`) statt bündig am Bildschirmrand.
+- **Video:** `figure.ncss-video.ncss-ratio-video` mit `<figcaption>` schneidet die Bildunterschrift nicht mehr ab - Seitenverhältnis, Rundung und Hintergrund gelten dann dem `<video>`.
+- **Overlay:** die Blende von `.ncss-overlay--scrim` an `--bottom`/`--top` reicht über den Text hinaus (`--ncss-overlay-scrim-extent`), der Text liegt im dichten Teil.
+- **Video in Schrift:** der Pause-Schalter bekommt auf schmaler Fläche eine eigene Zeile statt die Buchstaben zu verdecken.
+- **Reveal-Pin:** das Panel hat im Fallback (reduzierte Bewegung, ohne Scroll-Timeline) seitlichen Abstand und ist zentriert.
+- **Scroll-Stack:** bei reduzierter Bewegung oder `data-motion="reduce"` werden die Karten auch mit Scroll-Timeline-Unterstützung als normale Liste untereinander gezeigt; `data-motion="full"` hebt ein System-„reduce“ auf.
+- **Segmente:** `.ncss-segmented` nutzt `inline-size: fit-content` statt `align-self`/`justify-self: start` - in einer `.ncss-cluster`-Zeile wieder auf der gemeinsamen Mittellinie.
+- **Countdown:** vier Kacheln brechen in schmalem Platz 2×2 statt 3+1 um (Container-Query auf `<ncss-countdown>`).
+- **Bento:** `.ncss-bento--hero`/`--mosaic` ohne Löcher bei 2-5 Spalten (Spannweiten je Spaltenzahl, höchstens 5 Spalten).
+- **Pillen-Gruppe:** passt `.ncss-pill-group` nicht in die Breite, scrollt sie in sich statt die Seite zu verbreitern (Handbuch-Beispiel bei 320px).
+- **Stamped:** der gravierte Rahmen bleibt auf weißem (und dunklem) Grund durchgehend sichtbar; Forced-Colors-Darstellung ergänzt.
+
 ## [1.1.0] - 2026-11-20
 
 ### Neu
