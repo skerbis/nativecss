@@ -31,7 +31,7 @@
   .demo-icon-group + .demo-icon-group { margin-block-start: var(--ncss-space-md); }
   .demo-icon-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 6.25rem), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr));
     gap: var(--ncss-space-2xs);
     margin: 0;
     padding: 0;
@@ -51,7 +51,7 @@
   }
   .demo-icon-tile > .ncss-icon { --ncss-icon-size: 1.75rem; color: var(--ncss-color-text); }
   .demo-icon-tile code {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     overflow-wrap: anywhere;
     background: none;
     padding: 0;
@@ -133,6 +133,15 @@
     font-size: var(--ncss-font-size-sm);
     color: var(--ncss-color-text-muted);
   }
+
+  /* Review-Korrekturen: Code-Schnipsel im Fließtext nicht mitten im Wort trennen */
+  .demo-feature-text code,
+  .demo-chapter-lead code,
+  .demo-nowrap { white-space: nowrap; }
+  /* WORKAROUND (gehört eigentlich in showcase.css): .demo-frame / .demo-live geben die
+     margin-block-end des letzten Kindes (p, dl … aus base.css) als Leerraum unten weiter. */
+  .demo-frame > :last-child,
+  .demo-live > :last-child { margin-block-end: 0; }
 </style>
 </head>
 <body class="ncss-page-shell">

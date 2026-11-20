@@ -127,6 +127,10 @@
 .ncss-subnav-list a[aria-current="location"] {
   background-color: var(--ncss-color-brand-100);
   color: var(--ncss-color-brand-on-soft);
+  /* deutlich, aber ruhiger als eine gefüllte Pille: Rand in der Markenfarbe + dezentes
+     Fett per text-shadow (ändert die Breite nicht - die Leiste springt nicht) */
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ncss-color-brand) 55%, transparent);
+  text-shadow: 0.3px 0 currentColor, -0.3px 0 currentColor;
 }
 
 @media (forced-colors: active) {

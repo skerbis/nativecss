@@ -187,6 +187,26 @@
     background-color: var(--ncss-color-bg);
   }
   .demo-alert-stack { display: grid; gap: var(--ncss-space-sm); }
+
+  /* Review-Korrekturen: Code-Schnipsel im Fließtext nicht mitten im Wort trennen */
+  .demo-feature-text code,
+  .demo-chapter-lead code,
+  .demo-nowrap { white-space: nowrap; }
+  /* WORKAROUND (gehört eigentlich in showcase.css): .demo-frame / .demo-live geben die
+     margin-block-end des letzten Kindes (p, dl … aus base.css) als Leerraum unten weiter. */
+  .demo-frame > :last-child,
+  .demo-live > :last-child { margin-block-end: 0; }
+  .demo-popover-line {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ncss-space-2xs) var(--ncss-space-xs);
+  }
+  .demo-backdrop-stage > .ncss-glass > :last-child { margin-block-end: 0; }
+  .demo-filter legend { padding-inline: 0; }
+  /* WORKAROUND (Bibliothek: .ncss-modal-body trimmt den Endabstand des letzten Absatzes nicht) */
+  .demo-live .ncss-modal-body > :last-child { margin-block-end: 0; }
 </style>
 </head>
 <body class="ncss-page-shell">
@@ -604,8 +624,8 @@
         </dialog>
         <dialog id="ldRequest" class="ncss-modal" closedby="closerequest" aria-labelledby="ldRequest-title">
           <button type="button" class="ncss-dialog-close" command="close" commandfor="ldRequest" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
-          <div class="ncss-modal-header"><h3 id="ldRequest-title">closedby="closerequest"</h3></div>
-          <div class="ncss-modal-body"><p>Ein Klick daneben tut nichts – <kbd class="ncss-kbd">Esc</kbd> und der Schließen-Button funktionieren weiter.</p></div>
+          <div class="ncss-modal-header"><h3 id="ldRequest-title">Nur Esc und Buttons</h3></div>
+          <div class="ncss-modal-body"><p><code>closedby="closerequest"</code>: Ein Klick daneben tut nichts – <kbd class="ncss-kbd">Esc</kbd> und der Schließen-Button funktionieren weiter.</p></div>
         </dialog>
         <dialog id="ldNone" class="ncss-modal" closedby="none" aria-labelledby="ldNone-title">
           <div class="ncss-modal-header"><h3 id="ldNone-title">Meldeformular Wohnsitz</h3></div>
@@ -693,7 +713,7 @@
       </div>
       <div class="demo-live">
         <div class="demo-frame">
-          <p>Rezeption, Spa und Restaurant haben unterschiedliche Zeiten.
+          <p class="demo-popover-line">Rezeption, Spa und Restaurant haben unterschiedliche Zeiten.
             <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" popovertarget="hoursPopover"><span class="ncss-icon ncss-icon-clock" aria-hidden="true"></span> Öffnungszeiten</button></p>
           <div id="hoursPopover" class="demo-popover" popover>
             <h3>Öffnungszeiten</h3>

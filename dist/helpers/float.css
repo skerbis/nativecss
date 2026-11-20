@@ -112,4 +112,24 @@
     width: auto;
     max-width: var(--ncss-float-max-width);
   }
+  /* Zusammen mit einem Float: .ncss-center-narrow (margin-inline:auto bzw. 0) und
+     .ncss-full-narrow (width) stehen weiter unten in der Datei als die Float-Regeln und
+     würden deren Abstand zum Text bzw. die Bleed-Breite überschreiben (Bild klebte ohne
+     Abstand am Text) - ab der Schwelle gelten deshalb wieder die Float-Werte. */
+  .ncss-center-narrow:is(.ncss-float-start, .ncss-float-bleed-start) {
+    margin-inline-end: var(--ncss-space-md);
+  }
+  .ncss-center-narrow:is(.ncss-float-end, .ncss-float-bleed-end) {
+    margin-inline-start: var(--ncss-space-md);
+  }
+  .ncss-center-narrow.ncss-float-bleed-start {
+    margin-inline-start: calc(50% - 50vw);
+  }
+  .ncss-center-narrow.ncss-float-bleed-end {
+    margin-inline-end: calc(50% - 50vw);
+  }
+  .ncss-full-narrow:is(.ncss-float-bleed-start, .ncss-float-bleed-end) {
+    width: var(--ncss-float-max-width);
+    max-width: none;
+  }
 }

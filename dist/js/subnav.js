@@ -9,9 +9,11 @@
  * Markup: <nav class="ncss-subnav" data-ncss-subnav> ... <a href="#abschnitt"> ... </nav>
  * Zusätzlich: misst den klebenden Kopfbereich ([data-ncss-sticky-header] oder .ncss-topbar)
  * und setzt --ncss-scroll-offset (+ ggf. --ncss-subnav-top), siehe trackHeader().
- * "Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante der Leiste erreicht
- * hat; am Seitenende immer der letzte Abschnitt (kurze Schluss-Abschnitte erreichen die
- * Oberkante sonst nie).
+ * "Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante des klebenden
+ * Kopfbereichs erreicht hat; davor (ganz oben) der erste, am Seitenende immer der letzte
+ * (kurze Schluss-Abschnitte erreichen die Kante sonst nie). Beobachtet wird per
+ * IntersectionObserver eine 1px-Linie an dieser Kante (rootMargin aus der gemessenen
+ * Kopfhöhe), dazu scroll/scrollend gebündelt per requestAnimationFrame.
  */
 (function () {
   "use strict";
@@ -38,29 +40,37 @@
       current = link;
       if (!link) return;
       link.setAttribute("aria-current", "location");
-      // Nur die Leiste selbst seitlich nachführen, nie die Seite scrollen.
-      var l = link.offsetLeft - list.offsetLeft;
-      var r = l + link.offsetWidth;
+      // Nur die Leiste selbst seitlich nachführen, nie die Seite scrollen (darum kein
+      // scrollIntoView, das auch senkrecht scrollen könnte).
+      var lr = list.getBoundingClientRect();
+      var r = link.getBoundingClientRect();
       var pad = 24;
-      if (l < list.scrollLeft + pad || r > list.scrollLeft + list.clientWidth - pad) {
+      if (r.left < lr.left + pad || r.right > lr.right - pad) {
         var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        list.scrollTo({ left: Math.max(0, l - list.clientWidth / 2 + link.offsetWidth / 2), behavior: reduce ? "auto" : "smooth" });
+        var left = list.scrollLeft + (r.left - lr.left) - (list.clientWidth - r.width) / 2;
+        list.scrollTo({ left: Math.max(0, left), behavior: reduce ? "auto" : "smooth" });
       }
+    }
+
+    // Kante = Unterkante des klebenden Kopfbereichs (bzw. der Leiste) plus etwas Luft -
+    // dort landet ein angesprungener Abschnitt (scroll-padding aus subnav.css).
+    function edge() {
+      var pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      return Math.max(nav.getBoundingClientRect().bottom, pad) + 24;
     }
 
     function update() {
       queued = false;
-      // Kante = dort, wo ein angesprungener Abschnitt landet (scroll-padding aus
-      // subnav.css), mindestens die Unterkante der Leiste - plus etwas Luft.
-      var pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-      var edge = Math.max(nav.getBoundingClientRect().bottom, pad) + 24;
+      var line = edge();
       var atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-      var index = -1;
+      // Ganz oben (noch kein Abschnitt an der Kante) gilt der erste, ganz unten der letzte -
+      // auch wenn der letzte Abschnitt zu kurz ist, um die Kante je zu erreichen.
+      var index = 0;
       for (var i = 0; i < targets.length; i++) {
-        if (targets[i].getBoundingClientRect().top <= edge) index = i;
+        if (targets[i].getBoundingClientRect().top <= line) index = i;
       }
       if (atEnd) index = targets.length - 1;
-      setCurrent(index >= 0 ? links[index] : null);
+      setCurrent(links[index]);
     }
 
     function queue() {
@@ -69,14 +79,44 @@
       requestAnimationFrame(update);
     }
 
-    // Der Observer meldet jedes Überschreiten einer Abschnittskante - genau dann kann
-    // sich der aktuelle Abschnitt ändern; scrollend fängt das Seitenende ab.
-    var observer = new IntersectionObserver(queue, { threshold: [0, 1] });
-    targets.forEach(function (t) {
-      observer.observe(t);
-    });
+    // Der Observer beobachtet nur eine 1px-Linie an der Kante (rootMargin aus der
+    // gemessenen Kopfhöhe): er meldet jedes Mal, wenn eine Abschnitts-Ober- oder
+    // -Unterkante sie kreuzt - also genau, wenn sich der aktuelle Abschnitt ändern kann,
+    // auch mitten im Scrollen und bei Abschnitten, die höher als der Bildschirm sind.
+    // Neu aufgebaut, wenn sich Fenster oder Kopfbereich in der Höhe ändern.
+    var observer = null;
+    var observedLine = -1;
+    function observe() {
+      var line = Math.round(edge());
+      var h = window.innerHeight;
+      if (observer && line === observedLine) return;
+      observedLine = line;
+      if (observer) observer.disconnect();
+      var top = Math.min(line, h - 1);
+      observer = new IntersectionObserver(queue, {
+        rootMargin: -top + "px 0px " + -(h - top - 1) + "px 0px",
+        threshold: 0,
+      });
+      targets.forEach(function (t) {
+        observer.observe(t);
+      });
+    }
+    observe();
+    // scroll (gebündelt per requestAnimationFrame) als Rückfall für Browser, die die
+    // Linie bei schnellem Scrollen überspringen; scrollend/resize für Seitenende/Größe.
+    addEventListener("scroll", queue, { passive: true });
     addEventListener("scrollend", queue, { passive: true });
-    addEventListener("resize", queue, { passive: true });
+    addEventListener("resize", function () {
+      observe();
+      queue();
+    }, { passive: true });
+    if ("ResizeObserver" in window) {
+      var unit = nav.closest("[data-ncss-sticky-header]") || nav;
+      new ResizeObserver(function () {
+        observe();
+        queue();
+      }).observe(unit);
+    }
     nav.addEventListener("click", function (e) {
       var link = e.target.closest && e.target.closest('a[href^="#"]');
       if (link && links.indexOf(link) >= 0) setCurrent(link);
