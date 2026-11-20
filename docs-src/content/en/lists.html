@@ -69,4 +69,81 @@
 </section>
 
 
+<section class="ncss-stack" id="leaders" data-subnav-label="Leader lines">
+  <h2 class="demo-section-title">Leader lines (price lists, menus) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>components/leaders.css</code> - leader lines for price lists, menus and tables of contents: "Coffee ........ €3.50". Robust with wrapping names (dots and price sit on the last line), works in RTL and is invisible to screen readers. Needs only colors/tokens/reset/base.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Price list with leader lines">
+    <h3 class="ncss-text-md">Hot drinks</h3>
+    <dl class="ncss-leaders">
+      <div class="ncss-leaders-item"><dt>Coffee</dt><dd>€3.50</dd></div>
+      <div class="ncss-leaders-item">
+        <dt>Cappuccino with oat milk</dt><dd>€4.20</dd>
+        <dd class="ncss-leaders-desc">Double espresso, Ethiopian beans</dd>
+      </div>
+      <div class="ncss-leaders-item"><dt>House-style hot chocolate with whipped cream and cinnamon</dt><dd>€4.80</dd></div>
+      <div class="ncss-leaders-item"><dt>Tea, pot</dt><dd>€5.00</dd></div>
+    </dl>
+    <h3 class="ncss-text-md">Contents (list, dashed)</h3>
+    <ul class="ncss-leaders ncss-leaders--dashed ncss-leaders--compact" role="list">
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Introduction</a></span><span class="ncss-leaders-value">4</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Container queries in practice</a></span><span class="ncss-leaders-value">17</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Appendix</a></span><span class="ncss-leaders-value">112</span></li>
+    </ul>
+    <h3 class="ncss-text-md">Right to left (Arabic)</h3>
+    <dl class="ncss-leaders" dir="rtl" lang="ar">
+      <div class="ncss-leaders-item"><dt>قهوة</dt><dd>٣٫٥٠ €</dd></div>
+      <div class="ncss-leaders-item"><dt>شاي بالنعناع</dt><dd>٢٫٨٠ €</dd></div>
+    </dl>
+  </div>
+  <pre><code class="language-html">&lt;dl class="ncss-leaders"&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Coffee&lt;/dt&gt;
+    &lt;dd&gt;€3.50&lt;/dd&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Cappuccino with oat milk&lt;/dt&gt;
+    &lt;dd&gt;€4.20&lt;/dd&gt;
+    &lt;dd class="ncss-leaders-desc"&gt;Double espresso, Ethiopian beans&lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;
+
+&lt;ul class="ncss-leaders ncss-leaders--dashed" role="list"&gt;
+  &lt;li class="ncss-leaders-item"&gt;
+    &lt;span class="ncss-leaders-name"&gt;&lt;a href="#k1"&gt;Introduction&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="ncss-leaders-value"&gt;4&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Mixed content in the name (text plus <code>&lt;small&gt;</code> or an icon) belongs in one shared <code>&lt;span&gt;</code> - the name is a flex row internally.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-leaders</code></td><td>On a <code>&lt;dl&gt;</code> (name/value) or <code>&lt;ul role="list"&gt;</code></td></tr>
+        <tr><td><code>.ncss-leaders-item</code></td><td>One row: a <code>&lt;div&gt;</code> around <code>dt</code>/<code>dd</code>, or the <code>&lt;li&gt;</code></td></tr>
+        <tr><td><code>dt / .ncss-leaders-name</code></td><td>Name, may wrap; the dots follow its last line</td></tr>
+        <tr><td><code>dd / .ncss-leaders-value</code></td><td>Value (price, page number), never wraps, tabular figures</td></tr>
+        <tr><td><code>.ncss-leaders-desc</code></td><td>Description on its own row below (<code>&lt;dd&gt;</code> or any element)</td></tr>
+        <tr><td><code>.ncss-leaders--dashed / --line / --compact</code></td><td>Dashes or a line instead of dots; tighter rows</td></tr>
+        <tr><td><code>--ncss-leaders-style / -color / -gap</code></td><td>Border style (dotted), dot colour, row gap</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Not interactive; links (e.g. in a table of contents) follow the normal tab order.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>The dots are an empty pseudo-element with a dotted border - no text, so screen readers only read "Coffee, €3.50". <code>&lt;dl&gt;</code> links name and price as term/description; on a list, set <code>role="list"</code>.</p>
+    <h4>Preferences</h4>
+    <p>Logical properties: in RTL dots and price mirror automatically (example above). Forced colours: dots in <code>CanvasText</code>. With enlarged text or a narrow column the name wraps; dots and price stay on its last line.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
 <!--MERGE: all-components#listen-->

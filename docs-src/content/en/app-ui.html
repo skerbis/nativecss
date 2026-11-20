@@ -414,6 +414,18 @@
     <label for="seg-kal">Calendar</label>
   </fieldset>
   <p class="ncss-text-sm ncss-text-muted"><code>--sm</code> for toolbars, <code>--block</code> for full width.</p>
+  <p><strong>Sliding selection</strong> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span> with <code>.ncss-segmented--slide</code>: the selection surface glides to the new segment - pure CSS (anchor positioning); without support or with reduced motion it jumps as above.</p>
+  <fieldset class="ncss-segmented ncss-segmented--slide">
+    <legend class="ncss-visually-hidden">Period</legend>
+    <input type="radio" name="seg-period" id="seg-day" value="day" checked>
+    <label for="seg-day">Day</label>
+    <input type="radio" name="seg-period" id="seg-week" value="week">
+    <label for="seg-week">Week</label>
+    <input type="radio" name="seg-period" id="seg-month" value="month">
+    <label for="seg-month">Month</label>
+    <input type="radio" name="seg-period" id="seg-year" value="year">
+    <label for="seg-year">Whole year</label>
+  </fieldset>
   <div class="docs-a11y-notes">
     <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
     <h4>Keyboard</h4>
@@ -635,5 +647,153 @@
     <p>Reduced motion: hard switch instead of fade-in, no smooth scrolling. Forced colours: the border stays visible.</p>
     <h4>Without JS</h4>
     <p>Pure CSS; without scroll-driven animations an ordinary link where it sits in the markup.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="kommentare" data-subnav-label="Comments">
+  <h2 class="demo-section-title">Comments &amp; threads <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>components/comments.css</code> - comments and discussion threads: avatar, name, time, text, actions (reply, like) and nested replies with indent lines. A text badge marks the author. In narrow containers (below 30rem) only the first reply level indents, wider up to three - deeper levels stay flush, the line keeps showing where they belong. Needs colors/tokens/reset/base, optionally <a href="#avatar">avatar.css</a>.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Comment thread">
+    <section class="ncss-comments" aria-labelledby="cm-en-title">
+      <h3 id="cm-en-title">5 comments</h3>
+      <ol class="ncss-comment-list" role="list">
+        <li>
+          <article class="ncss-comment" aria-labelledby="cm-en-1">
+            <span class="ncss-avatar ncss-avatar--sm ncss-avatar--success" aria-hidden="true">AY</span>
+            <header class="ncss-comment-header">
+              <span class="ncss-comment-author" id="cm-en-1">Aylin Yilmaz</span>
+              <time class="ncss-comment-time" datetime="2026-11-18T14:12">2 days ago</time>
+            </header>
+            <div class="ncss-comment-body"><p>Very helpful article. How do the indent lines behave with deeply nested replies on a phone?</p></div>
+            <footer class="ncss-comment-actions">
+              <button type="button" class="ncss-comment-action">Reply</button>
+              <button type="button" class="ncss-comment-action" aria-pressed="false">Like (12)</button>
+            </footer>
+          </article>
+          <ol class="ncss-comment-list" role="list">
+            <li>
+              <article class="ncss-comment" aria-labelledby="cm-en-2">
+                <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+                <header class="ncss-comment-header">
+                  <span class="ncss-comment-author" id="cm-en-2">Julia Brenner</span>
+                  <span class="ncss-comment-badge">Author</span>
+                  <time class="ncss-comment-time" datetime="2026-11-19T09:30">1 day ago</time>
+                </header>
+                <div class="ncss-comment-body"><p>Thanks! From the second reply level on, the thread stops indenting in narrow containers so there's enough room for the text.</p></div>
+                <footer class="ncss-comment-actions">
+                  <button type="button" class="ncss-comment-action">Reply</button>
+                  <button type="button" class="ncss-comment-action" aria-pressed="true">Like (5)</button>
+                </footer>
+              </article>
+              <ol class="ncss-comment-list" role="list">
+                <li>
+                  <article class="ncss-comment" aria-labelledby="cm-en-3">
+                    <span class="ncss-avatar ncss-avatar--sm ncss-avatar--neutral" aria-hidden="true">TK</span>
+                    <header class="ncss-comment-header">
+                      <span class="ncss-comment-author" id="cm-en-3">Tobias Kern</span>
+                      <time class="ncss-comment-time" datetime="2026-11-19T17:05">yesterday</time>
+                    </header>
+                    <div class="ncss-comment-body"><p>And in a 300-pixel sidebar?</p></div>
+                    <footer class="ncss-comment-actions">
+                      <button type="button" class="ncss-comment-action">Reply</button>
+                      <button type="button" class="ncss-comment-action" aria-pressed="false">Like (0)</button>
+                    </footer>
+                  </article>
+                  <ol class="ncss-comment-list" role="list">
+                    <li>
+                      <article class="ncss-comment" aria-labelledby="cm-en-4">
+                        <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+                        <header class="ncss-comment-header">
+                          <span class="ncss-comment-author" id="cm-en-4">Julia Brenner</span>
+                          <span class="ncss-comment-badge">Author</span>
+                          <time class="ncss-comment-time" datetime="2026-11-19T18:40">yesterday</time>
+                        </header>
+                        <div class="ncss-comment-body"><p>That's exactly what the container query is for - the component knows nothing about the viewport.</p></div>
+                        <footer class="ncss-comment-actions">
+                          <button type="button" class="ncss-comment-action">Reply</button>
+                          <button type="button" class="ncss-comment-action" aria-pressed="false">Like (2)</button>
+                        </footer>
+                      </article>
+                    </li>
+                  </ol>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <article class="ncss-comment" aria-labelledby="cm-en-5">
+            <span class="ncss-avatar ncss-avatar--sm ncss-avatar--brand-2" aria-hidden="true">SM</span>
+            <header class="ncss-comment-header">
+              <span class="ncss-comment-author" id="cm-en-5">Sofia Marin</span>
+              <time class="ncss-comment-time" datetime="2026-11-20T08:02">3 hours ago</time>
+            </header>
+            <div class="ncss-comment-body"><p>Works perfectly with RTL content on our side, too.</p></div>
+            <footer class="ncss-comment-actions">
+              <button type="button" class="ncss-comment-action">Reply</button>
+              <button type="button" class="ncss-comment-action" aria-pressed="false">Like (1)</button>
+            </footer>
+          </article>
+        </li>
+      </ol>
+    </section>
+  </div>
+  <pre><code class="language-html">&lt;section class="ncss-comments" aria-labelledby="c-title"&gt;
+  &lt;h2 id="c-title"&gt;5 comments&lt;/h2&gt;
+  &lt;ol class="ncss-comment-list" role="list"&gt;
+    &lt;li&gt;
+      &lt;article class="ncss-comment" aria-labelledby="c1"&gt;
+        &lt;span class="ncss-avatar ncss-avatar--sm" aria-hidden="true"&gt;AY&lt;/span&gt;
+        &lt;header class="ncss-comment-header"&gt;
+          &lt;span class="ncss-comment-author" id="c1"&gt;Aylin Yilmaz&lt;/span&gt;
+          &lt;time class="ncss-comment-time" datetime="2026-11-18T14:12"&gt;2 days ago&lt;/time&gt;
+        &lt;/header&gt;
+        &lt;div class="ncss-comment-body"&gt;&lt;p&gt;…&lt;/p&gt;&lt;/div&gt;
+        &lt;footer class="ncss-comment-actions"&gt;
+          &lt;button type="button" class="ncss-comment-action"&gt;Reply&lt;/button&gt;
+          &lt;button type="button" class="ncss-comment-action" aria-pressed="false"&gt;Like (12)&lt;/button&gt;
+        &lt;/footer&gt;
+      &lt;/article&gt;
+      &lt;ol class="ncss-comment-list" role="list"&gt;
+        &lt;li&gt;&lt;article class="ncss-comment" aria-labelledby="c2"&gt;
+          …
+          &lt;span class="ncss-comment-badge"&gt;Author&lt;/span&gt;
+          …
+        &lt;/article&gt;&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-comments</code></td><td>Wrapper (usually a <code>&lt;section&gt;</code> with a heading), container for the indent depth</td></tr>
+        <tr><td><code>.ncss-comment-list</code></td><td>List of comments; nested = replies with an indent line</td></tr>
+        <tr><td><code>.ncss-comment</code></td><td>One comment (<code>&lt;article&gt;</code>): avatar at the start, content beside it</td></tr>
+        <tr><td><code>.ncss-comment-header / -author / -time</code></td><td>Header row with name and <code>&lt;time datetime&gt;</code></td></tr>
+        <tr><td><code>.ncss-comment-badge</code></td><td>Text badge, e.g. "Author", "Team", "Moderator"</td></tr>
+        <tr><td><code>.ncss-comment-body</code></td><td>Comment text, breaks long words/URLs</td></tr>
+        <tr><td><code>.ncss-comment-actions / -action</code></td><td>Action bar and quiet text buttons; <code>aria-pressed</code> shows a heart (empty/filled)</td></tr>
+        <tr><td><code>.ncss-comment--highlight / :target</code></td><td>Highlighted (pinned or jumped to via link)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Through every comment's action buttons in reading order.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd></td><td>Triggers the action (behaviour provided by the application).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Nested lists mirror the thread ("list, 1 item, level 2"); each comment is an <code>&lt;article&gt;</code> named by its author. Avatars are <code>aria-hidden</code>, the name is next to them. "Like" is a toggle with <code>aria-pressed</code> - the heart is CSS content with empty alt text. Point identical buttons ("Reply") to the author name via <code>aria-describedby</code> if needed.</p>
+    <h4>Preferences</h4>
+    <p>The badge is text, an active "Like" shows a filled instead of an empty heart (shape, not only colour). Reduced motion / <code>data-motion="reduce"</code>: no colour transitions. Forced colours: indent lines in <code>GrayText</code>, highlighted comment with a <code>Highlight</code> outline.</p>
+    <h4>Without JS</h4>
+    <p>Presentation is pure CSS; replying and liking need application logic (form, server, your own script).</p>
   </div>
 </section>

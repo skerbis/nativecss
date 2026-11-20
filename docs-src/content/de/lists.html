@@ -69,4 +69,81 @@
 </section>
 
 
+<section class="ncss-stack" id="leaders" data-subnav-label="Führungspunkte">
+  <h2 class="demo-section-title">Führungspunkte (Preislisten, Speisekarten) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/leaders.css</code> - Führungspunkte für Preislisten, Speisekarten und Inhaltsverzeichnisse: "Kaffee ........ 3,50 €". Robust bei umbrechenden Namen (Punkte und Preis stehen an der letzten Zeile), funktioniert in RTL und ist für Screenreader unsichtbar. Braucht nur colors/tokens/reset/base.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Preisliste mit Führungspunkten">
+    <h3 class="ncss-text-md">Heißgetränke</h3>
+    <dl class="ncss-leaders">
+      <div class="ncss-leaders-item"><dt>Kaffee</dt><dd>3,50 €</dd></div>
+      <div class="ncss-leaders-item">
+        <dt>Cappuccino mit Hafermilch</dt><dd>4,20 €</dd>
+        <dd class="ncss-leaders-desc">Doppelter Espresso, Bohnen aus Äthiopien</dd>
+      </div>
+      <div class="ncss-leaders-item"><dt>Heiße Schokolade nach Art des Hauses mit Sahne und Zimt</dt><dd>4,80 €</dd></div>
+      <div class="ncss-leaders-item"><dt>Tee, Kanne</dt><dd>5,00 €</dd></div>
+    </dl>
+    <h3 class="ncss-text-md">Inhalt (Liste, gestrichelt)</h3>
+    <ul class="ncss-leaders ncss-leaders--dashed ncss-leaders--compact" role="list">
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Einleitung</a></span><span class="ncss-leaders-value">4</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Container Queries in der Praxis</a></span><span class="ncss-leaders-value">17</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Anhang</a></span><span class="ncss-leaders-value">112</span></li>
+    </ul>
+    <h3 class="ncss-text-md">Rechts nach links (Arabisch)</h3>
+    <dl class="ncss-leaders" dir="rtl" lang="ar">
+      <div class="ncss-leaders-item"><dt>قهوة</dt><dd>٣٫٥٠ €</dd></div>
+      <div class="ncss-leaders-item"><dt>شاي بالنعناع</dt><dd>٢٫٨٠ €</dd></div>
+    </dl>
+  </div>
+  <pre><code class="language-html">&lt;dl class="ncss-leaders"&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Kaffee&lt;/dt&gt;
+    &lt;dd&gt;3,50 €&lt;/dd&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Cappuccino mit Hafermilch&lt;/dt&gt;
+    &lt;dd&gt;4,20 €&lt;/dd&gt;
+    &lt;dd class="ncss-leaders-desc"&gt;Doppelter Espresso, Bohnen aus Äthiopien&lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;
+
+&lt;ul class="ncss-leaders ncss-leaders--dashed" role="list"&gt;
+  &lt;li class="ncss-leaders-item"&gt;
+    &lt;span class="ncss-leaders-name"&gt;&lt;a href="#k1"&gt;Einleitung&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="ncss-leaders-value"&gt;4&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Gemischter Inhalt im Namen (Text plus <code>&lt;small&gt;</code> oder Icon) gehört in ein gemeinsames <code>&lt;span&gt;</code> - der Name ist intern eine Flex-Zeile.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-leaders</code></td><td>Auf <code>&lt;dl&gt;</code> (Name/Wert) oder <code>&lt;ul role="list"&gt;</code></td></tr>
+        <tr><td><code>.ncss-leaders-item</code></td><td>Eine Zeile: <code>&lt;div&gt;</code> um <code>dt</code>/<code>dd</code> bzw. das <code>&lt;li&gt;</code></td></tr>
+        <tr><td><code>dt / .ncss-leaders-name</code></td><td>Name, darf umbrechen; die Punkte folgen seiner letzten Zeile</td></tr>
+        <tr><td><code>dd / .ncss-leaders-value</code></td><td>Wert (Preis, Seitenzahl), bricht nie um, Ziffern tabellarisch</td></tr>
+        <tr><td><code>.ncss-leaders-desc</code></td><td>Beschreibung als eigene Zeile darunter (<code>&lt;dd&gt;</code> oder beliebiges Element)</td></tr>
+        <tr><td><code>.ncss-leaders--dashed / --line / --compact</code></td><td>Striche bzw. Linie statt Punkte; engere Zeilen</td></tr>
+        <tr><td><code>--ncss-leaders-style / -color / -gap</code></td><td>Randstil (dotted), Farbe der Punkte, Zeilenabstand</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Nicht interaktiv; Links (z.B. im Inhaltsverzeichnis) folgen der normalen Tab-Reihenfolge.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Die Punkte sind ein leeres Pseudo-Element mit gepunktetem Rand - kein Text, also liest der Screenreader nur "Kaffee, 3,50 €". <code>&lt;dl&gt;</code> verknüpft Name und Preis als Begriff/Beschreibung; für eine Liste <code>role="list"</code> setzen.</p>
+    <h4>Einstellungen</h4>
+    <p>Logische Eigenschaften: in RTL laufen Punkte und Preis automatisch gespiegelt (Beispiel oben). Hochkontrast: Punkte in <code>CanvasText</code>. Bei vergrößertem Text oder schmaler Spalte bricht der Name um, Punkte und Preis bleiben an seiner letzten Zeile.</p>
+    <h4>Ohne JS</h4>
+    <p>Reines CSS.</p>
+  </div>
+</section>
+
 <!--MERGE: all-components#listen-->

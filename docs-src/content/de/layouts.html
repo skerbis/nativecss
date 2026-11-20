@@ -243,3 +243,251 @@
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Funktioniert genauso mit einem Bild statt Text in der Randnotiz (<code>&lt;aside class="ncss-marginnote-end"&gt;&lt;img ...&gt;&lt;/aside&gt;</code>) - die Randspalte bekommt dann automatisch <code>width:100%; height:auto;</code>. Panel schmaler als 60rem ziehen, um den Fallback zu sehen: darunter stapelt jede Randnotiz einfach an ihrer Stelle im normalen Textfluss, kein kaputter/leerer Zustand.</p>
 </section>
+
+<section class="ncss-stack" id="kundenstimmen" data-subnav-label="Kundenstimmen">
+  <h2 class="demo-section-title">Kundenstimmen (Testimonials) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/testimonial.css</code> - Kundenstimmen für Landingpages: Zitat, Person mit Avatar (<a href="app-ui.html#avatar">avatar.css</a>, optional), Rolle, optional Sterne und Logo. Als Raster gleich hoher Karten (<code>.ncss-testimonial-grid</code>) oder als einzelne große Stimme (<code>--featured</code>). Braucht colors/tokens/reset/base.</p>
+  <p class="ncss-text-sm ncss-text-muted">Die Sterne sind eine reine Anzeige - <a href="app-ui.html#bewertung">rating.css</a> ist die Eingabe aus Radio-Buttons und für ein fertiges Zitat die falsche Semantik.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Kundenstimmen">
+    <ul class="ncss-testimonial-grid" role="list">
+      <li>
+        <figure class="ncss-testimonial">
+          <p class="ncss-testimonial-rating" role="img" aria-label="5 von 5 Sternen"><span aria-hidden="true">★★★★★</span></p>
+          <blockquote class="ncss-testimonial-quote"><p>Wir haben drei Tools durch eines ersetzt. Die Einarbeitung hat einen Nachmittag gedauert, nicht drei Wochen.</p></blockquote>
+          <figcaption class="ncss-testimonial-author">
+            <span class="ncss-avatar" aria-hidden="true">JB</span>
+            <span class="ncss-testimonial-person">
+              <span class="ncss-testimonial-name">Julia Brenner</span>
+              <span class="ncss-testimonial-role">Leitung Einkauf, Nordlicht GmbH</span>
+            </span>
+            <span class="ncss-testimonial-logo" aria-hidden="true">Nordlicht</span>
+          </figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure class="ncss-testimonial">
+          <p class="ncss-testimonial-rating" role="img" aria-label="4 von 5 Sternen"><span aria-hidden="true">★★★★☆</span></p>
+          <blockquote class="ncss-testimonial-quote"><p>Endlich Rechnungen, die meine Kundschaft versteht.</p></blockquote>
+          <figcaption class="ncss-testimonial-author">
+            <span class="ncss-avatar ncss-avatar--brand-2" aria-hidden="true">MW</span>
+            <span class="ncss-testimonial-person">
+              <span class="ncss-testimonial-name">Marco Weber</span>
+              <span class="ncss-testimonial-role">Inhaber, Bergwerk Studio</span>
+            </span>
+            <span class="ncss-testimonial-logo" aria-hidden="true">Bergwerk</span>
+          </figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure class="ncss-testimonial">
+          <p class="ncss-testimonial-rating" role="img" aria-label="5 von 5 Sternen"><span aria-hidden="true">★★★★★</span></p>
+          <blockquote class="ncss-testimonial-quote"><p>Die Schnittstelle ist sauber dokumentiert, und der Support antwortet in der Regel noch am selben Tag - auch bei Fragen, die eigentlich gar nicht zum Produkt gehören.</p></blockquote>
+          <figcaption class="ncss-testimonial-author">
+            <span class="ncss-avatar ncss-avatar--success" aria-hidden="true">AY</span>
+            <span class="ncss-testimonial-person">
+              <span class="ncss-testimonial-name">Aylin Yilmaz</span>
+              <span class="ncss-testimonial-role">Entwicklerin, Kaffeerösterei Lindner</span>
+            </span>
+            <span class="ncss-testimonial-logo" aria-hidden="true">Lindner</span>
+          </figcaption>
+        </figure>
+      </li>
+    </ul>
+    <figure class="ncss-testimonial ncss-testimonial--featured">
+      <blockquote class="ncss-testimonial-quote"><p>Seit der Umstellung beantworten wir Anfragen doppelt so schnell - und das Team geht pünktlich nach Hause.</p></blockquote>
+      <figcaption class="ncss-testimonial-author">
+        <span class="ncss-avatar ncss-avatar--lg ncss-avatar--warning" aria-hidden="true">LF</span>
+        <span class="ncss-testimonial-person">
+          <span class="ncss-testimonial-name">Lena Fuchs</span>
+          <span class="ncss-testimonial-role">Geschäftsführerin, Fuchs &amp; Kern Reisen</span>
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+  <pre><code class="language-html">&lt;ul class="ncss-testimonial-grid" role="list"&gt;
+  &lt;li&gt;
+    &lt;figure class="ncss-testimonial"&gt;
+      &lt;p class="ncss-testimonial-rating" role="img" aria-label="5 von 5 Sternen"&gt;&lt;span aria-hidden="true"&gt;★★★★★&lt;/span&gt;&lt;/p&gt;
+      &lt;blockquote class="ncss-testimonial-quote"&gt;&lt;p&gt;Wir haben drei Tools durch eines ersetzt. Die Einarbeitung hat einen Nachmittag gedauert, nicht drei Wochen.&lt;/p&gt;&lt;/blockquote&gt;
+      &lt;figcaption class="ncss-testimonial-author"&gt;
+        &lt;span class="ncss-avatar" aria-hidden="true"&gt;JB&lt;/span&gt;
+        &lt;span class="ncss-testimonial-person"&gt;
+          &lt;span class="ncss-testimonial-name"&gt;Julia Brenner&lt;/span&gt;
+          &lt;span class="ncss-testimonial-role"&gt;Leitung Einkauf, Nordlicht GmbH&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;img class="ncss-testimonial-logo" src="nordlicht.svg" alt="" width="96" height="24"&gt;
+      &lt;/figcaption&gt;
+    &lt;/figure&gt;
+  &lt;/li&gt;
+  …
+&lt;/ul&gt;
+
+&lt;figure class="ncss-testimonial ncss-testimonial--featured"&gt;…&lt;/figure&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-testimonial</code></td><td>Karte auf <code>&lt;figure&gt;</code>: Rahmen, Fläche, Abstand</td></tr>
+        <tr><td><code>.ncss-testimonial-quote</code></td><td>Das <code>&lt;blockquote&gt;</code> - volle Textfarbe statt der gedämpften base.css-Optik</td></tr>
+        <tr><td><code>.ncss-testimonial-author</code></td><td>Die <code>&lt;figcaption&gt;</code>: Avatar, Person, Logo</td></tr>
+        <tr><td><code>.ncss-testimonial-person / -name / -role</code></td><td>Name und Rolle untereinander</td></tr>
+        <tr><td><code>.ncss-testimonial-logo</code></td><td>Firmenlogo (<code>&lt;img&gt;</code>) oder Text-Schriftzug, gedämpft</td></tr>
+        <tr><td><code>.ncss-testimonial-rating</code></td><td>Sterne als reine Anzeige (<code>role="img"</code> + <code>aria-label</code>)</td></tr>
+        <tr><td><code>.ncss-testimonial-grid</code></td><td>Raster gleich hoher Karten, Personenzeile unten bündig (<code>--ncss-testimonial-min</code>, 18rem)</td></tr>
+        <tr><td><code>.ncss-testimonial--featured</code></td><td>Großes, zentriertes Zitat mit dekorativem Anführungszeichen</td></tr>
+        <tr><td><code>.ncss-testimonial--plain</code></td><td>Ohne Rahmen/Fläche, z.B. auf einer farbigen Tile</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Nicht interaktiv.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p><code>&lt;figure&gt;</code> + <code>&lt;blockquote&gt;</code> + <code>&lt;figcaption&gt;</code> verbindet Zitat und Quelle. Der Name steht als Text, nicht in <code>&lt;cite&gt;</code> (das ist per Spec ein Werktitel). Avatar mit <code>aria-hidden</code>, weil der Name daneben steht; Logo mit <code>alt=""</code> bzw. <code>aria-hidden</code>, wenn die Firma schon in der Rolle genannt ist. Die Sterne werden als "5 von 5 Sternen" vorgelesen, nicht als fünf Zeichen. Das Anführungszeichen der Featured-Variante ist CSS-Inhalt mit leerem Alternativtext.</p>
+    <h4>Einstellungen</h4>
+    <p>Gefüllte und leere Sterne unterscheiden sich in der Form (★/☆). Hochkontrast: Rahmen bleibt, Sterne in Systemfarbe. Keine Bewegung.</p>
+    <h4>Ohne JS</h4>
+    <p>Reines CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="preise" data-subnav-label="Preistabelle">
+  <h2 class="demo-section-title">Preistabelle <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/pricing.css</code> - Preistabelle mit Tarifkarten: Name, Preis und Zeitraum, Leistungsliste mit enthalten/nicht enthalten, ein hervorgehobener "Empfohlen"-Tarif und ein Handlungsaufruf. Der Umschalter Monatlich/Jährlich ist eine native Radio-Gruppe, die Preise wechseln per <code>:has()</code> - kein JavaScript. Die Karten richten Kopf, Preis, Liste und Button per Subgrid zeilenweise aus (dasselbe Prinzip wie <a href="cards.html#raster"><code>.ncss-card-grid</code></a>, hier eigenständig, damit card.css nicht nötig ist).</p>
+  <p class="ncss-text-sm ncss-text-muted">Braucht colors/tokens/reset/base und helpers/a11y.css (versteckte Texte). Optional: <code>.ncss-btn</code> aus helpers/forms.css für die Buttons und <a href="app-ui.html#segmentiert">segmented.css</a> für die Optik des Umschalters - ohne sie bleiben native Links bzw. Radio-Buttons, voll bedienbar.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Preistabelle mit Umschalter">
+    <div class="ncss-pricing">
+      <fieldset class="ncss-pricing-toggle ncss-segmented">
+        <legend class="ncss-visually-hidden">Abrechnungszeitraum</legend>
+        <input type="radio" name="billing-de" id="billing-de-m" data-period="monthly" checked>
+        <label for="billing-de-m">Monatlich</label>
+        <input type="radio" name="billing-de" id="billing-de-y" data-period="yearly">
+        <label for="billing-de-y">Jährlich (−20 %)</label>
+      </fieldset>
+      <ul class="ncss-pricing-plans" role="list">
+        <li class="ncss-pricing-plan" aria-labelledby="price-de-start">
+          <div class="ncss-pricing-header">
+            <h3 class="ncss-pricing-name" id="price-de-start">Start</h3>
+            <p class="ncss-pricing-desc">Für Einzelpersonen und erste Projekte</p>
+          </div>
+          <p class="ncss-pricing-price">
+            <span class="ncss-pricing-amount" data-period="monthly"><span class="ncss-pricing-value">0 €</span> <span class="ncss-pricing-period">pro Monat</span></span>
+            <span class="ncss-pricing-amount" data-period="yearly"><span class="ncss-pricing-value">0 €</span> <span class="ncss-pricing-period">pro Monat, jährlich abgerechnet</span></span>
+          </p>
+          <ul class="ncss-pricing-features" role="list">
+            <li><span class="ncss-visually-hidden">Enthalten:</span> 1 Projekt</li>
+            <li><span class="ncss-visually-hidden">Enthalten:</span> 2 GB Speicher</li>
+            <li class="ncss-pricing-excluded"><span class="ncss-visually-hidden">Nicht enthalten:</span> Team-Freigaben</li>
+            <li class="ncss-pricing-excluded"><span class="ncss-visually-hidden">Nicht enthalten:</span> Telefon-Support</li>
+          </ul>
+          <div class="ncss-pricing-action"><a class="ncss-btn" href="#preise">Kostenlos starten</a></div>
+        </li>
+        <li class="ncss-pricing-plan ncss-pricing-plan--featured" aria-labelledby="price-de-team">
+          <div class="ncss-pricing-header">
+            <p class="ncss-pricing-badge">Empfohlen</p>
+            <h3 class="ncss-pricing-name" id="price-de-team">Team</h3>
+            <p class="ncss-pricing-desc">Für kleine Teams, die zusammen planen</p>
+          </div>
+          <p class="ncss-pricing-price">
+            <span class="ncss-pricing-amount" data-period="monthly"><span class="ncss-pricing-value">29 €</span> <span class="ncss-pricing-period">pro Monat</span></span>
+            <span class="ncss-pricing-amount" data-period="yearly"><span class="ncss-pricing-value">23 €</span> <span class="ncss-pricing-period">pro Monat, jährlich abgerechnet</span></span>
+          </p>
+          <ul class="ncss-pricing-features" role="list">
+            <li><span class="ncss-visually-hidden">Enthalten:</span> 10 Projekte</li>
+            <li><span class="ncss-visually-hidden">Enthalten:</span> 50 GB Speicher</li>
+            <li><span class="ncss-visually-hidden">Enthalten:</span> Team-Freigaben</li>
+            <li class="ncss-pricing-excluded"><span class="ncss-visually-hidden">Nicht enthalten:</span> Telefon-Support</li>
+          </ul>
+          <div class="ncss-pricing-action"><a class="ncss-btn ncss-btn--primary" href="#preise">Team wählen</a></div>
+        </li>
+        <li class="ncss-pricing-plan" aria-labelledby="price-de-business">
+          <div class="ncss-pricing-header">
+            <h3 class="ncss-pricing-name" id="price-de-business">Business</h3>
+            <p class="ncss-pricing-desc">Für Unternehmen mit mehreren Abteilungen und eigenen Anforderungen an Sicherheit</p>
+          </div>
+          <p class="ncss-pricing-price">
+            <span class="ncss-pricing-amount" data-period="monthly"><span class="ncss-pricing-value">79 €</span> <span class="ncss-pricing-period">pro Monat</span></span>
+            <span class="ncss-pricing-amount" data-period="yearly"><span class="ncss-pricing-value">63 €</span> <span class="ncss-pricing-period">pro Monat, jährlich abgerechnet</span></span>
+          </p>
+          <ul class="ncss-pricing-features" role="list">
+            <li><span class="ncss-visually-hidden">Enthalten:</span> Unbegrenzte Projekte</li>
+            <li><span class="ncss-visually-hidden">Enthalten:</span> 1 TB Speicher</li>
+            <li><span class="ncss-visually-hidden">Enthalten:</span> Team-Freigaben</li>
+            <li><span class="ncss-visually-hidden">Enthalten:</span> Telefon-Support</li>
+          </ul>
+          <div class="ncss-pricing-action"><a class="ncss-btn" href="#preise">Vertrieb kontaktieren</a></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-pricing"&gt;
+  &lt;fieldset class="ncss-pricing-toggle ncss-segmented"&gt;
+    &lt;legend class="ncss-visually-hidden"&gt;Abrechnungszeitraum&lt;/legend&gt;
+    &lt;input type="radio" name="billing" id="billing-m" data-period="monthly" checked&gt;
+    &lt;label for="billing-m"&gt;Monatlich&lt;/label&gt;
+    &lt;input type="radio" name="billing" id="billing-y" data-period="yearly"&gt;
+    &lt;label for="billing-y"&gt;Jährlich (−20 %)&lt;/label&gt;
+  &lt;/fieldset&gt;
+  &lt;ul class="ncss-pricing-plans" role="list"&gt;
+    &lt;li class="ncss-pricing-plan ncss-pricing-plan--featured" aria-labelledby="plan-team"&gt;
+      &lt;div class="ncss-pricing-header"&gt;
+        &lt;p class="ncss-pricing-badge"&gt;Empfohlen&lt;/p&gt;
+        &lt;h3 class="ncss-pricing-name" id="plan-team"&gt;Team&lt;/h3&gt;
+        &lt;p class="ncss-pricing-desc"&gt;Für kleine Teams, die zusammen planen&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;p class="ncss-pricing-price"&gt;
+        &lt;span class="ncss-pricing-amount" data-period="monthly"&gt;&lt;span class="ncss-pricing-value"&gt;29 €&lt;/span&gt; &lt;span class="ncss-pricing-period"&gt;pro Monat&lt;/span&gt;&lt;/span&gt;
+        &lt;span class="ncss-pricing-amount" data-period="yearly"&gt;&lt;span class="ncss-pricing-value"&gt;23 €&lt;/span&gt; &lt;span class="ncss-pricing-period"&gt;pro Monat, jährlich abgerechnet&lt;/span&gt;&lt;/span&gt;
+      &lt;/p&gt;
+      &lt;ul class="ncss-pricing-features" role="list"&gt;
+        &lt;li&gt;&lt;span class="ncss-visually-hidden"&gt;Enthalten:&lt;/span&gt; 10 Projekte&lt;/li&gt;
+        &lt;li&gt;&lt;span class="ncss-visually-hidden"&gt;Enthalten:&lt;/span&gt; 50 GB Speicher&lt;/li&gt;
+        &lt;li&gt;&lt;span class="ncss-visually-hidden"&gt;Enthalten:&lt;/span&gt; Team-Freigaben&lt;/li&gt;
+        &lt;li class="ncss-pricing-excluded"&gt;&lt;span class="ncss-visually-hidden"&gt;Nicht enthalten:&lt;/span&gt; Telefon-Support&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;div class="ncss-pricing-action"&gt;&lt;a class="ncss-btn ncss-btn--primary" href="#preise"&gt;Team wählen&lt;/a&gt;&lt;/div&gt;
+    &lt;/li&gt;
+    …
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-pricing</code></td><td>Hülle für Umschalter + Tarife; steuert per <code>:has()</code>, welcher Preis sichtbar ist</td></tr>
+        <tr><td><code>.ncss-pricing-toggle</code></td><td>Radio-Gruppe Monatlich/Jährlich (Inputs mit <code>data-period</code>); Optik über <code>.ncss-segmented</code></td></tr>
+        <tr><td><code>.ncss-pricing-plans</code></td><td>Raster der Tarife, Subgrid: Kopf, Preis, Leistungen und Aktion je Reihe auf gleicher Höhe</td></tr>
+        <tr><td><code>.ncss-pricing-plan / --featured</code></td><td>Tarifkarte (genau 4 Kinder) / hervorgehoben mit Markenrahmen</td></tr>
+        <tr><td><code>.ncss-pricing-badge</code></td><td>"Empfohlen" als echter Text</td></tr>
+        <tr><td><code>.ncss-pricing-name / -desc</code></td><td>Tarifname (Überschrift) und Kurzbeschreibung</td></tr>
+        <tr><td><code>.ncss-pricing-price / -amount / -value / -period</code></td><td>Preisblock, je Zeitraum ein <code>-amount[data-period]</code>; Betrag groß, Zeitraum klein</td></tr>
+        <tr><td><code>.ncss-pricing-features / .ncss-pricing-excluded</code></td><td>Leistungsliste mit Haken; ausgeschlossene Leistung mit Kreuz und gedämpft</td></tr>
+        <tr><td><code>.ncss-pricing-action</code></td><td>Unterste Zeile für den Handlungsaufruf (volle Breite)</td></tr>
+        <tr><td><code>--ncss-pricing-min / -gap / -rows</code></td><td>Mindestbreite (15rem), Abstand, Zeilenzahl des Subgrids (4)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Zum Umschalter, dann zu den Buttons der Tarife.</td></tr>
+        <tr><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd></td><td>Wechselt Monatlich/Jährlich (native Radio-Gruppe).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Jeder Tarif ist ein Listeneintrag mit Überschrift (per <code>aria-labelledby</code> benannt). "Enthalten:"/"Nicht enthalten:" steht als versteckter Text vor jeder Leistung - Haken und Kreuz sind CSS-Inhalt mit leerem Alternativtext. Der Zeitraum steht als Wort ("pro Monat") statt als Schrägstrich. Beim Umschalten ändert sich der Preis ohne Live-Ansage (reines CSS) - wer den Umschalter bedient, findet die neuen Preise beim Weiterlesen.</p>
+    <h4>Einstellungen</h4>
+    <p>Enthalten/ausgeschlossen unterscheidet sich in Form (✓/✕) und Text, nicht nur in der Farbe; "Empfohlen" ist ein Textbadge. Hochkontrast: hervorgehobener Tarif mit dickem <code>Highlight</code>-Rahmen. Keine Bewegung.</p>
+    <h4>Ohne JS</h4>
+    <p>Reines CSS. Browser ohne <code>:has()</code> blenden den Umschalter aus und zeigen nur die Monatspreise.</p>
+  </div>
+</section>

@@ -414,6 +414,18 @@
     <label for="seg-kal">Kalender</label>
   </fieldset>
   <p class="ncss-text-sm ncss-text-muted"><code>--sm</code> für Toolbars, <code>--block</code> für volle Breite.</p>
+  <p><strong>Gleitende Auswahl</strong> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span> mit <code>.ncss-segmented--slide</code>: die Auswahl-Fläche gleitet zum neuen Segment - reines CSS (Anchor Positioning), ohne Unterstützung oder bei reduzierter Bewegung springt sie wie oben.</p>
+  <fieldset class="ncss-segmented ncss-segmented--slide">
+    <legend class="ncss-visually-hidden">Zeitraum</legend>
+    <input type="radio" name="seg-zeit" id="seg-tag" value="tag" checked>
+    <label for="seg-tag">Tag</label>
+    <input type="radio" name="seg-zeit" id="seg-woche" value="woche">
+    <label for="seg-woche">Woche</label>
+    <input type="radio" name="seg-zeit" id="seg-monat" value="monat">
+    <label for="seg-monat">Monat</label>
+    <input type="radio" name="seg-zeit" id="seg-jahr" value="jahr">
+    <label for="seg-jahr">Ganzes Jahr</label>
+  </fieldset>
   <div class="docs-a11y-notes">
     <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
     <h4>Tastatur</h4>
@@ -635,5 +647,153 @@
     <p>Reduzierte Bewegung: harter Wechsel statt Einblenden, kein sanftes Scrollen. Hochkontrast: Rahmen bleibt sichtbar.</p>
     <h4>Ohne JS</h4>
     <p>Reines CSS; ohne Scroll-getriebene Animationen ein normaler Link an seiner Markup-Stelle.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="kommentare" data-subnav-label="Kommentare">
+  <h2 class="demo-section-title">Kommentare &amp; Threads <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/comments.css</code> - Kommentare und Diskussions-Threads: Avatar, Name, Zeit, Text, Aktionen (Antworten, Gefällt mir) und verschachtelte Antworten mit Einzugslinien. Ein Textbadge markiert die Autorin. In schmalen Containern (unter 30rem) rückt nur die erste Antwortebene ein, breiter bis zu drei - tiefere Ebenen bleiben bündig, die Linie zeigt die Zugehörigkeit weiter. Braucht colors/tokens/reset/base, optional <a href="#avatar">avatar.css</a>.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Kommentar-Thread">
+    <section class="ncss-comments" aria-labelledby="cm-de-title">
+      <h3 id="cm-de-title">5 Kommentare</h3>
+      <ol class="ncss-comment-list" role="list">
+        <li>
+          <article class="ncss-comment" aria-labelledby="cm-de-1">
+            <span class="ncss-avatar ncss-avatar--sm ncss-avatar--success" aria-hidden="true">AY</span>
+            <header class="ncss-comment-header">
+              <span class="ncss-comment-author" id="cm-de-1">Aylin Yilmaz</span>
+              <time class="ncss-comment-time" datetime="2026-11-18T14:12">vor 2 Tagen</time>
+            </header>
+            <div class="ncss-comment-body"><p>Sehr hilfreicher Artikel. Wie verhalten sich die Einzugslinien bei tief verschachtelten Antworten auf dem Handy?</p></div>
+            <footer class="ncss-comment-actions">
+              <button type="button" class="ncss-comment-action">Antworten</button>
+              <button type="button" class="ncss-comment-action" aria-pressed="false">Gefällt mir (12)</button>
+            </footer>
+          </article>
+          <ol class="ncss-comment-list" role="list">
+            <li>
+              <article class="ncss-comment" aria-labelledby="cm-de-2">
+                <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+                <header class="ncss-comment-header">
+                  <span class="ncss-comment-author" id="cm-de-2">Julia Brenner</span>
+                  <span class="ncss-comment-badge">Autorin</span>
+                  <time class="ncss-comment-time" datetime="2026-11-19T09:30">vor 1 Tag</time>
+                </header>
+                <div class="ncss-comment-body"><p>Danke! Ab der zweiten Antwortebene rückt der Thread auf schmalen Containern nicht weiter ein, damit genug Platz für den Text bleibt.</p></div>
+                <footer class="ncss-comment-actions">
+                  <button type="button" class="ncss-comment-action">Antworten</button>
+                  <button type="button" class="ncss-comment-action" aria-pressed="true">Gefällt mir (5)</button>
+                </footer>
+              </article>
+              <ol class="ncss-comment-list" role="list">
+                <li>
+                  <article class="ncss-comment" aria-labelledby="cm-de-3">
+                    <span class="ncss-avatar ncss-avatar--sm ncss-avatar--neutral" aria-hidden="true">TK</span>
+                    <header class="ncss-comment-header">
+                      <span class="ncss-comment-author" id="cm-de-3">Tobias Kern</span>
+                      <time class="ncss-comment-time" datetime="2026-11-19T17:05">gestern</time>
+                    </header>
+                    <div class="ncss-comment-body"><p>Und in der Seitenleiste mit 300 Pixeln?</p></div>
+                    <footer class="ncss-comment-actions">
+                      <button type="button" class="ncss-comment-action">Antworten</button>
+                      <button type="button" class="ncss-comment-action" aria-pressed="false">Gefällt mir (0)</button>
+                    </footer>
+                  </article>
+                  <ol class="ncss-comment-list" role="list">
+                    <li>
+                      <article class="ncss-comment" aria-labelledby="cm-de-4">
+                        <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+                        <header class="ncss-comment-header">
+                          <span class="ncss-comment-author" id="cm-de-4">Julia Brenner</span>
+                          <span class="ncss-comment-badge">Autorin</span>
+                          <time class="ncss-comment-time" datetime="2026-11-19T18:40">gestern</time>
+                        </header>
+                        <div class="ncss-comment-body"><p>Genau dafür ist die Container Query da - die Komponente weiß nichts vom Viewport.</p></div>
+                        <footer class="ncss-comment-actions">
+                          <button type="button" class="ncss-comment-action">Antworten</button>
+                          <button type="button" class="ncss-comment-action" aria-pressed="false">Gefällt mir (2)</button>
+                        </footer>
+                      </article>
+                    </li>
+                  </ol>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <article class="ncss-comment" aria-labelledby="cm-de-5">
+            <span class="ncss-avatar ncss-avatar--sm ncss-avatar--brand-2" aria-hidden="true">SM</span>
+            <header class="ncss-comment-header">
+              <span class="ncss-comment-author" id="cm-de-5">Sofia Marin</span>
+              <time class="ncss-comment-time" datetime="2026-11-20T08:02">vor 3 Stunden</time>
+            </header>
+            <div class="ncss-comment-body"><p>Funktioniert bei uns auch mit RTL-Inhalten einwandfrei.</p></div>
+            <footer class="ncss-comment-actions">
+              <button type="button" class="ncss-comment-action">Antworten</button>
+              <button type="button" class="ncss-comment-action" aria-pressed="false">Gefällt mir (1)</button>
+            </footer>
+          </article>
+        </li>
+      </ol>
+    </section>
+  </div>
+  <pre><code class="language-html">&lt;section class="ncss-comments" aria-labelledby="c-title"&gt;
+  &lt;h2 id="c-title"&gt;5 Kommentare&lt;/h2&gt;
+  &lt;ol class="ncss-comment-list" role="list"&gt;
+    &lt;li&gt;
+      &lt;article class="ncss-comment" aria-labelledby="c1"&gt;
+        &lt;span class="ncss-avatar ncss-avatar--sm" aria-hidden="true"&gt;AY&lt;/span&gt;
+        &lt;header class="ncss-comment-header"&gt;
+          &lt;span class="ncss-comment-author" id="c1"&gt;Aylin Yilmaz&lt;/span&gt;
+          &lt;time class="ncss-comment-time" datetime="2026-11-18T14:12"&gt;vor 2 Tagen&lt;/time&gt;
+        &lt;/header&gt;
+        &lt;div class="ncss-comment-body"&gt;&lt;p&gt;…&lt;/p&gt;&lt;/div&gt;
+        &lt;footer class="ncss-comment-actions"&gt;
+          &lt;button type="button" class="ncss-comment-action"&gt;Antworten&lt;/button&gt;
+          &lt;button type="button" class="ncss-comment-action" aria-pressed="false"&gt;Gefällt mir (12)&lt;/button&gt;
+        &lt;/footer&gt;
+      &lt;/article&gt;
+      &lt;ol class="ncss-comment-list" role="list"&gt;
+        &lt;li&gt;&lt;article class="ncss-comment" aria-labelledby="c2"&gt;
+          …
+          &lt;span class="ncss-comment-badge"&gt;Autorin&lt;/span&gt;
+          …
+        &lt;/article&gt;&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-comments</code></td><td>Hülle (meist <code>&lt;section&gt;</code> mit Überschrift), Container für die Einzugstiefe</td></tr>
+        <tr><td><code>.ncss-comment-list</code></td><td>Liste der Kommentare; verschachtelt = Antworten mit Einzugslinie</td></tr>
+        <tr><td><code>.ncss-comment</code></td><td>Ein Kommentar (<code>&lt;article&gt;</code>): Avatar links, Inhalt rechts</td></tr>
+        <tr><td><code>.ncss-comment-header / -author / -time</code></td><td>Kopfzeile mit Name und <code>&lt;time datetime&gt;</code></td></tr>
+        <tr><td><code>.ncss-comment-badge</code></td><td>Textbadge, z.B. "Autorin", "Team", "Moderation"</td></tr>
+        <tr><td><code>.ncss-comment-body</code></td><td>Kommentartext, bricht lange Wörter/URLs um</td></tr>
+        <tr><td><code>.ncss-comment-actions / -action</code></td><td>Aktionsleiste und ruhige Text-Buttons; <code>aria-pressed</code> zeigt ein Herz (leer/gefüllt)</td></tr>
+        <tr><td><code>.ncss-comment--highlight / :target</code></td><td>Hervorgehoben (angepinnt bzw. per Link angesprungen)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Durch die Aktions-Buttons aller Kommentare in Lesereihenfolge.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd></td><td>Löst die Aktion aus (Verhalten liefert die Anwendung).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Verschachtelte Listen bilden den Thread ab ("Liste, 1 Eintrag, Ebene 2"), jeder Kommentar ist ein <code>&lt;article&gt;</code> mit dem Autornamen als Namen. Avatare sind <code>aria-hidden</code>, der Name steht daneben. "Gefällt mir" ist ein Umschalter mit <code>aria-pressed</code> - das Herz ist CSS-Inhalt mit leerem Alternativtext. Gleichlautende Buttons ("Antworten") ggf. per <code>aria-describedby</code> auf den Autornamen beziehen.</p>
+    <h4>Einstellungen</h4>
+    <p>Badge ist Text, "Gefällt mir" aktiv zeigt ein gefülltes statt leeres Herz (Form, nicht nur Farbe). Reduzierte Bewegung / <code>data-motion="reduce"</code>: keine Farbübergänge. Hochkontrast: Einzugslinien in <code>GrayText</code>, hervorgehobener Kommentar mit <code>Highlight</code>-Rahmen.</p>
+    <h4>Ohne JS</h4>
+    <p>Darstellung reines CSS; Antworten und Liken brauchen Logik der Anwendung (Formular, Server, eigenes Skript).</p>
   </div>
 </section>

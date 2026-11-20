@@ -201,6 +201,12 @@
           "en": "Lists"
         },
         {
+          "slug": "timeline",
+          "de": "Zeitleiste & Schritte",
+          "en": "Timeline & Steps",
+          "new": true
+        },
+        {
           "slug": "tables",
           "de": "Tabellen",
           "en": "Tables"

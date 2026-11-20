@@ -1,0 +1,188 @@
+<!--DESC: Statische Zeitleiste mit Datum, Icons und Wechsel-Layout sowie Fortschritts-Schritte (Stepper) für Bestellstatus und Formular-Assistenten - reines CSS mit Container Queries.-->
+<section class="ncss-stack">
+  <h1>Zeitleiste &amp; Schritte</h1>
+  <p class="ncss-text-lg ncss-text-muted">Zwei Komponenten für Abfolgen: die <strong>Zeitleiste</strong> erzählt, was wann passiert ist; der <strong>Stepper</strong> zeigt, wie weit ein Vorgang ist. Beide schalten über Container Queries zwischen schmaler und breiter Darstellung um und kommen ohne JavaScript aus.</p>
+</section>
+
+<section class="ncss-stack" id="zeitleiste" data-subnav-label="Zeitleiste">
+  <h2 class="demo-section-title">Zeitleiste <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/timeline.css</code> - eine ruhige, vertikale Zeitleiste für Firmengeschichte, Changelog oder Projektverlauf: Datum, Punkt oder Icon als Marker, der aktuelle Eintrag hervorgehoben (<code>aria-current</code>). Mit <code>.ncss-timeline--alternate</code> wechseln die Einträge ab 40rem <em>Container</em>-Breite links/rechts - in einer schmalen Spalte bleibt es automatisch einspaltig. Braucht nur colors/tokens/reset/base.</p>
+  <p class="ncss-text-sm ncss-text-muted">Abgrenzung: <code>.ncss-roadmap</code> (<a href="scroll-effects.html">Scroll-Effekte</a>) ist die scroll-animierte Variante ohne Datum/Icons; <code>.ncss-list--steps</code> (<a href="lists.html#ol">Listen</a>) ist eine nummerierte Anleitung ohne Zustände.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Zeitleiste der Firmengeschichte">
+    <ol class="ncss-timeline ncss-timeline--alternate" role="list">
+      <li class="ncss-timeline-item">
+        <span class="ncss-timeline-marker" aria-hidden="true"></span>
+        <div class="ncss-timeline-content">
+          <time class="ncss-timeline-date" datetime="2019-04">April 2019</time>
+          <h3 class="ncss-timeline-title">Gründung in Leipzig</h3>
+          <p>Zu dritt in einem Hinterhofbüro, das erste Projekt für eine Kaffeerösterei.</p>
+        </div>
+      </li>
+      <li class="ncss-timeline-item">
+        <span class="ncss-timeline-marker" aria-hidden="true"><span class="ncss-icon ncss-icon-star"></span></span>
+        <div class="ncss-timeline-content">
+          <time class="ncss-timeline-date" datetime="2021-09">September 2021</time>
+          <h3 class="ncss-timeline-title">Erstes eigenes Produkt</h3>
+          <p>Das Buchungstool geht live und hat nach drei Monaten 400 Kundinnen und Kunden.</p>
+        </div>
+      </li>
+      <li class="ncss-timeline-item">
+        <span class="ncss-timeline-marker" aria-hidden="true"><span class="ncss-icon ncss-icon-users"></span></span>
+        <div class="ncss-timeline-content">
+          <time class="ncss-timeline-date" datetime="2024-02">Februar 2024</time>
+          <h3 class="ncss-timeline-title">Team wächst auf 25</h3>
+          <p>Neues Büro, zweiter Standort in Wien.</p>
+        </div>
+      </li>
+      <li class="ncss-timeline-item" aria-current="date">
+        <span class="ncss-timeline-marker" aria-hidden="true"><span class="ncss-icon ncss-icon-check"></span></span>
+        <div class="ncss-timeline-content">
+          <time class="ncss-timeline-date" datetime="2026-11">Heute · November 2026</time>
+          <h3 class="ncss-timeline-title">Version 1.1 erscheint</h3>
+          <p>Barrierefreiheit von Anfang an, komplett ohne Build-Schritt.</p>
+        </div>
+      </li>
+      <li class="ncss-timeline-item ncss-timeline-item--muted">
+        <span class="ncss-timeline-marker" aria-hidden="true"></span>
+        <div class="ncss-timeline-content">
+          <time class="ncss-timeline-date" datetime="2027">2027 (geplant)</time>
+          <h3 class="ncss-timeline-title">Dritter Standort</h3>
+          <p>Noch nicht entschieden: Zürich oder Prag.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+  <pre><code class="language-html">&lt;ol class="ncss-timeline ncss-timeline--alternate" role="list"&gt;
+  &lt;li class="ncss-timeline-item"&gt;
+    &lt;span class="ncss-timeline-marker" aria-hidden="true"&gt;&lt;/span&gt;
+    &lt;div class="ncss-timeline-content"&gt;
+      &lt;time class="ncss-timeline-date" datetime="2019-04"&gt;April 2019&lt;/time&gt;
+      &lt;h3 class="ncss-timeline-title"&gt;Gründung in Leipzig&lt;/h3&gt;
+      &lt;p&gt;…&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li class="ncss-timeline-item" aria-current="date"&gt;
+    &lt;span class="ncss-timeline-marker" aria-hidden="true"&gt;&lt;span class="ncss-icon ncss-icon-check"&gt;&lt;/span&gt;&lt;/span&gt;
+    &lt;div class="ncss-timeline-content"&gt;…&lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li class="ncss-timeline-item ncss-timeline-item--muted"&gt;…&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Einspaltig und kompakt, z.B. in einer Seitenleiste: <code>&lt;ol class="ncss-timeline ncss-timeline--compact" role="list"&gt;</code>. Die Live-Fläche oben ist breit genug für das Wechsel-Layout; auf dem Handy siehst du die einspaltige Form.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-timeline</code></td><td>Liste (<code>&lt;ol role="list"&gt;</code>), zugleich Container für die Container Query</td></tr>
+        <tr><td><code>.ncss-timeline-item</code></td><td>Ein Eintrag; zeichnet das Linien-Segment zum nächsten</td></tr>
+        <tr><td><code>.ncss-timeline-marker</code></td><td>Leer = Punkt auf der Linie; mit Icon/Text = gefüllter Kreis. Immer <code>aria-hidden="true"</code></td></tr>
+        <tr><td><code>.ncss-timeline-content</code></td><td>Textspalte</td></tr>
+        <tr><td><code>.ncss-timeline-date / -title</code></td><td>Datum (<code>&lt;time datetime&gt;</code>) und Überschrift</td></tr>
+        <tr><td><code>[aria-current]</code></td><td>Aktueller Eintrag: gefüllter Marker mit zweitem Ring, Datum in Markenfarbe</td></tr>
+        <tr><td><code>.ncss-timeline-item--muted</code></td><td>Geplant/zweitrangig: gestrichelter Punkt, gedämpfter Text</td></tr>
+        <tr><td><code>.ncss-timeline--alternate</code></td><td>Ab 40rem Container-Breite abwechselnd links/rechts</td></tr>
+        <tr><td><code>.ncss-timeline--compact</code></td><td>Engere Abstände, kleinere Marker</td></tr>
+        <tr><td><code>--ncss-timeline-gap / -line-color / -marker-color / -ring</code></td><td>Abstand, Linien-, Marker- und Ringfarbe</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Nicht interaktiv; Links im Inhalt folgen der normalen Tab-Reihenfolge.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Geordnete Liste mit <code>role="list"</code>, je Eintrag eine Überschrift - die Zeitleiste lässt sich per Überschriften-Navigation durchspringen. <code>&lt;time datetime&gt;</code> liefert das maschinenlesbare Datum. <code>aria-current</code> sagt "aktuell" an; Marker und Icons sind <code>aria-hidden</code>. Im Wechsel-Layout bleibt die Lesereihenfolge die des Markups (oben nach unten), nur die Seite wechselt.</p>
+    <h4>Einstellungen</h4>
+    <p>Aktuell und geplant unterscheiden sich in der Form (gefüllt mit Doppelring bzw. gestrichelt), nicht nur in der Farbe. Hochkontrast: Marker mit Systemfarben-Rahmen, der aktuelle Eintrag in <code>Highlight</code>. Keine Bewegung - für die scroll-animierte Variante siehe <a href="scroll-effects.html">Roadmap</a>.</p>
+    <h4>Ohne JS</h4>
+    <p>Reines CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="stepper" data-subnav-label="Fortschritts-Schritte">
+  <h2 class="demo-section-title">Fortschritts-Schritte (Stepper) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/stepper.css</code> - Fortschritt in Schritten für Bestellstatus, Formular-Assistent oder Onboarding, mit drei Zuständen: erledigt, aktuell (<code>aria-current="step"</code>) und ausstehend. Horizontal, sobald der <em>Container</em> mindestens 36rem breit ist, darunter automatisch senkrecht - ohne Viewport-Breakpoint. Braucht colors/tokens/reset/base, für den versteckten Zustandstext helpers/a11y.css.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Bestellstatus">
+    <ol class="ncss-stepper" role="list" aria-label="Bestellstatus">
+      <li class="ncss-stepper-step ncss-stepper-step--done">
+        <span class="ncss-stepper-label">Bestellt <span class="ncss-visually-hidden">(erledigt)</span></span>
+        <span class="ncss-stepper-meta"><time datetime="2026-11-16">16. Nov.</time></span>
+      </li>
+      <li class="ncss-stepper-step ncss-stepper-step--done">
+        <span class="ncss-stepper-label">Bezahlt <span class="ncss-visually-hidden">(erledigt)</span></span>
+        <span class="ncss-stepper-meta"><time datetime="2026-11-16">16. Nov.</time></span>
+      </li>
+      <li class="ncss-stepper-step" aria-current="step">
+        <span class="ncss-stepper-label">Versandt</span>
+        <span class="ncss-stepper-meta">unterwegs mit DHL</span>
+      </li>
+      <li class="ncss-stepper-step">
+        <span class="ncss-stepper-label">Zugestellt</span>
+        <span class="ncss-stepper-meta">voraussichtlich Fr.</span>
+      </li>
+    </ol>
+  </div>
+  <pre><code class="language-html">&lt;ol class="ncss-stepper" role="list" aria-label="Bestellstatus"&gt;
+  &lt;li class="ncss-stepper-step ncss-stepper-step--done"&gt;
+    &lt;span class="ncss-stepper-label"&gt;Bestellt &lt;span class="ncss-visually-hidden"&gt;(erledigt)&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="ncss-stepper-meta"&gt;&lt;time datetime="2026-11-16"&gt;16. Nov.&lt;/time&gt;&lt;/span&gt;
+  &lt;/li&gt;
+  &lt;li class="ncss-stepper-step ncss-stepper-step--done"&gt;
+    &lt;span class="ncss-stepper-label"&gt;Bezahlt &lt;span class="ncss-visually-hidden"&gt;(erledigt)&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="ncss-stepper-meta"&gt;&lt;time datetime="2026-11-16"&gt;16. Nov.&lt;/time&gt;&lt;/span&gt;
+  &lt;/li&gt;
+  &lt;li class="ncss-stepper-step" aria-current="step"&gt;
+    &lt;span class="ncss-stepper-label"&gt;Versandt&lt;/span&gt;
+    &lt;span class="ncss-stepper-meta"&gt;unterwegs mit DHL&lt;/span&gt;
+  &lt;/li&gt;
+  &lt;li class="ncss-stepper-step"&gt;
+    &lt;span class="ncss-stepper-label"&gt;Zugestellt&lt;/span&gt;
+    &lt;span class="ncss-stepper-meta"&gt;voraussichtlich Fr.&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Formular-Assistent mit fünf Schritten - der erledigte Schritt ist ein Link zurück:</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Formular-Assistent">
+    <ol class="ncss-stepper" role="list" aria-label="Registrierung, Schritt 2 von 5">
+      <li class="ncss-stepper-step ncss-stepper-step--done"><a class="ncss-stepper-label" href="#stepper">Konto <span class="ncss-visually-hidden">(erledigt)</span></a></li>
+      <li class="ncss-stepper-step" aria-current="step"><span class="ncss-stepper-label">Adresse</span></li>
+      <li class="ncss-stepper-step"><span class="ncss-stepper-label">Zahlung</span></li>
+      <li class="ncss-stepper-step"><span class="ncss-stepper-label">Prüfen</span></li>
+      <li class="ncss-stepper-step"><span class="ncss-stepper-label">Fertig</span></li>
+    </ol>
+  </div>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-stepper</code></td><td>Liste (<code>&lt;ol role="list" aria-label&gt;</code>), zugleich Container; ab 36rem horizontal</td></tr>
+        <tr><td><code>.ncss-stepper-step</code></td><td>Ein Schritt (ausstehend: dünner Ring, gestrichelte Linie)</td></tr>
+        <tr><td><code>.ncss-stepper-step--done</code></td><td>Erledigt: gefüllter Kreis mit Haken, durchgezogene Linie</td></tr>
+        <tr><td><code>[aria-current="step"]</code></td><td>Aktueller Schritt: dicker Ring, fetter Text</td></tr>
+        <tr><td><code>.ncss-stepper-step--error</code></td><td>Fehlgeschlagen: Ausrufezeichen in Gefahrenfarbe</td></tr>
+        <tr><td><code>.ncss-stepper-label / -meta</code></td><td>Beschriftung (darf ein <code>&lt;a&gt;</code> sein) und Zusatzzeile (Datum, Hinweis)</td></tr>
+        <tr><td><code>.ncss-stepper--vertical</code></td><td>Immer senkrecht, z.B. bei vielen Schritten</td></tr>
+        <tr><td><code>--ncss-stepper-marker / -color</code></td><td>Markergröße (2rem) und Farbe erledigter/aktueller Schritte</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Nur Links in erledigten Schritten sind Tab-Stopps (zurück zu einem früheren Schritt).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p><code>aria-current="step"</code> sagt den aktuellen Schritt an, "(erledigt)" steht als versteckter Text im Label (<code>.ncss-visually-hidden</code> aus helpers/a11y.css). Nummer und Haken sind CSS-Inhalt mit leerem Alternativtext und werden nicht vorgelesen - die Listenposition ("3 von 4") kommt von der Liste selbst. Ein <code>aria-label</code> an der Liste nennt den Zweck.</p>
+    <h4>Einstellungen</h4>
+    <p>Die drei Zustände unterscheiden sich in der Form (Haken / dicker Ring / dünner Ring, durchgezogene / gestrichelte Linie). Hochkontrast: Systemfarben, der aktuelle Ring in <code>Highlight</code>. Keine Bewegung.</p>
+    <h4>Ohne JS</h4>
+    <p>Reines CSS; der Zustand kommt aus dem Markup (Server oder eigenes Skript setzt Klasse/Attribut).</p>
+  </div>
+</section>
