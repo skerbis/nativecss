@@ -14,7 +14,16 @@
 <script src="../../../../dist/js/nav-drilldown.js" defer></script>
 <style>
   body { margin: 0; }
-  .demo-frame-hint { padding-inline: var(--ncss-space-sm); }
+  /* Etwas Seiteninhalt unter der Leiste, damit der Rahmen nicht leer wirkt, solange das
+     Menü zu ist; der Hinweis klebt nicht mehr an der Linie der Leiste. */
+  .demo-frame-main { padding: var(--ncss-space-md) var(--ncss-space-sm); }
+  .demo-frame-main h1 { font-size: var(--ncss-font-size-xl); margin-block-end: var(--ncss-space-2xs); }
+  .demo-frame-hint {
+    margin-block-start: var(--ncss-space-md);
+    padding: var(--ncss-space-xs) var(--ncss-space-sm);
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+  }
 </style>
 </head>
 <body class="ncss-page-shell">
@@ -58,6 +67,10 @@
       </nav>
     </div>
   </header>
-  <p class="demo-frame-hint ncss-text-sm ncss-text-muted">☰ antippen, dann „Zimmer &amp; Suiten“ oder „Wellness“.</p>
+  <main class="demo-frame-main">
+    <h1>Willkommen am Walchensee</h1>
+    <p>Holzhaus direkt am Ufer, eigener Badesteg, Frühstück mit Seeblick.</p>
+    <p class="demo-frame-hint ncss-text-sm ncss-text-muted">☰ antippen, dann „Zimmer &amp; Suiten“ oder „Wellness“.</p>
+  </main>
 </body>
 </html>

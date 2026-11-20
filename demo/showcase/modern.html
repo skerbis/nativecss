@@ -43,6 +43,8 @@
   .demo-tile h4,
   .demo-tile-photo h4 {
     margin: 0;
+    hyphens: manual;
+    overflow-wrap: break-word;
     font-size: var(--ncss-font-size-md);
     line-height: var(--ncss-line-height-tight);
   }
@@ -62,9 +64,11 @@
     block-size: 100%;
     object-fit: cover;
   }
-  .demo-tile-photo p { margin: 0; }
+  .demo-tile-photo p { margin: var(--ncss-space-2xs) 0 0; }
   .demo-tile-photo figcaption { text-shadow: 0 1px 3px rgb(0 0 0 / 70%); }
-  .demo-mosaic { max-inline-size: 62rem; }
+  /* Mosaik: höchstens 4 Spalten über die volle Breite – das 5er-Muster geht in 4 Spalten
+     lückenlos auf, bei 5 Spalten blieben Löcher (Bibliotheks-Fund, siehe Bericht) */
+  .demo-mosaic { --ncss-bento-min: max(12rem, (100% - 3 * var(--ncss-space-md)) / 4 - 1px); }
   .demo-tile-big h4 {
     font-size: var(--ncss-font-size-lg);
     line-height: var(--ncss-line-height-tight);
@@ -78,6 +82,13 @@
   }
   .demo-room h3 { font-size: var(--ncss-font-size-md); margin-block-end: var(--ncss-space-3xs); }
   .demo-room p { margin: 0; }
+  .demo-room code,
+  .demo-voucher code,
+  .demo-feature-text code { white-space: nowrap; }
+
+  /* Morgennebel-Foto: oben fast weiß – im schmalen Panel ausgeschnitten, sonst verschwindet
+     die Panel-Ecke im hellen Rahmen. transform statt scale (scale nutzt die Komponente). */
+  .demo-panel-fog img { transform: scale(1.5); transform-origin: 50% 85%; }
 
   .demo-compare { max-inline-size: 56rem; }
 
@@ -477,7 +488,7 @@
             </figure>
             <article class="ncss-card ncss-card--brand ncss-radius-lg demo-tile">
               <span class="demo-kicker">Inklusive</span>
-              <h4>Ruderboote und E-Bikes ohne Aufpreis</h4>
+              <h4>Ruderboote und E&#8209;Bikes ohne Aufpreis</h4>
               <p class="ncss-text-sm">Einfach an der Rezeption melden – Schwimmwesten und Helme liegen bereit.</p>
             </article>
             <article class="ncss-card ncss-border ncss-radius-lg demo-tile">
@@ -659,7 +670,7 @@
               <span class="ncss-expand-panel-body">Liegen mit Decken, Tee und Stille – Handys bleiben draußen.</span>
             </button>
             <button type="button" class="ncss-expand-panel">
-              <span class="ncss-expand-panel-media"><img src="../assets/examples/hotel/steg-morgennebel.webp" width="1600" height="1066" loading="lazy" alt=""></span>
+              <span class="ncss-expand-panel-media demo-panel-fog"><img src="../assets/examples/hotel/steg-morgennebel.webp" width="1600" height="1066" loading="lazy" alt=""></span>
               <span class="ncss-expand-panel-title">Morgenschwimmen</span>
               <span class="ncss-expand-panel-body">Ab 7 Uhr vom Steg in den See, Bademäntel liegen bereit.</span>
             </button>

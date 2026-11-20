@@ -44,6 +44,7 @@
   .demo-space-bar { block-size: 0.9rem; inline-size: var(--demo-size); border-radius: var(--ncss-radius-full); background-color: var(--ncss-color-brand); }
 
   .demo-offer { max-inline-size: 26rem; }
+  .demo-offer ul.ncss-cluster { padding-inline-start: 0; margin: 0; }
   .demo-offer img { aspect-ratio: 16 / 9; object-fit: cover; }
   .demo-price { font-size: var(--ncss-font-size-lg); font-weight: 700; margin: 0; }
   .demo-price small { font-size: var(--ncss-font-size-sm); font-weight: 400; color: var(--ncss-color-text-muted); }
@@ -68,7 +69,9 @@
   .demo-bento-text p { margin: 0; font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
   .demo-bento-text--brand { background-color: var(--ncss-color-brand); border-color: transparent; color: var(--ncss-color-brand-contrast); }
   .demo-bento-text--brand :is(h3, p) { color: inherit; }
-  .demo-bento-photo { position: relative; }
+  .demo-bento-photo { position: relative; min-block-size: var(--ncss-bento-row-height); }
+  /* Fotos dürfen die Zeilenhöhe nicht aufblähen (sonst riesige Text-Kacheln daneben) */
+  .demo-bento-photo > img { position: absolute; inset: 0; }
 
   .demo-masonry figure { margin-inline: 0; margin-block-start: 0; }
   .demo-masonry img { inline-size: 100%; border-radius: var(--ncss-radius-md); }

@@ -75,6 +75,15 @@
 
   /* Reveal-Pin */
   .demo-pin-intro { font-size: var(--ncss-font-size-xl); font-weight: 700; text-wrap: balance; }
+  /* Vorläufig (Bibliotheks-Fund reveal-pin.css): im Fallback/bei reduzierter Bewegung hat das
+     Panel keinen seitlichen Abstand und klebt in der vollbreiten Bühne am Bildschirmrand. */
+  .demo-pin-panel {
+    max-inline-size: min(36rem, 100% - 2 * var(--ncss-space-md));
+    margin-inline: auto;
+  }
+
+  /* Morphing: Luft zwischen den beiden Morph-Sektionen (schmal stehen Bild und Text untereinander) */
+  .demo-morph-next { margin-block-start: var(--ncss-space-xl); }
 
   /* Text-Reveal */
   .demo-big-text {
@@ -93,9 +102,12 @@
     border: var(--ncss-border-width) solid var(--ncss-color-border);
     border-radius: var(--ncss-radius-lg);
     background-color: var(--ncss-color-surface);
+    container-type: inline-size;
   }
   .demo-stat-value {
-    font-size: var(--ncss-font-size-2xl);
+    /* an die Kartenbreite gekoppelt: „1.200 m²“ passt auch in vier schmale Spalten */
+    font-size: min(var(--ncss-font-size-2xl), 19cqi);
+    white-space: nowrap;
     font-weight: 700;
     line-height: 1;
     color: var(--ncss-color-brand-on-soft);
@@ -152,6 +164,21 @@
     border-radius: var(--ncss-radius-md);
   }
   .demo-package h3, .demo-package p { margin: 0; color: inherit; }
+  /* Vorläufig (Bibliotheks-Fund scroll-stack.css): bei reduzierter Bewegung bleibt sonst der
+     Ruhe-Stapel stehen – nur die oberste Karte lesbar, darunter viel Leerraum. Hier wie im
+     @supports-not-Fallback: Karten ganz normal untereinander. */
+  @media (prefers-reduced-motion: reduce) {
+    .demo-stack-section { height: auto; }
+    .demo-stack-stage {
+      position: static;
+      height: auto;
+      overflow: visible;
+      flex-direction: column;
+      gap: var(--ncss-space-lg);
+      padding-block: var(--ncss-space-lg);
+    }
+    .demo-stack-section .demo-package { position: relative; transform: none; height: auto; min-block-size: 22rem; }
+  }
   .demo-package-tag { font-size: var(--ncss-font-size-sm); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
   /* Scrollytelling */
@@ -174,6 +201,7 @@
     background-color: color-mix(in oklab, var(--ncss-color-bg) 82%, transparent);
     max-inline-size: 22rem;
   }
+  .demo-frames-overlay { display: grid; gap: var(--ncss-space-3xs); }
   .demo-frames-overlay h3, .demo-frames-overlay p { margin: 0; }
 
   /* Curtain */
@@ -235,7 +263,10 @@
   }
 
   /* Animationen */
-  .demo-anim-card { padding: var(--ncss-space-sm) var(--ncss-space-md); font-weight: 600; text-align: center; }
+  /* Rahmen: .ncss-card ist weiß ohne Kontur – auf dem weißen Abschnitt sonst unsichtbar */
+  .demo-anim-card, .demo-anim-note { border: var(--ncss-border-width) solid var(--ncss-color-border); border-radius: var(--ncss-radius-lg); }
+  .demo-replay { margin-block-start: var(--ncss-space-sm); }
+  .demo-anim-card { padding: var(--ncss-space-sm) var(--ncss-space-xs); font-weight: 600; text-align: center; white-space: nowrap; }
   .demo-loop-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
@@ -253,6 +284,7 @@
   }
   .demo-loop .ncss-btn, .demo-loop button { white-space: nowrap; }
   .demo-anim-note { padding: var(--ncss-space-sm) var(--ncss-space-md); margin-block-start: var(--ncss-space-sm); }
+  .demo-anim-note p { margin: 0; }
   .demo-loop code { font-size: 0.8rem; color: var(--ncss-color-text-muted); }
   .demo-live-badge { display: inline-flex; align-items: center; gap: 0.5em; font-weight: 600; }
   .demo-live-dot { inline-size: 0.75rem; block-size: 0.75rem; border-radius: var(--ncss-radius-full); background-color: var(--ncss-color-danger); }
@@ -634,7 +666,7 @@
       <div class="ncss-reveal-pin-stage">
         <p class="ncss-reveal-pin-intro demo-pin-intro">Ein See, der den ganzen Raum nimmt.</p>
         <img src="../assets/examples/hotel/see-panorama.webp" width="1600" height="1068" loading="lazy" alt="Walchensee: türkises Wasser, bewaldete Ufer und Berge unter blauem Himmel">
-        <div class="ncss-reveal-pin-content">
+        <div class="ncss-reveal-pin-content demo-pin-panel">
           <h3>Angekommen</h3>
           <p>Zwei Minuten zu Fuß vom Hotel Seeblick zum Ufer – das Panel erscheint erst, wenn das Bild den Bildschirm füllt.</p>
         </div>
@@ -678,7 +710,7 @@
         </div>
       </div>
     </section>
-    <section class="ncss-morph ncss-morph--start ncss-morph--card" aria-label="Steg im Morgennebel" style="--ncss-morph-top: var(--ncss-scroll-offset, 0px)">
+    <section class="ncss-morph ncss-morph--start ncss-morph--card demo-morph-next" aria-label="Steg im Morgennebel" style="--ncss-morph-top: var(--ncss-scroll-offset, 0px)">
       <div class="ncss-morph-stage">
         <div class="ncss-morph-media"><img src="../assets/examples/hotel/steg-morgennebel.webp" width="1600" height="1066" loading="lazy" alt="Steg im Morgennebel, die Sonne geht über dem See auf"></div>
         <div class="ncss-morph-content">
@@ -850,8 +882,8 @@
         </div>
       </div>
     </div>
-    <div class="ncss-stack-section" style="--ncss-stack-count: 4; --ncss-stack-stage-top: var(--ncss-scroll-offset, 0px); --ncss-stack-stage-height: calc(100lvh - var(--ncss-scroll-offset, 0px))">
-      <div class="ncss-stack-stage">
+    <div class="ncss-stack-section demo-stack-section" style="--ncss-stack-count: 4; --ncss-stack-stage-top: var(--ncss-scroll-offset, 0px); --ncss-stack-stage-height: calc(100lvh - var(--ncss-scroll-offset, 0px))">
+      <div class="ncss-stack-stage demo-stack-stage">
         <article class="ncss-stack-card ncss-surface--brand demo-package" style="--ncss-stack-index: 0">
           <p class="demo-package-tag">Arrangement 1</p>
           <img src="../assets/examples/hotel/ruderboot-steg-thumb.webp" width="480" height="640" loading="lazy" alt="Ruderboot mit Rudern am Holzsteg">
@@ -1171,7 +1203,7 @@
       </div>
       <div class="demo-live">
         <h3 class="demo-live-label">Einblenden</h3>
-        <div class="ncss-grid" id="animEntrance" style="--ncss-grid-min: 9rem">
+        <div class="ncss-grid" id="animEntrance" style="--ncss-grid-min: 10rem">
           <div class="ncss-card ncss-animate-fade-in demo-anim-card">fade-in</div>
           <div class="ncss-card ncss-animate-slide-in-up demo-anim-card">slide-in-up</div>
           <div class="ncss-card ncss-animate-slide-in-down demo-anim-card">slide-in-down</div>
@@ -1179,8 +1211,8 @@
           <div class="ncss-card ncss-animate-slide-in-right demo-anim-card">slide-in-right</div>
           <div class="ncss-card ncss-animate-scale-in demo-anim-card">scale-in</div>
         </div>
-        <p><button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-demo-replay="animEntrance">Noch einmal abspielen</button></p>
-        <div class="ncss-card ncss-animate-on-scroll ncss-animate-on-scroll--slide-up demo-anim-note">Diese Karte gleitet beim Hereinscrollen hoch: <code>.ncss-animate-on-scroll--slide-up</code>, der schlanke Kurzweg ohne Formen.</div>
+        <p class="demo-replay"><button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-demo-replay="animEntrance">Noch einmal abspielen</button></p>
+        <div class="ncss-card ncss-animate-on-scroll ncss-animate-on-scroll--slide-up demo-anim-note"><p>Diese Karte gleitet beim Hereinscrollen hoch: <code>.ncss-animate-on-scroll--slide-up</code>, der schlanke Kurzweg ohne Formen.</p></div>
       </div>
       <div class="demo-live">
         <h3 class="demo-live-label">Schleifen: Laden &amp; Aufmerksamkeit</h3>

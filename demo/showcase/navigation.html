@@ -23,7 +23,9 @@
 <link rel="stylesheet" href="../../dist/ncss.css">
 <link rel="stylesheet" href="../assets/inspector.css">
 <link rel="stylesheet" href="../assets/examples/showcase/showcase.css">
+<link rel="stylesheet" href="../../dist/components/nav-priority.css">
 <script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/nav-priority.js" defer></script>
 <script src="../../dist/js/tabs.js" defer></script>
 <script src="../../dist/js/livesearch.js" defer></script>
 <script src="../assets/js/showcase-navigation.js" defer></script>
@@ -49,6 +51,15 @@
     border-start-start-radius: var(--ncss-radius-lg);
     border-start-end-radius: var(--ncss-radius-lg);
   }
+  /* Schmaler Rahmen: kleinerer Abstand, damit Marke, Menü-Knopf und Aktionen in eine
+     Zeile passen statt die Aktionen allein in eine zweite Zeile zu schieben. */
+  @container ncss-container (max-width: 30rem) {
+    .demo-site .ncss-topbar-inner { column-gap: var(--ncss-space-xs); }
+  }
+  /* UMGEHUNG Bibliotheks-Fund: der Rand-Verlauf von .ncss-nav--scroll blendet auch am
+     Scroll-Anfang den ersten Punkt halb aus - Innenabstand schiebt ihn aus dem Verlauf. */
+  .demo-live .ncss-nav--scroll .ncss-nav-list { padding-inline: var(--ncss-space-md); }
+
   .demo-site-body {
     display: grid;
     gap: var(--ncss-space-sm);
@@ -116,6 +127,10 @@
     border-radius: var(--ncss-radius-md);
     background-color: var(--ncss-color-surface);
   }
+  /* UMGEHUNG Bibliotheks-Fund: nav.css setzt unter 64rem auf JEDE .ncss-nav-list
+     margin-block-start (fürs Off-Canvas-Panel); .ncss-nav--tree setzt das nicht zurück
+     -> leerer Streifen über dem ersten Punkt. */
+  .demo-tree-layout .ncss-nav--tree .ncss-nav-list { margin-block-start: 0; }
   .demo-tree-layout h3 { font-size: var(--ncss-font-size-lg); margin-block-end: var(--ncss-space-2xs); }
 
   /* Priority-Nav: per Regler (showcase-navigation.js) verstellbarer Rahmen */
@@ -152,15 +167,19 @@
   }
   @container ncss-container (min-width: 40rem) {
     .demo-room { grid-template-columns: 12rem minmax(0, 1fr); align-items: start; }
+    .demo-room img { aspect-ratio: 2 / 3; }
   }
+  /* Gestapelt (schmal) quer, sonst würde das Hochformat auf voller Breite riesig. */
   .demo-room img {
     inline-size: 100%;
     block-size: auto;
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
     border-radius: var(--ncss-radius-md);
   }
-  .demo-live h3 { font-size: var(--ncss-font-size-md); }
+  /* Inhalts-Überschriften in Demos - nicht die kleinen Beschriftungen (.demo-live-label
+     aus showcase.css), die sonst von dieser spezifischeren Regel groß gezogen würden. */
+  .demo-live h3:not(.demo-live-label) { font-size: var(--ncss-font-size-md); }
   .demo-live h4 { font-size: var(--ncss-font-size-md); }
 
   /* Ausblenden beim Scrollen: eigener Scroll-Container statt der ganzen Seite */
@@ -554,7 +573,7 @@
                       </li>
                       <li class="ncss-nav-item"><a href="#tabs-anreise">Anreise</a></li>
                     </ul>
-                                  </dialog>
+                  </dialog>
               </nav>
               <div class="ncss-topbar-actions">
                 <div class="ncss-search">

@@ -8,10 +8,14 @@
   var output = document.getElementById("priorityWidthOut");
   var frame = document.getElementById("priorityFrame");
   if (!slider || !output || !frame) return;
+  // Der Rahmen ist per CSS auf die verfügbare Breite gedeckelt (max-inline-size:100%) -
+  // die Anzeige nennt deshalb die tatsächliche Breite, nicht nur den Reglerwert (sonst
+  // stünde auf dem Handy "720 px" neben einem 358 px breiten Rahmen).
   function apply() {
     frame.style.inlineSize = slider.value + "px";
-    output.textContent = slider.value + " px";
+    output.textContent = Math.round(frame.getBoundingClientRect().width) + " px";
   }
   slider.addEventListener("input", apply);
+  window.addEventListener("resize", apply);
   apply();
 })();

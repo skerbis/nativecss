@@ -238,6 +238,35 @@
   }
   .demo-badge-row p { margin: 0; }
   .demo-badge-row strong { display: block; }
+  /* Hinweis-Boxen im Raster: Zeilen nicht dehnen, wenn die Nachbarbox höher ist (sonst
+     klafft zwischen Titel und Text eine Lücke). VORLÄUFIG – Ursache: dist/components/alert.css,
+     .ncss-alert hat kein align-content: start. */
+  .demo-alerts > * { align-content: start; }
+
+  /* Code-Blöcke: <pre> nutzt bg-subtle – genau die Farbe jeder zweiten Rundgang-Section,
+     der Block wäre dort unsichtbar. */
+  .demo-code pre {
+    background-color: var(--ncss-color-surface);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+  }
+
+  /* Tabellen: Beschriftung linksbündig (zentriert über einer breiten Scroll-Tabelle ist sie
+     auf dem Handy nur halb sichtbar). Im Stapel-Modus bleibt <caption> sonst table-caption
+     und schrumpft auf Min-Breite. VORLÄUFIG – Ursache: dist/helpers/tables.css. */
+  .demo-tables caption { text-align: start; }
+  @container ncss-table (max-width: 36rem) {
+    .demo-tables caption { display: block; }
+  }
+
+  /* Termine/Downloads: die per JS erzeugten <p> erben margin-block-end aus base.css –
+     große Lücken zwischen Ort und Beschreibung bzw. Beschreibung und Größe, und die
+     Metazeile klebt ohne Abstand am Titel. VORLÄUFIG – Ursache: dist/components/events.css
+     und downloads.css setzen die Abstände in ihren Bodies nicht selbst. */
+  .demo-events :is(.ncss-agenda-body, .ncss-downloads-body) > * { margin-block: 0; }
+  .demo-events :is(.ncss-agenda-body, .ncss-downloads-body) > * + * { margin-block-start: var(--ncss-space-3xs); }
+  .demo-events .ncss-agenda-body > p:not([class]) { margin-block-start: var(--ncss-space-2xs); }
+  .demo-events .ncss-card-header p { margin-block: var(--ncss-space-2xs) 0; }
+  .demo-events :is(.ncss-cal-grid, .ncss-agenda-list:last-child) { margin-block-end: 0; }
 </style>
 </head>
 <body class="ncss-page-shell">
@@ -676,8 +705,8 @@
         <div class="demo-frame">
           <p class="demo-live-label">Narrow column, justified</p>
           <div class="ncss-grid" style="--ncss-grid-min: 6.5rem;">
-            <p class="demo-justify" lang="de">Ohne: Grundstücksverkehrsgenehmigung und Abfallentsorgungsgebühren.</p>
-            <p class="demo-justify ncss-hyphenate" lang="de">Mit: Grundstücksverkehrsgenehmigung und Abfallentsorgungsgebühren.</p>
+            <p class="demo-justify">Without: <span lang="de">Grundstücksverkehrsgenehmigung und Abfallentsorgungsgebühren.</span></p>
+            <p class="demo-justify ncss-hyphenate">With: <span lang="de">Grundstücksverkehrsgenehmigung und Abfallentsorgungsgebühren.</span></p>
           </div>
         </div>
       </div>
@@ -1166,7 +1195,7 @@
           <a class="demo-handbook" href="../../docs/en/base-components.html#alert">In the handbook<span class="ncss-visually-hidden">: alerts</span> <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div class="demo-live ncss-grid" style="--ncss-grid-min: 20rem;">
+      <div class="demo-live ncss-grid demo-alerts" style="--ncss-grid-min: 20rem;">
         <div class="ncss-alert">
           <p class="ncss-alert-title">Note:</p>
           <p>Registration for the lake festival flea market is open until 30 June.</p>
@@ -1270,7 +1299,7 @@
           </ul>
         </div>
       </div>
-      <div class="demo-live ncss-grid" style="--ncss-grid-min: 20rem;">
+      <div class="demo-live ncss-grid demo-code" style="--ncss-grid-min: 20rem;">
         <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;
   &lt;div class="ncss-card-body"&gt;
     &lt;h3&gt;Lake view room&lt;/h3&gt;
@@ -1477,7 +1506,7 @@
         </div>
 
         <h3 class="demo-subhead">Status cards</h3>
-        <div class="ncss-grid" style="--ncss-grid-min: 10.5rem;">
+        <div class="ncss-grid ncss-hyphenate" style="--ncss-grid-min: 10.5rem;">
           <article class="ncss-card ncss-card--brand ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">New at the hotel</h4><p class="ncss-text-sm">Our own boat hire from May.</p></div></article>
           <article class="ncss-card ncss-card--brand-2 ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Campaign</h4><p class="ncss-text-sm">“Seeburg cycles” – sign up now.</p></div></article>
           <article class="ncss-card ncss-card--neutral ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Info</h4><p class="ncss-text-sm">Service charge statement follows in March.</p></div></article>
@@ -1544,7 +1573,7 @@
           </li>
           <li class="ncss-card ncss-border ncss-radius-lg">
             <div class="ncss-card-media"><img src="../assets/examples/immo/gartenstrasse-thumb.webp" alt="Ivy on a yellow period facade" width="640" height="428" loading="lazy"></div>
-            <div class="ncss-card-body"><h4>Gartenstraße 2 – period building with rear house</h4><p class="ncss-text-sm ncss-text-muted">Longer title, more text – the footers of the row still line up.</p></div>
+            <div class="ncss-card-body"><h4>Gartenstraße&nbsp;2 – period building with rear house</h4><p class="ncss-text-sm ncss-text-muted">Longer title, more text – the footers of the row still line up.</p></div>
             <div class="ncss-card-footer"><span class="ncss-badge ncss-badge--warning">1 flat available</span></div>
           </li>
           <li class="ncss-card ncss-border ncss-radius-lg">
@@ -1597,7 +1626,7 @@
             <span class="ncss-card-badge">Recommended</span>
             <div class="ncss-card-header">Lake view room</div>
             <div class="ncss-card-body"><p class="ncss-text-sm">Strong border plus a label – not colour alone.</p></div>
-            <div class="ncss-card-footer ncss-card-footer--plain">1€89 / night</div>
+            <div class="ncss-card-footer ncss-card-footer--plain">€189 / night</div>
           </article>
           <article class="ncss-card ncss-card--accent-start ncss-border ncss-radius-lg" style="--ncss-card-accent: var(--ncss-color-success);">
             <div class="ncss-card-header">Family room</div>
@@ -1607,7 +1636,7 @@
           <article class="ncss-card ncss-card--disabled ncss-border ncss-radius-lg" aria-disabled="true">
             <div class="ncss-card-header">Attic suite</div>
             <div class="ncss-card-body"><p class="ncss-text-sm">Fully booked – muted, text stays readable.</p></div>
-            <div class="ncss-card-footer ncss-card-footer--plain">2€89 / night</div>
+            <div class="ncss-card-footer ncss-card-footer--plain">€289 / night</div>
           </article>
         </div>
 
@@ -1724,7 +1753,7 @@
         </div>
         <div class="demo-frame">
           <p class="demo-live-label"><code>.ncss-list--dash</code></p>
-          <ul class="ncss-list--dash" role="list">
+          <ul class="ncss-list--dash ncss-hyphenate" role="list">
             <li>Bring: your ID card</li>
             <li>When moving: landlord confirmation</li>
             <li>Fee: none</li>
@@ -1812,7 +1841,7 @@
           <a class="demo-handbook" href="../../docs/en/tables.html#scroll">In the handbook<span class="ncss-visually-hidden">: tables</span> <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div class="demo-live">
+      <div class="demo-live demo-tables">
         <p class="demo-live-label">Scrolling: <code>.ncss-table-scroll</code></p>
         <div class="ncss-table-scroll" tabindex="0" role="region" aria-labelledby="demo-preise-cap">
           <table>
@@ -1827,7 +1856,7 @@
           </table>
         </div>
       </div>
-      <div class="demo-live">
+      <div class="demo-live demo-tables">
         <p class="demo-hint"><span class="ncss-icon ncss-icon-arrow-left" aria-hidden="true"></span> Drag the frame narrower – rows turn into cards</p>
         <div class="demo-resizable">
           <div class="ncss-table-stacked">
@@ -1842,7 +1871,7 @@
           </div>
         </div>
       </div>
-      <div class="demo-live">
+      <div class="demo-live demo-tables">
         <p class="demo-live-label">Compact: <code>.ncss-table--compact</code></p>
         <div class="ncss-table-scroll" tabindex="0" role="region" aria-labelledby="demo-zeiten-cap">
           <table class="ncss-table--compact">
@@ -1880,7 +1909,7 @@
           <a class="demo-handbook" href="../../docs/en/widgets.html#events">In the handbook<span class="ncss-visually-hidden">: events</span> <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div class="demo-live ncss-grid ncss-grid--align-start" style="--ncss-grid-min: 20rem;">
+      <div class="demo-live ncss-grid ncss-grid--align-start demo-events" style="--ncss-grid-min: 20rem;">
         <div class="demo-frame">
           <p class="demo-live-label"><code>data-view="month"</code></p>
           <div lang="de" class="ncss-events" data-view="month" data-ics="../assets/examples/gemeinde/termine.ics" data-window-months="6"></div>
@@ -1918,7 +1947,7 @@
           <a class="demo-handbook" href="../../docs/en/widgets.html#downloads">In the handbook<span class="ncss-visually-hidden">: download list</span> <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div class="demo-live">
+      <div class="demo-live demo-events ncss-hyphenate">
         <div lang="de" class="ncss-downloads" data-src="../data/downloads.json"><p class="ncss-text-muted">Dateiliste wird geladen …</p></div>
       </div>
     </div>

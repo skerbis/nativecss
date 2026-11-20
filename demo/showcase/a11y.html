@@ -179,6 +179,20 @@
   @media (hover: hover) and (pointer: fine) {
     a.demo-press-card:hover strong { text-decoration: underline; }
   }
+
+  /* Review-Korrekturen: Code-Schnipsel im Fließtext nicht mitten im Wort trennen */
+  .demo-feature-text code,
+  .demo-chapter-lead code,
+  .demo-nowrap { white-space: nowrap; }
+  /* WORKAROUND (gehört eigentlich in showcase.css): .demo-frame / .demo-live geben die
+     margin-block-end des letzten Kindes (p, dl … aus base.css) als Leerraum unten weiter. */
+  .demo-frame > :last-child,
+  .demo-live > :last-child { margin-block-end: 0; }
+  .demo-prefs-sample > :last-child { margin-block-end: 0; }
+  .demo-print-box { margin-block-end: 0; }
+  .demo-live .demo-two > div > h3:first-child { margin-block-start: 0; }
+  /* WORKAROUND (Bibliothek: .ncss-preferences-hint behält die Absatz-Margin aus base.css) */
+  .demo-live .ncss-preferences-hint { margin-block: var(--ncss-space-3xs) 0; }
 </style>
 </head>
 <body class="ncss-page-shell">
@@ -459,19 +473,21 @@
       </div>
       <div class="demo-live">
         <div class="demo-two">
-          <div class="demo-frame">
+          <div>
             <h3>Als Button mit Popover</h3>
-            <p class="ncss-text-sm ncss-text-muted">So sitzt es typischerweise in der Kopfleiste.</p>
-            <ncss-preferences></ncss-preferences>
-            <h3>Woran du die Wirkung siehst</h3>
-            <article class="ncss-card ncss-border ncss-radius-md demo-prefs-sample-card">
-              <div class="ncss-card-media"><img src="../assets/examples/hotel/fruehstueck-thumb.webp" width="640" height="427" loading="lazy" alt="Gedeckter Frühstückstisch mit Brot, Obst und Kaffee"></div>
-              <div class="ncss-card-body">
-                <p class="ncss-eyebrow">Hotel Seeblick</p>
-                <p><strong>Frühstück am See</strong></p>
-                <p class="ncss-text-muted ncss-text-sm">Täglich von 7 bis 11 Uhr auf der Terrasse. <a href="#darstellung">Zur Speisekarte</a></p>
-              </div>
-            </article>
+            <div class="demo-frame">
+              <p class="ncss-text-sm ncss-text-muted">So sitzt es typischerweise in der Kopfleiste.</p>
+              <ncss-preferences></ncss-preferences>
+              <h3>Woran du die Wirkung siehst</h3>
+              <article class="ncss-card ncss-border ncss-radius-md demo-prefs-sample-card">
+                <div class="ncss-card-media"><img src="../assets/examples/hotel/fruehstueck-thumb.webp" width="640" height="427" loading="lazy" alt="Gedeckter Frühstückstisch mit Brot, Obst und Kaffee"></div>
+                <div class="ncss-card-body">
+                  <p class="ncss-eyebrow">Hotel Seeblick</p>
+                  <p><strong>Frühstück am See</strong></p>
+                  <p class="ncss-text-muted ncss-text-sm">Täglich von 7 bis 11 Uhr auf der Terrasse. <a href="#darstellung">Zur Speisekarte</a></p>
+                </div>
+              </article>
+            </div>
           </div>
           <div>
             <h3>Als Bedienfeld: <code>inline</code></h3>
@@ -666,7 +682,7 @@
           </div>
           <a class="ncss-card ncss-border ncss-radius-md ncss-press demo-press-card" href="#touch">
             <img src="../assets/examples/hotel/spa-pool-thumb.webp" width="480" height="640" loading="lazy" alt="">
-            <span><strong>Hallenbad</strong><br><span class="ncss-text-sm ncss-text-muted">Täglich 10–21 Uhr · Karte mit <code>.ncss-press</code></span></span>
+            <span><strong>Hallenbad</strong><br><span class="ncss-text-sm ncss-text-muted">Täglich 10–21 Uhr · Karte mit <code class="demo-nowrap">.ncss-press</code></span></span>
           </a>
         </div>
       </div>
@@ -678,7 +694,7 @@
       <div class="demo-feature-head">
         <div class="demo-feature-text">
           <h2 id="sichtbarkeit-h">Nur am Bildschirm, nur im Druck</h2>
-          <p><code>.ncss-screen-only</code> verschwindet im Ausdruck, <code>.ncss-print-only</code> erscheint nur dort – etwa die ausgeschriebene Adresse statt eines Kartenknopfs. Öffne die Druckvorschau (<kbd class="ncss-kbd">Strg</kbd>+<kbd class="ncss-kbd">P</kbd>), um den Tausch zu sehen.</p>
+          <p><code>.ncss-screen-only</code> verschwindet im Ausdruck, <code>.ncss-print-only</code> erscheint nur dort – etwa die ausgeschriebene Adresse statt eines Kartenknopfs. Öffne die Druckvorschau <span class="demo-nowrap">(<kbd class="ncss-kbd">Strg</kbd>+<kbd class="ncss-kbd">P</kbd>)</span>, um den Tausch zu sehen.</p>
           <p class="demo-gotcha"><strong>Gut zu wissen:</strong> Die Verstecken-Helfer arbeiten mit <code>!important</code> – sie schlagen jede Komponente, egal in welchem Layer.</p>
         </div>
         <div class="demo-feature-meta">

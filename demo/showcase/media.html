@@ -42,7 +42,7 @@
   .demo-box { block-size: 11rem; inline-size: 100%; }
   .demo-contain { background-color: var(--ncss-color-bg-subtle); border: var(--ncss-border-width) solid var(--ncss-color-border); border-radius: var(--ncss-radius-md); }
   .demo-circle { inline-size: min(9rem, 100%); }
-  .demo-article { display: flow-root; max-inline-size: 72ch; }
+  .demo-article { display: flow-root; max-inline-size: 72ch; margin-inline: auto; }
   .demo-article h3 { margin-block-start: 0; }
   .demo-article figcaption { font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
   .demo-picture img { inline-size: 100%; border-radius: var(--ncss-radius-lg); }
@@ -68,6 +68,23 @@
   .demo-bg-card > * { margin: 0; }
   .demo-under-header { --ncss-scroll-video-top: var(--ncss-scroll-offset, 0px); }
   .demo-scroll-intro { margin-block-start: var(--ncss-space-md); }
+  /* Review: Verlauf hinter --bottom/--top-Overlays reicht über den Text hinaus (sonst liegt die
+     erste Zeile im fast transparenten Teil). Vorläufig hier – Ursache in components/overlay.css. */
+  .demo-scrim-room.ncss-overlay--bottom { padding-block-start: var(--ncss-space-2xl); }
+  .demo-scrim-room.ncss-overlay--top { padding-block-end: var(--ncss-space-2xl); }
+  /* Raster mit Zwischenüberschriften: Überschriften- und Videozeilen fluchten (subgrid), gestapelt
+     klar getrennt statt Überschrift näher am vorigen Video */
+  .demo-headed-grid { row-gap: var(--ncss-space-xl); }
+  .demo-headed-grid > .ncss-stack { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: var(--ncss-space-md); }
+  .demo-headed-grid > .ncss-stack > * { align-self: start; }
+  /* Video in Schrift: auf schmaler Bühne Platz für den Pause-Schalter unter dem Wort lassen.
+     Vorläufig hier – Ursache in components/video-text.css + video-bg.css. */
+  @container (max-width: 40rem) { .demo-vt-title { padding-block-end: calc(2 * var(--ncss-space-sm) + 2.75rem); } }
+  /* Scroll-Video ohne Animation (reduzierte Bewegung, kein JS): Video + Texte in Containerbreite
+     statt randlos bis an den Fensterrand */
+  .demo-scroll-intro:not(.is-active) > .ncss-scroll-video-stage { max-inline-size: var(--ncss-container-max); margin-inline: auto; padding-inline: var(--ncss-space-sm); }
+  /* Kurze Codes im Fließtext nicht am Bindestrich umbrechen ("--" allein am Zeilenende) */
+  .demo-feature p code, .demo-article figcaption code { white-space: nowrap; }
 </style>
 </head>
 <body class="ncss-page-shell">
@@ -454,7 +471,7 @@
           <h3>Frühstück mit Seeblick</h3>
           <figure class="ncss-figure ncss-figure--width-50 ncss-figure--align-right">
             <img class="ncss-img-rounded" src="../assets/examples/hotel/fruehstueck-thumb.webp" width="640" height="427" loading="lazy" alt="Frühstückstisch mit Kaffee und Brötchen">
-            <figcaption>Halbe Breite, rechts (<code>--width-50 --align-right</code>)</figcaption>
+            <figcaption>Halbe Breite, rechts (<code>--width-50</code> <code>--align-right</code>)</figcaption>
           </figure>
           <p>Im Hotel Seeblick beginnt der Tag auf der Terrasse: frisches Brot aus der Dorfbäckerei, Honig vom Imker am Ortsrand und Eier von den Höfen rund um den See. Wer früh aufsteht, sieht den Nebel noch über dem Wasser liegen.</p>
           <p>Bei Regen decken wir im Wintergarten. Das Buffet steht von sieben bis elf Uhr bereit, am Wochenende eine Stunde länger – für Langschläfer gibt es auf Wunsch ein Frühstück aufs Zimmer.</p>
@@ -466,7 +483,7 @@
           <p>Und wer lieber hinaus will: Ruderboote verleihen wir am hauseigenen Steg, die Runde um die kleine Insel dauert etwa eine Stunde.</p>
           <figure class="ncss-figure ncss-figure--width-75 ncss-figure--align-center">
             <img class="ncss-img-rounded" src="../assets/examples/hotel/see-daemmerung.webp" width="1600" height="1200" loading="lazy" alt="Der See in der Dämmerung mit Bergkette">
-            <figcaption>Drei Viertel, zentriert (<code>--width-75 --align-center</code>)</figcaption>
+            <figcaption>Drei Viertel, zentriert (<code>--width-75</code> <code>--align-center</code>)</figcaption>
           </figure>
         </article>
       </div>
@@ -529,13 +546,13 @@
         <div class="demo-media-grid" style="--demo-min: 15rem">
           <div class="ncss-overlay-container ncss-ratio-video ncss-radius-md">
             <img src="../assets/examples/gemeinde/seeburg-ufer-thumb.webp" width="640" height="427" loading="lazy" alt="Seeburg mit Kirchturm, gespiegelt im See">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
               <p class="ncss-text-light demo-overlay-text"><strong>Seeburger Ufer</strong></p>
             </div>
           </div>
           <div class="ncss-overlay-container ncss-ratio-video ncss-radius-md">
             <img src="../assets/examples/gemeinde/wochenmarkt-thumb.webp" width="640" height="427" loading="lazy" alt="Gemüse am Marktstand">
-            <div class="ncss-overlay ncss-overlay--top ncss-overlay--scrim">
+            <div class="ncss-overlay ncss-overlay--top ncss-overlay--scrim demo-scrim-room">
               <p class="ncss-text-light demo-overlay-text"><strong>Samstag: Wochenmarkt</strong></p>
             </div>
           </div>
@@ -558,22 +575,22 @@
 
         <h3>Portraitkarten</h3>
         <p class="ncss-text-sm ncss-text-muted">Hochformat + Verlauf + <code>--zoom</code>: mit der Maus starten die Fotos leicht entsättigt und erwachen beim Darüberfahren oder per Tab-Fokus.</p>
-        <div class="demo-media-grid demo-wide" style="--demo-min: 12rem">
+        <div class="demo-media-grid demo-wide" style="--demo-min: 15rem">
           <div class="ncss-overlay-container ncss-overlay-container--zoom ncss-ratio-portrait ncss-radius-lg">
             <img src="../assets/examples/hotel/zimmer-seeblick-thumb.webp" width="480" height="720" loading="lazy" alt="Zimmer Seeblick mit Holzwänden">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
               <p class="ncss-text-light demo-overlay-text"><a class="ncss-text-light" href="../example-hotel.html"><strong>Zimmer Seeblick</strong></a><br><span class="ncss-text-light-700">ab 149 € pro Nacht</span></p>
             </div>
           </div>
           <div class="ncss-overlay-container ncss-overlay-container--zoom ncss-ratio-portrait ncss-radius-lg">
             <img src="../assets/examples/hotel/restaurant-thumb.webp" width="480" height="720" loading="lazy" alt="Restaurant mit gedeckten Tischen">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
               <p class="ncss-text-light demo-overlay-text"><a class="ncss-text-light" href="../example-hotel.html"><strong>Restaurant Seestube</strong></a><br><span class="ncss-text-light-700">regionale Küche, täglich ab 18 Uhr</span></p>
             </div>
           </div>
           <div class="ncss-overlay-container ncss-overlay-container--zoom ncss-ratio-portrait ncss-radius-lg">
             <img src="../assets/examples/hotel/sauna-thumb.webp" width="480" height="720" loading="lazy" alt="Holzsauna">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
               <p class="ncss-text-light demo-overlay-text"><a class="ncss-text-light" href="../example-hotel.html"><strong>Spa &amp; Sauna</strong></a><br><span class="ncss-text-light-700">10–21 Uhr, für Hausgäste frei</span></p>
             </div>
           </div>
@@ -793,7 +810,7 @@
           <a class="demo-handbook" href="../../docs/de/media.html#video">Im Handbuch<span class="ncss-visually-hidden">: Video</span> <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div class="demo-live demo-media-grid" style="--demo-min: 16rem">
+      <div class="demo-live demo-media-grid demo-headed-grid" style="--demo-min: 16rem">
         <div class="ncss-stack">
           <h3>Nativ, ohne Klasse</h3>
           <video controls playsinline preload="none" poster="../assets/media/film-poster.jpg" width="1280" height="720">
@@ -803,8 +820,9 @@
         </div>
         <div class="ncss-stack">
           <h3>Mit Seitenverhältnis</h3>
-          <figure class="ncss-video ncss-ratio-video">
-            <video controls playsinline muted preload="none" poster="../assets/media/aurora-poster.jpg" width="960" height="540">
+          <!-- Review: Seitenverhältnis am <video> statt an der <figure> – sonst schneidet overflow:hidden die Bildunterschrift ab (components/video.css) -->
+          <figure class="ncss-video">
+            <video class="ncss-ratio-video" controls playsinline muted preload="none" poster="../assets/media/aurora-poster.jpg" width="960" height="540">
               <source src="../assets/media/aurora-loop.webm" type="video/webm">
               <source src="../assets/media/aurora-loop.mp4" type="video/mp4">
             </video>
@@ -1027,7 +1045,7 @@
             <source data-src="../assets/media/blobs-loop.webm" type="video/webm">
             <source data-src="../assets/media/blobs-loop.mp4" type="video/mp4">
           </video>
-          <h3 class="ncss-video-text-title">Seeblick</h3>
+          <h3 class="ncss-video-text-title demo-vt-title">Seeblick</h3>
         </div>
       </div>
     </div>
