@@ -69,6 +69,12 @@ Schritt für Schritt, Barrierefreiheit, bekannte Grenzen) steht unter
 - zweisprachig (DE/EN), eine Seite pro Thema. Lebende Beispiele zu jedem Thema unter
 [demo/](https://skerbis.github.io/nativecss/).
 
+## Unterstützen
+
+NativeCSS ist frei (MIT) und entsteht in freier Zeit. Wenn es dir oder deinen Projekten hilft,
+freue ich mich über Unterstützung via **[GitHub Sponsors](https://github.com/sponsors/skerbis)** -
+das finanziert Pflege, neue Komponenten und die Doku.
+
 ## Lizenz
 
 [MIT](LICENSE) © 2026 [Thomas Skerbis](https://github.com/skerbis) und
