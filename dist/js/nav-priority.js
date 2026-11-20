@@ -145,8 +145,17 @@
 
         this._ensureMoreItem();
         this._list.appendChild(this._moreItem);
+        var moreText = this.getAttribute("more-text") || "Mehr";
+        var itemCount = this._items.length;
+        var moreLabel = this._moreSummary;
+        // "Mehr (n)" mit der tatsächlichen Zahl messen - der Text von der letzten
+        // Berechnung (oder noch leer) lag sonst um ein paar Pixel daneben.
+        var setMoreText = function (visibleCount) {
+          moreLabel.textContent = moreText + " (" + (itemCount - visibleCount) + ")";
+        };
 
         while (fitCount > 0) {
+          setMoreText(fitCount);
           var withMore = this._moreItem.getBoundingClientRect().width + gap;
           for (var k = 0; k < fitCount; k++) {
             withMore += this._items[k].getBoundingClientRect().width + (k > 0 ? gap : 0);
@@ -166,9 +175,25 @@
           }
         }
         if (currentIndex >= fitCount && fitCount > 0) {
-          var tmp = order[fitCount - 1];
-          order[fitCount - 1] = order[currentIndex];
-          order[currentIndex] = tmp;
+          // Der aktuelle Punkt ersetzt den letzten sichtbaren - ist er breiter, so lange
+          // weitere Punkte ins "Mehr"-Menü schieben, bis er wirklich Platz hat.
+          var currentWidth = order[currentIndex].getBoundingClientRect().width;
+          while (fitCount > 0) {
+            setMoreText(fitCount);
+            var used = this._moreItem.getBoundingClientRect().width + gap + currentWidth;
+            for (var q = 0; q < fitCount - 1; q++) {
+              used += this._items[q].getBoundingClientRect().width + gap;
+            }
+            if (used <= available) {
+              break;
+            }
+            fitCount--;
+          }
+          if (fitCount > 0) {
+            var tmp = order[fitCount - 1];
+            order[fitCount - 1] = order[currentIndex];
+            order[currentIndex] = tmp;
+          }
         }
 
         var overflow = order.slice(fitCount);
@@ -189,8 +214,7 @@
           this._moreSubmenu.appendChild(overflow[o]);
         }
 
-        var moreText = this.getAttribute("more-text") || "Mehr";
-        this._moreSummary.textContent = moreText + " (" + overflow.length + ")";
+        setMoreText(fitCount);
       }
     }
   );

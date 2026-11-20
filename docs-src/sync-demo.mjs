@@ -9,6 +9,8 @@
 //    ← Alle Beispiele · Handbuch" plus den schwebenden Inspect-Schalter - zwischen
 //    <!-- example-bar:start --> ... <!-- example-bar:end --> (nur Seiten mit Markern;
 //    fremd gepflegte Beispiele setzen die Marker selbst, siehe Skript-Ausgabe).
+// 3. Rundgang (demo/showcase/): Kopfleiste der Website + Kapitel-Leiste + "Auf dieser
+//    Seite" + Inhaltsverzeichnisse, siehe unten.
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -111,6 +113,181 @@ for (const rel of pages) {
   const base = "../".repeat(rel.split("/").length);
   write(path, html.replace(BAR_RE, `<!-- example-bar:start -->\n${exampleBar(ex, lang, base)}\n<!-- example-bar:end -->`));
 }
+
+// 3. Rundgang (demo/showcase/): dieselbe Kopfleiste wie die Website, darunter Kapitel-Leiste
+//    und "Auf dieser Seite" - alle drei als EINE klebende Einheit (wie im Handbuch).
+//    Kopfleiste: aus der GEBAUTEN Handbuch-Übersicht docs/<lang>/index.html übernommen
+//    (vorher `node docs-src/build.mjs`) - entsteht so aus denselben Funktionen wie auf der
+//    Website (buildTopbar/buildActions, Template) und kann nicht auseinanderlaufen.
+//    Kapitel: demo/assets/examples/showcase/chapters.json. Abschnitte (Leiste "Auf dieser
+//    Seite", Inhaltsverzeichnis im Kapitel-Kopf, Gesamt-Inhaltsverzeichnis der Übersicht):
+//    aus den <section class="demo-feature" id="…"> der Seiten selbst (Beschriftung:
+//    data-subnav-label, sonst der h2-Text) - nichts von Hand zu pflegen.
+//    Marker: <!-- site-head:start/end -->, <!-- site-topbar:start/end -->,
+//    <!-- tour-toc:start/end -->.
+const HEAD_RE = /<!-- site-head:start -->[\s\S]*?<!-- site-head:end -->/;
+const TOPBAR_RE = /<!-- site-topbar:start -->[\s\S]*?<!-- site-topbar:end -->/;
+const TOC_RE = /([ \t]*)<!-- tour-toc:start -->[\s\S]*?<!-- tour-toc:end -->/;
+const TOUR = join(DEMO, "showcase");
+const tour = JSON.parse(readFileSync(join(DEMO, "assets", "examples", "showcase", "chapters.json"), "utf8"));
+const siteHeaderSource = {};
+function siteHeaderFor(lang) {
+  if (lang in siteHeaderSource) return siteHeaderSource[lang];
+  const file = join(HERE, "..", "docs", lang, "index.html");
+  if (!existsSync(file)) return (siteHeaderSource[lang] = null);
+  const html = readFileSync(file, "utf8");
+  const a = html.indexOf('<div class="site-sticky"');
+  const end = "</ncss-command-palette>";
+  const b = html.indexOf(end, a);
+  return (siteHeaderSource[lang] = a < 0 || b < 0 ? null : html.slice(a, b + end.length));
+}
+const SITE_HEAD = [
+  '<script src="../../dist/js/preferences-early.js"></script>',
+  '<link rel="stylesheet" href="../../dist/components/preferences-fonts.css">',
+  '<link rel="stylesheet" href="../assets/site-shell.css">',
+  '<script src="../../dist/js/command-fallback.js" defer></script>',
+  '<script src="../../dist/js/nav.js" defer></script>',
+  '<script src="../../dist/js/preferences.js" defer></script>',
+  '<script src="../../dist/js/subnav.js" defer></script>',
+  '<script src="../../dist/js/command-palette.js" defer></script>',
+  '<script src="../../dist/js/dialog-light-dismiss.js" defer></script>',
+  '<script src="../../dist/js/dropdown.js" defer></script>',
+  '<script src="../assets/js/showcase-tour.js" defer></script>',
+].join("\n");
+const stripTags = (h) => h.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+function tourSections(html) {
+  const out = [];
+  const re = /<section class="demo-feature[^"]*" id="([^"]+)"([^>]*)>[\s\S]*?<h2[^>]*>([\s\S]*?)<\/h2>/g;
+  let m;
+  while ((m = re.exec(html))) {
+    const label = /data-subnav-label="([^"]+)"/.exec(m[2]);
+    out.push({ id: m[1], title: stripTags(m[3]), label: label ? label[1] : stripTags(m[3]) });
+  }
+  return out;
+}
+const T = {
+  de: { chapter: "Kapitel", onPage: "Auf dieser Seite", contents: "Inhalt", contentsLabel: "Inhalt dieses Kapitels", allContents: "Inhaltsverzeichnis", allLabel: "Inhaltsverzeichnis des Rundgangs" },
+  en: { chapter: "Chapter", onPage: "On this page", contents: "Contents", contentsLabel: "Contents of this chapter", allContents: "Table of contents", allLabel: "Table of contents of the tour" },
+};
+function tourTopbar(lang, file, sections) {
+  const src = siteHeaderFor(lang);
+  if (!src) return null;
+  const t = T[lang];
+  const slug = file.replace(/(-en)?\.html$/, "");
+  const sfx = lang === "de" ? "" : "-en";
+  const twin = lang === "de" ? `${slug}-en.html` : `${slug}.html`;
+  let out = src.replace(/ aria-current="(page|true)"/g, "");
+  // Pfade: docs/<lang>/ und demo/showcase/ liegen gleich tief - "../../…" bleibt, "../x" wird
+  // "../../docs/x", relative Seitenlinks zeigen ins Handbuch, der Tour-Punkt auf den Rundgang.
+  out = out.replace(/\b(href|src)="([^"]*)"/g, (m, attr, url) => {
+    if (/^(https?:|mailto:|#|data:)/.test(url)) return m;
+    const hit = /^\.\.\/\.\.\/demo\/showcase\/(index(?:-en)?\.html)$/.exec(url);
+    if (hit) return `${attr}="${hit[1]}" aria-current="${slug === "index" ? "page" : "true"}"`;
+    if (url.startsWith("../../")) return m;
+    if (url.startsWith("../")) return `${attr}="../../docs/${url.slice(3)}"`;
+    return `${attr}="../../docs/${lang}/${url}"`;
+  });
+  out = out.replace(/(<a class="demo-topbar-lang" href=")[^"]*"/, `$1${twin}"`);
+  const current = tour.chapters.find((c) => c.slug === slug) || tour.chapters[0];
+  const link = (c, cls = "") =>
+    `<a${cls}${c.slug === slug ? ' aria-current="page"' : ""} href="${c.slug}${sfx}.html">${c[lang]}</a>`;
+  const pills = tour.chapters.map((c) => `      <li>${link(c)}</li>`).join("\n");
+  // Kapitel als Pillen; unter 48rem (nur Seiten MIT "Auf dieser Seite") stattdessen ein
+  // Auswahl-Knopf "Kapitel: …" vorn in dieser Leiste - spart auf dem Handy eine Zeile.
+  const collapsible = sections.length >= 3;
+  const bars = [
+    `<nav class="demo-chapterbar${collapsible ? " demo-chapterbar--collapsible" : ""}" aria-label="${tour.label[lang]}">
+  <div class="demo-chapterbar-inner">
+    <span class="demo-chapterbar-label" aria-hidden="true">${tour.label[lang]}</span>
+    <ul class="demo-chapterbar-list" role="list">
+${pills}
+    </ul>
+  </div>
+</nav>`,
+  ];
+  if (collapsible) {
+    const items = tour.chapters.map((c) => `          <li>${link(c, ' class="ncss-dropdown-item"')}</li>`).join("\n");
+    const subs = sections.map((x) => `      <li><a href="#${x.id}">${x.label}</a></li>`).join("\n");
+    bars.push(`<nav class="ncss-subnav demo-onpage" aria-label="${t.onPage}" data-ncss-subnav>
+  <div class="ncss-subnav-inner">
+    <div class="demo-chapter-pick">
+      <button type="button" class="ncss-btn ncss-dropdown-toggle demo-chapter-pick-btn" popovertarget="chapterPick">${t.chapter}: ${current[lang]}</button>
+      <div class="ncss-dropdown-menu" id="chapterPick" popover>
+        <ul role="list">
+${items}
+        </ul>
+      </div>
+    </div>
+    <span class="ncss-subnav-label" aria-hidden="true">${t.onPage}</span>
+    <ul class="ncss-subnav-list" role="list">
+${subs}
+    </ul>
+  </div>
+</nav>`);
+  }
+  // Die Website-Übersicht hat keine eigene Leiste: an ihre Stelle (zwischen </header> und
+  // dem Ende des Sticky-Containers) kommen Kapitel-Leiste und "Auf dieser Seite".
+  return out.replace(/<\/header>\s*<\/div>/, `</header>\n${bars.join("\n")}\n</div>`);
+}
+function chapterToc(lang, sections, pad) {
+  const t = T[lang];
+  const items = sections.map((x) => `${pad}    <li><a href="#${x.id}">${x.title}</a></li>`).join("\n");
+  return `${pad}<nav class="demo-contents" aria-label="${t.contentsLabel}">
+${pad}  <p class="demo-contents-title" aria-hidden="true">${t.contents}</p>
+${pad}  <ol class="demo-contents-list">
+${items}
+${pad}  </ol>
+${pad}</nav>`;
+}
+function tourToc(lang, pad) {
+  const t = T[lang];
+  const sfx = lang === "de" ? "" : "-en";
+  const chapters = tour.chapters
+    .filter((c) => c.slug !== "index")
+    .map((c) => {
+      const file = join(TOUR, `${c.slug}${sfx}.html`);
+      const secs = existsSync(file) ? tourSections(readFileSync(file, "utf8")) : [];
+      const sub = secs.map((x) => `${pad}        <li><a href="${c.slug}${sfx}.html#${x.id}">${x.title}</a></li>`).join("\n");
+      return `${pad}    <li>
+${pad}      <a class="demo-alltoc-chapter" href="${c.slug}${sfx}.html">${c[lang]}</a>
+${pad}      <ol>
+${sub}
+${pad}      </ol>
+${pad}    </li>`;
+    })
+    .join("\n");
+  return `${pad}<nav class="demo-alltoc ncss-container" aria-labelledby="alltoc-h">
+${pad}  <h2 id="alltoc-h">${t.allContents}</h2>
+${pad}  <ol class="demo-alltoc-list">
+${chapters}
+${pad}  </ol>
+${pad}</nav>`;
+}
+let tourMissing = false;
+if (existsSync(TOUR)) {
+  for (const name of readdirSync(TOUR)) {
+    if (!name.endsWith(".html")) continue;
+    const path = join(TOUR, name);
+    const html = readFileSync(path, "utf8");
+    if (!TOPBAR_RE.test(html)) continue;
+    const lang = /<html lang="en"/.test(html) ? "en" : "de";
+    const sections = tourSections(html);
+    const bar = tourTopbar(lang, name, sections);
+    if (!bar) {
+      tourMissing = true;
+      continue;
+    }
+    let next = html
+      .replace(HEAD_RE, `<!-- site-head:start -->\n${SITE_HEAD}\n<!-- site-head:end -->`)
+      .replace(TOPBAR_RE, `<!-- site-topbar:start -->\n${bar}\n<!-- site-topbar:end -->`);
+    next = next.replace(TOC_RE, (m, pad) => {
+      const body = /^index(-en)?\.html$/.test(name) ? tourToc(lang, pad) : chapterToc(lang, sections, pad);
+      return `${pad}<!-- tour-toc:start -->\n${body}\n${pad}<!-- tour-toc:end -->`;
+    });
+    write(path, next);
+  }
+}
+if (tourMissing) console.warn("Rundgang: docs/<lang>/index.html fehlt - erst `node docs-src/build.mjs`, dann erneut.");
 
 console.log(`demo/ synchronisiert: ${changed} Datei(en) geändert.`);
 if (missing.length) console.log(`Ohne Beispiel-Leisten-Marker (selbst gepflegt): ${missing.join(", ")}`);

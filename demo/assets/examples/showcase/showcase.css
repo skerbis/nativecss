@@ -5,58 +5,153 @@
  * <style>-Block der anderen Beispiele) - gewinnt damit gegen jede Layer-Regel.
  *
  * Aufbau einer Kapitel-Seite:
- *   .demo-sticky-header  Topbar (Kapitel-Navigation) + Abschnitts-Leiste (.ncss-subnav),
- *                        zusammen klebend (siehe components/subnav.css)
+ *   Kopfleiste           die der Website (site-shell.css) + Kapitel-Leiste .demo-chapterbar,
+ *                        beide per docs-src/sync-demo.mjs zwischen Markern eingesetzt
  *   .demo-chapter        Kapitel-Kopf (h1, Einleitung)
  *   .demo-feature        ein Baustein: Kopf (h2, Erklärung, Klassen, Handbuch-Link) + Live
  *   .demo-pager          vorheriges/nächstes Kapitel
  */
 
-/* --- Kopfbereich ---------------------------------------------------------------------- */
-.demo-sticky-header {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: var(--ncss-topbar-z);
+/* --- Kopfbereich ----------------------------------------------------------------------
+   EINE klebende Einheit (wie im Handbuch, [data-ncss-sticky-header]): Kopfleiste der
+   Website (demo/assets/site-shell.css), darunter die Kapitel als Pillen (.demo-chapterbar,
+   aktuelles Kapitel gefüllt), darunter "Auf dieser Seite" (.ncss-subnav, components/
+   subnav.css, Scrollspy per js/subnav.js). Markup per docs-src/sync-demo.mjs. Unter 48rem
+   wandern die Kapitel in einen Auswahl-Knopf vorn in "Auf dieser Seite" (eine Zeile weniger). */
+.demo-chapterbar {
+  --_fade: var(--ncss-space-md);
+  background-color: var(--ncss-color-bg-subtle);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
 }
-.demo-sticky-header > .ncss-topbar {
-  position: relative;
+.demo-chapterbar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  max-inline-size: var(--ncss-container-max);
+  min-block-size: 3rem;
+  margin-inline: auto;
+  padding-inline: var(--ncss-space-sm);
 }
-.demo-brand {
+.demo-chapterbar-label {
+  flex: none;
+  font-size: var(--ncss-font-size-sm);
   font-weight: 700;
-  line-height: 1.05;
-  text-decoration: none;
+  color: var(--ncss-color-text-muted);
+}
+.demo-chapterbar-list {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0.3rem var(--_fade);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, transparent, #000 var(--_fade), #000 calc(100% - var(--_fade)), transparent);
+}
+.demo-chapterbar-list::-webkit-scrollbar { display: none; }
+.demo-chapterbar-list a {
+  display: block;
+  padding: 0.3em 0.9em;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
   color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 500;
+  text-decoration: none;
   white-space: nowrap;
 }
-.demo-brand small {
-  display: block;
-  font-weight: 400;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+.demo-chapterbar-list a[aria-current="page"] {
+  border-color: var(--ncss-color-brand);
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+  font-weight: 600;
+}
+.demo-chapterbar-list a:focus-visible {
+  outline: 2px solid var(--ncss-color-focus-ring, var(--ncss-color-brand));
+  outline-offset: -2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-chapterbar-list a:not([aria-current="page"]):hover { border-color: var(--ncss-color-brand); }
+}
+@media (forced-colors: active) {
+  .demo-chapterbar-list { mask-image: none; }
+  .demo-chapterbar-list a[aria-current="page"] { outline: 2px solid Highlight; outline-offset: -2px; }
+}
+/* Kapitel-Auswahl in "Auf dieser Seite" - nur schmal sichtbar */
+.demo-chapter-pick { display: none; flex: none; }
+.demo-chapter-pick-btn {
+  min-block-size: 2.1rem;
+  padding-block: 0.2rem;
+  padding-inline: 0.75rem;
+  font-size: var(--ncss-font-size-sm);
+  white-space: nowrap;
+}
+@media (width < 48rem) {
+  .demo-chapterbar--collapsible { display: none; }
+  .demo-chapter-pick { display: block; }
+  .demo-onpage .ncss-subnav-label { display: none; }
+}
+
+/* Inhaltsverzeichnis im Kapitel-Kopf (aus den Abschnitten erzeugt) */
+.demo-contents {
+  margin-block-start: var(--ncss-space-sm);
+  padding: var(--ncss-space-sm) var(--ncss-space-md);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+}
+.demo-contents-title {
+  margin: 0 0 var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ncss-color-text-muted);
 }
-.ncss-nav-list a { white-space: nowrap; }
-.ncss-topbar-inner > .ncss-nav { flex-basis: 0; }
-/* Kapitel-Menü: Der aktuelle Punkt trägt aria-current="true" statt "page" - nav-priority.js
-   tauscht einen "page"-Punkt sonst in den letzten freien Platz, auch wenn er breiter ist
-   als der verdrängte Punkt ("Scroll-Effekte" statt "Medien"), und die Leiste läuft über.
-   Optik wie .ncss-nav-item > a[aria-current="page"] (components/nav.css). Unter ~22rem
-   hat nicht einmal "Mehr" neben Marke und Aktionen Platz - die Mindestbreite aus
-   nav-priority.css (8rem) würde die Aktionen dann in eine zweite Zeile schieben. */
-.demo-sticky-header { --ncss-nav-priority-min: 0px; }
-.demo-sticky-header :is(ncss-nav-priority, .ncss-nav-list) { min-inline-size: 0; }
-.demo-sticky-header .ncss-nav-item > a[aria-current="true"],
-.demo-sticky-header .ncss-nav-submenu a[aria-current="true"] {
-  background-color: var(--ncss-color-brand-100);
-  color: var(--ncss-color-brand-on-soft);
-  text-shadow: 0.3px 0 currentColor, -0.3px 0 currentColor, 0 0.3px currentColor, 0 -0.3px currentColor;
-}
-.demo-lang {
+.demo-contents-list {
+  margin: 0;
+  padding-inline-start: 1.6em;
+  columns: 15rem;
+  column-gap: var(--ncss-space-lg);
   font-size: var(--ncss-font-size-sm);
-  font-weight: 600;
-  white-space: nowrap;
 }
+.demo-contents-list li {
+  break-inside: avoid;
+  padding-block: 0.15em;
+}
+.demo-contents-list li::marker { color: var(--ncss-color-text-muted); }
+
+/* Gesamt-Inhaltsverzeichnis auf der Übersicht */
+.demo-alltoc {
+  padding-block: var(--ncss-space-md) var(--ncss-space-xl);
+}
+.demo-alltoc h2 { font-size: var(--ncss-font-size-xl); }
+.demo-alltoc-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 17rem;
+  column-gap: var(--ncss-space-lg);
+}
+.demo-alltoc-list > li {
+  break-inside: avoid;
+  margin-block-end: var(--ncss-space-md);
+}
+.demo-alltoc-chapter {
+  font-weight: 700;
+  font-size: var(--ncss-font-size-md);
+}
+.demo-alltoc-list ol {
+  margin: var(--ncss-space-3xs) 0 0;
+  padding-inline-start: 1.6em;
+  font-size: var(--ncss-font-size-sm);
+}
+.demo-alltoc-list ol li { padding-block: 0.1em; }
 
 /* --- Kapitel-Kopf --------------------------------------------------------------------- */
 .demo-chapter {
