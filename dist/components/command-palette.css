@@ -35,6 +35,11 @@
  * palette.js öffnet den Dialog bei fehlendem command/commandfor selbst - js/command-
  * fallback.js ist NICHT nötig (schadet aber auch nicht).
  *
+ * Suchmodus (js/command-palette.js, Attribut src="index.json"): Treffer werden zur
+ * Laufzeit gerendert - .ncss-command-results (Container vor den Markup-Gruppen),
+ * .ncss-command-item-body mit -title und -snippet (zweizeiliger Eintrag), Suchbegriffe
+ * als <mark>.
+ *
  * Tokens: --ncss-command-width (Default 40rem), --ncss-command-height (Listenhöhe,
  * Default min(26rem, 60svh)), --ncss-command-offset (Abstand von oben, Default 12svh).
  */
@@ -245,7 +250,43 @@ ncss-command-palette:not(:defined) .ncss-command-footer {
   }
 }
 
+/* Suchmodus: Titel + kurzer Textauszug untereinander, Hinweis (z.B. Seite) rechts. */
+.ncss-command-results[hidden] {
+  display: none;
+}
+.ncss-command-item-body {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+  padding-block: var(--ncss-space-3xs);
+}
+.ncss-command-item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ncss-command-item-snippet {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-command-item mark {
+  padding: 0 0.05em;
+  border-radius: 0.15em;
+  background-color: var(--ncss-color-warning-100);
+  color: inherit;
+}
+
 .ncss-command-item-hint {
+  flex: none;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   margin-inline-start: auto;
   font-size: var(--ncss-font-size-sm);
   color: var(--ncss-color-text-muted);
@@ -295,6 +336,11 @@ ncss-command-palette:not(:defined) .ncss-command-footer {
   }
   .ncss-command-search::before {
     background-color: CanvasText;
+  }
+  .ncss-command-item mark {
+    forced-color-adjust: none;
+    background-color: Mark;
+    color: MarkText;
   }
   .ncss-command-item[aria-selected="true"] {
     forced-color-adjust: none;

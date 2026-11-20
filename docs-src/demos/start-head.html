@@ -1,0 +1,289 @@
+<!--NEUTRAL-->
+<!--HEAD:
+<script src="~/dist/js/compare.js" defer></script>
+<script src="~/demo/assets/js/start-demos.js" defer></script>
+<style>
+  /* --- Startseite (nur diese Seite) ----------------------------------------------------
+     Ruhig und konzeptorientiert: eine Aussage oben, danach je Abschnitt EIN Satz
+     Erklärung + eine kleine lebende Vorführung. Großzügige Abstände, wenige Karten. */
+  .demo-start-section {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .demo-start-section + .demo-start-section {
+    border-block-start: 1px solid var(--ncss-color-border);
+  }
+  .demo-start-section--tinted {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .demo-start-head {
+    max-width: 46rem;
+    margin-block-end: var(--ncss-space-xl);
+  }
+  .demo-start-head h2 {
+    margin: 0 0 var(--ncss-space-xs);
+    font-size: var(--ncss-font-size-2xl);
+    letter-spacing: -0.01em;
+  }
+  .demo-start-head p {
+    margin: 0;
+    color: var(--ncss-color-text-muted);
+    font-size: var(--ncss-font-size-lg);
+  }
+
+  /* Hero */
+  .demo-start-hero {
+    padding-block: clamp(3.5rem, 10vw, 7.5rem) clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .demo-start-hero h1 {
+    max-width: 18ch;
+    margin: var(--ncss-space-md) 0 var(--ncss-space-sm);
+    font-size: clamp(2.25rem, 1.4rem + 4vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+  .demo-start-hero h1 em {
+    font-style: normal;
+    color: var(--ncss-color-brand);
+  }
+  .demo-start-lead {
+    max-width: 40rem;
+    margin: 0;
+    font-size: var(--ncss-font-size-lg);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-start-actions {
+    margin-block-start: var(--ncss-space-lg);
+  }
+  .demo-start-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ncss-space-2xs);
+    padding: 0.3rem 0.85rem;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    font-size: var(--ncss-font-size-sm);
+    text-decoration: none;
+  }
+  .demo-start-pill:focus-visible {
+    outline: 2px solid var(--ncss-color-brand);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .demo-start-pill:hover:not(:active) {
+      border-color: var(--ncss-color-brand);
+    }
+  }
+  .demo-start-pill:active {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+
+  /* (a) Zwei Zeilen statt Build-Kette */
+  .demo-start-vs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--ncss-space-lg);
+    align-items: stretch;
+  }
+  .demo-start-vs figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-xs);
+  }
+  .demo-start-vs figcaption {
+    font-weight: 700;
+  }
+  .demo-start-vs pre {
+    flex: 1;
+    margin: 0;
+  }
+  .demo-start-chain {
+    opacity: 0.7;
+  }
+  .demo-start-chain pre {
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in oklch, var(--ncss-color-danger) 60%, transparent);
+  }
+
+  /* (b) Vier Säulen */
+  .demo-start-pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+    gap: var(--ncss-space-lg);
+  }
+  .demo-start-pillar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-start-pillar h3 {
+    margin: 0;
+    font-size: var(--ncss-font-size-lg);
+  }
+  .demo-start-pillar > p {
+    margin: 0;
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-start-stage {
+    display: grid;
+    place-items: center;
+    min-block-size: 8rem;
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .demo-start-pillar pre {
+    margin: 0;
+    font-size: 0.75rem;
+  }
+  /* Cascade Layers: ein UNLAYERED Element-Selektor (Spezifität 0,0,1) schlägt die
+     Layer-Klasse .ncss-btn--primary (0,1,0) - Reihenfolge statt Spezifität. */
+  :where(.demo-start-layers:has(input:checked)) button {
+    background-color: #b4400f;
+    border-color: #b4400f;
+    color: #fff;
+  }
+  /* Container Queries: Breite des Rahmens per Regler (start-demos.js setzt --demo-cq-w). */
+  .demo-start-cq-frame {
+    inline-size: var(--demo-cq-w, 100%);
+    max-inline-size: 100%;
+    margin-inline: auto;
+    transition: inline-size 0.15s ease;
+  }
+  .demo-start-cq-frame .ncss-card-media {
+    background: linear-gradient(135deg, var(--ncss-color-brand-2), var(--ncss-color-brand));
+  }
+  .demo-start-cq-frame .ncss-card-body {
+    font-size: var(--ncss-font-size-sm);
+  }
+  /* light-dark(): dieselben Bausteine zweimal, nur color-scheme unterscheidet sich. */
+  .demo-start-schemes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ncss-space-xs);
+    inline-size: 100%;
+  }
+  .demo-start-schemes > div {
+    display: grid;
+    gap: var(--ncss-space-2xs);
+    justify-items: start;
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-surface);
+    border: 1px solid var(--ncss-color-border);
+    font-size: var(--ncss-font-size-sm);
+  }
+
+  /* (c) Cherry-Picking */
+  .demo-start-pick {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--ncss-space-lg);
+    align-items: start;
+  }
+  .demo-start-pick > * {
+    min-inline-size: 0;
+  }
+  /* fieldset hat per UA-Default min-inline-size:min-content - lange @import-Zeilen würden
+     die Spalte sonst über den Bildschirm drücken. */
+  .demo-start-manifest {
+    min-inline-size: 0;
+    margin: 0;
+    padding: var(--ncss-space-sm);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    font: 0.8125rem/1.5 var(--ncss-font-family-mono, ui-monospace, monospace);
+  }
+  .demo-start-manifest legend {
+    padding-inline: var(--ncss-space-2xs);
+    font-family: var(--ncss-font-family-base, system-ui, sans-serif);
+    font-weight: 700;
+  }
+  .demo-start-manifest label {
+    display: flex;
+    gap: var(--ncss-space-xs);
+    align-items: baseline;
+    padding-block: 0.2rem;
+    cursor: pointer;
+  }
+  .demo-start-manifest code {
+    overflow-wrap: anywhere;
+  }
+  .demo-start-manifest label:has(input:not(:checked)) code {
+    text-decoration: line-through;
+    opacity: 0.55;
+  }
+  .demo-start-manifest .demo-start-fixed {
+    opacity: 0.6;
+    padding-block: 0.2rem;
+  }
+  .demo-start-total {
+    margin-block-start: var(--ncss-space-xs);
+    font-family: var(--ncss-font-family-base, system-ui, sans-serif);
+    font-weight: 700;
+  }
+  .demo-start-preview {
+    display: grid;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .demo-start-preview > * {
+    min-inline-size: 0;
+  }
+  .demo-start-ghost {
+    display: none;
+    padding: var(--ncss-space-xs) var(--ncss-space-sm);
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    color: var(--ncss-color-text-muted);
+    font-size: var(--ncss-font-size-sm);
+  }
+  .demo-start-pick:has([data-pick="card"]:not(:checked)) [data-pick-target="card"],
+  .demo-start-pick:has([data-pick="badge"]:not(:checked)) [data-pick-target="badge"],
+  .demo-start-pick:has([data-pick="disclosure"]:not(:checked)) [data-pick-target="disclosure"],
+  .demo-start-pick:has([data-pick="marquee"]:not(:checked)) [data-pick-target="marquee"] {
+    display: none;
+  }
+  .demo-start-pick:has([data-pick="card"]:not(:checked)) [data-pick-ghost="card"],
+  .demo-start-pick:has([data-pick="badge"]:not(:checked)) [data-pick-ghost="badge"],
+  .demo-start-pick:has([data-pick="disclosure"]:not(:checked)) [data-pick-ghost="disclosure"],
+  .demo-start-pick:has([data-pick="marquee"]:not(:checked)) [data-pick-ghost="marquee"] {
+    display: block;
+  }
+
+  /* (d) Neu + Beispiele: Karten aus site-cards.css; Neu-Karten mit Links unten. */
+  .demo-start-new-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ncss-space-2xs) var(--ncss-space-md);
+    font-weight: 600;
+  }
+
+  /* Wann / wann nicht */
+  .demo-start-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--ncss-space-xl);
+  }
+  .demo-start-fit h3 {
+    margin: 0 0 var(--ncss-space-xs);
+  }
+
+  .demo-start-cta {
+    text-align: center;
+  }
+  .demo-start-cta .ncss-cluster {
+    justify-content: center;
+  }
+</style>
+-->

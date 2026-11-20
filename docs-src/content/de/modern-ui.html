@@ -159,3 +159,37 @@ document.dispatchEvent(new CustomEvent("ncss-notify", { detail: { message: "Hall
     </table>
   </div>
 </section>
+
+<section class="ncss-stack" id="suchmodus">
+  <h2 class="demo-section-title">Befehlspalette als Suche (Suchmodus)</h2>
+  <p>Für große Listen - etwa eine Website-Suche - lädt <code>&lt;ncss-command-palette src="suche.json"&gt;</code> die Einträge aus einer JSON-Datei, sobald die Palette zum ersten Mal öffnet, und rendert Treffer erst beim Tippen: gerankt (Titel-Anfang vor Titel vor Stichwort/Text), je Gruppe begrenzt (<code>limit</code>, Default 8), die Gruppe mit dem besten Treffer zuerst, Suchbegriffe als <code>&lt;mark&gt;</code> hervorgehoben. Kein Server, keine Bibliothek - die Suche oben auf dieser Website ist genau das (Index aus <code>docs-src/build.mjs</code>).</p>
+  <pre><code class="language-html">&lt;button type="button" command="show-modal" commandfor="suche"&gt;Suchen &lt;kbd data-ncss-command-key&gt;Strg K&lt;/kbd&gt;&lt;/button&gt;
+&lt;ncss-command-palette shortcut="k" slash src="suche.json" limit="7"&gt;
+  &lt;dialog id="suche" class="ncss-command" aria-label="Suchen" closedby="any"&gt;
+    &lt;div class="ncss-command-search"&gt;&lt;input class="ncss-command-input" type="search" aria-label="Suchen"&gt;&lt;/div&gt;
+    &lt;div class="ncss-command-list" aria-label="Treffer"&gt;...Vorschläge (auch ohne JS)...&lt;/div&gt;
+    &lt;p class="ncss-command-empty" hidden&gt;Keine Treffer&lt;/p&gt;
+  &lt;/dialog&gt;
+&lt;/ncss-command-palette&gt;</code></pre>
+  <pre><code class="language-javascript">{ "groups": [{ "id": "pages", "label": "Seiten" }, { "id": "classes", "label": "Klassen" }],
+  "items":  [{ "g": "pages", "t": "Karten", "u": "de/cards.html", "h": "Inhalt", "s": "Kurzer Textauszug", "k": "card teaser" }] }</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribut / API</th><th scope="col">Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><code>src</code></td><td>JSON-Index für den Suchmodus; <code>u</code> gilt relativ zur JSON-Datei.</td></tr>
+        <tr><td><code>limit</code></td><td>Höchstzahl Treffer je Gruppe (Default 8).</td></tr>
+        <tr><td><code>slash</code></td><td>Zusätzlich <kbd>/</kbd> als Kürzel (nicht, während ein Eingabefeld Fokus hat).</td></tr>
+        <tr><td><code>data-ncss-command-key</code></td><td>Element bekommt den passenden Kürzel-Text (<kbd>⌘K</kbd> bzw. <kbd>Strg K</kbd>).</td></tr>
+        <tr><td><code>.ncss-command-item-title</code> / <code>-snippet</code></td><td>Zweizeiliger Treffer: Titel und einzeiliger Textauszug.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="live-demo">
+  <h2 class="demo-section-title">Live-Beispiele</h2>
+  <p class="ncss-text-muted">Alle Bausteine dieser Seite live zum Ausprobieren - mit <strong>Inspect</strong> unten rechts lässt sich jedes Element anklicken, um sein HTML und die passende Erklärung zu sehen.</p>
+</section>
+
+<!--INCLUDE: modern-ui-->

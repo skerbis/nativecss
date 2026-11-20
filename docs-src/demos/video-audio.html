@@ -1,0 +1,297 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-narrow {
+    max-width: min(48rem, 100%);
+  }
+  /* Scroll-Videos unter der sticky Topbar beginnen lassen */
+  .demo-under-topbar {
+    --ncss-scroll-video-top: var(--ncss-topbar-height);
+    --ncss-scroll-frames-top: var(--ncss-topbar-height);
+  }
+  .demo-frames-overlay {
+    align-self: end;
+    justify-self: start;
+    margin: var(--ncss-space-md);
+    padding: var(--ncss-space-sm) var(--ncss-space-md);
+    max-width: min(30rem, calc(100% - 2 * var(--ncss-space-md)));
+    color: #fff;
+    background-color: rgb(0 0 0 / 55%);
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-frames-overlay > * {
+    margin: 0;
+  }
+  .demo-bg-band {
+    padding-block: var(--ncss-space-2xl);
+  }
+  .demo-bg-card {
+    display: grid;
+    align-content: end;
+    gap: var(--ncss-space-2xs);
+    min-height: 16rem;
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-bg-card > * {
+    margin: 0;
+  }
+  .demo-hero-video {
+    min-height: 26rem;
+  }
+  .demo-grid {
+    --ncss-grid-min: 16rem;
+  }
+  .demo-scrolly-figure ncss-scroll-video video {
+    border-radius: var(--ncss-radius-lg);
+  }
+</style>
+<script src="~/dist/js/video-player.js" defer></script>
+<script src="~/dist/js/audio-player.js" defer></script>
+<script src="~/dist/js/scroll-video.js" defer></script>
+<script src="~/dist/js/scroll-frames.js" defer></script>
+<script src="~/dist/js/scrolly.js" defer></script>
+<script src="~/dist/js/video-bg.js" defer></script>
+<script src="~/dist/js/video-float.js" defer></script>
+<script src="~/dist/js/video-card.js" defer></script>
+-->
+  <div class="ncss-container ncss-stack">
+    <p class="ncss-text-lg ncss-text-muted demo-narrow">Eigene Player als Web Components über nativem <code>&lt;video&gt;</code>/<code>&lt;audio&gt;</code>, scroll-gesteuertes Video, Hintergrund-Video mit Pause-Schalter, Video in Schrift, Mini-Player und Vorschaukarten. Jede Komponente ist eine eigene CSS-Datei (+ höchstens ein Script) und einzeln einsetzbar - ohne JS bleibt überall das native Element benutzbar.</p>
+    <p class="ncss-text-sm ncss-text-muted">Alle Clips und Klänge auf dieser Seite sind selbst erzeugt (Canvas-Animation bzw. Synthese) - frei von Lizenzfragen.</p>
+  </div>
+
+  <!-- 1. Player-Familie: Video + Audio -->
+  <section id="live-player" class="ncss-container ncss-stack">
+    <h2 class="demo-section-title">Video- und Audioplayer</h2>
+    <p class="ncss-text-muted ncss-text-sm demo-narrow"><code>&lt;ncss-video-player&gt;</code> und <code>&lt;ncss-audio-player&gt;</code> aus einem Guss: gleiche Symbole, runder Play-Button in der Akzentfarbe, dieselbe Zeitleiste mit Kapitel-Lücken, dieselben Kapitel- und Playlist-Listen. Beim Video liegen die Bedienelemente auf einem weichen Verlauf über dem Bild; Geschwindigkeit und Untertitel-Sprache stecken im Zahnrad-Menü. Tasten im fokussierten Player: Leertaste/K, J/L, Pfeile, M, F, C, N/P, 0-9. Es spielt immer nur ein Player.</p>
+    <ncss-video-player layout="card" aria-label="Videoplayer mit Playlist">
+      <video controls playsinline preload="metadata" poster="~/demo/assets/media/film-poster.jpg" width="1280" height="720">
+        <source src="~/demo/assets/media/film.mp4" type="video/mp4">
+        <track kind="captions" src="~/demo/assets/media/film-de.vtt" srclang="de" label="Deutsch">
+        <track kind="captions" src="~/demo/assets/media/film-en.vtt" srclang="en" label="English">
+        <track kind="chapters" src="~/demo/assets/media/film-chapters-de.vtt" srclang="de">
+      </video>
+      <p class="ncss-video-player-title">Vier Stimmungen</p>
+      <p class="ncss-video-player-meta">Kurzfilm · NativeCSS Studio</p>
+      <ol class="ncss-video-player-playlist">
+        <li><a href="~/demo/assets/media/film.mp4" data-poster="~/demo/assets/media/film-poster.jpg" data-title="Vier Stimmungen" data-meta="Kurzfilm · NativeCSS Studio" data-chapters="~/demo/assets/media/film-chapters-de.vtt" data-captions="de=~/demo/assets/media/film-de.vtt en=~/demo/assets/media/film-en.vtt"><img src="~/demo/assets/media/film-poster.jpg" alt=""><span>Vier Stimmungen</span> <span>0:32</span></a></li>
+        <li><a href="~/demo/assets/media/aurora-loop.mp4" data-poster="~/demo/assets/media/aurora-poster.jpg" data-title="Nordlicht" data-meta="Szene · ohne Ton"><img src="~/demo/assets/media/aurora-poster.jpg" alt=""><span>Nordlicht</span> <span>0:10</span></a></li>
+        <li><a href="~/demo/assets/media/waves-loop.mp4" data-poster="~/demo/assets/media/waves-poster.jpg" data-title="Abend am Meer" data-meta="Szene · ohne Ton"><img src="~/demo/assets/media/waves-poster.jpg" alt=""><span>Abend am Meer</span> <span>0:10</span></a></li>
+        <li><a href="~/demo/assets/media/blobs-loop.mp4" data-poster="~/demo/assets/media/blobs-poster.jpg" data-title="Farbfluss" data-meta="Szene · ohne Ton"><img src="~/demo/assets/media/blobs-poster.jpg" alt=""><span>Farbfluss</span> <span>0:10</span></a></li>
+      </ol>
+    </ncss-video-player>
+    <div class="ncss-grid demo-grid">
+      <ncss-audio-player layout="card" waveform>
+        <img class="ncss-audio-player-cover" src="~/demo/assets/media/tide.svg" alt="">
+        <p class="ncss-audio-player-title">Gezeiten</p>
+        <p class="ncss-audio-player-artist">NativeCSS Ensemble</p>
+        <audio controls preload="metadata" src="~/demo/assets/media/tide.m4a">
+          <track kind="chapters" src="~/demo/assets/media/tide-chapters-de.vtt" srclang="de">
+        </audio>
+        <ol class="ncss-audio-player-playlist">
+          <li><a href="~/demo/assets/media/tide.m4a" data-title="Gezeiten" data-artist="NativeCSS Ensemble" data-cover="~/demo/assets/media/tide.svg" data-chapters="~/demo/assets/media/tide-chapters-de.vtt">Gezeiten <span>0:36</span></a></li>
+          <li><a href="~/demo/assets/media/dawn.m4a" data-title="Morgenrot" data-artist="NativeCSS Ensemble" data-cover="~/demo/assets/media/dawn.svg">Morgenrot <span>0:32</span></a></li>
+          <li><a href="~/demo/assets/media/circuit.m4a" data-title="Kreislauf" data-artist="NativeCSS Ensemble" data-cover="~/demo/assets/media/circuit.svg">Kreislauf <span>0:30</span></a></li>
+        </ol>
+      </ncss-audio-player>
+      <div class="ncss-stack">
+        <p class="ncss-text-sm ncss-text-muted">Kompakt, eine Zeile:</p>
+        <ncss-audio-player aria-label="Morgenrot">
+          <audio controls preload="metadata" src="~/demo/assets/media/dawn.m4a"></audio>
+        </ncss-audio-player>
+        <p class="ncss-text-sm ncss-text-muted">Video ohne Karte (nur die Bühne):</p>
+        <ncss-video-player aria-label="Abend am Meer">
+          <video controls playsinline preload="metadata" poster="~/demo/assets/media/waves-poster.jpg" src="~/demo/assets/media/waves-loop.mp4" width="960" height="540"></video>
+        </ncss-video-player>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Scroll-Video, angepinnt -->
+  <section id="live-scroll-video" class="ncss-stack">
+    <div class="ncss-container ncss-stack">
+      <h2 class="demo-section-title">Scroll-Video <code>&lt;ncss-scroll-video&gt;</code></h2>
+      <p class="ncss-text-muted ncss-text-sm demo-narrow">Scrollen spult das Video vor und zurück - ein Tag über den Hügeln, vom Morgengrauen bis zur Nacht. Die Bühne klebt randlos im Viewport (<code>object-fit: cover</code>, keine Balken). Bei reduzierter Bewegung: normales Video mit Steuerung, Texte darunter.</p>
+    </div>
+    <ncss-scroll-video class="demo-under-topbar" length="400">
+      <div class="ncss-scroll-video-stage">
+        <video muted playsinline controls preload="metadata" poster="~/demo/assets/media/landscape-poster.jpg" width="1280" height="720" aria-label="Landschaft vom Morgengrauen bis zur Nacht">
+          <source src="~/demo/assets/media/landscape-scrub.mp4" type="video/mp4">
+        </video>
+        <p class="ncss-scroll-video-caption" data-ncss-time="0.3-2.2">Morgengrauen: die Sonne steigt hinter den Hügeln auf.</p>
+        <p class="ncss-scroll-video-caption" data-ncss-time="2.8-4.4">Mittag: klare Luft, die Wolken ziehen weiter.</p>
+        <p class="ncss-scroll-video-caption" data-ncss-time="5.0-6.3">Abendrot taucht die Grate in warmes Licht.</p>
+        <p class="ncss-scroll-video-caption" data-ncss-time="6.8-8">Nacht: der Mond geht auf, die Sterne erscheinen.</p>
+      </div>
+    </ncss-scroll-video>
+  </section>
+
+  <!-- 4. Bildsequenz -->
+  <section id="live-scroll-frames" class="ncss-stack">
+    <div class="ncss-container ncss-stack">
+      <h2 class="demo-section-title">Bildsequenz <code>&lt;ncss-scroll-frames&gt;</code></h2>
+      <p class="ncss-text-muted ncss-text-sm demo-narrow">Dieselbe Szene als 72 WebP-Einzelbilder auf einem Canvas - spult in jeder Engine ruckelfrei, weil nichts dekodiert oder gesucht werden muss. Geladen wird erst in der Nähe des Viewports, grob zuerst (jedes 16. Bild), dann verfeinert.</p>
+    </div>
+    <ncss-scroll-frames class="demo-under-topbar" src="~/demo/assets/media/frames/f-%03d.webp" count="72" length="300">
+      <div class="ncss-scroll-frames-stage">
+        <img class="ncss-scroll-frames-poster" src="~/demo/assets/media/frames/f-020.webp" alt="Gestaffelte Hügel im Wechsel vom Morgen bis zur Nacht" width="800" height="450">
+        <div class="demo-frames-overlay">
+          <h3>Bild für Bild</h3>
+          <p>Scrollen zeichnet das passende Einzelbild.</p>
+        </div>
+      </div>
+    </ncss-scroll-frames>
+  </section>
+
+  <!-- 5. Scrollytelling-Kopplung -->
+  <section id="scrolly" class="ncss-container ncss-stack">
+    <h2 class="demo-section-title">Scrollytelling + Video</h2>
+    <p class="ncss-text-muted ncss-text-sm demo-narrow">Ein <code>&lt;ncss-scroll-video&gt;</code> in einem <code>&lt;ncss-scrolly&gt;</code> folgt den Schritten: <code>data-ncss-time="2-4"</code> spult von 2 auf 4 s, während der Schritt die Bildschirmmitte kreuzt. Bei reduzierter Bewegung springt das Video pro Schritt (Event <code>ncss-scrolly-step</code>) statt zu spulen.</p>
+    <ncss-scrolly>
+      <div class="ncss-scrolly-steps">
+        <div class="ncss-scrolly-step" data-ncss-time="0-2"><div><h3>Früh</h3><p>Das erste Licht färbt den Horizont.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="2-4"><div><h3>Tag</h3><p>Die Sonne zieht ihren Bogen.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="4-6"><div><h3>Abend</h3><p>Warme Farben, lange Schatten.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="6-8"><div><h3>Nacht</h3><p>Der Mond übernimmt.</p></div></div>
+      </div>
+      <div class="ncss-scrolly-media">
+        <figure class="ncss-scrolly-figure demo-scrolly-figure">
+          <ncss-scroll-video>
+            <div class="ncss-scroll-video-stage">
+              <video muted playsinline preload="metadata" poster="~/demo/assets/media/landscape-poster.jpg" width="1280" height="720" aria-label="Landschaft im Tagesverlauf">
+                <source src="~/demo/assets/media/landscape-scrub.mp4" type="video/mp4">
+              </video>
+            </div>
+          </ncss-scroll-video>
+        </figure>
+      </div>
+    </ncss-scrolly>
+  </section>
+
+  <!-- 6. Hintergrund-Video -->
+  <section id="live-video-bg" class="ncss-stack">
+    <div class="ncss-container ncss-stack">
+      <h2 class="demo-section-title">Hintergrund-Video <code>.ncss-video-bg</code></h2>
+      <p class="ncss-text-muted ncss-text-sm demo-narrow">Für jede Fläche: Tönung für lesbaren Text (hell/dunkel/Marke/Verlauf), sichtbarer Pause-Schalter, lädt erst in Viewport-Nähe, pausiert außer Sicht und im Hintergrund-Tab. Bei reduzierter Bewegung oder Datensparmodus wird nichts geladen - nur das Poster.</p>
+    </div>
+    <div class="ncss-video-bg ncss-video-bg--dark demo-bg-band" data-ncss-video-bg style="--ncss-video-bg-strength: 20%;">
+      <video class="ncss-video-bg-media" muted loop playsinline preload="none" poster="~/demo/assets/media/aurora-poster.jpg" aria-hidden="true">
+        <source data-src="~/demo/assets/media/aurora-loop.webm" type="video/webm">
+        <source data-src="~/demo/assets/media/aurora-loop.mp4" type="video/mp4">
+      </video>
+      <div class="ncss-container ncss-stack">
+        <h3 class="ncss-text-xl">Ruhiger Hintergrund, klarer Text</h3>
+        <p class="demo-narrow">Die dunkle Tönung setzt <code>color-scheme: dark</code> - Text, Buttons und Karten in der Fläche lösen ihre Farben automatisch in der dunklen Hälfte auf, im hellen wie im dunklen Seiten-Theme.</p>
+        <div class="ncss-cluster">
+          <a class="ncss-btn ncss-btn--primary" href="#live-encoding">Kodieren lernen</a>
+          <a class="ncss-btn ncss-btn--secondary" href="#live-player">Zum Player</a>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-container ncss-grid demo-grid">
+      <article class="ncss-video-bg ncss-video-bg--light demo-bg-card" data-ncss-video-bg="top-end" style="--ncss-video-bg-strength: 35%;">
+        <video class="ncss-video-bg-media" muted loop playsinline preload="none" poster="~/demo/assets/media/blobs-poster.jpg" aria-hidden="true">
+          <source data-src="~/demo/assets/media/blobs-loop.webm" type="video/webm">
+          <source data-src="~/demo/assets/media/blobs-loop.mp4" type="video/mp4">
+        </video>
+        <h3>Helle Tönung</h3>
+        <p><code>.ncss-video-bg--light</code> - dunkler Text auf aufgehelltem Video.</p>
+      </article>
+      <article class="ncss-video-bg ncss-video-bg--brand demo-bg-card" data-ncss-video-bg="top-end">
+        <video class="ncss-video-bg-media" muted loop playsinline preload="none" poster="~/demo/assets/media/waves-poster.jpg" aria-hidden="true">
+          <source data-src="~/demo/assets/media/waves-loop.webm" type="video/webm">
+          <source data-src="~/demo/assets/media/waves-loop.mp4" type="video/mp4">
+        </video>
+        <h3>Markenfarbe</h3>
+        <p><code>.ncss-video-bg--brand</code> - mit der Markenfarbe getönt.</p>
+      </article>
+    </div>
+    <div class="ncss-container">
+      <section class="ncss-hero demo-hero-video" data-ncss-video-bg="top-end" aria-label="Hero mit Video">
+        <div class="ncss-hero-media">
+          <video muted loop playsinline preload="none" poster="~/demo/assets/media/waves-poster.jpg" aria-hidden="true">
+            <source data-src="~/demo/assets/media/waves-loop.webm" type="video/webm">
+            <source data-src="~/demo/assets/media/waves-loop.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="ncss-hero-content ncss-hero-content--filled">
+          <h3>Hero mit Video</h3>
+          <p>Dasselbe Script auf einem <code>.ncss-hero</code>: <code>data-ncss-video-bg</code> genügt, das Video in <code>.ncss-hero-media</code> bekommt Pause-Schalter, Lazy-Load und Bewegungs-Rücksicht.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- 7. Video in Schrift -->
+  <section id="live-video-text" class="ncss-container ncss-stack">
+    <h2 class="demo-section-title">Video in Schrift <code>.ncss-video-text</code></h2>
+    <p class="ncss-text-muted ncss-text-sm demo-narrow">Die Überschrift bleibt echter Text; ein einziger Mischmodus (<code>hard-light</code>) zeigt das Video in den Buchstaben - die Fläche drumherum folgt der Seitenfarbe in Hell und Dunkel.</p>
+    <div class="ncss-video-text" data-ncss-video-bg>
+      <video class="ncss-video-text-media" muted loop playsinline preload="none" poster="~/demo/assets/media/blobs-poster.jpg" aria-hidden="true">
+        <source data-src="~/demo/assets/media/blobs-loop.webm" type="video/webm">
+        <source data-src="~/demo/assets/media/blobs-loop.mp4" type="video/mp4">
+      </video>
+      <h3 class="ncss-video-text-title">Farbfluss</h3>
+    </div>
+  </section>
+
+  <!-- 8. Mini-Player -->
+  <section id="live-video-float" class="ncss-container ncss-stack">
+    <h2 class="demo-section-title">Mini-Player <code>&lt;ncss-video-float&gt;</code></h2>
+    <p class="ncss-text-muted ncss-text-sm demo-narrow">Video starten und weiterscrollen: der laufende Player dockt unten rechts an und kehrt beim Zurückscrollen an seinen Platz zurück. "Schließen" pausiert.</p>
+    <ncss-video-float class="demo-narrow">
+      <div class="ncss-video-float-frame">
+        <ncss-video-player aria-label="Kurzfilm im Mini-Player">
+          <video controls playsinline preload="metadata" poster="~/demo/assets/media/film-poster.jpg" width="1280" height="720">
+            <source src="~/demo/assets/media/film.mp4" type="video/mp4">
+            <track kind="captions" src="~/demo/assets/media/film-de.vtt" srclang="de" label="Deutsch">
+          </video>
+        </ncss-video-player>
+      </div>
+    </ncss-video-float>
+  </section>
+
+  <!-- 9. Vorschaukarten -->
+  <section id="live-video-card" class="ncss-container ncss-stack">
+    <h2 class="demo-section-title">Vorschaukarten <code>.ncss-video-card</code></h2>
+    <p class="ncss-text-muted ncss-text-sm demo-narrow">Mit der Maus berühren oder per Tab fokussieren - die Karte spielt eine stumme Vorschau. Vorher wird kein Byte Video geladen (<code>preload="none"</code>); auf Touch-Geräten und bei reduzierter Bewegung bleibt das Poster.</p>
+    <div class="ncss-grid demo-grid">
+      <a class="ncss-video-card" href="#live-video-bg">
+        <div class="ncss-video-card-media">
+          <video muted loop playsinline preload="none" poster="~/demo/assets/media/aurora-poster.jpg" src="~/demo/assets/media/aurora-loop.mp4" aria-hidden="true"></video>
+          <span class="ncss-video-card-badge">Vorschau</span>
+        </div>
+        <div class="ncss-video-card-body"><h3>Nordlicht</h3><p>Schleife, 10 s</p></div>
+      </a>
+      <a class="ncss-video-card" href="#live-video-bg">
+        <div class="ncss-video-card-media">
+          <video muted loop playsinline preload="none" poster="~/demo/assets/media/waves-poster.jpg" src="~/demo/assets/media/waves-loop.mp4" aria-hidden="true"></video>
+          <span class="ncss-video-card-badge">Vorschau</span>
+        </div>
+        <div class="ncss-video-card-body"><h3>Abend am Meer</h3><p>Schleife, 10 s</p></div>
+      </a>
+      <a class="ncss-video-card" href="#live-video-bg">
+        <div class="ncss-video-card-media">
+          <video muted loop playsinline preload="none" poster="~/demo/assets/media/blobs-poster.jpg" src="~/demo/assets/media/blobs-loop.mp4" aria-hidden="true"></video>
+          <span class="ncss-video-card-badge">Vorschau</span>
+        </div>
+        <div class="ncss-video-card-body"><h3>Farbfluss</h3><p>Schleife, 10 s</p></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 10. Kodieren -->
+  <section id="live-encoding" class="ncss-container ncss-stack">
+    <h2 class="demo-section-title">Video fürs Spulen kodieren</h2>
+    <p class="ncss-text-muted ncss-text-sm demo-narrow">Spulen heißt Suchen - und ein Sprung kann nur an einem Keyframe mit dem Dekodieren beginnen. Normale Web-Videos haben alle 2-10 s einen Keyframe: Chrome überspielt das, Safari ruckelt sichtbar. Für Scroll-Video deshalb jedes Bild als Keyframe (<code>-g 1</code>, all-intra) oder eine sehr kurze GOP. Ausführlich im Handbuch.</p>
+    <pre><code class="language-bash"># Scroll-Video: H.264, jedes Bild ein Keyframe, ohne Ton, Metadaten vorn
+ffmpeg -i quelle.mov -an -vf "scale=1280:-2,fps=24" \
+  -c:v libx264 -preset slow -crf 30 -g 1 -pix_fmt yuv420p \
+  -movflags +faststart scrub.mp4</code></pre>
+  </section>

@@ -1,0 +1,295 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-big-text {
+    font-size: var(--ncss-font-size-xl);
+    font-weight: var(--ncss-font-weight-semibold);
+    line-height: var(--ncss-line-height-tight);
+    max-inline-size: 40rem;
+  }
+  .demo-spacer {
+    min-block-size: 40vh;
+    display: grid;
+    place-items: center;
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-stat {
+    display: grid;
+    gap: var(--ncss-space-3xs);
+    padding: var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-stat-value {
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: var(--ncss-font-weight-bold);
+    color: var(--ncss-color-brand-on-soft);
+    line-height: 1;
+  }
+  .demo-logo {
+    padding: var(--ncss-space-2xs) var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-surface);
+    font-weight: var(--ncss-font-weight-semibold);
+    white-space: nowrap;
+  }
+  .demo-reveal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--ncss-space-md);
+  }
+  .demo-reveal-tile {
+    margin: 0;
+    display: grid;
+    gap: var(--ncss-space-2xs);
+  }
+  .demo-reveal-tile > .ncss-reveal,
+  .demo-reveal-tile img {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-reveal-tile figcaption {
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-reveal-panel {
+    display: grid;
+    place-items: center;
+    padding: var(--ncss-space-lg);
+    text-align: center;
+    background-color: var(--ncss-color-brand-900);
+    color: var(--ncss-color-brand-contrast);
+  }
+  .demo-hscroll-card {
+    display: grid;
+    align-content: end;
+    gap: var(--ncss-space-2xs);
+    min-block-size: min(60svh, 28rem);
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    border: 1px solid var(--ncss-color-border);
+    box-shadow: var(--ncss-shadow-md);
+  }
+  .demo-hscroll-card:nth-child(3n + 1) { background-color: var(--ncss-color-brand-100); }
+  .demo-hscroll-card:nth-child(3n + 2) { background-color: var(--ncss-color-brand-2-100); }
+  .demo-hscroll-num {
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: var(--ncss-font-weight-bold);
+    line-height: 1;
+  }
+  .demo-scrolly-visual {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--ncss-radius-lg);
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: var(--ncss-font-weight-bold);
+    color: var(--ncss-color-brand-contrast);
+  }
+  .demo-scrolly-visual--1 { background-color: var(--ncss-color-brand); }
+  .demo-scrolly-visual--2 { background-color: var(--ncss-color-brand-2-900); }
+  .demo-scrolly-visual--3 { background-color: var(--ncss-color-success-900); }
+  .demo-scrolly-visual--4 { background-color: var(--ncss-color-neutral-900); }
+  .demo-curtain-section {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-xl) var(--ncss-space-md);
+    text-align: center;
+  }
+  .demo-curtain-section--long {
+    align-content: space-between;
+    min-block-size: 150svh;
+  }
+  .demo-expand {
+    min-block-size: 70svh;
+  }
+</style>
+<script src="~/dist/js/hero-video-motion.js" defer></script>
+<script src="~/dist/js/scroll-horizontal.js" defer></script>
+<script src="~/dist/js/text-reveal.js" defer></script>
+<script src="~/dist/js/scrolly.js" defer></script>
+<script src="~/dist/js/count-up.js" defer></script>
+<script src="~/dist/js/marquee.js" defer></script>
+<script src="~/dist/js/reveal.js" defer></script>
+<script src="~/demo/assets/js/scroll-effects-demo.js" defer></script>
+-->
+  <div class="ncss-container ncss-stack ncss-py-xl">
+    <p class="ncss-text-lg ncss-text-muted">Scroll-getriebene Effekte, nativ über <code>animation-timeline: view()</code> und (Chromium) scroll-getriggerte Animationen - JavaScript nur als kleiner, opt-in Fallback oder wo CSS nicht hinkommt (Fokus, Zustand, Events). Jeder Effekt ist eine eigene Datei und einzeln einbindbar. Ohne Unterstützung und bei reduzierter Bewegung bleibt alles normal lesbar.</p>
+  </div>
+
+  <section id="live-text-reveal" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Text-Reveal</h2>
+    <p class="ncss-text-muted"><code>components/text-reveal.css</code> - Text wird beim Hindurchscrollen hell. Zeilen und Fluss ohne JS, Wort für Wort mit <code>js/text-reveal.js</code>.</p>
+    <p class="ncss-eyebrow">Zeilen (Default)</p>
+    <p class="ncss-text-reveal demo-big-text">Native CSS kann heute, wofür man früher eine Animations-Bibliothek brauchte: Fortschritt an die Scroll-Position koppeln, ganz ohne Scroll-Listener.</p>
+    <p class="ncss-eyebrow">Fluss (<code>--flow</code>)</p>
+    <p class="ncss-text-reveal ncss-text-reveal--flow demo-big-text"><span>Im Fluss läuft die Helligkeit Wort für Wort in Leserichtung über die Zeilen - ein einziger Verlauf auf einem Inline-Element.</span></p>
+    <p class="ncss-eyebrow">Wörter (<code>data-ncss-text-reveal</code>)</p>
+    <p class="ncss-text-reveal demo-big-text" data-ncss-text-reveal>Jedes Wort bekommt seinen eigenen Abschnitt und hebt sich <em>einzeln</em> ins Bild.</p>
+    <pre><code class="language-html">&lt;p class="ncss-text-reveal"&gt;...&lt;/p&gt;
+&lt;p class="ncss-text-reveal ncss-text-reveal--flow"&gt;&lt;span&gt;...&lt;/span&gt;&lt;/p&gt;
+&lt;p class="ncss-text-reveal" data-ncss-text-reveal&gt;...&lt;/p&gt;</code></pre>
+  </section>
+
+  <section id="live-count-up" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Count-up</h2>
+    <p class="ncss-text-muted"><code>components/count-up.css</code> - die echte Zahl steht im DOM (Screenreader, ohne JS), gezählt wird in einem <code>::after</code>. Chromium: einmal per CSS-Scroll-Trigger; sonst mit <code>js/count-up.js</code>.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 12rem;">
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 12500">12.500</span></span><span class="ncss-text-muted">Projekte</span></div>
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 98; --ncss-count-suffix: ' %'">98 %</span></span><span class="ncss-text-muted">Zufriedenheit</span></div>
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 40; --ncss-count-prefix: '+'">+40</span></span><span class="ncss-text-muted">Komponenten</span></div>
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 0; --ncss-count-from: 100">0</span></span><span class="ncss-text-muted">Build-Schritte</span></div>
+    </div>
+    <pre><code class="language-html">&lt;span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 12500"&gt;12.500&lt;/span&gt;</code></pre>
+  </section>
+
+  <section id="live-marquee" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Marquee</h2>
+    <p class="ncss-text-muted"><code>components/marquee.css</code> - Endlos-Laufband, hält bei Hover und Fokus an; der Button pausiert dauerhaft (WCAG 2.2.2). Reduzierte Bewegung: statische, wischbare Reihe.</p>
+    <div id="demo-marquee" class="ncss-marquee ncss-marquee--fade" data-ncss-marquee>
+      <ul class="ncss-marquee-group" role="list">
+        <li class="demo-logo">Cascade Layers</li>
+        <li class="demo-logo">Container Queries</li>
+        <li class="demo-logo">light-dark()</li>
+        <li class="demo-logo">view()</li>
+        <li class="demo-logo">:has()</li>
+        <li class="demo-logo">@property</li>
+        <li class="demo-logo"><a href="#scrolly">Scrollytelling</a></li>
+      </ul>
+    </div>
+    <div class="ncss-marquee ncss-marquee--reverse ncss-marquee--fast" data-ncss-marquee>
+      <ul class="ncss-marquee-group" role="list">
+        <li class="demo-logo">Kein Build-Schritt</li>
+        <li class="demo-logo">Native zuerst</li>
+        <li class="demo-logo">Barrierefrei</li>
+        <li class="demo-logo">Cherry-Picking</li>
+        <li class="demo-logo">Dark Mode</li>
+      </ul>
+    </div>
+    <p><button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-marquee-toggle aria-controls="demo-marquee">Oberes Laufband anhalten</button></p>
+  </section>
+
+  <section id="live-reveal" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Reveal-Formen</h2>
+    <p class="ncss-text-muted"><code>helpers/reveal.css</code> - für jedes Element (Bild, Video, Sektion). Standard scroll-gescrubbt (zurückscrollen spult zurück); <code>--once</code> spielt einmal zeitbasiert ab.</p>
+    <div class="demo-reveal-grid">
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--circle" data-ncss-reveal src="~/demo/assets/slide-1.jpg" alt="Beispielbild 1" loading="lazy"><figcaption><code>--circle</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-right" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Beispielbild 2" loading="lazy"><figcaption><code>--wipe-right</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-left" data-ncss-reveal src="~/demo/assets/slide-3.jpg" alt="Beispielbild 3" loading="lazy"><figcaption><code>--wipe-left</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-up" data-ncss-reveal src="~/demo/assets/slide-1.jpg" alt="Beispielbild 1" loading="lazy"><figcaption><code>--wipe-up</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-down" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Beispielbild 2" loading="lazy"><figcaption><code>--wipe-down</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--inset" data-ncss-reveal src="~/demo/assets/slide-3.jpg" alt="Beispielbild 3" loading="lazy"><figcaption><code>--inset</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--split" data-ncss-reveal src="~/demo/assets/slide-1.jpg" alt="Beispielbild 1" loading="lazy"><figcaption><code>--split</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--diagonal" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Beispielbild 2" loading="lazy"><figcaption><code>--diagonal</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><div class="ncss-reveal ncss-reveal--zoom" data-ncss-reveal><img src="~/demo/assets/slide-3.jpg" alt="Beispielbild 3" loading="lazy"></div><figcaption><code>--zoom</code> (auf einem Wrapper)</figcaption></figure>
+    </div>
+
+    <h3>Einmal-Modus (<code>--once</code>)</h3>
+    <div class="demo-reveal-grid">
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--circle ncss-reveal--once" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Beispielbild 2" loading="lazy"><figcaption><code>--circle --once</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal src="~/demo/assets/slide-3.jpg" alt="Beispielbild 3" loading="lazy"><figcaption><code>--split --once</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><div class="ncss-reveal ncss-reveal--slide-up ncss-reveal--once demo-reveal-panel" data-ncss-reveal><p class="ncss-text-inherit">Beliebiges Element, hier ein Panel: <code>--slide-up --once</code></p></div><figcaption><code>--slide-up --once</code></figcaption></figure>
+    </div>
+    <pre><code class="language-html">&lt;img class="ncss-reveal ncss-reveal--circle" src="..." alt="..."&gt;
+&lt;figure class="ncss-reveal ncss-reveal--zoom"&gt;&lt;img src="..." alt="..."&gt;&lt;/figure&gt;
+&lt;section class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal&gt;...&lt;/section&gt;</code></pre>
+  </section>
+
+  <section class="ncss-reveal ncss-reveal--expand demo-reveal-panel demo-expand" data-ncss-reveal>
+    <div class="ncss-stack">
+      <h2 class="ncss-text-inherit"><code>--expand</code>: wächst zu Full-Bleed</h2>
+      <p class="ncss-text-inherit">Eine vollbreite Sektion startet als eingerückte, abgerundete Karte und zieht beim Scrollen auf volle Breite auf.</p>
+    </div>
+  </section>
+
+  <section id="live-reveal-pin" aria-labelledby="reveal-pin-title">
+    <div class="ncss-container ncss-stack ncss-py-xl">
+      <h2 class="demo-section-title" id="reveal-pin-title">Reveal-Pin</h2>
+      <p class="ncss-text-muted"><code>components/reveal-pin.css</code> - gepinnte Bühne: das Video zieht von einer Karte auf Vollbild auf, der Intro-Text geht, ein Panel kommt.</p>
+    </div>
+    <div class="ncss-reveal-pin">
+      <div class="ncss-reveal-pin-stage">
+        <p class="ncss-reveal-pin-intro">Ein Bild, das den ganzen Raum nimmt.</p>
+        <video src="~/demo/assets/sample-clip.mp4" poster="~/demo/assets/sample-poster.jpg" muted playsinline loop autoplay></video>
+        <div class="ncss-reveal-pin-content">
+          <h3>Angekommen</h3>
+          <p>Das Panel blendet erst ein, wenn das Medium den Viewport füllt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="horizontal" aria-labelledby="horizontal-title">
+    <div class="ncss-container ncss-stack ncss-py-xl">
+      <h2 class="demo-section-title" id="horizontal-title">Horizontal-Scroll</h2>
+      <p class="ncss-text-muted"><code>components/scroll-horizontal.css</code> + <code>js/scroll-horizontal.js</code> - vertikales Scrollen schiebt die Reihe seitlich. Per Tab durch die Links: das Script holt das fokussierte Element ins Bild. Fallback: wischbare Snap-Reihe.</p>
+    </div>
+    <div class="ncss-scroll-horizontal" data-ncss-scroll-horizontal aria-label="Projekte">
+      <div class="ncss-scroll-horizontal-viewport">
+        <div class="ncss-scroll-horizontal-track">
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">01</span><h3>Tokens</h3><p>Eine Werteliste für alles. <a href="tokens.html">Mehr</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">02</span><h3>Layers</h3><p>Priorität ohne !important. <a href="architecture.html">Mehr</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">03</span><h3>Container</h3><p>Komponenten, die ihren Platz kennen. <a href="~/demo/layout.html">Mehr</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">04</span><h3>Farben</h3><p>light-dark() statt zweitem Stylesheet. <a href="~/demo/colors.html">Mehr</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">05</span><h3>Bewegung</h3><p>Scroll-Timelines statt Listener. <a href="animations.html">Mehr</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">06</span><h3>Zugänglich</h3><p>Fokus bleibt sichtbar. <a href="accessibility.html">Mehr</a></p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scrolly" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Scrollytelling</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-scrolly&gt;</code> (<code>components/scrolly.css</code> + <code>js/scrolly.js</code>) - der Schritt in der Viewport-Mitte ist aktiv und schaltet das Medium. Jeder Schritt trägt <code>data-ncss-time</code>; das Event <code>ncss-scrolly-step</code> meldet <code>{index, time}</code>, z.B. für ein scroll-gesteuertes Video.</p>
+    <p class="ncss-text-sm">Letztes Event: <output id="demo-scrolly-log" for="demo-scrolly">-</output></p>
+    <ncss-scrolly id="demo-scrolly" style="--ncss-scrolly-top: var(--ncss-topbar-height);">
+      <div class="ncss-scrolly-steps">
+        <div class="ncss-scrolly-step" data-ncss-time="0"><div><h3>1. Ausgangslage</h3><p>Ohne JavaScript stehen alle Schritte und Bilder einfach untereinander.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="2.5"><div><h3>2. Bühne</h3><p>Mit dem Element klebt die Medien-Spalte, jeweils ein Bild ist sichtbar.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="5"><div><h3>3. Hook</h3><p><code>data-ncss-time</code> gibt jedem Schritt eine Zeitmarke in Sekunden.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="7.5"><div><h3>4. Ende</h3><p>Schmal: das Medium sitzt oben, die Schritte laufen darunter durch.</p></div></div>
+      </div>
+      <div class="ncss-scrolly-media">
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--1" role="img" aria-label="Schritt 1">1</div></figure>
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--2" role="img" aria-label="Schritt 2">2</div></figure>
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--3" role="img" aria-label="Schritt 3">3</div></figure>
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--4" role="img" aria-label="Schritt 4">4</div></figure>
+      </div>
+    </ncss-scrolly>
+  </section>
+
+  <section id="live-curtain" aria-labelledby="curtain-title">
+    <div class="ncss-container ncss-stack ncss-py-xl">
+      <h2 class="demo-section-title" id="curtain-title">Curtain-Sektionen</h2>
+      <p class="ncss-text-muted"><code>components/curtain.css</code> - jede Sektion bleibt stehen, die nächste gleitet darüber; <code>--scale</code> lässt die bedeckte zurückweichen, <code>--dim</code> dunkelt sie ab. Kein <code>position: sticky</code> - auch überlange Sektionen zeigen ihren ganzen Inhalt.</p>
+    </div>
+    <div class="ncss-curtain ncss-curtain--scale ncss-curtain--dim">
+      <section class="demo-curtain-section ncss-surface--brand">
+        <h3 class="ncss-text-inherit">Sektion 1</h3>
+        <p class="ncss-text-inherit">Weiterscrollen - die nächste Sektion schiebt sich darüber.</p>
+      </section>
+      <section class="demo-curtain-section demo-curtain-section--long ncss-surface--neutral">
+        <h3 class="ncss-text-inherit">Sektion 2 (überlang)</h3>
+        <p class="ncss-text-inherit">Diese Sektion ist anderthalb Bildschirme hoch und scrollt erst komplett durch, bevor sie stehen bleibt.</p>
+        <p class="ncss-text-inherit">Unterkante von Sektion 2 - erst jetzt hält sie an und Sektion 3 gleitet darüber.</p>
+      </section>
+      <section class="demo-curtain-section ncss-surface--brand-2">
+        <h3 class="ncss-text-inherit">Sektion 3</h3>
+        <p class="ncss-text-inherit">Die letzte Sektion wird nie bedeckt.</p>
+        <p><a href="all-components.html" class="ncss-btn ncss-btn--primary">Zurück zur Übersicht</a></p>
+      </section>
+    </div>
+  </section>

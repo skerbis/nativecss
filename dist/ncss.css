@@ -58,6 +58,14 @@
 @import url("components/sparkline.css") layer(components);
 @import url("components/video.css") layer(components);
 @import url("components/audio.css") layer(components);
+@import url("components/video-player.css") layer(components);
+@import url("components/audio-player.css") layer(components);
+@import url("components/scroll-video.css") layer(components);
+@import url("components/scroll-frames.css") layer(components);
+@import url("components/video-bg.css") layer(components);
+@import url("components/video-text.css") layer(components);
+@import url("components/video-float.css") layer(components);
+@import url("components/video-card.css") layer(components);
 @import url("components/card.css") layer(components);
 @import url("components/split.css") layer(components);
 @import url("components/tile.css") layer(components);
@@ -77,6 +85,7 @@
 @import url("components/disclosure.css") layer(components);
 @import url("components/badge.css") layer(components);
 @import url("components/breadcrumb.css") layer(components);
+@import url("components/subnav.css") layer(components);
 @import url("components/lists.css") layer(components);
 @import url("components/cover.css") layer(components);
 @import url("components/overlay.css") layer(components);

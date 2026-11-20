@@ -13,7 +13,21 @@
  *
  * Attribute am Element:
  *   shortcut="k"   opt-in Tastenkürzel: ⌘K auf Apple-Geräten, sonst Strg+K (öffnet/schließt)
+ *   slash          zusätzlich "/" als Kürzel (nur wenn gerade kein Eingabefeld Fokus hat)
  *   status-text="{n} Treffer"  Ansage der Trefferzahl, Default nach <html lang>
+ *   src="suche.json"  opt-in SUCHMODUS für große Listen: die Einträge kommen aus einer
+ *                  JSON-Datei (beim ersten Öffnen geladen, kein Server nötig) und werden
+ *                  erst beim Tippen gerendert - gerankt, je Gruppe begrenzt, Treffer mit
+ *                  <mark> hervorgehoben. Format:
+ *                    { "groups": [{ "id": "pages", "label": "Seiten" }, ...],
+ *                      "items":  [{ "g": "pages", "t": "Titel", "u": "de/seite.html#anker",
+ *                                   "h": "Hinweis rechts", "s": "Textauszug", "k": "Stichwörter" }] }
+ *                  "u" gilt relativ zur JSON-Datei (dieselbe Liste funktioniert von jeder
+ *                  Seite aus). Einträge im Markup bleiben erhalten (z.B. als Vorschläge bei
+ *                  leerem Feld und als Inhalt ohne JS).
+ *   limit="8"      Suchmodus: höchstens so viele Treffer je Gruppe (Default 8)
+ * Elemente mit [data-ncss-command-key] (z.B. das <kbd> im Öffnen-Button) bekommen den
+ * passenden Kürzel-Text ("⌘K" bzw. "Strg K"/"Ctrl K").
  *
  * Events (am Element, bubbeln):
  *   ncss-command-select { item }  cancelable - preventDefault() hält die Palette offen und
@@ -36,8 +50,8 @@
   }
 
   var TEXTS = {
-    de: { status: "{n} Treffer, mit Pfeiltasten auswählen", list: "Befehle" },
-    en: { status: "{n} results, use arrow keys to choose", list: "Commands" }
+    de: { status: "{n} Treffer, mit Pfeiltasten auswählen", list: "Befehle", ctrl: "Strg" },
+    en: { status: "{n} results, use arrow keys to choose", list: "Commands", ctrl: "Ctrl" }
   };
   var lang = (document.documentElement.getAttribute("lang") || "de").slice(0, 2) === "en" ? "en" : "de";
   var isApple = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
@@ -45,6 +59,21 @@
 
   function norm(value) {
     return String(value).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  }
+  function esc(value) {
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  // Markiert jedes Vorkommen der Suchbegriffe (Groß-/Kleinschreibung egal) mit <mark>.
+  function highlight(text, terms) {
+    var html = esc(text);
+    terms.forEach(function (t) {
+      if (t.length < 2) return;
+      var re = new RegExp("(" + esc(t).replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
+      html = html.replace(/(<[^>]*>)|([^<]+)/g, function (m, tag, txt) {
+        return tag || txt.replace(re, "<mark>$1</mark>");
+      });
+    });
+    return html;
   }
   function ensureId(el, prefix) {
     if (!el.id) {
@@ -100,12 +129,29 @@
           }
         });
         this._items().forEach(function (item) {
-          ensureId(item, "ncss-command-item");
-          item.setAttribute("role", "option");
-          item.setAttribute("aria-selected", "false");
-          item.tabIndex = -1;
-          item._ncssText = norm(item.textContent + " " + (item.getAttribute("data-keywords") || ""));
+          self._prepare(item);
         });
+        // Tastenkürzel-Beschriftungen (auch außerhalb der Palette, z.B. im Such-Button der
+        // Kopfleiste) - beim Start UND für später eingefügte Beschriftungen nach einem
+        // "ncss-content-change"-Event (htmx, fetch+innerHTML, siehe js/content-observer.js).
+        this._labelKeys = function (root) {
+          if (!root || !root.querySelectorAll) {
+            return;
+          }
+          var key = (self.getAttribute("shortcut") || "k").toUpperCase();
+          var els = Array.prototype.slice.call(root.querySelectorAll("[data-ncss-command-key]"));
+          if (root.matches && root.matches("[data-ncss-command-key]")) {
+            els.unshift(root);
+          }
+          els.forEach(function (el) {
+            el.textContent = isApple ? "⌘" + key : TEXTS[lang].ctrl + " " + key;
+          });
+        };
+        this._labelKeys(document);
+        this._onContent = function (event) {
+          self._labelKeys((event.detail && event.detail.root) || document);
+        };
+        document.addEventListener("ncss-content-change", this._onContent);
 
         input.addEventListener("input", function () {
           self.filter(input.value);
@@ -164,6 +210,7 @@
         this._mo = new MutationObserver(function () {
           if (dialog.open) {
             input.value = "";
+            self._load();
             self.filter("");
             input.focus();
             self.dispatchEvent(new CustomEvent("ncss-command-show", { bubbles: true }));
@@ -203,6 +250,14 @@
         }
 
         this._onKey = function (event) {
+          if (event.key === "/" && self.hasAttribute("slash") && !dialog.open && !event.metaKey && !event.ctrlKey && !event.altKey) {
+            var t = event.target;
+            if (!(t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))) {
+              event.preventDefault();
+              self.show();
+            }
+            return;
+          }
           var key = self.getAttribute("shortcut");
           if (!key || !event.key || event.key.toLowerCase() !== key.toLowerCase() || event.altKey || event.shiftKey) {
             return;
@@ -219,6 +274,9 @@
       }
 
       disconnectedCallback() {
+        if (this._onContent) {
+          document.removeEventListener("ncss-content-change", this._onContent);
+        }
         if (this._mo) {
           this._mo.disconnect();
         }
@@ -253,6 +311,7 @@
           return 0;
         }
         var terms = norm(query || "").trim().split(/\s+/).filter(Boolean);
+        this._renderResults(query || "", terms);
         this._items().forEach(function (item) {
           item.hidden = !terms.every(function (t) { return item._ncssText.indexOf(t) !== -1; });
         });
@@ -274,6 +333,113 @@
           ? (this.getAttribute("status-text") || TEXTS[lang].status).replace("{n}", visible.length)
           : "";
         return visible.length;
+      }
+
+      _prepare(item) {
+        ensureId(item, "ncss-command-item");
+        item.setAttribute("role", "option");
+        item.setAttribute("aria-selected", "false");
+        item.tabIndex = -1;
+        item._ncssText = norm(item.textContent + " " + (item.getAttribute("data-keywords") || ""));
+      }
+
+      // Suchmodus: JSON einmalig laden, danach die aktuelle Eingabe neu filtern.
+      _load() {
+        var src = this.getAttribute("src");
+        if (!src || this._data || this._loading || !window.fetch) {
+          return;
+        }
+        var self = this;
+        var url = new URL(src, document.baseURI);
+        this._loading = true;
+        fetch(url)
+          .then(function (r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+          })
+          .then(function (data) {
+            data.items.forEach(function (it) {
+              // Titel ohne führenden Punkt/spitze Klammern: ".ncss-card" und "<ncss-x>"
+              // zählen bei der Eingabe "ncss-card" als exakter Treffer.
+              it._n = norm(it.t).replace(/^[.<]+|>$/g, "");
+              it._all = norm(it.t + " " + (it.k || "") + " " + (it.h || "") + " " + (it.s || ""));
+              it._url = new URL(it.u, url).href;
+            });
+            self._data = data;
+            if (self._dialog.open) self.filter(self._input.value);
+          })
+          .catch(function (err) {
+            if (window.console) window.console.error("[ncss-command-palette]", err);
+          })
+          .then(function () {
+            self._loading = false;
+          });
+      }
+
+      // Trefferliste aus den JSON-Einträgen: Rang = Titel beginnt mit Begriff > Titel
+      // enthält ihn > nur Stichwörter/Text; je Gruppe höchstens "limit" Einträge.
+      _renderResults(query, terms) {
+        if (!this._data) {
+          return;
+        }
+        if (!this._results) {
+          this._results = document.createElement("div");
+          this._results.className = "ncss-command-results";
+          this._list.insertBefore(this._results, this._list.firstChild);
+        }
+        this._results.textContent = "";
+        if (!terms.length) {
+          this._results.hidden = true;
+          return;
+        }
+        this._results.hidden = false;
+        var limit = parseInt(this.getAttribute("limit"), 10) || 8;
+        var rawTerms = query.trim().split(/\s+/).filter(Boolean);
+        var self = this;
+        var boxes = [];
+        this._data.groups.forEach(function (group, order) {
+          var hits = [];
+          self._data.items.forEach(function (it) {
+            if (it.g !== group.id) return;
+            if (!terms.every(function (t) { return it._all.indexOf(t) !== -1; })) return;
+            var score = 0;
+            terms.forEach(function (t) {
+              t = t.replace(/^[.<]+|>$/g, "");
+              if (it._n.indexOf(t) === 0) score += 4;
+              else if (it._n.indexOf(t) !== -1) score += 2;
+            });
+            if (it._n === terms.join(" ").replace(/^[.<]+|>$/g, "")) score += 6;
+            hits.push({ it: it, score: score });
+          });
+          if (!hits.length) return;
+          hits.sort(function (a, b) { return b.score - a.score || a.it.t.length - b.it.t.length; });
+          var best = hits[0].score;
+          var box = document.createElement("div");
+          box.className = "ncss-command-group";
+          box.setAttribute("role", "group");
+          var label = document.createElement("p");
+          label.className = "ncss-command-group-label";
+          label.textContent = group.label;
+          box.setAttribute("aria-labelledby", ensureId(label, "ncss-command-label"));
+          box.appendChild(label);
+          hits.slice(0, limit).forEach(function (h) {
+            var a = document.createElement("a");
+            a.className = "ncss-command-item";
+            a.href = h.it._url;
+            a.innerHTML =
+              '<span class="ncss-command-item-body"><span class="ncss-command-item-title">' + highlight(h.it.t, rawTerms) + "</span>" +
+              (h.it.s ? '<span class="ncss-command-item-snippet">' + highlight(h.it.s, rawTerms) + "</span>" : "") +
+              "</span>" + (h.it.h ? '<span class="ncss-command-item-hint">' + esc(h.it.h) + "</span>" : "");
+            box.appendChild(a);
+            self._prepare(a);
+            a._ncssText = h.it._all;
+          });
+          boxes.push({ box: box, best: best, order: order });
+        });
+        // Gruppe mit dem besten Treffer zuerst (z.B. "ncss-card" -> Klassen vor Abschnitten),
+        // bei Gleichstand die Reihenfolge aus der JSON-Datei.
+        boxes.sort(function (a, b) { return b.best - a.best || a.order - b.order; });
+        boxes.forEach(function (b) { self._results.appendChild(b.box); });
       }
 
       _items() {

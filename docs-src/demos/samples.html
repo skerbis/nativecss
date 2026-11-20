@@ -1,0 +1,125 @@
+<!--NEUTRAL-->
+<!--HEAD:
+<style>
+  /* Neutrale Vorführ-Rahmen für Muster-Reihen (Icons, Tokens, Abschnitts-Navigation) -
+     gemeinsam genutzt von mehreren Handbuch-Seiten (INCLUDE samples#abschnitt). */
+  .demo-frame {
+    padding: var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .demo-samples {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+    gap: var(--ncss-space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .demo-samples > li {
+    display: grid;
+    justify-items: center;
+    gap: var(--ncss-space-2xs);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-surface);
+    text-align: center;
+  }
+  .demo-samples code {
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+  .demo-sample-icon {
+    font-size: var(--ncss-font-size-2xl);
+  }
+  /* Abstands-Skala: Balkenlänge = der Token selbst (Parameter per Custom Property). */
+  .demo-space-row {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    align-items: center;
+    gap: var(--ncss-space-sm);
+  }
+  .demo-space-bar {
+    display: block;
+    inline-size: var(--demo-space);
+    block-size: 0.75rem;
+    border-radius: var(--ncss-radius-sm);
+    background-color: var(--ncss-color-brand);
+  }
+  .demo-shape {
+    inline-size: 4.5rem;
+    block-size: 3rem;
+    background-color: var(--ncss-color-surface);
+    border: 1px solid var(--ncss-color-border);
+  }
+  .demo-samples--shapes > li {
+    background: none;
+  }
+  /* Statisches Muster der Abschnitts-Navigation (nicht klebend, kein Script). */
+  .demo-frame .ncss-subnav {
+    position: static;
+  }
+</style>
+-->
+<section class="ncss-stack" id="icons-live">
+  <h2 class="demo-section-title">Alle Icons</h2>
+  <div class="demo-frame">
+    <ul class="demo-samples" role="list">
+      <li><span class="ncss-icon ncss-icon-menu demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-menu</code></li>
+      <li><span class="ncss-icon ncss-icon-close demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-close</code></li>
+      <li><span class="ncss-icon ncss-icon-chevron-down demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-chevron-down</code></li>
+      <li><span class="ncss-icon ncss-icon-search demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-search</code></li>
+      <li><span class="ncss-icon ncss-icon-play demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-play</code></li>
+      <li><span class="ncss-icon ncss-icon-copy demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-copy</code></li>
+      <li><span class="ncss-icon ncss-icon-check demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-check</code></li>
+      <li><span class="ncss-icon ncss-icon-sun demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-sun</code></li>
+      <li><span class="ncss-icon ncss-icon-moon demo-sample-icon" aria-hidden="true"></span><code>.ncss-icon-moon</code></li>
+    </ul>
+  </div>
+  <pre><code class="language-html">&lt;span class="ncss-icon ncss-icon-search" aria-hidden="true"&gt;&lt;/span&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="tokens-live">
+  <h2 class="demo-section-title">Skalen live</h2>
+  <div class="demo-frame ncss-stack">
+    <div class="demo-space-row"><code>--ncss-space-3xs</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-3xs);"></span></div>
+    <div class="demo-space-row"><code>--ncss-space-2xs</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-2xs);"></span></div>
+    <div class="demo-space-row"><code>--ncss-space-xs</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-xs);"></span></div>
+    <div class="demo-space-row"><code>--ncss-space-sm</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-sm);"></span></div>
+    <div class="demo-space-row"><code>--ncss-space-md</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-md);"></span></div>
+    <div class="demo-space-row"><code>--ncss-space-lg</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-lg);"></span></div>
+    <div class="demo-space-row"><code>--ncss-space-xl</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-xl);"></span></div>
+    <div class="demo-space-row"><code>--ncss-space-2xl</code><span class="demo-space-bar" style="--demo-space: var(--ncss-space-2xl);"></span></div>
+  </div>
+  <div class="demo-frame">
+    <ul class="demo-samples demo-samples--shapes" role="list">
+      <li><span class="demo-shape ncss-radius-none"></span><code>.ncss-radius-none</code></li>
+      <li><span class="demo-shape ncss-radius-sm"></span><code>.ncss-radius-sm</code></li>
+      <li><span class="demo-shape ncss-radius-md"></span><code>.ncss-radius-md</code></li>
+      <li><span class="demo-shape ncss-radius-lg"></span><code>.ncss-radius-lg</code></li>
+      <li><span class="demo-shape ncss-radius-full"></span><code>.ncss-radius-full</code></li>
+      <li><span class="demo-shape ncss-radius-md ncss-shadow-sm"></span><code>.ncss-shadow-sm</code></li>
+      <li><span class="demo-shape ncss-radius-md ncss-shadow-md"></span><code>.ncss-shadow-md</code></li>
+      <li><span class="demo-shape ncss-radius-md ncss-shadow-lg"></span><code>.ncss-shadow-lg</code></li>
+    </ul>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-radius-lg ncss-shadow-md"&gt;...&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="subnav-live">
+  <h2 class="demo-section-title">Muster</h2>
+  <div class="demo-frame">
+    <nav class="ncss-subnav" aria-label="Muster: Auf dieser Seite">
+      <div class="ncss-subnav-inner">
+        <span class="ncss-subnav-label" aria-hidden="true">Auf dieser Seite</span>
+        <ul class="ncss-subnav-list" role="list">
+          <li><a href="#subnav-live">Zimmer</a></li>
+          <li><a href="#subnav-live" aria-current="location">Angebote</a></li>
+          <li><a href="#subnav-live">Anfahrt</a></li>
+          <li><a href="#subnav-live">Anfrage</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</section>

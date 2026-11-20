@@ -1,0 +1,280 @@
+/**
+ * NativeCSS-Website - Übersichts-Karten mit Mini-Vorschau (Komponenten-Hub demo/index.html
+ * und "Neu in NativeCSS" auf demo/product.html). Nur Website, NICHT Teil von dist/ -
+ * geteilt zwischen zwei Seiten, deshalb eine eigene Datei statt zweier identischer
+ * <style>-Blöcke. Die Vorschauen selbst sind echte ncss-Komponenten (Aurora, Compare,
+ * Marquee, Text-Reveal, Buttons, Badges ...), hier nur der Rahmen darum.
+ *
+ * Markup:
+ * <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+ *   <div class="demo-hub-preview" aria-hidden="true" inert>...echte Komponenten...</div>
+ *   <div class="ncss-card-body">
+ *     <h3 class="demo-hub-title">Name <span class="ncss-badge-dot">...</span></h3>
+ *     <p class="ncss-text-sm ncss-text-muted">Beschreibung</p>
+ *     <p class="demo-hub-links"><a href="...">Demo</a><a href="...">Handbuch</a></p>
+ *   </div>
+ * </article>
+ * Rein dekorative Vorschau: aria-hidden + inert (keine Tab-Stopps, keine Doppel-Ansage).
+ * Eine interaktive Vorschau (z.B. Compare-Regler) bleibt ohne beides bedienbar.
+ */
+
+.demo-hub-group {
+  scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+}
+
+.demo-hub-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ncss-space-2xs) var(--ncss-space-sm);
+  border-block-end: 1px solid var(--ncss-color-border);
+  padding-block-end: var(--ncss-space-2xs);
+}
+.demo-hub-group-head h2 {
+  margin: 0;
+}
+
+.demo-hub-card {
+  overflow: clip;
+}
+
+.demo-hub-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: 8.5rem;
+  padding: var(--ncss-space-sm);
+  overflow: clip;
+  background-color: var(--ncss-color-bg-subtle);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  font-size: var(--ncss-font-size-sm);
+}
+/* Vorschauen mit eigener Vollfläche (Aurora, Compare, Bild) ohne Innenabstand. */
+.demo-hub-preview--bleed {
+  padding: 0;
+}
+.demo-hub-preview--bleed > * {
+  inline-size: 100%;
+  block-size: 100%;
+}
+.demo-hub-preview--bleed ncss-compare {
+  aspect-ratio: auto;
+}
+
+.demo-hub-title {
+  margin: 0;
+  font-size: var(--ncss-font-size-md);
+  line-height: 1.3;
+}
+.demo-hub-title a {
+  color: inherit;
+  text-decoration: none;
+}
+.demo-hub-title a:focus-visible {
+  text-decoration: underline;
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-hub-card:has(.ncss-card-link):hover .demo-hub-title a {
+    text-decoration: underline;
+  }
+}
+
+.demo-hub-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs) var(--ncss-space-md);
+  font-weight: 600;
+}
+
+/* --- Bausteine für Mini-Vorschauen -------------------------------------------------- */
+
+/* Kleine Farbfelder/Kacheln (Grid-, Swatch-, Seiten-Skizzen). */
+.demo-hub-swatches {
+  display: flex;
+  gap: var(--ncss-space-2xs);
+}
+.demo-hub-swatches > span {
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: var(--ncss-radius-md);
+}
+.demo-hub-minigrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ncss-space-2xs);
+  inline-size: min(100%, 12rem);
+}
+.demo-hub-minigrid > span {
+  block-size: 1.5rem;
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-brand-100);
+  border: 1px solid color-mix(in oklch, var(--ncss-color-brand) 30%, transparent);
+}
+.demo-hub-minigrid > span:first-child {
+  grid-column: span 2;
+}
+/* Skizze einer ganzen Seite (Beispiel-Websites): Kopfzeile, Hero, drei Spalten. */
+.demo-hub-page {
+  display: grid;
+  gap: 0.35rem;
+  inline-size: min(100%, 13rem);
+  padding: 0.5rem;
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-surface);
+  border: 1px solid var(--ncss-color-border);
+  box-shadow: var(--ncss-shadow-sm);
+}
+.demo-hub-page > span {
+  display: block;
+  block-size: 0.5rem;
+  border-radius: 0.2rem;
+  background-color: color-mix(in oklch, var(--ncss-color-text) 14%, transparent);
+}
+.demo-hub-page > .demo-hub-page-hero {
+  block-size: 2.25rem;
+  background-color: var(--demo-hub-accent, var(--ncss-color-brand-2));
+}
+.demo-hub-page > .demo-hub-page-cols {
+  block-size: 1.25rem;
+  background: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.3rem;
+}
+.demo-hub-page-cols::before,
+.demo-hub-page-cols::after,
+.demo-hub-page-cols > i {
+  content: "";
+  border-radius: 0.2rem;
+  background-color: color-mix(in oklch, var(--ncss-color-text) 10%, transparent);
+}
+/* App-Skizze (Backend): Seitenleiste + Tabellenzeilen. */
+.demo-hub-page--app {
+  grid-template-columns: 2.5rem 1fr;
+}
+.demo-hub-page--app > .demo-hub-page-hero {
+  grid-row: span 4;
+  block-size: auto;
+}
+
+/* Mini-Aurora mit kurzer Zeile darüber. */
+.demo-hub-aurora {
+  display: grid;
+  place-content: center;
+  font-weight: 700;
+  font-size: var(--ncss-font-size-xl);
+}
+
+/* Mini-Text-Reveal: großer Satz, der beim Scrollen durch den Viewport hell wird. */
+.demo-hub-reveal {
+  margin: 0;
+  font-size: var(--ncss-font-size-lg);
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+/* Mini-Player-Skizze (Video & Audio). */
+.demo-hub-player {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  inline-size: min(100%, 15rem);
+  padding: var(--ncss-space-xs) var(--ncss-space-sm);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
+  border: 1px solid var(--ncss-color-border);
+  box-shadow: var(--ncss-shadow-sm);
+}
+.demo-hub-player progress {
+  inline-size: 100%;
+}
+.demo-hub-player-play {
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand-2);
+  color: var(--ncss-color-brand-2-contrast);
+}
+
+/* Mini-Code-Skizze (Inspektor). */
+.demo-hub-code {
+  margin: 0;
+  padding: var(--ncss-space-xs) var(--ncss-space-sm);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-surface);
+  border: 1px dashed var(--ncss-color-brand);
+  font: 0.75rem/1.5 var(--ncss-font-family-mono, ui-monospace, monospace);
+  white-space: pre;
+}
+
+/* Sprung-Navigation zu den Gruppen am Seitenanfang. */
+.demo-hub-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.demo-hub-jump a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--ncss-radius-full);
+  border: 1px solid var(--ncss-color-border);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-sm);
+  text-decoration: none;
+}
+.demo-hub-jump a:focus-visible {
+  background-color: var(--ncss-color-bg-subtle);
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-hub-jump a:hover:not(:active) {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+.demo-hub-jump a:active {
+  background-color: var(--ncss-color-brand-100);
+}
+
+@media (forced-colors: active) {
+  .demo-hub-preview { border-block-end-color: CanvasText; }
+  .demo-hub-minigrid > span,
+  .demo-hub-page > span,
+  .demo-hub-swatches > span { border: 1px solid CanvasText; }
+}
+
+/* Mini-Skizze der Abschnitts-Navigation (Vorschau auf der Handbuch-Übersicht). */
+.demo-hub-subnav {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  border-block: 1px solid var(--ncss-color-border);
+  background-color: var(--ncss-color-surface);
+  white-space: nowrap;
+}
+
+/* Ganz klickbare Übersichts-Karte (.ncss-card--linked): Rahmen zeigt Hover/Fokus. */
+.demo-hub-card:has(.ncss-card-link:focus-visible) {
+  outline: 2px solid var(--ncss-color-brand);
+  outline-offset: 2px;
+}
+.demo-hub-card:has(.ncss-card-link) {
+  transition: border-color var(--ncss-motion-duration, 0.2s) var(--ncss-motion-easing, ease), translate var(--ncss-motion-duration, 0.2s) var(--ncss-motion-easing, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-hub-card:has(.ncss-card-link):hover {
+    border-color: var(--ncss-color-brand);
+    translate: 0 -2px;
+  }
+}
+.demo-hub-card:has(.ncss-card-link):active {
+  translate: 0 0;
+}

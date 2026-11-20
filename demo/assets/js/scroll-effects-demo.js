@@ -1,5 +1,5 @@
 /**
- * Demo-Hilfe für demo/scroll-effects.html: zeigt das zuletzt empfangene "ncss:step"-Event
+ * Demo-Hilfe für demo/scroll-effects.html: zeigt das zuletzt empfangene "ncss-scrolly-step"-Event
  * von <ncss-scrolly> sichtbar an (Beleg für den data-ncss-time-Hook).
  */
 (function () {
@@ -8,7 +8,7 @@
   function show(index, time) {
     out.textContent = "Schritt " + (index + 1) + ", time = " + (time === null ? "null" : time + " s");
   }
-  document.addEventListener("ncss:step", function (event) {
+  document.addEventListener("ncss-scrolly-step", function (event) {
     var d = event.detail || {};
     show(d.index, d.time);
   });

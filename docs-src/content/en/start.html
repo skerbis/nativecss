@@ -1,0 +1,219 @@
+<!--DESC: NativeCSS: a CSS design system built only on features browsers already ship - cascade layers, container queries, light-dark(), native HTML. No Sass, no bundler, no build step.-->
+<!--INCLUDE: start-head-->
+<section class="demo-start-hero" data-subnav="off">
+  <div class="ncss-container">
+    <a class="demo-start-pill" href="#neu"><span class="ncss-badge-dot" aria-hidden="true"></span> New: scroll effects, modern UI, video &amp; audio, example websites</a>
+    <h1>CSS the browser <em>already knows</em>.</h1>
+    <p class="demo-start-lead">NativeCSS is a design system made of plain, modern CSS: cascade layers, container queries, <code>light-dark()</code> and native HTML elements instead of a preprocessor, a bundler and JavaScript re-implementations. Add two lines - done.</p>
+    <div class="ncss-cluster demo-start-actions">
+      <a class="ncss-btn ncss-btn--primary" href="index.html">Open the docs</a>
+      <a class="ncss-btn ncss-btn--secondary" href="examples.html">See examples</a>
+      <a class="ncss-btn ncss-btn--secondary" href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<section class="demo-start-section demo-start-section--tinted" id="einbinden" data-subnav-label="Install">
+  <div class="ncss-container">
+    <div class="demo-start-head">
+      <h2>Two lines instead of a build chain</h2>
+      <p>No installing, compiling or purging: the files are finished CSS the browser loads directly.</p>
+    </div>
+    <div class="demo-start-vs">
+      <figure class="demo-start-chain">
+        <figcaption>Usual</figcaption>
+        <pre class="ncss-radius-lg ncss-border"><code class="language-markup">npm install -D sass postcss autoprefixer
+npm install -D vite tailwindcss
+npx tailwindcss init
+# vite.config.js, postcss.config.js, purge rules …
+npm run build</code></pre>
+      </figure>
+      <figure>
+        <figcaption>NativeCSS</figcaption>
+        <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss/ncss.css"&gt;
+&lt;link rel="stylesheet" href="ncss/theme.css"&gt;</code></pre>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="demo-start-section" id="konzept" data-subnav-label="Concept">
+  <div class="ncss-container">
+    <div class="demo-start-head">
+      <h2>Four browser features carry everything</h2>
+      <p>Every component is built on the same four platform features - live here, to try out right away.</p>
+    </div>
+    <div class="demo-start-pillars">
+      <article class="demo-start-pillar demo-start-layers">
+        <h3>Cascade Layers</h3>
+        <p>Order instead of specificity: your own unlayered CSS always wins - no <code>!important</code>.</p>
+        <div class="demo-start-stage"><button type="button" class="ncss-btn ncss-btn--primary">.ncss-btn--primary</button></div>
+        <label class="ncss-choice"><input type="checkbox"> Enable your own rule <code>button { … }</code></label>
+        <pre><code class="language-css">@layer tokens, reset, base, helpers, components;
+button { background: #b4400f; } /* unlayered: wins */</code></pre>
+      </article>
+      <article class="demo-start-pillar">
+        <h3>Container Queries</h3>
+        <p>A card adapts to its own space, not to the screen - change the width with the slider.</p>
+        <div class="demo-start-stage">
+          <div class="demo-start-cq-frame" data-demo-cq-frame>
+            <div class="ncss-card-container">
+              <article class="ncss-card ncss-card--horizontal ncss-border ncss-radius-md">
+                <div class="ncss-card-media" aria-hidden="true"></div>
+                <div class="ncss-card-body"><strong>Card</strong><p class="ncss-text-muted">With enough room: image on the left.</p></div>
+              </article>
+            </div>
+          </div>
+        </div>
+        <label class="ncss-label" for="demoCqRange">Container width: <output for="demoCqRange" data-demo-cq-out>100 %</output></label>
+        <input id="demoCqRange" type="range" min="35" max="100" value="100" data-demo-cq-range>
+      </article>
+      <article class="demo-start-pillar">
+        <h3>light-dark()</h3>
+        <p>One token holds light AND dark - no second stylesheet, no <code>.dark</code> class.</p>
+        <div class="demo-start-stage">
+          <div class="demo-start-schemes">
+            <div class="ncss-scheme-light"><strong>Light</strong><span class="ncss-badge">Badge</span><span class="ncss-btn ncss-btn--primary">Button</span></div>
+            <div class="ncss-scheme-dark"><strong>Dark</strong><span class="ncss-badge">Badge</span><span class="ncss-btn ncss-btn--primary">Button</span></div>
+          </div>
+        </div>
+        <pre><code class="language-css">--ncss-color-surface: light-dark(#fff, #16181d);</code></pre>
+      </article>
+      <article class="demo-start-pillar">
+        <h3>Native elements</h3>
+        <p><code>&lt;dialog&gt;</code> and <code>&lt;details&gt;</code> bring focus, Esc and keyboard support - NativeCSS only styles them.</p>
+        <div class="demo-start-stage">
+          <div class="ncss-stack ncss-stack--tight">
+            <details class="ncss-disclosure"><summary>Expand</summary><p>Native &lt;details&gt;, no JavaScript.</p></details>
+            <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoStartDialog">Open dialog</button>
+          </div>
+        </div>
+        <dialog id="demoStartDialog" class="ncss-modal" aria-labelledby="demoStartDialogTitle">
+          <div class="ncss-modal-header"><h3 id="demoStartDialogTitle">Native &lt;dialog&gt;</h3></div>
+          <p>Focus trap, Esc key and backdrop come from the browser.</p>
+          <div class="ncss-modal-footer"><button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="demoStartDialog">Close</button></div>
+        </dialog>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="demo-start-section demo-start-section--tinted" id="cherry-picking" data-subnav-label="Cherry-Picking">
+  <div class="ncss-container">
+    <div class="demo-start-head">
+      <h2>Include only what you need</h2>
+      <p>Every component is its own small file - untick a line in <code>ncss.css</code> and the building block disappears from the preview.</p>
+    </div>
+    <div class="demo-start-pick">
+      <fieldset class="demo-start-manifest">
+        <legend>Your own ncss.css</legend>
+        <div class="demo-start-fixed">@import url("tokens.css") layer(tokens); …</div>
+        <label><input type="checkbox" checked data-pick="card" data-kb="9.5"> <code>@import url("components/card.css") layer(components);</code></label>
+        <label><input type="checkbox" checked data-pick="badge" data-kb="3.8"> <code>@import url("components/badge.css") layer(components);</code></label>
+        <label><input type="checkbox" checked data-pick="disclosure" data-kb="1.2"> <code>@import url("components/disclosure.css") layer(components);</code></label>
+        <label><input type="checkbox" checked data-pick="marquee" data-kb="3.8"> <code>@import url("components/marquee.css") layer(components);</code></label>
+        <p class="demo-start-total" aria-live="polite">Selected: <span data-demo-pick-total>18.3</span> KB uncompressed</p>
+      </fieldset>
+      <div class="demo-start-preview" aria-label="Preview" role="group">
+        <article class="ncss-card ncss-border ncss-radius-md" data-pick-target="card"><div class="ncss-card-body"><strong>components/card.css</strong><p class="ncss-text-muted ncss-text-sm">Card with border and content.</p></div></article>
+        <p class="demo-start-ghost" data-pick-ghost="card">card.css not included</p>
+        <p data-pick-target="badge"><span class="ncss-badge">badge.css</span> <span class="ncss-badge ncss-badge--success">Success</span></p>
+        <p class="demo-start-ghost" data-pick-ghost="badge">badge.css not included</p>
+        <details class="ncss-disclosure" data-pick-target="disclosure"><summary>disclosure.css</summary><p>Expandable box.</p></details>
+        <p class="demo-start-ghost" data-pick-ghost="disclosure">disclosure.css not included</p>
+        <div class="ncss-marquee ncss-marquee--fade ncss-marquee--slow" data-pick-target="marquee" aria-hidden="true">
+          <ul class="ncss-marquee-group" role="list"><li class="ncss-badge ncss-badge--neutral">marquee.css</li><li class="ncss-badge ncss-badge--neutral">runs endlessly</li><li class="ncss-badge ncss-badge--neutral">pure CSS</li></ul>
+          <ul class="ncss-marquee-group" role="list" inert><li class="ncss-badge ncss-badge--neutral">marquee.css</li><li class="ncss-badge ncss-badge--neutral">runs endlessly</li><li class="ncss-badge ncss-badge--neutral">pure CSS</li></ul>
+        </div>
+        <p class="demo-start-ghost" data-pick-ghost="marquee">marquee.css not included</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-start-section" id="neu" data-subnav-label="New">
+  <div class="ncss-container">
+    <div class="demo-start-head">
+      <h2>New in NativeCSS <span class="ncss-badge-dot" aria-hidden="true"></span></h2>
+      <p>The latest building blocks - every card shows the real component as a mini preview. In the docs, a green dot marks everything new.</p>
+    </div>
+    <div class="ncss-grid" style="--ncss-grid-min: 18rem;">
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview" aria-hidden="true" inert><p class="ncss-text-reveal demo-hub-reveal">Text lights up as you scroll.</p></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Scroll Effects</h3><p class="ncss-text-sm ncss-text-muted">Text reveal, scrollytelling, horizontal scroll, count-up, marquee - tied to the scroll position.</p><p class="demo-start-new-links"><a href="scroll-effects.html">Scroll effects in the docs</a></p></div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview demo-hub-preview--bleed" aria-hidden="true" inert><div class="ncss-aurora demo-hub-aurora">Aurora</div></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Modern UI</h3><p class="ncss-text-sm ncss-text-muted">Aurora, spotlight, bento, command palette, hovercards and toasts.</p><p class="demo-start-new-links"><a href="modern-ui.html">Modern UI in the docs</a></p></div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview demo-hub-preview--bleed"><ncss-compare><img class="ncss-compare-before" src="~/demo/assets/modern-ui/compare-before.svg" alt="Mountain landscape in winter" width="1600" height="900"><img class="ncss-compare-after" src="~/demo/assets/modern-ui/compare-after.svg" alt="The same landscape in summer" width="1600" height="900"><input class="ncss-compare-range" type="range" min="0" max="100" value="50" aria-label="Move the divider: winter on the left, summer on the right"></ncss-compare></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Before/After</h3><p class="ncss-text-sm ncss-text-muted">A real range slider over two images - drag it right here.</p><p class="demo-start-new-links"><a href="modern-ui.html#live-demo">Comparison in the docs</a></p></div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview" aria-hidden="true" inert><div class="demo-hub-player"><span class="demo-hub-player-play"><span class="ncss-icon ncss-icon-play"></span></span><progress value="35" max="100" tabindex="-1"></progress><span class="ncss-text-muted">1:24</span></div></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Video &amp; Audio</h3><p class="ncss-text-sm ncss-text-muted">Custom video and audio players, video cards, background and scroll videos.</p><p class="demo-start-new-links"><a href="video-audio.html">Video &amp; audio in the docs</a></p></div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview" aria-hidden="true" inert><div class="demo-hub-subnav"><span>On this page</span><span class="ncss-badge">Section 2</span><span>Section 3</span></div></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Section Navigation</h3><p class="ncss-text-sm ncss-text-muted">Sticky "On this page" bar for one-pagers - like the one at the top of this page.</p><p class="demo-start-new-links"><a href="subnav.html">Section navigation in the docs</a></p></div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview" aria-hidden="true" inert><pre class="demo-hub-code">&lt;article class="ncss-card"&gt;
+  → components/card.css
+&lt;/article&gt;</pre></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Code Inspector</h3><p class="ncss-text-sm ncss-text-muted">Bottom right on every page: click an element, see its HTML, an explanation and its source file.</p><p class="demo-start-new-links"><button type="button" class="ncss-btn ncss-btn--secondary" data-demo-inspect aria-pressed="false">Turn on the inspector</button></p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="demo-start-section demo-start-section--tinted" id="beispiele" data-subnav-label="Examples">
+  <div class="ncss-container">
+    <div class="demo-start-head">
+      <h2>Whole websites, made only of NativeCSS</h2>
+      <p>A municipality, a hotel, an admin back end and more - each example with its own design.</p>
+    </div>
+<!--EXAMPLES-->
+  </div>
+</section>
+
+<section class="demo-start-section" id="passt" data-subnav-label="Is it a fit?">
+  <div class="ncss-container">
+    <div class="demo-start-head">
+      <h2>When NativeCSS - and when not</h2>
+      <p>An honest take, so the decision is quick.</p>
+    </div>
+    <div class="demo-start-fit">
+      <div>
+        <h3>Good fit</h3>
+        <ul class="ncss-list--dot" role="list">
+          <li>Websites and CMS themes (e.g. REDAXO, WordPress) that should work without a build pipeline.</li>
+          <li>Projects that may require current browsers (evergreen: Chrome, Edge, Firefox, Safari).</li>
+          <li>Teams who prefer reading native CSS over utility classes or Sass mixins.</li>
+          <li>Accessibility from the start: focus, contrast, reduced motion.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Rather not</h3>
+        <ul class="ncss-list--dot" role="list">
+          <li>When very old browsers (e.g. Internet Explorer, Safari &lt; 16) must be fully supported.</li>
+          <li>When the project is already committed to a utility-first framework with its own toolchain.</li>
+          <li>For complex app widgets without a native counterpart - use Web Awesome via the <a href="webawesome-bridge.html">bridge</a> there.</li>
+        </ul>
+        <p class="ncss-text-sm ncss-text-muted">Details: <a href="known-limitations.html">Known limitations</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-start-section demo-start-section--tinted demo-start-cta" data-subnav="off">
+  <div class="ncss-container ncss-stack">
+    <h2>Try it yourself</h2>
+    <p class="ncss-text-muted">Clone the repository, include <code>ncss.css</code>, start building.</p>
+    <div class="ncss-cluster">
+      <a class="ncss-btn ncss-btn--primary" href="index.html">Open the docs</a>
+      <a class="ncss-btn ncss-btn--secondary" href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">Repository on GitHub</a>
+    </div>
+  </div>
+</section>

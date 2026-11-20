@@ -14,6 +14,13 @@
  * alternativ Alt+I (Mac: ⌥I). Esc beendet den Modus. Styles in demo/assets/inspector.css
  * (keine Inline-Styles - CSP).
  *
+ * Erklärungen: beim ersten Einschalten lädt der Inspektor docs/class-index.{de,en}.json
+ * (erzeugt von docs-src/build.mjs aus den Klassen-Tabellen des Handbuchs + den Datei-
+ * Kommentaren in dist/) und zeigt je ncss-Klasse, data-ncss-Attribut und <ncss-…>-Element
+ * eine kurze Erklärung mit Link zum Handbuch-Abschnitt. Fehlt die Datei: alles außer den
+ * Erklärungen. Der Pfad ergibt sich aus dem Ort DIESES Scripts (demo/assets/js/) - der
+ * Inspektor funktioniert damit auf Handbuch-, Start- und Beispielseiten gleichermaßen.
+ *
  * Texte Deutsch/Englisch nach <html lang>.
  */
 (function () {
@@ -22,18 +29,49 @@
   if (!("closest" in Element.prototype) || !document.styleSheets) return;
 
   var EN = (document.documentElement.lang || "").slice(0, 2) === "en";
+  var LANG = EN ? "en" : "de";
+  var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || location.href;
+  var SITE_ROOT = new URL("../../../", SCRIPT_SRC);
+  var explain = null;      // geladener Klassen-Index (oder false, wenn nicht ladbar)
+  var explainLoading = false;
+
+  function loadExplanations(done) {
+    if (explain !== null || explainLoading || !window.fetch) return;
+    explainLoading = true;
+    fetch(new URL("docs/class-index." + LANG + ".json", SITE_ROOT))
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (data) { explain = data; })
+      .catch(function () { explain = false; })
+      .then(function () { explainLoading = false; done(); });
+  }
+
+  function explainFor(key) {
+    if (!explain || !explain.entries) return "";
+    var e = explain.entries[key];
+    // Modifier ohne eigenen Eintrag (.ncss-btn--primary): Erklärung der Basisklasse.
+    if (!e && key.indexOf("--") > 0) e = explain.entries[key.split("--")[0]];
+    if (!e) return "";
+    var href = new URL("docs/" + LANG + "/" + e.page + ".html" + (e.anchor ? "#" + e.anchor : ""), SITE_ROOT).href;
+    return '<span class="demo-inspect-explain">' + esc(e.text) + ' <a href="' + esc(href) + '">' + T.docs + ": " + esc(e.title) + "</a></span>";
+  }
+
+  function fileNote(path) {
+    return explain && explain.files && explain.files[path] ? '<span class="demo-inspect-explain">' + esc(explain.files[path]) + "</span>" : "";
+  }
   var T = EN ? {
     title: "Inspector", copy: "Copy HTML", copied: "Copied", parent: "Parent ↑", close: "Close",
     hint: "Click any element on the page. Alt+I (⌥I) toggles inspect mode, Esc leaves it.",
     html: "HTML", classes: "Classes → defining file", scripts: "JavaScript", imports: "Cherry-pick: @import lines for your own ncss.css",
     notLoaded: "not defined by a loaded stylesheet", noScript: "script not loaded on this page", ancestors: "Ancestors",
-    needsBase: "always needed: colors, tokens, reset, base"
+    needsBase: "always needed: colors, tokens, reset, base",
+    docs: "Docs", elements: "Custom elements", files: "Files"
   } : {
     title: "Inspektor", copy: "HTML kopieren", copied: "Kopiert", parent: "Eltern ↑", close: "Schließen",
     hint: "Ein beliebiges Element anklicken. Alt+I (⌥I) schaltet den Modus um, Esc beendet ihn.",
     html: "HTML", classes: "Klassen → definierende Datei", scripts: "JavaScript", imports: "Cherry-Picking: @import-Zeilen für die eigene ncss.css",
     notLoaded: "von keinem geladenen Stylesheet definiert", noScript: "Script auf dieser Seite nicht geladen", ancestors: "Vorfahren",
-    needsBase: "immer nötig: colors, tokens, reset, base"
+    needsBase: "immer nötig: colors, tokens, reset, base",
+    docs: "Handbuch", elements: "Eigene Elemente", files: "Dateien"
   };
 
   var active = false;
@@ -181,6 +219,7 @@
 
   function show(el) {
     current = el;
+    loadExplanations(function () { if (current === el && panel && !panel.hidden) show(el); });
     ensurePanel().hidden = false;
     index = index || buildIndex();
 
@@ -194,8 +233,9 @@
 
     // Klassen + data-ncss-* im gesamten Teilbaum
     var nodes = [el].concat(Array.prototype.slice.call(el.querySelectorAll("*")));
-    var classes = {}, attrs = {};
+    var classes = {}, attrs = {}, elements = {};
     nodes.forEach(function (node) {
+      if (node.localName && node.localName.indexOf("ncss-") === 0) elements[node.localName] = true;
       Array.prototype.forEach.call(node.classList || [], function (c) { if (c.indexOf("ncss-") === 0) classes[c] = true; });
       Array.prototype.forEach.call(node.attributes || [], function (a) {
         var m = /^data-ncss-([a-z-]+)$/.exec(a.name);
@@ -208,7 +248,7 @@
       var hrefs = index[c] || [];
       var paths = hrefs.map(distPath).filter(Boolean);
       paths.forEach(function (p) { files[p] = true; });
-      return "<li><code>." + esc(c) + "</code><span>" + (paths.length ? paths.map(function (p) { return "dist/" + esc(p); }).join(", ") : T.notLoaded) + "</span></li>";
+      return "<li><code>." + esc(c) + "</code><span>" + (paths.length ? paths.map(function (p) { return "dist/" + esc(p); }).join(", ") : T.notLoaded) + "</span>" + explainFor(c) + "</li>";
     }).join("");
 
     var scripts = Array.prototype.map.call(document.querySelectorAll("script[src]"), function (s) { return s.getAttribute("src"); })
@@ -218,7 +258,16 @@
         var file = src.split("/").pop().replace(/\.js$/, "");
         return name === file || name.indexOf(file + "-") === 0 || file.indexOf(name) === 0;
       })[0];
-      return "<li><code>data-ncss-" + esc(name) + "</code><span>" + (hit ? "dist/js/" + esc(hit.split("/").pop()) : T.noScript) + "</span></li>";
+      return "<li><code>data-ncss-" + esc(name) + "</code><span>" + (hit ? "dist/js/" + esc(hit.split("/").pop()) : T.noScript) + "</span>" + explainFor("data-ncss-" + name) + "</li>";
+    }).join("");
+
+    var elementRows = Object.keys(elements).sort().map(function (name) {
+      return "<li><code>&lt;" + esc(name) + "&gt;</code>" + explainFor("<" + name + ">") + "</li>";
+    }).join("");
+
+    var fileRows = Object.keys(files).sort().map(function (p) {
+      var note = fileNote(p);
+      return note ? "<li><code>dist/" + esc(p) + "</code>" + note + "</li>" : "";
     }).join("");
 
     var imports = Object.keys(files).filter(function (p) { return !/^(colors|tokens|reset|base)\.css$/.test(p) && layerOf(p); })
@@ -227,7 +276,9 @@
     panel.querySelector(".demo-inspect-body").innerHTML =
       "<div><h3>" + T.html + '</h3><pre class="demo-inspect-code">' + esc(html) + "</pre></div>" +
       (classRows ? "<div><h3>" + T.classes + '</h3><ul class="demo-inspect-list">' + classRows + "</ul></div>" : "") +
+      (elementRows ? "<div><h3>" + T.elements + '</h3><ul class="demo-inspect-list">' + elementRows + "</ul></div>" : "") +
       (scriptRows ? "<div><h3>" + T.scripts + '</h3><ul class="demo-inspect-list">' + scriptRows + "</ul></div>" : "") +
+      (fileRows ? "<div><h3>" + T.files + '</h3><ul class="demo-inspect-list">' + fileRows + "</ul></div>" : "") +
       (imports ? "<div><h3>" + T.imports + '</h3><pre class="demo-inspect-code">/* ' + T.needsBase + " */\n" + esc(imports) + "</pre></div>" : "");
   }
 

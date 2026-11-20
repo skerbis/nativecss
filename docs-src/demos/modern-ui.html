@@ -1,0 +1,382 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+
+  /* Nur fürs Demo: Kacheln mit Inhalt unten, Kicker oben */
+  .demo-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-2xs);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-tile > p:last-child {
+    margin-block-start: auto;
+  }
+  .demo-tile h3 {
+    margin: 0;
+  }
+  .demo-kicker {
+    font-size: var(--ncss-font-size-sm);
+    font-weight: var(--ncss-font-weight-semibold);
+    color: var(--ncss-color-brand-on-soft);
+  }
+  .demo-tile-big h3 {
+    font-size: var(--ncss-font-size-xl);
+    line-height: var(--ncss-line-height-tight);
+  }
+
+  /* Zieh-Rahmen: Container schmaler ziehen, um die Container Queries live zu sehen */
+  .demo-resizable {
+    resize: horizontal;
+    overflow: auto;
+    min-width: 16rem;
+    max-width: 100%;
+    padding: var(--ncss-space-xs);
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+  }
+
+  .demo-compare {
+    max-width: 52rem;
+  }
+
+  .demo-aurora {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-xs);
+    min-height: 22rem;
+    padding: var(--ncss-space-xl) var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    text-align: center;
+  }
+  .demo-aurora h3 {
+    margin: 0;
+    font-size: var(--ncss-font-size-2xl);
+  }
+  .demo-aurora p {
+    max-width: 40ch;
+    margin-inline: auto;
+  }
+
+  .demo-kbd-hint {
+    margin-inline-start: var(--ncss-space-2xs);
+    font-size: var(--ncss-font-size-sm);
+    color: inherit;
+    opacity: 0.75;
+  }
+</style>
+<script src="~/dist/js/spotlight.js" defer></script>
+<script src="~/dist/js/compare.js" defer></script>
+<script src="~/dist/js/command-palette.js" defer></script>
+<script src="~/dist/js/hovercard.js" defer></script>
+<script src="~/dist/js/notification.js" defer></script>
+<script src="~/demo/assets/js/modern-ui-demo.js" defer></script>
+-->
+  <div class="ncss-stack ncss-stack--tight">
+    <p class="ncss-text-lg ncss-text-muted">Bento-Raster, Spotlight, Vorher/Nachher-Vergleich, Aufklapp-Panels, Befehlspalette, Hovercards, Benachrichtigungen und Aurora-Hintergründe - jede Komponente eine eigene CSS-Datei (plus höchstens ein Script), einzeln einbindbar.</p>
+    <p>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoCommand">Befehlspalette öffnen <kbd class="demo-kbd-hint" data-demo-shortcut>Strg J</kbd></button>
+    </p>
+  </div>
+
+  <!-- Bento -->
+  <section id="live-bento" class="ncss-stack">
+    <h2 class="demo-section-title">Bento-Raster</h2>
+    <p class="ncss-text-muted">Erweitert das vorhandene <code>.ncss-bento</code> (<code>helpers/layout.css</code>): eigener Container - zu schmal für eine Spannweite, fällt sie weg, statt seitlich überzulaufen. Neu: Vorlagen <code>.ncss-bento--hero</code> / <code>--mosaic</code> (Spannweiten nach Position, keine Klassen an den Kacheln) und mitwachsende Zeilen. Kombiniert hier mit <code>.ncss-spotlight</code> als Gruppe. Rahmen rechts unten ziehen, um das Umfließen zu sehen.</p>
+
+    <div class="demo-resizable">
+      <div class="ncss-bento ncss-bento--hero" data-ncss-spotlight>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile demo-tile-big">
+          <span class="demo-kicker">Ohne Build-Schritt</span>
+          <h3>Native CSS, Cascade Layers, Container Queries</h3>
+          <p class="ncss-text-muted">Die große Kachel nimmt 2×2 Felder ein - in einem schmalen Raster wird sie zur normalen Kachel.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Schnell</span>
+          <h3>Keine Laufzeit</h3>
+          <p class="ncss-text-sm ncss-text-muted">Nur, was die Seite einbindet.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Fluid</span>
+          <h3>Fließend</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>auto-fit</code> + <code>minmax()</code>.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Zugänglich</span>
+          <h3>Fokus sichtbar</h3>
+          <p class="ncss-text-sm ncss-text-muted">Die 4. Kachel ist hoch (2 Zeilen).</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Anpassbar</span>
+          <h3>Tokens statt Werte</h3>
+          <p class="ncss-text-sm ncss-text-muted">Die 5. Kachel ist breit.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Hell &amp; Dunkel</span>
+          <h3>light-dark()</h3>
+          <p class="ncss-text-sm ncss-text-muted">Ein Wert für beide Modi.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Layer</span>
+          <h3>Ohne !important</h3>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Nativ</span>
+          <h3>dialog &amp; popover</h3>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Cherry-Picking</span>
+          <h3>Je Datei eine Komponente</h3>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Bewegung</span>
+          <h3>Reduziert, wenn gewünscht</h3>
+        </article>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-bento ncss-bento--hero"&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;Groß (1. Kachel)&lt;/article&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;...&lt;/article&gt;
+&lt;/div&gt;
+
+&lt;!-- oder freie Spannweiten pro Kachel --&gt;
+&lt;div class="ncss-bento"&gt;
+  &lt;article class="ncss-card ncss-col-span-2 ncss-row-span-2"&gt;...&lt;/article&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <!-- Spotlight -->
+  <section id="live-spotlight" class="ncss-stack">
+    <h2 class="demo-section-title">Spotlight</h2>
+    <p class="ncss-text-muted">Ein Lichtkegel folgt dem Mauszeiger, dazu leuchtet das Rand-Segment nahe am Zeiger auf. <code>data-ncss-spotlight</code> an der Gruppe: ein Listener für alle, Nachbarn fangen den Rand des Lichts auf. Ohne JS und bei Tastatur-Fokus steht das Licht in der Mitte. <code>components/spotlight.css</code> + <code>js/spotlight.js</code>.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 15rem;" data-ncss-spotlight>
+      <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+        <h3><a class="ncss-card-link" href="#live-spotlight">Standard</a></h3>
+        <p class="ncss-text-sm ncss-text-muted">Ganze Karte klickbar (<code>.ncss-card--linked</code>) - Tab auf den Link zeigt das Licht ebenfalls.</p>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight ncss-spotlight--strong demo-tile">
+        <h3>Kräftig</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-spotlight--strong</code></p>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile" style="--ncss-spotlight-color: color-mix(in oklch, var(--ncss-color-success) 28%, transparent); --ncss-spotlight-border: var(--ncss-color-success);">
+        <h3>Eigene Farbe</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>--ncss-spotlight-color</code> / <code>-border</code></p>
+      </article>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-grid" data-ncss-spotlight&gt;
+  &lt;article class="ncss-card ncss-spotlight"&gt;...&lt;/article&gt;
+  &lt;article class="ncss-card ncss-spotlight ncss-spotlight--strong"&gt;...&lt;/article&gt;
+&lt;/div&gt;
+&lt;script src="ncss/js/spotlight.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Compare -->
+  <section id="compare" class="ncss-stack">
+    <h2 class="demo-section-title">Vorher/Nachher-Vergleich</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-compare&gt;</code>: ein echter <code>&lt;input type="range"&gt;</code> über zwei Bildern - Ziehen mit Maus oder Finger (senkrecht scrollt die Seite weiter), Pfeiltasten, Pos1/Ende, Screenreader-Ansage "50 % vorher". Ohne JS: statischer 50/50-Vergleich.</p>
+    <ncss-compare class="demo-compare" style="--ncss-compare-ratio: 16 / 9;">
+      <img class="ncss-compare-before" src="~/demo/assets/modern-ui/compare-before.svg" alt="Berglandschaft im Winter, grau und verschneit" width="1600" height="900">
+      <img class="ncss-compare-after" src="~/demo/assets/modern-ui/compare-after.svg" alt="Dieselbe Berglandschaft im Sommer, grün unter blauem Himmel" width="1600" height="900">
+      <span class="ncss-compare-label" aria-hidden="true">Winter</span>
+      <span class="ncss-compare-label ncss-compare-label--end" aria-hidden="true">Sommer</span>
+      <input class="ncss-compare-range" type="range" min="0" max="100" value="50" aria-label="Trennlinie verschieben: links Winter, rechts Sommer">
+    </ncss-compare>
+    <pre><code class="language-html">&lt;ncss-compare style="--ncss-compare-ratio: 16 / 9"&gt;
+  &lt;img class="ncss-compare-before" src="vorher.jpg" alt="..."&gt;
+  &lt;img class="ncss-compare-after" src="nachher.jpg" alt="..."&gt;
+  &lt;span class="ncss-compare-label" aria-hidden="true"&gt;Vorher&lt;/span&gt;
+  &lt;span class="ncss-compare-label ncss-compare-label--end" aria-hidden="true"&gt;Nachher&lt;/span&gt;
+  &lt;input class="ncss-compare-range" type="range" min="0" max="100" value="50"
+         aria-label="Trennlinie verschieben: links vorher, rechts nachher"&gt;
+&lt;/ncss-compare&gt;
+&lt;script src="ncss/js/compare.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Expand panels -->
+  <section id="live-panels" class="ncss-stack">
+    <h2 class="demo-section-title">Aufklapp-Panels</h2>
+    <p class="ncss-text-muted">Reines CSS: das überfahrene oder per Tab fokussierte Panel wächst, sonst das aktive (<code>.ncss-expand-panel--active</code> / <code>aria-current</code>). Unter 36rem Containerbreite stapeln sich die Panels und wachsen in der Höhe - Rahmen schmaler ziehen.</p>
+    <div class="demo-resizable">
+      <div class="ncss-expand-panels">
+        <a class="ncss-expand-panel ncss-expand-panel--active" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-1.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Abendrot</span>
+          <span class="ncss-expand-panel-body">Kurze Wanderung zum Aussichtspunkt, ideal zum Sonnenuntergang.</span>
+        </a>
+        <a class="ncss-expand-panel" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-2.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Nachtpfad</span>
+          <span class="ncss-expand-panel-body">Mit Stirnlampe über den Grat - nur bei klarem Himmel.</span>
+        </a>
+        <a class="ncss-expand-panel" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-3.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Talrunde</span>
+          <span class="ncss-expand-panel-body">Flach, schattig, familientauglich. Drei Stunden.</span>
+        </a>
+        <a class="ncss-expand-panel" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-4.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Dämmerung</span>
+          <span class="ncss-expand-panel-body">Rundweg am See mit zwei Einkehrmöglichkeiten.</span>
+        </a>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-expand-panels"&gt;
+  &lt;a class="ncss-expand-panel ncss-expand-panel--active" href="/abendrot"&gt;
+    &lt;span class="ncss-expand-panel-media"&gt;&lt;img src="..." alt=""&gt;&lt;/span&gt;
+    &lt;span class="ncss-expand-panel-title"&gt;Abendrot&lt;/span&gt;
+    &lt;span class="ncss-expand-panel-body"&gt;Kurze Wanderung ...&lt;/span&gt;
+  &lt;/a&gt;
+  ...
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <!-- Command palette -->
+  <section id="command" class="ncss-stack">
+    <h2 class="demo-section-title">Befehlspalette</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-command-palette shortcut="k"&gt;</code> um einen <code>&lt;dialog&gt;</code>: öffnet ohne JS über <code>command="show-modal"</code>, mit JS zusätzlich per Tastenkürzel (hier <kbd>⌘J</kbd> / <kbd>Strg</kbd>+<kbd>J</kbd>, weil <kbd>⌘K</kbd> auf dieser Website die Suche öffnet). Combobox + Listbox nach APG: Fokus bleibt im Feld, <kbd>↑</kbd>/<kbd>↓</kbd> wählt, <kbd>Enter</kbd> führt aus, <kbd>Esc</kbd> schließt. Filter ignoriert Groß-/Kleinschreibung und Akzente, <code>data-keywords</code> liefern Zusatzbegriffe.</p>
+    <p><button type="button" class="ncss-btn ncss-btn--primary" command="show-modal" commandfor="demoCommand">Befehlspalette öffnen</button></p>
+
+    <ncss-command-palette shortcut="j">
+      <dialog id="demoCommand" class="ncss-command" aria-label="Befehlspalette" closedby="any">
+        <div class="ncss-command-search">
+          <input class="ncss-command-input" type="text" aria-label="Befehl oder Abschnitt suchen" placeholder="Befehl oder Abschnitt suchen …">
+        </div>
+        <div class="ncss-command-list" aria-label="Befehle">
+          <div class="ncss-command-group">
+            <p class="ncss-command-group-label">Abschnitte</p>
+            <a class="ncss-command-item" href="#live-bento" data-keywords="grid raster kacheln"><span class="ncss-command-item-icon" aria-hidden="true">▦</span>Zum Bento-Raster</a>
+            <a class="ncss-command-item" href="#compare" data-keywords="vorher nachher slider bild"><span class="ncss-command-item-icon" aria-hidden="true">⇆</span>Zum Vergleich</a>
+            <a class="ncss-command-item" href="#notifications" data-keywords="toast meldung sonner"><span class="ncss-command-item-icon" aria-hidden="true">✉</span>Zu den Benachrichtigungen</a>
+            <a class="ncss-command-item" href="#live-aurora" data-keywords="hintergrund verlauf mesh"><span class="ncss-command-item-icon" aria-hidden="true">◐</span>Zu Aurora &amp; Mesh</a>
+          </div>
+          <div class="ncss-command-group">
+            <p class="ncss-command-group-label">Darstellung</p>
+            <button class="ncss-command-item" type="button" data-demo-theme="dark" data-keywords="nacht dunkel dark"><span class="ncss-command-item-icon" aria-hidden="true">☾</span>Dunkles Design<span class="ncss-command-item-hint">Design</span></button>
+            <button class="ncss-command-item" type="button" data-demo-theme="light" data-keywords="tag hell light"><span class="ncss-command-item-icon" aria-hidden="true">☀</span>Helles Design<span class="ncss-command-item-hint">Design</span></button>
+            <button class="ncss-command-item" type="button" data-demo-theme="" data-keywords="system automatisch"><span class="ncss-command-item-icon" aria-hidden="true">◑</span>Wie System<span class="ncss-command-item-hint">Design</span></button>
+          </div>
+          <div class="ncss-command-group">
+            <p class="ncss-command-group-label">Aktionen</p>
+            <button class="ncss-command-item" type="button" data-ncss-notify="Aus der Befehlspalette ausgelöst" data-status="success" data-keywords="toast meldung notify"><span class="ncss-command-item-icon" aria-hidden="true">✓</span>Testmeldung zeigen<span class="ncss-command-item-hint">Aktion</span></button>
+          </div>
+        </div>
+        <p class="ncss-command-empty" hidden>Keine Treffer</p>
+        <div class="ncss-command-footer" aria-hidden="true"><span><kbd>↑</kbd> <kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> ausführen</span><span><kbd>Esc</kbd> schließen</span></div>
+      </dialog>
+    </ncss-command-palette>
+
+    <pre><code class="language-html">&lt;button type="button" command="show-modal" commandfor="live-cmd"&gt;Befehle&lt;/button&gt;
+&lt;ncss-command-palette shortcut="k"&gt;
+  &lt;dialog id="live-cmd" class="ncss-command" aria-label="Befehlspalette" closedby="any"&gt;
+    &lt;div class="ncss-command-search"&gt;
+      &lt;input class="ncss-command-input" type="text" aria-label="Befehl suchen"&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-command-list" aria-label="Befehle"&gt;
+      &lt;div class="ncss-command-group"&gt;
+        &lt;p class="ncss-command-group-label"&gt;Seiten&lt;/p&gt;
+        &lt;a class="ncss-command-item" href="/" data-keywords="start"&gt;Startseite&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p class="ncss-command-empty" hidden&gt;Keine Treffer&lt;/p&gt;
+  &lt;/dialog&gt;
+&lt;/ncss-command-palette&gt;
+&lt;script src="ncss/js/command-palette.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Hovercards -->
+  <section id="live-hovercards" class="ncss-stack">
+    <h2 class="demo-section-title">Hovercards</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-hovercard&gt;</code>: <code>popover="hint"</code> + <code>interestfor</code>, wo der Browser es kann (dann ganz ohne JS), sonst übernimmt das Script Verzögerung, Hover/Fokus und <kbd>Esc</kbd>. Die Karte bleibt offen, solange Zeiger oder Fokus darin sind.</p>
+    <p>
+      Die erste Programmiererin war
+      <ncss-hovercard>
+        <a href="#live-hovercards" interestfor="demoHcAda">Ada Lovelace</a><span id="demoHcAda" class="ncss-hovercard" popover="hint">
+          <span class="ncss-hovercard-header">
+            <span class="ncss-hovercard-avatar" aria-hidden="true">AL</span>
+            <span><strong class="ncss-hovercard-title">Ada Lovelace</strong><span class="ncss-hovercard-meta">Mathematikerin, 1815-1852</span></span>
+          </span>
+          <span class="ncss-hovercard-text">Beschrieb als Erste einen Algorithmus für Babbages Analytical Engine. <a href="#live-hovercards">Profil öffnen</a></span>
+        </span></ncss-hovercard>,
+      ihr Mentor war
+      <ncss-hovercard>
+        <a href="#live-hovercards" interestfor="demoHcBabbage">Charles Babbage</a><span id="demoHcBabbage" class="ncss-hovercard" popover="hint">
+          <span class="ncss-hovercard-header">
+            <span class="ncss-hovercard-avatar" aria-hidden="true">CB</span>
+            <span><strong class="ncss-hovercard-title">Charles Babbage</strong><span class="ncss-hovercard-meta">Mathematiker, 1791-1871</span></span>
+          </span>
+          <span class="ncss-hovercard-text">Entwarf die Difference Engine und die Analytical Engine.</span>
+        </span></ncss-hovercard>.
+    </p>
+    <pre><code class="language-html">&lt;ncss-hovercard&gt;
+  &lt;a href="/team/ada" interestfor="hc-ada"&gt;Ada Lovelace&lt;/a&gt;&lt;span id="live-hc-ada" class="ncss-hovercard" popover="hint"&gt;
+    &lt;span class="ncss-hovercard-header"&gt;
+      &lt;span class="ncss-hovercard-avatar" aria-hidden="true"&gt;AL&lt;/span&gt;
+      &lt;span&gt;&lt;strong class="ncss-hovercard-title"&gt;Ada Lovelace&lt;/strong&gt;
+            &lt;span class="ncss-hovercard-meta"&gt;Mathematikerin&lt;/span&gt;&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="ncss-hovercard-text"&gt;...&lt;/span&gt;
+  &lt;/span&gt;&lt;/ncss-hovercard&gt;
+&lt;script src="ncss/js/hovercard.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Notifications -->
+  <section id="notifications" class="ncss-stack">
+    <h2 class="demo-section-title">Benachrichtigungen</h2>
+    <p class="ncss-text-muted"><code>ncss.notify()</code> oder <code>data-ncss-notify</code> am Button. Die Timer pausieren, solange Zeiger oder Fokus in der Region sind. Fehler (<code>danger</code>) bleiben stehen, bis sie geschlossen werden. Die Region liegt im Top Layer - Meldungen erscheinen auch über einem offenen Modal.</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Neue Version verfügbar." data-status="brand" data-position="top-end">Info oben</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Deine Änderungen sind online." data-title="Gespeichert" data-status="success" data-position="top-end">Erfolg oben</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Noch 2 GB Speicher frei." data-status="warning" data-position="top-center">Warnung Mitte</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Die Datei ist größer als 20 MB." data-title="Upload fehlgeschlagen" data-status="danger" data-position="top-start">Fehler links</button>
+    </div>
+    <h3>Gestapelt (Sonner-Stil)</h3>
+    <p class="ncss-text-muted">Mehrmals klicken: ältere Meldungen stapeln sich hinter der neuesten, bei Hover oder Tastatur-Fokus fächern sie sich auf.</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary" data-demo-stack>Gestapelte Meldung (unten rechts)</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-demo-close-all>Alle schließen</button>
+    </div>
+    <pre><code class="language-javascript">ncss.notify("Gespeichert", { status: "success" });
+ncss.notify({ title: "Upload fehlgeschlagen", message: "Datei zu groß",
+              status: "danger", position: "top-start" });
+ncss.notify("Kopiert", { position: "bottom-end", stack: true, timeout: 8000 });</code></pre>
+    <pre><code class="language-html">&lt;button type="button" data-ncss-notify="Gespeichert" data-status="success"&gt;Speichern&lt;/button&gt;
+&lt;script src="ncss/js/notification.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- serverseitig gerenderte Meldung (bleibt ohne JS einfach stehen) --&gt;
+&lt;ncss-toast-region position="top-end"&gt;
+  &lt;div class="ncss-notification ncss-notification--success" data-timeout="6000"&gt;
+    &lt;p class="ncss-notification-title"&gt;Gespeichert&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/ncss-toast-region&gt;</code></pre>
+  </section>
+
+  <!-- Aurora -->
+  <section id="live-aurora" class="ncss-stack">
+    <h2 class="demo-section-title">Aurora &amp; Mesh</h2>
+    <p class="ncss-text-muted">Weiche, treibende Farbfelder aus den Markenfarben - nur <code>transform</code>, kein Blur-Filter. Bei reduzierter Bewegung statisch, in Forced Colors aus.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 18rem;">
+      <div class="ncss-aurora demo-aurora">
+        <h3>Aurora</h3>
+        <p><code>.ncss-aurora</code> - zwei gegenläufig treibende Ebenen.</p>
+      </div>
+      <div class="ncss-aurora ncss-aurora--vivid demo-aurora">
+        <h3>Aurora kräftig</h3>
+        <p><code>.ncss-aurora--vivid</code> - für kurze Texte und große Überschriften.</p>
+      </div>
+      <div class="ncss-mesh demo-aurora">
+        <h3>Mesh</h3>
+        <p><code>.ncss-mesh</code> - vier Felder, langsam drehend.</p>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;section class="ncss-aurora"&gt;...&lt;/section&gt;
+&lt;section class="ncss-aurora ncss-aurora--vivid"&gt;...&lt;/section&gt;
+&lt;section class="ncss-mesh"&gt;...&lt;/section&gt;</code></pre>
+  </section>
+
+  <p class="ncss-text-sm ncss-text-muted">Ladezustände: <code>.ncss-skeleton</code> aus <code>helpers/animations.css</code> deckt den Shimmer bereits ab - siehe <a href="animations.html">Animationen</a>.</p>

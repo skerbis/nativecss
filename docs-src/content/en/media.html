@@ -50,6 +50,7 @@
       </tbody>
     </table>
   </div>
+  <p class="ncss-text-muted ncss-text-sm">Custom video/audio players, scroll-scrubbed video, background video with a pause toggle, mini player and preview cards: <a href="video-audio.html">Video &amp; Audio</a>.</p>
 </section>
 
 <section class="ncss-stack" id="overlay">
@@ -105,3 +106,12 @@
   <p class="ncss-text-muted ncss-text-sm"><code>autoplay</code> NEEDS <code>muted</code> (otherwise virtually every browser blocks autostart), <code>playsinline</code> prevents fullscreen takeover on iOS Safari, <code>poster</code> shows a still frame before loading. For <code>prefers-reduced-motion</code>: pure CSS can't control <code>&lt;video&gt;</code> playback (unlike the <code>animation-timeline</code> used by <code>--parallax</code> above) - <code>js/hero-video-motion.js</code> (opt-in, only include it on pages with an actual background video) removes <code>autoplay</code> and pauses the video when that preference is active; the video stays visible (poster/last frame), just without automatic motion:</p>
   <pre><code class="language-html">&lt;script src="js/hero-video-motion.js" defer&gt;&lt;/script&gt;</code></pre>
 </section>
+
+<section class="ncss-stack" id="live-demo">
+  <h2 class="demo-section-title">Live examples</h2>
+  <p class="ncss-text-muted">Every building block of this page, live - turn on <strong>Inspect</strong> (bottom right) and click any element to see its HTML and an explanation.</p>
+</section>
+
+<!--INCLUDE: media-->
+
+<!--INCLUDE: all-components#slideshow-->

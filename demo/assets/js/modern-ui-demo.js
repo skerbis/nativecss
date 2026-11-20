@@ -7,7 +7,7 @@
 
   var isApple = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   document.querySelectorAll("[data-demo-shortcut]").forEach(function (kbd) {
-    kbd.textContent = isApple ? "⌘K" : "Strg K";
+    kbd.textContent = isApple ? "⌘J" : "Strg J";
   });
 
   var stackTexts = [

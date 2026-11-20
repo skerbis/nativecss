@@ -1,0 +1,129 @@
+/**
+ * ncss - Abschnitts-Navigation "Auf dieser Seite" (Layer "components"): schmale, klebende
+ * Leiste direkt unter der Topbar mit Sprunglinks zu den Abschnitten einer langen Seite
+ * (One-Pager, Handbuch-Seite). Eine Zeile, auf schmalen Bildschirmen seitlich wischbar
+ * mit weichen Rändern; der Abschnitt im Blick wird automatisch hervorgehoben.
+ *
+ * Markup:
+ *   <nav class="ncss-subnav" aria-label="Auf dieser Seite" data-ncss-subnav>
+ *     <div class="ncss-subnav-inner">
+ *       <span class="ncss-subnav-label" aria-hidden="true">Auf dieser Seite</span>
+ *       <ul class="ncss-subnav-list" role="list">
+ *         <li><a href="#intro">Einleitung</a></li> ...
+ *       </ul>
+ *     </div>
+ *   </nav>
+ * Direkt nach der Topbar platzieren (Geschwister im <body>, nicht in <main>) - nur dann
+ * klebt sie über die ganze Seite.
+ *
+ * Aktueller Abschnitt: nativ per scroll-target-group + :target-current (Chromium 140+,
+ * reines CSS), überall sonst und zusätzlich für Screenreader setzt js/subnav.js
+ * aria-current="location" am passenden Link. Ohne JS und ohne native Unterstützung:
+ * ganz normale Sprunglinks ohne Hervorhebung.
+ *
+ * Sprungziele: :root bekommt scroll-padding-block-start = Topbar + diese Leiste, damit
+ * Überschriften nicht unter den beiden klebenden Leisten verschwinden. Weiches Scrollen
+ * kommt aus reset.css (scroll-behavior: smooth, bei reduzierter Bewegung aus).
+ *
+ * Tokens: --ncss-subnav-height (Höhe, Default 2.75rem), --ncss-subnav-top (Abstand oben,
+ * Default --ncss-topbar-height; 0 ohne Topbar).
+ *
+ * Benötigt: tokens.css/colors.css. Optional js/subnav.js.
+ */
+
+:root:has(.ncss-subnav) {
+  scroll-padding-block-start: calc(var(--ncss-subnav-top, var(--ncss-topbar-height)) + var(--ncss-subnav-height, 2.75rem) + var(--ncss-space-sm));
+}
+
+.ncss-subnav {
+  position: sticky;
+  inset-block-start: var(--ncss-subnav-top, var(--ncss-topbar-height));
+  z-index: calc(var(--ncss-topbar-z) - 1);
+  background-color: var(--ncss-color-surface);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  font-size: var(--ncss-font-size-sm);
+}
+
+.ncss-subnav-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  block-size: var(--ncss-subnav-height, 2.75rem);
+  max-width: var(--ncss-container-max);
+  margin-inline: auto;
+  padding-inline: var(--ncss-space-sm);
+}
+
+.ncss-subnav-label {
+  flex: 0 0 auto;
+  font-weight: 700;
+  color: var(--ncss-color-text-muted);
+  white-space: nowrap;
+}
+
+/* Wischbare Zeile: weiche Ränder per Maske, gleich breites Innen-Padding, damit der
+   erste/letzte Link nicht unter dem Verlauf liegt. */
+.ncss-subnav-list {
+  --_fade: var(--ncss-space-md);
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0 var(--_fade);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  scroll-target-group: auto;
+  mask-image: linear-gradient(to right, transparent, #000 var(--_fade), #000 calc(100% - var(--_fade)), transparent);
+}
+.ncss-subnav-list::-webkit-scrollbar {
+  display: none;
+}
+
+.ncss-subnav-list a {
+  display: block;
+  padding: 0.3em 0.75em;
+  border-radius: var(--ncss-radius-full);
+  color: var(--ncss-color-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* Fokus-Ring nach innen - die Liste schneidet seitlich ab (overflow). */
+.ncss-subnav-list a:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-brand);
+  outline-offset: -2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-subnav-list a:hover:not(:active) {
+    background-color: var(--ncss-color-bg-subtle);
+    color: var(--ncss-color-text);
+  }
+}
+.ncss-subnav-list a:active {
+  background-color: var(--ncss-color-brand-100);
+}
+.ncss-subnav-list a:target-current,
+.ncss-subnav-list a[aria-current="location"] {
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+}
+
+@media (forced-colors: active) {
+  .ncss-subnav-list {
+    mask-image: none;
+  }
+  .ncss-subnav-list a:target-current,
+  .ncss-subnav-list a[aria-current="location"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
+@media print {
+  .ncss-subnav {
+    display: none;
+  }
+}

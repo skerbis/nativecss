@@ -1,0 +1,32 @@
+<!--DESC: Ein Element anklicken und sofort sehen: bereinigtes HTML, Erklärung jeder ncss-Klasse, definierende Datei, Script und Cherry-Picking-Imports.-->
+<section class="ncss-stack">
+  <h1>Code-Inspektor</h1>
+  <p class="ncss-text-lg ncss-text-muted">Auf jeder Seite dieser Website schwebt unten rechts der Schalter <strong>Inspect</strong> (Tastatur: <kbd>Alt</kbd>+<kbd>I</kbd>, Mac <kbd>⌥</kbd><kbd>I</kbd>). Danach ein beliebiges Element anklicken - der Inspektor zeigt, wie es gebaut ist.</p>
+  <p><button type="button" class="ncss-btn ncss-btn--primary" data-demo-inspect aria-pressed="false">Inspektor jetzt einschalten</button></p>
+</section>
+
+<section class="ncss-stack" id="anzeige">
+  <h2 class="demo-section-title">Was angezeigt wird</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>HTML</strong> des Elements, bereinigt und eingerückt - mit Knopf zum Kopieren.</li>
+    <li><strong>Erklärung</strong> zu jeder <code>ncss-</code>-Klasse, jedem <code>data-ncss-</code>-Attribut und jedem <code>&lt;ncss-…&gt;</code>-Element, mit Link zum passenden Abschnitt im Handbuch.</li>
+    <li><strong>Definierende Datei</strong> in <code>dist/</code> samt Kurzbeschreibung der Datei.</li>
+    <li><strong>JavaScript</strong>: welches Script aus <code>dist/js/</code> zu den <code>data-ncss-</code>-Attributen gehört.</li>
+    <li><strong>Cherry-Picking</strong>: die <code>@import</code>-Zeilen für eine eigene, ausgedünnte <code>ncss.css</code> mit genau diesem Baustein.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="bedienung">
+  <h2 class="demo-section-title">Bedienung</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Vorfahren-Leiste</strong> und <strong>Eltern ↑</strong>: vom angeklickten Button zur ganzen Karte springen.</li>
+    <li><kbd>Esc</kbd> beendet den Modus, ein zweiter Klick auf <strong>Inspect</strong> ebenso.</li>
+    <li>Funktioniert auf Handbuch-Seiten und auf allen <a href="examples.html">Beispiel-Websites</a>.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="woher">
+  <h2 class="demo-section-title">Woher die Erklärungen kommen</h2>
+  <p>Beim Bauen der Website (<code>node docs-src/build.mjs</code>) werden die "Klasse | Zweck"-Tabellen aller Handbuch-Seiten und der erste Satz jedes Datei-Kommentars in <code>dist/</code> zu <code>docs/class-index.de.json</code> bzw. <code>.en.json</code> zusammengefasst. Der Inspektor lädt diese Datei beim ersten Einschalten - fehlt sie, zeigt er alles außer den Erklärungen. Eine neue Klasse bekommt ihre Erklärung also automatisch, sobald sie im Handbuch in einer Klassen-Tabelle steht.</p>
+  <p class="ncss-text-sm ncss-text-muted">Der Inspektor ist ein Werkzeug dieser Website (<code>demo/assets/js/inspector.js</code>), nicht Teil von <code>dist/</code>.</p>
+</section>

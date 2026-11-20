@@ -50,6 +50,7 @@
       </tbody>
     </table>
   </div>
+  <p class="ncss-text-muted ncss-text-sm">Eigene Video-/Audioplayer, Scroll-Video, Hintergrund-Video mit Pause-Schalter, Mini-Player und Vorschaukarten: <a href="video-audio.html">Video &amp; Audio</a>.</p>
 </section>
 
 <section class="ncss-stack" id="overlay">
@@ -105,3 +106,12 @@
   <p class="ncss-text-muted ncss-text-sm"><code>autoplay</code> BRAUCHT <code>muted</code> (sonst blockieren praktisch alle Browser den Autostart), <code>playsinline</code> verhindert Vollbild-Übernahme auf iOS Safari, <code>poster</code> zeigt ein Standbild vor dem Laden. Für <code>prefers-reduced-motion</code>: reines CSS kann eine <code>&lt;video&gt;</code>-Wiedergabe nicht steuern (anders als <code>animation-timeline</code> bei <code>--parallax</code> oben) - <code>js/hero-video-motion.js</code> (opt-in, nur bei tatsächlichem Hintergrund-Video einbinden) entfernt <code>autoplay</code> und pausiert das Video, wenn die Einstellung aktiv ist, das Video bleibt sichtbar (Poster/letztes Bild), nur ohne automatische Bewegung:</p>
   <pre><code class="language-html">&lt;script src="js/hero-video-motion.js" defer&gt;&lt;/script&gt;</code></pre>
 </section>
+
+<section class="ncss-stack" id="live-demo">
+  <h2 class="demo-section-title">Live-Beispiele</h2>
+  <p class="ncss-text-muted">Alle Bausteine dieser Seite live zum Ausprobieren - mit <strong>Inspect</strong> unten rechts lässt sich jedes Element anklicken, um sein HTML und die passende Erklärung zu sehen.</p>
+</section>
+
+<!--INCLUDE: media-->
+
+<!--INCLUDE: all-components#slideshow-->

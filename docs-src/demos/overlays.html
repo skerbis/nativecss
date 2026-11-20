@@ -1,0 +1,312 @@
+<!--HEAD:
+<style>
+  /* Nur für diese Demo-Seite selbst (Layout des Showcase-Rahmens) - kein Teil von NativeCSS. */
+  .demo-swatch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-3xs);
+  }
+  .demo-swatch-color {
+    height: 3.5rem;
+    border-radius: var(--ncss-radius-md);
+    border: 1px solid var(--ncss-color-border);
+  }
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-resize-hint {
+    border: 1px dashed var(--ncss-color-border);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    resize: horizontal;
+    overflow: auto;
+    min-width: 12rem;
+    max-width: 100%;
+  }
+  .demo-tree-nav {
+    max-width: 16rem;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-anim-loop-grid {
+    --ncss-grid-min: 10rem;
+    align-items: start;
+  }
+  .demo-anim-loop-item {
+    align-items: center;
+    text-align: center;
+  }
+  .demo-anim-spin-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--ncss-color-brand);
+  }
+  .demo-skeleton-line {
+    width: 100%;
+    height: 1rem;
+  }
+  .demo-skeleton-line--short {
+    width: 60%;
+  }
+  .demo-micro-card {
+    width: 10rem;
+  }
+  .demo-media-bottom {
+    max-width: 20rem;
+  }
+
+  /* Ab hier: benannte Klassen statt Inline-Styles fuer alle Demo-Platzhalter/Farbfelder.
+     --ncss-grid-min bleibt bewusst als style="--ncss-grid-min: Xrem" auf .ncss-grid stehen -
+     das ist Parametrisierung einer Custom Property (wie in tokens.css vorgesehen), keine
+     Deko, und wuerde als Klasse pro Wert (--min-8rem/-10rem/-12rem/...) genau die
+     Utility-Klassen-Matrix erzeugen, die wir vermeiden wollen. */
+  .demo-cq-context {
+    container-type: inline-size;
+    container-name: ncss-container;
+  }
+  .demo-float-sample {
+    background-color: var(--ncss-color-brand-300);
+    width: 8rem;
+    height: 8rem;
+  }
+  .demo-justify {
+    max-width: 12rem;
+    text-align: justify;
+  }
+  .demo-narrow-form {
+    max-width: 28rem;
+  }
+  .demo-align-start {
+    align-self: start;
+  }
+  /* Echte Platzhalter-Boxen (Bild-fehlt/Skeleton-Optik) sind jetzt components/placeholder.css
+     (.ncss-placeholder, kombinierbar mit .ncss-ratio-.../.ncss-card-media) - kein Demo-only-Klon
+     mehr. Hier nur noch, was wirklich seitenspezifisch ist. */
+  .demo-text-pad {
+    padding: var(--ncss-space-sm);
+  }
+  .demo-no-border {
+    padding: 0;
+    border: none;
+  }
+  .demo-sticky-box {
+    resize: vertical;
+    max-height: 10rem;
+    height: 10rem;
+  }
+  .demo-sticky-label {
+    background-color: var(--ncss-color-brand);
+    color: var(--ncss-color-brand-contrast);
+    padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  }
+  .demo-callout {
+    background-color: var(--ncss-color-bg-subtle);
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-hover-card {
+    position: relative;
+    padding: var(--ncss-space-sm);
+  }
+  .demo-hover-action {
+    position: absolute;
+    inset-block-start: var(--ncss-space-xs);
+    inset-inline-end: var(--ncss-space-xs);
+  }
+  .demo-slide {
+    aspect-ratio: var(--ncss-aspect-video);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ncss-color-brand-contrast);
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-slide--brand { background-color: var(--ncss-color-brand); }
+  .demo-slide--success { background-color: var(--ncss-color-success); }
+  .demo-slide--danger { background-color: var(--ncss-color-danger); }
+  .demo-thumb {
+    width: 8rem;
+    padding: 0;
+    border: none;
+    cursor: zoom-in;
+  }
+  .demo-lightbox-gallery img {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--ncss-aspect-square);
+    object-fit: cover;
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-lightbox-size {
+    width: 24rem;
+    max-width: 100%;
+  }
+  .demo-heading-inherit {
+    color: inherit;
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+
+  /* Farbfelder: je Token eine Modifier-Klasse statt style="background:var(...)" -
+     dieselbe demo-swatch-color--* Konvention wie an anderen Stellen dieser Seite. */
+  .demo-swatch-color--brand { background-color: var(--ncss-color-brand); }
+  .demo-swatch-color--bg-subtle { background-color: var(--ncss-color-bg-subtle); }
+  .demo-swatch-color--surface { background-color: var(--ncss-color-surface); }
+  .demo-swatch-color--success { background-color: var(--ncss-color-success); }
+  .demo-swatch-color--warning { background-color: var(--ncss-color-warning); }
+  .demo-swatch-color--danger { background-color: var(--ncss-color-danger); }
+
+  .demo-swatch-color--brand-100 { background-color: var(--ncss-color-brand-100); }
+  .demo-swatch-color--brand-300 { background-color: var(--ncss-color-brand-300); }
+  .demo-swatch-color--brand-500 { background-color: var(--ncss-color-brand-500); }
+  .demo-swatch-color--brand-700 { background-color: var(--ncss-color-brand-700); }
+  .demo-swatch-color--brand-900 { background-color: var(--ncss-color-brand-900); }
+
+  .demo-swatch-color--brand-2-100 { background-color: var(--ncss-color-brand-2-100); }
+  .demo-swatch-color--brand-2-300 { background-color: var(--ncss-color-brand-2-300); }
+  .demo-swatch-color--brand-2-500 { background-color: var(--ncss-color-brand-2-500); }
+  .demo-swatch-color--brand-2-700 { background-color: var(--ncss-color-brand-2-700); }
+  .demo-swatch-color--brand-2-900 { background-color: var(--ncss-color-brand-2-900); }
+
+  .demo-swatch-color--neutral-100 { background-color: var(--ncss-color-neutral-100); }
+  .demo-swatch-color--neutral-300 { background-color: var(--ncss-color-neutral-300); }
+  .demo-swatch-color--neutral-500 { background-color: var(--ncss-color-neutral-500); }
+  .demo-swatch-color--neutral-700 { background-color: var(--ncss-color-neutral-700); }
+  .demo-swatch-color--neutral-900 { background-color: var(--ncss-color-neutral-900); }
+</style>
+<script src="~/dist/js/view-transitions.js" defer></script>
+<script src="~/dist/js/lightbox.js" defer></script>
+<script src="~/dist/js/compare.js" defer></script>
+-->
+  <section class="ncss-stack" id="modal-demo">
+    <h2 class="demo-section-title">Native Elemente (details, dialog)</h2>
+    <details class="ncss-disclosure">
+      <summary>Details aufklappen</summary>
+      <p>Inhalt, der per nativem <code>&lt;details&gt;</code> ein-/ausgeblendet wird - kein JS nötig. Die "Box"-Optik kommt jetzt explizit von <code>.ncss-disclosure</code>, nicht mehr vom nackten Tag.</p>
+    </details>
+    <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog">Dialog öffnen</button>
+    <dialog id="demoDialog" class="ncss-modal">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialog" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>Natives &lt;dialog&gt; als .ncss-modal</h3></div>
+      <div class="ncss-modal-body">
+        <p>Fokus-Trap, ESC zum Schließen, <code>::backdrop</code>, Fade+Scale-Animation - alles vom Browser/CSS, kein JS-Modal-Framework.</p>
+      </div>
+      <div class="ncss-modal-footer">
+        <button type="button" class="ncss-btn ncss-btn--secondary" command="close" commandfor="demoDialog">Abbrechen</button>
+        <button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="demoDialog">Bestätigen</button>
+      </div>
+    </dialog>
+
+    <p class="ncss-text-muted ncss-text-sm">3D-Varianten: <code>perspective()</code> als Transform-Funktion in der eigenen <code>transform</code>-Kette (kein <code>perspective</code> auf einem Elternelement nötig/wirksam, <code>&lt;dialog&gt;</code> rendert im Top Layer).</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog3d">--3d</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog3dFlip">--3d-flip</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialog3dSwing">--3d-swing</button>
+    </div>
+    <dialog id="demoDialog3d" class="ncss-modal ncss-modal--3d">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialog3d" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--3d</h3></div>
+      <div class="ncss-modal-body">
+        <p>Kippt beim Öffnen wie aus der Tiefe nach vorne herein, statt nur zu faden/skalieren.</p>
+      </div>
+      <div class="ncss-modal-footer">
+        <button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="demoDialog3d">Schließen</button>
+      </div>
+    </dialog>
+    <dialog id="demoDialog3dFlip" class="ncss-modal ncss-modal--3d-flip">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialog3dFlip" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--3d-flip</h3></div>
+      <div class="ncss-modal-body"><p>Dreht sich beim Öffnen einmal um die eigene Hochachse herein, wie eine Karte.</p></div>
+    </dialog>
+    <dialog id="demoDialog3dSwing" class="ncss-modal ncss-modal--3d-swing">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialog3dSwing" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--3d-swing</h3></div>
+      <div class="ncss-modal-body"><p>Schwingt wie eine Tür um ein Scharnier an der linken Kante herein.</p></div>
+    </dialog>
+
+    <p class="ncss-text-muted ncss-text-sm">Einblendvarianten: statt der Standard-Skalierung slidet/wächst das Modal aus einer Richtung heran (langsamere, deutlich abbremsende Bezier-Kurve statt der neutralen Standardkurve).</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideUp">--slide-up</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideDown">--slide-down</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideLeft">--slide-left</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogSlideRight">--slide-right</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoDialogZoom">--zoom</button>
+    </div>
+    <dialog id="demoDialogSlideUp" class="ncss-modal ncss-modal--slide-up">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideUp" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-up</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von unten herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogSlideDown" class="ncss-modal ncss-modal--slide-down">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideDown" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-down</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von oben herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogSlideLeft" class="ncss-modal ncss-modal--slide-left">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideLeft" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-left</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von rechts herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogSlideRight" class="ncss-modal ncss-modal--slide-right">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogSlideRight" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--slide-right</h3></div>
+      <div class="ncss-modal-body"><p>Schiebt sich beim Öffnen von links herein.</p></div>
+    </dialog>
+    <dialog id="demoDialogZoom" class="ncss-modal ncss-modal--zoom">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoDialogZoom" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-modal-header"><h3>.ncss-modal--zoom</h3></div>
+      <div class="ncss-modal-body"><p>Wächst beim Öffnen deutlicher aus der Mitte heran als der Standard-Fade.</p></div>
+    </dialog>
+
+    <p class="ncss-text-muted ncss-text-sm">AJAX-Modal-Router (<code>js/modal-router.js</code>, opt-in): Trigger-Links mit echtem <code>href</code> laden ihr Ziel per <code>fetch()</code> in ein geteiltes Modal nach, die Adresse wandert per <code>history.pushState()</code> mit (<a href="~/demo/assets/modal-router-demo.html">eigenständig öffnen</a>):</p>
+    <div style="overflow: hidden; width: 100%; border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe src="~/demo/assets/modal-router-demo.html" title="AJAX-Modal-Router, live testbar" style="display: block; width: 100%; height: 20rem; border: 0;" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <section class="ncss-stack" id="offcanvas-demo">
+    <h2 class="demo-section-title">Off-Canvas-Sidebar (eigenständig, nicht nur im Mobile-Nav)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Dasselbe <code>.ncss-offcanvas</code>, das die Navigation oben unterhalb 64rem
+      Viewport-Breite nutzt - hier unabhängig davon, immer über den Button auslösbar.
+    </p>
+    <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoOffcanvas">Off-Canvas öffnen (von rechts)</button>
+    <dialog id="demoOffcanvas" class="ncss-offcanvas ncss-offcanvas--end">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoOffcanvas" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-offcanvas-header"><h3>Off-Canvas-Inhalt</h3></div>
+      <p>Schiebt sich von der Kante ein (<code>@starting-style</code> + <code>translate</code>), mit Backdrop und Fokus-Trap - alles vom nativen <code>&lt;dialog&gt;</code>.</p>
+    </dialog>
+  </section>
+
+  <section class="ncss-stack" id="lightbox">
+    <h2 class="demo-section-title">Modal, Lightbox-Variante (.ncss-modal--fullscreen .ncss-modal--dark)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Keine eigene Lightbox-Komponente mehr - nur .ncss-modal mit zwei Varianten.</p>
+    <button type="button" command="show-modal" commandfor="demoLightboxModal" class="demo-thumb">
+      <div class="ncss-ratio-square ncss-placeholder">Klick mich</div>
+    </button>
+    <dialog id="demoLightboxModal" class="ncss-modal ncss-modal--fullscreen ncss-modal--dark">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demoLightboxModal" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+      <div class="ncss-ratio-video ncss-placeholder ncss-placeholder--surface demo-lightbox-size">Großes Bild</div>
+    </dialog>
+  </section>
+
+  <section class="ncss-stack" id="lightbox-galerie">
+    <h2 class="demo-section-title">Lightbox-Galerie (data-ncss-lightbox)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Mehrere Bilder einer Gruppe durchblättern - Pfeiltasten, Vor/Zurück, Wischen, Zähler, Bildunterschrift. Baut auf der Modal-Lightbox oben auf (<code>components/lightbox.css</code> + <code>js/lightbox.js</code>), ohne JavaScript öffnet der Link einfach das große Bild.</p>
+    <ul class="ncss-grid demo-lightbox-gallery" role="list" style="--ncss-grid-min: 9rem;">
+      <li><a href="~/demo/assets/slide-1.jpg" data-ncss-lightbox="demo" data-caption="Erstes Bild - Bildunterschrift aus data-caption"><img src="~/demo/assets/slide-1.jpg" alt="Beispielbild 1"></a></li>
+      <li><a href="~/demo/assets/slide-2.jpg" data-ncss-lightbox="demo" data-caption="Zweites Bild"><img src="~/demo/assets/slide-2.jpg" alt="Beispielbild 2"></a></li>
+      <li><a href="~/demo/assets/slide-3.jpg" data-ncss-lightbox="demo" data-caption="Drittes Bild"><img src="~/demo/assets/slide-3.jpg" alt="Beispielbild 3"></a></li>
+      <li><a href="~/demo/assets/art-direction-desktop.jpg" data-ncss-lightbox="demo"><img src="~/demo/assets/art-direction-mobile.jpg" alt="Querformat - ohne data-caption dient dieser alt-Text als Bildunterschrift"></a></li>
+    </ul>
+    <pre><code class="language-html">&lt;a href="gross-1.jpg" data-ncss-lightbox="ausstellung" data-caption="Titel, 2024"&gt;
+  &lt;img src="klein-1.jpg" alt="Titel, 2024"&gt;
+&lt;/a&gt;
+&lt;script src="dist/js/lightbox.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+<!--FOOT:
+<script src="~/demo/assets/js/index-animations.js"></script>
+-->

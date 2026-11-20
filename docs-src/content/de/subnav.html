@@ -1,0 +1,69 @@
+<!--DESC: Schmale, klebende "Auf dieser Seite"-Leiste unter der Topbar - Sprunglinks zu den Abschnitten, aktueller Abschnitt automatisch markiert.-->
+<section class="ncss-stack">
+  <h1>Abschnitts-Navigation</h1>
+  <p class="ncss-text-lg ncss-text-muted">Für lange Seiten mit mehreren Abschnitten - One-Pager, Produktseiten, Handbuch-Seiten: eine zweite, schmale Leiste direkt unter der Haupt-Navigation. Sie bleibt beim Scrollen kleben, zeigt die Abschnitte in einer Zeile (auf schmalen Bildschirmen seitlich wischbar) und hebt den Abschnitt hervor, der gerade im Blick ist. Diese Seite nutzt sie selbst - oben unter der Kopfleiste.</p>
+</section>
+
+<section class="ncss-stack" id="markup">
+  <h2 class="demo-section-title">Markup</h2>
+  <p>Direkt nach der Topbar als Geschwister im <code>&lt;body&gt;</code> platzieren (nicht in <code>&lt;main&gt;</code>) - nur dann klebt sie über die ganze Seite. Die Sprungziele sind ganz normale IDs.</p>
+  <pre><code class="language-html">&lt;header class="ncss-topbar"&gt;...&lt;/header&gt;
+&lt;nav class="ncss-subnav" aria-label="Auf dieser Seite" data-ncss-subnav&gt;
+  &lt;div class="ncss-subnav-inner"&gt;
+    &lt;span class="ncss-subnav-label" aria-hidden="true"&gt;Auf dieser Seite&lt;/span&gt;
+    &lt;ul class="ncss-subnav-list" role="list"&gt;
+      &lt;li&gt;&lt;a href="#zimmer"&gt;Zimmer&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#angebote"&gt;Angebote&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#anfrage"&gt;Anfrage&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+&lt;main&gt;
+  &lt;section id="zimmer"&gt;&lt;h2&gt;Zimmer&lt;/h2&gt;...&lt;/section&gt;
+  ...
+&lt;/main&gt;
+&lt;script src="ncss/js/subnav.js" defer&gt;&lt;/script&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="klassen">
+  <h2 class="demo-section-title">Klassen &amp; Attribute</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-subnav</code></td><td>Klebende Leiste "Auf dieser Seite" unter der Topbar, eine Zeile mit Sprunglinks zu den Abschnitten.</td></tr>
+        <tr><td><code>.ncss-subnav-inner</code></td><td>Innerer Rahmen in Containerbreite (gleiche Fluchtlinie wie der Seiteninhalt).</td></tr>
+        <tr><td><code>.ncss-subnav-label</code></td><td>Sichtbare Beschriftung vor den Links, für Screenreader ausgeblendet (die nav trägt aria-label).</td></tr>
+        <tr><td><code>.ncss-subnav-list</code></td><td>Die Linkliste: seitlich wischbar mit weichen Rändern, aktueller Link als Pille hervorgehoben.</td></tr>
+        <tr><td><code>[data-ncss-subnav]</code></td><td>Aktiviert <code>js/subnav.js</code>: setzt <code>aria-current="location"</code> am Link des Abschnitts im Blick und führt die Leiste seitlich nach.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="verhalten">
+  <h2 class="demo-section-title">Verhalten</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Versatz:</strong> <code>:root</code> bekommt automatisch <code>scroll-padding-block-start</code> = Topbar + Leiste - angesprungene Überschriften landen sichtbar unter beiden Leisten, auch bei Tastatur-Navigation und Links von anderen Seiten.</li>
+    <li><strong>Aktueller Abschnitt:</strong> nativ per <code>scroll-target-group</code> + <code>:target-current</code> (Chromium 140+, reines CSS); <code>js/subnav.js</code> ergänzt überall <code>aria-current="location"</code> (IntersectionObserver), damit auch Screenreader den Zustand kennen. Ohne JS: normale Sprunglinks.</li>
+    <li><strong>Bewegung:</strong> weiches Scrollen kommt aus <code>reset.css</code> und entfällt bei <code>prefers-reduced-motion</code>.</li>
+    <li><strong>Mobil:</strong> die Hauptleiste klappt in den Menü-Knopf, die Abschnitts-Leiste bleibt eine einzige wischbare Zeile.</li>
+    <li><strong>Forced Colors / Druck:</strong> aktueller Link mit Systemfarben-Rahmen; im Druck ausgeblendet.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="tokens">
+  <h2 class="demo-section-title">Parameter</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Token</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>--ncss-subnav-height</code></td><td>Höhe der Leiste (Default <code>2.75rem</code>), fließt in den Sprung-Versatz ein.</td></tr>
+        <tr><td><code>--ncss-subnav-top</code></td><td>Abstand nach oben (Default <code>--ncss-topbar-height</code>); <code>0</code> auf Seiten ohne klebende Topbar.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Cherry-Picking: <code>@import url("components/subnav.css") layer(components);</code> + optional <code>js/subnav.js</code>; braucht nur <code>tokens.css</code>/<code>colors.css</code>.</p>
+</section>
+
+<!--INCLUDE: samples#subnav-live-->

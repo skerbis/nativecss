@@ -45,7 +45,7 @@
 &lt;figure class="ncss-reveal ncss-reveal--zoom"&gt;&lt;img src="..." alt="..."&gt;&lt;/figure&gt;
 &lt;section class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal&gt;...&lt;/section&gt;
 &lt;script src="ncss/js/reveal.js" defer&gt;&lt;/script&gt;</code></pre>
-  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-reveal-start</code>/<code>-end</code> (default <code>entry 25%</code> / <code>cover 45%</code> - finishes just before the viewport centre), <code>--ncss-reveal-inset</code>, <code>--ncss-reveal-radius</code>, <code>--ncss-reveal-scale</code>, <code>--ncss-reveal-duration</code> (<code>--once</code>, 0.9s). Event <code>ncss:reveal</code> when the JS path starts.</p>
+  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-reveal-start</code>/<code>-end</code> (default <code>entry 25%</code> / <code>cover 45%</code> - finishes just before the viewport centre), <code>--ncss-reveal-inset</code>, <code>--ncss-reveal-radius</code>, <code>--ncss-reveal-scale</code>, <code>--ncss-reveal-duration</code> (<code>--once</code>, 0.9s). Event <code>ncss-reveal</code> when the JS path starts.</p>
   <p class="ncss-text-muted ncss-text-sm">Relation to <code>.ncss-animate-on-scroll</code> (<a href="animations.html">Animations</a>): that remains the lightweight shorthand (fade/slide only, scrub only). <code>.ncss-reveal</code> is the larger, self-contained variant with shapes, once mode and fallback - own keyframes, no dependency between the two files.</p>
 </section>
 
@@ -123,11 +123,11 @@
         <tr><td><code>media-start</code> (attribute)</td><td>media column on the left instead of the right</td></tr>
         <tr><td><code>el.step</code></td><td>index of the active step; assigning scrolls that step to the centre</td></tr>
         <tr><td><code>data-ncss-time</code> (step)</td><td>time mark in seconds - hook for a scroll-driven video</td></tr>
-        <tr><td>Event <code>ncss:step</code></td><td>bubbles, <code>detail = { index, time, step, figure }</code> (<code>time</code> = number or <code>null</code>)</td></tr>
+        <tr><td>Event <code>ncss-scrolly-step</code></td><td>bubbles, <code>detail = { index, time, step, figure }</code> (<code>time</code> = number or <code>null</code>)</td></tr>
       </tbody>
     </table>
   </div>
-  <pre><code class="language-javascript">document.querySelector("ncss-scrolly").addEventListener("ncss:step", (e) =&gt; {
+  <pre><code class="language-javascript">document.querySelector("ncss-scrolly").addEventListener("ncss-scrolly-step", (e) =&gt; {
   if (e.detail.time !== null) video.currentTime = e.detail.time;
 });</code></pre>
 </section>
@@ -146,3 +146,10 @@
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-curtain-height</code> (100svh), <code>--ncss-curtain-scale</code> (0.88), <code>--ncss-curtain-dim</code> (0.45), <code>--ncss-curtain-radius</code>. For a pinned stage with cards instead of real sections: <code>components/scroll-stack.css</code> (<a href="../../demo/stacked-cards.html">Stacked Cards</a>).</p>
 </section>
+
+<section class="ncss-stack" id="live-demo">
+  <h2 class="demo-section-title">Live examples</h2>
+  <p class="ncss-text-muted">Every building block of this page, live - turn on <strong>Inspect</strong> (bottom right) and click any element to see its HTML and an explanation.</p>
+</section>
+
+<!--INCLUDE: scroll-effects-->

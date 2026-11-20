@@ -64,3 +64,32 @@
   border-radius: var(--ncss-radius-full);
   font-size: 2rem;
 }
+
+/* --- Punkt-Badge -----------------------------------------------------------------------
+ * Kleiner Status-/"Neu"-Punkt neben einem Text (Nav-Punkt, Kartentitel, Listeneintrag).
+ * Standardfarbe Erfolg/Grün; pro Instanz per --ncss-badge-dot-color umfärbbar.
+ * Farbe allein ist keine Information (WCAG 1.4.1) - der Punkt trägt IMMER einen
+ * .ncss-visually-hidden-Text als Kind, den Screenreader vorlesen:
+ *   Scroll-Effekte <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span>
+ * Größe in em: wächst mit der Schrift des umgebenden Textes mit. Der helle Ring
+ * (--ncss-color-surface) trennt den Punkt von farbigen Flächen; in Forced Colors bleibt
+ * er als Systemfarbe sichtbar (sonst würde background-color dort entfernt). */
+.ncss-badge-dot {
+  display: inline-block;
+  position: relative;
+  flex-shrink: 0;
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  margin-inline-start: 0.2em;
+  vertical-align: 0.1em;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-badge-dot-color, var(--ncss-color-success));
+  box-shadow: 0 0 0 0.12em var(--ncss-badge-dot-ring, var(--ncss-color-surface));
+}
+@media (forced-colors: active) {
+  .ncss-badge-dot {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    box-shadow: 0 0 0 0.12em Canvas;
+  }
+}

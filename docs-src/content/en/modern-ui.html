@@ -159,3 +159,37 @@ document.dispatchEvent(new CustomEvent("ncss-notify", { detail: { message: "Hell
     </table>
   </div>
 </section>
+
+<section class="ncss-stack" id="suchmodus">
+  <h2 class="demo-section-title">Command palette as search (search mode)</h2>
+  <p>For large lists - such as a site search - <code>&lt;ncss-command-palette src="search.json"&gt;</code> loads its entries from a JSON file the first time the palette opens and renders results only while typing: ranked (title start before title before keyword/text), limited per group (<code>limit</code>, default 8), the group with the best hit first, search terms highlighted with <code>&lt;mark&gt;</code>. No server, no library - the search at the top of this website is exactly that (index built by <code>docs-src/build.mjs</code>).</p>
+  <pre><code class="language-html">&lt;button type="button" command="show-modal" commandfor="search"&gt;Search &lt;kbd data-ncss-command-key&gt;Ctrl K&lt;/kbd&gt;&lt;/button&gt;
+&lt;ncss-command-palette shortcut="k" slash src="search.json" limit="7"&gt;
+  &lt;dialog id="search" class="ncss-command" aria-label="Search" closedby="any"&gt;
+    &lt;div class="ncss-command-search"&gt;&lt;input class="ncss-command-input" type="search" aria-label="Search"&gt;&lt;/div&gt;
+    &lt;div class="ncss-command-list" aria-label="Results"&gt;...suggestions (also without JS)...&lt;/div&gt;
+    &lt;p class="ncss-command-empty" hidden&gt;No results&lt;/p&gt;
+  &lt;/dialog&gt;
+&lt;/ncss-command-palette&gt;</code></pre>
+  <pre><code class="language-javascript">{ "groups": [{ "id": "pages", "label": "Pages" }, { "id": "classes", "label": "Classes" }],
+  "items":  [{ "g": "pages", "t": "Cards", "u": "en/cards.html", "h": "Content", "s": "Short excerpt", "k": "card teaser" }] }</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribute / API</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>src</code></td><td>JSON index for search mode; <code>u</code> is relative to the JSON file.</td></tr>
+        <tr><td><code>limit</code></td><td>Maximum results per group (default 8).</td></tr>
+        <tr><td><code>slash</code></td><td>Also <kbd>/</kbd> as a shortcut (not while a text field has focus).</td></tr>
+        <tr><td><code>data-ncss-command-key</code></td><td>Element receives the matching shortcut text (<kbd>⌘K</kbd> or <kbd>Ctrl K</kbd>).</td></tr>
+        <tr><td><code>.ncss-command-item-title</code> / <code>-snippet</code></td><td>Two-line result: title and a one-line excerpt.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="live-demo">
+  <h2 class="demo-section-title">Live examples</h2>
+  <p class="ncss-text-muted">Every building block of this page, live - turn on <strong>Inspect</strong> (bottom right) and click any element to see its HTML and an explanation.</p>
+</section>
+
+<!--INCLUDE: modern-ui-->
