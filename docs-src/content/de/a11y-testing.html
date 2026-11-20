@@ -12,7 +12,7 @@
     <li><strong>Lighthouse</strong> (in den Chrome-Entwicklerwerkzeugen unter "Lighthouse", Kategorie "Barrierefreiheit") - baut auf axe auf und liefert einen Punktwert. 100 Punkte bedeuten nur: keine automatisch erkennbaren Fehler.</li>
     <li><strong>Lighthouse auf der Kommandozeile</strong> - für mehrere Seiten oder regelmäßige Prüfungen:</li>
   </ul>
-  <pre><code>npx lighthouse https://example.org/ --only-categories=accessibility --view
+  <pre><code class="language-none">npx lighthouse https://example.org/ --only-categories=accessibility --view
 
 # Ergebnis als JSON speichern, z. B. für einen Vergleich
 npx lighthouse https://example.org/kontakt/ --only-categories=accessibility --output=json --output-path=./a11y-kontakt.json</code></pre>

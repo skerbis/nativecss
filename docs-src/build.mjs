@@ -580,7 +580,7 @@ function render(lang, page, classIndex) {
     __WORDMARK__: WORDMARK,
     __BRAND_LABEL__: s.brandLabel,
     __SPONSOR_LABEL__: s.sponsorLabel,
-    __SPONSOR_ARIA__: s.sponsorAria,
+    __SPONSOR_NOTE__: s.sponsorNote,
     __VERSION__: VERSION,
     __VERSION_LABEL__: s.versionLabel,
     __CHANGELOG_LABEL__: s.changelogLabel,
@@ -807,8 +807,10 @@ for (const lang of LANGS) {
   const classIndex = buildClassIndex(lang);
   writeFileSync(join(OUT_DIR, `class-index.${lang}.json`), JSON.stringify(classIndex));
   for (const page of allPages) {
-    const html = render(lang, page, classIndex);
+    let html = render(lang, page, classIndex);
     if (!html) continue;
+    // Scrollbare Bereiche per Tastatur erreichbar (WCAG 2.1.1, axe scrollable-region-focusable)
+    html = html.replace(/<(div|ul) class="(ncss-table-scroll|ncss-sticky-container|ncss-slideshow-track)([^"]*)"(?![^>]*tabindex)/g, '<$1 class="$2$3" tabindex="0"');
     writeFileSync(join(langDir, `${page.slug}.html`), html);
     count++;
   }

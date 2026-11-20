@@ -69,9 +69,12 @@
         var name = choice === "light" ? label(btn, "lightName") : choice === "dark" ? label(btn, "darkName") : label(btn, "system");
         var target = btn.querySelector("[data-ncss-theme-label]");
         if (target) {
+          // Sichtbarer Text ist der Name (WCAG 2.5.3 Label in Name) - kein abweichendes aria-label
           target.textContent = name;
+          btn.removeAttribute("aria-label");
+        } else {
+          btn.setAttribute("aria-label", label(btn, "cycle") + ": " + name);
         }
-        btn.setAttribute("aria-label", label(btn, "cycle") + ": " + name);
         return;
       }
       var dark = mode === "dark";

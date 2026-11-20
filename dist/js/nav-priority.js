@@ -86,7 +86,7 @@
         var details = document.createElement("details");
         details.className = "ncss-nav-dropdown";
         var summary = document.createElement("summary");
-        summary.setAttribute("aria-label", this.getAttribute("more-label") || "Weitere Punkte");
+        summary.setAttribute("aria-label", this.getAttribute("more-label") || "Mehr Punkte");
         var submenu = document.createElement("ul");
         submenu.className = "ncss-nav-submenu";
         details.appendChild(summary);

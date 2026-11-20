@@ -244,6 +244,30 @@
    ]
   },
   {
+   "name": "ncss-preferences",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)\n\nScript: `js/preferences.js` · CSS: `components/preferences.css`\n\nEvents: `ncss-preferences-change`"
+   },
+   "attributes": [
+    {
+     "name": "inline",
+     "description": "Bedienfeld direkt anzeigen statt Button + Popover",
+     "valueSet": "v"
+    },
+    {
+     "name": "settings",
+     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten) - Default/Beispiel: `theme contrast motion text font spacing links focus`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
    "name": "ncss-scroll-frames",
    "description": {
     "kind": "markdown",
@@ -532,6 +556,13 @@
    }
   },
   {
+   "name": "data-ncss-font",
+   "description": {
+    "kind": "markdown",
+    "value": "Darstellungs-Einstellungen, früher Teil: setzt gespeicherte Besucher-Einstellungen (<ncss-preferences>, js/preferences.js) als Attribute am <html>, BEVOR die Seite gezeichnet wird - kein Aufblitzen in falscher Schriftgröße/Farbe beim Laden\n\n```html\nGewählt wird über <html data-ncss-font=\"hyperlegible|lexend|opendyslexic\"> (gesetzt von\n```\n\nQuelle: `components/preferences-fonts.css`, `js/preferences-early.js`, `js/preferences.js`"
+   }
+  },
+  {
    "name": "data-ncss-hovercard-manual",
    "description": {
     "kind": "markdown",
@@ -606,6 +637,13 @@
    "description": {
     "kind": "markdown",
     "value": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)\n\nQuelle: `js/audio-player.js`, `js/video-player.js`"
+   }
+  },
+  {
+   "name": "data-ncss-preferences-fallback",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)\n\nQuelle: `components/preferences.css`, `js/preferences.js`"
    }
   },
   {

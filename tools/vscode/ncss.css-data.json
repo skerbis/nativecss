@@ -957,7 +957,7 @@
    "name": "--ncss-focus-ring-width",
    "description": {
     "kind": "markdown",
-    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-focus-ring-width: 2px;\n```\nQuelle: `tokens.css`"
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-focus-ring-width: 3px !important;\n```\nQuelle: `colors.css`"
    },
    "syntax": "*"
   },

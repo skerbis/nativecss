@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 834 Klassen, 17 Custom Elements, 46 data-ncss-Attribute, 204 Tokens.
+Stand: 847 Klassen, 18 Custom Elements, 48 data-ncss-Attribute, 204 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -1983,6 +1983,53 @@ aspect-ratio-Werte mitzubringen:
   <div class="ncss-placeholder ncss-ratio-video">...</div>
 und mit .ncss-card-media, wenn eine Card noch kein echtes Bild hat:
   <div class="ncss-card-media ncss-placeholder"></div>
+```
+
+### `components/preferences-fonts.css`
+
+Klassen (1): `.ncss-preferences-options`
+
+```text
+ncss - Lese-Schriften für die Darstellungs-Einstellungen (Layer "components"), opt-in,
+NICHT in ncss.css enthalten - bewusst eigene Datei, damit eine Seite ohne Schriftwahl
+keine @font-face-Zeile ausliefert:
+  <link rel="stylesheet" href="ncss/components/preferences-fonts.css">
+Selbst gehostet unter fonts/ (Lizenzen + Größen: fonts/README.md), kein CDN-Request.
+
+Gewählt wird über <html data-ncss-font="hyperlegible|lexend|opendyslexic"> (gesetzt von
+js/preferences-early.js / js/preferences.js, Einstellung "font" in <ncss-preferences>).
+Ein @font-face lädt seine Datei erst, wenn ein Element die Familie tatsächlich nutzt -
+ohne Wahl wird also keine einzige Schriftdatei angefragt.
+
+Gewirkt wird über die Tokens --ncss-font-family-base/-heading (Fließtext + Überschriften),
+NICHT über --ncss-font-family-mono - Code bleibt in Festbreitenschrift. Die eigene
+Seitenschrift bleibt als Fallback in der Liste (font-display: swap: Text ist sofort
+lesbar, die gewählte Schrift tauscht nach dem Laden ein). !important aus demselben Grund
+wie beim Kontrast (colors.css): theme.css setzt die Schrift-Tokens unlayered.
+```
+
+### `components/preferences.css`
+
+Klassen (11): `.ncss-preferences-actions` `.ncss-preferences-group` `.ncss-preferences-hint` `.ncss-preferences-icon` `.ncss-preferences-intro` `.ncss-preferences-options` `.ncss-preferences-panel` `.ncss-preferences-status` `.ncss-preferences-switch` `.ncss-preferences-title` `.ncss-preferences-toggle`
+
+```text
+ncss - <ncss-preferences>: Darstellungs-Einstellungen für Besucher (Layer "components").
+KEIN Barrierefreiheits-Overlay - es macht keine Seite barrierefrei, sondern lässt Besucher
+eine bereits barrierefreie Seite an ihre Bedürfnisse anpassen. Systemeinstellungen bleiben
+Default ("System") und werden nie stillschweigend überschrieben.
+
+Markup (den Rest baut js/preferences.js):
+  <script src="js/preferences-early.js"></script>      im <head>, vor den Stylesheets
+  <ncss-preferences></ncss-preferences>                 Button "Darstellung" + Popover
+  <ncss-preferences inline></ncss-preferences>          Bedienfeld direkt (z.B. eigene Seite)
+  <ncss-preferences settings="theme text links"></ncss-preferences>   nur eine Auswahl
+  <script src="js/preferences.js" defer></script>
+Wirkung der Einstellungen: colors.css (Farbschema, Kontrast) und reset.css (Bewegung,
+Schriftgröße, Textabstände, Links, Fokus) - diese Datei stylt nur das Bedienfeld.
+
+Ohne JS bleibt das Element verborgen, es gelten die Systemeinstellungen.
+Abhängigkeiten (Cherry-Picking): colors.css/tokens.css/reset.css (+ base). Keine andere
+Komponente nötig (eigenes Icon, eigene Segment-/Schalter-Optik).
 ```
 
 ### `components/rating.css`
@@ -4196,6 +4243,73 @@ Document View Transitions, ob deklarativ per CSS oder per JS ausgelöst.
 Einbindung (zusätzlich zu page-transitions.css, komplett optional - nur bei Bedarf,
 page-transitions.css selbst bleibt bewusst reines CSS ohne JS-Abhängigkeit):
   <script src="js/page-transitions-quiet.js" defer></script>
+```
+
+### `js/preferences-early.js`
+
+data-Attribute: `data-ncss-font`
+
+```text
+ncss - Darstellungs-Einstellungen, früher Teil: setzt gespeicherte Besucher-Einstellungen
+(<ncss-preferences>, js/preferences.js) als Attribute am <html>, BEVOR die Seite gezeichnet
+wird - kein Aufblitzen in falscher Schriftgröße/Farbe beim Laden.
+
+Synchron im <head>, VOR den Stylesheets, ohne defer/async (eigene Datei statt Inline-
+Snippet, damit eine strenge CSP ohne 'unsafe-inline' funktioniert):
+  <script src="dist/js/preferences-early.js"></script>
+  <link rel="stylesheet" href="dist/ncss.css">
+Ersetzt js/theme-toggle-early.js (liest denselben Schlüssel "ncss-theme" - beide Dateien
+zusammen schaden nicht, eine reicht).
+
+Gesetzte Attribute (Wirkung in colors.css/reset.css, ohne Wahl gilt das System):
+  data-theme="light|dark"         Farbschema (+ data-theme-resolved, wie theme-toggle)
+  data-contrast="more|normal"     Kontrast (normal = System-"more" bewusst zurücknehmen)
+  data-motion="reduce|full"       Bewegung (full = System-"reduce" bewusst aufheben)
+  data-text-scale="115|130"       Schriftgröße
+  data-ncss-font="hyperlegible|lexend|opendyslexic"   Lese-Schrift
+                                  (Wirkung in components/preferences-fonts.css)
+  data-text-spacing               Textabstände nach WCAG 1.4.12
+  data-links="underline"          Links immer unterstreichen
+  data-focus="strong"             verstärkter Fokus-Rahmen
+```
+
+### `js/preferences.js`
+
+Elemente: `<ncss-preferences>`
+
+Attribute: `inline`, `settings="theme contrast motion text font spacing links focus"`
+
+data-Attribute: `data-ncss-font`, `data-ncss-preferences-fallback`
+
+Events: `ncss-preferences-change`
+
+```text
+ncss - <ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe
+components/preferences.css für Markup). Light-DOM-Custom-Element.
+
+KEIN "Barrierefreiheits-Overlay": macht keine Seite barrierefrei und repariert nichts.
+Es lässt Besucher eine bereits barrierefreie Seite an persönliche Bedürfnisse anpassen.
+Betriebssystem-/Browser-Einstellungen sind der Default ("System") und werden nie
+stillschweigend überschrieben - jede Abweichung ist eine ausdrückliche Wahl.
+
+Schreibt dieselben <html>-Attribute wie js/preferences-early.js (Wirkung in colors.css
+und reset.css, keine Komponente muss davon wissen) und speichert in localStorage:
+"ncss-theme" (gemeinsam mit js/theme-toggle.js - EIN Mechanismus) und "ncss-prefs" (JSON).
+
+Attribute am Element:
+  inline                     Bedienfeld direkt anzeigen statt Button + Popover
+  settings="theme contrast motion text font spacing links focus"   Auswahl/Reihenfolge
+                             ("font" nur mit components/preferences-fonts.css)
+  data-label-<schlüssel>="…"  jeden Text überschreiben (Schlüssel siehe TEXTS unten)
+Event (am document): ncss-preferences-change, detail { key, value, prefs }
+
+Bedienung: native Radiogruppen (fieldset/legend, Pfeiltasten) und Checkboxen (Leertaste),
+Änderungen wirken sofort (Live-Vorschau) und werden höflich angesagt (role="status").
+Popover: Esc/Klick daneben schließt, Fokus geht beim Öffnen auf das erste Feld und beim
+Schließen zurück auf den Button. Ohne Anchor Positioning rechnet das Script die Position.
+
+Abhängigkeiten: keine anderen ncss-Scripts. Ohne customElements wird nichts registriert -
+das Element bleibt verborgen (CSS :not(:defined)), es gelten die Systemeinstellungen.
 ```
 
 ### `js/reveal.js`

@@ -1748,6 +1748,57 @@
  "ncss-placeholder--surface": [
   "components/placeholder.css"
  ],
+ "ncss-preferences-actions": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-close": [
+  "js/preferences.js"
+ ],
+ "ncss-preferences-group": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-hint": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-icon": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-intro": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-options": [
+  "components/preferences-fonts.css",
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-panel": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-reset": [
+  "js/preferences.js"
+ ],
+ "ncss-preferences-status": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-switch": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-title": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
+ "ncss-preferences-toggle": [
+  "components/preferences.css",
+  "js/preferences.js"
+ ],
  "ncss-press": [
   "helpers/animations.css"
  ],

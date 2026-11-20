@@ -89,8 +89,10 @@ ncss-scrolly:defined:has(.ncss-scrolly-step.is-active) {
     min-block-size: var(--ncss-scrolly-step-height, 75svh);
   }
 
+  /* Inaktive Schritte nur leicht gedimmt: 0.65 hält auch Markenfarben-Text über
+     WCAG 1.4.3 (4.5:1) - sie bleiben lesbarer Inhalt, kein deaktiviertes Element. */
   & .ncss-scrolly-step > * {
-    opacity: 0.45;
+    opacity: 0.65;
     transition:
       opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
       border-color var(--ncss-motion-duration-slow) var(--ncss-motion-easing),

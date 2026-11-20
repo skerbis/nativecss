@@ -105,8 +105,14 @@
     }
   }
   @media (max-width: 29.99rem) {
+    /* nur optisch weg - bleibt Name des Buttons (WCAG 2.5.3 Label in Name) */
     .site-search-label {
-      display: none;
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
     .site-search-btn {
       padding-inline: 0.55rem;
@@ -411,10 +417,10 @@ __HEAD_EXTRA__
 <div class="site-sticky" data-ncss-sticky-header>
 <header class="ncss-topbar site-topbar">
   <div class="ncss-topbar-inner">
-    <a class="ncss-topbar-brand site-brand" href="__BRAND_HREF__"__BRAND_CURRENT__ title="__BRAND_LABEL__">__WORDMARK__</a>
+    <a class="ncss-topbar-brand site-brand" href="__BRAND_HREF__"__BRAND_CURRENT__ aria-label="__BRAND_LABEL__">__WORDMARK__</a>
 __SITE_NAV__
     <div class="ncss-topbar-actions">
-      <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-label="__SEARCH_LABEL__" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">__SEARCH_LABEL__</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
+      <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">__SEARCH_LABEL__</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
 __SITE_ACTIONS__
     </div>
   </div>
@@ -457,7 +463,7 @@ __MAIN__
         <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">GitHub</a></li>
         <li class="ncss-nav-item"><a href="accessibility-statement.html"><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>__STATEMENT_LABEL__</a></li>
         <li class="ncss-nav-item"><a href="../../LICENSE">Lizenz / License</a></li>
-        <li class="ncss-nav-item"><a href="https://github.com/sponsors/skerbis" target="_blank" rel="noopener" aria-label="__SPONSOR_ARIA__">__SPONSOR_LABEL__</a></li>
+        <li class="ncss-nav-item"><a href="https://github.com/sponsors/skerbis" target="_blank" rel="noopener">__SPONSOR_LABEL__ <span class="ncss-visually-hidden">__SPONSOR_NOTE__</span></a></li>
       </ul>
     </nav>
   </div>

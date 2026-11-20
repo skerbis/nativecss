@@ -362,6 +362,31 @@
    "events": [],
    "api": []
   },
+  "ncss-preferences": {
+   "script": "js/preferences.js",
+   "css": [
+    "components/preferences.css"
+   ],
+   "description": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)",
+   "attributes": [
+    {
+     "name": "inline",
+     "default": null,
+     "boolean": true,
+     "description": "Bedienfeld direkt anzeigen statt Button + Popover"
+    },
+    {
+     "name": "settings",
+     "default": "theme contrast motion text font spacing links focus",
+     "boolean": false,
+     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten)"
+    }
+   ],
+   "events": [
+    "ncss-preferences-change"
+   ],
+   "api": []
+  },
   "ncss-scroll-frames": {
    "script": "js/scroll-frames.js",
    "css": [
@@ -799,6 +824,15 @@
    ],
    "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)"
   },
+  "data-ncss-font": {
+   "files": [
+    "components/preferences-fonts.css",
+    "js/preferences-early.js",
+    "js/preferences.js"
+   ],
+   "description": "Darstellungs-Einstellungen, früher Teil: setzt gespeicherte Besucher-Einstellungen (<ncss-preferences>, js/preferences.js) als Attribute am <html>, BEVOR die Seite gezeichnet wird - kein Aufblitzen in falscher Schriftgröße/Farbe beim Laden",
+   "example": "Gewählt wird über <html data-ncss-font=\"hyperlegible|lexend|opendyslexic\"> (gesetzt von"
+  },
   "data-ncss-hovercard-manual": {
    "files": [
     "components/hovercard.css",
@@ -873,6 +907,14 @@
     "js/video-player.js"
    ],
    "description": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)"
+  },
+  "data-ncss-preferences-fallback": {
+   "files": [
+    "components/preferences.css",
+    "js/preferences.js"
+   ],
+   "description": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)",
+   "internal": true
   },
   "data-ncss-reveal": {
    "files": [
@@ -1055,6 +1097,7 @@
   "ncss-media-pause",
   "ncss-media-play",
   "ncss-notification-close",
+  "ncss-preferences-change",
   "ncss-reveal",
   "ncss-scroll-video-change",
   "ncss-scrolly-step",
@@ -1396,6 +1439,29 @@
    "elements": [],
    "dataAttributes": [],
    "events": [],
+   "api": []
+  },
+  "js/preferences-early.js": {
+   "description": "Darstellungs-Einstellungen, früher Teil: setzt gespeicherte Besucher-Einstellungen (<ncss-preferences>, js/preferences.js) als Attribute am <html>, BEVOR die Seite gezeichnet wird - kein Aufblitzen in falscher Schriftgröße/Farbe beim Laden",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-font"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/preferences.js": {
+   "description": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)",
+   "elements": [
+    "ncss-preferences"
+   ],
+   "dataAttributes": [
+    "data-ncss-font",
+    "data-ncss-preferences-fallback"
+   ],
+   "events": [
+    "ncss-preferences-change"
+   ],
    "api": []
   },
   "js/reveal.js": {

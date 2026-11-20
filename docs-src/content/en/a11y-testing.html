@@ -12,7 +12,7 @@
     <li><strong>Lighthouse</strong> (in Chrome DevTools under "Lighthouse", category "Accessibility") - built on axe and gives you a score. 100 points only means: no automatically detectable errors.</li>
     <li><strong>Lighthouse on the command line</strong> - for several pages or regular checks:</li>
   </ul>
-  <pre><code>npx lighthouse https://example.org/ --only-categories=accessibility --view
+  <pre><code class="language-none">npx lighthouse https://example.org/ --only-categories=accessibility --view
 
 # Save the result as JSON, e.g. to compare runs
 npx lighthouse https://example.org/contact/ --only-categories=accessibility --output=json --output-path=./a11y-contact.json</code></pre>

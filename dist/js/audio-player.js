@@ -62,7 +62,7 @@
       player: "Audioplayer", play: "Abspielen", pause: "Pause", mute: "Ton aus", unmute: "Ton an",
       volume: "Lautstärke", seek: "Zeitleiste", speed: "Geschwindigkeit", timeOf: "%s von %s",
       playing: "Wiedergabe", paused: "Pausiert", muted: "Stumm", volumeTo: "Lautstärke %s %",
-      speedTo: "Geschwindigkeit %s×", back: "%s Sekunden zurück", forward: "%s Sekunden vor",
+      speedTo: "Geschwindigkeit %s×", back: "−%s s zurück", forward: "+%s s vor",
       previous: "Vorheriger Titel", next: "Nächster Titel", chapters: "Kapitel", normal: "normal",
       error: "Diese Audiodatei konnte nicht geladen werden."
     },
@@ -70,7 +70,7 @@
       player: "Audio player", play: "Play", pause: "Pause", mute: "Mute", unmute: "Unmute",
       volume: "Volume", seek: "Seek", speed: "Speed", timeOf: "%s of %s",
       playing: "Playing", paused: "Paused", muted: "Muted", volumeTo: "Volume %s %",
-      speedTo: "Speed %s×", back: "Back %s seconds", forward: "Forward %s seconds",
+      speedTo: "Speed %s×", back: "−%s s back", forward: "+%s s forward",
       previous: "Previous track", next: "Next track", chapters: "Chapters", normal: "normal",
       error: "This audio file could not be loaded."
     }
