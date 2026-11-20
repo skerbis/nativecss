@@ -1,4 +1,4 @@
-name: Release (npm + GitHub)
+name: Release (npm + GitHub-Release mit ZIP)
 
 # Veröffentlicht NativeCSS bei npm, sobald ein Versions-Tag gepusht wird:
 #   git tag v1.1.0 && git push origin v1.1.0
@@ -55,4 +55,9 @@ jobs:
             on && /^## / { exit }
             on { print }
           ' CHANGELOG.md > release-notes.md
-          gh release create "$GITHUB_REF_NAME" --title "NativeCSS $VERSION" --notes-file release-notes.md
+          # Schlankes Download-Paket: nur das, was ein Projekt braucht (kein Doku-/Demo-Ballast)
+          mkdir -p "nativecss-$VERSION"
+          cp -R dist LICENSE README.md CHANGELOG.md "nativecss-$VERSION/"
+          zip -qr "nativecss-$VERSION.zip" "nativecss-$VERSION"
+          gh release create "$GITHUB_REF_NAME" "nativecss-$VERSION.zip" \
+            --title "NativeCSS $VERSION" --notes-file release-notes.md
