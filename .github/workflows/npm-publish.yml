@@ -2,8 +2,10 @@ name: Release (npm + GitHub-Release mit ZIP)
 
 # Veröffentlicht NativeCSS bei npm, sobald ein Versions-Tag gepusht wird:
 #   git tag v1.1.0 && git push origin v1.1.0
-# Voraussetzungen (einmalig, im Repo unter Settings → Secrets and variables → Actions):
-#   NPM_TOKEN = npm "Automation"-Token (oder Granular Token mit Publish-Recht auf "nativecss")
+# Anmeldung bei npm per "Trusted Publishing" (OIDC) - KEIN Token, kein Secret.
+# Voraussetzung (einmalig): auf npmjs.com unter Paket "nativecss" → Settings → Trusted Publisher
+#   GitHub Actions · Owner: skerbis · Repository: nativecss · Workflow: npm-publish.yml
+# (npm schränkt Tokens, die 2FA umgehen, ab Jan 2027 für direktes Veröffentlichen ein.)
 # Das Paket enthält nur dist/, LICENSE, README.md, CHANGELOG.md (siehe "files" in package.json) -
 # kein Build-Schritt, keine Abhängigkeiten.
 
@@ -13,7 +15,7 @@ on:
 
 permissions:
   contents: write   # GitHub-Release anlegen
-  id-token: write   # npm Provenance (Herkunftsnachweis)
+  id-token: write   # OIDC-Anmeldung bei npm (Trusted Publishing) + Provenance
 
 jobs:
   publish:
@@ -25,8 +27,11 @@ jobs:
       - name: Node einrichten
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org
+
+      - name: npm aktualisieren (Trusted Publishing braucht npm >= 11.5.1)
+        run: npm install -g npm@latest
 
       - name: Tag passt zur Version in package.json
         run: |
@@ -41,9 +46,8 @@ jobs:
         run: npm pack --dry-run
 
       - name: Bei npm veröffentlichen
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # Provenance (Herkunftsnachweis) erzeugt npm bei Trusted Publishing automatisch
+        run: npm publish --access public
 
       - name: GitHub-Release mit Changelog-Abschnitt
         env:
