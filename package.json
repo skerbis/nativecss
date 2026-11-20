@@ -1,0 +1,51 @@
+{
+  "name": "nativecss",
+  "version": "1.1.0",
+  "description": "Natives CSS-Designsystem ohne Build-Schritt: Cascade Layers, Container Queries, light-dark(), native Elemente und Light-DOM-Web-Components. Einzeln einbindbar.",
+  "keywords": [
+    "css",
+    "css-framework",
+    "design-system",
+    "cascade-layers",
+    "container-queries",
+    "light-dark",
+    "web-components",
+    "no-build",
+    "accessibility"
+  ],
+  "homepage": "https://skerbis.github.io/nativecss/",
+  "bugs": {
+    "url": "https://github.com/skerbis/nativecss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skerbis/nativecss.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/skerbis"
+  },
+  "license": "MIT",
+  "author": "Thomas Skerbis (https://github.com/skerbis)",
+  "contributors": [
+    "KLXM Crossmedia (https://github.com/klxm)"
+  ],
+  "style": "dist/ncss.css",
+  "exports": {
+    ".": "./dist/ncss.css",
+    "./ncss.css": "./dist/ncss.css",
+    "./theme.css": "./dist/theme.css",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": [
+    "*.css",
+    "dist/js/*.js"
+  ]
+}

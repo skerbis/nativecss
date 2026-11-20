@@ -1,0 +1,58 @@
+name: Release (npm + GitHub)
+
+# Veröffentlicht NativeCSS bei npm, sobald ein Versions-Tag gepusht wird:
+#   git tag v1.1.0 && git push origin v1.1.0
+# Voraussetzungen (einmalig, im Repo unter Settings → Secrets and variables → Actions):
+#   NPM_TOKEN = npm "Automation"-Token (oder Granular Token mit Publish-Recht auf "nativecss")
+# Das Paket enthält nur dist/, LICENSE, README.md, CHANGELOG.md (siehe "files" in package.json) -
+# kein Build-Schritt, keine Abhängigkeiten.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write   # GitHub-Release anlegen
+  id-token: write   # npm Provenance (Herkunftsnachweis)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Tag passt zur Version in package.json
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PKG" ]; then
+            echo "Tag v$TAG passt nicht zu package.json ($PKG)." >&2
+            exit 1
+          fi
+
+      - name: Paketinhalt prüfen
+        run: npm pack --dry-run
+
+      - name: Bei npm veröffentlichen
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: GitHub-Release mit Changelog-Abschnitt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[?" v "\\]?" { on = 1; next }
+            on && /^## / { exit }
+            on { print }
+          ' CHANGELOG.md > release-notes.md
+          gh release create "$GITHUB_REF_NAME" --title "NativeCSS $VERSION" --notes-file release-notes.md
