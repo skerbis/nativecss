@@ -1,0 +1,92 @@
+<!--DESC: NativeCSS with Laravel, Symfony, Astro, Eleventy/Hugo, React/Vue/Svelte and htmx/Alpine - with or without a bundler, web components in frameworks.-->
+<section class="ncss-stack">
+  <h1>Framework integration</h1>
+  <p class="ncss-text-lg ncss-text-muted">NativeCSS needs no bundler - if you already use one, you can import it via npm. The web components (<code>&lt;ncss-…&gt;</code>) are light-DOM elements without dependencies and work like plain HTML in any framework.</p>
+</section>
+
+<section class="ncss-stack" id="zwei-wege">
+  <h2 class="demo-section-title">Two ways</h2>
+  <div class="ncss-grid" style="--ncss-grid-min: 18rem;">
+    <div class="ncss-card ncss-border ncss-radius-lg"><div class="ncss-card-body ncss-stack">
+      <h3>Without a bundler</h3>
+      <p>Copy <code>dist/</code> into the public folder and include it via <code>&lt;link&gt;</code> - works with any server framework.</p>
+    </div></div>
+    <div class="ncss-card ncss-border ncss-radius-lg"><div class="ncss-card-body ncss-stack">
+      <h3>With a bundler (Vite, Astro …)</h3>
+      <pre><code class="language-javascript">// npm i nativecss
+import "nativecss";            // = dist/ncss.css
+import "nativecss/theme.css";
+import "nativecss/dist/js/tabs.js"; // only the scripts you need</code></pre>
+    </div></div>
+  </div>
+</section>
+
+<section class="ncss-stack" id="laravel">
+  <h2 class="demo-section-title">Laravel (Blade)</h2>
+  <pre><code class="language-html">&lt;!-- resources/views/layouts/app.blade.php, files in public/ncss/ --&gt;
+&lt;link rel="stylesheet" href="{{ asset('ncss/ncss.css') }}"&gt;
+&lt;link rel="stylesheet" href="{{ asset('ncss/theme.css') }}"&gt;</code></pre>
+  <p>Wrap recurring markup in a Blade component - the classes stay NativeCSS:</p>
+  <pre><code class="language-html">&lt;!-- resources/views/components/card.blade.php --&gt;
+&lt;article {{ $attributes-&gt;merge(['class' =&gt; 'ncss-card ncss-border ncss-radius-lg']) }}&gt;
+  &lt;div class="ncss-card-body ncss-stack"&gt;
+    &lt;h3&gt;{{ $title }}&lt;/h3&gt;
+    {{ $slot }}
+  &lt;/div&gt;
+&lt;/article&gt;
+
+&lt;!-- usage --&gt;
+&lt;x-card title="Hello"&gt;Content&lt;/x-card&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">With Vite: <code>npm i nativecss</code> and <code>import "nativecss"</code> in <code>resources/js/app.js</code>.</p>
+</section>
+
+<section class="ncss-stack" id="symfony">
+  <h2 class="demo-section-title">Symfony (Twig)</h2>
+  <pre><code class="language-html">{# templates/base.html.twig, files e.g. in assets/ncss/ (AssetMapper) #}
+&lt;link rel="stylesheet" href="{{ asset('ncss/ncss.css') }}"&gt;
+&lt;link rel="stylesheet" href="{{ asset('ncss/theme.css') }}"&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Recurring building blocks as Twig macros or Twig components (Symfony UX) - they output NativeCSS markup.</p>
+</section>
+
+<section class="ncss-stack" id="astro-ssg">
+  <h2 class="demo-section-title">Astro, Eleventy, Hugo</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Astro</strong>: <code>import "nativecss";</code> in the layout frontmatter (or files in <code>public/</code> + <code>&lt;link&gt;</code>); component scripts via <code>&lt;script src="…/dist/js/tabs.js"&gt;</code> only in the components that need them.</li>
+    <li><strong>Eleventy / Hugo</strong>: serve <code>dist/</code> via passthrough copy (11ty) or from <code>static/</code> (Hugo), two <code>&lt;link&gt;</code> lines in the base layout, shortcodes/partials output NativeCSS markup.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="spa">
+  <h2 class="demo-section-title">React, Vue, Svelte</h2>
+  <p>The web components are ordinary custom elements without shadow DOM - classes, tokens and <code>theme.css</code> apply as everywhere. Two things to note:</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Events</strong> are named <code>ncss-&lt;component&gt;-&lt;action&gt;</code> (e.g. <code>ncss-compare-change</code>). Subscribe via a ref with <code>addEventListener</code> - it works the same in every framework.</li>
+    <li><strong>Vue</strong> must know that <code>ncss-*</code> are not Vue components:</li>
+  </ul>
+  <pre><code class="language-javascript">// vite.config.js
+vue({ template: { compilerOptions: {
+  isCustomElement: (tag) =&gt; tag.startsWith("ncss-")
+} } })</code></pre>
+  <pre><code class="language-javascript">// React: subscribe to an event via a ref
+const ref = useRef(null);
+useEffect(() =&gt; {
+  const el = ref.current;
+  const onChange = (e) =&gt; console.log(e.detail);
+  el.addEventListener("ncss-compare-change", onChange);
+  return () =&gt; el.removeEventListener("ncss-compare-change", onChange);
+}, []);
+return &lt;ncss-compare ref={ref}&gt;…&lt;/ncss-compare&gt;;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Class-based effects with a script (count-up, marquee …) need the <code>ncss-content-change</code> event after rendering new content - see <a href="dynamic-content.html">Dynamic content</a>. Custom elements initialise themselves.</p>
+</section>
+
+<section class="ncss-stack" id="htmx-alpine">
+  <h2 class="demo-section-title">htmx and Alpine.js</h2>
+  <p>Server-rendered HTML is NativeCSS's natural partner. For htmx a tiny file is enough:</p>
+  <pre><code class="language-javascript">// assets/js/htmx-ncss.js
+document.addEventListener("htmx:load", function (event) {
+  document.dispatchEvent(new CustomEvent("ncss-content-change", {
+    detail: { root: event.detail.elt }
+  }));
+});</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Alpine.js manages state (e.g. <code>x-show</code>) - but for dialogs, accordions and tabs prefer the native NativeCSS variants (<code>&lt;dialog&gt;</code> + <code>command</code>, <code>&lt;details&gt;</code>, <code>&lt;ncss-tabs&gt;</code>); they already bring keyboard support and ARIA.</p>
+</section>
