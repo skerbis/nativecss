@@ -2,6 +2,14 @@
  "version": 1.1,
  "properties": [
   {
+   "name": "--ncss-alert-bar-inset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-alert-bar-inset: 0.6rem (Fallback in var());\n```\nQuelle: `components/alert.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-alert-bg",
    "description": {
     "kind": "markdown",
@@ -302,6 +310,14 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-accent: var(--ncss-color-brand);\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-bar-inset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-bar-inset: 1rem (Fallback in var());\n```\nQuelle: `components/card.css`"
    },
    "syntax": "*"
   },
@@ -818,6 +834,22 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-comment-avatar",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-comment-avatar: 1.75rem;\n```\nQuelle: `components/comments.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-comment-indent",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-comment-indent: calc(var(--ncss-comment-avatar) + var(--ncss-space-xs));\n```\nQuelle: `components/comments.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-compare-handle",
    "description": {
     "kind": "markdown",
@@ -942,6 +974,22 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-dialog-max-width: 32rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-dropdown-min-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-dropdown-min-width: 12rem;\n```\nQuelle: `components/dropdown.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-dropdown-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-dropdown-offset: var(--ncss-space-3xs);\n```\nQuelle: `components/dropdown.css`"
    },
    "syntax": "*"
   },
@@ -1078,6 +1126,14 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-xl: clamp(1.8rem, 1.5rem + 1.5vw, 2.6rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-xs",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-xs: 0.8rem (Fallback in var());\n```\nQuelle: `components/pill-group.css`"
    },
    "syntax": "*"
   },
@@ -1286,6 +1342,30 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-icon-size-sm: 0.8em;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-leaders-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-leaders-color: var(--ncss-color-text-muted) (Fallback in var());\n```\nQuelle: `components/leaders.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-leaders-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-leaders-gap: var(--ncss-space-3xs);\n```\nQuelle: `components/leaders.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-leaders-style",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-leaders-style: dotted;\n```\nQuelle: `components/leaders.css`"
    },
    "syntax": "*"
   },
@@ -1546,6 +1626,54 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-pill-group-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pill-group-gap: 2px (Fallback in var());\n```\nQuelle: `components/pill-group.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pill-group-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pill-group-height: 2.25rem (Fallback in var());\n```\nQuelle: `components/pill-group.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-min: 15rem (Fallback in var());\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-padding",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-padding: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-rows",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-rows: 4;\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-radius-adaptive-lg",
    "description": {
     "kind": "markdown",
@@ -1598,6 +1726,14 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-radius-sm: 0.25rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-xl",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-radius-xl: 1.5rem (Fallback in var());\n```\nQuelle: `components/toolbar.css`"
    },
    "syntax": "*"
   },
@@ -1802,6 +1938,30 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-scroll-shadow-cover",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-shadow-cover: var(--ncss-color-bg) (Fallback in var());\n```\nQuelle: `helpers/scroll-shadow.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-shadow-max-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-shadow-max-height: none (Fallback in var());\n```\nQuelle: `helpers/scroll-shadow.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-shadow-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-shadow-size: 1rem (Fallback in var());\n```\nQuelle: `helpers/scroll-shadow.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-scroll-video-fit",
    "description": {
     "kind": "markdown",
@@ -1886,6 +2046,22 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-slideshow-item-width: 85%;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-slideshow-shadow-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-slideshow-shadow-size: 3rem (Fallback in var());\n```\nQuelle: `components/slideshow.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-sortable-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-sortable-gap: var(--ncss-space-2xs);\n```\nQuelle: `components/sortable.css`"
    },
    "syntax": "*"
   },
@@ -2202,6 +2378,30 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-stepper-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stepper-color: var(--ncss-color-brand);\n```\nQuelle: `components/stepper.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stepper-line-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stepper-line-width: 2px;\n```\nQuelle: `components/stepper.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stepper-marker",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stepper-marker: 2rem;\n```\nQuelle: `components/stepper.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-sticky-container-max-height",
    "description": {
     "kind": "markdown",
@@ -2242,6 +2442,22 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-tabs-duration",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-duration: var(--ncss-motion-duration-slow, 0.3s) (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-h",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-h: 0px (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-tabs-panel-min",
    "description": {
     "kind": "markdown",
@@ -2250,10 +2466,66 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-tabs-w",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-w: 0 (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-x",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-x: 0 (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-y",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-y: 0 (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-tag-accent",
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tag-accent: var(--ncss-color-neutral);\n```\nQuelle: `components/tag.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-min: 18rem (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-padding",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-padding: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-rating-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-rating-color: var(--ncss-color-warning) (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
    },
    "syntax": "*"
   },
@@ -2302,6 +2574,70 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tile-padding-inline: var(--ncss-space-lg) (Fallback in var());\n```\nQuelle: `components/tile.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-col-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-col-gap: var(--ncss-space-sm);\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-dot",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-dot: 0.875rem;\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-gap: var(--ncss-space-sm);\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-line-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-line-color: var(--ncss-color-border) (Fallback in var());\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-line-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-line-width: 2px;\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-marker-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-marker-color: var(--ncss-color-brand) (Fallback in var());\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-rail",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-rail: 2rem;\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-ring",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-ring: var(--ncss-color-bg) (Fallback in var());\n```\nQuelle: `components/timeline.css`"
    },
    "syntax": "*"
   },

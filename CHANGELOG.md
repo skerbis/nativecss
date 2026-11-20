@@ -11,6 +11,11 @@ Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versio
 - **Video & Audio:** `<ncss-video-player>` und `<ncss-audio-player>` aus einem Guss (Kapitel, Playlist, Untertitel, Geschwindigkeit, Bild-in-Bild, Media Session, Tastatur), scroll-gesteuertes Video `<ncss-scroll-video>` und Bildsequenz `<ncss-scroll-frames>`, Hintergrundvideo für beliebige Sektionen (mit Pause-Knopf, WCAG 2.2.2), Video im Text, Mini-Player `<ncss-video-float>`, Vorschau-Karten.
 - **Karten** `<ncss-map>` (MapLibre GL): Proxy-Adressen für Stil, Kacheln, Schriften und Symbole (Präfix oder `{url}`-Vorlage) - Besucher haben keinen Kontakt zu Dritten; Zwei-Klick-Modus, lädt erst in Sichtweite, Fallback ohne JS, Dunkelmodus, 3D-Ansicht.
 - **Karten-Komponente ausgebaut:** ganze Karte als Link (innere Buttons bleiben bedienbar), Bild-Overlay, Seitenverhältnisse, Zoom, Auswahl-Karten (Radio/Checkbox), hervorgehobene, deaktivierte und Akzent-Karten, Kopf mit Aktionen, Meta-Zeile, Karten-Raster mit Subgrid, Lade-Skelett.
+- **Morphing beim Scrollen** `.ncss-morph`: großes Bild/Video schrumpft zur Seite und macht Platz für Text (auch umgekehrt, Karte, Kreis) - reines CSS, statisches Endbild als Fallback.
+- **Neue Bausteine:** Dropdown/Aktionsmenü `<ncss-dropdown>` (APG Menu Button oder Link-Liste), Tabellen-Sortierung `<ncss-table-sort>`, sortierbare Liste `<ncss-sortable>` (Maus, Touch, Tastatur, Hoch/Runter-Knöpfe), Slideshow-Pfeile und -Punkte (nativ per `::scroll-button`/`::scroll-marker`, sonst `<ncss-slideshow>`), Filter-Raster `.ncss-filter` (reines CSS, optional `<ncss-filter>`), Scroll-Schatten `.ncss-scroll-shadow`, Zeitleiste und Stepper, Kundenstimmen und Preistabellen, Leader-Linien, Kommentare, Pillen-Gruppe `.ncss-pill-group`, Toolbar `<ncss-toolbar>` mit Split-Button, Modus-Umschalter `.ncss-segmented--pill`.
+- **Animationen:** Tabs mit gleitendem Unterstrich, Pillen und Panel-Übergängen (`animate="fade slide scale height"`), gleitende Auswahl in `.ncss-segmented--slide`; alles aus bei reduzierter Bewegung.
+- **Buttons:** `--pill`, `--ghost`.
+- **Akzent-Balken** statt dicker Randkanten an abgerundeten Karten, Hinweisen und Kommentaren.
 - **Darstellungs-Einstellungen** `<ncss-preferences>`: Besucher wählen Farbschema, Kontrast, Bewegung, Schriftgröße, Textabstände, Link-Unterstreichung, Fokus-Rahmen und lesbare Schriften (Atkinson Hyperlegible Next, Lexend, OpenDyslexic, selbst gehostet) - kein „Overlay“, sondern Anpassung einer bereits barrierefreien Seite.
 - **Icons:** 52 Kern-Icons per Klasse, alle Phosphor-Icons per `<ncss-icon>`, Sprite-Builder.
 - **Dialoge** schließen standardmäßig beim Klick daneben (`closedby="any"`, abschaltbar).
@@ -19,7 +24,7 @@ Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versio
 
 ### Website & Werkzeuge
 
-- Website komplett neu: eine generierte Shell für Start, Handbuch und Beispiele, Suche (⌘K), Code-Inspektor mit Erklärungen, Live-Beispiele direkt im Handbuch, neue Beispiel-Websites (Gemeinde, Hotel, ImmoDesk-Backend).
+- Website komplett neu: eine generierte Shell für Start, Handbuch und Beispiele, Suche (⌘K), Code-Inspektor mit Erklärungen, Live-Beispiele direkt im Handbuch, neue Beispiel-Websites (Gemeinde, Hotel, ImmoDesk-Backend), Tour durch alle Funktionen, Impressum und Datenschutz, „Unterstützen“ in der Kopfleiste.
 - Lokaler Entwicklungs-Router `docs-src/dev-router.php` mit Range-Support für Video/Audio.
 - Veröffentlichung bei npm (`npm i nativecss`) zusätzlich zu Kopieren und CDN - weiterhin ohne Build-Schritt nutzbar.
 

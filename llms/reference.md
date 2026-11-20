@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 888 Klassen, 19 Custom Elements, 49 data-ncss-Attribute, 214 Tokens.
+Stand: 1007 Klassen, 25 Custom Elements, 58 data-ncss-Attribute, 230 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -247,7 +247,7 @@ Markup: <img class="ncss-float-start" src="..." alt="...">Text fließt drumherum
 
 ### `helpers/forms.css`
 
-Klassen (18): `.ncss-btn` `.ncss-btn--danger` `.ncss-btn--icon` `.ncss-btn--lg` `.ncss-btn--primary` `.ncss-btn--secondary` `.ncss-btn--sm` `.ncss-choice` `.ncss-field` `.ncss-field-error` `.ncss-field-hint` `.ncss-input` `.ncss-label` `.ncss-label--required` `.ncss-range` `.ncss-select` `.ncss-switch` `.ncss-textarea`
+Klassen (20): `.ncss-btn` `.ncss-btn--danger` `.ncss-btn--ghost` `.ncss-btn--icon` `.ncss-btn--lg` `.ncss-btn--pill` `.ncss-btn--primary` `.ncss-btn--secondary` `.ncss-btn--sm` `.ncss-choice` `.ncss-field` `.ncss-field-error` `.ncss-field-hint` `.ncss-input` `.ncss-label` `.ncss-label--required` `.ncss-range` `.ncss-select` `.ncss-switch` `.ncss-textarea`
 
 ```text
 ncss - Formular-Helper (Layer "helpers"). Native Formularelemente werden hier zu Ende
@@ -368,6 +368,50 @@ prefers-reduced-motion, Druck: kein Clip, keine Bewegung. Forced Colors: unberü
 
 Benötigt: tokens.css (--ncss-radius-lg, --ncss-motion-easing-emphasized). Optional
 js/reveal.js.
+```
+
+### `helpers/scroll-shadow.css`
+
+Klassen (2): `.ncss-scroll-shadow` `.ncss-scroll-shadow--block`
+
+```text
+ncss - Scroll-Schatten (Layer "helpers"): ein weicher Schatten an der Kante eines
+scrollbaren Bereichs - aber nur, solange es in diese Richtung noch etwas zu sehen gibt.
+Am Anfang fehlt der Schatten vorn, am Ende hinten, passt alles hinein, gibt es keinen.
+Kein JS. Braucht nur colors.css + tokens.css.
+
+  <div class="ncss-table-scroll ncss-scroll-shadow" role="region" aria-label="…" tabindex="0">
+  <div class="ncss-scroll-shadow ncss-scroll-shadow--block" style="--ncss-scroll-shadow-max-height: 20rem">
+
+.ncss-scroll-shadow = waagerecht (inline), --block = senkrecht. Opt-in - bestehende
+Tabellen/Scroller ändern sich nicht. Für Fotos (Slideshow) gibt es
+.ncss-slideshow--shadow in components/slideshow.css: hier liegt der Schatten bewusst
+HINTER dem Inhalt (Hintergrund), damit er Text weder verdeckt noch dessen Kontrast über
+die Maßen senkt - hinter undurchsichtigen Bildern wäre er unsichtbar.
+
+Zwei Wege:
+1. Scroll-getriebene Animation (animation-timeline: scroll(self)) - Chromium 115+,
+   Safari 26+. Die Deckkraft der beiden Schatten folgt dem Scroll-Fortschritt, der
+   Bereich braucht KEINE eigene Hintergrundfarbe (funktioniert auf Karten, Flächen,
+   Verläufen).
+2. Fallback - der klassische background-attachment-Trick (local/scroll, nach Lea Verou
+   und Roman Komarov): zwei "Abdeckungen" in Hintergrundfarbe wandern mit dem Inhalt
+   (local) und verdecken die festen Schatten (scroll) an den Enden. Braucht eine
+   deckende Fläche in der Farbe des Untergrunds: --ncss-scroll-shadow-cover (Default
+   Seitenhintergrund) - auf einer Karte o. ä. passend setzen. Läuft in jedem Browser.
+   Auch bei reduzierter Bewegung aktiv: die globale Dämpfung in reset.css macht aus
+   jeder Animation eine sofort beendete Zeitanimation - die scroll-getriebene Variante
+   zeigte dann dauerhaft falsche Schatten.
+
+Anpassen (pro Instanz per style="--…" oder global):
+  --ncss-scroll-shadow-size    Breite/Höhe des Schattens (Default 1rem)
+  --ncss-scroll-shadow-color   Schattenfarbe (Default 12 % Textfarbe - hell/dunkel passend)
+  --ncss-scroll-shadow-cover   nur Fallback: Untergrundfarbe (Default --ncss-color-bg)
+  --ncss-scroll-shadow-max-height  nur --block: maximale Höhe des Bereichs (Default none)
+
+Kontrast: max. 12 % Textfarbe hinter dem Text, nur im äußersten Rand (meist im
+Zellen-Innenabstand). Per Messung: gedämpfter Text (--ncss-color-text-muted) bleibt auch
+am dunkelsten Punkt über 4.5:1, hell wie dunkel.
 ```
 
 ### `helpers/scroll.css`
@@ -962,6 +1006,52 @@ Tokens: --ncss-command-width (Default 40rem), --ncss-command-height (Listenhöhe
 Default min(26rem, 60svh)), --ncss-command-offset (Abstand von oben, Default 12svh).
 ```
 
+### `components/comments.css`
+
+Klassen (12): `.ncss-avatar` `.ncss-comment` `.ncss-comment--highlight` `.ncss-comment-action` `.ncss-comment-actions` `.ncss-comment-author` `.ncss-comment-badge` `.ncss-comment-body` `.ncss-comment-header` `.ncss-comment-list` `.ncss-comment-time` `.ncss-comments`
+
+```text
+ncss - Kommentare / Diskussions-Thread (Layer "components"): Kommentar mit Avatar,
+Name, Zeit (<time>), Text und Aktionen (Antworten, Gefällt mir), verschachtelte
+Antworten mit Einzugslinien und ein "Autor"-Badge. Reines CSS; das Verhalten der
+Buttons (Antwortformular öffnen, aria-pressed umschalten) liefert die Anwendung.
+
+Braucht colors.css + tokens.css (+ reset/base). Optionaler Begleiter:
+  components/avatar.css   für .ncss-avatar (Bild oder Initialen)
+
+Einzugstiefe: in schmalen Containern (< 30rem) rückt nur die ERSTE Antwortebene ein,
+tiefere Ebenen stehen bündig unter ihrem Elternkommentar (innerhalb von dessen Linie) - sonst
+bliebe auf dem Handy nach drei Ebenen kaum Platz für Text. Ab 30rem rücken bis zu drei
+Antwortebenen ein, tiefere bleiben auf Ebene drei. Container Query auf .ncss-comments.
+
+Markup:
+  <section class="ncss-comments" aria-labelledby="c-title">
+    <h2 id="c-title">3 Kommentare</h2>
+    <ol class="ncss-comment-list" role="list">
+      <li>
+        <article class="ncss-comment" aria-labelledby="c1-name">
+          <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+          <header class="ncss-comment-header">
+            <span class="ncss-comment-author" id="c1-name">Julia Brenner</span>
+            <span class="ncss-comment-badge">Autorin</span>
+            <time class="ncss-comment-time" datetime="2026-11-18T09:12">vor 2 Tagen</time>
+          </header>
+          <div class="ncss-comment-body"><p>Text ...</p></div>
+          <footer class="ncss-comment-actions">
+            <button type="button" class="ncss-comment-action">Antworten</button>
+            <button type="button" class="ncss-comment-action" aria-pressed="false">Gefällt mir (4)</button>
+          </footer>
+        </article>
+        <ol class="ncss-comment-list" role="list"> ... Antworten ... </ol>
+      </li>
+    </ol>
+  </section>
+<article> je Kommentar entspricht der HTML-Spec (Kommentare als verschachtelte
+Artikel); aria-labelledby gibt ihm den Autornamen als Namen. Der Badge ist echter
+Text ("Autorin"), nicht nur eine Farbe. Relative Zeit ("vor 2 Tagen") sichtbar, das
+exakte Datum steht maschinenlesbar in datetime - gern zusätzlich als title.
+```
+
 ### `components/compare.css`
 
 Klassen (5): `.ncss-compare-after` `.ncss-compare-before` `.ncss-compare-label` `.ncss-compare-label--end` `.ncss-compare-range`
@@ -1180,6 +1270,64 @@ Downloadliste ist strukturell eine Liste (kein Karten-Raster), .ncss-events-empt
 (events.css) wird für den Leerzustand mitgenutzt statt dupliziert.
 ```
 
+### `components/dropdown.css`
+
+Klassen (11): `.ncss-dropdown` `.ncss-dropdown-divider` `.ncss-dropdown-heading` `.ncss-dropdown-hint` `.ncss-dropdown-item` `.ncss-dropdown-item--danger` `.ncss-dropdown-menu` `.ncss-dropdown-menu--end` `.ncss-dropdown-menu--up` `.ncss-dropdown-toggle` `.ncss-dropdown-toggle--plain`
+
+```text
+ncss - Dropdown / Aktionsmenü (Layer "components"): kleines Aufklapp-Menü AUSSERHALB der
+Hauptnavigation - "⋯"-Menü an einer Zeile, Benutzer-Menü, "Sortieren nach …". Das Menü
+ist ein natives [popover] (Top Layer, Light Dismiss: Klick daneben und Esc schließen,
+kein z-index-Kampf), positioniert per CSS Anchor Positioning unter dem Auslöser.
+
+Für die Hauptnavigation gibt es .ncss-nav-dropdown (components/nav.css) - das ist ein
+<details> im Nav-Fluss (absolut positioniert, auf Mobil eingeklappt im Off-Canvas) und
+lässt sich deshalb nicht als freies Overlay wiederverwenden. Positionierung und
+Ein-/Ausblendung folgen hier bewusst demselben Muster wie components/hovercard.css.
+
+Zwei Varianten - welche passt, entscheidet der Inhalt (WAI-ARIA APG):
+
+1. Aktionsmenü (role="menu", APG "Menu Button"): Befehle, die auf der Seite etwas tun
+   (Bearbeiten, Duplizieren, Löschen) oder eine Auswahl (menuitemradio/-checkbox).
+   Braucht js/dropdown.js - Pfeiltasten, Pos1/Ende, Tippsuche, Esc zurück zum Auslöser.
+   <ncss-dropdown class="ncss-dropdown">
+     <button type="button" class="ncss-btn ncss-dropdown-toggle" popovertarget="dd-1"
+             aria-haspopup="menu">Aktionen</button>
+     <div class="ncss-dropdown-menu" id="dd-1" popover role="menu" aria-label="Aktionen">
+       <button type="button" class="ncss-dropdown-item" role="menuitem">Bearbeiten</button>
+       <hr class="ncss-dropdown-divider">
+       <div role="group" aria-labelledby="dd-1-sort">
+         <span class="ncss-dropdown-heading" id="dd-1-sort" aria-hidden="true">Sortieren nach</span>
+         <button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="true">Datum</button>
+         <button type="button" class="ncss-dropdown-item" role="menuitemradio" aria-checked="false">Name</button>
+       </div>
+       <button type="button" class="ncss-dropdown-item ncss-dropdown-item--danger" role="menuitem">Löschen</button>
+     </div>
+   </ncss-dropdown>
+
+2. Link-Liste (Disclosure, KEIN role="menu"): Navigation zu anderen Seiten, z. B. das
+   Benutzer-Menü (Profil, Einstellungen, Abmelden). APG rät hier ausdrücklich vom
+   Menü-Muster ab - Links bleiben Links, Tab/Umschalt+Tab bewegt sich durch die Liste,
+   Screenreader zeigen sie in der Linkliste. Funktioniert schon OHNE JavaScript.
+   <button type="button" class="ncss-btn ncss-dropdown-toggle" popovertarget="dd-user">Konto</button>
+   <div class="ncss-dropdown-menu ncss-dropdown-menu--end" id="dd-user" popover>
+     <ul role="list"><li><a class="ncss-dropdown-item" href="/profil">Profil</a></li> …</ul>
+   </div>
+
+Klassen: .ncss-dropdown (Hülle, inline), .ncss-dropdown-toggle (Pfeil am Auslöser),
+  .ncss-dropdown-menu (+ --end: rechtsbündig unter dem Auslöser, --up: darüber),
+  .ncss-dropdown-item (+ --danger), .ncss-dropdown-divider, .ncss-dropdown-heading,
+  .ncss-dropdown-hint (rechtsbündiger Zusatz, z. B. Tastenkürzel).
+  Icons: beliebiges aria-hidden-Element als erstes Kind im Eintrag (z. B. .ncss-icon).
+  Ein Eintrag mit aria-checked="true" bekommt ein Häkchen.
+
+Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base). Optional
+js/dropdown.js (nötig für role="menu"; ohne Anchor Positioning rechnet es die Position).
+
+Tokens: --ncss-dropdown-min-width (Default 12rem), --ncss-dropdown-offset (Abstand zum
+Auslöser, Default --ncss-space-3xs).
+```
+
 ### `components/dropzone.css`
 
 Klassen (10): `.ncss-dropzone-area` `.ncss-dropzone-error` `.ncss-dropzone-file` `.ncss-dropzone-hint` `.ncss-dropzone-list` `.ncss-dropzone-name` `.ncss-dropzone-remove` `.ncss-dropzone-size` `.ncss-dropzone-status` `.ncss-dropzone-thumb`
@@ -1300,6 +1448,44 @@ Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base).
 Tokens: --ncss-expand-height (Zeilenhöhe, Default 24rem), --ncss-expand-grow (Faktor des
 offenen Panels, Default 4), --ncss-expand-collapsed / --ncss-expand-expanded (Höhen im
 gestapelten Zustand, Default 4.5rem / 16rem). Stapelt unter 36rem Containerbreite.
+```
+
+### `components/filter.css`
+
+Klassen (4): `.ncss-filter` `.ncss-filter-bar` `.ncss-filter-item` `.ncss-filter-status`
+
+```text
+ncss - Filter-Raster (Layer "components"): Portfolio, Team, Zimmer o. ä. nach
+Kategorie filtern - wie UIkits Filter, aber ohne JS. Die Filterleiste ist eine echte
+Radio-Gruppe (eine Kategorie) oder eine Checkbox-Gruppe (mehrere Kategorien, ODER-
+verknüpft); :has() blendet nicht passende Einträge aus. Tastatur, Formular-Semantik und
+Screenreader-Ansage ("Optionsfeld, 2 von 4") kommen vom Browser. Braucht nur colors.css
++ tokens.css (+ reset/base).
+
+Markup - Input DIREKT vor seinem Label (wie components/segmented.css):
+  <div class="ncss-filter">
+    <fieldset class="ncss-filter-bar">
+      <legend>Kategorie</legend>
+      <input type="radio" name="team" id="t-alle" value="" checked>
+      <label for="t-alle">Alle</label>
+      <input type="radio" name="team" id="t-1" value="1">
+      <label for="t-1">Rezeption</label>
+      ...
+    </fieldset>
+    <ul class="ncss-grid" role="list">
+      <li class="ncss-filter-item" data-category="1 3">...</li>
+    </ul>
+  </div>
+
+Kategorien: reines CSS kann einen Attributwert nicht mit einem anderen vergleichen -
+deshalb gibt es feste Kategorie-Nummern 1 bis 12 (value="1" ... value="12", ein Eintrag
+kann mehrere tragen: data-category="1 3"). value="" oder value="all" = alle zeigen.
+Mit js/filter.js (<ncss-filter> statt <div>) gehen zusätzlich beliebige Namen
+(value="zimmer" / data-category="zimmer spa"), dazu Trefferzahl im Live-Bereich und
+View Transitions - siehe dort.
+
+Ohne :has()-Unterstützung greift die Ausblend-Regel nicht: alles bleibt sichtbar (die
+Leiste ist dann wirkungslos, aber nichts geht verloren).
 ```
 
 ### `components/floating-label.css`
@@ -1483,6 +1669,46 @@ Markup:
   <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Strg</kbd>+<kbd class="ncss-kbd">K</kbd></kbd>
 Symbol-Tasten (⌘, ⇧, ↵) für Screenreader per <abbr title="Befehlstaste">⌘</abbr> oder
 aria-label ausschreiben - das Glyph allein wird oft gar nicht oder falsch vorgelesen.
+```
+
+### `components/leaders.css`
+
+Klassen (8): `.ncss-leaders` `.ncss-leaders--compact` `.ncss-leaders--dashed` `.ncss-leaders--line` `.ncss-leaders-desc` `.ncss-leaders-item` `.ncss-leaders-name` `.ncss-leaders-value`
+
+```text
+ncss - Führungspunkte / Leader Lines (Layer "components"): "Kaffee ........ 3,50 €" für
+Preislisten, Speisekarten, Inhaltsverzeichnisse, technische Daten. Reines CSS, kein JS.
+Braucht nur colors.css + tokens.css (+ reset/base).
+
+Die Punkte sind ein leeres ::after mit gepunktetem Rand - kein Text, also liest der
+Screenreader nur Name und Preis ("Kaffee, 3,50 €"), keine "Punkt Punkt Punkt". Bricht
+der Name um, stehen Punkte und Preis an der LETZTEN Zeile (align-items: last baseline).
+Alles in logischen Eigenschaften - in RTL laufen die Punkte automatisch von rechts.
+
+Markup A - Beschreibungsliste (empfohlen für Name/Wert-Paare):
+  <dl class="ncss-leaders">
+    <div class="ncss-leaders-item">
+      <dt>Kaffee</dt>
+      <dd>3,50 €</dd>
+      <dd class="ncss-leaders-desc">Bohnen aus Äthiopien, Hafermilch +0,50 €</dd>   (optional)
+    </div>
+  </dl>
+Ein <div> je Paar ist laut HTML-Spec erlaubt und hier nötig (Flex-Zeile pro Eintrag).
+
+Markup B - Liste (z.B. Inhaltsverzeichnis mit Seitenzahl):
+  <ul class="ncss-leaders" role="list">
+    <li class="ncss-leaders-item">
+      <span class="ncss-leaders-name"><a href="#k1">Einleitung</a></span>
+      <span class="ncss-leaders-value">4</span>
+    </li>
+  </ul>
+
+Gemischter Inhalt im Namen (Text + <small>/<a>/Icon) bitte in EIN <span> fassen - der
+Name ist intern eine Flex-Zeile, jedes lose Kind würde sonst ein eigenes Stück.
+
+Varianten: .ncss-leaders--dashed / --line (Strich statt Punkte), .ncss-leaders--compact.
+Properties: --ncss-leaders-style (dotted|dashed|solid), --ncss-leaders-color,
+--ncss-leaders-gap (Abstand zwischen den Einträgen).
 ```
 
 ### `components/lightbox.css`
@@ -2083,6 +2309,42 @@ reagiert auf den echten Platz (Sidebar, Karte, Modal), nicht auf den Viewport.
 Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base).
 ```
 
+### `components/pill-group.css`
+
+Klassen (6): `.ncss-pill-group` `.ncss-pill-group--no-dividers` `.ncss-pill-group--plain` `.ncss-pill-group--sm` `.ncss-pill-group--solid` `.ncss-pill-group-item`
+
+```text
+ncss - Pillen-Gruppe (Layer "components"): mehrere Buttons/Links als EINE Pille mit
+feinen Trennstrichen - z.B. Werkzeuge in einer Kopfleiste (Suche · Sprache ·
+Darstellung), Ansichts-Aktionen (Teilen · Drucken · Merken) oder eine kompakte Toolbar.
+
+Abgrenzung: .ncss-segmented ist eine AUSWAHL (Radio-Gruppe, genau eins aktiv) - die
+Pillen-Gruppe bündelt dagegen unabhängige Aktionen/Links, jedes Teil bleibt ein ganz
+normaler Button bzw. Link mit eigenem Tab-Stopp. Kein JS.
+
+Markup:
+  <div class="ncss-pill-group" role="group" aria-label="Werkzeuge">
+    <button type="button">Suchen</button>
+    <a href="/en/">English</a>
+    <button type="button" aria-label="Teilen"><span class="ncss-icon ncss-icon-share" aria-hidden="true"></span></button>
+  </div>
+role="group" + aria-label, sobald die Gruppe eine gemeinsame Bedeutung hat.
+Reine Icon-Teile brauchen einen Namen (aria-label oder visuell versteckter Text).
+Beliebige Elemente (auch Custom Elements wie <ncss-preferences>) sind als Teil
+möglich - ihr innerer Button wird wie die direkten Kinder gestylt (.ncss-pill-group-item
+an den inneren Button setzen, wenn das Element nicht selbst der Button ist).
+
+Varianten:
+  --sm        kompakter (dichte Toolbars)
+  --solid     kräftigere Fläche statt der dezenten Hintergrundtönung
+  --plain     ohne Rahmen und Fläche, nur die Trennstriche
+  --no-dividers  ohne Trennstriche
+
+Parameter: --ncss-pill-group-height, --ncss-pill-group-gap (Innenabstand der Pille).
+
+Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base).
+```
+
 ### `components/placeholder.css`
 
 Klassen (2): `.ncss-placeholder` `.ncss-placeholder--surface`
@@ -2144,6 +2406,60 @@ Schriftgröße, Textabstände, Links, Fokus) - diese Datei stylt nur das Bedienf
 Ohne JS bleibt das Element verborgen, es gelten die Systemeinstellungen.
 Abhängigkeiten (Cherry-Picking): colors.css/tokens.css/reset.css (+ base). Keine andere
 Komponente nötig (eigenes Icon, eigene Segment-/Schalter-Optik).
+```
+
+### `components/pricing.css`
+
+Klassen (17): `.ncss-pricing` `.ncss-pricing-action` `.ncss-pricing-amount` `.ncss-pricing-badge` `.ncss-pricing-desc` `.ncss-pricing-excluded` `.ncss-pricing-features` `.ncss-pricing-header` `.ncss-pricing-name` `.ncss-pricing-note` `.ncss-pricing-period` `.ncss-pricing-plan` `.ncss-pricing-plan--featured` `.ncss-pricing-plans` `.ncss-pricing-price` `.ncss-pricing-toggle` `.ncss-pricing-value`
+
+```text
+ncss - Preistabelle (Layer "components"): Tarifkarten mit Name, Preis + Zeitraum,
+Leistungsliste (enthalten/nicht enthalten), hervorgehobenem "Empfohlen"-Tarif und
+Handlungsaufruf. Optional ein Monatlich/Jährlich-Umschalter - reines CSS (Radio-Buttons +
+:has()), kein JS.
+
+Braucht colors.css + tokens.css (+ reset/base) und helpers/a11y.css für den
+versteckten Text "Nicht enthalten:" bzw. "Enthalten:". Optionale Begleiter:
+  helpers/forms.css         .ncss-btn für den Handlungsaufruf
+  components/segmented.css  Optik für den Umschalter (.ncss-segmented) - ohne ihn
+                            erscheinen native Radio-Buttons, voll bedienbar
+
+Gleich hohe, zeilenweise ausgerichtete Karten mit Subgrid - dasselbe Prinzip wie
+.ncss-card-grid in components/card.css, hier aber eigenständig, damit die Preistabelle
+ohne card.css auskommt. Jede Karte hat GENAU vier direkte Kinder (Kopf, Preis,
+Leistungen, Aktion); bei anderer Zahl --ncss-pricing-rows anpassen.
+
+Markup:
+  <div class="ncss-pricing">
+    <fieldset class="ncss-pricing-toggle ncss-segmented">             (optional)
+      <legend class="ncss-visually-hidden">Abrechnungszeitraum</legend>
+      <input type="radio" name="billing" id="b-m" data-period="monthly" checked><label for="b-m">Monatlich</label>
+      <input type="radio" name="billing" id="b-y" data-period="yearly"><label for="b-y">Jährlich</label>
+    </fieldset>
+    <ul class="ncss-pricing-plans" role="list">
+      <li class="ncss-pricing-plan ncss-pricing-plan--featured">
+        <div class="ncss-pricing-header">
+          <p class="ncss-pricing-badge">Empfohlen</p>
+          <h3 class="ncss-pricing-name">Team</h3>
+          <p class="ncss-pricing-desc">Für kleine Teams</p>
+        </div>
+        <p class="ncss-pricing-price">
+          <span class="ncss-pricing-amount" data-period="monthly"><span class="ncss-pricing-value">29 €</span> <span class="ncss-pricing-period">pro Monat</span></span>
+          <span class="ncss-pricing-amount" data-period="yearly"><span class="ncss-pricing-value">23 €</span> <span class="ncss-pricing-period">pro Monat, jährlich abgerechnet</span></span>
+        </p>
+        <ul class="ncss-pricing-features" role="list">
+          <li><span class="ncss-visually-hidden">Enthalten:</span> 10 Projekte</li>
+          <li class="ncss-pricing-excluded"><span class="ncss-visually-hidden">Nicht enthalten:</span> SSO</li>
+        </ul>
+        <div class="ncss-pricing-action"><a class="ncss-btn ncss-btn--primary" href="...">Team wählen</a></div>
+      </li>
+    </ul>
+  </div>
+Ohne Umschalter einfach nur EINEN Preis (ohne data-period) in .ncss-pricing-price.
+
+Enthalten/nicht enthalten unterscheidet sich in FORM (Haken vs. Kreuz) + Text, nicht nur
+in der Farbe; die Symbole selbst sind Deko (Alternativtext ""), die Aussage trägt der
+versteckte Text. "Empfohlen" ist echter Text, nicht nur der farbige Rahmen.
 ```
 
 ### `components/rating.css`
@@ -2560,7 +2876,7 @@ Feld leer UND unfokussiert ist.
 
 ### `components/segmented.css`
 
-Klassen (3): `.ncss-segmented` `.ncss-segmented--block` `.ncss-segmented--sm`
+Klassen (6): `.ncss-icon` `.ncss-segmented` `.ncss-segmented--block` `.ncss-segmented--pill` `.ncss-segmented--slide` `.ncss-segmented--sm`
 
 ```text
 ncss - Segmentierte Auswahl (Layer "components"): "Liste | Karte | Kalender" als
@@ -2579,6 +2895,11 @@ funktioniert ohne :has(), also auch in älteren Browsern):
     <label for="a-karte">Karte</label>
   </fieldset>
 --sm für dichte Toolbars, --block für volle Breite (Segmente teilen sich den Platz).
+--pill: vollrunde Leiste mit runder Auswahl-Pille (Modus-Umschalter wie
+"Ansehen | Bearbeiten", gern mit Icon im Label) - kombinierbar mit --slide.
+--slide: die Auswahl-Fläche GLEITET zum neuen Segment (reines CSS per Anchor
+Positioning + anchor-scope; ohne Unterstützung bzw. bei reduzierter Bewegung springt
+sie wie gewohnt). Nur für einzeilige Leisten gedacht.
 ```
 
 ### `components/select.css`
@@ -2638,30 +2959,91 @@ zufällig eine der ersten beiden ebenfalls unterstützen könnten.
 
 ### `components/slideshow.css`
 
-Klassen (5): `.ncss-slideshow` `.ncss-slideshow-item` `.ncss-slideshow-item--peek` `.ncss-slideshow-track` `.ncss-slideshow-track--no-scrollbar`
+Klassen (13): `.ncss-slideshow` `.ncss-slideshow--controls` `.ncss-slideshow--shadow` `.ncss-slideshow-button` `.ncss-slideshow-button--next` `.ncss-slideshow-button--prev` `.ncss-slideshow-dot` `.ncss-slideshow-dots` `.ncss-slideshow-item` `.ncss-slideshow-item--peek` `.ncss-slideshow-toggle` `.ncss-slideshow-track` `.ncss-slideshow-track--no-scrollbar`
 
 ```text
-ncss - Slideshow-Komponente (Layer "components"). Kein JS, kein Framework.
+ncss - Slideshow-Komponente (Layer "components"). Basis ohne JS, ohne Framework.
 
 Läuft in JEDEM Browser über natives Scroll-Snapping - Pfeiltasten, Touch-Wischen,
-Trackpad, Maus-Scrollrad funktionieren automatisch, ganz ohne eigenen Code.
+Trackpad, Maus-Scrollrad funktionieren automatisch, ganz ohne eigenen Code. Wo der
+Browser ::scroll-marker kennt (Chromium 135+), bekommt jede Slideshow zusätzlich
+native Punkte - unverändert wie bisher, ohne Markup-Änderung.
 
-Absichtlich OHNE ::scroll-button()/::scroll-marker-Erweiterung (Pfeil-Buttons/Punkte):
-ein erster Versuch damit wurde per echtem Browser-Test verworfen - die Pseudo-Elemente
-rendersten in diesem (sehr aktuellen, experimentellen) Chromium-Build nachweislich NICHT
-an der per CSS vorgegebenen Position (mit elementFromPoint() bestätigt: die "Buttons"
-tauchten an einer völlig anderen Stelle der Seite auf als die Slideshow selbst). Statt
-auf ungeprüftem Verhalten einer sich noch ändernden Spec weiterzubauen, bleibt es bei
-der soliden, überall funktionierenden Scroll-Snap-Basis - erneut aufgreifen, sobald sich
-das Verhalten in einer stabilen Browser-Version verifizieren lässt.
+Steuerung (seit 1.1.0, opt-in): .ncss-slideshow--controls ergänzt Pfeil-Buttons und
+Punkte. Wo der Browser ::scroll-button() und ::scroll-marker kennt, erzeugt er beide
+selbst (reines CSS, kein JS nötig). Alle anderen Browser (Safari, Firefox, Stand
+November 2026) bekommen dieselben Bedienelemente aus js/slideshow.js als echte
+<button>s - das Script prüft per CSS.supports() dieselben Bedingungen wie die
+@supports-Blöcke unten und baut nur, was nativ fehlt (nie doppelte Steuerung).
+Optionales Autoplay (Attribut autoplay, standardmäßig AUS) ebenfalls nur per Script.
 
-Markup:
+Frühere Notiz: ein erster ::scroll-button()-Versuch hing die Pseudo-Elemente an den
+Wrapper .ncss-slideshow - der ist aber kein Scroll-Container (Chromium zeigte nur einen
+verirrten, deaktivierten "‹" unten links, per Vorher/Nachher-Screenshot bestätigt; die
+Regeln sind entfernt). Richtig ist der Track (der scrollende Kasten selbst). Die Buttons sind dann
+Geschwister-Boxen des Tracks und damit Grid-Items des Wrappers - darüber liegen sie
+unten per grid-area über dem Track (per elementFromPoint in Chromium 153 bestätigt).
+
+.ncss-slideshow--shadow legt an den Rändern einen Schatten über die Bilder, solange
+es in diese Richtung weitergeht (scroll-getriebene Animation, ohne JS).
+
+Markup (bestehend, unverändert gültig):
 <div class="ncss-slideshow">
-  <ul class="ncss-slideshow-track">
+  <ul class="ncss-slideshow-track" tabindex="0" aria-label="Fotos">
     <li class="ncss-slideshow-item">...</li>
     ...
   </ul>
 </div>
+
+Mit Steuerung (Wrapper als Custom Element, damit der Fallback greift):
+<ncss-slideshow class="ncss-slideshow ncss-slideshow--controls">
+  <ul class="ncss-slideshow-track" tabindex="0" aria-label="Fotos">...</ul>
+</ncss-slideshow>
+<script src="ncss/js/slideshow.js" defer></script>
+
+Beschriftungen: Deutsch/Englisch nach lang-Attribut, am Track per data-label-prev /
+data-label-next überschreibbar (gilt für native UND Script-Buttons).
+```
+
+### `components/sortable.css`
+
+Klassen (8): `.ncss-sortable-actions` `.ncss-sortable-content` `.ncss-sortable-handle` `.ncss-sortable-instructions` `.ncss-sortable-item` `.ncss-sortable-list` `.ncss-sortable-move` `.ncss-sortable-status`
+
+```text
+ncss - Sortierbare Liste (Layer "components"): Einträge per Ziehen am Griff, per Tastatur
+oder per Hoch/Runter-Schaltflächen umsortieren - z. B. Prioritäten, Reihenfolge von
+Menüpunkten, Wunschliste. Light-DOM-Custom-Element <ncss-sortable> + js/sortable.js.
+
+Markup - eine ganz normale Liste. Griff und Schaltflächen erzeugt erst das Script, ohne
+JavaScript bleibt also keine funktionslose Bedienung zurück:
+<ncss-sortable>
+  <ol class="ncss-sortable-list">
+    <li data-id="kaffee">Kaffee</li>
+    <li data-id="tee">Tee</li>
+    <li data-id="saft" data-label="Orangensaft">Orangensaft <small>frisch gepresst</small></li>
+  </ol>
+</ncss-sortable>
+<script src="js/sortable.js" defer></script>
+
+Bedienung (Details in js/sortable.js):
+  Zeiger/Touch: am Griff ziehen. Tastatur: Griff fokussieren, Leertaste/Enter aufnehmen,
+  Pfeiltasten verschieben, Leertaste/Enter ablegen, Esc bricht ab.
+  Hoch/Runter-Schaltflächen: Alternative mit EINEM Klick, ohne Ziehbewegung - WCAG 2.5.7
+  (Dragging Movements) verlangt sie, Tastaturbedienung allein genügt dafür nicht.
+
+Klassen: .ncss-sortable-list (Liste), vom Script erzeugt: .ncss-sortable-item,
+  .ncss-sortable-handle, .ncss-sortable-content, .ncss-sortable-actions,
+  .ncss-sortable-move (Hoch/Runter), .ncss-sortable-status (Live-Region).
+  Zustände: [data-grabbed] (per Tastatur aufgenommen), [data-dragging] (wird gezogen),
+  am Element [data-sorting] während eines Vorgangs.
+
+Bewegung: Nachbar-Einträge gleiten beim Umsortieren an ihren neuen Platz - nur, wenn
+Bewegung erlaubt ist (prefers-reduced-motion bzw. data-motion="reduce"|"full" an <html>,
+das Script prüft beides). Der gezogene Eintrag folgt dem Zeiger immer direkt.
+
+Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base) + js/sortable.js.
+
+Tokens: --ncss-sortable-gap (Abstand der Einträge, Default --ncss-space-2xs).
 ```
 
 ### `components/sparkline.css`
@@ -2813,6 +3195,50 @@ Für Kennzahlen, bei denen "weniger" GUT ist (Kosten, Leerstand, offene Tickets)
 .ncss-stat--inverse auf .ncss-stat tauscht nur die Farben, der Pfeil bleibt ehrlich.
 ```
 
+### `components/stepper.css`
+
+Klassen (7): `.ncss-stepper` `.ncss-stepper--vertical` `.ncss-stepper-label` `.ncss-stepper-meta` `.ncss-stepper-step` `.ncss-stepper-step--done` `.ncss-stepper-step--error`
+
+```text
+ncss - Fortschritts-Schritte / Stepper (Layer "components"): Bestellstatus, Formular-
+Assistent, Onboarding. Horizontal, sobald der CONTAINER breit genug ist, sonst
+automatisch vertikal (Container Query, kein Viewport-Breakpoint). Reines CSS, kein JS.
+
+Abgrenzung: components/lists.css .ncss-list--steps ist eine nummerierte ANLEITUNG
+(alle Schritte gleichwertig, kein Zustand). Der Stepper zeigt dagegen einen FORTSCHRITT
+mit drei Zuständen: erledigt / aktuell / ausstehend.
+
+Braucht colors.css + tokens.css (+ reset/base). Für den Zustandstext "(erledigt)"
+zusätzlich helpers/a11y.css (.ncss-visually-hidden) - oder eine eigene versteckte
+Textklasse.
+
+Markup:
+  <ol class="ncss-stepper" role="list" aria-label="Bestellstatus">
+    <li class="ncss-stepper-step ncss-stepper-step--done">
+      <span class="ncss-stepper-label">Bestellt <span class="ncss-visually-hidden">(erledigt)</span></span>
+      <span class="ncss-stepper-meta">12. Mai</span>
+    </li>
+    <li class="ncss-stepper-step" aria-current="step">
+      <span class="ncss-stepper-label">Versandt</span>
+    </li>
+    <li class="ncss-stepper-step">
+      <span class="ncss-stepper-label">Zugestellt</span>
+    </li>
+  </ol>
+Marker (Kreis mit Nummer bzw. Haken) kommt per CSS (::before, Alternativtext "") -
+kein eigenes Element nötig. Im Assistenten darf .ncss-stepper-label ein <a> zu einem
+erledigten Schritt sein.
+
+Zustände unterscheiden sich in der FORM, nicht nur in der Farbe:
+  erledigt   gefüllter Kreis mit Haken, durchgezogene Linie zum nächsten Schritt
+  aktuell    dicker Ring mit Nummer, fetter Text, aria-current="step"
+  ausstehend dünner Ring mit Nummer, gestrichelte Linie, gedämpfter Text
+
+Umschalten: ab 36rem Container-Breite horizontal (bei 6 Schritten also ~6rem je
+Schritt, längere Beschriftungen brechen um). .ncss-stepper--vertical erzwingt immer die
+senkrechte Darstellung, z.B. für sehr viele Schritte oder lange Beschriftungen.
+```
+
 ### `components/subnav.css`
 
 Klassen (4): `.ncss-subnav` `.ncss-subnav-inner` `.ncss-subnav-label` `.ncss-subnav-list`
@@ -2861,9 +3287,42 @@ gemessene Gesamthöhe des klebenden Kopfbereichs).
 Benötigt: tokens.css/colors.css. Optional js/subnav.js.
 ```
 
+### `components/table-sort.css`
+
+Klassen (5): `.ncss-table--compact` `.ncss-table-sort-button` `.ncss-table-sort-icon` `.ncss-table-sort-status` `.ncss-text-end`
+
+```text
+ncss - Sortierbare Tabelle (Layer "components"): Spaltenköpfe werden zu Schaltflächen,
+ein Klick sortiert nach der Spalte (auf-/absteigend), aria-sort am <th> und eine
+Live-Region sagen den Zustand an. Muster: WAI-ARIA APG "Sortable Table".
+
+Markup - eine normale Tabelle, entweder umschlossen oder per Attribut:
+<ncss-table-sort>
+  <table>
+    <caption>Zimmerpreise</caption>
+    <thead><tr><th>Zimmer</th><th data-sort-type="number">Preis</th><th>Anreise</th>
+               <th data-sort="false">Aktion</th></tr></thead>
+    <tbody><tr><td>Seeblick</td><td data-sort-value="189">189 €</td> …</tr></tbody>
+  </table>
+</ncss-table-sort>
+<table data-ncss-sort> … </table>                         (gleiches Verhalten)
+<script src="js/table-sort.js" defer></script>
+
+Ohne JavaScript bleibt es eine ganz normale Tabelle - die Schaltflächen entstehen erst
+durch das Script. Kombinierbar mit helpers/tables.css (.ncss-table-scroll,
+.ncss-table--compact); bei .ncss-table-stacked ist der Kopf auf schmalen Screens
+ausgeblendet, dort gibt es dann keine Sortier-Schaltflächen.
+
+Klassen (vom Script erzeugt): .ncss-table-sort-button (Schaltfläche im <th>),
+  .ncss-table-sort-icon (Pfeil, aria-hidden), .ncss-table-sort-status (Live-Region,
+  nur für Screenreader sichtbar).
+
+Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base) + js/table-sort.js.
+```
+
 ### `components/tabs.css`
 
-Klassen (4): `.ncss-tabs--vertical` `.ncss-tabs-heading` `.ncss-tabs-list` `.ncss-tabs-panel`
+Klassen (6): `.ncss-tabs--pills` `.ncss-tabs--slide` `.ncss-tabs--vertical` `.ncss-tabs-heading` `.ncss-tabs-list` `.ncss-tabs-panel`
 
 ```text
 ncss - <ncss-tabs>: Registerkarten nach WAI-ARIA-APG-Muster "Tabs" (Layer "components").
@@ -2891,6 +3350,18 @@ Varianten/Attribute:
                                          aktiviert (für Panels mit teurem Inhalt)
   hash                                   aktiver Tab spiegelt sich in der Adresse (#id),
                                          ein Link auf #id öffnet direkt diesen Tab
+
+Animationen (opt-in, alle aus bei reduzierter Bewegung bzw. data-motion="reduce"):
+  class="ncss-tabs--slide"   Unterstrich gleitet zum neuen Tab (statt zu springen)
+  class="ncss-tabs--pills"   Pillen-Tabs, die Hintergrund-Pille gleitet mit
+  animate="fade"             Panel blendet weich ein
+  animate="slide"            Panel schiebt sich aus der Richtung des neuen Tabs herein
+                             (vorwärts von der Endseite, rückwärts von der Startseite)
+  animate="scale"            Panel wächst leicht auf
+  animate="height"           Höhe des Inhaltsbereichs gleitet mit (nur wo
+                             interpolate-size unterstützt wird, sonst sofort)
+  Mehrere kombinierbar: animate="fade slide".
+  --ncss-tabs-duration       Dauer (Standard: --ncss-motion-duration-slow)
 .ncss-tabs-heading ist optional: die Überschrift je Abschnitt hilft OHNE JS (dort ist es
 eine normale Seite mit Abschnitten), MIT JS doppelt sie den Tab-Namen - sie wird dann
 nur noch optisch ausgeblendet, bleibt für Screenreader im Panel erhalten.
@@ -2922,6 +3393,50 @@ Markup:
   </span>
 Farbvarianten wie .ncss-badge: --brand/--brand-2/--success/--warning/--danger
 (Default neutral), --sm für dichte Listen.
+```
+
+### `components/testimonial.css`
+
+Klassen (11): `.ncss-testimonial` `.ncss-testimonial--featured` `.ncss-testimonial--plain` `.ncss-testimonial-author` `.ncss-testimonial-grid` `.ncss-testimonial-logo` `.ncss-testimonial-name` `.ncss-testimonial-person` `.ncss-testimonial-quote` `.ncss-testimonial-rating` `.ncss-testimonial-role`
+
+```text
+ncss - Kundenstimmen / Zitatkarten (Layer "components"): Zitat, Person (Avatar, Name,
+Rolle), optionale Sterne-Bewertung und Firmenlogo. Einzelkarte, Raster und eine große
+hervorgehobene Variante für Landingpages. Reines CSS, kein JS.
+
+Braucht colors.css + tokens.css (+ reset/base). Optionale Begleiter:
+  components/avatar.css   für .ncss-avatar (Bild oder Initialen) in der Bildunterschrift
+  helpers/a11y.css        falls zusätzlicher versteckter Text gebraucht wird
+Die Sterne hier sind eine reine ANZEIGE (.ncss-testimonial-rating) - components/
+rating.css ist die Eingabe-Variante (Radio-Buttons) und für ein fertiges Zitat die
+falsche Semantik.
+
+Semantik: <figure> + <blockquote> + <figcaption> (HTML-Spec-Muster für Zitate mit
+Quelle). Der Name steht als Text in der figcaption, NICHT in <cite> - <cite> ist per
+Spec der Titel eines Werks, kein Personenname.
+
+Markup:
+  <figure class="ncss-testimonial">
+    <p class="ncss-testimonial-rating" role="img" aria-label="5 von 5 Sternen"><span aria-hidden="true">★★★★★</span></p>
+    <blockquote class="ncss-testimonial-quote"><p>Zitat ...</p></blockquote>
+    <figcaption class="ncss-testimonial-author">
+      <span class="ncss-avatar" aria-hidden="true">JB</span>
+      <span class="ncss-testimonial-person">
+        <span class="ncss-testimonial-name">Julia Brenner</span>
+        <span class="ncss-testimonial-role">Leitung Einkauf, Nordlicht GmbH</span>
+      </span>
+      <img class="ncss-testimonial-logo" src="logo.svg" alt="" width="96" height="24">
+    </figcaption>
+  </figure>
+Logo mit alt="", wenn die Firma schon in der Rolle steht (sonst doppelt vorgelesen);
+steht sie nirgends als Text, alt="Firmenname". Statt <img> geht auch ein Text-
+Schriftzug (<span class="ncss-testimonial-logo">).
+
+Varianten:
+  .ncss-testimonial-grid       Raster gleich hoher Karten, Personenzeile unten bündig
+                               (--ncss-testimonial-min, Default 18rem)
+  .ncss-testimonial--featured  großes Zitat mit Anführungszeichen, zentriert
+  .ncss-testimonial--plain     ohne Rahmen/Fläche (z.B. auf einer farbigen Tile)
 ```
 
 ### `components/text-reveal.css`
@@ -3004,6 +3519,87 @@ Padding über --ncss-tile-padding-block/-inline parametrisierbar (Default
 padding-Utilities (helpers/layout.css) würden gegen diesen Default nicht gewinnen
 (Layer-Reihenfolge: helpers vor components), deshalb hier bewusst als Custom
 Property statt fest codiert - siehe demo/index.html für ein Override-Beispiel.
+```
+
+### `components/timeline.css`
+
+Klassen (9): `.ncss-timeline` `.ncss-timeline--alternate` `.ncss-timeline--compact` `.ncss-timeline-content` `.ncss-timeline-date` `.ncss-timeline-item` `.ncss-timeline-item--muted` `.ncss-timeline-marker` `.ncss-timeline-title`
+
+```text
+ncss - Zeitleiste (Layer "components"): statische, vertikale Abfolge von Ereignissen mit
+Datum, Markierung (Punkt oder Icon) und hervorgehobenem aktuellem Eintrag. Auf breiten
+Containern optional abwechselnd links/rechts (.ncss-timeline--alternate, Container
+Query - keine Viewport-Breakpoints). Reines CSS, kein JS.
+
+Abgrenzung: components/roadmap.css (.ncss-roadmap-*) ist die SCROLL-animierte Variante
+(Linie zeichnet sich beim Scrollen nach, Karten blenden ein). Diese Zeitleiste hier ist
+bewusst ruhig - für Firmengeschichte, Changelog, Lebenslauf, Projektverlauf - und bringt
+Datum, Icons, Wechsel-Layout und den "Aktuell"-Zustand mit, die der Roadmap fehlen.
+
+Braucht nur colors.css + tokens.css (+ reset/base). Cherry-pick-fähig. Optional
+helpers/icons.css für .ncss-icon-* in den Markern (ohne: leerer, gefüllter Kreis).
+
+Markup:
+  <ol class="ncss-timeline" role="list">
+    <li class="ncss-timeline-item">
+      <span class="ncss-timeline-marker" aria-hidden="true"></span>        (leer = Punkt)
+      <div class="ncss-timeline-content">
+        <time class="ncss-timeline-date" datetime="2024-03">März 2024</time>
+        <h3 class="ncss-timeline-title">Gründung</h3>
+        <p>Text ...</p>
+      </div>
+    </li>
+    <li class="ncss-timeline-item" aria-current="true">                    (aktueller Eintrag)
+      <span class="ncss-timeline-marker" aria-hidden="true"><span class="ncss-icon ncss-icon-star"></span></span>
+      ...
+    </li>
+  </ol>
+role="list" wie bei allen Listen-Varianten (list-style:none entfernt in älterem
+VoiceOver sonst die Listen-Semantik). aria-current sagt Screenreadern "aktuell" an -
+zusätzlich sichtbar: größerer, gefüllter Marker MIT Ring (Form, nicht nur Farbe).
+Wer es noch deutlicher will, schreibt "Aktuell"/"Heute" als Text ins Datum.
+
+Varianten:
+  .ncss-timeline--alternate   ab ~40rem Container-Breite abwechselnd links/rechts
+  .ncss-timeline--compact     engere Abstände (z.B. in Seitenleisten)
+  .ncss-timeline-item--muted  vergangener/zweitrangiger Eintrag, gedämpft
+Properties: --ncss-timeline-gap, --ncss-timeline-line-color, --ncss-timeline-marker-color
+```
+
+### `components/toolbar.css`
+
+Klassen (13): `.ncss-btn` `.ncss-btn--primary` `.ncss-btn--secondary` `.ncss-dropdown` `.ncss-scheme-dark` `.ncss-split-btn` `.ncss-split-btn--pill` `.ncss-split-btn-caret` `.ncss-toolbar` `.ncss-toolbar--floating` `.ncss-toolbar-divider` `.ncss-toolbar-end` `.ncss-toolbar-group`
+
+```text
+ncss - Toolbar und Split-Button (Layer "components").
+
+1. .ncss-toolbar: Werkzeugleiste (Editor, App-Kopf, Tabellen-Aktionen) - Gruppen links
+   und rechts, Trennstriche, bricht bei wenig Platz sauber um statt zu überlaufen.
+   Gern auf dunkler Fläche: class="ncss-toolbar ncss-scheme-dark" (helpers/surfaces.css).
+   Buttons darin: .ncss-btn mit --ghost / --pill / --icon (helpers/forms.css).
+
+   <div class="ncss-toolbar" role="toolbar" aria-label="Seite bearbeiten">
+     <div class="ncss-toolbar-group"> … Modus-Umschalter … </div>
+     <div class="ncss-toolbar-group ncss-toolbar-end"> … Aktionen … </div>
+   </div>
+
+   role="toolbar" NUR zusammen mit <ncss-toolbar> (js/toolbar.js): dann ist die Leiste
+   ein Tab-Stopp und Pfeiltasten wandern zwischen den Werkzeugen (WAI-ARIA-APG "Toolbar").
+   Ohne das Script ist sie eine normale Gruppe (role="group"), jedes Werkzeug ein
+   eigener Tab-Stopp - beides ist zugänglich.
+
+2. .ncss-split-btn: Hauptaktion + angehängter Menü-Knopf ("Veröffentlichen ▾").
+   Der Menü-Knopf öffnet z.B. ein .ncss-dropdown (components/dropdown.css) per popovertarget.
+
+   <div class="ncss-split-btn">
+     <button type="button" class="ncss-btn ncss-btn--primary">Veröffentlichen</button>
+     <button type="button" class="ncss-btn ncss-btn--primary" popovertarget="pubMenu"
+             aria-label="Weitere Optionen zum Veröffentlichen">▾</button>
+   </div>
+   Mit --pill vollrund.
+
+Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base); Buttons aus
+helpers/forms.css.
 ```
 
 ### `components/tooltip.css`
@@ -3814,6 +4410,52 @@ Dynamische Inhalte: neu eingefügte Widgets per
 melden (oder js/content-observer.js einbinden) - jedes Widget lädt nur einmal.
 ```
 
+### `js/dropdown.js`
+
+Elemente: `<ncss-dropdown>`
+
+data-Attribute: `data-ncss-dropdown-fallback`
+
+Events: `ncss-dropdown-hide`, `ncss-dropdown-select`, `ncss-dropdown-show`
+
+Öffentlich: `el.show()`, `el.hide()`, `el.open`
+
+```text
+ncss - <ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup).
+Light-DOM-Custom-Element. Inhalt: ein Auslöser mit popovertarget + das Menü
+(.ncss-dropdown-menu[popover]). Öffnen, Schließen per Klick daneben und Esc übernimmt
+der Browser (Popover-API) - dieses Script ergänzt nur, was die API nicht kann.
+
+Zwei Modi, abhängig vom Markup:
+  role="menu" am Menü  -> WAI-ARIA-APG "Menu Button": Einträge (role="menuitem",
+                          "menuitemradio", "menuitemcheckbox") bekommen tabindex="-1",
+                          der Fokus wandert per Tastatur (roving focus), beim Öffnen
+                          springt er auf den ersten Eintrag.
+  ohne role="menu"     -> Disclosure (Link-Liste, z. B. Benutzer-Menü): normale Tab-
+                          Reihenfolge, das Script setzt nur aria-expanded und die Position.
+
+Tasten (role="menu"):
+  Auslöser: Enter/Leertaste/Pfeil runter öffnet + erster Eintrag, Pfeil hoch + letzter
+  Menü: Pfeil hoch/runter (zyklisch), Pos1/Ende, Buchstabe = nächster passender Eintrag
+  (Tippsuche), Enter = auswählen + schließen, Leertaste bei Radio/Checkbox = umschalten
+  ohne zu schließen, Esc = schließen + Fokus zurück auf den Auslöser, Tab = schließen.
+
+Attribute am Element: keine nötig. Am Eintrag: aria-disabled="true" (bleibt fokussierbar,
+  lässt sich aber nicht auswählen), data-value="…" (Wert im Event, sonst value/Text).
+Events (bubbeln, am Element): ncss-dropdown-select { item, value, checked },
+  ncss-dropdown-show, ncss-dropdown-hide
+Öffentlich: el.show(), el.hide(), el.open (nur lesen)
+
+Positionierung: CSS Anchor Positioning (das Script vergibt eindeutige anchor-name/
+position-anchor); ohne Anchor Positioning rechnet es top/left selbst aus (unter dem
+Auslöser, bei Platzmangel darüber, im Viewport gehalten) - gleiche Logik wie
+js/preferences.js und js/hovercard.js, bewusst ohne gemeinsame Abhängigkeit.
+
+Abhängigkeiten: keine anderen ncss-Scripts. Ohne customElements/Popover-API wird nichts
+registriert - eine Link-Liste funktioniert trotzdem (Popover nativ), ein role="menu"-Menü
+ist dann nur per Tab bedienbar.
+```
+
 ### `js/dropzone.js`
 
 Elemente: `<ncss-dropzone>`
@@ -3873,6 +4515,39 @@ data-window-months: wie viele Monate voraus eine unbegrenzte ICS-RRULE (ohne COU
 Reine Vanilla-JS-Erweiterung, kein Framework, kein Build-Schritt - Rendering nutzt
 ausschließlich bereits vorhandene ncss-Komponenten (.ncss-card, .ncss-modal,
 .ncss-badge) statt eigener Parallel-Optik.
+```
+
+### `js/filter.js`
+
+Elemente: `<ncss-filter>`
+
+data-Attribute: `data-ncss-filter-out`, `data-ncss-filter-status`
+
+Events: `ncss-content-change`, `ncss-filter-change`
+
+```text
+ncss - <ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM-
+Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()),
+das Script ergänzt nur:
+  1. Trefferzahl in einem Live-Bereich ("6 Einträge", role="status") - sichtbar für
+     alle und vom Screenreader angesagt. Eigenes Element möglich:
+     <p class="ncss-filter-status" data-ncss-filter-status></p> irgendwo im Filter,
+     sonst wird eins direkt nach der Leiste erzeugt.
+  2. Beliebige Kategorienamen (value="zimmer" / data-category="zimmer spa") zusätzlich
+     zu den CSS-Nummern 1-12: nicht passende Einträge bekommen data-ncss-filter-out.
+  3. View Transitions beim Umschalten (Einträge gleiten an ihren neuen Platz), wo der
+     Browser sie kann - NICHT bei reduzierter Bewegung (System oder
+     <html data-motion="reduce">).
+Mehrfachauswahl braucht kein Script: Checkboxen statt Radios in der Leiste genügen.
+
+Markup: <ncss-filter class="ncss-filter"> statt <div class="ncss-filter">, Rest gleich.
+Texte: Deutsch/Englisch nach <html lang>, per data-label-status ("{n} Einträge"),
+  data-label-status-one, data-label-status-none am Element überschreibbar.
+Events (bubbeln): ncss-filter-change { values: [...], count } nach jeder Änderung.
+Dynamische Einträge (htmx, fetch+innerHTML): beim "ncss-content-change"-Event wird neu
+  gezählt/markiert (siehe js/content-observer.js).
+
+Ohne customElements: nichts wird registriert, das reine CSS-Filtern (1-12) läuft weiter.
 ```
 
 ### `js/hero-video-motion.js`
@@ -4731,6 +5406,117 @@ wird das Element gar nicht erst definiert (SKILL-Regel: kein halb funktionierend
 Einbindung: <script src="ncss/js/scrolly.js" defer></script>
 ```
 
+### `js/slideshow.js`
+
+Elemente: `<ncss-slideshow>`
+
+Attribute: `autoplay`
+
+data-Attribute: `data-ncss-overflow`
+
+Events: `ncss-slideshow-change`, `ncss-slideshow-pause`, `ncss-slideshow-play`
+
+Öffentlich: `el.next()`, `el.prev()`, `el.goTo(index)`, `el.play()`, `el.pause()`, `el.index`
+
+```text
+ncss - <ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für
+components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track
+bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie
+bisher), das Script ergänzt nur Bedienelemente.
+
+Markup:
+  <ncss-slideshow class="ncss-slideshow ncss-slideshow--controls" autoplay="6000">
+    <ul class="ncss-slideshow-track" tabindex="0" aria-label="Fotos">
+      <li class="ncss-slideshow-item">...</li>
+    </ul>
+  </ncss-slideshow>
+
+Nie doppelte Steuerung: Pfeile baut das Script nur ohne ::scroll-button(), Punkte nur
+ohne ::scroll-marker - exakt dieselben Bedingungen wie die @supports-Blöcke in
+slideshow.css. In Chromium 135+ bleibt bei .ncss-slideshow--controls also alles nativ,
+das Script kümmert sich dort nur noch um ein eventuelles Autoplay.
+
+Mit .ncss-slideshow--shadow setzt das Script zusätzlich data-ncss-overflow="start end"
+(Richtungen mit weiterem Inhalt) - davon hängen die Randschatten ab, wo die rein
+scroll-getriebene CSS-Variante nicht greift (Safari, reduzierte Bewegung).
+
+Attribute (am Element):
+  autoplay[="ms"]   automatischer Wechsel, Standard AUS; Wert = Intervall (Default 6000).
+                    Bringt immer einen Pause-Knopf mit (WCAG 2.2.2), hält bei Hover/
+                    Fokus in der Slideshow an, startet bei reduzierter Bewegung
+                    (System oder <html data-motion="reduce">) gar nicht erst.
+Beschriftungen: Deutsch/Englisch nach <html lang>, jede per data-label-<key> am Track
+  (oder am Element) überschreibbar: prev, next, dots, dot ("{n} von {total}"), play, pause.
+
+Events (bubbeln): ncss-slideshow-change { index } bei neuem aktuellem Element,
+  ncss-slideshow-play / ncss-slideshow-pause beim Umschalten des Autoplays.
+Öffentlich: el.next(), el.prev(), el.goTo(index), el.play(), el.pause(), el.index.
+Dynamische Elemente im Track: nach dem Einfügen "ncss-content-change" auslösen (oder
+  js/content-observer.js einbinden) - Punkte und Pfeile werden dann neu berechnet.
+
+Ohne customElements wird nichts registriert (Element bleibt :not(:defined)) - die
+Slideshow bleibt per Wischen/Scrollen voll bedienbar, nur ohne Fallback-Knöpfe.
+```
+
+### `js/sortable.js`
+
+Elemente: `<ncss-sortable>`
+
+Attribute: `no-buttons`
+
+data-Attribute: `data-ncss-own-label`
+
+Events: `ncss-sortable-change`
+
+Öffentlich: `el.items`, `el.order`, `el.move(eintragOderIndex, zielIndex)`
+
+```text
+ncss - <ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter-
+Schaltflächen (siehe components/sortable.css für Markup). Light-DOM-Custom-Element.
+Inhalt: eine <ul>/<ol> (oder role="list") - jedes direkte Kind ist ein Eintrag. Das
+Script legt je Eintrag einen Griff (<button>) vor den Inhalt und zwei Schaltflächen
+(nach oben/nach unten) dahinter; ein vorhandenes .ncss-sortable-handle im Markup wird
+übernommen statt neu erzeugt.
+
+Tasten (Fokus auf dem Griff):
+  Leertaste/Enter   aufnehmen bzw. ablegen
+  Pfeil hoch/links  eine Position nach oben (aufgenommen)
+  Pfeil runter/rechts  eine Position nach unten (aufgenommen)
+  Pos1/Ende         an den Anfang/das Ende (aufgenommen)
+  Esc               abbrechen, Eintrag zurück an die Ausgangsposition
+  Tab               legt an der aktuellen Position ab und verlässt den Griff
+Zeiger/Touch: am Griff ziehen (Maus, Stift, Finger - touch-action:none nur am Griff),
+  Esc während des Ziehens bricht ab.
+Hoch/Runter-Schaltflächen: ein Klick = eine Position (WCAG 2.5.7, Alternative ohne
+  Ziehbewegung). Am Anfang/Ende aria-disabled (bleiben fokussierbar, der Fokus geht beim
+  Erreichen der Kante nicht verloren).
+Jede Änderung sagt eine Live-Region an, z. B. „Tee, Position 2 von 5.“
+
+Attribute am Element:
+  no-buttons              Hoch/Runter-Schaltflächen weglassen - NUR, wenn die Seite selbst
+                          eine gleichwertige Alternative ohne Ziehen anbietet
+  data-label-<schlüssel>="…"  Texte überschreiben ({label}, {pos}, {total} werden ersetzt),
+                          Schlüssel: handle, up, down, instructions, grabbed, moved,
+                          dropped, cancelled
+Am Eintrag: data-id="…" (Wert in detail.order), data-label="…" (Name in Ansagen/
+  Schaltflächen, sonst der Text des Eintrags).
+Events (bubbeln, am Element): ncss-sortable-change
+  { item, from, to, order } - from/to 0-basiert, order = data-id (sonst Name) aller
+  Einträge in neuer Reihenfolge. Feuert nur, wenn sich die Reihenfolge wirklich ändert.
+Öffentlich: el.items (Array), el.order (Array), el.move(eintragOderIndex, zielIndex)
+
+Bewegung: Nachbarn gleiten per Web Animations an ihren neuen Platz, nur wenn Bewegung
+erlaubt ist - geprüft werden data-motion="reduce"|"full" an <html> (Vorrang) und
+prefers-reduced-motion. Web Animations unterliegen NICHT der globalen reduce-Regel aus
+reset.css, deshalb die eigene Prüfung.
+
+Dynamische Inhalte: initialisiert sich selbst (Custom Element). Später per JS
+angehängte Einträge werden per MutationObserver mit Griff/Schaltflächen versehen.
+
+Abhängigkeiten: keine anderen ncss-Scripts. Ohne customElements bleibt es eine normale
+Liste ohne Bedienelemente.
+```
+
 ### `js/sparkline.js`
 
 data-Attribute: `data-ncss-sparkline-table`
@@ -4795,13 +5581,57 @@ hat; am Seitenende immer der letzte Abschnitt (kurze Schluss-Abschnitte erreiche
 Oberkante sonst nie).
 ```
 
+### `js/table-sort.js`
+
+Elemente: `<ncss-table-sort>`
+
+data-Attribute: `data-ncss-sort`
+
+Events: `ncss-table-sort-change`
+
+```text
+ncss - Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt
+an der <table> (siehe components/table-sort.css für Markup). Muster: WAI-ARIA APG
+"Sortable Table" - der Inhalt jedes sortierbaren Spaltenkopfs wird in einen <button>
+gelegt, aria-sort steht NUR am gerade sortierten <th> ("ascending"/"descending"; ohne
+Attribut = "none", so empfiehlt es die ARIA-Spezifikation: höchstens ein Kopf zur Zeit).
+
+Sortiert wird je <tbody> für sich, STABIL (gleiche Werte behalten ihre Reihenfolge, auch
+absteigend). Erster Klick: aufsteigend (data-sort-default="descending" am <th> dreht das
+um), jeder weitere Klick wechselt die Richtung.
+
+Wert einer Zelle: data-sort-value="…" > <time datetime> in der Zelle > sichtbarer Text.
+Typ je Spalte: data-sort-type="number|date|text" am <th>, sonst automatisch erkannt -
+"number", wenn ALLE nicht leeren Zellen Zahlen sind (auch "1.234,50 €", "12 %", "-3";
+Dezimaltrenner nach <html lang>: de "," / en "."), "date", wenn alle Datumsangaben sind
+(ISO 2026-11-20, 20.11.2026, <time datetime>), sonst "text" (Intl.Collator in der
+Seitensprache, "Zimmer 2" vor "Zimmer 10"). Leere Zellen landen immer am Ende.
+
+Attribute am <th>: data-sort="false" (Spalte nicht sortierbar), data-sort-type,
+  data-sort-default="descending", aria-sort="ascending|descending" im Markup = Tabelle
+  ist bereits so sortiert (nur Zustand übernehmen, nichts umstellen).
+Attribute am Element bzw. an der <table>: data-label-sorted="Sortiert nach {column},
+  {direction}", data-label-ascending, data-label-descending, data-label-hint (Zusatz für
+  die <caption>, nur für Screenreader; leer = keiner).
+Events (bubbeln, am Element bzw. an der <table>): ncss-table-sort-change
+  { column, index, direction, type }
+Öffentlich (nur <ncss-table-sort>): el.sort(spaltenIndex, "ascending"|"descending")
+
+Dynamische Inhalte: <ncss-table-sort> initialisiert sich selbst; neu eingefügte
+<table data-ncss-sort> werden bei "ncss-content-change" (detail.root) erkannt. Jede
+Tabelle wird nur einmal aufbereitet (WeakSet).
+
+Abhängigkeiten: keine anderen ncss-Scripts. Ohne customElements funktioniert
+data-ncss-sort trotzdem; ohne JavaScript bleibt die Tabelle eine normale Tabelle.
+```
+
 ### `js/tabs.js`
 
 Elemente: `<ncss-tabs>`
 
 Attribute: `hash`, `activation`
 
-data-Attribute: `data-ncss-selected`, `data-ncss-tab`
+data-Attribute: `data-ncss-direction`, `data-ncss-indicator`, `data-ncss-selected`, `data-ncss-tab`
 
 Events: `ncss-tabs-change`
 
@@ -4901,6 +5731,29 @@ Zwei Varianten:
    in einem Kind-Element [data-ncss-theme-label].
 
 Texte Deutsch/Englisch nach <html lang>, einzeln per data-label-* überschreibbar.
+```
+
+### `js/toolbar.js`
+
+Elemente: `<ncss-toolbar>`
+
+data-Attribute: `data-ncss-toolbar-item`
+
+```text
+ncss - <ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster "Toolbar" (Light DOM).
+Styling: components/toolbar.css (.ncss-toolbar-Regeln gelten auch für das Element).
+
+  <ncss-toolbar aria-label="Seite bearbeiten"> … Buttons, Links, Segmented … </ncss-toolbar>
+
+- setzt role="toolbar"; die Leiste ist EIN Tab-Stopp (Roving Tabindex),
+- ← / → (bzw. ↑ / ↓ bei aria-orientation="vertical") wandern zwischen den Werkzeugen,
+  Pos1/Ende springen an Anfang/Ende; in RTL sind links/rechts vertauscht,
+- eine Radio-Gruppe (z.B. .ncss-segmented) zählt als EIN Werkzeug (ihr gewähltes Radio)
+  und behält innerhalb ihre eigenen Pfeiltasten nicht - dort wählt Leertaste/Klick;
+  Pfeiltasten bewegen in einer Toolbar wie vom APG empfohlen zum nächsten Werkzeug,
+- deaktivierte Elemente bleiben fokussierbar übersprungen (disabled wird ausgelassen),
+- ohne Script: normale Gruppe, jedes Werkzeug ein eigener Tab-Stopp.
+Abhängigkeiten: keine.
 ```
 
 ### `js/tooltip.js`

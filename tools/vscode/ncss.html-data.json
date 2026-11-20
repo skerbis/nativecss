@@ -137,10 +137,38 @@
    ]
   },
   {
+   "name": "ncss-dropdown",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)\n\nScript: `js/dropdown.js` · CSS: `components/dropdown.css`\n\nEvents: `ncss-dropdown-hide`, `ncss-dropdown-select`, `ncss-dropdown-show`\n\nÖffentlich: `el.show()`, `el.hide()`, `el.open`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
    "name": "ncss-dropzone",
    "description": {
     "kind": "markdown",
     "value": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)\n\nScript: `js/dropzone.js` · CSS: `components/dropzone.css`\n\nEvents: `ncss-dropzone-change`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-filter",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1\n\nScript: `js/filter.js` · CSS: `components/filter.css`\n\nEvents: `ncss-content-change`, `ncss-filter-change`"
    },
    "attributes": [],
    "references": [
@@ -436,6 +464,58 @@
    ]
   },
   {
+   "name": "ncss-slideshow",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...\n\nScript: `js/slideshow.js` · CSS: `components/slideshow.css`\n\nEvents: `ncss-slideshow-change`, `ncss-slideshow-pause`, `ncss-slideshow-play`\n\nÖffentlich: `el.next()`, `el.prev()`, `el.goTo(index)`, `el.play()`, `el.pause()`, `el.index`"
+   },
+   "attributes": [
+    {
+     "name": "autoplay"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-sortable",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)\n\nScript: `js/sortable.js` · CSS: `components/sortable.css`\n\nEvents: `ncss-sortable-change`\n\nÖffentlich: `el.items`, `el.order`, `el.move(eintragOderIndex, zielIndex)`"
+   },
+   "attributes": [
+    {
+     "name": "no-buttons",
+     "description": "Hoch/Runter-Schaltflächen weglassen - NUR, wenn die Seite selbst eine gleichwertige Alternative ohne Ziehen anbietet data-label-<schlüssel>=\"…\"  Texte überschreiben ({label}, {pos}, {total} werden ersetzt), Schlüssel: handle, up, down, instructions, grabbed, moved, dropped, cancelled",
+     "valueSet": "v"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-table-sort",
+   "description": {
+    "kind": "markdown",
+    "value": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)\n\nScript: `js/table-sort.js` · CSS: `components/table-sort.css`\n\nEvents: `ncss-table-sort-change`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
    "name": "ncss-tabs",
    "description": {
     "kind": "markdown",
@@ -469,6 +549,20 @@
      "valueSet": "v"
     }
    ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-toolbar",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)\n\nScript: `js/toolbar.js` · CSS: `components/toolbar.css`"
+   },
+   "attributes": [],
    "references": [
     {
      "name": "NativeCSS-Handbuch",
@@ -583,6 +677,13 @@
    }
   },
   {
+   "name": "data-ncss-direction",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nQuelle: `components/tabs.css`, `js/tabs.js`"
+   }
+  },
+  {
    "name": "data-ncss-dismiss",
    "description": {
     "kind": "markdown",
@@ -618,10 +719,31 @@
    }
   },
   {
+   "name": "data-ncss-dropdown-fallback",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)\n\nQuelle: `components/dropdown.css`, `js/dropdown.js`"
+   }
+  },
+  {
    "name": "data-ncss-ended",
    "description": {
     "kind": "markdown",
     "value": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)\n\nQuelle: `js/countdown.js`"
+   }
+  },
+  {
+   "name": "data-ncss-filter-out",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1\n\nQuelle: `components/filter.css`, `js/filter.js`"
+   }
+  },
+  {
+   "name": "data-ncss-filter-status",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1\n\n```html\n<p class=\"ncss-filter-status\" data-ncss-filter-status></p> irgendwo im Filter,\n```\n\nQuelle: `js/filter.js`"
    }
   },
   {
@@ -650,6 +772,13 @@
    "description": {
     "kind": "markdown",
     "value": "(intern, vom Script gesetzt) <ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)\n\nQuelle: `js/dropzone.js`"
+   }
+  },
+  {
+   "name": "data-ncss-indicator",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nQuelle: `components/tabs.css`, `js/tabs.js`"
    }
   },
   {
@@ -709,6 +838,20 @@
    }
   },
   {
+   "name": "data-ncss-overflow",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...\n\nQuelle: `components/slideshow.css`, `js/slideshow.js`"
+   }
+  },
+  {
+   "name": "data-ncss-own-label",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)\n\nQuelle: `js/sortable.js`"
+   }
+  },
+  {
    "name": "data-ncss-player-media",
    "description": {
     "kind": "markdown",
@@ -741,6 +884,13 @@
    "description": {
     "kind": "markdown",
     "value": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nQuelle: `js/tabs.js`"
+   }
+  },
+  {
+   "name": "data-ncss-sort",
+   "description": {
+    "kind": "markdown",
+    "value": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)\n\n```html\nncss - Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt\n```\n\nQuelle: `js/table-sort.js`"
    }
   },
   {
@@ -839,6 +989,13 @@
    "description": {
     "kind": "markdown",
     "value": "(intern, vom Script gesetzt) Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)\n\nQuelle: `components/notification.css`, `js/notification.js`"
+   }
+  },
+  {
+   "name": "data-ncss-toolbar-item",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)\n\nQuelle: `components/toolbar.css`, `js/toolbar.js`"
    }
   },
   {

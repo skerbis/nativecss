@@ -253,7 +253,8 @@
   "components/aurora.css"
  ],
  "ncss-avatar": [
-  "components/avatar.css"
+  "components/avatar.css",
+  "components/comments.css"
  ],
  "ncss-avatar--brand-2": [
   "components/avatar.css"
@@ -407,11 +408,15 @@
   "components/events.css",
   "components/input-group.css",
   "components/nav.css",
+  "components/toolbar.css",
   "helpers/forms.css",
   "js/downloads.js",
   "js/events.js"
  ],
  "ncss-btn--danger": [
+  "helpers/forms.css"
+ ],
+ "ncss-btn--ghost": [
   "helpers/forms.css"
  ],
  "ncss-btn--icon": [
@@ -420,10 +425,15 @@
  "ncss-btn--lg": [
   "helpers/forms.css"
  ],
+ "ncss-btn--pill": [
+  "helpers/forms.css"
+ ],
  "ncss-btn--primary": [
+  "components/toolbar.css",
   "helpers/forms.css"
  ],
  "ncss-btn--secondary": [
+  "components/toolbar.css",
   "helpers/forms.css",
   "js/downloads.js",
   "js/events.js"
@@ -738,6 +748,39 @@
   "components/command-palette.css",
   "js/command-palette.js"
  ],
+ "ncss-comment": [
+  "components/comments.css"
+ ],
+ "ncss-comment--highlight": [
+  "components/comments.css"
+ ],
+ "ncss-comment-action": [
+  "components/comments.css"
+ ],
+ "ncss-comment-actions": [
+  "components/comments.css"
+ ],
+ "ncss-comment-author": [
+  "components/comments.css"
+ ],
+ "ncss-comment-badge": [
+  "components/comments.css"
+ ],
+ "ncss-comment-body": [
+  "components/comments.css"
+ ],
+ "ncss-comment-header": [
+  "components/comments.css"
+ ],
+ "ncss-comment-list": [
+  "components/comments.css"
+ ],
+ "ncss-comment-time": [
+  "components/comments.css"
+ ],
+ "ncss-comments": [
+  "components/comments.css"
+ ],
  "ncss-compare-after": [
   "components/compare.css"
  ],
@@ -885,6 +928,43 @@
  "ncss-drop-cap--sm": [
   "helpers/typography.css"
  ],
+ "ncss-dropdown": [
+  "components/dropdown.css",
+  "components/toolbar.css"
+ ],
+ "ncss-dropdown-divider": [
+  "components/dropdown.css"
+ ],
+ "ncss-dropdown-heading": [
+  "components/dropdown.css"
+ ],
+ "ncss-dropdown-hint": [
+  "components/dropdown.css"
+ ],
+ "ncss-dropdown-item": [
+  "components/dropdown.css",
+  "js/dropdown.js"
+ ],
+ "ncss-dropdown-item--danger": [
+  "components/dropdown.css"
+ ],
+ "ncss-dropdown-menu": [
+  "components/dropdown.css"
+ ],
+ "ncss-dropdown-menu--end": [
+  "components/dropdown.css",
+  "js/dropdown.js"
+ ],
+ "ncss-dropdown-menu--up": [
+  "components/dropdown.css",
+  "js/dropdown.js"
+ ],
+ "ncss-dropdown-toggle": [
+  "components/dropdown.css"
+ ],
+ "ncss-dropdown-toggle--plain": [
+  "components/dropdown.css"
+ ],
  "ncss-dropzone-area": [
   "components/dropzone.css",
   "js/dropzone.js"
@@ -1023,6 +1103,21 @@
  ],
  "ncss-figure--width-full": [
   "helpers/media.css"
+ ],
+ "ncss-filter": [
+  "components/filter.css"
+ ],
+ "ncss-filter-bar": [
+  "components/filter.css",
+  "js/filter.js"
+ ],
+ "ncss-filter-item": [
+  "components/filter.css",
+  "js/filter.js"
+ ],
+ "ncss-filter-status": [
+  "components/filter.css",
+  "js/filter.js"
  ],
  "ncss-flex": [
   "components/card.css",
@@ -1231,6 +1326,7 @@
   "components/lightbox.css",
   "components/lists.css",
   "components/search.css",
+  "components/segmented.css",
   "helpers/icons.css",
   "js/code-block.js",
   "js/events.js",
@@ -1450,6 +1546,30 @@
  ],
  "ncss-lead-quote": [
   "helpers/typography.css"
+ ],
+ "ncss-leaders": [
+  "components/leaders.css"
+ ],
+ "ncss-leaders--compact": [
+  "components/leaders.css"
+ ],
+ "ncss-leaders--dashed": [
+  "components/leaders.css"
+ ],
+ "ncss-leaders--line": [
+  "components/leaders.css"
+ ],
+ "ncss-leaders-desc": [
+  "components/leaders.css"
+ ],
+ "ncss-leaders-item": [
+  "components/leaders.css"
+ ],
+ "ncss-leaders-name": [
+  "components/leaders.css"
+ ],
+ "ncss-leaders-value": [
+  "components/leaders.css"
  ],
  "ncss-lightbox": [
   "components/lightbox.css",
@@ -1873,6 +1993,24 @@
  "ncss-pagination-sr": [
   "components/pagination.css"
  ],
+ "ncss-pill-group": [
+  "components/pill-group.css"
+ ],
+ "ncss-pill-group--no-dividers": [
+  "components/pill-group.css"
+ ],
+ "ncss-pill-group--plain": [
+  "components/pill-group.css"
+ ],
+ "ncss-pill-group--sm": [
+  "components/pill-group.css"
+ ],
+ "ncss-pill-group--solid": [
+  "components/pill-group.css"
+ ],
+ "ncss-pill-group-item": [
+  "components/pill-group.css"
+ ],
  "ncss-placeholder": [
   "components/placeholder.css"
  ],
@@ -1932,6 +2070,57 @@
  ],
  "ncss-press": [
   "helpers/animations.css"
+ ],
+ "ncss-pricing": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-action": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-amount": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-badge": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-desc": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-excluded": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-features": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-header": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-name": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-note": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-period": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-plan": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-plan--featured": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-plans": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-price": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-toggle": [
+  "components/pricing.css"
+ ],
+ "ncss-pricing-value": [
+  "components/pricing.css"
  ],
  "ncss-print-only": [
   "helpers/visibility.css"
@@ -2101,6 +2290,7 @@
   "helpers/layout.css"
  ],
  "ncss-scheme-dark": [
+  "components/toolbar.css",
   "helpers/surfaces.css"
  ],
  "ncss-scheme-light": [
@@ -2139,6 +2329,12 @@
  ],
  "ncss-scroll-progress--vertical": [
   "components/scroll-progress.css"
+ ],
+ "ncss-scroll-shadow": [
+  "helpers/scroll-shadow.css"
+ ],
+ "ncss-scroll-shadow--block": [
+  "helpers/scroll-shadow.css"
  ],
  "ncss-scroll-snap-item": [
   "helpers/scroll.css"
@@ -2181,6 +2377,12 @@
   "components/segmented.css"
  ],
  "ncss-segmented--block": [
+  "components/segmented.css"
+ ],
+ "ncss-segmented--pill": [
+  "components/segmented.css"
+ ],
+ "ncss-segmented--slide": [
   "components/segmented.css"
  ],
  "ncss-segmented--sm": [
@@ -2226,14 +2428,46 @@
  "ncss-slideshow": [
   "components/slideshow.css"
  ],
- "ncss-slideshow-item": [
+ "ncss-slideshow--controls": [
+  "components/slideshow.css",
+  "js/slideshow.js"
+ ],
+ "ncss-slideshow--shadow": [
+  "components/slideshow.css",
+  "js/slideshow.js"
+ ],
+ "ncss-slideshow-button": [
+  "components/slideshow.css",
+  "js/slideshow.js"
+ ],
+ "ncss-slideshow-button--next": [
   "components/slideshow.css"
+ ],
+ "ncss-slideshow-button--prev": [
+  "components/slideshow.css"
+ ],
+ "ncss-slideshow-dot": [
+  "components/slideshow.css",
+  "js/slideshow.js"
+ ],
+ "ncss-slideshow-dots": [
+  "components/slideshow.css",
+  "js/slideshow.js"
+ ],
+ "ncss-slideshow-item": [
+  "components/slideshow.css",
+  "js/slideshow.js"
  ],
  "ncss-slideshow-item--peek": [
   "components/slideshow.css"
  ],
+ "ncss-slideshow-toggle": [
+  "components/slideshow.css",
+  "js/slideshow.js"
+ ],
  "ncss-slideshow-track": [
-  "components/slideshow.css"
+  "components/slideshow.css",
+  "js/slideshow.js"
  ],
  "ncss-slideshow-track--no-scrollbar": [
   "components/slideshow.css"
@@ -2247,6 +2481,38 @@
  "ncss-snap-sections": [
   "components/curtain.css",
   "helpers/scroll.css"
+ ],
+ "ncss-sortable-actions": [
+  "components/sortable.css",
+  "js/sortable.js"
+ ],
+ "ncss-sortable-content": [
+  "components/sortable.css",
+  "js/sortable.js"
+ ],
+ "ncss-sortable-handle": [
+  "components/sortable.css",
+  "js/sortable.js"
+ ],
+ "ncss-sortable-instructions": [
+  "components/sortable.css",
+  "js/sortable.js"
+ ],
+ "ncss-sortable-item": [
+  "components/sortable.css",
+  "js/sortable.js"
+ ],
+ "ncss-sortable-list": [
+  "components/sortable.css",
+  "js/sortable.js"
+ ],
+ "ncss-sortable-move": [
+  "components/sortable.css",
+  "js/sortable.js"
+ ],
+ "ncss-sortable-status": [
+  "components/sortable.css",
+  "js/sortable.js"
  ],
  "ncss-sparkline": [
   "components/sparkline.css",
@@ -2286,6 +2552,15 @@
  ],
  "ncss-split--align-stretch": [
   "components/split.css"
+ ],
+ "ncss-split-btn": [
+  "components/toolbar.css"
+ ],
+ "ncss-split-btn--pill": [
+  "components/toolbar.css"
+ ],
+ "ncss-split-btn-caret": [
+  "components/toolbar.css"
  ],
  "ncss-split-container": [
   "components/split.css"
@@ -2366,6 +2641,27 @@
  "ncss-stat-value": [
   "components/stat.css"
  ],
+ "ncss-stepper": [
+  "components/stepper.css"
+ ],
+ "ncss-stepper--vertical": [
+  "components/stepper.css"
+ ],
+ "ncss-stepper-label": [
+  "components/stepper.css"
+ ],
+ "ncss-stepper-meta": [
+  "components/stepper.css"
+ ],
+ "ncss-stepper-step": [
+  "components/stepper.css"
+ ],
+ "ncss-stepper-step--done": [
+  "components/stepper.css"
+ ],
+ "ncss-stepper-step--error": [
+  "components/stepper.css"
+ ],
  "ncss-sticky": [
   "helpers/scroll.css"
  ],
@@ -2407,13 +2703,32 @@
   "helpers/forms.css"
  ],
  "ncss-table--compact": [
+  "components/table-sort.css",
   "helpers/tables.css"
  ],
  "ncss-table-scroll": [
   "helpers/tables.css"
  ],
+ "ncss-table-sort-button": [
+  "components/table-sort.css",
+  "js/table-sort.js"
+ ],
+ "ncss-table-sort-icon": [
+  "components/table-sort.css",
+  "js/table-sort.js"
+ ],
+ "ncss-table-sort-status": [
+  "components/table-sort.css",
+  "js/table-sort.js"
+ ],
  "ncss-table-stacked": [
   "helpers/tables.css"
+ ],
+ "ncss-tabs--pills": [
+  "components/tabs.css"
+ ],
+ "ncss-tabs--slide": [
+  "components/tabs.css"
  ],
  "ncss-tabs--vertical": [
   "components/tabs.css",
@@ -2453,6 +2768,39 @@
  "ncss-tag-remove": [
   "components/tag.css"
  ],
+ "ncss-testimonial": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial--featured": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial--plain": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-author": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-grid": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-logo": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-name": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-person": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-quote": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-rating": [
+  "components/testimonial.css"
+ ],
+ "ncss-testimonial-role": [
+  "components/testimonial.css"
+ ],
  "ncss-text-balance": [
   "helpers/typography.css"
  ],
@@ -2491,6 +2839,7 @@
   "helpers/typography.css"
  ],
  "ncss-text-end": [
+  "components/table-sort.css",
   "helpers/typography.css"
  ],
  "ncss-text-gradient-brand": [
@@ -2604,6 +2953,48 @@
  ],
  "ncss-tile--muted": [
   "components/tile.css"
+ ],
+ "ncss-timeline": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline--alternate": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline--compact": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline-content": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline-date": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline-item": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline-item--muted": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline-marker": [
+  "components/timeline.css"
+ ],
+ "ncss-timeline-title": [
+  "components/timeline.css"
+ ],
+ "ncss-toolbar": [
+  "components/toolbar.css"
+ ],
+ "ncss-toolbar--floating": [
+  "components/toolbar.css"
+ ],
+ "ncss-toolbar-divider": [
+  "components/toolbar.css"
+ ],
+ "ncss-toolbar-end": [
+  "components/toolbar.css"
+ ],
+ "ncss-toolbar-group": [
+  "components/toolbar.css"
  ],
  "ncss-tooltip": [
   "components/tooltip.css",

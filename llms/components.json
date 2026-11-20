@@ -230,6 +230,36 @@
    ],
    "api": []
   },
+  "ncss-dropdown": {
+   "script": "js/dropdown.js",
+   "css": [
+    "components/dropdown.css"
+   ],
+   "description": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)",
+   "attributes": [],
+   "events": [
+    "ncss-dropdown-hide",
+    "ncss-dropdown-select",
+    "ncss-dropdown-show"
+   ],
+   "api": [
+    {
+     "name": "show",
+     "kind": "method",
+     "signature": "show()"
+    },
+    {
+     "name": "hide",
+     "kind": "method",
+     "signature": "hide()"
+    },
+    {
+     "name": "open",
+     "kind": "property",
+     "signature": "open"
+    }
+   ]
+  },
   "ncss-dropzone": {
    "script": "js/dropzone.js",
    "css": [
@@ -239,6 +269,19 @@
    "attributes": [],
    "events": [
     "ncss-dropzone-change"
+   ],
+   "api": []
+  },
+  "ncss-filter": {
+   "script": "js/filter.js",
+   "css": [
+    "components/filter.css"
+   ],
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1",
+   "attributes": [],
+   "events": [
+    "ncss-content-change",
+    "ncss-filter-change"
    ],
    "api": []
   },
@@ -664,6 +707,105 @@
     }
    ]
   },
+  "ncss-slideshow": {
+   "script": "js/slideshow.js",
+   "css": [
+    "components/slideshow.css"
+   ],
+   "description": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...",
+   "attributes": [
+    {
+     "name": "autoplay",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-slideshow-change",
+    "ncss-slideshow-pause",
+    "ncss-slideshow-play"
+   ],
+   "api": [
+    {
+     "name": "next",
+     "kind": "method",
+     "signature": "next()"
+    },
+    {
+     "name": "prev",
+     "kind": "method",
+     "signature": "prev()"
+    },
+    {
+     "name": "goTo",
+     "kind": "method",
+     "signature": "goTo(index)"
+    },
+    {
+     "name": "play",
+     "kind": "method",
+     "signature": "play()"
+    },
+    {
+     "name": "pause",
+     "kind": "method",
+     "signature": "pause()"
+    },
+    {
+     "name": "index",
+     "kind": "property",
+     "signature": "index"
+    }
+   ]
+  },
+  "ncss-sortable": {
+   "script": "js/sortable.js",
+   "css": [
+    "components/sortable.css"
+   ],
+   "description": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)",
+   "attributes": [
+    {
+     "name": "no-buttons",
+     "default": null,
+     "boolean": true,
+     "description": "Hoch/Runter-Schaltflächen weglassen - NUR, wenn die Seite selbst eine gleichwertige Alternative ohne Ziehen anbietet data-label-<schlüssel>=\"…\"  Texte überschreiben ({label}, {pos}, {total} werden ersetzt), Schlüssel: handle, up, down, instructions, grabbed, moved, dropped, cancelled"
+    }
+   ],
+   "events": [
+    "ncss-sortable-change"
+   ],
+   "api": [
+    {
+     "name": "items",
+     "kind": "property",
+     "signature": "items"
+    },
+    {
+     "name": "order",
+     "kind": "property",
+     "signature": "order"
+    },
+    {
+     "name": "move",
+     "kind": "method",
+     "signature": "move(eintragOderIndex, zielIndex)"
+    }
+   ]
+  },
+  "ncss-table-sort": {
+   "script": "js/table-sort.js",
+   "css": [
+    "components/table-sort.css"
+   ],
+   "description": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)",
+   "attributes": [],
+   "events": [
+    "ncss-table-sort-change"
+   ],
+   "api": []
+  },
   "ncss-tabs": {
    "script": "js/tabs.js",
    "css": [
@@ -712,6 +854,16 @@
    "events": [
     "ncss-notification-close"
    ],
+   "api": []
+  },
+  "ncss-toolbar": {
+   "script": "js/toolbar.js",
+   "css": [
+    "components/toolbar.css"
+   ],
+   "description": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)",
+   "attributes": [],
+   "events": [],
    "api": []
   },
   "ncss-video-float": {
@@ -895,6 +1047,14 @@
    "description": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ...",
    "example": "(<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>,"
   },
+  "data-ncss-direction": {
+   "files": [
+    "components/tabs.css",
+    "js/tabs.js"
+   ],
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)",
+   "internal": true
+  },
   "data-ncss-dismiss": {
    "files": [
     "js/dismiss.js"
@@ -930,11 +1090,33 @@
    "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)",
    "internal": true
   },
+  "data-ncss-dropdown-fallback": {
+   "files": [
+    "components/dropdown.css",
+    "js/dropdown.js"
+   ],
+   "description": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)",
+   "internal": true
+  },
   "data-ncss-ended": {
    "files": [
     "js/countdown.js"
    ],
    "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)"
+  },
+  "data-ncss-filter-out": {
+   "files": [
+    "components/filter.css",
+    "js/filter.js"
+   ],
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1"
+  },
+  "data-ncss-filter-status": {
+   "files": [
+    "js/filter.js"
+   ],
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1",
+   "example": "<p class=\"ncss-filter-status\" data-ncss-filter-status></p> irgendwo im Filter,"
   },
   "data-ncss-font": {
    "files": [
@@ -964,6 +1146,14 @@
     "js/dropzone.js"
    ],
    "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)",
+   "internal": true
+  },
+  "data-ncss-indicator": {
+   "files": [
+    "components/tabs.css",
+    "js/tabs.js"
+   ],
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)",
    "internal": true
   },
   "data-ncss-lightbox": {
@@ -1020,6 +1210,20 @@
    ],
    "description": "Content-Observer (opt-in): meldet neu eingefügtes Markup automatisch per \"ncss-content-change\"-Event, damit die Attribut-Scripts aus js/ (count-up, reveal, marquee, sparkline, downloads, events, code-block, combobox, livesearch, ...) es ..."
   },
+  "data-ncss-overflow": {
+   "files": [
+    "components/slideshow.css",
+    "js/slideshow.js"
+   ],
+   "description": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ..."
+  },
+  "data-ncss-own-label": {
+   "files": [
+    "js/sortable.js"
+   ],
+   "description": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)",
+   "internal": true
+  },
   "data-ncss-player-media": {
    "files": [
     "js/audio-player.js",
@@ -1052,6 +1256,13 @@
     "js/tabs.js"
    ],
    "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)"
+  },
+  "data-ncss-sort": {
+   "files": [
+    "js/table-sort.js"
+   ],
+   "description": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)",
+   "example": "ncss - Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt"
   },
   "data-ncss-sparkline-table": {
    "files": [
@@ -1151,6 +1362,14 @@
    "description": "Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)",
    "internal": true
   },
+  "data-ncss-toolbar-item": {
+   "files": [
+    "components/toolbar.css",
+    "js/toolbar.js"
+   ],
+   "description": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)",
+   "internal": true
+  },
   "data-ncss-tooltip-fallback": {
    "files": [
     "components/tooltip.css",
@@ -1207,7 +1426,11 @@
   "ncss-content-change",
   "ncss-countdown-end",
   "ncss-dismiss-remove",
+  "ncss-dropdown-hide",
+  "ncss-dropdown-select",
+  "ncss-dropdown-show",
   "ncss-dropzone-change",
+  "ncss-filter-change",
   "ncss-hovercard-hide",
   "ncss-hovercard-show",
   "ncss-icon-error",
@@ -1225,6 +1448,11 @@
   "ncss-reveal",
   "ncss-scroll-video-change",
   "ncss-scrolly-step",
+  "ncss-slideshow-change",
+  "ncss-slideshow-pause",
+  "ncss-slideshow-play",
+  "ncss-sortable-change",
+  "ncss-table-sort-change",
   "ncss-tabs-change",
   "ncss-tooltip-hide",
   "ncss-tooltip-show",
@@ -1396,6 +1624,25 @@
    ],
    "api": []
   },
+  "js/dropdown.js": {
+   "description": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)",
+   "elements": [
+    "ncss-dropdown"
+   ],
+   "dataAttributes": [
+    "data-ncss-dropdown-fallback"
+   ],
+   "events": [
+    "ncss-dropdown-hide",
+    "ncss-dropdown-select",
+    "ncss-dropdown-show"
+   ],
+   "api": [
+    "show()",
+    "hide()",
+    "open"
+   ]
+  },
   "js/dropzone.js": {
    "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)",
    "elements": [
@@ -1416,6 +1663,21 @@
    "elements": [],
    "dataAttributes": [],
    "events": [],
+   "api": []
+  },
+  "js/filter.js": {
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1",
+   "elements": [
+    "ncss-filter"
+   ],
+   "dataAttributes": [
+    "data-ncss-filter-out",
+    "data-ncss-filter-status"
+   ],
+   "events": [
+    "ncss-content-change",
+    "ncss-filter-change"
+   ],
    "api": []
   },
   "js/hero-video-motion.js": {
@@ -1681,6 +1943,45 @@
     "step"
    ]
   },
+  "js/slideshow.js": {
+   "description": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...",
+   "elements": [
+    "ncss-slideshow"
+   ],
+   "dataAttributes": [
+    "data-ncss-overflow"
+   ],
+   "events": [
+    "ncss-slideshow-change",
+    "ncss-slideshow-pause",
+    "ncss-slideshow-play"
+   ],
+   "api": [
+    "next()",
+    "prev()",
+    "goTo(index)",
+    "play()",
+    "pause()",
+    "index"
+   ]
+  },
+  "js/sortable.js": {
+   "description": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)",
+   "elements": [
+    "ncss-sortable"
+   ],
+   "dataAttributes": [
+    "data-ncss-own-label"
+   ],
+   "events": [
+    "ncss-sortable-change"
+   ],
+   "api": [
+    "items",
+    "order",
+    "move(eintragOderIndex, zielIndex)"
+   ]
+  },
   "js/sparkline.js": {
    "description": "Sparkline-Datenbindung (opt-in, ergänzt components/sparkline.css): berechnet polyline/-area/-dot aus echten Werten statt sie von Hand als SVG-Koordinaten ausrechnen zu müssen, UND liefert die Werte gleichzeitig als barrierefreie Tabelle ...",
    "elements": [],
@@ -1711,12 +2012,27 @@
    "events": [],
    "api": []
   },
+  "js/table-sort.js": {
+   "description": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)",
+   "elements": [
+    "ncss-table-sort"
+   ],
+   "dataAttributes": [
+    "data-ncss-sort"
+   ],
+   "events": [
+    "ncss-table-sort-change"
+   ],
+   "api": []
+  },
   "js/tabs.js": {
    "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)",
    "elements": [
     "ncss-tabs"
    ],
    "dataAttributes": [
+    "data-ncss-direction",
+    "data-ncss-indicator",
     "data-ncss-selected",
     "data-ncss-tab"
    ],
@@ -1749,6 +2065,17 @@
    "dataAttributes": [
     "data-ncss-theme-label",
     "data-ncss-theme-toggle"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/toolbar.js": {
+   "description": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)",
+   "elements": [
+    "ncss-toolbar"
+   ],
+   "dataAttributes": [
+    "data-ncss-toolbar-item"
    ],
    "events": [],
    "api": []
