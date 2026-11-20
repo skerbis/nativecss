@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automatischer Kompakt-Modus</title>
+<!-- Ohne theme.css: neutrale Standardfarben aus colors.css (siehe nav-priority-demo.html). -->
+<link rel="stylesheet" href="../../dist/ncss.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<!-- Im <head> mit defer: der Anfangszustand (Zeile oder Menü-Schaltfläche) steht fest,
+     bevor die Seite das erste Mal gezeichnet wird. -->
+<script src="../../dist/js/nav.js" defer></script>
+<style>
+  body { margin: 0; }
+  .demo-auto-search { inline-size: 8rem; }
+  /* Sehr schmal (320px = 400 % Zoom): Suche aus der Leiste nehmen, damit nichts seitlich überläuft. */
+  @media (max-width: 30rem) { .demo-auto-search { display: none; } }
+</style>
+</head>
+<body class="ncss-page-shell">
+  <header class="ncss-topbar">
+    <div class="ncss-topbar-inner">
+      <a class="ncss-topbar-brand" href="#top">Agentur</a>
+      <nav class="ncss-nav" aria-label="Hauptnavigation">
+        <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navAutoPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+        <dialog id="navAutoPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Menü">
+          <button type="button" class="ncss-dialog-close" command="close" commandfor="navAutoPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+          <ul class="ncss-nav-list">
+            <li class="ncss-nav-item"><a href="#start" aria-current="page">Start</a></li>
+            <li class="ncss-nav-item"><a href="#leistungen">Leistungen</a></li>
+            <li class="ncss-nav-item">
+              <details class="ncss-nav-dropdown">
+                <summary>Showcase</summary>
+                <ul class="ncss-nav-submenu"><li><a href="#0">Übersicht</a></li><li><a href="#1">Websites</a></li><li><a href="#2">Apps</a></li></ul>
+              </details>
+            </li>
+            <li class="ncss-nav-item"><a href="#kontakt">Kontakt</a></li>
+          </ul>
+        </dialog>
+      </nav>
+      <div class="ncss-topbar-actions">
+        <input type="search" class="ncss-input demo-auto-search" aria-label="Suche" placeholder="Suche">
+        <a class="ncss-btn ncss-btn--primary" href="#contact">Anfragen</a>
+      </div>
+    </div>
+  </header>
+  <main class="ncss-container ncss-stack" id="top">
+    <p class="ncss-text-sm ncss-text-muted">Die Liste bricht nie um: passt sie nicht mehr neben Marke, Suche und Button, erscheint die Menü-Schaltfläche - bei jeder Breite, ohne festen Breakpoint.</p>
+    <p class="ncss-text-sm">Zustand: <strong id="navAutoState">-</strong></p>
+  </main>
+  <script src="../assets/js/nav-auto-demo.js" defer></script>
+</body>
+</html>

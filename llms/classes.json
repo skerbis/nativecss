@@ -1818,7 +1818,12 @@
  ],
  "ncss-nav": [
   "components/nav-priority.css",
-  "components/nav.css"
+  "components/nav.css",
+  "js/nav.js"
+ ],
+ "ncss-nav--compact": [
+  "components/nav.css",
+  "js/nav.js"
  ],
  "ncss-nav--scroll": [
   "components/nav.css"
@@ -1863,7 +1868,8 @@
   "components/nav-priority.css",
   "components/nav.css",
   "js/nav-drilldown.js",
-  "js/nav-priority.js"
+  "js/nav-priority.js",
+  "js/nav.js"
  ],
  "ncss-nav-mega-col": [
   "components/nav.css"
@@ -1892,7 +1898,8 @@
  ],
  "ncss-nav-toggle": [
   "components/nav-priority.css",
-  "components/nav.css"
+  "components/nav.css",
+  "js/nav.js"
  ],
  "ncss-notification": [
   "components/notification.css",

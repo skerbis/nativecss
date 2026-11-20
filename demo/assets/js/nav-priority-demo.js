@@ -3,13 +3,16 @@
 // Breite des <iframe> direkt per Regler statt über CSS resize:horizontal - dessen wenige
 // Pixel große Ecken-Trefferfläche funktioniert nicht per Touch/Trackpad (siehe SKILL.md,
 // dasselbe Rezept wie cards-radius-slider.js für den Card-Radius-Regler).
+// Treibt ebenso den Regler des automatischen Kompakt-Modus (Präfix "navAuto").
 (function () {
-  var slider = document.getElementById("navPriorityWidthSlider");
-  var output = document.getElementById("navPriorityWidthOutput");
-  var frame = document.getElementById("navPriorityFrame");
-  if (!slider || !output || !frame) return;
-  slider.addEventListener("input", function () {
-    frame.style.width = slider.value + "px";
-    output.textContent = slider.value + "px";
+  ["navPriority", "navAuto"].forEach(function (prefix) {
+    var slider = document.getElementById(prefix + "WidthSlider");
+    var output = document.getElementById(prefix + "WidthOutput");
+    var frame = document.getElementById(prefix + "Frame");
+    if (!slider || !output || !frame) return;
+    slider.addEventListener("input", function () {
+      frame.style.width = slider.value + "px";
+      output.textContent = slider.value + "px";
+    });
   });
 })();

@@ -1197,6 +1197,13 @@
    ],
    "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)"
   },
+  "data-ncss-nav-auto": {
+   "files": [
+    "components/nav.css",
+    "js/nav.js"
+   ],
+   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem)"
+  },
   "data-ncss-notify": {
    "files": [
     "js/notification.js"
@@ -1443,6 +1450,7 @@
   "ncss-media-ended",
   "ncss-media-pause",
   "ncss-media-play",
+  "ncss-nav-change",
   "ncss-notification-close",
   "ncss-preferences-change",
   "ncss-reveal",
@@ -1808,10 +1816,14 @@
    "api": []
   },
   "js/nav.js": {
-   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>)",
+   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem)",
    "elements": [],
-   "dataAttributes": [],
-   "events": [],
+   "dataAttributes": [
+    "data-ncss-nav-auto"
+   ],
+   "events": [
+    "ncss-nav-change"
+   ],
    "api": []
   },
   "js/ncss-container.js": {

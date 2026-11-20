@@ -1,8 +1,9 @@
 /**
  * ncss - Navigation-Komponente (Layer "components"). Zwei Varianten:
  *
- * 1. .ncss-nav (horizontal, Desktop) - kollabiert unterhalb der Breakpoint-Konvention
- *    "nav-collapse" (64rem, siehe tokens.css) zu einem Hamburger-Button, der DASSELBE
+ * 1. .ncss-nav (horizontal) - kollabiert zu einem Hamburger-Button, sobald die Liste nicht
+ *    mehr in EINE Zeile passt (automatisch per js/nav.js, siehe "Kompakt-Modus" unten;
+ *    ohne JS fest unterhalb der Konvention "nav-collapse", 64rem, siehe tokens.css), der DASSELBE
  *    Markup als Off-Canvas-Sidebar öffnet (components/off-canvas.css wird direkt
  *    mitgenutzt, nicht dupliziert - .ncss-nav-panel trägt zusätzlich die off-canvas-
  *    Klassen). "display: contents" lässt den Dialog-Wrapper auf Desktop optisch
@@ -93,11 +94,10 @@
   display: none;
 }
 
-/* Breakpointless: KEIN fester Punkt, an dem die horizontale Liste "umschaltet" - sie
-   versucht immer zuerst, in einer Zeile zu bleiben; passt sie nicht, umbricht sie
-   organisch in eine zweite Zeile (wie Fließtext), statt den Viewport zu sprengen.
-   Reagiert stufenlos auf JEDE Breite, nicht nur auf die eine dokumentierte
-   nav-collapse-Schwelle.
+/* Ohne JavaScript (Rückfall): passt die Liste oberhalb von 64rem nicht in eine Zeile,
+   umbricht sie organisch in eine zweite Zeile (wie Fließtext), statt den Viewport zu
+   sprengen. Mit js/nav.js bricht sie nie um - dann schaltet der Kompakt-Modus (unten)
+   auf die Menü-Schaltfläche.
    NICHT overflow-x:auto (frühere Version dieser Datei, per echtem Nutzertest verworfen):
    overflow-x auf irgendeinem Nicht-"visible"-Wert zwingt laut Spec AUCH overflow-y auf
    einen berechneten Wert ungleich "visible" (nicht mehr "sichtbar über den Rand hinaus")
@@ -333,75 +333,6 @@
   inset-block-start: 0;
 }
 
-/* -- ncss breakpoint: nav-collapse (64rem) -- */
-@media (max-width: 63.99rem) {
-  .ncss-nav-toggle {
-    display: inline-flex;
-  }
-  /* display:contents zurücknehmen - jetzt greift die native <dialog>-Logik normal
-     (position:fixed, Slide-in-Animation, Backdrop aus components/off-canvas.css).
-     EXPLIZITE [open]/:not([open])-Werte statt `revert`/`revert-layer`: robuster/direkter,
-     keine Kaskaden-Auflösung über Layer-Grenzen und das UA-Stylesheet zur Laufzeit nötig. */
-  .ncss-nav-panel:not([open]) {
-    display: none;
-  }
-  .ncss-nav-panel[open] {
-    display: block;
-  }
-  /* .ncss-offcanvas (off-canvas.css) animiert "display"/"overlay" selbst per
-     allow-discrete (fürs sanfte Ausblenden beim Schließen, siehe dortiger Kommentar).
-     Für .ncss-nav-panel hier bewusst OHNE die beiden - display:contents (Desktop-Regel
-     oben) verträgt sich nicht mit einer späteren allow-discrete-Transition auf "display"
-     (siehe dortiger Kommentar für die vollständige Ursachenanalyse: display bleibt sonst
-     dauerhaft auf "contents" hängen, sobald der Mobile-Breakpoint erreicht wird - genau
-     der gemeldete Nav-Flash-Bug). translate/opacity bleiben animiert (sanftes Einschieben
-     beim Öffnen), das Schließen verschwindet dafür sofort statt auszublenden - der
-     sichere Kompromiss ohne das Hängenbleiben. */
-  .ncss-nav-panel {
-    transition:
-      translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
-      opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
-  }
-  .ncss-nav-panel .ncss-dialog-close {
-    display: block;
-  }
-  .ncss-nav-list {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--ncss-space-2xs);
-    margin-block-start: var(--ncss-space-lg);
-  }
-  .ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
-    position: static;
-    box-shadow: none;
-    border: none;
-    background: none;
-    padding-inline-start: var(--ncss-space-md);
-  }
-
-  /* Trenner zwischen den festen Hauptbereichen (Handbuch/Demo) und den seitenspezifischen
-     Punkten (siehe helpers/layout.css' .ncss-divider--vertical, hier per Markup als
-     <li><hr class="ncss-divider--vertical" ...></li> eingesetzt) - dessen Grundform
-     (border-inline-start) ist für eine FLEX-ZEILE gedacht. Sobald .ncss-nav-list oben auf
-     flex-direction:column umschaltet (schmaler Viewport, off-canvas-Panel), würde
-     dieselbe vertikale Linie nur noch als kaum sichtbarer, seitlich hängender Strich
-     zwischen zwei gestapelten Zeilen wirken - hier deshalb auf eine normale HORIZONTALE
-     Trennlinie zurückgesetzt, passend zur gestapelten Liste. Dieselbe currentColor-
-     Begründung wie bei der Desktop-Variante weiter oben in dieser Datei (Größen-/
-     Farblogik-Kommentar bei `.ncss-nav-item > .ncss-divider--vertical`) gilt hier
-     unverändert mit. */
-  .ncss-nav-list .ncss-divider--vertical {
-    align-self: stretch;
-    width: auto;
-    height: 0;
-    border-inline-start: none;
-    border-block-start: var(--ncss-border-width) solid
-      color-mix(in oklch, currentColor 30%, transparent);
-    margin-inline: 0;
-    margin-block: var(--ncss-space-3xs);
-  }
-}
-
 /* --- Variante: Mega-Menü -----------------------------------------------------------------
    Dieselbe <details>/<summary>-Mechanik wie ein normales Dropdown oben - nur der Inhalt ist
    ein mehrspaltiges Grid statt einer einzelnen Liste. .ncss-nav-submenu bleibt die äußere
@@ -445,9 +376,75 @@
   color: var(--ncss-color-text-muted);
   margin-block-end: var(--ncss-space-2xs);
 }
-/* -- ncss breakpoint: md (768px) -- */
-@media (max-width: 63.99rem) {
-  .ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
+/* --- Kompakt-Modus: Menü-Button + Off-Canvas statt Zeile --------------------------------
+   Drei Wege in denselben Zustand, die Regeln stehen deshalb zweimal (identisch halten):
+
+   1. Automatisch (Standard, js/nav.js): das Skript misst per ResizeObserver, ob die
+      Liste wirklich in EINE Zeile neben Marke/Aktionen passt, und setzt
+      data-ncss-nav-auto="inline" bzw. "compact" an .ncss-nav - unabhängig von der
+      Viewport-Breite (eine kurze Nav bleibt auch am Handy in der Zeile, eine lange
+      klappt auch am Desktop zusammen). Die Liste bricht dabei nie in eine zweite Zeile um.
+   2. Fest: .ncss-nav--compact - immer Menü-Button, bei jeder Breite.
+   3. Ohne JavaScript bzw. mit data-ncss-nav-auto="off": die feste Media Query
+      nav-collapse (64rem, siehe tokens.css) wie bisher.
+
+   .ncss-nav--tree ist ausgenommen (immer vertikal, kein Panel - früher bekam ihre Liste
+   unter 64rem fälschlich den Panel-Abstand oben).
+   Alle Bereichs-Selektoren in :where() - die Spezifität der einzelnen Regeln bleibt
+   dadurch dieselbe wie ohne Bereich, Varianten wie .ncss-nav--scroll oder
+   <ncss-nav-priority> setzen sich weiterhin per eigener Regel durch. */
+:where(.ncss-nav--compact, .ncss-nav[data-ncss-nav-auto="compact"]) {
+  & .ncss-nav-toggle {
+    display: inline-flex;
+  }
+  /* display:contents zurücknehmen - jetzt greift die native <dialog>-Logik normal
+     (position:fixed, Slide-in-Animation, Backdrop aus components/off-canvas.css).
+     EXPLIZITE [open]/:not([open])-Werte statt `revert`/`revert-layer`: robuster/direkter,
+     keine Kaskaden-Auflösung über Layer-Grenzen und das UA-Stylesheet zur Laufzeit nötig. */
+  & .ncss-nav-panel:not([open]) {
+    display: none;
+  }
+  & .ncss-nav-panel[open] {
+    display: block;
+  }
+  /* OHNE "display"/"overlay" in der Transition - siehe Kommentar an .ncss-nav-panel oben
+     (display:contents verträgt keine spätere allow-discrete-Transition auf display). */
+  & .ncss-nav-panel {
+    transition:
+      translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
+  }
+  & .ncss-nav-panel .ncss-dialog-close {
+    display: block;
+  }
+  & .ncss-nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ncss-space-2xs);
+    margin-block-start: var(--ncss-space-lg);
+  }
+  &.ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    background: none;
+    padding-inline-start: var(--ncss-space-md);
+  }
+  /* Trenner (<li><hr class="ncss-divider--vertical"></li>) in der gestapelten Liste als
+     HORIZONTALE Linie - die vertikale Grundform ist für eine Flex-Zeile gedacht.
+     currentColor-Begründung wie bei `.ncss-nav-item > .ncss-divider--vertical` oben. */
+  & .ncss-nav-list .ncss-divider--vertical {
+    align-self: stretch;
+    width: auto;
+    height: 0;
+    border-inline-start: none;
+    border-block-start: var(--ncss-border-width) solid
+      color-mix(in oklch, currentColor 30%, transparent);
+    margin-inline: 0;
+    margin-block: var(--ncss-space-3xs);
+  }
+  /* Mega-Menü gestapelt statt mehrspaltig. */
+  &.ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
     display: flex;
     flex-direction: column;
     gap: var(--ncss-space-sm);
@@ -456,6 +453,81 @@
     max-width: none;
     padding: 0;
   }
+}
+
+/* -- ncss breakpoint: nav-collapse (64rem) - nur ohne JS-Messung (siehe oben) -- */
+@media (max-width: 63.99rem) {
+  :where(.ncss-nav:not(.ncss-nav--tree, [data-ncss-nav-auto="inline"])) {
+    & .ncss-nav-toggle {
+      display: inline-flex;
+    }
+    /* display:contents zurücknehmen - jetzt greift die native <dialog>-Logik normal
+       (position:fixed, Slide-in-Animation, Backdrop aus components/off-canvas.css).
+       EXPLIZITE [open]/:not([open])-Werte statt `revert`/`revert-layer`: robuster/direkter,
+       keine Kaskaden-Auflösung über Layer-Grenzen und das UA-Stylesheet zur Laufzeit nötig. */
+    & .ncss-nav-panel:not([open]) {
+      display: none;
+    }
+    & .ncss-nav-panel[open] {
+      display: block;
+    }
+    /* OHNE "display"/"overlay" in der Transition - siehe Kommentar an .ncss-nav-panel oben
+       (display:contents verträgt keine spätere allow-discrete-Transition auf display). */
+    & .ncss-nav-panel {
+      transition:
+        translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+        opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
+    }
+    & .ncss-nav-panel .ncss-dialog-close {
+      display: block;
+    }
+    & .ncss-nav-list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--ncss-space-2xs);
+      margin-block-start: var(--ncss-space-lg);
+    }
+    &.ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
+      position: static;
+      box-shadow: none;
+      border: none;
+      background: none;
+      padding-inline-start: var(--ncss-space-md);
+    }
+    /* Trenner (<li><hr class="ncss-divider--vertical"></li>) in der gestapelten Liste als
+       HORIZONTALE Linie - die vertikale Grundform ist für eine Flex-Zeile gedacht.
+       currentColor-Begründung wie bei `.ncss-nav-item > .ncss-divider--vertical` oben. */
+    & .ncss-nav-list .ncss-divider--vertical {
+      align-self: stretch;
+      width: auto;
+      height: 0;
+      border-inline-start: none;
+      border-block-start: var(--ncss-border-width) solid
+        color-mix(in oklch, currentColor 30%, transparent);
+      margin-inline: 0;
+      margin-block: var(--ncss-space-3xs);
+    }
+    /* Mega-Menü gestapelt statt mehrspaltig. */
+    &.ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ncss-space-sm);
+      width: auto;
+      min-width: 0;
+      max-width: none;
+      padding: 0;
+    }
+  }
+}
+
+/* Automatik aktiv und Liste passt: nie umbrechen - weder die Liste noch ein Punkt in
+   sich ("Über" / "uns"). Passt sie nicht mehr, schaltet js/nav.js auf "compact". */
+:where(.ncss-nav[data-ncss-nav-auto="inline"]) > .ncss-nav-panel > .ncss-nav-list {
+  flex-wrap: nowrap;
+}
+:where(.ncss-nav[data-ncss-nav-auto="inline"]) > .ncss-nav-panel > .ncss-nav-list > .ncss-nav-item > a,
+:where(.ncss-nav[data-ncss-nav-auto="inline"]) > .ncss-nav-panel > .ncss-nav-list > .ncss-nav-item > .ncss-nav-dropdown > summary {
+  white-space: nowrap;
 }
 
 /* --- Variante: vertikale Tree-Navigation (z.B. Docs-Sidebar) ---------------------------

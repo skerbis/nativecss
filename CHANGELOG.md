@@ -2,6 +2,29 @@
 
 Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.2.0] - 2026-11-20
+
+### Geändert (Verhalten)
+
+- **Navigation ohne festen Breakpoint:** `.ncss-nav` klappt jetzt automatisch genau dann zur Menü-Schaltfläche (Off-Canvas) zusammen, wenn die Liste nicht mehr in **eine** Zeile neben Marke und Aktionen passt - bei jeder Breite. `js/nav.js` misst per `ResizeObserver` (Zeile, Marke, Aktionen und Nav-Punkte, also auch bei größerer Schrift, Zoom und Textabständen) und setzt `data-ncss-nav-auto="inline"` bzw. `"compact"`. Die Liste bricht dabei nie mehr in eine zweite Zeile um. Ohne JavaScript bleibt die bisherige Umschaltung bei 64rem als Rückfall.
+
+### Neu
+
+- `.ncss-nav--compact`: immer Menü-Schaltfläche, bei jeder Breite.
+- `data-ncss-nav-auto="off"`: Automatik aus, feste Umschaltung bei 64rem (für Seiten, deren eigenes CSS an derselben Schwelle hängt - so die Kopfleiste der Website).
+- Event `ncss-nav-change` (`event.detail.compact`) bei jedem Wechsel.
+- Barrierefreiheit: `js/nav.js` setzt `aria-controls` und hält `aria-expanded` der Menü-Schaltfläche passend zum Panel. Klappt die Liste zusammen, während der Fokus darin liegt, wandert er auf die Schaltfläche; wird es wieder breit, schließt ein offenes Panel und der Fokus bleibt auf dem Link.
+- Handbuch: Live-Beispiel mit Breiten-Regler und Tabelle der Schalter (Navigation → Off-Canvas und automatischer Kompakt-Modus).
+
+### Behoben
+
+- `.ncss-nav--tree` bekam unter 64rem fälschlich den oberen Panel-Abstand der Off-Canvas-Liste.
+
+### Hinweis zum Umstieg
+
+- Seiten mit eigenem CSS, das an der 64rem-Schwelle der Nav hängt, entweder auf den Zustand umstellen (`.ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])`, dazu dieselben Regeln in `@media (max-width: 63.99rem)` für Seiten ohne JS) oder `data-ncss-nav-auto="off"` setzen.
+- `js/nav.js` am besten im `<head>` mit `defer` laden - dann steht der Zustand vor dem ersten Zeichnen fest.
+
 ## [1.1.0] - 2026-11-20
 
 ### Neu

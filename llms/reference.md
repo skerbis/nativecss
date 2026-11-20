@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 1007 Klassen, 25 Custom Elements, 58 data-ncss-Attribute, 230 Tokens.
+Stand: 1008 Klassen, 25 Custom Elements, 59 data-ncss-Attribute, 230 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -2126,13 +2126,14 @@ Elements.
 
 ### `components/nav.css`
 
-Klassen (16): `.ncss-btn` `.ncss-dialog-close` `.ncss-divider--vertical` `.ncss-nav` `.ncss-nav--scroll` `.ncss-nav--tree` `.ncss-nav-dropdown` `.ncss-nav-dropdown--nested` `.ncss-nav-item` `.ncss-nav-list` `.ncss-nav-mega-col` `.ncss-nav-mega-heading` `.ncss-nav-panel` `.ncss-nav-submenu` `.ncss-nav-submenu--mega` `.ncss-nav-toggle`
+Klassen (17): `.ncss-btn` `.ncss-dialog-close` `.ncss-divider--vertical` `.ncss-nav` `.ncss-nav--compact` `.ncss-nav--scroll` `.ncss-nav--tree` `.ncss-nav-dropdown` `.ncss-nav-dropdown--nested` `.ncss-nav-item` `.ncss-nav-list` `.ncss-nav-mega-col` `.ncss-nav-mega-heading` `.ncss-nav-panel` `.ncss-nav-submenu` `.ncss-nav-submenu--mega` `.ncss-nav-toggle`
 
 ```text
 ncss - Navigation-Komponente (Layer "components"). Zwei Varianten:
 
-1. .ncss-nav (horizontal, Desktop) - kollabiert unterhalb der Breakpoint-Konvention
-   "nav-collapse" (64rem, siehe tokens.css) zu einem Hamburger-Button, der DASSELBE
+1. .ncss-nav (horizontal) - kollabiert zu einem Hamburger-Button, sobald die Liste nicht
+   mehr in EINE Zeile passt (automatisch per js/nav.js, siehe "Kompakt-Modus" unten;
+   ohne JS fest unterhalb der Konvention "nav-collapse", 64rem, siehe tokens.css), der DASSELBE
    Markup als Off-Canvas-Sidebar öffnet (components/off-canvas.css wird direkt
    mitgenutzt, nicht dupliziert - .ncss-nav-panel trägt zusätzlich die off-canvas-
    Klassen). "display: contents" lässt den Dialog-Wrapper auf Desktop optisch
@@ -4958,13 +4959,32 @@ dafür unconditional selbst.
 
 ### `js/nav.js`
 
+data-Attribute: `data-ncss-nav-auto`
+
+Events: `ncss-nav-change`
+
 ```text
 ncss - Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü
 öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/
-commandfor bzw. <details>). Schließt nur zwei Dinge, für die es keinen reinen CSS-Weg
-gibt: das offene Dropdown nach Klick auf einen Untermenü-Link (natives <details> bleibt
-sonst offen stehen), und das mobile Off-Canvas-Panel nach Klick auf IRGENDEINen Nav-
-Link (sonst bleibt das Menü nach der Navigation sichtbar offen).
+commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem).
+
+1. Automatischer Kompakt-Modus (Standard für jede .ncss-nav mit Menü-Button und
+   Panel): misst per ResizeObserver, ob die Liste in EINE Zeile neben Marke/Aktionen
+   passt, und setzt data-ncss-nav-auto="inline" bzw. "compact" (Regeln siehe
+   components/nav.css). Kein fester Breakpoint. Hysterese: nach dem Zusammenklappen
+   wird erst wieder probiert, wenn der Platz um mehr als 24px gewachsen ist - der
+   Test selbst läuft synchron vor dem nächsten Bild, es flackert nichts.
+   Ausnahmen: data-ncss-nav-auto="off" (bleibt bei der Media Query), .ncss-nav--compact
+   (immer kompakt), Navs mit <ncss-nav-priority>/<ncss-nav-drilldown> (eigene Logik).
+   Event bei jedem Wechsel: "ncss-nav-change" mit detail.compact (true/false).
+   Barrierefreiheit: aria-controls/aria-expanded an der Menü-Schaltfläche; beim
+   Wechsel in den Kompakt-Modus wandert ein Fokus aus der Liste auf die Schaltfläche,
+   beim Zurückwechseln schließt ein offenes Panel und der Fokus bleibt in der Liste.
+   Reagiert auch auf Schriftgröße/Textabstände (beobachtet den Inhalt, nicht nur die
+   Fensterbreite). Für einen Anfangszustand ohne Springen im <head> mit defer laden.
+2. Schließt das offene Dropdown nach Klick auf einen Untermenü-Link (natives <details>
+   bleibt sonst offen stehen) und das Off-Canvas-Panel nach Klick auf IRGENDEINen
+   Nav-Link (sonst bleibt das Menü nach der Navigation sichtbar offen).
 ```
 
 ### `js/ncss-container.js`
@@ -5576,9 +5596,11 @@ aria-current kommt aber nur von hier).
 Markup: <nav class="ncss-subnav" data-ncss-subnav> ... <a href="#abschnitt"> ... </nav>
 Zusätzlich: misst den klebenden Kopfbereich ([data-ncss-sticky-header] oder .ncss-topbar)
 und setzt --ncss-scroll-offset (+ ggf. --ncss-subnav-top), siehe trackHeader().
-"Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante der Leiste erreicht
-hat; am Seitenende immer der letzte Abschnitt (kurze Schluss-Abschnitte erreichen die
-Oberkante sonst nie).
+"Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante des klebenden
+Kopfbereichs erreicht hat; davor (ganz oben) der erste, am Seitenende immer der letzte
+(kurze Schluss-Abschnitte erreichen die Kante sonst nie). Beobachtet wird per
+IntersectionObserver eine 1px-Linie an dieser Kante (rootMargin aus der gemessenen
+Kopfhöhe), dazu scroll/scrollend gebündelt per requestAnimationFrame.
 ```
 
 ### `js/table-sort.js`
