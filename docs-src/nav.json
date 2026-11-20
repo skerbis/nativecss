@@ -221,7 +221,8 @@
         {
           "slug": "widgets",
           "de": "Termine & Downloads",
-          "en": "Events & Downloads"
+          "en": "Events & Downloads",
+          "new": true
         }
       ]
     },
@@ -264,7 +265,8 @@
         {
           "slug": "media",
           "de": "Medien",
-          "en": "Media"
+          "en": "Media",
+          "new": true
         },
         {
           "slug": "maps",
@@ -283,7 +285,8 @@
         {
           "slug": "scroll",
           "de": "Scroll & Sichtbarkeit",
-          "en": "Scroll & Visibility"
+          "en": "Scroll & Visibility",
+          "new": true
         },
         {
           "slug": "animations",

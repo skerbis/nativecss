@@ -1,4 +1,5 @@
 <!--DESC: Images, video, audio and hero sections - aspect ratio, object-fit, art direction and parallax without JS.-->
+<!--FOOT: <script src="~/dist/js/slideshow.js"></script>-->
 <section class="ncss-stack">
   <h1>Media</h1>
   <p class="ncss-text-lg ncss-text-muted">Image, video, audio and hero sections - <code>helpers/media.css</code>, <code>components/video.css</code>, <code>components/audio.css</code>, <code>components/hero.css</code>, <code>components/cover.css</code>, <code>components/overlay.css</code>.</p>
@@ -111,3 +112,54 @@
 <!--MERGE: media-->
 
 <!--MERGE: all-components#slideshow-->
+
+<section class="ncss-stack" id="slideshow-steuerung" data-subnav-label="Arrows and dots for the slideshow">
+  <h2 class="demo-section-title">Arrows and dots for the slideshow <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>.ncss-slideshow--controls</code> adds arrow buttons and dots to the scroll-snap slideshow. Where the browser supports <code>::scroll-button()</code> and <code>::scroll-marker</code> (Chromium 135+), it generates both itself - no JavaScript at all. Safari and Firefox get the same controls from <code>js/slideshow.js</code> as real <code>&lt;button&gt;</code>s. The script checks the same conditions as the CSS and only builds what is missing natively: there are never two sets of arrows or dots. The arrows move by one item and are disabled at the start or end. The current dot is marked (<code>aria-current</code> from the script, natively as the selected tab). <code>.ncss-slideshow--shadow</code> lays a shadow over the photos at an edge as long as there is more in that direction.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Arrows and dots for the slideshow">
+    <ncss-slideshow class="ncss-slideshow ncss-slideshow--controls ncss-slideshow--shadow">
+      <ul class="ncss-slideshow-track ncss-slideshow-track--no-scrollbar" tabindex="0" aria-label="Hotel Seeblick, four photos">
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/see-panorama.webp" width="1600" height="1068" loading="lazy" alt="Panorama of the lake with mountains"></li>
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/spa-pool.webp" width="1125" height="1500" loading="lazy" alt="Indoor pool with large lattice windows"></li>
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/zimmer-classic.webp" width="1600" height="1067" loading="lazy" alt="Double room with wooden wall"></li>
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/steg-morgennebel.webp" width="1600" height="1066" loading="lazy" alt="Jetty in the morning mist"></li>
+      </ul>
+    </ncss-slideshow>
+    <p class="ncss-text-sm ncss-text-muted">Several images side by side (<code>--peek</code>) with optional autoplay - the button stops it, mouse or focus inside the slideshow pause it as well:</p>
+    <ncss-slideshow class="ncss-slideshow ncss-slideshow--controls" autoplay="6000">
+      <ul class="ncss-slideshow-track ncss-slideshow-track--no-scrollbar" tabindex="0" aria-label="Seeburg community, five photos" style="--ncss-slideshow-item-width: min(14rem, 75%)">
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/rathaus-thumb.webp" width="480" height="720" loading="lazy" alt="Historic half-timbered town hall in summer"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/badesteg-thumb.webp" width="480" height="720" loading="lazy" alt="Wooden jetty leading into a calm lake"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/wanderweg-thumb.webp" width="640" height="427" loading="lazy" alt="Hiking trail through a flowering mountain meadow"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/kirche-am-see-thumb.webp" width="640" height="427" loading="lazy" alt="Church on the lakeshore"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/adventsmarkt-thumb.webp" width="640" height="427" loading="lazy" alt="Illuminated carousel at the Christmas market"></li>
+      </ul>
+    </ncss-slideshow>
+  </div>
+  <pre><code class="language-html">&lt;ncss-slideshow class="ncss-slideshow ncss-slideshow--controls ncss-slideshow--shadow"&gt;
+  &lt;ul class="ncss-slideshow-track" tabindex="0" aria-label="Hotel Seeblick, four photos"&gt;
+    &lt;li class="ncss-slideshow-item"&gt;&lt;img src="see-panorama.webp" alt="Panorama of the lake with mountains"&gt;&lt;/li&gt;
+    &lt;li class="ncss-slideshow-item"&gt;&lt;img src="spa-pool.webp" alt="Indoor pool with large lattice windows"&gt;&lt;/li&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/ncss-slideshow&gt;
+
+&lt;!-- Optional: autoplay every 6 seconds, off by default --&gt;
+&lt;ncss-slideshow class="ncss-slideshow ncss-slideshow--controls" autoplay="6000"&gt;...&lt;/ncss-slideshow&gt;
+
+&lt;script src="js/slideshow.js" defer&gt;&lt;/script&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class / attribute</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-slideshow--controls</code></td><td>Arrows + dots: native via <code>::scroll-button()</code>/<code>::scroll-marker</code>, otherwise from <code>js/slideshow.js</code></td></tr>
+        <tr><td><code>.ncss-slideshow--shadow</code></td><td>Edge shadows over the photos as long as there is more in that direction (scroll-driven animation; in Safari and with reduced motion via the script)</td></tr>
+        <tr><td><code>&lt;ncss-slideshow&gt;</code></td><td>Wrapper as a custom element - needed for the script fallback and autoplay; a <code>&lt;div&gt;</code> still works, then native only</td></tr>
+        <tr><td><code>autoplay="6000"</code></td><td>Automatic advance (milliseconds, off by default) with a pause button; stops on hover and focus, does not start with reduced motion</td></tr>
+        <tr><td><code>data-label-prev</code>, <code>-next</code>, <code>-dots</code>, <code>-dot</code>, <code>-play</code>, <code>-pause</code></td><td>Override labels (on the track); default German/English by <code>&lt;html lang&gt;</code>, <code>-dot</code> with <code>{n}</code> and <code>{total}</code></td></tr>
+        <tr><td><code>ncss-slideshow-change</code>, <code>-play</code>, <code>-pause</code></td><td>Events (bubbling); <code>detail.index</code> on change. Methods: <code>next()</code>, <code>prev()</code>, <code>goTo(i)</code>, <code>play()</code>, <code>pause()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Accessibility:</strong> The track stays reachable by Tab and scrollable with the arrow keys (put <code>tabindex="0"</code> and <code>aria-label</code> in the markup). Arrows and dots are real buttons with names such as "Next item" or "2 of 4"; the arrows stay focusable at the end (<code>aria-disabled</code>) so focus is never lost. Autoplay is off until you switch it on; its pause button comes before the images in the DOM (WCAG 2.2.2). With reduced motion the slideshow jumps instead of gliding, in forced-colors mode the dots get system colors. Without JavaScript (and without native support) swiping and scrolling work as before.</p>
+</section>

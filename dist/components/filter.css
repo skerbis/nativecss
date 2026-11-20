@@ -1,0 +1,179 @@
+/**
+ * ncss - Filter-Raster (Layer "components"): Portfolio, Team, Zimmer o. ä. nach
+ * Kategorie filtern - wie UIkits Filter, aber ohne JS. Die Filterleiste ist eine echte
+ * Radio-Gruppe (eine Kategorie) oder eine Checkbox-Gruppe (mehrere Kategorien, ODER-
+ * verknüpft); :has() blendet nicht passende Einträge aus. Tastatur, Formular-Semantik und
+ * Screenreader-Ansage ("Optionsfeld, 2 von 4") kommen vom Browser. Braucht nur colors.css
+ * + tokens.css (+ reset/base).
+ *
+ * Markup - Input DIREKT vor seinem Label (wie components/segmented.css):
+ *   <div class="ncss-filter">
+ *     <fieldset class="ncss-filter-bar">
+ *       <legend>Kategorie</legend>
+ *       <input type="radio" name="team" id="t-alle" value="" checked>
+ *       <label for="t-alle">Alle</label>
+ *       <input type="radio" name="team" id="t-1" value="1">
+ *       <label for="t-1">Rezeption</label>
+ *       ...
+ *     </fieldset>
+ *     <ul class="ncss-grid" role="list">
+ *       <li class="ncss-filter-item" data-category="1 3">...</li>
+ *     </ul>
+ *   </div>
+ *
+ * Kategorien: reines CSS kann einen Attributwert nicht mit einem anderen vergleichen -
+ * deshalb gibt es feste Kategorie-Nummern 1 bis 12 (value="1" ... value="12", ein Eintrag
+ * kann mehrere tragen: data-category="1 3"). value="" oder value="all" = alle zeigen.
+ * Mit js/filter.js (<ncss-filter> statt <div>) gehen zusätzlich beliebige Namen
+ * (value="zimmer" / data-category="zimmer spa"), dazu Trefferzahl im Live-Bereich und
+ * View Transitions - siehe dort.
+ *
+ * Ohne :has()-Unterstützung greift die Ausblend-Regel nicht: alles bleibt sichtbar (die
+ * Leiste ist dann wirkungslos, aber nichts geht verloren).
+ */
+
+ncss-filter {
+  display: block;
+}
+
+.ncss-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+  margin: 0 0 var(--ncss-space-md);
+  padding: 0;
+  min-inline-size: 0;
+  border: 0;
+}
+.ncss-filter-bar > legend {
+  margin-block-end: var(--ncss-space-2xs);
+  padding: 0;
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+}
+/* Radio/Checkbox unsichtbar, aber fokussier- und per Tastatur bedienbar (kein
+   display:none - die Gruppe wäre sonst unerreichbar). */
+.ncss-filter-bar > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+/* Pillen: mind. 2.25rem hoch (Zielgröße WCAG 2.5.8 deutlich übertroffen). */
+.ncss-filter-bar > label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  min-block-size: 2.25rem;
+  padding: var(--ncss-space-3xs) var(--ncss-space-sm);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1.3;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              border-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-filter-bar > input:checked + label {
+  border-color: var(--ncss-color-brand);
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+}
+/* Checkbox-Leiste (Mehrfachauswahl): Häkchen vor dem Text, damit "an/aus" nicht nur an
+   der Farbe hängt (WCAG 1.4.1). */
+.ncss-filter-bar > input[type="checkbox"] + label::before {
+  content: "";
+  inline-size: 0.5em;
+  block-size: 0.85em;
+  margin-inline-end: 0.15em;
+  border: solid currentColor;
+  border-width: 0 0.15em 0.15em 0;
+  rotate: 45deg;
+  translate: 0 -0.1em;
+  opacity: 0;
+}
+.ncss-filter-bar > input[type="checkbox"]:checked + label::before {
+  opacity: 1;
+}
+.ncss-filter-bar > input:focus-visible + label {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+.ncss-filter-bar > input:disabled + label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ncss-filter-bar > input:not(:checked, :disabled) + label:active {
+  background-color: var(--ncss-color-bg-subtle);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-filter-bar > input:not(:checked, :disabled) + label:hover:not(:active) {
+    border-color: var(--ncss-color-text-muted);
+  }
+}
+/* WebKit: nach Pfeiltasten-Wechsel matcht der neue Radio nicht :focus-visible (siehe
+   segmented.css) - dort :focus. */
+@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+  .ncss-filter-bar > input:focus + label {
+    outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Trefferzahl (js/filter.js) - sichtbar für alle, role="status" sagt sie an. */
+.ncss-filter-status {
+  margin: 0 0 var(--ncss-space-sm);
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+}
+
+/* --- Ausblenden ------------------------------------------------------------------------
+   Aktiv, sobald eine Kategorie 1-12 gewählt ist. Ein Eintrag bleibt sichtbar, wenn
+   irgendeine gewählte Kategorie in seinem data-category steht (ODER bei Checkboxen).
+   :has() innerhalb von :is() ist erlaubt (nur :has() in :has() nicht). Ohne :has() ist
+   die ganze Regel ungültig und wird verworfen - alles bleibt sichtbar. */
+.ncss-filter:has(.ncss-filter-bar input:checked:is([value="1"], [value="2"], [value="3"], [value="4"], [value="5"], [value="6"], [value="7"], [value="8"], [value="9"], [value="10"], [value="11"], [value="12"])) .ncss-filter-item:not(:is(
+    .ncss-filter:has(.ncss-filter-bar input[value="1"]:checked) [data-category~="1"],
+    .ncss-filter:has(.ncss-filter-bar input[value="2"]:checked) [data-category~="2"],
+    .ncss-filter:has(.ncss-filter-bar input[value="3"]:checked) [data-category~="3"],
+    .ncss-filter:has(.ncss-filter-bar input[value="4"]:checked) [data-category~="4"],
+    .ncss-filter:has(.ncss-filter-bar input[value="5"]:checked) [data-category~="5"],
+    .ncss-filter:has(.ncss-filter-bar input[value="6"]:checked) [data-category~="6"],
+    .ncss-filter:has(.ncss-filter-bar input[value="7"]:checked) [data-category~="7"],
+    .ncss-filter:has(.ncss-filter-bar input[value="8"]:checked) [data-category~="8"],
+    .ncss-filter:has(.ncss-filter-bar input[value="9"]:checked) [data-category~="9"],
+    .ncss-filter:has(.ncss-filter-bar input[value="10"]:checked) [data-category~="10"],
+    .ncss-filter:has(.ncss-filter-bar input[value="11"]:checked) [data-category~="11"],
+    .ncss-filter:has(.ncss-filter-bar input[value="12"]:checked) [data-category~="12"]
+  )) {
+  display: none;
+}
+/* Beliebige Kategorienamen: js/filter.js markiert nicht passende Einträge selbst. */
+.ncss-filter .ncss-filter-item[data-ncss-filter-out] {
+  display: none;
+}
+
+/* View Transition beim Umschalten (js/filter.js, Typ "ncss-filter"): nur die Einträge
+   gleiten/blenden, die übrige Seite wechselt ohne Überblendung. */
+html:active-view-transition-type(ncss-filter)::view-transition-old(root) {
+  display: none;
+}
+html:active-view-transition-type(ncss-filter)::view-transition-new(root) {
+  animation: none;
+}
+
+/* Hochkontrast: Flächenfarbe verschwindet - gewählte Pille per dickem Systemrahmen. */
+@media (forced-colors: active) {
+  .ncss-filter-bar > input:checked + label {
+    border-color: Highlight;
+    border-width: calc(var(--ncss-border-width) * 3);
+  }
+}

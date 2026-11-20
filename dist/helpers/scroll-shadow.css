@@ -1,0 +1,129 @@
+/**
+ * ncss - Scroll-Schatten (Layer "helpers"): ein weicher Schatten an der Kante eines
+ * scrollbaren Bereichs - aber nur, solange es in diese Richtung noch etwas zu sehen gibt.
+ * Am Anfang fehlt der Schatten vorn, am Ende hinten, passt alles hinein, gibt es keinen.
+ * Kein JS. Braucht nur colors.css + tokens.css.
+ *
+ *   <div class="ncss-table-scroll ncss-scroll-shadow" role="region" aria-label="…" tabindex="0">
+ *   <div class="ncss-scroll-shadow ncss-scroll-shadow--block" style="--ncss-scroll-shadow-max-height: 20rem">
+ *
+ * .ncss-scroll-shadow = waagerecht (inline), --block = senkrecht. Opt-in - bestehende
+ * Tabellen/Scroller ändern sich nicht. Für Fotos (Slideshow) gibt es
+ * .ncss-slideshow--shadow in components/slideshow.css: hier liegt der Schatten bewusst
+ * HINTER dem Inhalt (Hintergrund), damit er Text weder verdeckt noch dessen Kontrast über
+ * die Maßen senkt - hinter undurchsichtigen Bildern wäre er unsichtbar.
+ *
+ * Zwei Wege:
+ * 1. Scroll-getriebene Animation (animation-timeline: scroll(self)) - Chromium 115+,
+ *    Safari 26+. Die Deckkraft der beiden Schatten folgt dem Scroll-Fortschritt, der
+ *    Bereich braucht KEINE eigene Hintergrundfarbe (funktioniert auf Karten, Flächen,
+ *    Verläufen).
+ * 2. Fallback - der klassische background-attachment-Trick (local/scroll, nach Lea Verou
+ *    und Roman Komarov): zwei "Abdeckungen" in Hintergrundfarbe wandern mit dem Inhalt
+ *    (local) und verdecken die festen Schatten (scroll) an den Enden. Braucht eine
+ *    deckende Fläche in der Farbe des Untergrunds: --ncss-scroll-shadow-cover (Default
+ *    Seitenhintergrund) - auf einer Karte o. ä. passend setzen. Läuft in jedem Browser.
+ *    Auch bei reduzierter Bewegung aktiv: die globale Dämpfung in reset.css macht aus
+ *    jeder Animation eine sofort beendete Zeitanimation - die scroll-getriebene Variante
+ *    zeigte dann dauerhaft falsche Schatten.
+ *
+ * Anpassen (pro Instanz per style="--…" oder global):
+ *   --ncss-scroll-shadow-size    Breite/Höhe des Schattens (Default 1rem)
+ *   --ncss-scroll-shadow-color   Schattenfarbe (Default 12 % Textfarbe - hell/dunkel passend)
+ *   --ncss-scroll-shadow-cover   nur Fallback: Untergrundfarbe (Default --ncss-color-bg)
+ *   --ncss-scroll-shadow-max-height  nur --block: maximale Höhe des Bereichs (Default none)
+ *
+ * Kontrast: max. 12 % Textfarbe hinter dem Text, nur im äußersten Rand (meist im
+ * Zellen-Innenabstand). Per Messung: gedämpfter Text (--ncss-color-text-muted) bleibt auch
+ * am dunkelsten Punkt über 4.5:1, hell wie dunkel.
+ */
+
+.ncss-scroll-shadow {
+  --_ncss-ss-size: var(--ncss-scroll-shadow-size, 1rem);
+  --_ncss-ss-color: var(--ncss-scroll-shadow-color, color-mix(in oklch, var(--ncss-color-text) 12%, transparent));
+  --_ncss-ss-cover: var(--ncss-scroll-shadow-cover, var(--ncss-color-bg));
+  /* Fallback-Weg (siehe oben): obere zwei Ebenen = mitwandernde Abdeckungen, untere zwei =
+     feste Schatten. Erste Ebene liegt oben. */
+  background:
+    linear-gradient(to right, var(--_ncss-ss-cover) 40%, transparent) left center / calc(var(--_ncss-ss-size) * 2) 100% no-repeat local,
+    linear-gradient(to left, var(--_ncss-ss-cover) 40%, transparent) right center / calc(var(--_ncss-ss-size) * 2) 100% no-repeat local,
+    linear-gradient(to right, var(--_ncss-ss-color), transparent) left center / var(--_ncss-ss-size) 100% no-repeat scroll,
+    linear-gradient(to left, var(--_ncss-ss-color), transparent) right center / var(--_ncss-ss-size) 100% no-repeat scroll,
+    var(--_ncss-ss-cover);
+}
+.ncss-scroll-shadow--block {
+  overflow-y: auto;
+  max-block-size: var(--ncss-scroll-shadow-max-height, none);
+  background:
+    linear-gradient(to bottom, var(--_ncss-ss-cover) 40%, transparent) center top / 100% calc(var(--_ncss-ss-size) * 2) no-repeat local,
+    linear-gradient(to top, var(--_ncss-ss-cover) 40%, transparent) center bottom / 100% calc(var(--_ncss-ss-size) * 2) no-repeat local,
+    linear-gradient(to bottom, var(--_ncss-ss-color), transparent) center top / 100% var(--_ncss-ss-size) no-repeat scroll,
+    linear-gradient(to top, var(--_ncss-ss-color), transparent) center bottom / 100% var(--_ncss-ss-size) no-repeat scroll,
+    var(--_ncss-ss-cover);
+}
+.ncss-scroll-shadow:dir(rtl):not(.ncss-scroll-shadow--block) {
+  background:
+    linear-gradient(to left, var(--_ncss-ss-cover) 40%, transparent) right center / calc(var(--_ncss-ss-size) * 2) 100% no-repeat local,
+    linear-gradient(to right, var(--_ncss-ss-cover) 40%, transparent) left center / calc(var(--_ncss-ss-size) * 2) 100% no-repeat local,
+    linear-gradient(to left, var(--_ncss-ss-color), transparent) right center / var(--_ncss-ss-size) 100% no-repeat scroll,
+    linear-gradient(to right, var(--_ncss-ss-color), transparent) left center / var(--_ncss-ss-size) 100% no-repeat scroll,
+    var(--_ncss-ss-cover);
+}
+
+/* --- Weg 1: scroll-getrieben -------------------------------------------------------------
+   Zwei typisierte Zahlen (0-1) steuern die Deckkraft der Schatten: --_ncss-ss-a (Anfang)
+   steigt in den ersten 3rem Scrollweg von 0 auf 1, --_ncss-ss-b (Ende) fällt in den
+   letzten 3rem von 1 auf 0. Ohne Scroll-Überlauf ist die Timeline inaktiv, die Animation
+   wirkt nicht - es bleibt der Grundwert 0 = kein Schatten. @property ist nötig, sonst
+   springen Custom Properties in @keyframes nur diskret. */
+@property --_ncss-ss-a {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --_ncss-ss-b {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes ncss-scroll-shadow-a {
+  from { --_ncss-ss-a: 0; }
+  to { --_ncss-ss-a: 1; }
+}
+@keyframes ncss-scroll-shadow-b {
+  from { --_ncss-ss-b: 1; }
+  to { --_ncss-ss-b: 0; }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="reduce"]) .ncss-scroll-shadow {
+      background:
+        linear-gradient(to right, color-mix(in srgb, var(--_ncss-ss-color) calc(var(--_ncss-ss-a) * 100%), transparent), transparent) left center / var(--_ncss-ss-size) 100% no-repeat,
+        linear-gradient(to left, color-mix(in srgb, var(--_ncss-ss-color) calc(var(--_ncss-ss-b) * 100%), transparent), transparent) right center / var(--_ncss-ss-size) 100% no-repeat;
+      animation: ncss-scroll-shadow-a linear both, ncss-scroll-shadow-b linear both;
+      animation-timeline: scroll(self inline), scroll(self inline);
+      animation-range: 0 3rem, calc(100% - 3rem) 100%;
+    }
+    :root:not([data-motion="reduce"]) .ncss-scroll-shadow:dir(rtl):not(.ncss-scroll-shadow--block) {
+      background:
+        linear-gradient(to left, color-mix(in srgb, var(--_ncss-ss-color) calc(var(--_ncss-ss-a) * 100%), transparent), transparent) right center / var(--_ncss-ss-size) 100% no-repeat,
+        linear-gradient(to right, color-mix(in srgb, var(--_ncss-ss-color) calc(var(--_ncss-ss-b) * 100%), transparent), transparent) left center / var(--_ncss-ss-size) 100% no-repeat;
+    }
+    :root:not([data-motion="reduce"]) .ncss-scroll-shadow--block {
+      background:
+        linear-gradient(to bottom, color-mix(in srgb, var(--_ncss-ss-color) calc(var(--_ncss-ss-a) * 100%), transparent), transparent) center top / 100% var(--_ncss-ss-size) no-repeat,
+        linear-gradient(to top, color-mix(in srgb, var(--_ncss-ss-color) calc(var(--_ncss-ss-b) * 100%), transparent), transparent) center bottom / 100% var(--_ncss-ss-size) no-repeat;
+      animation-timeline: scroll(self block), scroll(self block);
+    }
+  }
+}
+
+/* Hochkontrast: Hintergrundbilder werden ohnehin unterdrückt bzw. wären nicht
+   aussagekräftig - nichts erzwingen, der Bereich bleibt normal scrollbar. */
+@media (forced-colors: active) {
+  .ncss-scroll-shadow,
+  .ncss-scroll-shadow--block {
+    background: Canvas;
+  }
+}

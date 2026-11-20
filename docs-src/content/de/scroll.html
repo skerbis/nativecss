@@ -40,3 +40,54 @@
 
 
 <!--MERGE: all-components#sticky-->
+
+<section class="ncss-stack" id="scroll-schatten" data-subnav-label="Scroll-Schatten">
+  <h2 class="demo-section-title">Scroll-Schatten <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>helpers/scroll-shadow.css</code> zeigt an der Kante eines scrollbaren Bereichs einen weichen Schatten - nur solange es in diese Richtung noch etwas zu sehen gibt. Am Anfang fehlt er vorn, am Ende hinten, passt alles hinein, gibt es keinen. Reines CSS: eine scroll-getriebene Animation (<code>animation-timeline: scroll(self)</code>) steuert die Deckkraft, Browser ohne diese Technik und reduzierte Bewegung nutzen den klassischen <code>background-attachment: local</code>-Trick. Der Schatten liegt HINTER dem Inhalt und ist schwach (12&nbsp;% Textfarbe) - nichts wird verdeckt, auch gedämpfter Text behält am dunkelsten Punkt mehr als 4,5:1 Kontrast. Opt-in: bestehende Tabellen ändern sich nicht. Für Fotos in der Slideshow gibt es <a href="media.html#slideshow-steuerung"><code>.ncss-slideshow--shadow</code></a>.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Scroll-Schatten" style="--ncss-scroll-shadow-cover: var(--ncss-color-bg-subtle);">
+    <div class="ncss-table-scroll ncss-scroll-shadow" role="region" aria-label="Zimmerpreise pro Nacht, waagerecht scrollbar" tabindex="0">
+      <table>
+        <caption class="ncss-visually-hidden">Zimmerpreise pro Nacht</caption>
+        <thead><tr><th scope="col">Zimmer</th><th scope="col">Jan</th><th scope="col">Feb</th><th scope="col">Mär</th><th scope="col">Apr</th><th scope="col">Mai</th><th scope="col">Jun</th><th scope="col">Jul</th><th scope="col">Aug</th><th scope="col">Sep</th><th scope="col">Okt</th><th scope="col">Nov</th><th scope="col">Dez</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Classic</th><td>119 €</td><td>119 €</td><td>129 €</td><td>139 €</td><td>149 €</td><td>169 €</td><td>189 €</td><td>189 €</td><td>159 €</td><td>139 €</td><td>119 €</td><td>149 €</td></tr>
+          <tr><th scope="row">Seeblick</th><td>149 €</td><td>149 €</td><td>159 €</td><td>169 €</td><td>189 €</td><td>209 €</td><td>239 €</td><td>239 €</td><td>199 €</td><td>169 €</td><td>149 €</td><td>179 €</td></tr>
+          <tr><th scope="row">Suite unterm Dach</th><td>219 €</td><td>219 €</td><td>229 €</td><td>249 €</td><td>269 €</td><td>299 €</td><td>339 €</td><td>339 €</td><td>289 €</td><td>249 €</td><td>219 €</td><td>259 €</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="ncss-scroll-shadow ncss-scroll-shadow--block ncss-stack ncss-stack--tight" role="list" aria-label="Hausordnung, senkrecht scrollbar" tabindex="0" style="--ncss-scroll-shadow-max-height: 9rem;">
+        <li>Check-in ab 15 Uhr, Check-out bis 11 Uhr.</li>
+        <li>Frühstück täglich von 7 bis 11 Uhr im Wintergarten.</li>
+        <li>Sauna und Hallenbad von 8 bis 21 Uhr, Bademäntel liegen im Zimmer.</li>
+        <li>Ruderboote gegen Pfand an der Rezeption.</li>
+        <li>Hunde auf Anfrage, 15 € pro Nacht.</li>
+        <li>Ruhezeit im Haus ab 22 Uhr.</li>
+        <li>Parkplätze direkt am Haus, Ladesäule für E-Autos.</li>
+        <li>Fahrräder können im Schuppen abgestellt werden.</li>
+    </ul>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-table-scroll ncss-scroll-shadow" role="region" aria-label="Zimmerpreise pro Nacht, waagerecht scrollbar" tabindex="0"&gt;
+  &lt;table&gt;...&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;ul class="ncss-scroll-shadow ncss-scroll-shadow--block" role="list" aria-label="Hausordnung, senkrecht scrollbar"
+    tabindex="0" style="--ncss-scroll-shadow-max-height: 9rem;"&gt;...&lt;/ul&gt;
+
+&lt;!-- Auf einer Karte: Untergrundfarbe für den Fallback-Weg --&gt;
+&lt;div class="ncss-scroll-shadow" style="--ncss-scroll-shadow-cover: var(--ncss-color-surface);"&gt;...&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse / Variable</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-scroll-shadow</code></td><td>Schatten links/rechts (waagerecht) - z. B. zusätzlich auf <code>.ncss-table-scroll</code></td></tr>
+        <tr><td><code>.ncss-scroll-shadow--block</code></td><td>Zusätzlich: oben/unten (senkrecht), setzt <code>overflow-y: auto</code></td></tr>
+        <tr><td><code>--ncss-scroll-shadow-size</code></td><td>Breite bzw. Höhe des Schattens (Default 1rem)</td></tr>
+        <tr><td><code>--ncss-scroll-shadow-color</code></td><td>Schattenfarbe (Default 12&nbsp;% Textfarbe, hell/dunkel passend)</td></tr>
+        <tr><td><code>--ncss-scroll-shadow-cover</code></td><td>Nur Fallback-Weg: Farbe des Untergrunds (Default Seitenhintergrund) - auf Karten oder Flächen passend setzen</td></tr>
+        <tr><td><code>--ncss-scroll-shadow-max-height</code></td><td>Nur <code>--block</code>: maximale Höhe des Bereichs</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Barrierefreiheit:</strong> Der Schatten ist reine Zusatzinformation („hier geht es weiter“) und ändert nichts an Inhalt oder Bedienung. Der Scroll-Bereich selbst braucht wie immer <code>role="region"</code>, <code>aria-label</code> und <code>tabindex="0"</code>, damit er per Tastatur scrollbar ist (WCAG 2.1.1). Im Hochkontrastmodus entfällt der Schatten, bei reduzierter Bewegung greift der unanimierte Fallback.</p>
+</section>

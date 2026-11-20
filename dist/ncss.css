@@ -42,6 +42,7 @@
 @import url("helpers/tables.css") layer(helpers);
 @import url("helpers/media.css") layer(helpers);
 @import url("helpers/scroll.css") layer(helpers);
+@import url("helpers/scroll-shadow.css") layer(helpers);
 @import url("helpers/surfaces.css") layer(helpers);
 @import url("helpers/float.css") layer(helpers);
 @import url("helpers/animations.css") layer(helpers);
@@ -72,6 +73,7 @@
 @import url("components/accordion-split.css") layer(components);
 @import url("components/marginnote.css") layer(components);
 @import url("components/slideshow.css") layer(components);
+@import url("components/filter.css") layer(components);
 @import url("components/dialog-close.css") layer(components);
 @import url("components/theme-toggle.css") layer(components);
 @import url("components/modal.css") layer(components);

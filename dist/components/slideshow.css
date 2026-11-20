@@ -1,25 +1,45 @@
 /**
- * ncss - Slideshow-Komponente (Layer "components"). Kein JS, kein Framework.
+ * ncss - Slideshow-Komponente (Layer "components"). Basis ohne JS, ohne Framework.
  *
  * Läuft in JEDEM Browser über natives Scroll-Snapping - Pfeiltasten, Touch-Wischen,
- * Trackpad, Maus-Scrollrad funktionieren automatisch, ganz ohne eigenen Code.
+ * Trackpad, Maus-Scrollrad funktionieren automatisch, ganz ohne eigenen Code. Wo der
+ * Browser ::scroll-marker kennt (Chromium 135+), bekommt jede Slideshow zusätzlich
+ * native Punkte - unverändert wie bisher, ohne Markup-Änderung.
  *
- * Absichtlich OHNE ::scroll-button()/::scroll-marker-Erweiterung (Pfeil-Buttons/Punkte):
- * ein erster Versuch damit wurde per echtem Browser-Test verworfen - die Pseudo-Elemente
- * rendersten in diesem (sehr aktuellen, experimentellen) Chromium-Build nachweislich NICHT
- * an der per CSS vorgegebenen Position (mit elementFromPoint() bestätigt: die "Buttons"
- * tauchten an einer völlig anderen Stelle der Seite auf als die Slideshow selbst). Statt
- * auf ungeprüftem Verhalten einer sich noch ändernden Spec weiterzubauen, bleibt es bei
- * der soliden, überall funktionierenden Scroll-Snap-Basis - erneut aufgreifen, sobald sich
- * das Verhalten in einer stabilen Browser-Version verifizieren lässt.
+ * Steuerung (seit 1.1.0, opt-in): .ncss-slideshow--controls ergänzt Pfeil-Buttons und
+ * Punkte. Wo der Browser ::scroll-button() und ::scroll-marker kennt, erzeugt er beide
+ * selbst (reines CSS, kein JS nötig). Alle anderen Browser (Safari, Firefox, Stand
+ * November 2026) bekommen dieselben Bedienelemente aus js/slideshow.js als echte
+ * <button>s - das Script prüft per CSS.supports() dieselben Bedingungen wie die
+ * @supports-Blöcke unten und baut nur, was nativ fehlt (nie doppelte Steuerung).
+ * Optionales Autoplay (Attribut autoplay, standardmäßig AUS) ebenfalls nur per Script.
  *
- * Markup:
+ * Frühere Notiz: ein erster ::scroll-button()-Versuch hing die Pseudo-Elemente an den
+ * Wrapper .ncss-slideshow - der ist aber kein Scroll-Container (Chromium zeigte nur einen
+ * verirrten, deaktivierten "‹" unten links, per Vorher/Nachher-Screenshot bestätigt; die
+ * Regeln sind entfernt). Richtig ist der Track (der scrollende Kasten selbst). Die Buttons sind dann
+ * Geschwister-Boxen des Tracks und damit Grid-Items des Wrappers - darüber liegen sie
+ * unten per grid-area über dem Track (per elementFromPoint in Chromium 153 bestätigt).
+ *
+ * .ncss-slideshow--shadow legt an den Rändern einen Schatten über die Bilder, solange
+ * es in diese Richtung weitergeht (scroll-getriebene Animation, ohne JS).
+ *
+ * Markup (bestehend, unverändert gültig):
  * <div class="ncss-slideshow">
- *   <ul class="ncss-slideshow-track">
+ *   <ul class="ncss-slideshow-track" tabindex="0" aria-label="Fotos">
  *     <li class="ncss-slideshow-item">...</li>
  *     ...
  *   </ul>
  * </div>
+ *
+ * Mit Steuerung (Wrapper als Custom Element, damit der Fallback greift):
+ * <ncss-slideshow class="ncss-slideshow ncss-slideshow--controls">
+ *   <ul class="ncss-slideshow-track" tabindex="0" aria-label="Fotos">...</ul>
+ * </ncss-slideshow>
+ * <script src="ncss/js/slideshow.js" defer></script>
+ *
+ * Beschriftungen: Deutsch/Englisch nach lang-Attribut, am Track per data-label-prev /
+ * data-label-next überschreibbar (gilt für native UND Script-Buttons).
  */
 
 .ncss-slideshow {
@@ -66,46 +86,356 @@
     gap: var(--ncss-space-2xs);
     margin-block-start: var(--ncss-space-sm);
   }
+  /* Alternativtext für den Screenreader: ohne ihn hießen die Punkte nur "Tab" ohne Namen
+     (per Accessibility-Tree in Chromium 153 geprüft). Zähler statt fester Texte. */
+  .ncss-slideshow-track {
+    counter-reset: ncss-slideshow-item;
+  }
+  .ncss-slideshow-item {
+    counter-increment: ncss-slideshow-item;
+  }
   .ncss-slideshow-item::scroll-marker {
-    content: "";
+    content: "" / "Element " counter(ncss-slideshow-item);
     width: var(--ncss-space-2xs);
     height: var(--ncss-space-2xs);
     border-radius: var(--ncss-radius-full);
     background-color: var(--ncss-color-border);
+  }
+  .ncss-slideshow-item:lang(en)::scroll-marker {
+    content: "" / "Item " counter(ncss-slideshow-item);
   }
   .ncss-slideshow-item::scroll-marker:target-current {
     background-color: var(--ncss-color-brand);
   }
 }
 
-@supports selector(::scroll-button(*)) {
-  .ncss-slideshow::scroll-button(left),
-  .ncss-slideshow::scroll-button(right) {
-    position: absolute;
-    inset-block-start: 50%;
-    translate: 0 -50%;
-    z-index: 1;
-    width: var(--ncss-space-lg);
-    height: var(--ncss-space-lg);
-    border-radius: var(--ncss-radius-full);
-    border: var(--ncss-border-width) solid var(--ncss-color-border);
-    background-color: var(--ncss-color-surface);
-    color: var(--ncss-color-text);
+/* --- Steuerung: Pfeile + Punkte (.ncss-slideshow--controls) -------------------------
+   Der Wrapper wird zum einspaltigen Grid: Zeile 1 = Track, Pfeile liegen per gleicher
+   grid-area darüber (links/rechts, vertikal mittig zum Track - nicht zum ganzen
+   Wrapper samt Punkten). Zeile 2 = Punkte (nativ oder Script) und ggf. Pause-Knopf.
+   minmax(0, 1fr) statt 1fr: sonst bläht der breite Track die Spalte auf (Überlauf). */
+ncss-slideshow {
+  display: block;
+}
+.ncss-slideshow--controls,
+.ncss-slideshow--shadow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+:is(.ncss-slideshow--controls, .ncss-slideshow--shadow) > .ncss-slideshow-track {
+  grid-area: 1 / 1;
+}
+
+/* Script-Fallback-Pfeile (js/slideshow.js) - gleiche Optik wie die nativen unten. */
+.ncss-slideshow-button {
+  grid-area: 1 / 1;
+  align-self: center;
+  z-index: 2;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  margin-inline: var(--ncss-space-2xs);
+  padding: 0;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  box-shadow: var(--ncss-shadow-sm);
+  font: inherit;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.ncss-slideshow-button--prev {
+  justify-self: start;
+}
+.ncss-slideshow-button--next {
+  justify-self: end;
+}
+/* Am Anfang/Ende: aria-disabled statt disabled - ein echtes disabled würde dem gerade
+   gedrückten Button den Tastatur-Fokus wegnehmen (Fokus fiele auf <body>). */
+.ncss-slideshow-button[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+.ncss-slideshow-button:not([aria-disabled="true"]):active {
+  background-color: var(--ncss-color-bg-subtle);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-slideshow-button:not([aria-disabled="true"]):hover:not(:active) {
+    border-color: var(--ncss-color-text-muted);
+  }
+}
+.ncss-slideshow-button:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Script-Fallback-Punkte: sichtbarer Punkt 0.625rem, Trefferfläche 1.5rem (WCAG 2.5.8) -
+   der transparente Rand gehört zur Fläche, background-clip lässt nur die Mitte farbig. */
+.ncss-slideshow-dots {
+  grid-area: 2 / 1;
+  justify-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-block-start: var(--ncss-space-2xs);
+}
+.ncss-slideshow-dot,
+.ncss-slideshow-toggle {
+  font: inherit;
+  cursor: pointer;
+}
+.ncss-slideshow-dot {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  padding: 0;
+  border: 0.4375rem solid transparent;
+  border-radius: var(--ncss-radius-full);
+  background-clip: content-box;
+  background-color: var(--ncss-color-text-muted);
+}
+.ncss-slideshow-dot[aria-current="true"] {
+  background-color: var(--ncss-color-brand);
+  border-width: 0.3125rem;
+}
+.ncss-slideshow-dot:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 0;
+}
+
+/* Pause-/Abspielen-Knopf des optionalen Autoplays (WCAG 2.2.2) - immer sichtbar,
+   unten am Anfang der Punkte-Zeile, im DOM vor dem Track (zuerst erreichbar). */
+.ncss-slideshow-toggle {
+  grid-area: 2 / 1;
+  justify-self: start;
+  z-index: 1;
+  margin-block-start: var(--ncss-space-2xs);
+  padding: var(--ncss-space-3xs) var(--ncss-space-xs);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-sm);
+  line-height: 1.4;
+}
+.ncss-slideshow-toggle:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-slideshow-toggle:hover:not(:active) {
+    border-color: var(--ncss-color-text-muted);
+  }
+}
+.ncss-slideshow-toggle:active {
+  background-color: var(--ncss-color-bg-subtle);
+}
+
+/* Native Punkte im Steuerungs-Modus: größere Trefferfläche wie beim Fallback, Gruppe in
+   Zeile 2 des Grids. Die einfachen Punkte aller anderen Slideshows bleiben wie oben. */
+@supports selector(::scroll-marker) {
+  /* justify-self: stretch statt center: Chromium 153 rechnet die Gruppe als Grid-Item
+     sonst auf 0 Breite herunter (Punkte quetschten sich auf 0, per Box-Messung gefunden). */
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-marker-group {
+    grid-area: 2 / 1;
+    justify-self: stretch;
+    /* Feste Höhe: als Grid-Item meldete die Gruppe in Chromium 153 Höhe 0 (die Punkte
+       hingen darunter in den Folgeinhalt hinein). */
+    block-size: 1.5rem;
+    gap: 0;
+    margin-block-start: var(--ncss-space-2xs);
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track > .ncss-slideshow-item::scroll-marker {
+    flex: none;
+    box-sizing: border-box;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.4375rem solid transparent;
+    background-clip: content-box;
+    background-color: var(--ncss-color-text-muted);
     cursor: pointer;
   }
-  .ncss-slideshow::scroll-button(left) {
-    inset-inline-start: var(--ncss-space-2xs);
-    content: "‹";
+  .ncss-slideshow--controls > .ncss-slideshow-track > .ncss-slideshow-item::scroll-marker:target-current {
+    background-color: var(--ncss-color-brand);
+    border-width: 0.3125rem;
   }
-  .ncss-slideshow::scroll-button(right) {
-    inset-inline-end: var(--ncss-space-2xs);
-    content: "›";
+  .ncss-slideshow--controls > .ncss-slideshow-track > .ncss-slideshow-item::scroll-marker:focus-visible {
+    outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+    outline-offset: 0;
   }
-  /* Browser blendet den jeweiligen Button automatisch aus, wenn dort nichts mehr zu
-     scrollen ist (:disabled-Zustand) - hier nur die visuelle Ausprägung davon. */
-  .ncss-slideshow::scroll-button(left):disabled,
-  .ncss-slideshow::scroll-button(right):disabled {
-    opacity: 0.3;
+}
+
+/* Native Pfeile: am TRACK (dem Scroll-Container), nicht am Wrapper. Der Browser setzt
+   :disabled am Anfang/Ende selbst. Beschriftung nach Sprache, per data-label-prev/-next
+   am Track überschreibbar (attr() im Alternativtext von content). */
+@supports selector(::scroll-button(*)) {
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-start),
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-end) {
+    grid-area: 1 / 1;
+    align-self: center;
+    z-index: 2;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    margin-inline: var(--ncss-space-2xs);
+    padding: 0;
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    box-shadow: var(--ncss-shadow-sm);
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-start) {
+    justify-self: start;
+    content: "‹" / "Vorheriges Element";
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-end) {
+    justify-self: end;
+    content: "›" / "Nächstes Element";
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track:lang(en)::scroll-button(inline-start) {
+    content: "‹" / "Previous item";
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track:lang(en)::scroll-button(inline-end) {
+    content: "›" / "Next item";
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track[data-label-prev]::scroll-button(inline-start) {
+    content: "‹" / attr(data-label-prev);
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track[data-label-next]::scroll-button(inline-end) {
+    content: "›" / attr(data-label-next);
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-start):disabled,
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-end):disabled {
+    opacity: 0.4;
     cursor: default;
+  }
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-start):focus-visible,
+  .ncss-slideshow--controls > .ncss-slideshow-track::scroll-button(inline-end):focus-visible {
+    outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Hochkontrast: Flächen verschwinden - Punkte brauchen Systemfarben, der aktuelle Punkt
+   Highlight, sonst ist "wo bin ich" unsichtbar. */
+@media (forced-colors: active) {
+  .ncss-slideshow-dot {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+  .ncss-slideshow-dot[aria-current="true"] {
+    background-color: Highlight;
+  }
+  .ncss-slideshow-button[aria-disabled="true"] {
+    color: GrayText;
+  }
+}
+@supports selector(::scroll-marker) {
+  @media (forced-colors: active) {
+    .ncss-slideshow--controls > .ncss-slideshow-track > .ncss-slideshow-item::scroll-marker {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
+    .ncss-slideshow--controls > .ncss-slideshow-track > .ncss-slideshow-item::scroll-marker:target-current {
+      background-color: Highlight;
+    }
+  }
+}
+
+/* --- Randschatten (.ncss-slideshow--shadow) -------------------------------------------
+   Ein Schatten an der Kante, solange es in diese Richtung weitere Bilder gibt - über den
+   Bildern (Overlay), weil ein Hintergrund-Schatten hinter undurchsichtigen Fotos
+   unsichtbar bliebe. Für Text-Inhalte stattdessen helpers/scroll-shadow.css (Schatten
+   HINTER dem Inhalt, kein Kontrastverlust). Zwei Auslöser, beide ergeben dasselbe Bild:
+   1. CSS: Scroll-Fortschritt des Tracks (benannte scroll-timeline, per timeline-scope
+      für den Wrapper sichtbar). Nur bei erlaubter Bewegung - die globale Dämpfung in
+      reset.css machte daraus eine sofort beendete Zeitanimation (falsche Schatten).
+      NICHT in WebKit: Safari 26.6 kennt timeline-scope zwar laut @supports, die
+      Animation blieb im Test aber fest auf dem Endwert stehen (Anfangs-Schatten immer
+      an, End-Schatten nie) - deshalb per WebKit-Erkennung (wie segmented.css)
+      ausgenommen.
+   2. js/slideshow.js (<ncss-slideshow>): setzt data-ncss-overflow="start end" je nach
+      Richtung, in der es weitergeht - greift überall, auch bei reduzierter Bewegung
+      (dann ohne Überblendung). Wo beides läuft, gewinnt die Animation (gleiches Ergebnis).
+   Ohne beides: kein Schatten, sonst unverändert. */
+.ncss-slideshow--shadow::before,
+.ncss-slideshow--shadow::after {
+  content: "";
+  grid-area: 1 / 1;
+  align-self: stretch;
+  z-index: 1;
+  inline-size: var(--ncss-slideshow-shadow-size, 3rem);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-slideshow--shadow::before {
+  justify-self: start;
+  background-image: linear-gradient(to right, rgb(0 0 0 / 0.45), transparent);
+}
+.ncss-slideshow--shadow::after {
+  justify-self: end;
+  background-image: linear-gradient(to left, rgb(0 0 0 / 0.45), transparent);
+}
+.ncss-slideshow--shadow:dir(rtl)::before {
+  background-image: linear-gradient(to left, rgb(0 0 0 / 0.45), transparent);
+}
+.ncss-slideshow--shadow:dir(rtl)::after {
+  background-image: linear-gradient(to right, rgb(0 0 0 / 0.45), transparent);
+}
+.ncss-slideshow--shadow[data-ncss-overflow~="start"]::before,
+.ncss-slideshow--shadow[data-ncss-overflow~="end"]::after {
+  opacity: 1;
+}
+@keyframes ncss-slideshow-shadow-start {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ncss-slideshow-shadow-end {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@supports (animation-timeline: scroll()) and (timeline-scope: --a) and (not ((hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none))) {
+  .ncss-slideshow--shadow {
+    timeline-scope: --ncss-slideshow-scroll;
+  }
+  .ncss-slideshow--shadow > .ncss-slideshow-track {
+    scroll-timeline: --ncss-slideshow-scroll inline;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="reduce"]) .ncss-slideshow--shadow::before {
+      animation: ncss-slideshow-shadow-start linear both;
+      animation-timeline: --ncss-slideshow-scroll;
+      animation-range: 0 4rem;
+    }
+    :root:not([data-motion="reduce"]) .ncss-slideshow--shadow::after {
+      animation: ncss-slideshow-shadow-end linear both;
+      animation-timeline: --ncss-slideshow-scroll;
+      animation-range: calc(100% - 4rem) 100%;
+    }
+  }
+  :root[data-motion="full"] .ncss-slideshow--shadow::before {
+    animation: ncss-slideshow-shadow-start linear both;
+    animation-timeline: --ncss-slideshow-scroll;
+    animation-range: 0 4rem;
+  }
+  :root[data-motion="full"] .ncss-slideshow--shadow::after {
+    animation: ncss-slideshow-shadow-end linear both;
+    animation-timeline: --ncss-slideshow-scroll;
+    animation-range: calc(100% - 4rem) 100%;
+  }
+}
+@media (forced-colors: active) {
+  .ncss-slideshow--shadow::before,
+  .ncss-slideshow--shadow::after {
+    display: none;
   }
 }
