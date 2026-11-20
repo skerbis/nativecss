@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/ncss/llms/hooks/check-classes.mjs\"" }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "echo 'Dieses Projekt nutzt NativeCSS. Vor dem Schreiben von Markup ncss/llms/GUIDE.md lesen; keine ncss-Klassen erfinden (ncss/llms/classes.json).'" }
+        ]
+      }
+    ]
+  }
+}

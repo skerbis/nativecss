@@ -10,9 +10,9 @@
 CSS für die eingebettete Variante:
 
 ```css
-.ncss-wordmark { block-size: 1.6em; inline-size: auto; }
-.ncss-wordmark-native { fill: var(--ncss-color-brand); }
-.ncss-wordmark-css { fill: currentColor; }
+.demo-wordmark { block-size: 1.6em; inline-size: auto; }
+.demo-wordmark-native { fill: var(--ncss-color-brand); }
+.demo-wordmark-css { fill: currentColor; }
 ```
 
 Schriften (nur zur Erzeugung der Pfade, nicht ausgeliefert): Dancing Script (Impallari Type, SIL Open Font License 1.1) und Inter (Rasmus Andersson, SIL Open Font License 1.1). Die OFL erlaubt die Verwendung in Logos.

@@ -1,0 +1,507 @@
+{
+  "NativeCSS: Seite (Grundgerüst)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": [
+      "ncss-page",
+      "ncss-html"
+    ],
+    "body": [
+      "<!doctype html>",
+      "<html lang=\"${1:de}\">",
+      "<head>",
+      "  <meta charset=\"utf-8\">",
+      "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+      "  <title>${2:Seitentitel}</title>",
+      "  <script src=\"${3:ncss}/js/theme-toggle-early.js\"></script>",
+      "  <link rel=\"stylesheet\" href=\"${3:ncss}/ncss.css\">",
+      "  <link rel=\"stylesheet\" href=\"${3:ncss}/theme.css\">",
+      "  <script src=\"${3:ncss}/js/command-fallback.js\" defer></script>",
+      "  <script src=\"${3:ncss}/js/theme-toggle.js\" defer></script>",
+      "</head>",
+      "<body class=\"ncss-page-shell\">",
+      "  <a href=\"#main\" class=\"ncss-skip-link\">Zum Inhalt springen</a>",
+      "  <main id=\"main\">",
+      "    <div class=\"ncss-container ncss-stack ncss-py-xl\">",
+      "      <h1>${2:Seitentitel}</h1>",
+      "      $0",
+      "    </div>",
+      "  </main>",
+      "</body>",
+      "</html>"
+    ],
+    "description": "HTML-Seite mit ncss.css + theme.css, Theme-Umschalter ohne Aufblitzen, Skip-Link"
+  },
+  "NativeCSS: Container + Stack": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-container",
+    "body": [
+      "<div class=\"ncss-container ncss-stack ncss-py-${1|lg,md,sm,xl|}\">",
+      "  $0",
+      "</div>"
+    ],
+    "description": "Seitenbreite (max. 75rem) mit vertikalem Rhythmus"
+  },
+  "NativeCSS: Grid (intrinsisch, ohne Breakpoints)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-grid",
+    "body": [
+      "<div class=\"ncss-grid\" style=\"--ncss-grid-min: ${1:16rem};\">",
+      "  $0",
+      "</div>"
+    ],
+    "description": ".ncss-grid mit auto-fit/minmax - bricht selbst um, kein @m/@l nötig"
+  },
+  "NativeCSS: Flex-Grid (letzte Zeile zentriert)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-flex-grid",
+    "body": [
+      "<div class=\"ncss-flex-grid ncss-flex-grid--center\">",
+      "  <div class=\"ncss-width-${1|1-3,1-2,1-4,2-3|}\">$0</div>",
+      "</div>"
+    ],
+    "description": ".ncss-flex-grid + .ncss-width-1-3 - unvollständige letzte Zeile zentriert"
+  },
+  "NativeCSS: Karte": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-card",
+    "body": [
+      "<article class=\"ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md\">",
+      "  <div class=\"ncss-card-body\">",
+      "    <h3>${1:Titel}</h3>",
+      "    <p>${2:Text}</p>",
+      "  </div>",
+      "</article>"
+    ],
+    "description": "Karte mit Rahmen, Rundung und Hover-Schatten (Deko kommt aus helpers/elevation.css)"
+  },
+  "NativeCSS: Karte mit Bild": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-card-media",
+    "body": [
+      "<article class=\"ncss-card ncss-border ncss-radius-lg ncss-shadow-sm\">",
+      "  <div class=\"ncss-card-media\">",
+      "    <img src=\"${1:bild.jpg}\" alt=\"${2:Beschreibung}\" width=\"800\" height=\"450\" loading=\"lazy\">",
+      "  </div>",
+      "  <div class=\"ncss-card-body\">",
+      "    <h3>${3:Titel}</h3>",
+      "    <p>$0</p>",
+      "  </div>",
+      "</article>"
+    ],
+    "description": "Karte mit .ncss-card-media oben"
+  },
+  "NativeCSS: Karte, ganz klickbar": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-card-linked",
+    "body": [
+      "<article class=\"ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-sm\">",
+      "  <div class=\"ncss-card-body\">",
+      "    <h3><a class=\"ncss-card-link\" href=\"${1:/artikel}\">${2:Titel}</a></h3>",
+      "    <p>$0</p>",
+      "  </div>",
+      "</article>"
+    ],
+    "description": ".ncss-card--linked: ein echter Link, ganze Karte klickbar"
+  },
+  "NativeCSS: Karte horizontal (Container Query)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-card-horizontal",
+    "body": [
+      "<div class=\"ncss-card-container\">",
+      "  <article class=\"ncss-card ncss-card--horizontal ncss-border ncss-radius-lg\">",
+      "    <div class=\"ncss-card-media\"><img src=\"${1:bild.jpg}\" alt=\"${2:Beschreibung}\"></div>",
+      "    <div class=\"ncss-card-body\">",
+      "      <h3>${3:Titel}</h3>",
+      "      <p>$0</p>",
+      "    </div>",
+      "  </article>",
+      "</div>"
+    ],
+    "description": "Bild neben Text ab genug Platz - braucht den .ncss-card-container-Wrapper"
+  },
+  "NativeCSS: Button": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-btn",
+    "body": [
+      "<button type=\"button\" class=\"ncss-btn ncss-btn--${1|primary,secondary,danger|}\">${2:Aktion}</button>"
+    ],
+    "description": ".ncss-btn mit Variante"
+  },
+  "NativeCSS: Modal (natives <dialog>)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": [
+      "ncss-modal",
+      "ncss-dialog"
+    ],
+    "body": [
+      "<button type=\"button\" class=\"ncss-btn ncss-btn--primary\" command=\"show-modal\" commandfor=\"${1:modal1}\">${2:Öffnen}</button>",
+      "<dialog id=\"${1:modal1}\" class=\"ncss-modal\" aria-labelledby=\"${1:modal1}-title\">",
+      "  <button type=\"button\" class=\"ncss-dialog-close\" command=\"close\" commandfor=\"${1:modal1}\" aria-label=\"Schließen\">",
+      "    <span class=\"ncss-icon ncss-icon-close\" aria-hidden=\"true\"></span>",
+      "  </button>",
+      "  <div class=\"ncss-modal-header\"><h2 id=\"${1:modal1}-title\">${3:Titel}</h2></div>",
+      "  <div class=\"ncss-modal-body\">$0</div>",
+      "  <div class=\"ncss-modal-footer\">",
+      "    <button type=\"button\" class=\"ncss-btn ncss-btn--secondary\" command=\"close\" commandfor=\"${1:modal1}\">Abbrechen</button>",
+      "    <button type=\"button\" class=\"ncss-btn ncss-btn--primary\">${4:Bestätigen}</button>",
+      "  </div>",
+      "</dialog>"
+    ],
+    "description": "Modal mit Auslöser per command/commandfor - kein Komponenten-JS nötig"
+  },
+  "NativeCSS: Off-Canvas (Seitenpanel)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-offcanvas",
+    "body": [
+      "<button type=\"button\" class=\"ncss-btn ncss-btn--secondary\" command=\"show-modal\" commandfor=\"${1:panel}\">${2:Menü}</button>",
+      "<dialog id=\"${1:panel}\" class=\"ncss-offcanvas ncss-offcanvas--${3|start,end|}\" aria-label=\"${2:Menü}\">",
+      "  <button type=\"button\" class=\"ncss-dialog-close\" command=\"close\" commandfor=\"${1:panel}\" aria-label=\"Schließen\">",
+      "    <span class=\"ncss-icon ncss-icon-close\" aria-hidden=\"true\"></span>",
+      "  </button>",
+      "  $0",
+      "</dialog>"
+    ],
+    "description": "Seitlich einschiebendes <dialog> - gleiche command/commandfor-Mechanik wie das Modal"
+  },
+  "NativeCSS: Topbar + Navigation": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": [
+      "ncss-topbar",
+      "ncss-nav"
+    ],
+    "body": [
+      "<header class=\"ncss-topbar\">",
+      "  <div class=\"ncss-topbar-inner\">",
+      "    <a class=\"ncss-topbar-brand\" href=\"/\">${1:Marke}</a>",
+      "    <nav class=\"ncss-nav\" aria-label=\"Hauptnavigation\">",
+      "      <button type=\"button\" class=\"ncss-nav-toggle\" command=\"show-modal\" commandfor=\"${2:navPanel}\" aria-label=\"Menü öffnen\">",
+      "        <span class=\"ncss-icon ncss-icon-menu\" aria-hidden=\"true\"></span>",
+      "      </button>",
+      "      <dialog id=\"${2:navPanel}\" class=\"ncss-nav-panel ncss-offcanvas ncss-offcanvas--start\" aria-label=\"Menü\">",
+      "        <button type=\"button\" class=\"ncss-dialog-close\" command=\"close\" commandfor=\"${2:navPanel}\" aria-label=\"Menü schließen\">",
+      "          <span class=\"ncss-icon ncss-icon-close\" aria-hidden=\"true\"></span>",
+      "        </button>",
+      "        <ul class=\"ncss-nav-list\">",
+      "          <li class=\"ncss-nav-item\"><a href=\"/\" aria-current=\"page\">Start</a></li>",
+      "          <li class=\"ncss-nav-item\">",
+      "            <details class=\"ncss-nav-dropdown\">",
+      "              <summary>${3:Produkte}</summary>",
+      "              <ul class=\"ncss-nav-submenu\">",
+      "                <li><a href=\"/produkte\">Übersicht</a></li>",
+      "                <li><a href=\"/produkte/a\">Produkt A</a></li>",
+      "              </ul>",
+      "            </details>",
+      "          </li>",
+      "          $0",
+      "        </ul>",
+      "      </dialog>",
+      "    </nav>",
+      "    <div class=\"ncss-topbar-actions\">",
+      "      <button type=\"button\" class=\"ncss-theme-toggle\" data-ncss-theme-toggle>",
+      "        <span class=\"ncss-icon ncss-icon-moon ncss-theme-icon-dark\" aria-hidden=\"true\"></span>",
+      "        <span class=\"ncss-icon ncss-icon-sun ncss-theme-icon-light\" aria-hidden=\"true\"></span>",
+      "      </button>",
+      "    </div>",
+      "  </div>",
+      "</header>"
+    ],
+    "description": "Sticky Kopfleiste mit .ncss-nav (Desktop-Leiste, mobil Off-Canvas aus demselben Markup)"
+  },
+  "NativeCSS: Priority-Navigation (Mehr-Menü)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-nav-priority",
+    "body": [
+      "<ncss-nav-priority>",
+      "  <ul class=\"ncss-nav-list\">",
+      "    <li class=\"ncss-nav-item\"><a href=\"${1:/}\">${2:Start}</a></li>",
+      "    $0",
+      "  </ul>",
+      "</ncss-nav-priority>"
+    ],
+    "description": "Punkte, die nicht mehr passen, wandern automatisch ins Mehr-Menü (js/nav-priority.js)"
+  },
+  "NativeCSS: Abschnitts-Navigation": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-subnav",
+    "body": [
+      "<nav class=\"ncss-subnav\" aria-label=\"Auf dieser Seite\" data-ncss-subnav>",
+      "  <div class=\"ncss-subnav-inner\">",
+      "    <span class=\"ncss-subnav-label\" aria-hidden=\"true\">Auf dieser Seite</span>",
+      "    <ul class=\"ncss-subnav-list\" role=\"list\">",
+      "      <li><a href=\"#${1:intro}\">${2:Einleitung}</a></li>",
+      "      $0",
+      "    </ul>",
+      "  </div>",
+      "</nav>"
+    ],
+    "description": "\"Auf dieser Seite\"-Leiste unter der Topbar (optional js/subnav.js)"
+  },
+  "NativeCSS: FAQ / Akkordeon (<details>)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": [
+      "ncss-disclosure",
+      "ncss-accordion",
+      "ncss-faq"
+    ],
+    "body": [
+      "<details class=\"ncss-disclosure\" name=\"${1:faq}\">",
+      "  <summary>${2:Frage}</summary>",
+      "  <p>${3:Antwort}</p>",
+      "</details>",
+      "<details class=\"ncss-disclosure\" name=\"${1:faq}\">",
+      "  <summary>${4:Frage}</summary>",
+      "  <p>$0</p>",
+      "</details>"
+    ],
+    "description": "Natives <details>; gleicher name = nur einer gleichzeitig offen"
+  },
+  "NativeCSS: Tabs-Ersatz (exklusive <details>-Gruppe)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-tabs",
+    "body": [
+      "<div class=\"ncss-stack ncss-stack--tight\">",
+      "  <details class=\"ncss-disclosure\" name=\"${1:tabs}\" open>",
+      "    <summary>${2:Erster Reiter}</summary>",
+      "    <div>${3:Inhalt}</div>",
+      "  </details>",
+      "  <details class=\"ncss-disclosure\" name=\"${1:tabs}\">",
+      "    <summary>${4:Zweiter Reiter}</summary>",
+      "    <div>$0</div>",
+      "  </details>",
+      "</div>"
+    ],
+    "description": "ncss hat bewusst keine eigene Tab-Komponente: <details name> als Gruppe, für echtes ARIA-Tab-Verhalten <wa-tab-group> (Web Awesome)"
+  },
+  "NativeCSS: Accordion-Split (Text links, Bild rechts)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-accordion-split",
+    "body": [
+      "<div class=\"ncss-accordion-split-container\">",
+      "  <div class=\"ncss-accordion-split\">",
+      "    <div class=\"ncss-accordion-split-list\">",
+      "      <details name=\"${1:as-1}\" class=\"ncss-accordion-split-item\" open>",
+      "        <summary>${2:Punkt 1}</summary>",
+      "        <div class=\"ncss-accordion-split-body\">",
+      "          <p>${3:Text}</p>",
+      "          <div class=\"ncss-accordion-split-media-mobile\"><img src=\"${4:bild-1.jpg}\" alt=\"${5:Beschreibung}\"></div>",
+      "        </div>",
+      "      </details>",
+      "      $0",
+      "    </div>",
+      "  </div>",
+      "</div>"
+    ],
+    "description": "Akkordeon, dessen Bild mit dem geöffneten Punkt wechselt - ohne JS"
+  },
+  "NativeCSS: Hero": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-hero",
+    "body": [
+      "<section class=\"ncss-hero\">",
+      "  <div class=\"ncss-hero-media\" style=\"background-image: url(${1:bild.jpg})\"></div>",
+      "  <div class=\"ncss-hero-content ncss-hero-content--filled\">",
+      "    <h1>${2:Überschrift}</h1>",
+      "    <p>$0</p>",
+      "  </div>",
+      "</section>"
+    ],
+    "description": "Bild-Hintergrund-Sektion mit Inhalt obenauf"
+  },
+  "NativeCSS: Split (Bild + Text)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-split",
+    "body": [
+      "<div class=\"ncss-split-container\">",
+      "  <div class=\"ncss-split\">",
+      "    <div class=\"ncss-split-media\"><img src=\"${1:foto.jpg}\" alt=\"${2:Beschreibung}\"></div>",
+      "    <div class=\"ncss-split-content\">",
+      "      <h2>${3:Titel}</h2>",
+      "      <p>$0</p>",
+      "    </div>",
+      "  </div>",
+      "</div>"
+    ],
+    "description": "Zwei Spalten, stapelt sich per Container Query"
+  },
+  "NativeCSS: Formularfeld": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-field",
+    "body": [
+      "<div class=\"ncss-field\">",
+      "  <label class=\"ncss-label\" for=\"${1:email}\">${2:E-Mail}</label>",
+      "  <input class=\"ncss-input\" id=\"${1:email}\" name=\"${1:email}\" type=\"${3:email}\" autocomplete=\"${3:email}\">",
+      "  <p class=\"ncss-field-hint\">$0</p>",
+      "</div>"
+    ],
+    "description": "Label + Eingabe + Hinweis (Label als echtes <label>, kein placeholder-Ersatz)"
+  },
+  "NativeCSS: Lightbox-Galerie": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-lightbox",
+    "body": [
+      "<a href=\"${1:gross-1.jpg}\" data-ncss-lightbox=\"${2:galerie}\" data-caption=\"${3:Bildunterschrift}\">",
+      "  <img src=\"${4:klein-1.jpg}\" alt=\"${3:Bildunterschrift}\">",
+      "</a>"
+    ],
+    "description": "Links mit gleichem data-ncss-lightbox-Wert blättern gemeinsam (js/lightbox.js)"
+  },
+  "NativeCSS: Benachrichtigung (Toast-Button)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-notify",
+    "body": [
+      "<button type=\"button\" class=\"ncss-btn ncss-btn--secondary\" data-ncss-notify=\"${1:Gespeichert}\" data-status=\"${2|success,brand,warning,danger|}\">${3:Speichern}</button>"
+    ],
+    "description": "Deklarativer Toast per data-ncss-notify (js/notification.js)"
+  },
+  "NativeCSS: Theme-Umschalter": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-theme-toggle",
+    "body": [
+      "<button type=\"button\" class=\"ncss-theme-toggle\" data-ncss-theme-toggle>",
+      "  <span class=\"ncss-icon ncss-icon-moon ncss-theme-icon-dark\" aria-hidden=\"true\"></span>",
+      "  <span class=\"ncss-icon ncss-icon-sun ncss-theme-icon-light\" aria-hidden=\"true\"></span>",
+      "</button>"
+    ],
+    "description": "Hell/Dunkel-Button (js/theme-toggle-early.js im <head> + js/theme-toggle.js)"
+  },
+  "NativeCSS: Vorher/Nachher-Vergleich": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-compare",
+    "body": [
+      "<ncss-compare style=\"--ncss-compare-ratio: 16 / 9\">",
+      "  <img class=\"ncss-compare-before\" src=\"${1:vorher.jpg}\" alt=\"${2:Vorher}\">",
+      "  <img class=\"ncss-compare-after\" src=\"${3:nachher.jpg}\" alt=\"${4:Nachher}\">",
+      "  <span class=\"ncss-compare-label\" aria-hidden=\"true\">Vorher</span>",
+      "  <span class=\"ncss-compare-label ncss-compare-label--end\" aria-hidden=\"true\">Nachher</span>",
+      "  <input class=\"ncss-compare-range\" type=\"range\" min=\"0\" max=\"100\" value=\"50\" aria-label=\"Vergleich\">",
+      "</ncss-compare>"
+    ],
+    "description": "<ncss-compare> mit nativem Range-Regler (js/compare.js)"
+  },
+  "NativeCSS: Videoplayer": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-video-player",
+    "body": [
+      "<ncss-video-player>",
+      "  <video controls playsinline preload=\"metadata\" poster=\"${1:poster.jpg}\">",
+      "    <source src=\"${2:film.mp4}\" type=\"video/mp4\">",
+      "    <track kind=\"captions\" src=\"${3:de.vtt}\" srclang=\"de\" label=\"Deutsch\" default>",
+      "  </video>",
+      "</ncss-video-player>"
+    ],
+    "description": "<ncss-video-player> um ein natives <video controls> (js/video-player.js)"
+  },
+  "NativeCSS: Audioplayer": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-audio-player",
+    "body": [
+      "<ncss-audio-player${1: layout=\"card\"}>",
+      "  <p class=\"ncss-audio-player-title\">${2:Titel}</p>",
+      "  <p class=\"ncss-audio-player-artist\">${3:Interpret}</p>",
+      "  <audio controls preload=\"metadata\" src=\"${4:folge.m4a}\"></audio>",
+      "</ncss-audio-player>"
+    ],
+    "description": "<ncss-audio-player> um ein natives <audio controls> (js/audio-player.js)"
+  },
+  "NativeCSS: Hintergrund-Video": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-video-bg",
+    "body": [
+      "<section class=\"ncss-video-bg ncss-video-bg--dark\" data-ncss-video-bg>",
+      "  <video class=\"ncss-video-bg-media\" muted loop playsinline preload=\"none\" poster=\"${1:poster.jpg}\" aria-hidden=\"true\">",
+      "    <source data-src=\"${2:loop.mp4}\" type=\"video/mp4\">",
+      "  </video>",
+      "  <div>$0</div>",
+      "</section>"
+    ],
+    "description": "Fläche mit Hintergrund-Video, lädt erst nahe am Viewport, Pause-Schalter (js/video-bg.js)"
+  },
+  "NativeCSS: Scrollytelling": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-scrolly",
+    "body": [
+      "<ncss-scrolly line=\"50\">",
+      "  <div class=\"ncss-scrolly-steps\">",
+      "    <div class=\"ncss-scrolly-step\"><div>${1:Schritt 1}</div></div>",
+      "    <div class=\"ncss-scrolly-step\"><div>${2:Schritt 2}</div></div>",
+      "  </div>",
+      "  <div class=\"ncss-scrolly-media\">",
+      "    <figure class=\"ncss-scrolly-figure\">$0</figure>",
+      "    <figure class=\"ncss-scrolly-figure\"></figure>",
+      "  </div>",
+      "</ncss-scrolly>"
+    ],
+    "description": "<ncss-scrolly>: Text-Schritte neben klebendem Medium (js/scrolly.js)"
+  },
+  "NativeCSS: Scroll-Video": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-scroll-video",
+    "body": [
+      "<ncss-scroll-video length=\"${1:300}\">",
+      "  <div class=\"ncss-scroll-video-stage\">",
+      "    <video muted playsinline controls preload=\"metadata\" poster=\"${2:poster.jpg}\" src=\"${3:scrub.mp4}\"></video>",
+      "    <p class=\"ncss-scroll-video-caption\" data-ncss-time=\"${4:1-3}\">$0</p>",
+      "  </div>",
+      "</ncss-scroll-video>"
+    ],
+    "description": "Video, das mit der Scroll-Position spult (js/scroll-video.js)"
+  },
+  "NativeCSS: Scroll-Frames (Bildsequenz)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-scroll-frames",
+    "body": [
+      "<ncss-scroll-frames src=\"${1:frames/f-%03d.webp}\" count=\"${2:72}\" length=\"300\">",
+      "  <div class=\"ncss-scroll-frames-stage\">",
+      "    <img class=\"ncss-scroll-frames-poster\" src=\"${3:frames/f-001.webp}\" alt=\"${4:Was die Sequenz zeigt}\" width=\"800\" height=\"450\">",
+      "  </div>",
+      "</ncss-scroll-frames>"
+    ],
+    "description": "Bildsequenz auf <canvas> passend zur Scroll-Position (js/scroll-frames.js)"
+  },
+  "NativeCSS: Reveal beim Scrollen": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-reveal",
+    "body": [
+      "<section class=\"ncss-reveal ncss-reveal--${1|split,circle,zoom|}\">$0</section>"
+    ],
+    "description": "Scroll-gescrubbter Reveal (reines CSS; data-ncss-reveal + js/reveal.js nur für --once/Fallback)"
+  },
+  "NativeCSS: Zähler (Count-up)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-count-up",
+    "body": [
+      "<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: ${1:12500}\">${2:12.500}</span>"
+    ],
+    "description": "Zahl, die beim Erscheinen hochzählt"
+  },
+  "NativeCSS: Laufband (Marquee)": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-marquee",
+    "body": [
+      "<div id=\"${1:logos}\" class=\"ncss-marquee ncss-marquee--fade\" data-ncss-marquee>",
+      "  <ul class=\"ncss-marquee-group\" role=\"list\"><li>$0</li></ul>",
+      "</div>",
+      "<button type=\"button\" class=\"ncss-btn ncss-btn--secondary\" data-ncss-marquee-toggle aria-controls=\"${1:logos}\">Laufband anhalten</button>"
+    ],
+    "description": "Endloses Laufband mit Pause-Schalter"
+  },
+  "NativeCSS: Footer": {
+    "scope": "html,php,twig,blade,vue,svelte,astro,handlebars,nunjucks,liquid",
+    "prefix": "ncss-footer",
+    "body": [
+      "<footer class=\"ncss-footer\">",
+      "  <div class=\"ncss-footer-inner ncss-grid\" style=\"--ncss-grid-min: 12rem;\">",
+      "    <div class=\"ncss-stack ncss-stack--tight\">",
+      "      <strong>${1:Marke}</strong>",
+      "      <p class=\"ncss-text-sm ncss-text-muted\">${2:Kurzbeschreibung}</p>",
+      "    </div>",
+      "    <nav class=\"ncss-nav ncss-nav--tree\" aria-label=\"Footer\">",
+      "      <ul class=\"ncss-nav-list\"><li class=\"ncss-nav-item\"><a href=\"#\">${3:Link}</a></li></ul>",
+      "    </nav>",
+      "  </div>",
+      "  <div class=\"ncss-footer-bottom\">© ${4:2026 Firma}</div>",
+      "</footer>"
+    ],
+    "description": "Seitenfuß mit Spalten-Grid"
+  }
+}
