@@ -408,7 +408,10 @@
     display: block;
   }
   /* OHNE "display"/"overlay" in der Transition - siehe Kommentar an .ncss-nav-panel oben
-     (display:contents verträgt keine spätere allow-discrete-Transition auf display). */
+     (display:contents verträgt keine spätere allow-discrete-Transition auf display: das Panel
+     bliebe sichtbar in der Zeile hängen). Mit .ncss-offcanvas im Selektor, damit diese Regel
+     unabhängig von der Import-Reihenfolge gegen die Transition aus off-canvas.css gewinnt. */
+  & .ncss-nav-panel.ncss-offcanvas,
   & .ncss-nav-panel {
     transition:
       translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
@@ -472,7 +475,10 @@
       display: block;
     }
     /* OHNE "display"/"overlay" in der Transition - siehe Kommentar an .ncss-nav-panel oben
-       (display:contents verträgt keine spätere allow-discrete-Transition auf display). */
+       (display:contents verträgt keine spätere allow-discrete-Transition auf display: das Panel
+       bliebe sichtbar in der Zeile hängen). Mit .ncss-offcanvas im Selektor, damit diese Regel
+       unabhängig von der Import-Reihenfolge gegen die Transition aus off-canvas.css gewinnt. */
+    & .ncss-nav-panel.ncss-offcanvas,
     & .ncss-nav-panel {
       transition:
         translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
