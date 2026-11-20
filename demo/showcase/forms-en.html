@@ -35,11 +35,6 @@
   .demo-live h3:not(.demo-live-label) { font-size: var(--ncss-font-size-md); }
   /* Beschriftung im Rahmen sichtbar vom ersten Feld-Label absetzen */
   .demo-frame > .demo-live-label { margin-block-end: var(--ncss-space-sm); }
-  /* UMGEHUNG Bibliotheks-Fund: .ncss-field ist ein Flex-Stapel mit gap, die <p>-Hinweise
-     und -Fehler darin behalten aber den Absatz-Abstand aus base.css -> doppelte Lücke
-     unter Feldern mit Hinweis. */
-  .demo-live .ncss-field > .ncss-field-hint,
-  .demo-live .ncss-field > .ncss-field-error { margin-block-end: 0; }
 
   /* Serverseitig gemeldete Fehler: ncss färbt nur :user-invalid, aria-invalid ergänzt die
      Seite selbst (so empfiehlt es das Handbuch, a11y-forms.html#validierung). */

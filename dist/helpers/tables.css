@@ -22,6 +22,11 @@
 .ncss-table-scroll table {
   min-width: max-content;
 }
+/* Beschriftung linksbündig: zentriert über einer breiten Scroll-Tabelle stünde sie auf
+   schmalen Screens zur Hälfte außerhalb des sichtbaren Ausschnitts. */
+.ncss-table-scroll caption {
+  text-align: start;
+}
 
 /* --- Strategie 2 (Opt-in, NUR wenn Strategie 1 wirklich nicht passt): Karten-Stapel ----
    ACHTUNG a11y: display:block auf table/tr/td bricht die programmatische Tabellen-
@@ -72,6 +77,14 @@
   .ncss-table-stacked td::before {
     content: attr(data-label);
     font-weight: 600;
+  }
+  /* Die Tabelle ist jetzt display:block - eine <caption> mit display:table-caption hätte
+     keinen Tabellen-Kasten mehr als Bezug und schrumpfte auf Min-Breite (ein Wort pro
+     Zeile). Als normaler Block läuft sie über die volle Breite. */
+  .ncss-table-stacked caption {
+    display: block;
+    text-align: start;
+    margin-block-end: var(--ncss-space-2xs);
   }
 }
 

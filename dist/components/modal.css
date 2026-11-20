@@ -81,6 +81,12 @@
   gap: var(--ncss-space-xs);
   margin-block-start: var(--ncss-space-md);
 }
+/* Der letzte Absatz/die letzte Liste behielte sonst den Block-Abstand aus base.css -
+   innerhalb des Dialog-Paddings wird er zu leerem Raum am unteren Rand. :where() ohne
+   Spezifität: jede eigene Abstandsregel gewinnt weiterhin. */
+:where(.ncss-modal > :last-child, .ncss-modal-body > :last-child) {
+  margin-block-end: 0;
+}
 
 /* Fade+Scale beim Öffnen/Schließen per @starting-style + allow-discrete (display/overlay
    bleiben während der Schließen-Animation erhalten, siehe Kommentar zu position oben). `translate`

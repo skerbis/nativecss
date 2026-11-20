@@ -467,6 +467,9 @@
   flex-direction: column;
   align-items: stretch;
   gap: var(--ncss-space-3xs);
+  /* Die Mobile-Regel oben gibt JEDER .ncss-nav-list Abstand nach oben (Platz unter dem
+     Schließen-Button im Off-Canvas-Panel) - die Tree-Nav hat kein Panel. */
+  margin-block-start: 0;
 }
 .ncss-nav--tree .ncss-nav-submenu {
   position: static;
@@ -501,24 +504,27 @@
   align-items: center;
   gap: var(--ncss-space-xs);
   margin-block-start: 0;
+  /* Innenabstand so breit wie der Rand-Verlauf: am Scroll-Anfang/-Ende liegt der erste/
+     letzte Punkt voll sichtbar daneben, nur beim Weiterscrollen läuft Inhalt in den Verlauf. */
+  padding-inline: var(--ncss-nav-scroll-fade, var(--ncss-space-md));
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  scroll-padding-inline: var(--ncss-space-md);
+  scroll-padding-inline: var(--ncss-nav-scroll-fade, var(--ncss-space-md));
   overscroll-behavior-x: contain;
   scrollbar-width: thin;
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
-    black var(--ncss-space-md),
-    black calc(100% - var(--ncss-space-md)),
+    black var(--ncss-nav-scroll-fade, var(--ncss-space-md)),
+    black calc(100% - var(--ncss-nav-scroll-fade, var(--ncss-space-md))),
     transparent 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0,
-    black var(--ncss-space-md),
-    black calc(100% - var(--ncss-space-md)),
+    black var(--ncss-nav-scroll-fade, var(--ncss-space-md)),
+    black calc(100% - var(--ncss-nav-scroll-fade, var(--ncss-space-md))),
     transparent 100%
   );
 }

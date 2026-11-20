@@ -238,35 +238,6 @@
   }
   .demo-badge-row p { margin: 0; }
   .demo-badge-row strong { display: block; }
-  /* Hinweis-Boxen im Raster: Zeilen nicht dehnen, wenn die Nachbarbox höher ist (sonst
-     klafft zwischen Titel und Text eine Lücke). VORLÄUFIG – Ursache: dist/components/alert.css,
-     .ncss-alert hat kein align-content: start. */
-  .demo-alerts > * { align-content: start; }
-
-  /* Code-Blöcke: <pre> nutzt bg-subtle – genau die Farbe jeder zweiten Rundgang-Section,
-     der Block wäre dort unsichtbar. */
-  .demo-code pre {
-    background-color: var(--ncss-color-surface);
-    border: var(--ncss-border-width) solid var(--ncss-color-border);
-  }
-
-  /* Tabellen: Beschriftung linksbündig (zentriert über einer breiten Scroll-Tabelle ist sie
-     auf dem Handy nur halb sichtbar). Im Stapel-Modus bleibt <caption> sonst table-caption
-     und schrumpft auf Min-Breite. VORLÄUFIG – Ursache: dist/helpers/tables.css. */
-  .demo-tables caption { text-align: start; }
-  @container ncss-table (max-width: 36rem) {
-    .demo-tables caption { display: block; }
-  }
-
-  /* Termine/Downloads: die per JS erzeugten <p> erben margin-block-end aus base.css –
-     große Lücken zwischen Ort und Beschreibung bzw. Beschreibung und Größe, und die
-     Metazeile klebt ohne Abstand am Titel. VORLÄUFIG – Ursache: dist/components/events.css
-     und downloads.css setzen die Abstände in ihren Bodies nicht selbst. */
-  .demo-events :is(.ncss-agenda-body, .ncss-downloads-body) > * { margin-block: 0; }
-  .demo-events :is(.ncss-agenda-body, .ncss-downloads-body) > * + * { margin-block-start: var(--ncss-space-3xs); }
-  .demo-events .ncss-agenda-body > p:not([class]) { margin-block-start: var(--ncss-space-2xs); }
-  .demo-events .ncss-card-header p { margin-block: var(--ncss-space-2xs) 0; }
-  .demo-events :is(.ncss-cal-grid, .ncss-agenda-list:last-child) { margin-block-end: 0; }
 </style>
 </head>
 <body class="ncss-page-shell">

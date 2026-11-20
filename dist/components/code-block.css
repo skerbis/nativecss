@@ -27,6 +27,11 @@
 
 pre:has(> code[class*="language-"]) {
   position: relative;
+  /* Feine Kontur: base.css gibt <pre> --ncss-color-bg-subtle - genau die Farbe grauer
+     Sektionen (.ncss-tile--muted, bg-subtle-Bänder), dort wäre der Block sonst nicht
+     vom Hintergrund zu unterscheiden. Aus currentColor gemischt, passt damit hell wie
+     dunkel und auch auf eigenen, fest dunklen Code-Flächen. */
+  border: var(--ncss-border-width) solid color-mix(in srgb, currentColor 16%, transparent);
 }
 
 /* --- Copy-Button verdeckt NIE Code (js/code-block.js setzt .ncss-code-block am <pre>) ---

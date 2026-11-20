@@ -102,6 +102,11 @@
   background: var(--ncss-glass-bg, light-dark(rgb(255 255 255 / 55%), rgb(20 20 30 / 45%)));
   border: 1px solid var(--ncss-glass-border, light-dark(rgb(255 255 255 / 65%), rgb(255 255 255 / 12%)));
 }
+/* Letzter Absatz ohne base.css-Endabstand (sonst Leerraum über dem unteren Rand der
+   Glasfläche); :where() - beliebig überschreibbar. */
+:where(.ncss-glass > :last-child) {
+  margin-block-end: 0;
+}
 
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .ncss-glass {
@@ -142,7 +147,7 @@
    eins senkt). */
 .ncss-stamped {
   --ncss-stamped-shadow-dark: var(--ncss-stamped-dark, rgb(0 0 0 / 35%));
-  --ncss-stamped-shadow-light: var(--ncss-stamped-light, rgb(255 255 255 / 90%));
+  --ncss-stamped-shadow-light: var(--ncss-stamped-light, rgb(255 255 255 / 55%));
   position: relative;
   /* Eigene border-radius nötig für den Alleingang-Fall (Demo: .ncss-stamped ohne jede
      andere Komponente) - kombiniert mit einer Komponente, die SELBST schon eine radius
@@ -163,7 +168,14 @@
     inset: 0;
     border-radius: inherit;
     padding: var(--ncss-stamped-thickness, 1px);
-    background: linear-gradient(135deg, var(--ncss-stamped-shadow-dark) 0%, var(--ncss-stamped-shadow-light) 100%);
+    /* Zweite Ebene darunter: feiner Grundring aus currentColor. Die helle Kante allein
+       (Weiß) verschwand auf weißem Grund - der Rahmen wirkte unten rechts abgebrochen,
+       im Dunkelmodus ebenso die dunkle Kante oben links. Mit dem Grundring bleibt der
+       Rahmen auf jeder Fläche durchgehend sichtbar, die Lichtkante liegt halbtransparent
+       darüber und hellt ihn auf (Weiß: hellgrau, farbige/dunkle Flächen: echte Lichtkante). */
+    background:
+      linear-gradient(135deg, var(--ncss-stamped-shadow-dark) 0%, var(--ncss-stamped-shadow-light) 100%),
+      color-mix(in srgb, currentColor var(--ncss-stamped-base, 15%), transparent);
     pointer-events: none;
 
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -209,6 +221,13 @@
   box-shadow: inset 0 3px 6px var(--ncss-stamped-shadow-dark);
   transform: translateY(calc(var(--ncss-stamped-lift, 3px) * 1.6));
   transition-duration: var(--ncss-motion-duration-fast);
+}
+
+/* Forced Colors: Verläufe/Transparenzen tragen dort nicht - der Rahmen als Systemfarbe. */
+@media (forced-colors: active) {
+  .ncss-stamped::before {
+    background: CanvasText;
+  }
 }
 
 /* --- Grain (Korn-/Sandtextur) -----------------------------------------------------------
