@@ -13,7 +13,16 @@
  */
 
 $root = realpath($_SERVER['DOCUMENT_ROOT']);
-$path = realpath($root . urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
+$uriPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Site-Wurzel: live kopiert der Deploy (build-root-index.mjs) die Startseite nach /index.html,
+// lokal gibt es diese Kopie nicht - deshalb hier auf die generierte Startseite umleiten.
+if ($uriPath === '/' && !is_file($root . '/index.html')) {
+    header('Location: /docs/de/start.html', true, 302);
+    exit;
+}
+
+$path = realpath($root . urldecode($uriPath));
 
 // Nur Mediendateien INNERHALB des Projektordners (kein Ausbruch per ../ oder Symlink)
 if (!$path || strpos($path, $root . DIRECTORY_SEPARATOR) !== 0 || !is_file($path)
