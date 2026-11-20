@@ -134,7 +134,7 @@ Barrierefreiheit und neue Komponenten.
 
 ## Lizenz
 
-[MIT](LICENSE) © 2026 [Thomas Skerbis](https://github.com/skerbis) und
-[KLXM Crossmedia](https://github.com/klxm). Mitgelieferte Schriften (SIL OFL), Icons und
+[MIT](LICENSE) © 2026 [Thomas Skerbis](https://github.com/skerbis).
+Contributors: [KLXM Crossmedia](https://github.com/klxm). Mitgelieferte Schriften (SIL OFL), Icons und
 Bibliotheken in `vendor/` stehen unter ihren eigenen Lizenzen - siehe die jeweiligen
 Lizenzdateien und das [Impressum](https://skerbis.github.io/nativecss/docs/de/impressum.html).
