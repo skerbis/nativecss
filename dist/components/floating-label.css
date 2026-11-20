@@ -1,0 +1,69 @@
+/**
+ * ncss - Schwebende Beschriftung (Layer "components"): das Label sitzt wie ein
+ * Platzhalter IM leeren Feld und rutscht beim Fokus/Ausfüllen an die obere Kante. Reines
+ * CSS über :has() + :placeholder-shown. Baut auf helpers/forms.css (.ncss-field/
+ * .ncss-input/.ncss-select/.ncss-textarea) auf.
+ *
+ * Markup - das <label> bleibt ein ECHTES Label (for/id), kein Platzhalter-Ersatz
+ * (placeholder ist kein Label, siehe Skill "Barrierefreiheit"). placeholder=" " (ein
+ * Leerzeichen) ist Pflicht: nur so kann CSS "Feld ist leer" per :placeholder-shown
+ * erkennen. Ein echter Beispieltext darf stattdessen drinstehen - er wird erst beim Fokus
+ * sichtbar, wenn das Label bereits oben ist.
+ *   <div class="ncss-field ncss-field--floating">
+ *     <label class="ncss-label" for="ort">Ort</label>
+ *     <input class="ncss-input" id="ort" name="ort" placeholder=" ">
+ *   </div>
+ * Hinweis-/Fehlertext (.ncss-field-hint/-error) einfach NACH dem Feld anhängen.
+ *
+ * Fallback ohne :has() (ältere Browser): das Label steht dauerhaft klein oben IM Feld -
+ * immer lesbar, nur ohne die Platzhalter-Optik. <select> hat keinen "leeren" Zustand im
+ * Sinne von :placeholder-shown - dort bleibt das Label immer oben.
+ */
+
+.ncss-field--floating {
+  position: relative;
+  /* .ncss-field ist ein Flex-Column mit gap - hier liegt das Label ÜBER dem Feld statt
+     darüber, also kein Abstand dazwischen. */
+  gap: 0;
+}
+.ncss-field--floating > :is(.ncss-input, .ncss-select, .ncss-textarea) {
+  /* Platz oben für das verkleinerte Label. */
+  padding-block: calc(var(--ncss-space-sm) + 0.35em) var(--ncss-space-3xs);
+}
+.ncss-field--floating > .ncss-label {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--ncss-space-3xs);
+  inset-inline-start: calc(var(--ncss-space-xs) + var(--ncss-border-width));
+  max-inline-size: calc(100% - var(--ncss-space-xs) * 2);
+  overflow: hidden;
+  font-size: 0.75em;
+  line-height: 1.3;
+  color: var(--ncss-color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  transform-origin: 0 0;
+  transition: translate var(--ncss-motion-duration) var(--ncss-motion-easing),
+              font-size var(--ncss-motion-duration) var(--ncss-motion-easing),
+              color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-field--floating:focus-within > .ncss-label {
+  color: var(--ncss-color-brand-on-soft);
+}
+/* Leer und nicht fokussiert: Label in Feldmitte, normale Größe - wirkt wie ein
+   Platzhalter. Der echte Platzhaltertext bleibt in diesem Zustand unsichtbar. */
+.ncss-field--floating:has(> :is(.ncss-input, .ncss-textarea):placeholder-shown:not(:focus)) > .ncss-label {
+  translate: 0 calc(var(--ncss-space-2xs) + 0.2em);
+  font-size: 1em;
+}
+.ncss-field--floating > :is(.ncss-input, .ncss-textarea):not(:focus)::placeholder {
+  /* opacity zusätzlich zu transparent: im Hochkontrastmodus erzwingt das System eine
+     Platzhalter-Farbe (GrayText) - sonst überlagerten sich Label und Platzhalter. */
+  color: transparent;
+  opacity: 0;
+}
+/* Ein Fehler-Zustand färbt auch das Label - nicht nur den Rahmen. */
+.ncss-field--floating:has(> :user-invalid) > .ncss-label {
+  color: var(--ncss-color-danger);
+}

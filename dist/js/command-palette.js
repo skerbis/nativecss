@@ -87,6 +87,13 @@
     class extends HTMLElement {
       connectedCallback() {
         if (this._ready) {
+          // Erneut verbunden (per JS verschoben, z.B. REDAXO-Slice nach oben/unten, htmx
+          // hx-preserve): disconnectedCallback() hat die document-Listener entfernt - hier
+          // wieder anhängen statt die Palette tot zurückzulassen.
+          if (this._onContent) document.addEventListener("ncss-content-change", this._onContent);
+          if (this._onKey) document.addEventListener("keydown", this._onKey);
+          if (this._onDocClick) document.addEventListener("click", this._onDocClick);
+          if (this._mo && this._dialog) this._mo.observe(this._dialog, { attributes: true, attributeFilter: ["open"] });
           return;
         }
         var dialog = this.querySelector("dialog");

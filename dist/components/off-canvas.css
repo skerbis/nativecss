@@ -11,6 +11,12 @@
  *           commandfor="sidebar1" aria-label="Schließen">&times;</button>
  *   <nav>...</nav>
  * </dialog>
+ * Klick daneben (Backdrop) schließt: natives closedby="any" am <dialog> - js/dialog-light-
+ * dismiss.js setzt das für jedes ncss-Modal/-Off-Canvas ohne eigenes closedby automatisch
+ * (Default AN) und emuliert es in Browsern ohne closedby. Abschalten pro Dialog:
+ * closedby="closerequest" (nur Esc + Buttons) oder closedby="none" (nur Buttons, z.B. lange
+ * Formulare). Trefferfläche: der <dialog> selbst ist das Panel, alles außerhalb seiner Box
+ * ist Backdrop.
  */
 
 .ncss-offcanvas {

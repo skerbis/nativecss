@@ -1,0 +1,44 @@
+/**
+ * ncss - Tastenkappe (Layer "components"): <kbd> als echte Taste statt nur Monospace-
+ * Fläche. Bewusst OPT-IN per Klasse, nicht auf jedes <kbd> - base.css stylt <kbd>
+ * bereits schlicht wie <code>, und bestehende Stellen (z.B. die Fußzeile von
+ * components/command-palette.css) sollen sich nicht ungefragt ändern. Reines CSS, braucht
+ * colors.css + tokens.css (+ reset/base).
+ *
+ * Markup:
+ *   <kbd class="ncss-kbd">Esc</kbd>
+ *   Tastenkombination - die äußere <kbd> umfasst die Einzeltasten (HTML-Spec-Muster):
+ *   <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Strg</kbd>+<kbd class="ncss-kbd">K</kbd></kbd>
+ * Symbol-Tasten (⌘, ⇧, ↵) für Screenreader per <abbr title="Befehlstaste">⌘</abbr> oder
+ * aria-label ausschreiben - das Glyph allein wird oft gar nicht oder falsch vorgelesen.
+ */
+
+.ncss-kbd {
+  display: inline-block;
+  min-inline-size: 1.7em;
+  padding: 0.1em 0.45em;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  /* Untere Kante dicker = "Tastenhöhe", rein aus Tokens/currentColor statt Schatten-
+     Farbwert - funktioniert dadurch in beiden Themes ohne eigene Dark-Regel. */
+  border-block-end-width: calc(var(--ncss-border-width) * 3);
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  font-family: var(--ncss-font-family-mono);
+  font-size: 0.8em;
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: 0.1em;
+}
+.ncss-kbd-combo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25em;
+  padding: 0;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  white-space: nowrap;
+}

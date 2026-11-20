@@ -1,0 +1,151 @@
+/**
+ * ncss - <ncss-tabs>: Registerkarten nach WAI-ARIA-APG-Muster "Tabs" (Layer "components").
+ * Light-DOM-Custom-Element (js/tabs.js) - ohne JS bleibt es eine ganz normale
+ * Sprungmarken-Liste über untereinander stehenden Abschnitten (kein Inhalt geht verloren,
+ * jeder Link springt zu seinem Abschnitt).
+ *
+ * Markup:
+ * <ncss-tabs class="ncss-tabs">
+ *   <div class="ncss-tabs-list" aria-label="Produktinfos">
+ *     <a href="#tab-beschreibung">Beschreibung</a>
+ *     <a href="#tab-technik">Technik</a>
+ *   </div>
+ *   <section class="ncss-tabs-panel" id="tab-beschreibung">
+ *     <h3 class="ncss-tabs-heading">Beschreibung</h3> ...
+ *   </section>
+ *   <section class="ncss-tabs-panel" id="tab-technik"> ... </section>
+ * </ncss-tabs>
+ * <script src="js/tabs.js" defer></script>
+ *
+ * Varianten/Attribute:
+ *   class="ncss-tabs ncss-tabs--vertical"  Liste links, Inhalt rechts (bricht bei wenig
+ *                                          Platz von selbst untereinander um)
+ *   activation="manual"                    Pfeiltasten bewegen nur den Fokus, Enter/Leertaste
+ *                                          aktiviert (für Panels mit teurem Inhalt)
+ *   hash                                   aktiver Tab spiegelt sich in der Adresse (#id),
+ *                                          ein Link auf #id öffnet direkt diesen Tab
+ * .ncss-tabs-heading ist optional: die Überschrift je Abschnitt hilft OHNE JS (dort ist es
+ * eine normale Seite mit Abschnitten), MIT JS doppelt sie den Tab-Namen - sie wird dann
+ * nur noch optisch ausgeblendet, bleibt für Screenreader im Panel erhalten.
+ *
+ * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base). js/tabs.js
+ * eigenständig.
+ */
+ncss-tabs {
+  display: block;
+}
+
+.ncss-tabs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+  margin-block-end: var(--ncss-space-sm);
+}
+.ncss-tabs-list > a,
+.ncss-tabs-list > button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  border-radius: var(--ncss-radius-sm);
+  color: var(--ncss-color-text);
+  font-weight: var(--ncss-font-weight-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+
+/* Ohne JS: Panels stehen einfach untereinander (Sprungmarken-Seite). */
+ncss-tabs:not(:defined) .ncss-tabs-panel + .ncss-tabs-panel {
+  margin-block-start: var(--ncss-space-lg);
+}
+
+/* --- Mit JS (Element registriert) ----------------------------------------------------- */
+ncss-tabs:defined > .ncss-tabs-list {
+  flex-wrap: nowrap;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+ncss-tabs:defined > .ncss-tabs-list > [role="tab"] {
+  border-radius: var(--ncss-radius-sm) var(--ncss-radius-sm) 0 0;
+  /* Aktiv-Markierung als Unterstrich - box-shadow statt border, damit der Text nicht um
+     die Strichstärke springt. */
+  box-shadow: inset 0 calc(var(--ncss-border-width) * -3) 0 transparent;
+  color: var(--ncss-color-text-muted);
+}
+ncss-tabs:defined > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
+  color: var(--ncss-color-brand-on-soft);
+  box-shadow: inset 0 calc(var(--ncss-border-width) * -3) 0 var(--ncss-color-brand);
+}
+ncss-tabs:defined > .ncss-tabs-list > [role="tab"]:active {
+  background-color: color-mix(in oklch, currentColor 10%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  ncss-tabs:defined > .ncss-tabs-list > [role="tab"]:hover:not(:active) {
+    color: var(--ncss-color-text);
+    background-color: color-mix(in oklch, currentColor 6%, transparent);
+  }
+}
+/* Fokus-Ring nach innen - sonst schneidet overflow-x:auto der Liste ihn ab. */
+ncss-tabs:defined > .ncss-tabs-list > [role="tab"]:focus-visible {
+  outline-offset: calc(var(--ncss-focus-ring-width, 2px) * -1);
+}
+ncss-tabs:defined > .ncss-tabs-panel:focus-visible {
+  outline-offset: var(--ncss-space-3xs);
+  border-radius: var(--ncss-radius-sm);
+}
+
+/* Doppelte Überschrift nur optisch ausblenden (bleibt im Accessibility-Tree) - eigene
+   Regel statt .ncss-visually-hidden aus helpers/a11y.css, damit die Datei allein läuft. */
+ncss-tabs:defined .ncss-tabs-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Vertikal: Liste als Spalte, Inhalt daneben. flex-wrap statt fester Breakpoint/
+   Container Query: ist neben der Liste kein Platz für --ncss-tabs-panel-min, rutscht das
+   Panel von selbst darunter (und die Liste wird dann wie die horizontale Variante). */
+.ncss-tabs--vertical:defined {
+  --ncss-tabs-panel-min: 18rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--ncss-space-md);
+}
+.ncss-tabs--vertical:defined > .ncss-tabs-list {
+  flex: 1 0 10rem;
+  max-inline-size: 16rem;
+  flex-direction: column;
+  margin-block-end: 0;
+  overflow: visible;
+  border-block-end: 0;
+  border-inline-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.ncss-tabs--vertical:defined > .ncss-tabs-list > [role="tab"] {
+  border-radius: 0 var(--ncss-radius-sm) var(--ncss-radius-sm) 0;
+  box-shadow: inset calc(var(--ncss-border-width) * 3) 0 0 transparent;
+  white-space: normal;
+}
+.ncss-tabs--vertical:defined > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
+  box-shadow: inset calc(var(--ncss-border-width) * 3) 0 0 var(--ncss-color-brand);
+}
+.ncss-tabs--vertical:defined > .ncss-tabs-panel {
+  flex: 999 1 var(--ncss-tabs-panel-min);
+  min-inline-size: 0;
+}
+
+/* Erzwungene Farben: box-shadow wird entfernt - aktiver Tab braucht eine echte Kontur. */
+@media (forced-colors: active) {
+  ncss-tabs:defined > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
+    outline: calc(var(--ncss-border-width) * 2) solid Highlight;
+    outline-offset: calc(var(--ncss-border-width) * -2);
+  }
+}

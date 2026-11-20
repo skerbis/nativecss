@@ -1,0 +1,163 @@
+/**
+ * ncss - Alert/Callout: Hinweis-Box im Inhaltsfluss (Layer "components").
+ *
+ * Markup:
+ * <div class="ncss-alert ncss-alert--warning">
+ *   <p class="ncss-alert-title">Wartung am Freitag</p>
+ *   <p>Zwischen 18 und 20 Uhr ist der Shop nicht erreichbar.</p>
+ * </div>
+ * Varianten: --info (Default-Optik, Markenfarbe), --success, --warning, --danger,
+ * --neutral. --plain ohne Symbol.
+ *
+ * Schließbar (js/dismiss.js, generisch für alles mit [data-ncss-dismissible]):
+ * <div class="ncss-alert ncss-alert--info" data-ncss-dismissible>
+ *   ... <button class="ncss-alert-close" type="button" data-ncss-dismiss
+ *               aria-label="Hinweis schließen"></button>
+ * </div>
+ *
+ * Rolle - bewusst NICHT automatisch gesetzt, hängt vom Zeitpunkt ab:
+ *   - steht beim Laden schon auf der Seite: KEINE Rolle (wird normal mitgelesen, ein
+ *     role="alert" würde beim Laden ungefragt vorgelesen)
+ *   - wird später eingefügt, wichtig + zeitkritisch (Formularfehler): role="alert"
+ *   - wird später eingefügt, nur Info (gespeichert): role="status"
+ * Das Symbol ist reine Deko (::before) - die Bedeutung muss im Text stehen (Titel wie
+ * "Achtung:"/"Fehler:" oder ein .ncss-visually-hidden-Präfix), Farbe allein reicht nicht
+ * (WCAG 1.4.1).
+ *
+ * Abgrenzung: .ncss-card--success/-warning/... (card.css) ist eine KARTE in Statusfarbe
+ * (Container für beliebigen Inhalt, Kartenraster, Media, Footer). .ncss-alert ist eine
+ * MELDUNG: Symbol, Titel, kompakter Text, optional schließbar. Gleiche Farb-Tokens, damit
+ * beides nebeneinander konsistent aussieht - bewusst kein Alias. Für flüchtige
+ * Rückmeldungen (verschwindet von selbst) stattdessen die Toasts aus notification.css.
+ *
+ * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base); js/dismiss.js nur
+ * für den Schließen-Button.
+ */
+.ncss-alert {
+  --ncss-alert-color: var(--ncss-color-brand);
+  --ncss-alert-bg: var(--ncss-color-brand-100);
+  --ncss-alert-text: var(--ncss-color-brand-on-soft);
+  --ncss-alert-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.5'/%3E%3C/svg%3E");
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--ncss-space-xs);
+  row-gap: var(--ncss-space-3xs);
+  padding: var(--ncss-space-sm);
+  border-inline-start: calc(var(--ncss-border-width) * 3) solid var(--ncss-alert-color);
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-alert-bg);
+  color: var(--ncss-alert-text);
+}
+/* Symbol als Masken-Icon (erbt currentColor). Das url() steht als Wert DIREKT in dieser
+   Datei (siehe SKILL.md: relative url() nie durch Custom Properties reichen - data:-URIs
+   sind nicht relativ, daher unproblematisch). */
+.ncss-alert::before {
+  content: "";
+  grid-column: 1;
+  grid-row: 1;
+  width: 1.25em;
+  height: 1.25em;
+  margin-block-start: 0.15em;
+  background-color: var(--ncss-alert-color);
+  mask: var(--ncss-alert-icon) center / contain no-repeat;
+  -webkit-mask: var(--ncss-alert-icon) center / contain no-repeat;
+}
+.ncss-alert > * {
+  grid-column: 2;
+  margin: 0;
+}
+.ncss-alert--plain {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ncss-alert--plain::before {
+  display: none;
+}
+.ncss-alert--plain > * {
+  grid-column: 1;
+}
+.ncss-alert-title {
+  font-weight: var(--ncss-font-weight-bold);
+}
+.ncss-alert a {
+  color: inherit;
+}
+.ncss-alert-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+  margin-block-start: var(--ncss-space-2xs);
+}
+
+.ncss-alert--success {
+  --ncss-alert-color: var(--ncss-color-success);
+  --ncss-alert-bg: var(--ncss-color-success-100);
+  --ncss-alert-text: var(--ncss-color-success-on-soft);
+  --ncss-alert-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.5 2.5L16 9.5'/%3E%3C/svg%3E");
+}
+.ncss-alert--warning {
+  --ncss-alert-color: var(--ncss-color-warning);
+  --ncss-alert-bg: var(--ncss-color-warning-100);
+  --ncss-alert-text: var(--ncss-color-warning-on-soft);
+  --ncss-alert-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5L2.5 20h19z'/%3E%3Cpath d='M12 10v4.5M12 17.5v.5'/%3E%3C/svg%3E");
+}
+.ncss-alert--danger {
+  --ncss-alert-color: var(--ncss-color-danger);
+  --ncss-alert-bg: var(--ncss-color-danger-100);
+  --ncss-alert-text: var(--ncss-color-danger-on-soft);
+  --ncss-alert-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9 9l6 6M15 9l-6 6'/%3E%3C/svg%3E");
+}
+.ncss-alert--neutral {
+  --ncss-alert-color: var(--ncss-color-neutral);
+  --ncss-alert-bg: var(--ncss-color-neutral-100);
+  --ncss-alert-text: var(--ncss-color-neutral-on-soft);
+}
+
+/* --- Schließen-Button ------------------------------------------------------------------ */
+.ncss-alert[data-ncss-dismissible] {
+  padding-inline-end: calc(var(--ncss-space-sm) + 2.75rem);
+}
+.ncss-alert-close {
+  position: absolute;
+  inset-block-start: var(--ncss-space-2xs);
+  inset-inline-end: var(--ncss-space-2xs);
+  display: grid;
+  place-items: center;
+  /* 2.75rem = 44px Zielgröße. */
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  border-radius: var(--ncss-radius-sm);
+  color: inherit;
+  cursor: pointer;
+}
+.ncss-alert-close::before {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.ncss-alert-close:active {
+  background-color: color-mix(in oklch, currentColor 15%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-alert-close:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 8%, transparent);
+  }
+}
+
+/* Erzwungene Farben: Hintergrund/Masken-Füllung werden überschrieben - Rahmen als Ersatz,
+   Symbole mit Systemfarbe sichtbar halten. */
+@media (forced-colors: active) {
+  .ncss-alert {
+    border: var(--ncss-border-width) solid CanvasText;
+    border-inline-start-width: calc(var(--ncss-border-width) * 3);
+  }
+  .ncss-alert::before,
+  .ncss-alert-close::before {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+}

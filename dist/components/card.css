@@ -86,9 +86,16 @@
   flex: 1 1 auto;
 }
 /* Body-Kinder bekommen den üblichen Block-Rhythmus, ohne dass jede Card ihn manuell
-   nachbauen muss (dieselbe Lobotomized-Owl-Logik wie in base.css, hier lokal auf die
-   Card beschränkt). */
-.ncss-card-body > * + * {
+   nachbauen muss (Lobotomized-Owl-Logik, hier lokal auf die Card beschränkt). base.css'
+   margin-block-end (md auf p/ul/table/...) dabei auf 0 - sonst überstimmte er per
+   Margin-Collapsing den beabsichtigten xs-Rhythmus und hängte unter dem letzten Absatz
+   zusätzlichen Leerraum an das Padding (per Demo-Test gefunden). Trägt die Body selbst
+   .ncss-stack/-cluster/-grid/-flex (Flex/Grid: Margins kollabieren dort nicht), übernimmt
+   deren gap den Abstand - die Owl-Margin käme sonst noch obendrauf (doppelter Abstand). */
+.ncss-card-body > * {
+  margin-block-end: 0;
+}
+.ncss-card-body:not(.ncss-stack, .ncss-cluster, .ncss-grid, .ncss-flex) > * + * {
   margin-block-start: var(--ncss-space-xs);
 }
 
@@ -108,6 +115,18 @@
 .ncss-card--flush .ncss-card-body,
 .ncss-card--flush .ncss-card-footer {
   padding: 0;
+}
+
+/* Kompakte Karte für dichte Oberflächen (Dashboards, Seitenleisten, Listen vieler
+   Karten): festes, kleines Padding statt des mit der Containerbreite wachsenden
+   cqi-Werts oben, engerer Rhythmus im Body. */
+.ncss-card--compact .ncss-card-header,
+.ncss-card--compact .ncss-card-body,
+.ncss-card--compact .ncss-card-footer {
+  padding: var(--ncss-space-xs);
+}
+.ncss-card--compact .ncss-card-body > * + * {
+  margin-block-start: var(--ncss-space-2xs);
 }
 
 /* Entfernt die einzige verbliebene Deko, die .ncss-card selbst mitbringt

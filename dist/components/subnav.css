@@ -21,18 +21,33 @@
  * aria-current="location" am passenden Link. Ohne JS und ohne native Unterstützung:
  * ganz normale Sprunglinks ohne Hervorhebung.
  *
- * Sprungziele: :root bekommt scroll-padding-block-start = Topbar + diese Leiste, damit
- * Überschriften nicht unter den beiden klebenden Leisten verschwinden. Weiches Scrollen
+ * Empfohlen bei eigener Kopfleiste (One-Pager, Website-Header): Topbar UND Leiste in EINEN
+ * klebenden Container stecken - dann können beide nie gegeneinander verrutschen, egal wie
+ * hoch die Kopfleiste ist (Logo, Schriftgröße, 200 % Zoom, Mobil-Menü):
+ *   <div class="mein-header" data-ncss-sticky-header>   (selbst position: sticky; top: 0)
+ *     <header class="ncss-topbar">...</header>          (dort position: relative)
+ *     <nav class="ncss-subnav" ...>...</nav>             (klebt nicht mehr selbst)
+ *   </div>
+ * js/subnav.js misst die Höhe dieses Containers und setzt --ncss-scroll-offset an :root.
+ *
+ * Sprungziele: :root bekommt scroll-padding-block-start = gemessener Header
+ * (--ncss-scroll-offset), ohne Script Topbar + diese Leiste, damit Überschriften nicht
+ * unter den klebenden Leisten verschwinden. Weiches Scrollen
  * kommt aus reset.css (scroll-behavior: smooth, bei reduzierter Bewegung aus).
  *
  * Tokens: --ncss-subnav-height (Höhe, Default 2.75rem), --ncss-subnav-top (Abstand oben,
- * Default --ncss-topbar-height; 0 ohne Topbar).
+ * Default --ncss-topbar-height; 0 ohne Topbar), --ncss-scroll-offset (von js/subnav.js
+ * gemessene Gesamthöhe des klebenden Kopfbereichs).
  *
  * Benötigt: tokens.css/colors.css. Optional js/subnav.js.
  */
 
 :root:has(.ncss-subnav) {
-  scroll-padding-block-start: calc(var(--ncss-subnav-top, var(--ncss-topbar-height)) + var(--ncss-subnav-height, 2.75rem) + var(--ncss-space-sm));
+  scroll-padding-block-start: calc(var(--ncss-scroll-offset, calc(var(--ncss-subnav-top, var(--ncss-topbar-height)) + var(--ncss-subnav-height, 2.75rem))) + var(--ncss-space-sm));
+}
+/* Im gemeinsamen Sticky-Header klebt der Container, nicht die Leiste selbst. */
+[data-ncss-sticky-header] > .ncss-subnav {
+  position: static;
 }
 
 .ncss-subnav {
@@ -105,7 +120,10 @@
 .ncss-subnav-list a:active {
   background-color: var(--ncss-color-brand-100);
 }
-.ncss-subnav-list a:target-current,
+/* Genau EIN aktiver Link: sobald js/subnav.js läuft ([data-ncss-subnav-ready]), zählt
+   nur dessen aria-current - die native :target-current-Auswahl (eigene Kante, eigenes
+   Timing) könnte sonst gleichzeitig einen anderen Link markieren. */
+.ncss-subnav:not([data-ncss-subnav-ready]) .ncss-subnav-list a:target-current,
 .ncss-subnav-list a[aria-current="location"] {
   background-color: var(--ncss-color-brand-100);
   color: var(--ncss-color-brand-on-soft);
@@ -115,7 +133,7 @@
   .ncss-subnav-list {
     mask-image: none;
   }
-  .ncss-subnav-list a:target-current,
+  .ncss-subnav:not([data-ncss-subnav-ready]) .ncss-subnav-list a:target-current,
   .ncss-subnav-list a[aria-current="location"] {
     outline: 2px solid Highlight;
     outline-offset: -2px;

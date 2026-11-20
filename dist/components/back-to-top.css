@@ -1,0 +1,120 @@
+/**
+ * ncss - "Nach oben"-Link (Layer "components"). Reines CSS, kein JS: ein normaler Link
+ * auf "#top" - laut HTML-Spec scrollt das Fragment "top" auch OHNE Element mit dieser id
+ * an den Seitenanfang (die sanfte Bewegung kommt aus reset.css' scroll-behavior und
+ * entfällt dort automatisch bei reduzierter Bewegung). Braucht colors.css + tokens.css
+ * (+ reset/base).
+ *
+ * Markup (am Ende des Inhalts bzw. im Footer platzieren - das ist zugleich der Fallback-
+ * Ort, siehe unten):
+ *   <a class="ncss-back-to-top" href="#top">
+ *     <span aria-hidden="true">&uarr;</span><span class="ncss-back-to-top-label">Nach oben</span>
+ *   </a>
+ * Tastatur-Tipp: Liegt am Seitenanfang ein Element mit id="top" und tabindex="-1" (z.B.
+ * der Skip-Link-Zielbereich), landet auch der FOKUS dort - sonst bleibt er am Link stehen.
+ *
+ * Zwei Darstellungen, je nach Browser-Fähigkeit:
+ * - MIT Scroll-getriebenen Animationen (animation-timeline: scroll()): schwebt unten an
+ *   der Inline-End-Kante und blendet erst nach den ersten ~40vh Scrollweg ein. Im
+ *   unsichtbaren Zustand zusätzlich visibility:hidden - nicht per Tab erreichbar, solange
+ *   man ohnehin oben ist.
+ * - OHNE (z.B. Firefox ohne Flag): bleibt ein ganz normaler Link im Fluss, genau dort, wo
+ *   er im Markup steht (deshalb "am Ende platzieren") - immer sichtbar, nie verdeckend.
+ * Text: .ncss-back-to-top-label ist im schwebenden Modus nur für Screenreader sichtbar
+ * (runder Icon-Button), im Fluss-Modus ganz normal sichtbar.
+ */
+
+.ncss-back-to-top {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ncss-space-2xs);
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  font-weight: var(--ncss-font-weight-semibold);
+  text-decoration: none;
+  transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              scale var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+.ncss-back-to-top:active {
+  scale: 0.95;
+  background-color: var(--ncss-color-bg-subtle);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-back-to-top:hover:not(:active) {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .ncss-back-to-top {
+    position: fixed;
+    /* --ncss-back-to-top-offset verschiebt den Link nach oben, wenn die Ecke schon belegt
+       ist (z.B. ein eigener schwebender Button) - zwei überlappende Ziele wären zu klein
+       (WCAG 2.5.8, per axe-core gefunden). Parametrisierbar per style="--...: 4.5rem". */
+    inset-block-end: calc(max(var(--ncss-space-sm), env(safe-area-inset-bottom)) + var(--ncss-back-to-top-offset, 0px));
+    inset-inline-end: max(var(--ncss-space-sm), env(safe-area-inset-right));
+    z-index: var(--ncss-sticky-z, 10);
+    inline-size: 3rem;
+    block-size: 3rem;
+    padding: 0;
+    box-shadow: var(--ncss-shadow-md);
+    font-size: var(--ncss-font-size-lg);
+    animation: ncss-back-to-top-reveal linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 40vh;
+  }
+  /* Label nur visuell ausblenden (gleiche Technik wie .ncss-visually-hidden, hier lokal,
+     damit die Datei ohne helpers/a11y.css auskommt). */
+  .ncss-back-to-top-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+/* Reduzierte Bewegung: reset.css kürzt animation-duration global - bei einer Scroll-
+   Timeline wäre das Ergebnis browserabhängig. Statt sich darauf zu verlassen, die
+   Einblendung hier explizit durch einen harten Sprung ersetzen: animation-range auf einen
+   schmalen Bereich, keine Bewegung (nur opacity/visibility, kein translate). */
+@media (prefers-reduced-motion: reduce) {
+  @supports (animation-timeline: scroll()) {
+    .ncss-back-to-top {
+      animation-name: ncss-back-to-top-reveal-static;
+    }
+  }
+}
+
+@keyframes ncss-back-to-top-reveal {
+  from {
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 var(--ncss-space-sm);
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+  }
+}
+@keyframes ncss-back-to-top-reveal-static {
+  0%, 99% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media print {
+  .ncss-back-to-top {
+    display: none;
+  }
+}

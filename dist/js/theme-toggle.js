@@ -124,4 +124,9 @@
   } else {
     sync();
   }
+  // Klicks laufen bereits per Delegation am document (funktionieren also auch für später
+  // eingefügte Schalter) - nur aria-pressed/-label/Beschriftung neuer Schalter muss nach
+  // einem "ncss-content-change"-Event (htmx, fetch+innerHTML, siehe
+  // js/content-observer.js) einmal nachgezogen werden. sync() ist idempotent.
+  document.addEventListener("ncss-content-change", sync);
 })();

@@ -14,13 +14,13 @@
   "use strict";
 
   function init(root) {
-    if (root.hasAttribute("data-ready")) {
-      return;
-    }
     var items = Array.prototype.slice.call(root.querySelectorAll(".ncss-backdrop-item"));
     if (items.length === 0) {
       return;
     }
+    // Per innerHTML kopiertes, bereits laufendes Markup kann einen veralteten Zustand
+    // mitbringen (is-active auf einem späteren Bild) - immer vom ersten Bild aus starten.
+    items.forEach(function (item) { item.classList.remove("is-active"); });
     var interval = parseInt(root.getAttribute("data-interval"), 10) || 6000;
     root.style.setProperty("--ncss-backdrop-duration", interval + 2000 + "ms");
     root.setAttribute("data-ready", "");
@@ -41,6 +41,11 @@
     preload(items[1]);
 
     function next() {
+      // Element wurde entfernt (htmx-Swap, Frontend-Editing) - Timer nicht ewig weiterlaufen lassen.
+      if (!root.isConnected) {
+        stop();
+        return;
+      }
       var current = items[index];
       index = (index + 1) % items.length;
       var upcoming = items[index];
@@ -74,12 +79,32 @@
     start();
   }
 
-  function initAll() {
-    document.querySelectorAll("[data-ncss-backdrop]").forEach(init);
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = "[data-ncss-backdrop]";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
+  }
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
+  function scanDocument() {
+    scan(document);
   }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAll);
+    document.addEventListener("DOMContentLoaded", scanDocument);
   } else {
-    initAll();
+    scanDocument();
   }
 })();

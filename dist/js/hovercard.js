@@ -44,6 +44,11 @@
     class extends HTMLElement {
       connectedCallback() {
         if (this._ready) {
+          // Erneut verbunden (per JS verschoben, z.B. REDAXO-Slice umsortiert, htmx
+          // hx-preserve): disconnectedCallback() hat den Esc-Listener entfernt - wieder anhängen.
+          if (this._onKey) {
+            document.addEventListener("keydown", this._onKey);
+          }
           return;
         }
         var trigger = this.firstElementChild;

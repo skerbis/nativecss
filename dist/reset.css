@@ -91,6 +91,20 @@ p, h1, h2, h3, h4, h5, h6 {
   list-style: none;
 }
 
+/* Das hidden-Attribut versteckt IMMER - auch ein Element, das eine Komponente/ein Helper
+   mit eigenem display (z.B. .ncss-btn: inline-flex, .ncss-card: flex) sichtbar machen
+   würde. Die UA-Regel [hidden]{display:none} ist die schwächste der ganzen Kaskade, JEDE
+   Autoren-Regel mit display schlägt sie (per Demo-Test gefunden: <button class="ncss-btn"
+   hidden> blieb sichtbar). !important ist hier bewusst die Layer-konforme Lösung, kein
+   Spezifitäts-Kampf: wichtige Deklarationen kehren die Layer-Reihenfolge um - ein
+   !important im NIEDRIGSTEN Layer (reset) gewinnt gegen jede normale UND jede wichtige
+   Regel aller späteren Layer, ohne dass eine Komponente davon wissen muss. Ausnahme
+   hidden="until-found": das soll per Spec gerade NICHT display:none sein (UA nutzt
+   content-visibility, Find-in-Page/Anker öffnen es). */
+[hidden]:not([hidden="until-found"]) {
+  display: none !important;
+}
+
 /* Root-Stacking-Context für z-index-basierte Komponenten (Modals, Dropdowns) - ohne das
    können manche CSS-Isolationstricks von Drittkomponenten den Kontext durchbrechen. */
 #__redaxo, body {

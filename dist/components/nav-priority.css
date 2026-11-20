@@ -96,3 +96,62 @@ ncss-nav-priority:defined > .ncss-nav-list {
 .ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-panel {
   display: contents;
 }
+
+/* --- Topbar: Priority-Nav in EINER Zeile -------------------------------------------------
+   .ncss-topbar-inner bricht per flex-wrap um, sobald die Summe der Basis-Breiten nicht
+   passt - die Nav hatte dort flex-basis:auto (= Max-Content der KOMPLETTEN Liste, alle
+   Punkte nebeneinander), passte also praktisch nie und rutschte in eine zweite Zeile,
+   statt dass das Skript Punkte ins "Mehr"-Menü schiebt (per Demo-Test gefunden: Topbar
+   bei 1100-1440px doppelt so hoch). flex-basis:0 + flex-grow (aus topbar.css) = die Nav
+   nimmt genau den Restplatz neben Marke/Aktionen, ResizeObserver misst DIESE Breite. */
+/* min-inline-size: Platz für mindestens den "Mehr"-Auslöser (inkl. Zähler) - ist neben
+   Marke + Aktionen nicht einmal DAFÜR Platz (z.B. 360px mit langer Marke), bricht die
+   Nav per flex-wrap der Topbar in eine eigene Zeile um, statt dass "Mehr" über die
+   Aktionen (Theme-Toggle etc.) ragt (per Test bei 360px gefunden). Pro Instanz
+   anpassbar über --ncss-nav-priority-min (z.B. für ein längeres more-text). */
+.ncss-topbar-inner > .ncss-nav:has(ncss-nav-priority:defined) {
+  flex-basis: 0;
+  min-inline-size: var(--ncss-nav-priority-min, 8rem);
+}
+/* Ein Punkt darf nicht in sich umbrechen ("Leben am" / "See" in zwei Zeilen) - das
+   Skript soll ihn als Ganzes ins "Mehr"-Menü verschieben, ein Umbruch im Punkt selbst
+   ließ die Messung glauben, er passe noch. */
+ncss-nav-priority:defined > .ncss-nav-list > .ncss-nav-item > a,
+ncss-nav-priority:defined > .ncss-nav-list > .ncss-nav-item > .ncss-nav-dropdown > summary {
+  white-space: nowrap;
+}
+
+/* --- Unter 64rem: kein Off-Canvas, also auch keine Off-Canvas-Optik --------------------
+   nav.css schaltet unter 64rem für JEDE .ncss-nav auf die Off-Canvas-Darstellung:
+   Schließen-Button sichtbar, Untermenüs position:static ohne Fläche/Schatten (für eine
+   gestapelte Liste im Panel richtig). Mit Priority-Nav bleibt das Panel aber per
+   display:contents in der Zeile (siehe oben) - der Schließen-X stand dann neben den
+   Punkten, und das "Mehr"-Menü (sowie jedes andere Dropdown) klappte transparent INNERHALB
+   der Topbar auf, statt darüber zu schweben (per Demo-Test gefunden: Topbar wuchs beim
+   Öffnen von ~70 auf über 400px). Hier unconditional dieselbe schwebende Desktop-Optik
+   wie in nav.css (gleiche Tokens), unabhängig von der Breite. */
+.ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-panel .ncss-dialog-close {
+  display: none;
+}
+.ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-dropdown > .ncss-nav-submenu {
+  position: absolute;
+  inset-inline-start: 0;
+  min-width: 12rem;
+  padding: var(--ncss-space-2xs);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-md);
+  z-index: 20;
+}
+/* "Mehr" sitzt immer am Zeilenende - nach links aufklappen (rechtsbündig zum Auslöser),
+   sonst ragt es über den Viewport-Rand hinaus. */
+.ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-more > .ncss-nav-dropdown > .ncss-nav-submenu {
+  inset-inline: auto 0;
+}
+/* Verschachtelte Dropdowns IM "Mehr"-Menü (vom Skript als --nested markiert) zur Seite -
+   nach innen (links), weil "Mehr" bereits am rechten Rand steht. */
+.ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-more .ncss-nav-dropdown--nested > .ncss-nav-submenu {
+  inset-inline: auto 100%;
+  inset-block-start: 0;
+}

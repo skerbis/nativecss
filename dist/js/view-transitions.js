@@ -69,7 +69,11 @@
     });
   }
 
-  document.querySelectorAll(".ncss-accordion-split-container").forEach(function (container, containerIndex) {
+  // Fortlaufender Instanz-Zähler statt forEach-Index - auch später eingefügte Container
+  // (siehe scan() unten) bekommen so einen seitenweit eindeutigen view-transition-name.
+  var containerCount = 0;
+  function init(container) {
+    var containerIndex = containerCount++;
     var preset = container.dataset.transition || "";
     var transitionClass = preset === "slide" ? "ncss-vt-slide" : preset === "3d" ? "ncss-vt-3d" : "";
     enhanceExclusiveDetailsGroup(
@@ -79,5 +83,27 @@
       "ncss-accordion-split-media-" + containerIndex,
       transitionClass
     );
+  }
+
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = ".ncss-accordion-split-container";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
   });
 })();

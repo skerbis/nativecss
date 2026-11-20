@@ -23,9 +23,6 @@
     return;
   }
 
-  var blocks = document.querySelectorAll("[data-ncss-text-reveal]");
-  if (!blocks.length) return;
-
   var native = typeof CSS !== "undefined" && CSS.supports && CSS.supports("animation-timeline", "view()");
 
   function split(el) {
@@ -68,11 +65,35 @@
         { rootMargin: "0px 0px -25% 0px" }
       );
 
-  for (var i = 0; i < blocks.length; i++) {
-    split(blocks[i]);
+  function init(el) {
+    // Bereits geteiltes Markup (z.B. per innerHTML kopiert, inkl. der Wort-Spans) nicht
+    // ein zweites Mal zerlegen - nur Beobachtung/Zeitsteuerung neu verdrahten.
+    if (!el.classList.contains("ncss-text-reveal--words")) split(el);
     if (io) {
-      blocks[i].classList.add("ncss-text-reveal--timed");
-      io.observe(blocks[i]);
+      el.classList.add("ncss-text-reveal--timed");
+      io.observe(el);
     }
   }
+
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = "[data-ncss-text-reveal]";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
 })();

@@ -20,7 +20,7 @@
  * media-start (Medien-Spalte auf der Start-Seite statt rechts).
  *
  * Zustand: aktiver Schritt + aktives Medium tragen .is-active (Konvention wie Slideshow/
- * Lightbox). Event "ncss:step" auf dem Element: detail = { index, time, step, figure } -
+ * Lightbox). Event "ncss-scrolly-step" auf dem Element: detail = { index, time, step, figure } -
  * time ist der Zahlenwert aus data-ncss-time des Schritts (Sekunden) oder null. Damit
  * kann z.B. ein scroll-gesteuertes Video an die Stelle des Schritts springen, ohne dass
  * diese Komponente etwas über Video wissen muss.

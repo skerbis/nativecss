@@ -73,12 +73,32 @@
     });
   }
 
-  function initAll() {
-    document.querySelectorAll("[data-ncss-spotlight]").forEach(init);
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = "[data-ncss-spotlight]";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
+  }
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
+  function scanDocument() {
+    scan(document);
   }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAll);
+    document.addEventListener("DOMContentLoaded", scanDocument);
   } else {
-    initAll();
+    scanDocument();
   }
 })();

@@ -8,7 +8,7 @@
  *   - Browser ganz ohne animation-timeline: JEDES data-ncss-reveal-Element wird dort
  *     zum Einmal-Reveal (statt einfach statisch sichtbar zu bleiben).
  * Ablauf: Klasse .ncss-reveal--js hält den Startzustand (pausiert), .is-revealed spielt
- * ab. Event "ncss:reveal" (bubbelt) beim Start.
+ * ab. Event "ncss-reveal" (bubbelt) beim Start.
  * Unter prefers-reduced-motion: nichts (das CSS zeigt alles ungeclippt).
  *
  * Benötigt: helpers/reveal.css.
@@ -27,28 +27,44 @@
   var hasTimeline = CSS.supports("animation-timeline", "view()");
   var hasTrigger = CSS.supports("timeline-trigger", "--a view()");
 
-  var els = document.querySelectorAll("[data-ncss-reveal]");
-  var targets = [];
-  for (var i = 0; i < els.length; i++) {
-    var once = els[i].classList.contains("ncss-reveal--once");
-    if ((once && !hasTrigger) || !hasTimeline) targets.push(els[i]);
-  }
-  if (!targets.length) return;
-
   var io = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         io.unobserve(entry.target);
         entry.target.classList.add("is-revealed");
-        entry.target.dispatchEvent(new CustomEvent("ncss:reveal", { bubbles: true }));
+        entry.target.dispatchEvent(new CustomEvent("ncss-reveal", { bubbles: true }));
       });
     },
     { rootMargin: "0px 0px -15% 0px" }
   );
 
-  targets.forEach(function (el) {
+  function init(el) {
+    var once = el.classList.contains("ncss-reveal--once");
+    if (!((once && !hasTrigger) || !hasTimeline)) return;
     el.classList.add("ncss-reveal--js");
     io.observe(el);
+  }
+
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = "[data-ncss-reveal]";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
   });
 })();

@@ -18,6 +18,19 @@
   white-space: nowrap;
   border: 0;
 }
+/* Sonderfall <table>: eine Tabelle ignoriert width:1px/overflow:hidden (Tabellen sind
+   mindestens so breit wie ihr Inhalt, overflow gilt nicht für Tabellen-Boxen) - eine
+   versteckte Werte-Tabelle (z.B. neben einer Sparkline, siehe js/sparkline.js) blieb per
+   Messung ~290px bis mehrere 1000px breit und erzeugte horizontalen Seiten-Überlauf.
+   display:block würde es lösen, nimmt der Tabelle aber in einigen Screenreadern die
+   Tabellen-Semantik. position:fixed trägt dagegen per Spec nicht zum Scroll-Bereich des
+   Dokuments bei (per Test in Chromium + WebKit: kein Überlauf mehr) und lässt Semantik und
+   DOM-Lesereihenfolge unverändert. */
+table.ncss-visually-hidden {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
 
 /* Wie .ncss-visually-hidden, aber wird bei Tastatur-Fokus wieder sichtbar - für Links/
    Buttons, die nur für Tastaturnutzer relevant sind, sonst aber optisch stören würden

@@ -10,7 +10,7 @@
  * API:
  *   el.step            Index des aktiven Schritts (lesen); el.step = 2 scrollt Schritt 3
  *                      in die Mitte (respektiert prefers-reduced-motion).
- *   "ncss:step"-Event  bubbelt, detail = { index, time, step, figure }. time = Zahl aus
+ *   "ncss-scrolly-step"-Event  bubbelt, detail = { index, time, step, figure }. time = Zahl aus
  *                      data-ncss-time am Schritt (Sekunden) oder null - Andockpunkt für
  *                      ein scroll-gesteuertes Video (seeken auf time).
  *
@@ -89,7 +89,7 @@
         });
         var time = parseFloat(step.getAttribute("data-ncss-time"));
         this.dispatchEvent(
-          new CustomEvent("ncss:step", {
+          new CustomEvent("ncss-scrolly-step", {
             bubbles: true,
             detail: { index: i, time: isNaN(time) ? null : time, step: step, figure: figure }
           })

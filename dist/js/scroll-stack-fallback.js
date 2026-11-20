@@ -54,19 +54,20 @@
     return;
   }
 
-  var sectionEls = deepQueryAll(".ncss-stack-section");
-  if (!sectionEls.length) return;
-
   // Unsichtbares Sonden-Element zum Auflösen beliebiger CSS-Längen (rem/vh/lvh/px/em/
   // min()/calc()...) in einen echten px-Zahlenwert - dieselbe Technik wie beim Live-
   // Farbeditor (demo/colors.html), dort für Farben statt Längen. width statt height
   // gewählt, funktioniert aber für JEDE Längeneinheit unabhängig von der Achse (vh/lvh
   // beziehen sich immer auf die Viewport-Höhe, unabhängig davon, welcher Eigenschaft der
   // Wert zugewiesen wird).
-  var probe = document.createElement("div");
-  probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;top:0;left:0;width:0;height:0;";
-  document.body.appendChild(probe);
+  var probe = null;
   function resolveLength(value, fallback) {
+    // Erst bei Bedarf anlegen - eine Seite ohne Stack-Sektion bekommt kein Sonden-Element.
+    if (!probe) {
+      probe = document.createElement("div");
+      probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;top:0;left:0;width:0;height:0;";
+      document.body.appendChild(probe);
+    }
     probe.style.width = value || fallback;
     var px = probe.getBoundingClientRect().width;
     if (!px && value !== "0" && value !== "0px") {
@@ -87,7 +88,7 @@
   }
 
   var sections = [];
-  sectionEls.forEach(function (sectionEl) {
+  function addSection(sectionEl) {
     var sectionStyle = getComputedStyle(sectionEl);
     var horizontal = sectionEl.classList.contains("ncss-stack-section--horizontal");
     var cardEls = sectionEl.querySelectorAll(".ncss-stack-card");
@@ -119,9 +120,7 @@
 
     sectionEl.classList.add("ncss-stack-js-active");
     sections.push(section);
-  });
-
-  if (!sections.length) return;
+  }
 
   function applyCard(card, local, section) {
     var offset = card.index * card.fanPx;
@@ -158,6 +157,10 @@
 
   function update() {
     var vh = window.innerHeight;
+    // Entfernte Sektionen (htmx-Swap, Frontend-Editing) nicht weiter berechnen.
+    sections = sections.filter(function (section) {
+      return section.el.isConnected;
+    });
     sections.forEach(function (section) {
       var rect = section.el.getBoundingClientRect();
       var totalDistance = (section.count - 1) * section.stageHeightPx;
@@ -211,5 +214,28 @@
     { passive: true },
   );
   window.addEventListener("scroll", requestUpdate, { passive: true });
+
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = ".ncss-stack-section";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = deepQueryAll(SELECTOR, root);
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      addSection(el);
+    });
+  }
+  scan(document);
   requestUpdate();
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+    requestUpdate();
+  });
 })();

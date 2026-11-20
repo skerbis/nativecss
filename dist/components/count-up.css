@@ -10,8 +10,9 @@
  *   <span class="ncss-count-up" style="--ncss-count-to: 98; --ncss-count-suffix: '%'">98 %</span>
  *
  * Parameter: --ncss-count-from (0), --ncss-count-prefix/-suffix (Strings um die
- * Ziffern), --ncss-count-duration (2s). Während des Zählens fehlen Tausender-Trenner
- * (counter() kennt keine) - der Endwert zeigt wieder den echten, formatierten Text.
+ * Ziffern), --ncss-count-duration (2s). Im reinen CSS-Pfad fehlen während des Zählens
+ * Tausender-Trenner (counter() kennt keine) - mit js/count-up.js zählt stattdessen das
+ * Script, per Intl.NumberFormat sprachrichtig formatiert ("12.500" bzw. "12,500").
  *
  * Wann es zählt:
  *   Chromium (CSS scroll-triggered animations, timeline-trigger): zeitbasiert, einmal,
@@ -99,19 +100,28 @@
     }
   }
 
-  /* JS-Pfad (js/count-up.js): Startwert halten, bis .is-counting gesetzt wird. */
-  .ncss-count-up--js:not(.is-counting) {
-    --_ncss-count-t: 0;
+  /* JS-Pfad (js/count-up.js): das Script zählt selbst und schreibt jeden Zwischenwert
+     bereits per Intl.NumberFormat formatiert (MIT Tausender-Trennern, die counter() nicht
+     kann) nach data-ncss-count-text - keine CSS-Animation, ::after zeigt nur den Text.
+     Bis .is-counted bleiben die Zähl-Ziffern sichtbar, danach blendet es zum echten Text
+     über (registrierte <number>-Property, deshalb per transition animierbar). */
+  .ncss-count-up--js {
+    animation: none;
     --_ncss-count-fade: 1;
+    transition: --_ncss-count-fade var(--ncss-motion-duration) linear;
+
+    &::after {
+      content: var(--ncss-count-prefix, "") attr(data-ncss-count-text) var(--ncss-count-suffix, "") / "";
+    }
   }
-  .ncss-count-up--js.is-counting {
-    animation: ncss-count-up var(--ncss-count-duration, 2s) linear backwards;
+  .ncss-count-up--js.is-counted {
+    --_ncss-count-fade: 0;
   }
 }
 
 @media (forced-colors: active) {
   .ncss-count-up,
-  .ncss-count-up--js:not(.is-counting) {
+  .ncss-count-up.ncss-count-up--js {
     animation: none;
     --_ncss-count-fade: 0;
     -webkit-text-fill-color: currentColor;
@@ -123,7 +133,7 @@
 
 @media print {
   .ncss-count-up,
-  .ncss-count-up--js:not(.is-counting) {
+  .ncss-count-up.ncss-count-up--js {
     animation: none;
     --_ncss-count-fade: 0;
   }

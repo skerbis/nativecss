@@ -29,6 +29,71 @@ pre:has(> code[class*="language-"]) {
   position: relative;
 }
 
+/* --- Copy-Button verdeckt NIE Code (js/code-block.js setzt .ncss-code-block am <pre>) ---
+   Früher saß der Button absolut im <pre> - das ist aber selbst der Scroll-Container, der
+   Button scrollte mit und lag bei langen Zeilen (oder in schmalen Karten, User-Report
+   Startseiten-Installationskarten) über dem Text. Jetzt scrollt das <code> statt des <pre>:
+   der Button bleibt fest in der Ecke des nicht scrollenden <pre> und erbt weiterhin dessen
+   Textfarbe. Zwei Platz-Modi, vom Script je nach echter Zeilenbreite gewählt (nicht nach
+   Breakpoint - dieselbe Karte kann kurze und lange Blöcke enthalten):
+   - Standard: Zeilen passen neben den Button -> rechts reservierter Streifen
+     (padding-inline-end), Text erreicht die Button-Fläche nie.
+   - .is-stacked: mindestens eine Zeile ist zu lang -> Button bekommt eine eigene Zeile
+     ÜBER dem Code (padding-block-start), Code darunter scrollt frei.
+   Scrollbarer Code: Schatten an der Kante, hinter der noch Text liegt (.is-scrollable +
+   .is-at-start/-end), Scrollleiste bleibt sichtbar, <code> wird per tabindex="0" mit der
+   Tastatur scrollbar (WCAG 2.1.1). */
+.ncss-code-block {
+  --ncss-code-copy-size: calc(var(--ncss-space-md) + var(--ncss-space-3xs, 0.25rem));
+  --ncss-code-reserve: calc(var(--ncss-code-copy-size) + var(--ncss-space-2xs));
+  position: relative;
+  overflow: visible;
+  padding-inline-end: calc(var(--ncss-space-sm) + var(--ncss-code-reserve));
+}
+.ncss-code-block.is-stacked {
+  padding-inline-end: var(--ncss-space-sm);
+  padding-block-start: calc(var(--ncss-space-2xs) * 2 + var(--ncss-code-copy-size));
+}
+.ncss-code-block > code {
+  display: block;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, currentColor 40%, transparent) transparent;
+}
+.ncss-code-block > code:focus-visible {
+  outline-offset: var(--ncss-space-3xs, 0.25rem);
+  border-radius: var(--ncss-radius-sm);
+}
+/* Kanten-Schatten: aus currentColor (sitzt auf jedem Code-Hintergrund, hell wie dunkel). */
+.ncss-code-block::before,
+.ncss-code-block::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inline-size: calc(var(--ncss-space-sm) + var(--ncss-space-sm));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+.ncss-code-block::before {
+  inset-inline-start: 0;
+  border-start-start-radius: inherit;
+  border-end-start-radius: inherit;
+  background: linear-gradient(to right, color-mix(in srgb, currentColor 22%, transparent), transparent);
+}
+.ncss-code-block::after {
+  inset-inline-end: 0;
+  border-start-end-radius: inherit;
+  border-end-end-radius: inherit;
+  background: linear-gradient(to left, color-mix(in srgb, currentColor 22%, transparent), transparent);
+}
+.ncss-code-block:dir(rtl)::before { background: linear-gradient(to left, color-mix(in srgb, currentColor 22%, transparent), transparent); }
+.ncss-code-block:dir(rtl)::after { background: linear-gradient(to right, color-mix(in srgb, currentColor 22%, transparent), transparent); }
+.ncss-code-block.is-scrollable:not(.is-at-start)::before,
+.ncss-code-block.is-scrollable:not(.is-at-end)::after {
+  opacity: 1;
+}
+
 /* Farben bewusst NICHT über --ncss-color-bg/-text-muted (globale Seiten-Tokens) -
    .ncss-code-copy sitzt über EINEM <pre>, dessen eigener Hintergrund völlig unabhängig
    vom Seiten-bg sein kann (helle --ncss-color-bg-subtle im Normalfall, aber z.B. ein
@@ -43,13 +108,14 @@ pre:has(> code[class*="language-"]) {
    dahintersteckt - kein Raten/Pflegen einzelner Spezialfälle pro Seite mehr nötig. */
 .ncss-code-copy {
   position: absolute;
+  z-index: 1;
   inset-block-start: var(--ncss-space-2xs);
   inset-inline-end: var(--ncss-space-2xs);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--ncss-space-md);
-  height: var(--ncss-space-md);
+  width: var(--ncss-code-copy-size, var(--ncss-space-md));
+  height: var(--ncss-code-copy-size, var(--ncss-space-md));
   border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
   border-radius: var(--ncss-radius-sm);
   background-color: color-mix(in srgb, currentColor 12%, transparent);
@@ -60,7 +126,7 @@ pre:has(> code[class*="language-"]) {
   transition: color var(--ncss-motion-duration), background-color var(--ncss-motion-duration), border-color var(--ncss-motion-duration);
 }
 @media (hover: hover) and (pointer: fine) {
-  .ncss-code-copy:hover {
+  .ncss-code-copy:hover:not(:active) {
     background-color: color-mix(in srgb, currentColor 22%, transparent);
   }
 }
@@ -68,10 +134,34 @@ pre:has(> code[class*="language-"]) {
   scale: 0.92;
   transition-duration: var(--ncss-motion-duration-fast);
 }
+.ncss-code-copy:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring, currentColor);
+  outline-offset: 2px;
+}
 .ncss-code-copy[data-copied="true"] {
-  color: var(--ncss-color-success);
+  color: var(--ncss-color-success-on-soft);
   border-color: var(--ncss-color-success);
   background-color: color-mix(in srgb, var(--ncss-color-success) 15%, transparent);
+}
+/* Ansage "Kopiert" für Screenreader (role="status"), optisch unsichtbar - eigene Regel
+   statt .ncss-visually-hidden, damit die Datei allein läuft. */
+.ncss-code-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (forced-colors: active) {
+  .ncss-code-copy .ncss-icon {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+  .ncss-code-block::before,
+  .ncss-code-block::after {
+    display: none;
+  }
 }
 
 /* --- Prism-Token-Bridge: auf dieselben ncss-Farbtokens gemappt, die auch Komponenten

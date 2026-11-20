@@ -24,9 +24,6 @@
 (function () {
   if (typeof ResizeObserver === "undefined" || !window.matchMedia) return;
 
-  var sections = document.querySelectorAll("[data-ncss-scroll-horizontal]");
-  if (!sections.length) return;
-
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function setup(el) {
@@ -91,5 +88,25 @@
     refresh();
   }
 
-  for (var i = 0; i < sections.length; i++) setup(sections[i]);
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = "[data-ncss-scroll-horizontal]";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      setup(el);
+    });
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
 })();

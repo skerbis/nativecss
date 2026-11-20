@@ -1,0 +1,181 @@
+/**
+ * ncss - Upload-Fläche <ncss-dropzone> (Layer "components"), JS: js/dropzone.js.
+ * Light-DOM-Custom-Element um ein ECHTES <input type="file"> - ohne JS (oder ohne
+ * DataTransfer-Konstruktor, siehe Script) bleibt das native Feld sichtbar und voll
+ * funktionsfähig, inklusive Formular-Versand; Drag & Drop auf das native Feld kann der
+ * Browser selbst. Braucht colors.css + tokens.css (+ reset/base).
+ *
+ * Markup:
+ *   <ncss-dropzone class="ncss-dropzone">
+ *     <label class="ncss-dropzone-area">
+ *       <span class="ncss-dropzone-text"><strong>Dateien hierher ziehen</strong> oder klicken zum Auswählen</span>
+ *       <span class="ncss-dropzone-hint">PDF oder Bild, max. 10 MB</span>
+ *       <input type="file" name="belege" multiple accept="image/png,image/jpeg,.pdf">
+ *     </label>
+ *   </ncss-dropzone>
+ * Das Script hängt eine Dateiliste (.ncss-dropzone-list) mit Vorschau + Entfernen-Button
+ * und eine Live-Region für die Ansage an.
+ */
+
+ncss-dropzone {
+  /* Bezugsrahmen für die nur optisch versteckte Status-Zeile (kein Überlauf). */
+  position: relative;
+  display: block;
+}
+.ncss-dropzone-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ncss-space-3xs);
+  padding: var(--ncss-space-md) var(--ncss-space-sm);
+  border: calc(var(--ncss-border-width) * 2) dashed var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-bg-subtle);
+  color: var(--ncss-color-text);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              background-color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-dropzone-hint {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+/* Ohne JS: das native Feld bleibt sichtbar unter dem Text (normaler Datei-Button). */
+.ncss-dropzone-area > input[type="file"] {
+  max-inline-size: 100%;
+  margin-block-start: var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
+}
+
+/* Mit JS (:defined): natives Feld visuell versteckt, bleibt aber fokussierbar - die ganze
+   Fläche ist das Label und damit klickbar, Tastatur-Fokus zeigt sich an der Fläche. */
+ncss-dropzone:defined .ncss-dropzone-area > input[type="file"] {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.ncss-dropzone-area:has(> input:focus-visible) {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+.ncss-dropzone-area:active,
+ncss-dropzone[data-ncss-dragover] .ncss-dropzone-area {
+  border-color: var(--ncss-color-brand);
+  background-color: var(--ncss-color-brand-100);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-dropzone-area:hover {
+    border-color: var(--ncss-color-text-muted);
+  }
+}
+.ncss-dropzone-area:has(> input:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* --- Dateiliste (vom Script erzeugt) --------------------------------------------------- */
+.ncss-dropzone-list {
+  display: grid;
+  gap: var(--ncss-space-2xs);
+  margin: var(--ncss-space-xs) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ncss-dropzone-list:empty {
+  display: none;
+}
+.ncss-dropzone-file {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  min-inline-size: 0;
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-surface);
+}
+.ncss-dropzone-thumb {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  overflow: hidden;
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-neutral-100);
+  color: var(--ncss-color-neutral-on-soft);
+  font-size: 0.65rem;
+  font-weight: var(--ncss-font-weight-bold);
+  text-transform: uppercase;
+}
+.ncss-dropzone-thumb > img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.ncss-dropzone-name {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ncss-dropzone-size {
+  flex: none;
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.ncss-dropzone-remove {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ncss-radius-full);
+  background: none;
+  color: var(--ncss-color-text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.ncss-dropzone-remove:active {
+  background-color: color-mix(in oklch, currentColor 18%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-dropzone-remove:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 10%, transparent);
+    color: var(--ncss-color-danger);
+  }
+}
+.ncss-dropzone-error {
+  margin: var(--ncss-space-2xs) 0 0;
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-danger);
+}
+.ncss-dropzone-error:empty {
+  display: none;
+}
+.ncss-dropzone-status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  ncss-dropzone[data-ncss-dragover] .ncss-dropzone-area {
+    border-color: Highlight;
+    border-style: solid;
+  }
+}

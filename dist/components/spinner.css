@@ -1,0 +1,50 @@
+/**
+ * ncss - Lade-Indikator (Layer "components"): drehender Ring in currentColor - passt
+ * dadurch automatisch in jeden Button, auf jede Fläche, in beide Themes. Reines CSS.
+ * Braucht colors.css + tokens.css (+ reset/base), für den Ansagetext helpers/a11y.css.
+ *
+ * Markup (eigenständig, wird angesagt):
+ *   <span class="ncss-spinner" role="status"><span class="ncss-visually-hidden">Lädt …</span></span>
+ * Im Button (der Button selbst trägt den Zustand, der Spinner ist nur Optik):
+ *   <button class="ncss-btn ncss-btn--primary" aria-busy="true" disabled>
+ *     <span class="ncss-spinner ncss-spinner--sm" aria-hidden="true"></span> Speichert …
+ *   </button>
+ * role="status" erst einfügen/sichtbar machen, wenn wirklich geladen wird - ein dauerhaft
+ * im DOM stehender Status wird beim Seitenaufruf nicht angesagt.
+ *
+ * Reduzierte Bewegung: reset.css kürzt jede Animation global auf 0.01ms - der Ring steht
+ * dann still, bleibt aber als Ring mit Lücke sichtbar erkennbar (kein Verschwinden des
+ * Zustands). Ein Ersatz-Pulsieren wäre selbst wieder Bewegung, daher bewusst keines.
+ */
+
+.ncss-spinner {
+  --ncss-spinner-size: 1.5em;
+  --ncss-spinner-width: max(2px, calc(var(--ncss-spinner-size) / 8));
+  display: inline-block;
+  flex: none;
+  inline-size: var(--ncss-spinner-size);
+  block-size: var(--ncss-spinner-size);
+  vertical-align: -0.25em;
+  border: var(--ncss-spinner-width) solid color-mix(in oklch, currentColor 20%, transparent);
+  border-block-start-color: currentColor;
+  border-radius: var(--ncss-radius-full);
+  animation: ncss-spinner-spin 0.8s linear infinite;
+}
+.ncss-spinner--sm { --ncss-spinner-size: 1em; }
+.ncss-spinner--lg { --ncss-spinner-size: 2.5rem; }
+
+@keyframes ncss-spinner-spin {
+  to { rotate: 1turn; }
+}
+
+/* Hochkontrast: das System würde alle vier Rahmenseiten auf dieselbe Farbe zwingen - der
+   Ring wäre ein geschlossener Kreis ohne erkennbare Drehung. Lücke daher als echte
+   Transparenz mit Systemfarbe neu setzen. */
+@media (forced-colors: active) {
+  .ncss-spinner {
+    forced-color-adjust: none;
+    border-color: transparent;
+    border-block-start-color: CanvasText;
+    border-inline-end-color: CanvasText;
+  }
+}

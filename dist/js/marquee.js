@@ -15,9 +15,7 @@
 (function () {
   if (!document.querySelectorAll) return;
 
-  var marquees = document.querySelectorAll("[data-ncss-marquee]");
-  for (var i = 0; i < marquees.length; i++) {
-    var el = marquees[i];
+  function initMarquee(el) {
     var groups = el.querySelectorAll(":scope > .ncss-marquee-group");
     if (groups.length === 1) {
       var clone = groups[0].cloneNode(true);
@@ -30,16 +28,52 @@
     for (var c = 0; c < copies.length; c++) copies[c].inert = true;
   }
 
-  var toggles = document.querySelectorAll("[data-ncss-marquee-toggle]");
-  for (var t = 0; t < toggles.length; t++) {
-    (function (btn) {
+  // Pause-Schalter per Delegation am document statt pro Button - funktioniert dadurch
+  // auch für später eingefügte Schalter ohne erneute Initialisierung.
+  document.addEventListener("click", function (event) {
+    var btn = event.target.closest && event.target.closest("[data-ncss-marquee-toggle]");
+    if (!btn) return;
+    var target = document.getElementById(btn.getAttribute("aria-controls") || "");
+    if (!target) return;
+    var paused = target.classList.toggle("ncss-marquee--paused");
+    btn.setAttribute("aria-pressed", paused ? "true" : "false");
+  });
+
+  // Anfangszustand von aria-pressed (idempotent, darf beliebig oft laufen).
+  function syncToggles(root) {
+    var toggles = Array.prototype.slice.call(root.querySelectorAll("[data-ncss-marquee-toggle]"));
+    if (root.matches && root.matches("[data-ncss-marquee-toggle]")) toggles.unshift(root);
+    toggles.forEach(function (btn) {
       var target = document.getElementById(btn.getAttribute("aria-controls") || "");
       if (!target) return;
       btn.setAttribute("aria-pressed", target.classList.contains("ncss-marquee--paused") ? "true" : "false");
-      btn.addEventListener("click", function () {
-        var paused = target.classList.toggle("ncss-marquee--paused");
-        btn.setAttribute("aria-pressed", paused ? "true" : "false");
-      });
-    })(toggles[t]);
+    });
   }
+
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = "[data-ncss-marquee]";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      initMarquee(el);
+    });
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
+  syncToggles(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    var root = (event.detail && event.detail.root) || document;
+    if (root.querySelectorAll) syncToggles(root);
+  });
 })();

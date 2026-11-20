@@ -1,0 +1,266 @@
+/**
+ * ncss - App-Gerüst (Layer "components"): Seitenleiste + Kopfleiste + Inhalt für
+ * Verwaltungsoberflächen/Dashboards. Reines HTML/CSS, kein JS: die Seitenleiste ist ein
+ * natives Popover (popover-Attribut) - im BREITEN Container steht sie per CSS dauerhaft
+ * als Spalte da, im SCHMALEN Container wird genau dasselbe Element zum Off-Canvas, das
+ * der Menü-Button per popovertarget öffnet (ESC, Klick daneben und Fokus-Rückgabe liefert
+ * der Browser). Ein Element, kein Umhängen per JS, keine doppelte Navigation im DOM.
+ * Braucht colors.css + tokens.css (+ reset/base).
+ *
+ * Markup:
+ *   <div class="ncss-app-shell">
+ *     <nav class="ncss-app-shell-sidebar" id="appnav" popover aria-label="Hauptnavigation">
+ *       <button type="button" class="ncss-app-shell-close" popovertarget="appnav"
+ *               popovertargetaction="hide" aria-label="Navigation schließen">&times;</button>
+ *       <a class="ncss-app-shell-brand" href="/">Logo</a>
+ *       <ul class="ncss-app-shell-nav" role="list">
+ *         <li><a href="/" aria-current="page">Dashboard</a></li> ...
+ *       </ul>
+ *     </nav>
+ *     <div class="ncss-app-shell-main">
+ *       <header class="ncss-app-shell-topbar">
+ *         <button type="button" class="ncss-app-shell-toggle" popovertarget="appnav"
+ *                 aria-label="Navigation öffnen">&#9776;</button>
+ *         ... Suche, Konto ...
+ *       </header>
+ *       <main class="ncss-app-shell-content" id="main">...</main>
+ *     </div>
+ *   </div>
+ *
+ * Umschaltpunkt: Breite des .ncss-app-shell-CONTAINERS (nicht des Viewports) ab 48rem -
+ * dieselbe Shell funktioniert ganzseitig und eingebettet (z.B. in einer Doku-Vorschau).
+ * Anpassbar: --ncss-app-shell-sidebar-width (Default 16rem), --ncss-app-shell-height
+ * (Höhe der klebenden Seitenleiste, Default 100svh - bei eingebetteter Shell mit eigener
+ * Scroll-Box auf deren Höhe setzen).
+ *
+ * Fallback ohne Popover-API (sehr alte Browser): das popover-Attribut ist dort unbekannt,
+ * die Seitenleiste steht im schmalen Container einfach ganz normal ÜBER dem Inhalt -
+ * vollständig benutzbar, nur nicht eingeklappt. Bekannte Grenze: wird ein im schmalen
+ * Container GEÖFFNETES Off-Canvas durch Verbreitern zur Spalte, bleibt es bis zum
+ * nächsten ESC/Klick daneben im Top Layer - das Schließen kann CSS nicht auslösen.
+ */
+
+.ncss-app-shell {
+  container: ncss-app-shell / inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  min-block-size: var(--ncss-app-shell-height, 100svh);
+  background-color: var(--ncss-color-bg);
+  color: var(--ncss-color-text);
+}
+.ncss-app-shell-main {
+  /* Basis 0 statt auto: die Inhaltsspalte bricht nie neben der Seitenleiste um (die Shell
+     ist flex-wrap:wrap - nur für den Fallback ohne Popover-API, siehe unten). */
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.ncss-app-shell-content {
+  flex: 1 1 auto;
+  padding: var(--ncss-space-md);
+  min-inline-size: 0;
+}
+
+/* --- Kopfleiste -------------------------------------------------------------------------- */
+.ncss-app-shell-topbar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--ncss-topbar-z, 50);
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  min-block-size: var(--ncss-topbar-height, 3.5rem);
+  padding: var(--ncss-space-2xs) var(--ncss-space-md);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  background-color: var(--ncss-color-surface);
+}
+
+/* Menü-/Schließen-Button: eigene, kleine Icon-Buttons (ohne Abhängigkeit von
+   helpers/forms.css' .ncss-btn - die Datei bleibt einzeln nutzbar). */
+.ncss-app-shell-toggle,
+.ncss-app-shell-close {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ncss-radius-sm);
+  background: none;
+  color: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.ncss-app-shell-toggle:active,
+.ncss-app-shell-close:active {
+  background-color: color-mix(in oklch, currentColor 14%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-app-shell-toggle:hover:not(:active),
+  .ncss-app-shell-close:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 8%, transparent);
+  }
+}
+
+/* --- Seitenleiste ------------------------------------------------------------------------
+   Gemeinsame Optik in beiden Modi. Die UA-Popover-Defaults (Rahmen, Canvas-Farben,
+   inset/margin:auto, fit-content-Größe) werden hier explizit ersetzt. */
+.ncss-app-shell-sidebar {
+  /* KEIN display hier: die UA-Regel [popover]:not(:popover-open) { display:none } muss
+     im schmalen Container greifen können (eine Autoren-Regel würde sie überstimmen und
+     das geschlossene Off-Canvas dauerhaft zeigen - per WebKit-Test gefunden). display
+     setzen nur der offene Zustand, die Spalten-Variante und der Fallback unten. */
+  flex-direction: column;
+  gap: var(--ncss-space-sm);
+  box-sizing: border-box;
+  inline-size: var(--ncss-app-shell-sidebar-width, 16rem);
+  margin: 0;
+  padding: var(--ncss-space-sm);
+  border: 0;
+  border-inline-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.ncss-app-shell-close {
+  align-self: flex-end;
+  margin-block-end: calc(var(--ncss-space-xs) * -1);
+}
+.ncss-app-shell-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-2xs);
+  padding: var(--ncss-space-3xs) var(--ncss-space-2xs);
+  color: inherit;
+  font-weight: var(--ncss-font-weight-bold);
+  text-decoration: none;
+}
+.ncss-app-shell-nav {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ncss-app-shell-nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-2xs);
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  border-radius: var(--ncss-radius-sm);
+  color: var(--ncss-color-text-muted);
+  font-weight: var(--ncss-font-weight-medium);
+  text-decoration: none;
+}
+.ncss-app-shell-nav a:active {
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-app-shell-nav a:hover:not(:active) {
+    background-color: var(--ncss-color-bg-subtle);
+    color: var(--ncss-color-text);
+  }
+}
+.ncss-app-shell-nav a[aria-current="page"] {
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-weight: var(--ncss-font-weight-semibold);
+}
+/* Zwischenüberschrift einer Nav-Gruppe (<h2 class="ncss-app-shell-heading">). */
+.ncss-app-shell-heading {
+  margin: var(--ncss-space-xs) 0 0;
+  padding-inline: var(--ncss-space-xs);
+  font-size: 0.75rem;
+  font-weight: var(--ncss-font-weight-semibold);
+  letter-spacing: var(--ncss-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ncss-color-text-muted);
+}
+
+.ncss-app-shell-sidebar:popover-open {
+  display: flex;
+}
+@supports not selector(:popover-open) {
+  .ncss-app-shell-sidebar {
+    display: flex;
+  }
+}
+
+/* Fallback ohne Popover-API im schmalen Container: Leiste als volle Zeile über dem Inhalt
+   statt als schmale Spalte neben ihm. Mit Popover-API überschreibt der Block danach. */
+@container ncss-app-shell (max-width: 47.99rem) {
+  .ncss-app-shell-sidebar {
+    flex: 1 1 100%;
+    inline-size: auto;
+    border-inline-end: 0;
+    border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  }
+}
+
+/* --- Schmaler Container: Off-Canvas ------------------------------------------------------
+   Nur, wo der Browser Popover kann - sonst bleibt die Leiste normal im Fluss (siehe
+   Kopfkommentar). position:fixed im Top Layer, daher ohne Rücksicht auf Vorfahren. */
+@supports selector(:popover-open) {
+  @container ncss-app-shell (max-width: 47.99rem) {
+    .ncss-app-shell-sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      inset-inline: 0 auto;
+      block-size: 100%;
+      max-block-size: none;
+      inline-size: min(85vw, var(--ncss-app-shell-sidebar-width, 16rem));
+      border-block-end: 0;
+      border-inline-end: var(--ncss-border-width) solid var(--ncss-color-border);
+      box-shadow: var(--ncss-shadow-lg);
+      /* Nur translate/opacity animieren (siehe Skill: display/overlay als
+         allow-discrete-Transition bleiben bei einem Element, das an anderer Stelle seinen
+         Display-Typ wechselt, hängen) - Schließen ist dadurch sofort, Öffnen gleitet. */
+      transition: translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+    }
+    .ncss-app-shell-sidebar:dir(rtl) {
+      inset-inline: auto 0;
+    }
+    .ncss-app-shell-sidebar::backdrop {
+      background-color: var(--ncss-color-overlay);
+    }
+  }
+}
+@starting-style {
+  .ncss-app-shell-sidebar:popover-open {
+    translate: -100% 0;
+  }
+  .ncss-app-shell-sidebar:popover-open:dir(rtl) {
+    translate: 100% 0;
+  }
+}
+
+/* --- Breiter Container: feste Spalte -----------------------------------------------------
+   Das Popover wird hier unabhängig von seinem offen/zu-Zustand dauerhaft angezeigt: die
+   UA-Regel [popover]:not(:popover-open) { display:none } wird überstimmt. Menü-Button und
+   Schließen-Button werden überflüssig und verschwinden. */
+@container ncss-app-shell (min-width: 48rem) {
+  .ncss-app-shell-sidebar {
+    position: sticky;
+    inset-block-start: 0;
+    flex: 0 0 auto;
+    display: flex;
+    align-self: flex-start;
+    block-size: var(--ncss-app-shell-height, 100svh);
+    translate: none;
+  }
+  .ncss-app-shell-toggle,
+  .ncss-app-shell-close {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .ncss-app-shell-nav a[aria-current="page"] {
+    outline: var(--ncss-border-width) solid Highlight;
+  }
+}

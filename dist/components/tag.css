@@ -1,0 +1,130 @@
+/**
+ * ncss - Tag/Chip (Layer "components"): Schlagwort, Filter-Chip oder entfernbarer
+ * Eingabewert. Abgrenzung zu .ncss-badge (components/badge.css): ein Badge ist ein
+ * STATUS-Etikett (gefüllt, nicht interaktiv - "Neu", "3 offen"), ein Tag ist INHALT
+ * (Schlagwort, gewählter Filter, Empfänger) - umrandet, optional klickbar oder entfernbar.
+ * Reines CSS; das Entfernen übernimmt das generische js/dismiss.js (data-ncss-dismiss).
+ * Braucht nur colors.css + tokens.css (+ reset/base) - cherry-pick-fähig.
+ *
+ * Markup:
+ *   <span class="ncss-tag">Barrierefreiheit</span>
+ *   <a class="ncss-tag" href="/thema/css">CSS</a>
+ *   <button type="button" class="ncss-tag" aria-pressed="true">Nur offene</button>
+ *   <span class="ncss-tag" data-ncss-dismissible>
+ *     Berlin
+ *     <button type="button" class="ncss-tag-remove" data-ncss-dismiss
+ *             aria-label="Berlin entfernen">&times;</button>
+ *   </span>
+ * Farbvarianten wie .ncss-badge: --brand/--brand-2/--success/--warning/--danger
+ * (Default neutral), --sm für dichte Listen.
+ */
+
+.ncss-tag {
+  --ncss-tag-accent: var(--ncss-color-neutral);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  max-inline-size: 100%;
+  padding: 0.2em 0.7em;
+  border: var(--ncss-border-width) solid color-mix(in oklch, var(--ncss-tag-accent) 45%, transparent);
+  border-radius: var(--ncss-radius-full);
+  background-color: color-mix(in oklch, var(--ncss-tag-accent) 8%, transparent);
+  color: var(--ncss-color-text);
+  font: inherit;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-medium, 500);
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.ncss-tag--brand { --ncss-tag-accent: var(--ncss-color-brand); }
+.ncss-tag--brand-2 { --ncss-tag-accent: var(--ncss-color-brand-2); }
+.ncss-tag--success { --ncss-tag-accent: var(--ncss-color-success); }
+.ncss-tag--warning { --ncss-tag-accent: var(--ncss-color-warning); }
+.ncss-tag--danger { --ncss-tag-accent: var(--ncss-color-danger); }
+.ncss-tag--sm {
+  font-size: 0.8em;
+  padding: 0.1em 0.55em;
+}
+
+/* Interaktive Tags (Link/Button): Cursor + Touch-Feedback, Hover nur mit echtem
+   Zeigegerät (siehe Skill "Touch-Geräte haben kein :hover"). */
+a.ncss-tag,
+button.ncss-tag {
+  cursor: pointer;
+  transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              border-color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+a.ncss-tag:active,
+button.ncss-tag:active {
+  background-color: color-mix(in oklch, var(--ncss-tag-accent) 22%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  a.ncss-tag:hover:not(:active),
+  button.ncss-tag:hover:not(:active) {
+    background-color: color-mix(in oklch, var(--ncss-tag-accent) 15%, transparent);
+    border-color: var(--ncss-tag-accent);
+  }
+}
+/* Filter-Chip: aria-pressed="true" ist der EINZIGE Zustandsträger (Screenreader sagt
+   "gedrückt" an) - die Optik folgt ihm, keine eigene Klasse. Das Häkchen macht den Zustand
+   auch ohne Farbe erkennbar (Farbe allein reicht nach WCAG 1.4.1 nicht). */
+.ncss-tag[aria-pressed="true"] {
+  background-color: var(--ncss-color-brand-100);
+  border-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-on-soft);
+}
+.ncss-tag[aria-pressed="true"]::before {
+  content: "\2713" / "";
+  font-weight: var(--ncss-font-weight-bold);
+}
+
+/* --- Entfernen-Button -------------------------------------------------------------------
+   Kreisförmige Trefferfläche im Tag; bewusst currentColor-basiert, damit er auf jeder
+   Farbvariante passt. Der Button braucht IMMER ein aria-label mit dem Tag-Namen
+   ("Berlin entfernen") - ein nacktes "×" ist für Screenreader bedeutungslos. */
+.ncss-tag-remove {
+  display: inline-grid;
+  place-items: center;
+  /* Mindestens 24 x 24 px Trefferfläche (WCAG 2.5.8), optisch trotzdem klein: negative
+     Block-Margins lassen den Button über das Tag-Padding hinausragen, statt das Tag
+     höher zu machen. */
+  inline-size: max(1.5rem, 1.35em);
+  block-size: max(1.5rem, 1.35em);
+  margin-block: -0.35em;
+  margin-inline: 0.1em -0.55em;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ncss-radius-full);
+  background: none;
+  color: inherit;
+  font-size: 1.05em;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.75;
+}
+.ncss-tag-remove:active {
+  background-color: color-mix(in oklch, currentColor 20%, transparent);
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-tag-remove:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 12%, transparent);
+    opacity: 1;
+  }
+}
+.ncss-tag-remove:focus-visible {
+  outline-offset: 0;
+  opacity: 1;
+}
+
+@media (forced-colors: active) {
+  .ncss-tag {
+    border-color: CanvasText;
+  }
+  .ncss-tag[aria-pressed="true"] {
+    border-color: Highlight;
+    border-width: calc(var(--ncss-border-width) * 2);
+  }
+}

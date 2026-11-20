@@ -7,7 +7,8 @@
  * aria-current kommt aber nur von hier).
  *
  * Markup: <nav class="ncss-subnav" data-ncss-subnav> ... <a href="#abschnitt"> ... </nav>
- * Zusätzlich: misst die Höhe einer klebenden .ncss-topbar und setzt --ncss-subnav-top.
+ * Zusätzlich: misst den klebenden Kopfbereich ([data-ncss-sticky-header] oder .ncss-topbar)
+ * und setzt --ncss-scroll-offset (+ ggf. --ncss-subnav-top), siehe trackHeader().
  * "Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante der Leiste erreicht
  * hat; am Seitenende immer der letzte Abschnitt (kurze Schluss-Abschnitte erreichen die
  * Oberkante sonst nie).
@@ -24,6 +25,7 @@
       return a.hash.length > 1 && document.getElementById(decodeURIComponent(a.hash.slice(1)));
     });
     if (!links.length) return;
+    nav.setAttribute("data-ncss-subnav-ready", "");
     var targets = links.map(function (a) {
       return document.getElementById(decodeURIComponent(a.hash.slice(1)));
     });
@@ -82,23 +84,39 @@
     update();
   }
 
-  // Klebt die Leiste unter einer .ncss-topbar, deren Inhalt höher ist als
-  // --ncss-topbar-height (größere Schrift, zweizeilige Marke ...), würde sie die Topbar
-  // überlappen. Deshalb die echte Höhe messen und als --ncss-subnav-top an :root setzen -
-  // dieselbe Variable nutzt subnav.css auch für den Sprung-Versatz (scroll-padding).
-  function trackTopbar() {
+  // Höhe des klebenden Kopfbereichs messen und als --ncss-scroll-offset an :root setzen
+  // (scroll-padding für Sprungziele, Sticky-Abstände z.B. einer Seitenleiste):
+  // - Container mit [data-ncss-sticky-header] (Topbar + Leiste als EINE Einheit, empfohlen):
+  //   dessen Höhe - beide Zeilen können nie gegeneinander verrutschen.
+  // - sonst eine klebende .ncss-topbar: deren Höhe zusätzlich als --ncss-subnav-top (die
+  //   Leiste klebt dann direkt darunter) plus die Höhe der Leiste.
+  // Läuft auch ohne Leiste, sobald ein [data-ncss-sticky-header] existiert.
+  function trackHeader() {
+    if (!("ResizeObserver" in window)) return;
+    var root = document.documentElement;
+    var unit = document.querySelector("[data-ncss-sticky-header]");
+    if (unit) {
+      new ResizeObserver(function () {
+        root.style.setProperty("--ncss-scroll-offset", unit.getBoundingClientRect().height + "px");
+      }).observe(unit);
+      return;
+    }
     var bar = document.querySelector(".ncss-topbar");
-    if (!bar || !("ResizeObserver" in window)) return;
-    if (getComputedStyle(bar).position !== "sticky" && getComputedStyle(bar).position !== "fixed") return;
-    new ResizeObserver(function () {
-      document.documentElement.style.setProperty("--ncss-subnav-top", bar.getBoundingClientRect().height + "px");
-    }).observe(bar);
+    var nav = document.querySelector("[data-ncss-subnav]");
+    if (!bar || !/sticky|fixed/.test(getComputedStyle(bar).position)) return;
+    var measure = function () {
+      var h = bar.getBoundingClientRect().height;
+      root.style.setProperty("--ncss-subnav-top", h + "px");
+      root.style.setProperty("--ncss-scroll-offset", h + (nav ? nav.getBoundingClientRect().height : 0) + "px");
+    };
+    var ro = new ResizeObserver(measure);
+    ro.observe(bar);
+    if (nav) ro.observe(nav);
   }
 
   function start() {
-    var navs = document.querySelectorAll("[data-ncss-subnav]");
-    if (navs.length) trackTopbar();
-    Array.prototype.forEach.call(navs, init);
+    trackHeader();
+    Array.prototype.forEach.call(document.querySelectorAll("[data-ncss-subnav]"), init);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();

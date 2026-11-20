@@ -99,8 +99,13 @@
     var rows = points.map(function (p) {
       return "<tr><td>" + escapeHtml(p.label) + "</td><td>" + escapeHtml(p.value) + "</td></tr>";
     }).join("");
+    // Per innerHTML kopiertes, bereits gerendertes Markup bringt seine Tabelle schon mit -
+    // ersetzen statt eine zweite daneben zu stellen.
+    var stale = svg.nextElementSibling;
+    if (stale && stale.hasAttribute("data-ncss-sparkline-table")) stale.remove();
     var table = document.createElement("table");
     table.className = "ncss-visually-hidden";
+    table.setAttribute("data-ncss-sparkline-table", "");
     table.innerHTML =
       "<caption>" + escapeHtml(caption) + "</caption>" +
       "<thead><tr><th scope=\"col\">#</th><th scope=\"col\">" + colHead + "</th></tr></thead>" +
@@ -169,8 +174,26 @@
   // querySelectorAll() durchquert Shadow-Grenzen nicht. Nur Elemente MIT data-values/
   // -src werden angefasst - ein von Hand/serverseitig fertig gerendertes <svg
   // class="ncss-sparkline"> ohne diese Attribute bleibt unverändert.
-  var sparklines = deepQueryAll(".ncss-sparkline[data-values], .ncss-sparkline[data-src]");
-  for (var i = 0; i < sparklines.length; i++) {
-    init(sparklines[i]);
+  //
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = ".ncss-sparkline[data-values], .ncss-sparkline[data-src]";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = deepQueryAll(SELECTOR, root);
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
   }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
 })();

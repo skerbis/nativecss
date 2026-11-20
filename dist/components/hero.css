@@ -63,12 +63,23 @@
    Standbild, bevor das Video geladen ist/falls Autoplay verhindert wird. Für
    prefers-reduced-motion siehe js/hero-video-motion.js (opt-in, unterdrückt
    Autoplay dort - CSS allein kann eine <video>-Wiedergabe nicht steuern). */
-.ncss-hero-media > video {
+.ncss-hero-media > video,
+.ncss-hero-media > img,
+.ncss-hero-media > picture,
+.ncss-hero-media > picture > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: var(--ncss-focus-point);
 }
+/* Dasselbe für ein echtes <img>/<picture> (inhaltstragendes Bild mit alt-Text, siehe
+   Datei-Kopf, oder responsive srcset/Art Direction, die background-image nicht kann) -
+   bisher fehlte die Regel, das Bild lief mit seiner natürlichen Höhe (reset.css:
+   height:auto) aus dem Hero heraus bzw. ließ unten eine Lücke (per Demo-Test gefunden,
+   mehrere Beispielseiten hatten dafür eigene Seiten-CSS). <picture> selbst ist ein
+   Inline-Element ohne eigene Größe - deshalb Höhe/Breite auf <picture> UND das <img>
+   darin. Markup:
+     <div class="ncss-hero-media"><img src="bild.webp" alt="" width="1600" height="900"></div> */
 /* Lesbarkeits-Verlauf: dunkelt den unteren Bildbereich ab, unabhängig vom Motiv - trägt vor
    allem die --transparent-Inhaltsvariante (dort direkt auf dem Bild liegender Text), stört
    bei --filled (Text sitzt ohnehin auf blickdichter Fläche) nicht weiter. */

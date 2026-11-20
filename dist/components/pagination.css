@@ -1,0 +1,139 @@
+/**
+ * ncss - Pagination: Seitennavigation für Listen/Archive (Layer "components"), reines CSS.
+ *
+ * Markup - echte Links (funktioniert ohne JS, teilbar, Zurück-Taste), aktuelle Seite per
+ * aria-current="page", Lücke als aria-hidden-Element (die Seitenzahlen selbst sagen alles):
+ * <nav class="ncss-pagination" aria-label="Seiten">
+ *   <ul role="list">
+ *     <li><a class="ncss-pagination-prev" href="?seite=3" rel="prev">
+ *       <span class="ncss-pagination-label">Zurück</span></a></li>
+ *     <li><a href="?seite=1"><span class="ncss-pagination-sr">Seite </span>1</a></li>
+ *     <li class="ncss-pagination-gap" aria-hidden="true">…</li>
+ *     <li><a href="?seite=4" aria-current="page"><span class="ncss-pagination-sr">Seite </span>4</a></li>
+ *     ...
+ *     <li><a class="ncss-pagination-next" href="?seite=5" rel="next">
+ *       <span class="ncss-pagination-label">Weiter</span></a></li>
+ *   </ul>
+ * </nav>
+ * Erste/letzte Seite: den Zurück-/Weiter-Link OHNE href rendern (+ aria-disabled="true") -
+ * ein <a> ohne href ist nicht fokussierbar und nicht klickbar, bleibt aber als Platzhalter
+ * stehen (kein Springen der Leiste beim Blättern).
+ *
+ * Kompakt: die Leiste ist selbst ein Container (container-type: inline-size). Unter 32rem
+ * eigener Breite bleiben nur Zurück, aktuelle, erste, letzte Seite und Weiter sichtbar, und
+ * die Zurück/Weiter-Beschriftung wird zum Pfeil (Text bleibt für Screenreader erhalten) -
+ * reagiert auf den echten Platz (Sidebar, Karte, Modal), nicht auf den Viewport.
+ * .ncss-pagination--compact erzwingt diese Ansicht unabhängig von der Breite.
+ *
+ * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base).
+ */
+.ncss-pagination {
+  container-type: inline-size;
+  container-name: ncss-pagination;
+}
+.ncss-pagination > ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ncss-space-3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ncss-pagination li {
+  margin: 0;
+}
+.ncss-pagination a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ncss-space-3xs);
+  /* 2.75rem = 44px Zielgröße (WCAG 2.5.8 verlangt 24px, 44px ist die komfortable Größe). */
+  min-inline-size: 2.75rem;
+  min-block-size: 2.75rem;
+  padding-inline: var(--ncss-space-xs);
+  border: var(--ncss-border-width) solid transparent;
+  border-radius: var(--ncss-radius-sm);
+  color: var(--ncss-color-text);
+  font-weight: var(--ncss-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-pagination a[href]:active {
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-pagination a[href]:hover:not(:active):not([aria-current]) {
+    background-color: color-mix(in oklch, currentColor 6%, transparent);
+  }
+}
+.ncss-pagination a[aria-current="page"] {
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+}
+.ncss-pagination a:not([href]) {
+  color: var(--ncss-color-text-muted);
+  opacity: 0.6;
+  cursor: default;
+}
+.ncss-pagination-gap {
+  min-inline-size: 1.5rem;
+  text-align: center;
+  color: var(--ncss-color-text-muted);
+}
+
+/* Pfeile vor/nach der Beschriftung - als Text-Zeichen statt Icon-Datei (erbt Farbe, auch in
+   erzwungenen Farben sichtbar). Spiegelt sich in RTL automatisch über :dir(). */
+.ncss-pagination-prev::before { content: "\2190" / ""; }
+.ncss-pagination-next::after { content: "\2192" / ""; }
+.ncss-pagination:dir(rtl) .ncss-pagination-prev::before { content: "\2192" / ""; }
+.ncss-pagination:dir(rtl) .ncss-pagination-next::after { content: "\2190" / ""; }
+
+/* Nur für Screenreader ("Seite 4") - eigene Regel statt helpers/a11y.css, damit die Datei
+   allein läuft. */
+.ncss-pagination-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Kompakt: wenig eigener Platz ------------------------------------------------------ */
+/* -- ncss container-query: ncss-pagination, compact (32rem) -- */
+@container ncss-pagination (max-width: 31.99rem) {
+  .ncss-pagination li:not(:first-child, :last-child, :nth-child(2), :nth-last-child(2)):not(:has(> [aria-current])) {
+    display: none;
+  }
+  .ncss-pagination-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+.ncss-pagination--compact li:not(:first-child, :last-child, :nth-child(2), :nth-last-child(2)):not(:has(> [aria-current])) {
+  display: none;
+}
+.ncss-pagination--compact .ncss-pagination-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .ncss-pagination a[aria-current="page"] {
+    border-color: Highlight;
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
