@@ -41,6 +41,7 @@
       "pages": [
         { "slug": "scroll", "de": "Scroll & Sichtbarkeit", "en": "Scroll & Visibility" },
         { "slug": "animations", "de": "Animationen", "en": "Animations" },
+        { "slug": "scroll-effects", "de": "Scroll-Effekte", "en": "Scroll Effects" },
         { "slug": "touch-mobile", "de": "Touch & mobile Viewports", "en": "Touch & Mobile Viewports" },
         { "slug": "accessibility", "de": "Barrierefreiheit", "en": "Accessibility" }
       ]

@@ -173,7 +173,10 @@
    115+, Safari 18+, Firefox hinter Flag - Stand August 2026, ~84% global) hängt den
    Animations-Fortschritt an die Scroll-Position statt an Zeit. Ohne Unterstützung bleibt
    das Element schlicht permanent sichtbar (kein "both"-Fill ohne aktive Timeline, daher
-   reicht der @supports-Block allein als Fallback, kein zusätzlicher Code nötig). */
+   reicht der @supports-Block allein als Fallback, kein zusätzlicher Code nötig).
+   Für clip-path-Formen (Kreis/Wipe/Split/Zoom/Expand), einen Einmal-Modus (--once) und
+   einen JS-Fallback siehe helpers/reveal.css (.ncss-reveal) - dieselbe Idee als
+   eigenständige, größere Variante, .ncss-animate-on-scroll bleibt der schlanke Kurzweg. */
 @supports (animation-timeline: view()) {
   .ncss-animate-on-scroll {
     animation: ncss-fade-in var(--ncss-motion-duration) linear both;

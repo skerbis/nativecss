@@ -45,6 +45,7 @@
 @import url("helpers/surfaces.css") layer(helpers);
 @import url("helpers/float.css") layer(helpers);
 @import url("helpers/animations.css") layer(helpers);
+@import url("helpers/reveal.css") layer(helpers);
 @import url("helpers/elevation.css") layer(helpers);
 
 @import url("components/hero.css") layer(components);
@@ -85,6 +86,13 @@
 @import url("components/code-block.css") layer(components);
 @import url("components/events.css") layer(components);
 @import url("components/downloads.css") layer(components);
+@import url("components/curtain.css") layer(components);
+@import url("components/scroll-horizontal.css") layer(components);
+@import url("components/text-reveal.css") layer(components);
+@import url("components/scrolly.css") layer(components);
+@import url("components/count-up.css") layer(components);
+@import url("components/marquee.css") layer(components);
+@import url("components/reveal-pin.css") layer(components);
 /* Weitere Komponenten (Tabs, Accordion, ...) folgen hier, je eine Datei.
    JS liegt gesammelt unter js/, nicht neben dem jeweiligen Komponenten-CSS - separat
    einbinden (<script src="ncss/js/command-fallback.js">) - generischer Fallback für

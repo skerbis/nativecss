@@ -1,0 +1,165 @@
+/**
+ * ncss - Reveal-Pin (Layer "components"): gepinnte Bühne, auf der ein Bild/Video
+ * während des Scrollens von einer eingerückten, abgerundeten Box auf volle Viewport-
+ * Größe aufzieht ("expand to full bleed") - ein Intro-Text blendet dabei aus, am Ende
+ * blendet ein Inhalts-Panel ein. Eigenständig (eigene Keyframes), braucht helpers/
+ * reveal.css NICHT.
+ *
+ * Markup:
+ *   <section class="ncss-reveal-pin" aria-label="...">
+ *     <div class="ncss-reveal-pin-stage">
+ *       <p class="ncss-reveal-pin-intro">Überschrift vor dem Aufziehen</p>
+ *       <video src="..." muted playsinline loop autoplay poster="..."></video>
+ *       <div class="ncss-reveal-pin-content">Panel am Ende</div>
+ *     </div>
+ *   </section>
+ *
+ * Ebenen: .ncss-reveal-pin = hohe Sektion (Scroll-Distanz, Subjekt der benannten
+ * view-timeline), .ncss-reveal-pin-stage = sticky, eine Viewport-Höhe, alle Kinder im
+ * selben Grid-Feld gestapelt; img/video/picture/canvas füllen die Bühne.
+ * Parameter: --ncss-reveal-pin-length (Sektionshöhe, Default 250vh),
+ * --ncss-reveal-pin-inset (Start-Einrückung, Default 32% 14% 6% - oben Platz für das
+ * Intro), --ncss-reveal-pin-radius.
+ *
+ * Fallback (kein animation-timeline, prefers-reduced-motion, Druck): nichts gepinnt -
+ * Intro, Medium (16:9) und Panel stehen ganz normal untereinander.
+ *
+ * Benötigt: tokens.css, colors.css. Für <video autoplay> unter reduced motion zusätzlich
+ * js/hero-video-motion.js o.ä. (CSS kann Video-Wiedergabe nicht pausieren).
+ */
+
+.ncss-reveal-pin {
+  position: relative;
+  view-timeline: --ncss-reveal-pin block;
+  view-timeline-inset: 0px;
+}
+
+/* --- Basis = Fallback ----------------------------------------------------------------- */
+.ncss-reveal-pin-stage {
+  display: grid;
+  gap: var(--ncss-space-sm);
+
+  & > :is(img, video, picture, canvas) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: var(--ncss-aspect-video);
+    object-fit: cover;
+    object-position: var(--ncss-focus-point);
+  }
+  & > picture > img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+}
+
+.ncss-reveal-pin-intro {
+  margin: 0;
+  padding-inline: var(--ncss-space-md);
+  font-size: var(--ncss-font-size-2xl);
+  font-weight: var(--ncss-font-weight-heading);
+  line-height: var(--ncss-line-height-tight);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.ncss-reveal-pin-content {
+  max-inline-size: 36rem;
+  padding: var(--ncss-space-md);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  box-shadow: var(--ncss-shadow-lg);
+
+  & > :first-child { margin-block-start: 0; }
+  & > :last-child { margin-block-end: 0; }
+}
+
+/* --- Gepinnt + scroll-getrieben ------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ncss-reveal-pin {
+      block-size: var(--ncss-reveal-pin-length, 250vh);
+    }
+
+    .ncss-reveal-pin-stage {
+      position: sticky;
+      inset-block-start: 0;
+      block-size: 100vh;
+      block-size: 100svh;
+      overflow: clip;
+      grid-template-areas: "stack";
+      gap: 0;
+
+      & > * {
+        grid-area: stack;
+        min-block-size: 0;
+      }
+      & > :is(img, video, picture, canvas) {
+        block-size: 100%;
+        aspect-ratio: auto;
+        animation: ncss-reveal-pin-expand linear both;
+        animation-timeline: --ncss-reveal-pin;
+        animation-range: contain 0% contain 55%;
+      }
+    }
+
+    /* Intro OBEN, das Medium startet als Karte im unteren Teil (asymmetrische
+       Start-Einrückung, siehe Keyframes) - Text liegt so nicht über dem Bild
+       (Lesbarkeit über beliebigem Video nicht garantierbar). */
+    .ncss-reveal-pin-intro {
+      place-self: start center;
+      margin-block-start: 8svh;
+      z-index: 1;
+      animation: ncss-reveal-pin-out linear both;
+      animation-timeline: --ncss-reveal-pin;
+      animation-range: contain 0% contain 25%;
+    }
+
+    .ncss-reveal-pin-content {
+      place-self: end center;
+      z-index: 1;
+      max-inline-size: min(36rem, calc(100% - 2 * var(--ncss-space-md)));
+      margin: var(--ncss-space-md) var(--ncss-space-md) var(--ncss-space-xl);
+      animation: ncss-reveal-pin-in linear both;
+      animation-timeline: --ncss-reveal-pin;
+      animation-range: contain 60% contain 85%;
+    }
+  }
+}
+
+@keyframes ncss-reveal-pin-expand {
+  from { clip-path: inset(var(--ncss-reveal-pin-inset, 32% 14% 6%) round var(--ncss-reveal-pin-radius, calc(var(--ncss-radius-lg) * 2))); }
+  to { clip-path: inset(0 round 0); }
+}
+@keyframes ncss-reveal-pin-out {
+  from { translate: 0 0; }
+  to { opacity: 0; translate: 0 -6rem; }
+}
+@keyframes ncss-reveal-pin-in {
+  from { opacity: 0; translate: 0 2rem; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@media (forced-colors: active) {
+  .ncss-reveal-pin-content {
+    border: var(--ncss-border-width) solid CanvasText;
+    background-color: Canvas;
+  }
+}
+
+@media print {
+  .ncss-reveal-pin {
+    block-size: auto;
+  }
+  .ncss-reveal-pin-stage {
+    position: static;
+    block-size: auto;
+    grid-template-areas: none;
+  }
+  .ncss-reveal-pin-stage > * {
+    grid-area: auto;
+    animation: none;
+  }
+}

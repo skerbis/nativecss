@@ -1,0 +1,116 @@
+/**
+ * ncss - Curtain-Sektionen (Layer "components"): Vollhöhe-Sektionen, bei denen die
+ * jeweils NÄCHSTE Sektion wie ein Vorhang über die vorherige gleitet - die bedeckte
+ * Sektion bleibt dabei optisch stehen und kann zusätzlich zurückweichen (--scale) und/
+ * oder abdunkeln (--dim).
+ *
+ * Abgrenzung zu verwandten Bausteinen:
+ * - .ncss-snap-sections (helpers/scroll.css): rastet Sektion für Sektion ein, aber jede
+ *   Sektion scrollt ganz normal weg. Beide lassen sich KOMBINIEREN (class="ncss-snap-
+ *   sections ncss-curtain") - Einrasten + Vorhang-Effekt, siehe unten.
+ * - .ncss-stack-section (components/scroll-stack.css): EINE gepinnte Bühne, in der
+ *   Karten übereinander gleiten - hier dagegen echte, beliebig lange Seiten-Sektionen,
+ *   jede mit eigenem Scroll-Abschnitt.
+ *
+ * Bewusst KEIN position:sticky: eine sticky Sektion, die höher als der Viewport ist,
+ * würde ihren unteren Teil nie zeigen (er klebt fest, bevor man ihn sieht). Stattdessen
+ * wird die bedeckte Sektion während ihrer exit-Phase (animation-range: exit) per
+ * translate um genau die gescrollte Strecke nach unten geschoben - sie wirkt dadurch
+ * stillstehend, auch eine Überlänge-Sektion hält erst an, sobald ihre Unterkante
+ * erreicht ist (kein Inhalt geht verloren). min(100%, 100dvh) = Länge der exit-Phase
+ * (eigene Höhe, aber höchstens eine Viewport-Höhe).
+ *
+ * Markup (jedes DIREKTE Kind ist eine Sektion):
+ *   <div class="ncss-curtain ncss-curtain--scale ncss-curtain--dim">
+ *     <section class="ncss-surface--brand">...</section>
+ *     <section class="ncss-surface--neutral">...</section>
+ *     <section>...</section>
+ *   </div>
+ *
+ * WICHTIG: jede Sektion braucht eine BLICKDICHTE Hintergrundfarbe (z.B. eine
+ * .ncss-surface--...-Klasse direkt auf der Sektion) - sonst scheint die bedeckte
+ * Sektion durch. Die Komponente setzt bewusst KEINEN eigenen Hintergrund: als
+ * components-Regel würde er jede .ncss-surface-Helper-Klasse auf derselben Sektion per
+ * Layer-Reihenfolge überstimmen (Text-Farbe der Surface bliebe, Fläche nicht - weißer
+ * Text auf weißem Grund).
+ *
+ * Ohne animation-timeline-Unterstützung und bei prefers-reduced-motion: die Sektionen
+ * scrollen ganz normal nacheinander (kein Fehlerzustand, nur kein Vorhang).
+ *
+ * Benötigt: tokens.css (--ncss-radius-lg, --ncss-border-width). Kombination mit
+ * .ncss-snap-sections optional (helpers/scroll.css), nicht nötig.
+ */
+
+.ncss-curtain {
+  display: flow-root;
+}
+/* Verhindert, dass die nach unten verschobenen Sektionen die Seite künstlich verlängern
+   (transform zählt zum scrollbaren Überlauf). NICHT auf der Kombination mit
+   .ncss-snap-sections - dort ist das Element selbst der Scroll-Container
+   (overflow-y:auto), overflow:clip würde ihn ausschalten. Im Snap-Container sind alle
+   Sektionen exakt viewport-hoch, der Versatz ragt dort ohnehin nie über die letzte
+   Sektion hinaus. */
+.ncss-curtain:not(.ncss-snap-sections) {
+  overflow: clip;
+}
+.ncss-curtain > * {
+  /* position:relative sorgt dafür, dass spätere Sektionen in DOM-Reihenfolge ÜBER der
+     verschobenen vorherigen malen (beide positioniert, gleiche Stapelebene). */
+  position: relative;
+  min-block-size: var(--ncss-curtain-height, 100svh);
+  transform-origin: 50% 0;
+}
+
+/* Interne Endwerte - die Modifier schalten sie nur ein, die Keyframes lesen sie. */
+.ncss-curtain {
+  --_ncss-curtain-scale: 1;
+  --_ncss-curtain-dim: 1;
+  --_ncss-curtain-radius: 0px;
+}
+.ncss-curtain--scale {
+  --_ncss-curtain-scale: var(--ncss-curtain-scale, 0.88);
+  --_ncss-curtain-radius: var(--ncss-curtain-radius, var(--ncss-radius-lg));
+}
+.ncss-curtain--dim {
+  --_ncss-curtain-dim: var(--ncss-curtain-dim, 0.45);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Die letzte Sektion wird nie bedeckt - kein Grund, sie zu verschieben. */
+    .ncss-curtain > :not(:last-child) {
+      animation: ncss-curtain-hold linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+@keyframes ncss-curtain-hold {
+  to {
+    translate: 0 min(100%, 100dvh);
+    scale: var(--_ncss-curtain-scale);
+    filter: brightness(var(--_ncss-curtain-dim));
+    border-radius: var(--_ncss-curtain-radius);
+  }
+}
+
+/* Forced Colors: Hintergrundfarben werden durch Systemfarben ersetzt, die Sektionen
+   wären ununterscheidbar - eine Trennlinie markiert die Vorhang-Kante. Abdunkeln per
+   filter wäre dort wirkungslos bis irritierend, deshalb aus. */
+@media (forced-colors: active) {
+  .ncss-curtain > * {
+    border-block-start: var(--ncss-border-width) solid CanvasText;
+    background-color: Canvas;
+  }
+  .ncss-curtain {
+    --_ncss-curtain-dim: 1;
+  }
+}
+
+@media print {
+  .ncss-curtain > * {
+    animation: none;
+    min-block-size: 0;
+  }
+}

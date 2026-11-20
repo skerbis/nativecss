@@ -1,0 +1,172 @@
+/**
+ * ncss - Reveal-Effekte (Layer "helpers"): Einblenden per clip-path/Transform für
+ * BELIEBIGE Elemente - Sektionen, Karten, Bilder, <figure>, <video>, Hintergrund-Video-
+ * Boxen. Standard: an die eigene view()-Timeline gekoppelt (scroll-gescrubbt, rückwärts
+ * scrollen spult zurück). Mit --once: zeitbasiert, einmal, beim Hereinscrollen.
+ *
+ * Verhältnis zu .ncss-animate-on-scroll (helpers/animations.css): das bleibt der
+ * schlanke, kompatible Kurzweg für "Einblenden/Hochgleiten beim Scrollen" (nur scrub).
+ * .ncss-reveal ist die Obermenge mit eigener Mechanik: clip-path-Formen, einmal-Modus,
+ * JS-Fallback, einstellbarer Bereich - und enthält dafür auch --fade/--slide-up/--scale,
+ * damit eine Seite, die --once braucht, nicht zwei Systeme mischen muss. Bewusst EIGENE
+ * Keyframes statt die aus animations.css zu leihen: jede Datei bleibt einzeln
+ * einbindbar (Cherry-Picking).
+ *
+ * Markup (Basisklasse + genau eine Form):
+ *   <section class="ncss-reveal ncss-reveal--circle">...</section>
+ *   <figure class="ncss-reveal ncss-reveal--zoom"><img src="..." alt="..."></figure>
+ *   <video class="ncss-reveal ncss-reveal--wipe-up" ...></video>
+ *   <div class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal>...</div>
+ *
+ * Formen (der Clip öffnet sich bis zur vollen Box, danach bleibt KEIN clip-path stehen -
+ * Fokus-Ringe/Schatten werden nicht beschnitten):
+ *   --circle      Iris aus --ncss-reveal-x/-y (Default Mitte)
+ *   --wipe-right  Kante läuft links -> rechts (--wipe-left: rechts -> links)
+ *   --wipe-up     Kante läuft unten -> oben (--wipe-down: oben -> unten)
+ *   --inset       Rechteck wächst aus der Mitte
+ *   --split       Vorhang öffnet sich aus der Mitte zu beiden Seiten
+ *   --diagonal    diagonale Kante aus der oberen Startecke
+ *   --zoom        abgerundeter Ausschnitt öffnet sich, das Medium darin skaliert
+ *                 1.15 -> 1 (auf einen Wrapper setzen: figure/picture/div)
+ *   --expand      eingerückte, abgerundete Box wächst auf volle Größe - auf einem
+ *                 vollbreiten Element = "wächst zu Full-Bleed"
+ *   --fade / --slide-up / --scale   klassische Einblendungen, gleiche Mechanik
+ *
+ * Parameter: --ncss-reveal-start / -end (Bereich, Default entry 25% / cover 45% - der
+ * Reveal endet, kurz bevor das Element die Viewport-Mitte erreicht; ein frühes Ende wie
+ * contain 25% lief per Screenshot-Sequenz komplett am unteren Bildrand ab und war kaum
+ * wahrnehmbar), --ncss-reveal-x/-y,
+ * --ncss-reveal-inset, --ncss-reveal-radius, --ncss-reveal-scale (Zoom-Startwert),
+ * --ncss-reveal-duration (--once, Default 0.9s).
+ *
+ * Wer was kann:
+ *   scrub:  animation-timeline:view() (Chromium, Safari 26) - reines CSS.
+ *   --once: Chromium nativ per timeline-trigger (reines CSS). Ohne Trigger-Unterstützung
+ *           ohne JS: fällt auf scrub zurück. Mit js/reveal.js (data-ncss-reveal):
+ *           zeitbasiert per IntersectionObserver - auch für Browser ganz ohne view(),
+ *           dort wird jedes data-ncss-reveal-Element automatisch zum --once-Element.
+ *   Ohne alles: Inhalt einfach sichtbar (kein Fehlerzustand).
+ * prefers-reduced-motion, Druck: kein Clip, keine Bewegung. Forced Colors: unberührt.
+ *
+ * Benötigt: tokens.css (--ncss-radius-lg, --ncss-motion-easing-emphasized). Optional
+ * js/reveal.js.
+ */
+
+/* Welche Keyframes jede Form nutzt. */
+.ncss-reveal--circle { --_ncss-reveal: ncss-reveal-circle; }
+.ncss-reveal--wipe-right { --_ncss-reveal: ncss-reveal-wipe-right; }
+.ncss-reveal--wipe-left { --_ncss-reveal: ncss-reveal-wipe-left; }
+.ncss-reveal--wipe-up { --_ncss-reveal: ncss-reveal-wipe-up; }
+.ncss-reveal--wipe-down { --_ncss-reveal: ncss-reveal-wipe-down; }
+.ncss-reveal--inset { --_ncss-reveal: ncss-reveal-inset; --_ncss-reveal-inset: 42% 42%; }
+.ncss-reveal--split { --_ncss-reveal: ncss-reveal-split; }
+.ncss-reveal--diagonal { --_ncss-reveal: ncss-reveal-diagonal; }
+.ncss-reveal--zoom { --_ncss-reveal: ncss-reveal-inset; --_ncss-reveal-inset: 8% 8%; overflow: clip; }
+.ncss-reveal--expand { --_ncss-reveal: ncss-reveal-inset; --_ncss-reveal-inset: 12% 16%; }
+.ncss-reveal--fade { --_ncss-reveal: ncss-reveal-fade; }
+.ncss-reveal--slide-up { --_ncss-reveal: ncss-reveal-slide-up; }
+.ncss-reveal--scale { --_ncss-reveal: ncss-reveal-scale-in; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* --- scrub (Default) ---------------------------------------------------------------
+     fill "backwards": vor dem Bereich gilt der Startzustand, DANACH bleibt nichts
+     stehen (kein Rest-clip-path). Gilt auch für --once, solange weder Trigger noch JS
+     übernehmen (siehe unten - die späteren Regeln überschreiben das). */
+  @supports (animation-timeline: view()) {
+    .ncss-reveal {
+      animation: var(--_ncss-reveal, none) linear backwards;
+      animation-timeline: view();
+      animation-range: var(--ncss-reveal-start, entry 25%) var(--ncss-reveal-end, cover 45%);
+    }
+    .ncss-reveal--zoom > :is(img, video, picture, canvas, svg) {
+      animation: ncss-reveal-media-scale linear backwards;
+      animation-timeline: view();
+      animation-range: var(--ncss-reveal-start, entry 25%) var(--ncss-reveal-end, cover 45%);
+    }
+  }
+
+  /* --- --once nativ (Chromium): Scroll-Trigger startet die zeitbasierte Animation ---- */
+  @supports (timeline-trigger: --a view()) {
+    .ncss-reveal--once:not(.ncss-reveal--js),
+    .ncss-reveal--once:not(.ncss-reveal--js).ncss-reveal--zoom > :is(img, video, picture, canvas, svg) {
+      animation-duration: var(--ncss-reveal-duration, 0.9s);
+      animation-timing-function: var(--ncss-motion-easing-emphasized);
+      animation-timeline: auto;
+      animation-range: normal;
+      timeline-trigger: --ncss-reveal view() entry 15% exit 100%;
+      animation-trigger: --ncss-reveal play-forwards;
+    }
+    /* Das Zoom-Medium bekommt einen EIGENEN Trigger (eigener Name) - es deckt sich mit
+       dem Wrapper, startet also im selben Moment. */
+    .ncss-reveal--once:not(.ncss-reveal--js).ncss-reveal--zoom > :is(img, video, picture, canvas, svg) {
+      timeline-trigger: --ncss-reveal-media view() entry 15% exit 100%;
+      animation-trigger: --ncss-reveal-media play-forwards;
+    }
+  }
+
+  /* --- --once per JS (js/reveal.js setzt .ncss-reveal--js, dann .is-revealed) ------- */
+  .ncss-reveal--js {
+    animation: var(--_ncss-reveal, none) var(--ncss-reveal-duration, 0.9s) var(--ncss-motion-easing-emphasized) backwards paused;
+  }
+  .ncss-reveal--js.ncss-reveal--zoom > :is(img, video, picture, canvas, svg) {
+    animation: ncss-reveal-media-scale var(--ncss-reveal-duration, 0.9s) var(--ncss-motion-easing-emphasized) backwards paused;
+  }
+  .ncss-reveal--js.is-revealed,
+  .ncss-reveal--js.is-revealed > * {
+    animation-play-state: running;
+  }
+}
+
+/* --- Keyframes ---------------------------------------------------------------------- */
+@keyframes ncss-reveal-circle {
+  from { clip-path: circle(0% at var(--ncss-reveal-x, 50%) var(--ncss-reveal-y, 50%)); }
+  to { clip-path: circle(142% at var(--ncss-reveal-x, 50%) var(--ncss-reveal-y, 50%)); }
+}
+@keyframes ncss-reveal-wipe-right {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes ncss-reveal-wipe-left {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0); }
+}
+@keyframes ncss-reveal-wipe-up {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes ncss-reveal-wipe-down {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes ncss-reveal-inset {
+  from { clip-path: inset(var(--ncss-reveal-inset, var(--_ncss-reveal-inset)) round var(--ncss-reveal-radius, calc(var(--ncss-radius-lg) * 2))); }
+  to { clip-path: inset(0 round 0); }
+}
+@keyframes ncss-reveal-split {
+  from { clip-path: inset(0 50%); }
+  to { clip-path: inset(0); }
+}
+@keyframes ncss-reveal-diagonal {
+  from { clip-path: polygon(0 0, 0 0, 0 0); }
+  to { clip-path: polygon(0 0, 200% 0, 0 200%); }
+}
+@keyframes ncss-reveal-media-scale {
+  from { scale: var(--ncss-reveal-scale, 1.15); }
+  to { scale: 1; }
+}
+@keyframes ncss-reveal-fade {
+  from { opacity: 0; }
+}
+@keyframes ncss-reveal-slide-up {
+  from { opacity: 0; translate: 0 var(--ncss-space-xl); }
+}
+@keyframes ncss-reveal-scale-in {
+  from { opacity: 0; scale: 0.85; }
+}
+
+@media print {
+  .ncss-reveal,
+  .ncss-reveal > * {
+    animation: none;
+  }
+}
