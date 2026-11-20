@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mieter & Zahlungen · ImmoDesk – Beispiel mit NativeCSS</title>
+<meta name="description" content="ImmoDesk: sortier- und filterbare Mietertabelle mit Zahlungsstatus, Detailansicht und Mahnungs-Dialog - gebaut mit NativeCSS.">
+<link rel="icon" href="../assets/examples/immo/logo.svg" type="image/svg+xml">
+<script src="../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../assets/examples/immo/immo.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/notification.js" defer></script>
+<script src="../assets/js/immo-table.js" defer></script>
+<script src="../assets/js/immo-mieter.js" defer></script>
+<script src="../assets/js/immo-app.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+</head>
+<body>
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+<div class="demo-app">
+  <div class="demo-app-grid">
+    <div class="demo-sidebar">
+      <div class="demo-sidebar-inner" id="sidebarNav">
+        <a class="demo-brand" href="index.html"><img src="../assets/examples/immo/logo.svg" alt="" width="32" height="32"><span><strong>ImmoDesk</strong><small>Brandt &amp; Partner Hausverwaltung</small></span></a>
+        <nav class="demo-sidenav" aria-label="Hauptnavigation">
+        <h2 id="nav-g0">Übersicht</h2>
+        <ul aria-labelledby="nav-g0">
+          <li><a href="index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg><span>Dashboard</span></a></li>
+        </ul>
+        <h2 id="nav-g1">Bestand</h2>
+        <ul aria-labelledby="nav-g1">
+          <li><a href="objekte.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg><span>Objekte & Einheiten</span><span class="ncss-badge ncss-badge--neutral">6</span></a></li>
+          <li><a href="mieter.html" aria-current="page"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg><span>Mieter & Zahlungen</span><span class="ncss-badge ncss-badge--danger">5<span class="ncss-visually-hidden"> in Mahnung</span></span></a></li>
+          <li><a href="tickets.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><span>Reparaturen</span><span class="ncss-badge ncss-badge--neutral">14<span class="ncss-visually-hidden"> offen</span></span></a></li>
+          <li><a href="dokumente.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Dokumente</span></a></li>
+        </ul>
+        <h2 id="nav-g2">Sonstiges</h2>
+        <ul aria-labelledby="nav-g2">
+          <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg><span>Bildnachweis</span></a></li>
+        </ul>
+        </nav>
+        <div class="demo-sidebar-foot">
+          <p><strong>NK-Abrechnung 2025</strong></p>
+          <p class="demo-muted">4 von 6 Objekten abgerechnet</p>
+          <progress max="6" value="4" aria-label="Nebenkostenabrechnungen 2025: 4 von 6 abgerechnet"></progress>
+        </div>
+      </div>
+    </div>
+    <div class="demo-app-col">
+      <header class="ncss-topbar demo-topbar">
+        <div class="ncss-topbar-inner">
+          <button type="button" class="demo-iconbtn demo-nav-toggle" data-demo-drawer="appDrawer" aria-controls="appDrawer" aria-expanded="false" aria-label="Navigation öffnen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-menu"></use></svg></button>
+          <button type="button" class="demo-searchbtn" command="show-modal" commandfor="cmdPalette" aria-haspopup="dialog"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-search"></use></svg><span>Suchen: Objekte, Mieter, Befehle …</span><kbd class="demo-hide-narrow" data-demo-shortcut>Strg K</kbd></button>
+          <div class="demo-topbar-actions">
+            <button type="button" class="ncss-btn ncss-btn--secondary demo-inspect-btn" data-demo-inspect aria-pressed="false">Inspect</button>
+            <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Dunkles Design">
+              <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+              <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="demo-iconbtn" popovertarget="notifPop" aria-label="Benachrichtigungen, 3 ungelesen" data-demo-bell><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-bell"></use></svg><span class="demo-dot" aria-hidden="true">3</span></button>
+            <button type="button" class="demo-userbtn" popovertarget="userPop" aria-label="Konto: Julia Brenner"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span class="demo-hide-narrow">Julia Brenner</span><svg class="demo-i demo-hide-narrow" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-down"></use></svg></button>
+          </div>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="demo-page">
+
+          <div class="demo-pagehead">
+            <div>
+              <h1>Mieter &amp; Zahlungen</h1>
+              <p>61 Mietverhältnisse · Sollstellung November 2026</p>
+            </div>
+            <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-export="tenantTable" data-filename="mieter-zahlungen-2026-11.csv"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg>CSV exportieren</button>
+          </div>
+
+          <div class="ncss-grid ncss-mb-sm" style="--ncss-grid-min: 11rem; --ncss-grid-gap: var(--ncss-space-xs)">
+            <div class="ncss-card ncss-border ncss-radius-lg demo-kpi"><p class="demo-kpi-label">Soll November</p><p class="demo-kpi-value">60.770 €</p></div>
+            <div class="ncss-card ncss-border ncss-radius-lg demo-kpi"><p class="demo-kpi-label">Eingegangen</p><p class="demo-kpi-value">50.479 €</p></div>
+            <div class="ncss-card ncss-border ncss-radius-lg demo-kpi"><p class="demo-kpi-label">Offen gesamt</p><p class="demo-kpi-value" data-demo-opentotal>18.321 €</p></div>
+            <div class="ncss-card ncss-border ncss-radius-lg demo-kpi"><p class="demo-kpi-label">Überfällig</p><p class="demo-kpi-value">11</p><p class="demo-kpi-foot ncss-mb-0">davon 5 in Mahnung</p></div>
+          </div>
+
+          <section class="ncss-card ncss-border ncss-radius-lg demo-panel" aria-labelledby="tenantTitle">
+            <div class="ncss-card-header">
+              <h2 id="tenantTitle">Mieterliste</h2>
+              <span class="demo-sub">Name anklicken für Details · Spaltenköpfe sortieren</span>
+            </div>
+            <div class="ncss-card-body">
+              <form class="demo-toolbar" role="search" aria-label="Mieter filtern" data-demo-tenantfilter>
+                <div class="ncss-field demo-grow"><label class="ncss-label" for="tq">Suche</label><input class="ncss-input" type="search" id="tq" name="q" placeholder="Name, Objekt, E-Mail" autocomplete="off"></div>
+                <div class="ncss-field"><label class="ncss-label" for="tprop">Objekt</label><select class="ncss-select" id="tprop" name="prop"><option value="">Alle Objekte</option><option value="lindenallee">Lindenallee 12</option><option value="muehlbach">Am Mühlbach 4</option><option value="kastanienweg">Kastanienweg 7</option><option value="gartenstrasse">Gartenstraße 21</option><option value="marktplatz">Marktplatz 3</option><option value="rosenhoehe">Rosenhöhe A</option></select></div>
+                <div class="ncss-field"><label class="ncss-label" for="tstatus">Zahlungsstatus</label><select class="ncss-select" id="tstatus" name="status"><option value="">Alle</option><option value="bezahlt">bezahlt</option><option value="ueberfaellig">überfällig (alle)</option><option value="offen">offen</option><option value="mahn1">Mahnstufe 1</option><option value="mahn2">Mahnstufe 2</option></select></div>
+              </form>
+            </div>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="tenantTitle" tabindex="0">
+              <table class="demo-table" id="tenantTable" data-demo-sortable>
+                <caption class="ncss-visually-hidden">Mieter und Zahlungsstatus, Spaltenköpfe sortieren die Tabelle</caption>
+                <thead><tr><th scope="col" data-sort-key="name" data-sort-type="text"><button type="button" class="demo-sort">Mieter<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" data-sort-key="unit" data-sort-type="text"><button type="button" class="demo-sort">Objekt · Whg<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" data-sort-key="since" data-sort-type="text"><button type="button" class="demo-sort">Mietbeginn<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="warm" data-sort-type="number"><button type="button" class="demo-sort">Warmmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="saldo" data-sort-type="number"><button type="button" class="demo-sort">Offen<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" data-sort-key="status" data-sort-type="number"><button type="button" class="demo-sort">Status<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num"><span class="ncss-visually-hidden">Aktion</span></th></tr></thead>
+                <tbody>
+                  <tr data-id="m01" data-prop="lindenallee" data-status="bezahlt" data-search="katarina berger lindenallee 12 we 01 katarina.berger@example.com" data-name="Katarina Berger" data-unit="Lindenallee 12, WE 01 (EG links)" data-email="katarina.berger@example.com" data-phone="0170 000 9665" data-since="01.08.2011" data-kalt="950" data-nk="265" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="249" data-initials="KB">
+                    <td data-sort="Berger Katarina Berger"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 249" aria-hidden="true">KB</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Katarina Berger</button><span class="demo-sub">katarina.berger@example.com</span></span></span></td>
+                    <td data-sort="Lindenallee 12 WE 01">Lindenallee 12<span class="demo-sub">WE 01 · EG links</span></td>
+                    <td data-sort="2011-08-01"><time datetime="2011-08-01">01.08.2011</time></td>
+                    <td class="demo-num" data-sort="1215">1.215,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m02" data-prop="lindenallee" data-status="bezahlt" data-search="sophie demir lindenallee 12 we 02 sophie.demir@example.com" data-name="Sophie Demir" data-unit="Lindenallee 12, WE 02 (EG rechts)" data-email="sophie.demir@example.com" data-phone="0170 000 4937" data-since="01.02.2023" data-kalt="810" data-nk="220" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="12" data-initials="SD">
+                    <td data-sort="Demir Sophie Demir"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 12" aria-hidden="true">SD</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Sophie Demir</button><span class="demo-sub">sophie.demir@example.com</span></span></span></td>
+                    <td data-sort="Lindenallee 12 WE 02">Lindenallee 12<span class="demo-sub">WE 02 · EG rechts</span></td>
+                    <td data-sort="2023-02-01"><time datetime="2023-02-01">01.02.2023</time></td>
+                    <td class="demo-num" data-sort="1030">1.030,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m03" data-prop="lindenallee" data-status="bezahlt" data-search="nele oswald lindenallee 12 we 03 nele.oswald@example.com" data-name="Nele Oswald" data-unit="Lindenallee 12, WE 03 (1. OG links)" data-email="nele.oswald@example.com" data-phone="0170 000 7796" data-since="01.11.2015" data-kalt="965" data-nk="280" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="55" data-initials="NO">
+                    <td data-sort="Oswald Nele Oswald"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 55" aria-hidden="true">NO</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Nele Oswald</button><span class="demo-sub">nele.oswald@example.com</span></span></span></td>
+                    <td data-sort="Lindenallee 12 WE 03">Lindenallee 12<span class="demo-sub">WE 03 · 1. OG links</span></td>
+                    <td data-sort="2015-11-01"><time datetime="2015-11-01">01.11.2015</time></td>
+                    <td class="demo-num" data-sort="1245">1.245,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m04" data-prop="lindenallee" data-status="bezahlt" data-search="nele fuchs lindenallee 12 we 04 nele.fuchs@example.com" data-name="Nele Fuchs" data-unit="Lindenallee 12, WE 04 (1. OG rechts)" data-email="nele.fuchs@example.com" data-phone="0170 000 4647" data-since="01.09.2016" data-kalt="540" data-nk="160" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="302" data-initials="NF">
+                    <td data-sort="Fuchs Nele Fuchs"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 302" aria-hidden="true">NF</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Nele Fuchs</button><span class="demo-sub">nele.fuchs@example.com</span></span></span></td>
+                    <td data-sort="Lindenallee 12 WE 04">Lindenallee 12<span class="demo-sub">WE 04 · 1. OG rechts</span></td>
+                    <td data-sort="2016-09-01"><time datetime="2016-09-01">01.09.2016</time></td>
+                    <td class="demo-num" data-sort="700">700,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m05" data-prop="lindenallee" data-status="offen" data-search="sophie lorenz lindenallee 12 we 05 sophie.lorenz@example.com" data-name="Sophie Lorenz" data-unit="Lindenallee 12, WE 05 (2. OG links)" data-email="sophie.lorenz@example.com" data-phone="0170 000 6897" data-since="01.12.2017" data-kalt="880" data-nk="255" data-saldo="1135" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:offen" data-hue="299" data-initials="SL">
+                    <td data-sort="Lorenz Sophie Lorenz"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 299" aria-hidden="true">SL</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Sophie Lorenz</button><span class="demo-sub">sophie.lorenz@example.com</span></span></span></td>
+                    <td data-sort="Lindenallee 12 WE 05">Lindenallee 12<span class="demo-sub">WE 05 · 2. OG links</span></td>
+                    <td data-sort="2017-12-01"><time datetime="2017-12-01">01.12.2017</time></td>
+                    <td class="demo-num" data-sort="1135">1.135,00 €</td>
+                    <td class="demo-num" data-sort="1135" data-cell="saldo"><strong>1.135,00 €</strong></td>
+                    <td data-sort="1" data-cell="status"><span class="ncss-badge ncss-badge--warning">offen</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Sophie Lorenz</span></button></td>
+                  </tr>
+                  <tr data-id="m06" data-prop="lindenallee" data-status="bezahlt" data-search="elena kleinert lindenallee 12 we 07 elena.kleinert@example.com" data-name="Elena Kleinert" data-unit="Lindenallee 12, WE 07 (DG links)" data-email="elena.kleinert@example.com" data-phone="0170 000 7381" data-since="01.11.2025" data-kalt="695" data-nk="195" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="244" data-initials="EK">
+                    <td data-sort="Kleinert Elena Kleinert"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 244" aria-hidden="true">EK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Elena Kleinert</button><span class="demo-sub">elena.kleinert@example.com</span></span></span></td>
+                    <td data-sort="Lindenallee 12 WE 07">Lindenallee 12<span class="demo-sub">WE 07 · DG links</span></td>
+                    <td data-sort="2025-11-01"><time datetime="2025-11-01">01.11.2025</time></td>
+                    <td class="demo-num" data-sort="890">890,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m07" data-prop="lindenallee" data-status="bezahlt" data-search="elias ebert lindenallee 12 we 08 elias.ebert@example.com" data-name="Elias Ebert" data-unit="Lindenallee 12, WE 08 (DG rechts)" data-email="elias.ebert@example.com" data-phone="0170 000 5809" data-since="01.08.2021" data-kalt="965" data-nk="275" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="191" data-initials="EE">
+                    <td data-sort="Ebert Elias Ebert"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 191" aria-hidden="true">EE</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Elias Ebert</button><span class="demo-sub">elias.ebert@example.com</span></span></span></td>
+                    <td data-sort="Lindenallee 12 WE 08">Lindenallee 12<span class="demo-sub">WE 08 · DG rechts</span></td>
+                    <td data-sort="2021-08-01"><time datetime="2021-08-01">01.08.2021</time></td>
+                    <td class="demo-num" data-sort="1240">1.240,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m08" data-prop="muehlbach" data-status="bezahlt" data-search="helga engel am mühlbach 4 we 01 helga.engel@example.com" data-name="Helga Engel" data-unit="Am Mühlbach 4, WE 01 (EG links)" data-email="helga.engel@example.com" data-phone="0170 000 3965" data-since="01.12.2010" data-kalt="715" data-nk="210" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="351" data-initials="HE">
+                    <td data-sort="Engel Helga Engel"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 351" aria-hidden="true">HE</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Helga Engel</button><span class="demo-sub">helga.engel@example.com</span></span></span></td>
+                    <td data-sort="Am Mühlbach 4 WE 01">Am Mühlbach 4<span class="demo-sub">WE 01 · EG links</span></td>
+                    <td data-sort="2010-12-01"><time datetime="2010-12-01">01.12.2010</time></td>
+                    <td class="demo-num" data-sort="925">925,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m09" data-prop="muehlbach" data-status="bezahlt" data-search="elena sauer am mühlbach 4 we 02 elena.sauer@example.com" data-name="Elena Sauer" data-unit="Am Mühlbach 4, WE 02 (EG rechts)" data-email="elena.sauer@example.com" data-phone="0170 000 5146" data-since="01.06.2024" data-kalt="670" data-nk="210" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="166" data-initials="ES">
+                    <td data-sort="Sauer Elena Sauer"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 166" aria-hidden="true">ES</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Elena Sauer</button><span class="demo-sub">elena.sauer@example.com</span></span></span></td>
+                    <td data-sort="Am Mühlbach 4 WE 02">Am Mühlbach 4<span class="demo-sub">WE 02 · EG rechts</span></td>
+                    <td data-sort="2024-06-01"><time datetime="2024-06-01">01.06.2024</time></td>
+                    <td class="demo-num" data-sort="880">880,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m10" data-prop="muehlbach" data-status="mahn1" data-search="konrad seidel am mühlbach 4 we 03 konrad.seidel@example.com" data-name="Konrad Seidel" data-unit="Am Mühlbach 4, WE 03 (1. OG links)" data-email="konrad.seidel@example.com" data-phone="0170 000 7530" data-since="01.06.2017" data-kalt="720" data-nk="210" data-saldo="1860" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:offen,Nov:offen" data-hue="194" data-initials="KS">
+                    <td data-sort="Seidel Konrad Seidel"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 194" aria-hidden="true">KS</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Konrad Seidel</button><span class="demo-sub">konrad.seidel@example.com</span></span></span></td>
+                    <td data-sort="Am Mühlbach 4 WE 03">Am Mühlbach 4<span class="demo-sub">WE 03 · 1. OG links</span></td>
+                    <td data-sort="2017-06-01"><time datetime="2017-06-01">01.06.2017</time></td>
+                    <td class="demo-num" data-sort="930">930,00 €</td>
+                    <td class="demo-num" data-sort="1860" data-cell="saldo"><strong>1.860,00 €</strong></td>
+                    <td data-sort="2" data-cell="status"><span class="ncss-badge ncss-badge--danger">Mahnstufe 1</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Konrad Seidel</span></button></td>
+                  </tr>
+                  <tr data-id="m11" data-prop="muehlbach" data-status="bezahlt" data-search="selin demir am mühlbach 4 we 04 selin.demir@example.com" data-name="Selin Demir" data-unit="Am Mühlbach 4, WE 04 (1. OG rechts)" data-email="selin.demir@example.com" data-phone="0170 000 4636" data-since="01.08.2021" data-kalt="790" data-nk="245" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="53" data-initials="SD">
+                    <td data-sort="Demir Selin Demir"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 53" aria-hidden="true">SD</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Selin Demir</button><span class="demo-sub">selin.demir@example.com</span></span></span></td>
+                    <td data-sort="Am Mühlbach 4 WE 04">Am Mühlbach 4<span class="demo-sub">WE 04 · 1. OG rechts</span></td>
+                    <td data-sort="2021-08-01"><time datetime="2021-08-01">01.08.2021</time></td>
+                    <td class="demo-num" data-sort="1035">1.035,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m12" data-prop="muehlbach" data-status="bezahlt" data-search="noah sauer am mühlbach 4 we 05 noah.sauer@example.com" data-name="Noah Sauer" data-unit="Am Mühlbach 4, WE 05 (2. OG links)" data-email="noah.sauer@example.com" data-phone="0170 000 2439" data-since="01.05.2011" data-kalt="630" data-nk="190" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="251" data-initials="NS">
+                    <td data-sort="Sauer Noah Sauer"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 251" aria-hidden="true">NS</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Noah Sauer</button><span class="demo-sub">noah.sauer@example.com</span></span></span></td>
+                    <td data-sort="Am Mühlbach 4 WE 05">Am Mühlbach 4<span class="demo-sub">WE 05 · 2. OG links</span></td>
+                    <td data-sort="2011-05-01"><time datetime="2011-05-01">01.05.2011</time></td>
+                    <td class="demo-num" data-sort="820">820,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m13" data-prop="muehlbach" data-status="bezahlt" data-search="piotr kraus am mühlbach 4 we 06 piotr.kraus@example.com" data-name="Piotr Kraus" data-unit="Am Mühlbach 4, WE 06 (2. OG rechts)" data-email="piotr.kraus@example.com" data-phone="0170 000 9742" data-since="01.07.2024" data-kalt="675" data-nk="195" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="93" data-initials="PK">
+                    <td data-sort="Kraus Piotr Kraus"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 93" aria-hidden="true">PK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Piotr Kraus</button><span class="demo-sub">piotr.kraus@example.com</span></span></span></td>
+                    <td data-sort="Am Mühlbach 4 WE 06">Am Mühlbach 4<span class="demo-sub">WE 06 · 2. OG rechts</span></td>
+                    <td data-sort="2024-07-01"><time datetime="2024-07-01">01.07.2024</time></td>
+                    <td class="demo-num" data-sort="870">870,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m14" data-prop="kastanienweg" data-status="offen" data-search="frieda petersen kastanienweg 7 we 01 frieda.petersen@example.com" data-name="Frieda Petersen" data-unit="Kastanienweg 7, WE 01 (EG links)" data-email="frieda.petersen@example.com" data-phone="0170 000 6351" data-since="01.12.2017" data-kalt="375" data-nk="120" data-saldo="495" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:offen" data-hue="84" data-initials="FP">
+                    <td data-sort="Petersen Frieda Petersen"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 84" aria-hidden="true">FP</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Frieda Petersen</button><span class="demo-sub">frieda.petersen@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 01">Kastanienweg 7<span class="demo-sub">WE 01 · EG links</span></td>
+                    <td data-sort="2017-12-01"><time datetime="2017-12-01">01.12.2017</time></td>
+                    <td class="demo-num" data-sort="495">495,00 €</td>
+                    <td class="demo-num" data-sort="495" data-cell="saldo"><strong>495,00 €</strong></td>
+                    <td data-sort="1" data-cell="status"><span class="ncss-badge ncss-badge--warning">offen</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Frieda Petersen</span></button></td>
+                  </tr>
+                  <tr data-id="m15" data-prop="kastanienweg" data-status="bezahlt" data-search="lea vogt kastanienweg 7 we 02 lea.vogt@example.com" data-name="Lea Vogt" data-unit="Kastanienweg 7, WE 02 (EG rechts)" data-email="lea.vogt@example.com" data-phone="0170 000 5356" data-since="01.09.2020" data-kalt="395" data-nk="130" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="69" data-initials="LV">
+                    <td data-sort="Vogt Lea Vogt"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 69" aria-hidden="true">LV</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Lea Vogt</button><span class="demo-sub">lea.vogt@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 02">Kastanienweg 7<span class="demo-sub">WE 02 · EG rechts</span></td>
+                    <td data-sort="2020-09-01"><time datetime="2020-09-01">01.09.2020</time></td>
+                    <td class="demo-num" data-sort="525">525,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m16" data-prop="kastanienweg" data-status="bezahlt" data-search="konrad gerlach kastanienweg 7 we 03 konrad.gerlach@example.com" data-name="Konrad Gerlach" data-unit="Kastanienweg 7, WE 03 (1. OG links)" data-email="konrad.gerlach@example.com" data-phone="0170 000 7143" data-since="01.07.2014" data-kalt="425" data-nk="135" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="200" data-initials="KG">
+                    <td data-sort="Gerlach Konrad Gerlach"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 200" aria-hidden="true">KG</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Konrad Gerlach</button><span class="demo-sub">konrad.gerlach@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 03">Kastanienweg 7<span class="demo-sub">WE 03 · 1. OG links</span></td>
+                    <td data-sort="2014-07-01"><time datetime="2014-07-01">01.07.2014</time></td>
+                    <td class="demo-num" data-sort="560">560,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m17" data-prop="kastanienweg" data-status="bezahlt" data-search="jakob gerlach kastanienweg 7 we 04 jakob.gerlach@example.com" data-name="Jakob Gerlach" data-unit="Kastanienweg 7, WE 04 (1. OG rechts)" data-email="jakob.gerlach@example.com" data-phone="0170 000 8541" data-since="01.12.2020" data-kalt="580" data-nk="185" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="110" data-initials="JG">
+                    <td data-sort="Gerlach Jakob Gerlach"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 110" aria-hidden="true">JG</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Jakob Gerlach</button><span class="demo-sub">jakob.gerlach@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 04">Kastanienweg 7<span class="demo-sub">WE 04 · 1. OG rechts</span></td>
+                    <td data-sort="2020-12-01"><time datetime="2020-12-01">01.12.2020</time></td>
+                    <td class="demo-num" data-sort="765">765,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m18" data-prop="kastanienweg" data-status="bezahlt" data-search="lea hartwig kastanienweg 7 we 05 lea.hartwig@example.com" data-name="Lea Hartwig" data-unit="Kastanienweg 7, WE 05 (2. OG links)" data-email="lea.hartwig@example.com" data-phone="0170 000 4193" data-since="01.09.2020" data-kalt="640" data-nk="205" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="259" data-initials="LH">
+                    <td data-sort="Hartwig Lea Hartwig"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 259" aria-hidden="true">LH</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Lea Hartwig</button><span class="demo-sub">lea.hartwig@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 05">Kastanienweg 7<span class="demo-sub">WE 05 · 2. OG links</span></td>
+                    <td data-sort="2020-09-01"><time datetime="2020-09-01">01.09.2020</time></td>
+                    <td class="demo-num" data-sort="845">845,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m19" data-prop="kastanienweg" data-status="offen" data-search="ole lindner kastanienweg 7 we 06 ole.lindner@example.com" data-name="Ole Lindner" data-unit="Kastanienweg 7, WE 06 (2. OG rechts)" data-email="ole.lindner@example.com" data-phone="0170 000 3856" data-since="01.01.2023" data-kalt="640" data-nk="205" data-saldo="845" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:offen" data-hue="113" data-initials="OL">
+                    <td data-sort="Lindner Ole Lindner"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 113" aria-hidden="true">OL</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Ole Lindner</button><span class="demo-sub">ole.lindner@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 06">Kastanienweg 7<span class="demo-sub">WE 06 · 2. OG rechts</span></td>
+                    <td data-sort="2023-01-01"><time datetime="2023-01-01">01.01.2023</time></td>
+                    <td class="demo-num" data-sort="845">845,00 €</td>
+                    <td class="demo-num" data-sort="845" data-cell="saldo"><strong>845,00 €</strong></td>
+                    <td data-sort="1" data-cell="status"><span class="ncss-badge ncss-badge--warning">offen</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Ole Lindner</span></button></td>
+                  </tr>
+                  <tr data-id="m20" data-prop="kastanienweg" data-status="bezahlt" data-search="lukas imhoff kastanienweg 7 we 07 lukas.imhoff@example.com" data-name="Lukas Imhoff" data-unit="Kastanienweg 7, WE 07 (3. OG links)" data-email="lukas.imhoff@example.com" data-phone="0170 000 8018" data-since="01.06.2012" data-kalt="485" data-nk="160" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="222" data-initials="LI">
+                    <td data-sort="Imhoff Lukas Imhoff"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 222" aria-hidden="true">LI</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Lukas Imhoff</button><span class="demo-sub">lukas.imhoff@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 07">Kastanienweg 7<span class="demo-sub">WE 07 · 3. OG links</span></td>
+                    <td data-sort="2012-06-01"><time datetime="2012-06-01">01.06.2012</time></td>
+                    <td class="demo-num" data-sort="645">645,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m21" data-prop="kastanienweg" data-status="bezahlt" data-search="aylin lorenz kastanienweg 7 we 08 aylin.lorenz@example.com" data-name="Aylin Lorenz" data-unit="Kastanienweg 7, WE 08 (3. OG rechts)" data-email="aylin.lorenz@example.com" data-phone="0170 000 4934" data-since="01.05.2013" data-kalt="445" data-nk="150" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="192" data-initials="AL">
+                    <td data-sort="Lorenz Aylin Lorenz"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 192" aria-hidden="true">AL</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Aylin Lorenz</button><span class="demo-sub">aylin.lorenz@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 08">Kastanienweg 7<span class="demo-sub">WE 08 · 3. OG rechts</span></td>
+                    <td data-sort="2013-05-01"><time datetime="2013-05-01">01.05.2013</time></td>
+                    <td class="demo-num" data-sort="595">595,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m22" data-prop="kastanienweg" data-status="bezahlt" data-search="rüdiger engel kastanienweg 7 we 10 ruediger.engel@example.com" data-name="Rüdiger Engel" data-unit="Kastanienweg 7, WE 10 (4. OG rechts)" data-email="ruediger.engel@example.com" data-phone="0170 000 1357" data-since="01.09.2014" data-kalt="410" data-nk="125" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="187" data-initials="RE">
+                    <td data-sort="Engel Rüdiger Engel"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 187" aria-hidden="true">RE</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Rüdiger Engel</button><span class="demo-sub">ruediger.engel@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 10">Kastanienweg 7<span class="demo-sub">WE 10 · 4. OG rechts</span></td>
+                    <td data-sort="2014-09-01"><time datetime="2014-09-01">01.09.2014</time></td>
+                    <td class="demo-num" data-sort="535">535,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m23" data-prop="kastanienweg" data-status="mahn2" data-search="frieda pohl kastanienweg 7 we 11 frieda.pohl@example.com" data-name="Frieda Pohl" data-unit="Kastanienweg 7, WE 11 (DG links)" data-email="frieda.pohl@example.com" data-phone="0170 000 9664" data-since="01.08.2014" data-kalt="565" data-nk="180" data-saldo="2235" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:offen,Okt:offen,Nov:offen" data-hue="279" data-initials="FP">
+                    <td data-sort="Pohl Frieda Pohl"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 279" aria-hidden="true">FP</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Frieda Pohl</button><span class="demo-sub">frieda.pohl@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 11">Kastanienweg 7<span class="demo-sub">WE 11 · DG links</span></td>
+                    <td data-sort="2014-08-01"><time datetime="2014-08-01">01.08.2014</time></td>
+                    <td class="demo-num" data-sort="745">745,00 €</td>
+                    <td class="demo-num" data-sort="2235" data-cell="saldo"><strong>2.235,00 €</strong></td>
+                    <td data-sort="3" data-cell="status"><span class="ncss-badge ncss-badge--danger">Mahnstufe 2</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Frieda Pohl</span></button></td>
+                  </tr>
+                  <tr data-id="m24" data-prop="kastanienweg" data-status="bezahlt" data-search="ida rieger kastanienweg 7 we 12 ida.rieger@example.com" data-name="Ida Rieger" data-unit="Kastanienweg 7, WE 12 (DG rechts)" data-email="ida.rieger@example.com" data-phone="0170 000 3937" data-since="01.04.2011" data-kalt="425" data-nk="145" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="135" data-initials="IR">
+                    <td data-sort="Rieger Ida Rieger"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 135" aria-hidden="true">IR</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Ida Rieger</button><span class="demo-sub">ida.rieger@example.com</span></span></span></td>
+                    <td data-sort="Kastanienweg 7 WE 12">Kastanienweg 7<span class="demo-sub">WE 12 · DG rechts</span></td>
+                    <td data-sort="2011-04-01"><time datetime="2011-04-01">01.04.2011</time></td>
+                    <td class="demo-num" data-sort="570">570,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m25" data-prop="gartenstrasse" data-status="bezahlt" data-search="jan sauer gartenstraße 21 we 01 jan.sauer@example.com" data-name="Jan Sauer" data-unit="Gartenstraße 21, WE 01 (EG links)" data-email="jan.sauer@example.com" data-phone="0170 000 6365" data-since="01.05.2009" data-kalt="945" data-nk="260" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="52" data-initials="JS">
+                    <td data-sort="Sauer Jan Sauer"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 52" aria-hidden="true">JS</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Jan Sauer</button><span class="demo-sub">jan.sauer@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 01">Gartenstraße 21<span class="demo-sub">WE 01 · EG links</span></td>
+                    <td data-sort="2009-05-01"><time datetime="2009-05-01">01.05.2009</time></td>
+                    <td class="demo-num" data-sort="1205">1.205,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m26" data-prop="gartenstrasse" data-status="bezahlt" data-search="ingrid wendt gartenstraße 21 we 02 ingrid.wendt@example.com" data-name="Ingrid Wendt" data-unit="Gartenstraße 21, WE 02 (EG rechts)" data-email="ingrid.wendt@example.com" data-phone="0170 000 7695" data-since="01.08.2013" data-kalt="585" data-nk="165" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="18" data-initials="IW">
+                    <td data-sort="Wendt Ingrid Wendt"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 18" aria-hidden="true">IW</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Ingrid Wendt</button><span class="demo-sub">ingrid.wendt@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 02">Gartenstraße 21<span class="demo-sub">WE 02 · EG rechts</span></td>
+                    <td data-sort="2013-08-01"><time datetime="2013-08-01">01.08.2013</time></td>
+                    <td class="demo-num" data-sort="750">750,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m27" data-prop="gartenstrasse" data-status="bezahlt" data-search="jonas jansen gartenstraße 21 we 03 jonas.jansen@example.com" data-name="Jonas Jansen" data-unit="Gartenstraße 21, WE 03 (1. OG links)" data-email="jonas.jansen@example.com" data-phone="0170 000 3388" data-since="01.12.2014" data-kalt="545" data-nk="150" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="193" data-initials="JJ">
+                    <td data-sort="Jansen Jonas Jansen"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 193" aria-hidden="true">JJ</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Jonas Jansen</button><span class="demo-sub">jonas.jansen@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 03">Gartenstraße 21<span class="demo-sub">WE 03 · 1. OG links</span></td>
+                    <td data-sort="2014-12-01"><time datetime="2014-12-01">01.12.2014</time></td>
+                    <td class="demo-num" data-sort="695">695,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m28" data-prop="gartenstrasse" data-status="offen" data-search="elena brückner gartenstraße 21 we 04 elena.brueckner@example.com" data-name="Elena Brückner" data-unit="Gartenstraße 21, WE 04 (1. OG rechts)" data-email="elena.brueckner@example.com" data-phone="0170 000 8076" data-since="01.04.2019" data-kalt="555" data-nk="160" data-saldo="286" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:offen" data-hue="317" data-initials="EB">
+                    <td data-sort="Brückner Elena Brückner"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 317" aria-hidden="true">EB</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Elena Brückner</button><span class="demo-sub">elena.brueckner@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 04">Gartenstraße 21<span class="demo-sub">WE 04 · 1. OG rechts</span></td>
+                    <td data-sort="2019-04-01"><time datetime="2019-04-01">01.04.2019</time></td>
+                    <td class="demo-num" data-sort="715">715,00 €</td>
+                    <td class="demo-num" data-sort="286" data-cell="saldo"><strong>286,00 €</strong></td>
+                    <td data-sort="1" data-cell="status"><span class="ncss-badge ncss-badge--warning">offen</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Elena Brückner</span></button></td>
+                  </tr>
+                  <tr data-id="m29" data-prop="gartenstrasse" data-status="bezahlt" data-search="jonas quast gartenstraße 21 we 05 jonas.quast@example.com" data-name="Jonas Quast" data-unit="Gartenstraße 21, WE 05 (2. OG links)" data-email="jonas.quast@example.com" data-phone="0170 000 5838" data-since="01.03.2021" data-kalt="935" data-nk="260" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="202" data-initials="JQ">
+                    <td data-sort="Quast Jonas Quast"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 202" aria-hidden="true">JQ</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Jonas Quast</button><span class="demo-sub">jonas.quast@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 05">Gartenstraße 21<span class="demo-sub">WE 05 · 2. OG links</span></td>
+                    <td data-sort="2021-03-01"><time datetime="2021-03-01">01.03.2021</time></td>
+                    <td class="demo-num" data-sort="1195">1.195,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m30" data-prop="gartenstrasse" data-status="bezahlt" data-search="dario albers gartenstraße 21 we 06 dario.albers@example.com" data-name="Dario Albers" data-unit="Gartenstraße 21, WE 06 (2. OG rechts)" data-email="dario.albers@example.com" data-phone="0170 000 3102" data-since="01.09.2011" data-kalt="635" data-nk="185" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="355" data-initials="DA">
+                    <td data-sort="Albers Dario Albers"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 355" aria-hidden="true">DA</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Dario Albers</button><span class="demo-sub">dario.albers@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 06">Gartenstraße 21<span class="demo-sub">WE 06 · 2. OG rechts</span></td>
+                    <td data-sort="2011-09-01"><time datetime="2011-09-01">01.09.2011</time></td>
+                    <td class="demo-num" data-sort="820">820,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m31" data-prop="gartenstrasse" data-status="bezahlt" data-search="helga möller gartenstraße 21 we 07 helga.moeller@example.com" data-name="Helga Möller" data-unit="Gartenstraße 21, WE 07 (3. OG links)" data-email="helga.moeller@example.com" data-phone="0170 000 9297" data-since="01.02.2019" data-kalt="870" data-nk="260" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="164" data-initials="HM">
+                    <td data-sort="Möller Helga Möller"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 164" aria-hidden="true">HM</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Helga Möller</button><span class="demo-sub">helga.moeller@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 07">Gartenstraße 21<span class="demo-sub">WE 07 · 3. OG links</span></td>
+                    <td data-sort="2019-02-01"><time datetime="2019-02-01">01.02.2019</time></td>
+                    <td class="demo-num" data-sort="1130">1.130,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m32" data-prop="gartenstrasse" data-status="bezahlt" data-search="brigitte ulrich gartenstraße 21 we 08 brigitte.ulrich@example.com" data-name="Brigitte Ulrich" data-unit="Gartenstraße 21, WE 08 (3. OG rechts)" data-email="brigitte.ulrich@example.com" data-phone="0170 000 5404" data-since="01.10.2008" data-kalt="760" data-nk="210" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="250" data-initials="BU">
+                    <td data-sort="Ulrich Brigitte Ulrich"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 250" aria-hidden="true">BU</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Brigitte Ulrich</button><span class="demo-sub">brigitte.ulrich@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 08">Gartenstraße 21<span class="demo-sub">WE 08 · 3. OG rechts</span></td>
+                    <td data-sort="2008-10-01"><time datetime="2008-10-01">01.10.2008</time></td>
+                    <td class="demo-num" data-sort="970">970,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m33" data-prop="gartenstrasse" data-status="bezahlt" data-search="anna hartwig gartenstraße 21 we 09 anna.hartwig@example.com" data-name="Anna Hartwig" data-unit="Gartenstraße 21, WE 09 (DG links)" data-email="anna.hartwig@example.com" data-phone="0170 000 6514" data-since="01.11.2017" data-kalt="845" data-nk="245" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="97" data-initials="AH">
+                    <td data-sort="Hartwig Anna Hartwig"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 97" aria-hidden="true">AH</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Anna Hartwig</button><span class="demo-sub">anna.hartwig@example.com</span></span></span></td>
+                    <td data-sort="Gartenstraße 21 WE 09">Gartenstraße 21<span class="demo-sub">WE 09 · DG links</span></td>
+                    <td data-sort="2017-11-01"><time datetime="2017-11-01">01.11.2017</time></td>
+                    <td class="demo-num" data-sort="1090">1.090,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m34" data-prop="marktplatz" data-status="mahn1" data-search="buchhandlung seitenwind marktplatz 3 we 01 kontakt@seitenwind.example" data-name="Buchhandlung Seitenwind" data-unit="Marktplatz 3, WE 01 (EG, Laden)" data-email="kontakt@seitenwind.example" data-phone="0170 000 7509" data-since="01.03.2022" data-kalt="1120" data-nk="280" data-saldo="2800" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:offen,Nov:offen" data-hue="254" data-initials="BS">
+                    <td data-sort="Seitenwind Buchhandlung Seitenwind"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 254" aria-hidden="true">BS</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Buchhandlung Seitenwind</button><span class="demo-sub">kontakt@seitenwind.example</span></span></span></td>
+                    <td data-sort="Marktplatz 3 WE 01">Marktplatz 3<span class="demo-sub">WE 01 · EG, Laden</span></td>
+                    <td data-sort="2022-03-01"><time datetime="2022-03-01">01.03.2022</time></td>
+                    <td class="demo-num" data-sort="1400">1.400,00 €</td>
+                    <td class="demo-num" data-sort="2800" data-cell="saldo"><strong>2.800,00 €</strong></td>
+                    <td data-sort="2" data-cell="status"><span class="ncss-badge ncss-badge--danger">Mahnstufe 1</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Buchhandlung Seitenwind</span></button></td>
+                  </tr>
+                  <tr data-id="m35" data-prop="marktplatz" data-status="bezahlt" data-search="café lindgrün marktplatz 3 we 02 hallo@lindgruen.example" data-name="Café Lindgrün" data-unit="Marktplatz 3, WE 02 (EG, Café)" data-email="hallo@lindgruen.example" data-phone="0170 000 8647" data-since="01.11.2015" data-kalt="1205" data-nk="280" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="8" data-initials="CL">
+                    <td data-sort="Lindgrün Café Lindgrün"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 8" aria-hidden="true">CL</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Café Lindgrün</button><span class="demo-sub">hallo@lindgruen.example</span></span></span></td>
+                    <td data-sort="Marktplatz 3 WE 02">Marktplatz 3<span class="demo-sub">WE 02 · EG, Café</span></td>
+                    <td data-sort="2015-11-01"><time datetime="2015-11-01">01.11.2015</time></td>
+                    <td class="demo-num" data-sort="1485">1.485,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m36" data-prop="marktplatz" data-status="bezahlt" data-search="greta engel marktplatz 3 we 03 greta.engel@example.com" data-name="Greta Engel" data-unit="Marktplatz 3, WE 03 (1. OG)" data-email="greta.engel@example.com" data-phone="0170 000 8144" data-since="01.10.2021" data-kalt="1285" data-nk="320" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="309" data-initials="GE">
+                    <td data-sort="Engel Greta Engel"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 309" aria-hidden="true">GE</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Greta Engel</button><span class="demo-sub">greta.engel@example.com</span></span></span></td>
+                    <td data-sort="Marktplatz 3 WE 03">Marktplatz 3<span class="demo-sub">WE 03 · 1. OG</span></td>
+                    <td data-sort="2021-10-01"><time datetime="2021-10-01">01.10.2021</time></td>
+                    <td class="demo-num" data-sort="1605">1.605,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m37" data-prop="marktplatz" data-status="bezahlt" data-search="frieda kleinert marktplatz 3 we 04 frieda.kleinert@example.com" data-name="Frieda Kleinert" data-unit="Marktplatz 3, WE 04 (2. OG)" data-email="frieda.kleinert@example.com" data-phone="0170 000 6098" data-since="01.03.2023" data-kalt="1080" data-nk="275" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="226" data-initials="FK">
+                    <td data-sort="Kleinert Frieda Kleinert"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 226" aria-hidden="true">FK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Frieda Kleinert</button><span class="demo-sub">frieda.kleinert@example.com</span></span></span></td>
+                    <td data-sort="Marktplatz 3 WE 04">Marktplatz 3<span class="demo-sub">WE 04 · 2. OG</span></td>
+                    <td data-sort="2023-03-01"><time datetime="2023-03-01">01.03.2023</time></td>
+                    <td class="demo-num" data-sort="1355">1.355,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m38" data-prop="marktplatz" data-status="bezahlt" data-search="clara nowak marktplatz 3 we 05 clara.nowak@example.com" data-name="Clara Nowak" data-unit="Marktplatz 3, WE 05 (DG)" data-email="clara.nowak@example.com" data-phone="0170 000 6879" data-since="01.02.2018" data-kalt="1255" data-nk="295" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="104" data-initials="CN">
+                    <td data-sort="Nowak Clara Nowak"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 104" aria-hidden="true">CN</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Clara Nowak</button><span class="demo-sub">clara.nowak@example.com</span></span></span></td>
+                    <td data-sort="Marktplatz 3 WE 05">Marktplatz 3<span class="demo-sub">WE 05 · DG</span></td>
+                    <td data-sort="2018-02-01"><time datetime="2018-02-01">01.02.2018</time></td>
+                    <td class="demo-num" data-sort="1550">1.550,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m39" data-prop="rosenhoehe" data-status="offen" data-search="aylin kowalski quartier rosenhöhe, haus a we 01 aylin.kowalski@example.com" data-name="Aylin Kowalski" data-unit="Rosenhöhe A, WE 01 (EG, Whg 1)" data-email="aylin.kowalski@example.com" data-phone="0170 000 8311" data-since="01.06.2020" data-kalt="1000" data-nk="210" data-saldo="1210" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:offen" data-hue="185" data-initials="AK">
+                    <td data-sort="Kowalski Aylin Kowalski"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 185" aria-hidden="true">AK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Aylin Kowalski</button><span class="demo-sub">aylin.kowalski@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 01">Rosenhöhe A<span class="demo-sub">WE 01 · EG, Whg 1</span></td>
+                    <td data-sort="2020-06-01"><time datetime="2020-06-01">01.06.2020</time></td>
+                    <td class="demo-num" data-sort="1210">1.210,00 €</td>
+                    <td class="demo-num" data-sort="1210" data-cell="saldo"><strong>1.210,00 €</strong></td>
+                    <td data-sort="1" data-cell="status"><span class="ncss-badge ncss-badge--warning">offen</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Aylin Kowalski</span></button></td>
+                  </tr>
+                  <tr data-id="m40" data-prop="rosenhoehe" data-status="bezahlt" data-search="noah kowalski quartier rosenhöhe, haus a we 02 noah.kowalski@example.com" data-name="Noah Kowalski" data-unit="Rosenhöhe A, WE 02 (EG, Whg 2)" data-email="noah.kowalski@example.com" data-phone="0170 000 1034" data-since="01.03.2020" data-kalt="810" data-nk="175" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="276" data-initials="NK">
+                    <td data-sort="Kowalski Noah Kowalski"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 276" aria-hidden="true">NK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Noah Kowalski</button><span class="demo-sub">noah.kowalski@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 02">Rosenhöhe A<span class="demo-sub">WE 02 · EG, Whg 2</span></td>
+                    <td data-sort="2020-03-01"><time datetime="2020-03-01">01.03.2020</time></td>
+                    <td class="demo-num" data-sort="985">985,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m41" data-prop="rosenhoehe" data-status="bezahlt" data-search="selin rossi quartier rosenhöhe, haus a we 03 selin.rossi@example.com" data-name="Selin Rossi" data-unit="Rosenhöhe A, WE 03 (EG, Whg 3)" data-email="selin.rossi@example.com" data-phone="0170 000 2692" data-since="01.01.2025" data-kalt="1325" data-nk="280" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="84" data-initials="SR">
+                    <td data-sort="Rossi Selin Rossi"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 84" aria-hidden="true">SR</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Selin Rossi</button><span class="demo-sub">selin.rossi@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 03">Rosenhöhe A<span class="demo-sub">WE 03 · EG, Whg 3</span></td>
+                    <td data-sort="2025-01-01"><time datetime="2025-01-01">01.01.2025</time></td>
+                    <td class="demo-num" data-sort="1605">1.605,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m42" data-prop="rosenhoehe" data-status="bezahlt" data-search="selin gerlach quartier rosenhöhe, haus a we 04 selin.gerlach@example.com" data-name="Selin Gerlach" data-unit="Rosenhöhe A, WE 04 (EG, Whg 4)" data-email="selin.gerlach@example.com" data-phone="0170 000 9897" data-since="01.11.2014" data-kalt="775" data-nk="165" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="310" data-initials="SG">
+                    <td data-sort="Gerlach Selin Gerlach"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 310" aria-hidden="true">SG</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Selin Gerlach</button><span class="demo-sub">selin.gerlach@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 04">Rosenhöhe A<span class="demo-sub">WE 04 · EG, Whg 4</span></td>
+                    <td data-sort="2014-11-01"><time datetime="2014-11-01">01.11.2014</time></td>
+                    <td class="demo-num" data-sort="940">940,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m43" data-prop="rosenhoehe" data-status="bezahlt" data-search="felix quast quartier rosenhöhe, haus a we 05 felix.quast@example.com" data-name="Felix Quast" data-unit="Rosenhöhe A, WE 05 (1. OG, Whg 1)" data-email="felix.quast@example.com" data-phone="0170 000 9187" data-since="01.12.2020" data-kalt="955" data-nk="205" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="19" data-initials="FQ">
+                    <td data-sort="Quast Felix Quast"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 19" aria-hidden="true">FQ</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Felix Quast</button><span class="demo-sub">felix.quast@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 05">Rosenhöhe A<span class="demo-sub">WE 05 · 1. OG, Whg 1</span></td>
+                    <td data-sort="2020-12-01"><time datetime="2020-12-01">01.12.2020</time></td>
+                    <td class="demo-num" data-sort="1160">1.160,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m44" data-prop="rosenhoehe" data-status="bezahlt" data-search="jakob demir quartier rosenhöhe, haus a we 06 jakob.demir@example.com" data-name="Jakob Demir" data-unit="Rosenhöhe A, WE 06 (1. OG, Whg 2)" data-email="jakob.demir@example.com" data-phone="0170 000 4017" data-since="01.11.2017" data-kalt="1180" data-nk="250" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="333" data-initials="JD">
+                    <td data-sort="Demir Jakob Demir"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 333" aria-hidden="true">JD</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Jakob Demir</button><span class="demo-sub">jakob.demir@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 06">Rosenhöhe A<span class="demo-sub">WE 06 · 1. OG, Whg 2</span></td>
+                    <td data-sort="2017-11-01"><time datetime="2017-11-01">01.11.2017</time></td>
+                    <td class="demo-num" data-sort="1430">1.430,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m45" data-prop="rosenhoehe" data-status="mahn1" data-search="henrik hartwig quartier rosenhöhe, haus a we 07 henrik.hartwig@example.com" data-name="Henrik Hartwig" data-unit="Rosenhöhe A, WE 07 (1. OG, Whg 3)" data-email="henrik.hartwig@example.com" data-phone="0170 000 7302" data-since="01.02.2017" data-kalt="745" data-nk="155" data-saldo="1800" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:offen,Nov:offen" data-hue="204" data-initials="HH">
+                    <td data-sort="Hartwig Henrik Hartwig"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 204" aria-hidden="true">HH</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Henrik Hartwig</button><span class="demo-sub">henrik.hartwig@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 07">Rosenhöhe A<span class="demo-sub">WE 07 · 1. OG, Whg 3</span></td>
+                    <td data-sort="2017-02-01"><time datetime="2017-02-01">01.02.2017</time></td>
+                    <td class="demo-num" data-sort="900">900,00 €</td>
+                    <td class="demo-num" data-sort="1800" data-cell="saldo"><strong>1.800,00 €</strong></td>
+                    <td data-sort="2" data-cell="status"><span class="ncss-badge ncss-badge--danger">Mahnstufe 1</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Henrik Hartwig</span></button></td>
+                  </tr>
+                  <tr data-id="m46" data-prop="rosenhoehe" data-status="bezahlt" data-search="aylin brückner quartier rosenhöhe, haus a we 08 aylin.brueckner@example.com" data-name="Aylin Brückner" data-unit="Rosenhöhe A, WE 08 (1. OG, Whg 4)" data-email="aylin.brueckner@example.com" data-phone="0170 000 3199" data-since="01.11.2025" data-kalt="775" data-nk="155" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="221" data-initials="AB">
+                    <td data-sort="Brückner Aylin Brückner"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 221" aria-hidden="true">AB</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Aylin Brückner</button><span class="demo-sub">aylin.brueckner@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 08">Rosenhöhe A<span class="demo-sub">WE 08 · 1. OG, Whg 4</span></td>
+                    <td data-sort="2025-11-01"><time datetime="2025-11-01">01.11.2025</time></td>
+                    <td class="demo-num" data-sort="930">930,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m47" data-prop="rosenhoehe" data-status="bezahlt" data-search="marie lindner quartier rosenhöhe, haus a we 09 marie.lindner@example.com" data-name="Marie Lindner" data-unit="Rosenhöhe A, WE 09 (2. OG, Whg 1)" data-email="marie.lindner@example.com" data-phone="0170 000 2936" data-since="01.02.2012" data-kalt="555" data-nk="120" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="139" data-initials="ML">
+                    <td data-sort="Lindner Marie Lindner"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 139" aria-hidden="true">ML</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Marie Lindner</button><span class="demo-sub">marie.lindner@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 09">Rosenhöhe A<span class="demo-sub">WE 09 · 2. OG, Whg 1</span></td>
+                    <td data-sort="2012-02-01"><time datetime="2012-02-01">01.02.2012</time></td>
+                    <td class="demo-num" data-sort="675">675,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m48" data-prop="rosenhoehe" data-status="bezahlt" data-search="lukas kühn quartier rosenhöhe, haus a we 10 lukas.kuehn@example.com" data-name="Lukas Kühn" data-unit="Rosenhöhe A, WE 10 (2. OG, Whg 2)" data-email="lukas.kuehn@example.com" data-phone="0170 000 3842" data-since="01.04.2008" data-kalt="1030" data-nk="205" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="282" data-initials="LK">
+                    <td data-sort="Kühn Lukas Kühn"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 282" aria-hidden="true">LK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Lukas Kühn</button><span class="demo-sub">lukas.kuehn@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 10">Rosenhöhe A<span class="demo-sub">WE 10 · 2. OG, Whg 2</span></td>
+                    <td data-sort="2008-04-01"><time datetime="2008-04-01">01.04.2008</time></td>
+                    <td class="demo-num" data-sort="1235">1.235,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m49" data-prop="rosenhoehe" data-status="bezahlt" data-search="dario demir quartier rosenhöhe, haus a we 11 dario.demir@example.com" data-name="Dario Demir" data-unit="Rosenhöhe A, WE 11 (2. OG, Whg 3)" data-email="dario.demir@example.com" data-phone="0170 000 2938" data-since="01.10.2011" data-kalt="665" data-nk="145" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="41" data-initials="DD">
+                    <td data-sort="Demir Dario Demir"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 41" aria-hidden="true">DD</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Dario Demir</button><span class="demo-sub">dario.demir@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 11">Rosenhöhe A<span class="demo-sub">WE 11 · 2. OG, Whg 3</span></td>
+                    <td data-sort="2011-10-01"><time datetime="2011-10-01">01.10.2011</time></td>
+                    <td class="demo-num" data-sort="810">810,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m50" data-prop="rosenhoehe" data-status="bezahlt" data-search="ben brückner quartier rosenhöhe, haus a we 12 ben.brueckner@example.com" data-name="Ben Brückner" data-unit="Rosenhöhe A, WE 12 (2. OG, Whg 4)" data-email="ben.brueckner@example.com" data-phone="0170 000 1035" data-since="01.05.2012" data-kalt="1120" data-nk="245" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="19" data-initials="BB">
+                    <td data-sort="Brückner Ben Brückner"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 19" aria-hidden="true">BB</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Ben Brückner</button><span class="demo-sub">ben.brueckner@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 12">Rosenhöhe A<span class="demo-sub">WE 12 · 2. OG, Whg 4</span></td>
+                    <td data-sort="2012-05-01"><time datetime="2012-05-01">01.05.2012</time></td>
+                    <td class="demo-num" data-sort="1365">1.365,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m51" data-prop="rosenhoehe" data-status="bezahlt" data-search="clara haas quartier rosenhöhe, haus a we 13 clara.haas@example.com" data-name="Clara Haas" data-unit="Rosenhöhe A, WE 13 (3. OG, Whg 1)" data-email="clara.haas@example.com" data-phone="0170 000 6696" data-since="01.09.2015" data-kalt="560" data-nk="120" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="3" data-initials="CH">
+                    <td data-sort="Haas Clara Haas"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 3" aria-hidden="true">CH</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Clara Haas</button><span class="demo-sub">clara.haas@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 13">Rosenhöhe A<span class="demo-sub">WE 13 · 3. OG, Whg 1</span></td>
+                    <td data-sort="2015-09-01"><time datetime="2015-09-01">01.09.2015</time></td>
+                    <td class="demo-num" data-sort="680">680,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m52" data-prop="rosenhoehe" data-status="mahn2" data-search="selin quast quartier rosenhöhe, haus a we 14 selin.quast@example.com" data-name="Selin Quast" data-unit="Rosenhöhe A, WE 14 (3. OG, Whg 2)" data-email="selin.quast@example.com" data-phone="0170 000 4256" data-since="01.09.2011" data-kalt="1375" data-nk="280" data-saldo="4965" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:offen,Okt:offen,Nov:offen" data-hue="142" data-initials="SQ">
+                    <td data-sort="Quast Selin Quast"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 142" aria-hidden="true">SQ</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Selin Quast</button><span class="demo-sub">selin.quast@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 14">Rosenhöhe A<span class="demo-sub">WE 14 · 3. OG, Whg 2</span></td>
+                    <td data-sort="2011-09-01"><time datetime="2011-09-01">01.09.2011</time></td>
+                    <td class="demo-num" data-sort="1655">1.655,00 €</td>
+                    <td class="demo-num" data-sort="4965" data-cell="saldo"><strong>4.965,00 €</strong></td>
+                    <td data-sort="3" data-cell="status"><span class="ncss-badge ncss-badge--danger">Mahnstufe 2</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Selin Quast</span></button></td>
+                  </tr>
+                  <tr data-id="m53" data-prop="rosenhoehe" data-status="bezahlt" data-search="luca fuchs quartier rosenhöhe, haus a we 15 luca.fuchs@example.com" data-name="Luca Fuchs" data-unit="Rosenhöhe A, WE 15 (3. OG, Whg 3)" data-email="luca.fuchs@example.com" data-phone="0170 000 2676" data-since="01.05.2011" data-kalt="1335" data-nk="285" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="93" data-initials="LF">
+                    <td data-sort="Fuchs Luca Fuchs"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 93" aria-hidden="true">LF</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Luca Fuchs</button><span class="demo-sub">luca.fuchs@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 15">Rosenhöhe A<span class="demo-sub">WE 15 · 3. OG, Whg 3</span></td>
+                    <td data-sort="2011-05-01"><time datetime="2011-05-01">01.05.2011</time></td>
+                    <td class="demo-num" data-sort="1620">1.620,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m54" data-prop="rosenhoehe" data-status="bezahlt" data-search="yusuf petersen quartier rosenhöhe, haus a we 16 yusuf.petersen@example.com" data-name="Yusuf Petersen" data-unit="Rosenhöhe A, WE 16 (3. OG, Whg 4)" data-email="yusuf.petersen@example.com" data-phone="0170 000 8930" data-since="01.11.2017" data-kalt="770" data-nk="155" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="7" data-initials="YP">
+                    <td data-sort="Petersen Yusuf Petersen"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 7" aria-hidden="true">YP</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Yusuf Petersen</button><span class="demo-sub">yusuf.petersen@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 16">Rosenhöhe A<span class="demo-sub">WE 16 · 3. OG, Whg 4</span></td>
+                    <td data-sort="2017-11-01"><time datetime="2017-11-01">01.11.2017</time></td>
+                    <td class="demo-num" data-sort="925">925,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m55" data-prop="rosenhoehe" data-status="bezahlt" data-search="sophie kühn quartier rosenhöhe, haus a we 18 sophie.kuehn@example.com" data-name="Sophie Kühn" data-unit="Rosenhöhe A, WE 18 (4. OG, Whg 2)" data-email="sophie.kuehn@example.com" data-phone="0170 000 8084" data-since="01.12.2015" data-kalt="1065" data-nk="220" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="56" data-initials="SK">
+                    <td data-sort="Kühn Sophie Kühn"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 56" aria-hidden="true">SK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Sophie Kühn</button><span class="demo-sub">sophie.kuehn@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 18">Rosenhöhe A<span class="demo-sub">WE 18 · 4. OG, Whg 2</span></td>
+                    <td data-sort="2015-12-01"><time datetime="2015-12-01">01.12.2015</time></td>
+                    <td class="demo-num" data-sort="1285">1.285,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m56" data-prop="rosenhoehe" data-status="bezahlt" data-search="clara berger quartier rosenhöhe, haus a we 19 clara.berger@example.com" data-name="Clara Berger" data-unit="Rosenhöhe A, WE 19 (4. OG, Whg 3)" data-email="clara.berger@example.com" data-phone="0170 000 1866" data-since="01.12.2024" data-kalt="720" data-nk="155" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="221" data-initials="CB">
+                    <td data-sort="Berger Clara Berger"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 221" aria-hidden="true">CB</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Clara Berger</button><span class="demo-sub">clara.berger@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 19">Rosenhöhe A<span class="demo-sub">WE 19 · 4. OG, Whg 3</span></td>
+                    <td data-sort="2024-12-01"><time datetime="2024-12-01">01.12.2024</time></td>
+                    <td class="demo-num" data-sort="875">875,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m57" data-prop="rosenhoehe" data-status="offen" data-search="ben kleinert quartier rosenhöhe, haus a we 20 ben.kleinert@example.com" data-name="Ben Kleinert" data-unit="Rosenhöhe A, WE 20 (4. OG, Whg 4)" data-email="ben.kleinert@example.com" data-phone="0170 000 9200" data-since="01.02.2016" data-kalt="570" data-nk="120" data-saldo="690" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:offen" data-hue="306" data-initials="BK">
+                    <td data-sort="Kleinert Ben Kleinert"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 306" aria-hidden="true">BK</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Ben Kleinert</button><span class="demo-sub">ben.kleinert@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 20">Rosenhöhe A<span class="demo-sub">WE 20 · 4. OG, Whg 4</span></td>
+                    <td data-sort="2016-02-01"><time datetime="2016-02-01">01.02.2016</time></td>
+                    <td class="demo-num" data-sort="690">690,00 €</td>
+                    <td class="demo-num" data-sort="690" data-cell="saldo"><strong>690,00 €</strong></td>
+                    <td data-sort="1" data-cell="status"><span class="ncss-badge ncss-badge--warning">offen</span></td>
+                    <td class="demo-num" data-cell="action"><button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-dun>Mahnen<span class="ncss-visually-hidden">: Ben Kleinert</span></button></td>
+                  </tr>
+                  <tr data-id="m58" data-prop="rosenhoehe" data-status="bezahlt" data-search="elias seidel quartier rosenhöhe, haus a we 21 elias.seidel@example.com" data-name="Elias Seidel" data-unit="Rosenhöhe A, WE 21 (5. OG, Whg 1)" data-email="elias.seidel@example.com" data-phone="0170 000 1141" data-since="01.11.2016" data-kalt="865" data-nk="180" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="351" data-initials="ES">
+                    <td data-sort="Seidel Elias Seidel"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 351" aria-hidden="true">ES</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Elias Seidel</button><span class="demo-sub">elias.seidel@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 21">Rosenhöhe A<span class="demo-sub">WE 21 · 5. OG, Whg 1</span></td>
+                    <td data-sort="2016-11-01"><time datetime="2016-11-01">01.11.2016</time></td>
+                    <td class="demo-num" data-sort="1045">1.045,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m59" data-prop="rosenhoehe" data-status="bezahlt" data-search="rüdiger rossi quartier rosenhöhe, haus a we 22 ruediger.rossi@example.com" data-name="Rüdiger Rossi" data-unit="Rosenhöhe A, WE 22 (5. OG, Whg 2)" data-email="ruediger.rossi@example.com" data-phone="0170 000 6063" data-since="01.06.2025" data-kalt="530" data-nk="110" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="314" data-initials="RR">
+                    <td data-sort="Rossi Rüdiger Rossi"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 314" aria-hidden="true">RR</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Rüdiger Rossi</button><span class="demo-sub">ruediger.rossi@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 22">Rosenhöhe A<span class="demo-sub">WE 22 · 5. OG, Whg 2</span></td>
+                    <td data-sort="2025-06-01"><time datetime="2025-06-01">01.06.2025</time></td>
+                    <td class="demo-num" data-sort="640">640,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m60" data-prop="rosenhoehe" data-status="bezahlt" data-search="noah brückner quartier rosenhöhe, haus a we 23 noah.brueckner@example.com" data-name="Noah Brückner" data-unit="Rosenhöhe A, WE 23 (5. OG, Whg 3)" data-email="noah.brueckner@example.com" data-phone="0170 000 5883" data-since="01.10.2009" data-kalt="810" data-nk="170" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="312" data-initials="NB">
+                    <td data-sort="Brückner Noah Brückner"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 312" aria-hidden="true">NB</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Noah Brückner</button><span class="demo-sub">noah.brueckner@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 23">Rosenhöhe A<span class="demo-sub">WE 23 · 5. OG, Whg 3</span></td>
+                    <td data-sort="2009-10-01"><time datetime="2009-10-01">01.10.2009</time></td>
+                    <td class="demo-num" data-sort="980">980,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                  <tr data-id="m61" data-prop="rosenhoehe" data-status="bezahlt" data-search="mia engel quartier rosenhöhe, haus a we 24 mia.engel@example.com" data-name="Mia Engel" data-unit="Rosenhöhe A, WE 24 (5. OG, Whg 4)" data-email="mia.engel@example.com" data-phone="0170 000 9540" data-since="01.05.2014" data-kalt="935" data-nk="190" data-saldo="0" data-hist="Jun:bezahlt,Jul:bezahlt,Aug:bezahlt,Sep:bezahlt,Okt:bezahlt,Nov:bezahlt" data-hue="179" data-initials="ME">
+                    <td data-sort="Engel Mia Engel"><span class="demo-person"><span class="demo-avatar" style="--demo-hue: 179" aria-hidden="true">ME</span><span><button type="button" class="demo-linkbtn" data-demo-tenant>Mia Engel</button><span class="demo-sub">mia.engel@example.com</span></span></span></td>
+                    <td data-sort="Rosenhöhe A WE 24">Rosenhöhe A<span class="demo-sub">WE 24 · 5. OG, Whg 4</span></td>
+                    <td data-sort="2014-05-01"><time datetime="2014-05-01">01.05.2014</time></td>
+                    <td class="demo-num" data-sort="1125">1.125,00 €</td>
+                    <td class="demo-num" data-sort="0" data-cell="saldo"><span class="demo-muted">0,00 €</span></td>
+                    <td data-sort="0" data-cell="status"><span class="ncss-badge ncss-badge--success">bezahlt</span></td>
+                    <td class="demo-num" data-cell="action"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="ncss-card-footer"><output id="tenantCount" aria-live="polite">61 von 61 Mietverhältnissen</output></div>
+          </section>
+        </div>
+      </main>
+      <footer class="demo-app-footer">
+        <p>ImmoDesk ist ein Beispiel: Hausverwaltung, Personen, Adressen und Beträge sind frei erfunden.</p>
+        <p><a href="../product.html">Beispiel mit NativeCSS</a> · <a href="../index.html">zurück zur Übersicht</a> · <a href="bildnachweis.html">Bildnachweis</a></p>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<dialog id="appDrawer" class="ncss-offcanvas ncss-offcanvas--start demo-drawer" aria-label="Navigation">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="appDrawer" aria-label="Navigation schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+</dialog>
+
+<div id="notifPop" class="demo-popover" popover aria-labelledby="notifTitle">
+  <div class="ncss-cluster">
+    <h2 id="notifTitle">Benachrichtigungen</h2>
+    <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-markread>Alle gelesen</button>
+  </div>
+  <ul class="demo-menu" role="list">
+    <li><a class="demo-notice" href="mieter.html?mieter=m23" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg><p>Zahlung überfällig: Frieda Pohl (Kastanienweg 7, WE 11)</p><time datetime="2026-11-20T08:12">heute, 08:12</time></a></li>
+    <li><a class="demo-notice" href="tickets.html#t-2048" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><p>Neues Ticket #2048: Rauchwarnmelder piept dauerhaft</p><time datetime="2026-11-20T07:41">heute, 07:41</time></a></li>
+    <li><a class="demo-notice" href="dokumente.html" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><p>Heizungsbau Kessler hat einen Kostenvoranschlag hochgeladen</p><time datetime="2026-11-19T16:05">gestern, 16:05</time></a></li>
+    <li><a class="demo-notice" href="index.html#termine"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-calendar"></use></svg><p>Eigentümerversammlung Gartenstraße 21: Einladung versendet</p><time datetime="2026-11-18T11:30">18.11., 11:30</time></a></li>
+  </ul>
+</div>
+<div id="userPop" class="demo-popover demo-popover--menu" popover aria-label="Konto">
+  <div class="demo-person ncss-mb-sm"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span><strong>Julia Brenner</strong><span class="demo-sub">Objektbetreuung</span></span></div>
+  <ul class="demo-menu" role="list">
+    <li><a href="mieter.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg>Mein Profil</a></li>
+    <li><button type="button" data-ncss-theme-toggle><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg>Hell/Dunkel umschalten</button></li>
+    <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg>Bildnachweis</a></li>
+    <li><a href="../index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-logout"></use></svg>Zurück zur NativeCSS-Übersicht</a></li>
+  </ul>
+</div>
+
+<ncss-command-palette shortcut="k">
+  <dialog id="cmdPalette" class="ncss-command" aria-label="Suche und Befehle" closedby="any">
+    <div class="ncss-command-search">
+      <input class="ncss-command-input" type="text" aria-label="Suchen oder Befehl eingeben" placeholder="Objekt, Mieter, Seite oder Befehl …">
+    </div>
+    <div class="ncss-command-list" aria-label="Ergebnisse">
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Aktionen</p>
+      <a class="ncss-command-item" href="tickets.html#neu" data-keywords="reparatur schaden melden"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-plus"></use></svg></span><span>Neues Reparatur-Ticket</span><span class="ncss-command-item-hint">Ticket</span></a>
+      <a class="ncss-command-item" href="dokumente.html#upload" data-keywords="datei upload vertrag"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-upload"></use></svg></span><span>Dokument hochladen</span></a>
+      <a class="ncss-command-item" href="mieter.html?status=ueberfaellig" data-keywords="mahnung rückstand miete"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg></span><span>Überfällige Mieten anzeigen</span><span class="ncss-command-item-hint">11 offen</span></a>
+      <button type="button" class="ncss-command-item" data-ncss-theme-toggle data-keywords="dark mode hell dunkel theme"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg></span><span>Hell/Dunkel umschalten</span></button>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Seiten</p>
+      <a class="ncss-command-item" href="index.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg></span><span>Dashboard</span></a>
+      <a class="ncss-command-item" href="objekte.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Objekte & Einheiten</span></a>
+      <a class="ncss-command-item" href="mieter.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg></span><span>Mieter & Zahlungen</span></a>
+      <a class="ncss-command-item" href="tickets.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg></span><span>Reparaturen</span></a>
+      <a class="ncss-command-item" href="dokumente.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg></span><span>Dokumente</span></a>
+      <a class="ncss-command-item" href="bildnachweis.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg></span><span>Bildnachweis</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Objekte</p>
+      <a class="ncss-command-item" href="objekte.html#objekt-lindenallee" data-keywords="Altbau Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Lindenallee 12</span><span class="ncss-command-item-hint">8 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-muehlbach" data-keywords="Altbau Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Am Mühlbach 4</span><span class="ncss-command-item-hint">6 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-kastanienweg" data-keywords="Mehrfamilienhaus Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Kastanienweg 7</span><span class="ncss-command-item-hint">12 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-gartenstrasse" data-keywords="Altbau Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Gartenstraße 21</span><span class="ncss-command-item-hint">9 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-marktplatz" data-keywords="Wohn- &amp; Geschäftshaus Marktplatz 3"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Marktplatz 3</span><span class="ncss-command-item-hint">5 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-rosenhoehe" data-keywords="Neubau Rosenhöhe 2"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Quartier Rosenhöhe, Haus A</span><span class="ncss-command-item-hint">24 Einheiten</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Mieter</p>
+      <a class="ncss-command-item" href="mieter.html?mieter=m03" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Nele Oswald</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m05" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Sophie Lorenz</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 05</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m07" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elias Ebert</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 08</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m10" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Konrad Seidel</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m11" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Selin Demir</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m14" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Petersen</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 01</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m15" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Lea Vogt</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 02</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m19" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Ole Lindner</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 06</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m23" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Pohl</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 11</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m27" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Jonas Jansen</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m28" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elena Brückner</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m31" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Helga Möller</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 07</span></a>
+    </div>
+    </div>
+    <p class="ncss-command-empty" hidden>Keine Treffer – versuche einen Straßennamen oder „Ticket“.</p>
+    <div class="ncss-command-footer"><span><kbd>↑</kbd> <kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> öffnen</span><span><kbd>Esc</kbd> schließen</span></div>
+  </dialog>
+</ncss-command-palette>
+
+<dialog id="tenantDetail" class="ncss-offcanvas ncss-offcanvas--end demo-detail" aria-labelledby="tdName">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="tenantDetail" aria-label="Details schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+  <div class="demo-detail-head">
+    <span class="demo-avatar demo-avatar--lg" aria-hidden="true" data-td="avatar"></span>
+    <div><h2 id="tdName" data-td="name">Mieter</h2><span class="demo-sub" data-td="unit"></span></div>
+  </div>
+  <div class="demo-detail-body">
+    <div class="ncss-cluster"><span data-td="status"></span><span class="demo-sub" data-td="saldoText"></span></div>
+    <section aria-labelledby="tdContact" class="ncss-stack ncss-stack--tight">
+      <h3 id="tdContact">Kontakt</h3>
+      <dl class="demo-facts">
+        <div><dt>E-Mail</dt><dd><a data-td="email" href="#"></a></dd></div>
+        <div><dt>Telefon</dt><dd data-td="phone"></dd></div>
+      </dl>
+    </section>
+    <section aria-labelledby="tdContract" class="ncss-stack ncss-stack--tight">
+      <h3 id="tdContract">Mietvertrag</h3>
+      <dl class="demo-facts">
+        <div><dt>Mietbeginn</dt><dd data-td="since"></dd></div>
+        <div><dt>Kaltmiete</dt><dd data-td="kalt"></dd></div>
+        <div><dt>NK-Vorauszahlung</dt><dd data-td="nk"></dd></div>
+        <div><dt>Warmmiete</dt><dd data-td="warm"></dd></div>
+      </dl>
+    </section>
+    <section aria-labelledby="tdHist" class="ncss-stack ncss-stack--tight">
+      <h3 id="tdHist">Zahlungsverlauf 2026</h3>
+      <table class="demo-table">
+        <caption class="ncss-visually-hidden">Zahlungen Juni bis November 2026</caption>
+        <thead><tr><th scope="col">Monat</th><th scope="col" class="demo-num">Betrag</th><th scope="col">Status</th></tr></thead>
+        <tbody data-td="hist"></tbody>
+      </table>
+    </section>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary" data-td="dun">Mahnung erstellen</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-td="pay"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-check"></use></svg>Zahlung erfassen</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dunDialog" class="ncss-modal" aria-labelledby="dunTitle" aria-describedby="dunText">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="dunDialog" aria-label="Abbrechen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+  <form method="dialog" class="demo-form" id="dunForm">
+    <div class="ncss-modal-header"><h2 id="dunTitle">Mahnung erstellen?</h2></div>
+    <div class="ncss-modal-body demo-form">
+      <p id="dunText">Für <strong data-dun="name"></strong> wird eine Mahnung über <strong data-dun="amount"></strong> erstellt und per E-Mail versendet.</p>
+      <div class="demo-form-row">
+        <div class="ncss-field"><label class="ncss-label" for="dunLevel">Mahnstufe</label><select class="ncss-select" id="dunLevel" name="level"><option value="1">1. Mahnung (Zahlungserinnerung)</option><option value="2">2. Mahnung</option></select></div>
+        <div class="ncss-field"><label class="ncss-label" for="dunDue">Neue Zahlungsfrist</label><input class="ncss-input" type="date" id="dunDue" name="due" value="2026-12-04" min="2026-11-21" required></div>
+      </div>
+      <label class="ncss-choice"><input type="checkbox" name="fee" checked> Mahngebühr von 5,00 € berechnen</label>
+    </div>
+    <div class="ncss-modal-footer">
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="close" commandfor="dunDialog">Abbrechen</button>
+      <button type="submit" class="ncss-btn ncss-btn--primary" value="confirm"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-send"></use></svg>Mahnung versenden</button>
+    </div>
+  </form>
+</dialog>
+</body>
+</html>

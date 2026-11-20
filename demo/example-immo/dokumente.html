@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dokumente · ImmoDesk – Beispiel mit NativeCSS</title>
+<meta name="description" content="ImmoDesk: Dokumentenablage mit Ordnern, sortierbarer Dateiliste, Drag-&amp;-Drop-Upload und Vorlagen-Downloads - gebaut mit NativeCSS.">
+<link rel="icon" href="../assets/examples/immo/logo.svg" type="image/svg+xml">
+<script src="../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../assets/examples/immo/immo.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/notification.js" defer></script>
+<script src="../../dist/js/downloads.js" defer></script>
+<script src="../assets/js/immo-table.js" defer></script>
+<script src="../assets/js/immo-dokumente.js" defer></script>
+<script src="../assets/js/immo-app.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+</head>
+<body>
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+<div class="demo-app">
+  <div class="demo-app-grid">
+    <div class="demo-sidebar">
+      <div class="demo-sidebar-inner" id="sidebarNav">
+        <a class="demo-brand" href="index.html"><img src="../assets/examples/immo/logo.svg" alt="" width="32" height="32"><span><strong>ImmoDesk</strong><small>Brandt &amp; Partner Hausverwaltung</small></span></a>
+        <nav class="demo-sidenav" aria-label="Hauptnavigation">
+        <h2 id="nav-g0">Übersicht</h2>
+        <ul aria-labelledby="nav-g0">
+          <li><a href="index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg><span>Dashboard</span></a></li>
+        </ul>
+        <h2 id="nav-g1">Bestand</h2>
+        <ul aria-labelledby="nav-g1">
+          <li><a href="objekte.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg><span>Objekte & Einheiten</span><span class="ncss-badge ncss-badge--neutral">6</span></a></li>
+          <li><a href="mieter.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg><span>Mieter & Zahlungen</span><span class="ncss-badge ncss-badge--danger">5<span class="ncss-visually-hidden"> in Mahnung</span></span></a></li>
+          <li><a href="tickets.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><span>Reparaturen</span><span class="ncss-badge ncss-badge--neutral">14<span class="ncss-visually-hidden"> offen</span></span></a></li>
+          <li><a href="dokumente.html" aria-current="page"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Dokumente</span></a></li>
+        </ul>
+        <h2 id="nav-g2">Sonstiges</h2>
+        <ul aria-labelledby="nav-g2">
+          <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg><span>Bildnachweis</span></a></li>
+        </ul>
+        </nav>
+        <div class="demo-sidebar-foot">
+          <p><strong>NK-Abrechnung 2025</strong></p>
+          <p class="demo-muted">4 von 6 Objekten abgerechnet</p>
+          <progress max="6" value="4" aria-label="Nebenkostenabrechnungen 2025: 4 von 6 abgerechnet"></progress>
+        </div>
+      </div>
+    </div>
+    <div class="demo-app-col">
+      <header class="ncss-topbar demo-topbar">
+        <div class="ncss-topbar-inner">
+          <button type="button" class="demo-iconbtn demo-nav-toggle" data-demo-drawer="appDrawer" aria-controls="appDrawer" aria-expanded="false" aria-label="Navigation öffnen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-menu"></use></svg></button>
+          <button type="button" class="demo-searchbtn" command="show-modal" commandfor="cmdPalette" aria-haspopup="dialog"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-search"></use></svg><span>Suchen: Objekte, Mieter, Befehle …</span><kbd class="demo-hide-narrow" data-demo-shortcut>Strg K</kbd></button>
+          <div class="demo-topbar-actions">
+            <button type="button" class="ncss-btn ncss-btn--secondary demo-inspect-btn" data-demo-inspect aria-pressed="false">Inspect</button>
+            <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Dunkles Design">
+              <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+              <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="demo-iconbtn" popovertarget="notifPop" aria-label="Benachrichtigungen, 3 ungelesen" data-demo-bell><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-bell"></use></svg><span class="demo-dot" aria-hidden="true">3</span></button>
+            <button type="button" class="demo-userbtn" popovertarget="userPop" aria-label="Konto: Julia Brenner"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span class="demo-hide-narrow">Julia Brenner</span><svg class="demo-i demo-hide-narrow" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-down"></use></svg></button>
+          </div>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="demo-page">
+
+          <div class="demo-pagehead">
+            <div>
+              <h1>Dokumente</h1>
+              <p>16 Dateien · 16,6 MB · Mietverträge, Abrechnungen, Protokolle</p>
+            </div>
+            <label class="ncss-btn ncss-btn--primary demo-btn-sm" for="fileInput"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-upload"></use></svg>Hochladen</label>
+          </div>
+
+          <div class="demo-split demo-split--side">
+            <nav class="ncss-card ncss-border ncss-radius-lg demo-panel" aria-labelledby="folderTitle">
+              <div class="ncss-card-header"><h2 id="folderTitle">Ordner</h2></div>
+              <ul class="demo-folders" role="list">
+                <li><button type="button" aria-pressed="true" data-cat=""><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Alle Dokumente</span><span>16</span></button></li>
+                <li><button type="button" aria-pressed="false" data-cat="Mietverträge"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Mietverträge</span><span>3</span></button></li>
+                <li><button type="button" aria-pressed="false" data-cat="Protokolle"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Protokolle</span><span>4</span></button></li>
+                <li><button type="button" aria-pressed="false" data-cat="Nebenkostenabrechnungen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Nebenkostenabrechnungen</span><span>4</span></button></li>
+                <li><button type="button" aria-pressed="false" data-cat="Rechnungen &amp; Angebote"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Rechnungen &amp; Angebote</span><span>2</span></button></li>
+                <li><button type="button" aria-pressed="false" data-cat="Verträge &amp; Wartung"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Verträge &amp; Wartung</span><span>3</span></button></li>
+              </ul>
+            </nav>
+
+            <div class="ncss-stack">
+              <section aria-labelledby="uploadTitle" id="upload" tabindex="-1">
+                <h2 id="uploadTitle" class="ncss-visually-hidden">Dateien hochladen</h2>
+                <label class="demo-dropzone" for="fileInput" data-demo-dropzone>
+                  <svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-upload"></use></svg>
+                  <p><strong>Dateien hierher ziehen</strong> oder klicken zum Auswählen</p>
+                  <p class="demo-sub">PDF, DOCX, XLSX oder JPG, bis 20 MB je Datei – im Beispiel bleibt alles in deinem Browser.</p>
+                  <input class="ncss-visually-hidden" type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png,.csv">
+                </label>
+                <ul class="demo-uploads ncss-mb-0" role="list" aria-live="polite" id="uploadList"></ul>
+              </section>
+
+              <section class="ncss-card ncss-border ncss-radius-lg demo-panel" aria-labelledby="docTitle">
+                <div class="ncss-card-header">
+                  <h2 id="docTitle">Dateien <span class="demo-muted" data-demo-folderlabel>· Alle Dokumente</span></h2>
+                  <div class="ncss-field demo-docsearch"><label class="ncss-visually-hidden" for="dq">Dateien durchsuchen</label><input class="ncss-input demo-btn-sm" type="search" id="dq" placeholder="Dateiname oder Objekt" autocomplete="off"></div>
+                </div>
+                <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="docTitle" tabindex="0">
+                  <table class="demo-table" id="docTable" data-demo-sortable>
+                    <caption class="ncss-visually-hidden">Dokumente, Spaltenköpfe sortieren die Tabelle</caption>
+                    <thead><tr><th scope="col" data-sort-key="name" data-sort-type="text"><button type="button" class="demo-sort">Name<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" data-sort-key="prop" data-sort-type="text"><button type="button" class="demo-sort">Objekt<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="size" data-sort-type="number"><button type="button" class="demo-sort">Größe<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" data-sort-key="date" data-sort-type="text"><button type="button" class="demo-sort">Geändert<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num"><span class="ncss-visually-hidden">Aktion</span></th></tr></thead>
+                    <tbody>
+                      <tr data-cat="Mietverträge" data-search="mietvertrag_lindenallee12_we05.pdf lindenallee 12 mietverträge"><td data-sort="mietvertrag_lindenallee12_we05.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Mietvertrag Lindenallee 12, WE 05</strong><span class="demo-sub">Mietvertrag_Lindenallee12_WE05.pdf</span></span></span></td><td data-sort="Lindenallee 12">Lindenallee 12</td><td class="demo-num" data-sort="412000">412 KB</td><td data-sort="2026-11-18"><time datetime="2026-11-18">18.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Mietvertrag_Lindenallee12_WE05.pdf" aria-label="Mietvertrag_Lindenallee12_WE05.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Mietverträge" data-search="mietvertrag_rosenhoehe_we17_entwurf.docx quartier rosenhöhe, haus a mietverträge"><td data-sort="mietvertrag_rosenhoehe_we17_entwurf.docx"><span class="demo-person"><span class="demo-filetype" data-type="docx" aria-hidden="true">DOCX</span><span><strong>Mietvertrag Rosenhöhe, WE 17 Entwurf</strong><span class="demo-sub">Mietvertrag_Rosenhoehe_WE17_Entwurf.docx</span></span></span></td><td data-sort="Rosenhöhe A">Rosenhöhe A</td><td class="demo-num" data-sort="86000">86 KB</td><td data-sort="2026-11-17"><time datetime="2026-11-17">17.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Mietvertrag_Rosenhoehe_WE17_Entwurf.docx" aria-label="Mietvertrag_Rosenhoehe_WE17_Entwurf.docx herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Protokolle" data-search="uebergabeprotokoll_muehlbach4_we03.pdf am mühlbach 4 protokolle"><td data-sort="uebergabeprotokoll_muehlbach4_we03.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Übergabeprotokoll Am Mühlbach 4, WE 03</strong><span class="demo-sub">Uebergabeprotokoll_Muehlbach4_WE03.pdf</span></span></span></td><td data-sort="Am Mühlbach 4">Am Mühlbach 4</td><td class="demo-num" data-sort="1240000">1,2 MB</td><td data-sort="2026-10-27"><time datetime="2026-10-27">27.10.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Uebergabeprotokoll_Muehlbach4_WE03.pdf" aria-label="Uebergabeprotokoll_Muehlbach4_WE03.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Protokolle" data-search="protokoll_etv_gartenstrasse21_2025.pdf gartenstraße 21 protokolle"><td data-sort="protokoll_etv_gartenstrasse21_2025.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Protokoll Eigentümerversammlung Gartenstraße 21 2025</strong><span class="demo-sub">Protokoll_ETV_Gartenstrasse21_2025.pdf</span></span></span></td><td data-sort="Gartenstraße 21">Gartenstraße 21</td><td class="demo-num" data-sort="640000">640 KB</td><td data-sort="2025-11-28"><time datetime="2025-11-28">28.11.2025</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Protokoll_ETV_Gartenstrasse21_2025.pdf" aria-label="Protokoll_ETV_Gartenstrasse21_2025.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Protokolle" data-search="einladung_etv_gartenstrasse21_2026.pdf gartenstraße 21 protokolle"><td data-sort="einladung_etv_gartenstrasse21_2026.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Einladung Eigentümerversammlung Gartenstraße 21 2026</strong><span class="demo-sub">Einladung_ETV_Gartenstrasse21_2026.pdf</span></span></span></td><td data-sort="Gartenstraße 21">Gartenstraße 21</td><td class="demo-num" data-sort="220000">220 KB</td><td data-sort="2026-11-18"><time datetime="2026-11-18">18.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Einladung_ETV_Gartenstrasse21_2026.pdf" aria-label="Einladung_ETV_Gartenstrasse21_2026.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Nebenkostenabrechnungen" data-search="nk-abrechnung_2025_kastanienweg7.pdf kastanienweg 7 nebenkostenabrechnungen"><td data-sort="nk-abrechnung_2025_kastanienweg7.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>NK-Abrechnung 2025 Kastanienweg 7</strong><span class="demo-sub">NK-Abrechnung_2025_Kastanienweg7.pdf</span></span></span></td><td data-sort="Kastanienweg 7">Kastanienweg 7</td><td class="demo-num" data-sort="2810000">2,8 MB</td><td data-sort="2026-09-30"><time datetime="2026-09-30">30.09.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="NK-Abrechnung_2025_Kastanienweg7.pdf" aria-label="NK-Abrechnung_2025_Kastanienweg7.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Nebenkostenabrechnungen" data-search="nk-abrechnung_2025_lindenallee12.pdf lindenallee 12 nebenkostenabrechnungen"><td data-sort="nk-abrechnung_2025_lindenallee12.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>NK-Abrechnung 2025 Lindenallee 12</strong><span class="demo-sub">NK-Abrechnung_2025_Lindenallee12.pdf</span></span></span></td><td data-sort="Lindenallee 12">Lindenallee 12</td><td class="demo-num" data-sort="2140000">2,1 MB</td><td data-sort="2026-10-14"><time datetime="2026-10-14">14.10.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="NK-Abrechnung_2025_Lindenallee12.pdf" aria-label="NK-Abrechnung_2025_Lindenallee12.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Nebenkostenabrechnungen" data-search="nk-abrechnung_2025_marktplatz3.xlsx marktplatz 3 nebenkostenabrechnungen"><td data-sort="nk-abrechnung_2025_marktplatz3.xlsx"><span class="demo-person"><span class="demo-filetype" data-type="xlsx" aria-hidden="true">XLSX</span><span><strong>NK-Abrechnung 2025 Marktplatz 3</strong><span class="demo-sub">NK-Abrechnung_2025_Marktplatz3.xlsx</span></span></span></td><td data-sort="Marktplatz 3">Marktplatz 3</td><td class="demo-num" data-sort="182000">182 KB</td><td data-sort="2026-11-05"><time datetime="2026-11-05">05.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="NK-Abrechnung_2025_Marktplatz3.xlsx" aria-label="NK-Abrechnung_2025_Marktplatz3.xlsx herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Nebenkostenabrechnungen" data-search="nk-abrechnung_2025_rosenhoehe_hausa.pdf quartier rosenhöhe, haus a nebenkostenabrechnungen"><td data-sort="nk-abrechnung_2025_rosenhoehe_hausa.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>NK-Abrechnung 2025 Rosenhöhe Haus A</strong><span class="demo-sub">NK-Abrechnung_2025_Rosenhoehe_HausA.pdf</span></span></span></td><td data-sort="Rosenhöhe A">Rosenhöhe A</td><td class="demo-num" data-sort="3420000">3,4 MB</td><td data-sort="2026-10-21"><time datetime="2026-10-21">21.10.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="NK-Abrechnung_2025_Rosenhoehe_HausA.pdf" aria-label="NK-Abrechnung_2025_Rosenhoehe_HausA.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Rechnungen &amp; Angebote" data-search="kva_heizungsbau-kessler_lindenallee.pdf lindenallee 12 rechnungen &amp; angebote"><td data-sort="kva_heizungsbau-kessler_lindenallee.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Kostenvoranschlag Heizungsbau Kessler Lindenallee</strong><span class="demo-sub">KVA_Heizungsbau-Kessler_Lindenallee.pdf</span></span></span></td><td data-sort="Lindenallee 12">Lindenallee 12</td><td class="demo-num" data-sort="310000">310 KB</td><td data-sort="2026-11-19"><time datetime="2026-11-19">19.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="KVA_Heizungsbau-Kessler_Lindenallee.pdf" aria-label="KVA_Heizungsbau-Kessler_Lindenallee.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Rechnungen &amp; Angebote" data-search="rechnung_sanitaer-albrecht_2031.pdf gartenstraße 21 rechnungen &amp; angebote"><td data-sort="rechnung_sanitaer-albrecht_2031.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Rechnung Sanitär Albrecht 2031</strong><span class="demo-sub">Rechnung_Sanitaer-Albrecht_2031.pdf</span></span></span></td><td data-sort="Gartenstraße 21">Gartenstraße 21</td><td class="demo-num" data-sort="145000">145 KB</td><td data-sort="2026-11-04"><time datetime="2026-11-04">04.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Rechnung_Sanitaer-Albrecht_2031.pdf" aria-label="Rechnung_Sanitaer-Albrecht_2031.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Verträge &amp; Wartung" data-search="wartungsvertrag_aufzug_rosenhoehe.pdf quartier rosenhöhe, haus a verträge &amp; wartung"><td data-sort="wartungsvertrag_aufzug_rosenhoehe.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Wartungsvertrag Aufzug Rosenhöhe</strong><span class="demo-sub">Wartungsvertrag_Aufzug_Rosenhoehe.pdf</span></span></span></td><td data-sort="Rosenhöhe A">Rosenhöhe A</td><td class="demo-num" data-sort="980000">980 KB</td><td data-sort="2025-03-12"><time datetime="2025-03-12">12.03.2025</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Wartungsvertrag_Aufzug_Rosenhoehe.pdf" aria-label="Wartungsvertrag_Aufzug_Rosenhoehe.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Verträge &amp; Wartung" data-search="energieausweis_muehlbach4.pdf am mühlbach 4 verträge &amp; wartung"><td data-sort="energieausweis_muehlbach4.pdf"><span class="demo-person"><span class="demo-filetype" data-type="pdf" aria-hidden="true">PDF</span><span><strong>Energieausweis Am Mühlbach 4</strong><span class="demo-sub">Energieausweis_Muehlbach4.pdf</span></span></span></td><td data-sort="Am Mühlbach 4">Am Mühlbach 4</td><td class="demo-num" data-sort="1560000">1,6 MB</td><td data-sort="2024-06-03"><time datetime="2024-06-03">03.06.2024</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Energieausweis_Muehlbach4.pdf" aria-label="Energieausweis_Muehlbach4.pdf herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Protokolle" data-search="foto_feuchtigkeit_gartenstrasse_we09.jpg gartenstraße 21 protokolle"><td data-sort="foto_feuchtigkeit_gartenstrasse_we09.jpg"><span class="demo-person"><span class="demo-filetype" data-type="jpg" aria-hidden="true">JPG</span><span><strong>Foto Feuchtigkeit Gartenstraße, WE 09</strong><span class="demo-sub">Foto_Feuchtigkeit_Gartenstrasse_WE09.jpg</span></span></span></td><td data-sort="Gartenstraße 21">Gartenstraße 21</td><td class="demo-num" data-sort="2350000">2,4 MB</td><td data-sort="2026-11-13"><time datetime="2026-11-13">13.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Foto_Feuchtigkeit_Gartenstrasse_WE09.jpg" aria-label="Foto_Feuchtigkeit_Gartenstrasse_WE09.jpg herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Mietverträge" data-search="mieterliste_kastanienweg7.xlsx kastanienweg 7 mietverträge"><td data-sort="mieterliste_kastanienweg7.xlsx"><span class="demo-person"><span class="demo-filetype" data-type="xlsx" aria-hidden="true">XLSX</span><span><strong>Mieterliste Kastanienweg 7</strong><span class="demo-sub">Mieterliste_Kastanienweg7.xlsx</span></span></span></td><td data-sort="Kastanienweg 7">Kastanienweg 7</td><td class="demo-num" data-sort="54000">54 KB</td><td data-sort="2026-11-02"><time datetime="2026-11-02">02.11.2026</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Mieterliste_Kastanienweg7.xlsx" aria-label="Mieterliste_Kastanienweg7.xlsx herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                      <tr data-cat="Verträge &amp; Wartung" data-search="hausordnung_marktplatz3.docx marktplatz 3 verträge &amp; wartung"><td data-sort="hausordnung_marktplatz3.docx"><span class="demo-person"><span class="demo-filetype" data-type="docx" aria-hidden="true">DOCX</span><span><strong>Hausordnung Marktplatz 3</strong><span class="demo-sub">Hausordnung_Marktplatz3.docx</span></span></span></td><td data-sort="Marktplatz 3">Marktplatz 3</td><td class="demo-num" data-sort="41000">41 KB</td><td data-sort="2023-01-15"><time datetime="2023-01-15">15.01.2023</time></td><td class="demo-num"><button type="button" class="demo-iconbtn" data-demo-fakedl="Hausordnung_Marktplatz3.docx" aria-label="Hausordnung_Marktplatz3.docx herunterladen" title="Herunterladen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg></button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="ncss-card-footer"><output id="docCount" aria-live="polite">16 Dateien</output></div>
+              </section>
+
+              <section class="ncss-card ncss-border ncss-radius-lg demo-panel" aria-labelledby="tplTitle">
+                <div class="ncss-card-header"><h2 id="tplTitle">Vorlagen &amp; Formulare</h2><span class="demo-sub">echte Beispieldateien</span></div>
+                <div class="ncss-card-body"><div class="ncss-downloads" data-src="../assets/examples/immo/vorlagen.json"></div></div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer class="demo-app-footer">
+        <p>ImmoDesk ist ein Beispiel: Hausverwaltung, Personen, Adressen und Beträge sind frei erfunden.</p>
+        <p><a href="../product.html">Beispiel mit NativeCSS</a> · <a href="../index.html">zurück zur Übersicht</a> · <a href="bildnachweis.html">Bildnachweis</a></p>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<dialog id="appDrawer" class="ncss-offcanvas ncss-offcanvas--start demo-drawer" aria-label="Navigation">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="appDrawer" aria-label="Navigation schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+</dialog>
+
+<div id="notifPop" class="demo-popover" popover aria-labelledby="notifTitle">
+  <div class="ncss-cluster">
+    <h2 id="notifTitle">Benachrichtigungen</h2>
+    <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-markread>Alle gelesen</button>
+  </div>
+  <ul class="demo-menu" role="list">
+    <li><a class="demo-notice" href="mieter.html?mieter=m23" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg><p>Zahlung überfällig: Frieda Pohl (Kastanienweg 7, WE 11)</p><time datetime="2026-11-20T08:12">heute, 08:12</time></a></li>
+    <li><a class="demo-notice" href="tickets.html#t-2048" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><p>Neues Ticket #2048: Rauchwarnmelder piept dauerhaft</p><time datetime="2026-11-20T07:41">heute, 07:41</time></a></li>
+    <li><a class="demo-notice" href="dokumente.html" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><p>Heizungsbau Kessler hat einen Kostenvoranschlag hochgeladen</p><time datetime="2026-11-19T16:05">gestern, 16:05</time></a></li>
+    <li><a class="demo-notice" href="index.html#termine"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-calendar"></use></svg><p>Eigentümerversammlung Gartenstraße 21: Einladung versendet</p><time datetime="2026-11-18T11:30">18.11., 11:30</time></a></li>
+  </ul>
+</div>
+<div id="userPop" class="demo-popover demo-popover--menu" popover aria-label="Konto">
+  <div class="demo-person ncss-mb-sm"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span><strong>Julia Brenner</strong><span class="demo-sub">Objektbetreuung</span></span></div>
+  <ul class="demo-menu" role="list">
+    <li><a href="mieter.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg>Mein Profil</a></li>
+    <li><button type="button" data-ncss-theme-toggle><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg>Hell/Dunkel umschalten</button></li>
+    <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg>Bildnachweis</a></li>
+    <li><a href="../index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-logout"></use></svg>Zurück zur NativeCSS-Übersicht</a></li>
+  </ul>
+</div>
+
+<ncss-command-palette shortcut="k">
+  <dialog id="cmdPalette" class="ncss-command" aria-label="Suche und Befehle" closedby="any">
+    <div class="ncss-command-search">
+      <input class="ncss-command-input" type="text" aria-label="Suchen oder Befehl eingeben" placeholder="Objekt, Mieter, Seite oder Befehl …">
+    </div>
+    <div class="ncss-command-list" aria-label="Ergebnisse">
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Aktionen</p>
+      <a class="ncss-command-item" href="tickets.html#neu" data-keywords="reparatur schaden melden"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-plus"></use></svg></span><span>Neues Reparatur-Ticket</span><span class="ncss-command-item-hint">Ticket</span></a>
+      <a class="ncss-command-item" href="dokumente.html#upload" data-keywords="datei upload vertrag"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-upload"></use></svg></span><span>Dokument hochladen</span></a>
+      <a class="ncss-command-item" href="mieter.html?status=ueberfaellig" data-keywords="mahnung rückstand miete"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg></span><span>Überfällige Mieten anzeigen</span><span class="ncss-command-item-hint">11 offen</span></a>
+      <button type="button" class="ncss-command-item" data-ncss-theme-toggle data-keywords="dark mode hell dunkel theme"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg></span><span>Hell/Dunkel umschalten</span></button>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Seiten</p>
+      <a class="ncss-command-item" href="index.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg></span><span>Dashboard</span></a>
+      <a class="ncss-command-item" href="objekte.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Objekte & Einheiten</span></a>
+      <a class="ncss-command-item" href="mieter.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg></span><span>Mieter & Zahlungen</span></a>
+      <a class="ncss-command-item" href="tickets.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg></span><span>Reparaturen</span></a>
+      <a class="ncss-command-item" href="dokumente.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg></span><span>Dokumente</span></a>
+      <a class="ncss-command-item" href="bildnachweis.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg></span><span>Bildnachweis</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Objekte</p>
+      <a class="ncss-command-item" href="objekte.html#objekt-lindenallee" data-keywords="Altbau Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Lindenallee 12</span><span class="ncss-command-item-hint">8 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-muehlbach" data-keywords="Altbau Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Am Mühlbach 4</span><span class="ncss-command-item-hint">6 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-kastanienweg" data-keywords="Mehrfamilienhaus Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Kastanienweg 7</span><span class="ncss-command-item-hint">12 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-gartenstrasse" data-keywords="Altbau Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Gartenstraße 21</span><span class="ncss-command-item-hint">9 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-marktplatz" data-keywords="Wohn- &amp; Geschäftshaus Marktplatz 3"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Marktplatz 3</span><span class="ncss-command-item-hint">5 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-rosenhoehe" data-keywords="Neubau Rosenhöhe 2"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Quartier Rosenhöhe, Haus A</span><span class="ncss-command-item-hint">24 Einheiten</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Mieter</p>
+      <a class="ncss-command-item" href="mieter.html?mieter=m03" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Nele Oswald</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m05" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Sophie Lorenz</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 05</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m07" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elias Ebert</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 08</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m10" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Konrad Seidel</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m11" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Selin Demir</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m14" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Petersen</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 01</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m15" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Lea Vogt</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 02</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m19" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Ole Lindner</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 06</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m23" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Pohl</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 11</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m27" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Jonas Jansen</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m28" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elena Brückner</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m31" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Helga Möller</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 07</span></a>
+    </div>
+    </div>
+    <p class="ncss-command-empty" hidden>Keine Treffer – versuche einen Straßennamen oder „Ticket“.</p>
+    <div class="ncss-command-footer"><span><kbd>↑</kbd> <kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> öffnen</span><span><kbd>Esc</kbd> schließen</span></div>
+  </dialog>
+</ncss-command-palette>
+
+</body>
+</html>

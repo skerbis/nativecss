@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reparaturen · ImmoDesk – Beispiel mit NativeCSS</title>
+<meta name="description" content="ImmoDesk: Kanban-Board für Reparaturen mit Drag &amp; Drop, Tastatursteuerung und validiertem Formular-Dialog - gebaut mit NativeCSS.">
+<link rel="icon" href="../assets/examples/immo/logo.svg" type="image/svg+xml">
+<script src="../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../assets/examples/immo/immo.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/notification.js" defer></script>
+<script src="../assets/js/immo-kanban.js" defer></script>
+<script src="../assets/js/immo-app.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+</head>
+<body>
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+<div class="demo-app">
+  <div class="demo-app-grid">
+    <div class="demo-sidebar">
+      <div class="demo-sidebar-inner" id="sidebarNav">
+        <a class="demo-brand" href="index.html"><img src="../assets/examples/immo/logo.svg" alt="" width="32" height="32"><span><strong>ImmoDesk</strong><small>Brandt &amp; Partner Hausverwaltung</small></span></a>
+        <nav class="demo-sidenav" aria-label="Hauptnavigation">
+        <h2 id="nav-g0">Übersicht</h2>
+        <ul aria-labelledby="nav-g0">
+          <li><a href="index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg><span>Dashboard</span></a></li>
+        </ul>
+        <h2 id="nav-g1">Bestand</h2>
+        <ul aria-labelledby="nav-g1">
+          <li><a href="objekte.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg><span>Objekte & Einheiten</span><span class="ncss-badge ncss-badge--neutral">6</span></a></li>
+          <li><a href="mieter.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg><span>Mieter & Zahlungen</span><span class="ncss-badge ncss-badge--danger">5<span class="ncss-visually-hidden"> in Mahnung</span></span></a></li>
+          <li><a href="tickets.html" aria-current="page"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><span>Reparaturen</span><span class="ncss-badge ncss-badge--neutral">14<span class="ncss-visually-hidden"> offen</span></span></a></li>
+          <li><a href="dokumente.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Dokumente</span></a></li>
+        </ul>
+        <h2 id="nav-g2">Sonstiges</h2>
+        <ul aria-labelledby="nav-g2">
+          <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg><span>Bildnachweis</span></a></li>
+        </ul>
+        </nav>
+        <div class="demo-sidebar-foot">
+          <p><strong>NK-Abrechnung 2025</strong></p>
+          <p class="demo-muted">4 von 6 Objekten abgerechnet</p>
+          <progress max="6" value="4" aria-label="Nebenkostenabrechnungen 2025: 4 von 6 abgerechnet"></progress>
+        </div>
+      </div>
+    </div>
+    <div class="demo-app-col">
+      <header class="ncss-topbar demo-topbar">
+        <div class="ncss-topbar-inner">
+          <button type="button" class="demo-iconbtn demo-nav-toggle" data-demo-drawer="appDrawer" aria-controls="appDrawer" aria-expanded="false" aria-label="Navigation öffnen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-menu"></use></svg></button>
+          <button type="button" class="demo-searchbtn" command="show-modal" commandfor="cmdPalette" aria-haspopup="dialog"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-search"></use></svg><span>Suchen: Objekte, Mieter, Befehle …</span><kbd class="demo-hide-narrow" data-demo-shortcut>Strg K</kbd></button>
+          <div class="demo-topbar-actions">
+            <button type="button" class="ncss-btn ncss-btn--secondary demo-inspect-btn" data-demo-inspect aria-pressed="false">Inspect</button>
+            <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Dunkles Design">
+              <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+              <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="demo-iconbtn" popovertarget="notifPop" aria-label="Benachrichtigungen, 3 ungelesen" data-demo-bell><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-bell"></use></svg><span class="demo-dot" aria-hidden="true">3</span></button>
+            <button type="button" class="demo-userbtn" popovertarget="userPop" aria-label="Konto: Julia Brenner"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span class="demo-hide-narrow">Julia Brenner</span><svg class="demo-i demo-hide-narrow" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-down"></use></svg></button>
+          </div>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="demo-page">
+
+          <div class="demo-pagehead">
+            <div>
+              <h1>Reparaturen</h1>
+              <p>14 offene Vorgänge · 2 dringend</p>
+            </div>
+            <button type="button" class="ncss-btn ncss-btn--primary demo-btn-sm" command="show-modal" commandfor="newTicket"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-plus"></use></svg>Neues Ticket</button>
+          </div>
+
+          <form class="demo-toolbar ncss-mb-sm" role="search" aria-label="Tickets filtern" data-demo-ticketfilter>
+            <div class="ncss-field demo-grow"><label class="ncss-label" for="kq">Suche</label><input class="ncss-input" type="search" id="kq" name="q" placeholder="Titel, Objekt oder Nummer" autocomplete="off"></div>
+            <div class="ncss-field"><label class="ncss-label" for="kprop">Objekt</label><select class="ncss-select" id="kprop" name="prop"><option value="">Alle Objekte</option><option value="lindenallee">Lindenallee 12</option><option value="muehlbach">Am Mühlbach 4</option><option value="kastanienweg">Kastanienweg 7</option><option value="gartenstrasse">Gartenstraße 21</option><option value="marktplatz">Marktplatz 3</option><option value="rosenhoehe">Rosenhöhe A</option></select></div>
+            <div class="ncss-field"><label class="ncss-label" for="kprio">Priorität</label><select class="ncss-select" id="kprio" name="prio"><option value="">Alle</option><option>niedrig</option><option>mittel</option><option>hoch</option><option>dringend</option></select></div>
+            <p class="demo-toolbar-end demo-help" id="boardHelp">Karten ziehen – oder fokussieren und mit <kbd>Alt</kbd> + <kbd>←</kbd>/<kbd>→</kbd> verschieben.</p>
+          </form>
+
+          <p class="ncss-visually-hidden" aria-live="polite" id="boardStatus"></p>
+          <div class="demo-board" data-demo-board aria-describedby="boardHelp">
+            <section class="demo-col" data-col="neu" aria-labelledby="col-neu" style="--demo-col-color: var(--ncss-color-brand)">
+              <div class="demo-col-head"><h2 id="col-neu">Neu</h2><span class="ncss-badge ncss-badge--neutral" data-count>6</span></div>
+              <ol class="demo-cards" role="list">
+                  <li><article class="demo-ticket" id="t-2048" tabindex="0" draggable="true" data-prop="rosenhoehe" data-prio="hoch" data-search="rauchwarnmelder piept dauerhaft quartier rosenhöhe, haus a we 12 2048" aria-labelledby="tt-2048" aria-describedby="tm-2048">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--warning">hoch</span><span class="demo-muted">#2048</span></div>
+                    <h3 id="tt-2048">Rauchwarnmelder piept dauerhaft</h3>
+                    <p class="demo-ticket-meta" id="tm-2048"><span>Rosenhöhe A · WE 12</span><span>20.11.2026 · Mieter-App</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-muted">nicht zugewiesen</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2047" tabindex="0" draggable="true" data-prop="kastanienweg" data-prio="niedrig" data-search="tropfender wasserhahn in der küche kastanienweg 7 we 04 2047" aria-labelledby="tt-2047" aria-describedby="tm-2047">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--neutral">niedrig</span><span class="demo-muted">#2047</span></div>
+                    <h3 id="tt-2047">Tropfender Wasserhahn in der Küche</h3>
+                    <p class="demo-ticket-meta" id="tm-2047"><span>Kastanienweg 7 · WE 04</span><span>19.11.2026 · Telefon</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-muted">nicht zugewiesen</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2046" tabindex="0" draggable="true" data-prop="muehlbach" data-prio="mittel" data-search="haustür fällt nicht ins schloss am mühlbach 4 treppenhaus 2046" aria-labelledby="tt-2046" aria-describedby="tm-2046">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--brand-2">mittel</span><span class="demo-muted">#2046</span></div>
+                    <h3 id="tt-2046">Haustür fällt nicht ins Schloss</h3>
+                    <p class="demo-ticket-meta" id="tm-2046"><span>Am Mühlbach 4 · Treppenhaus</span><span>19.11.2026 · E-Mail</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-muted">nicht zugewiesen</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2044" tabindex="0" draggable="true" data-prop="marktplatz" data-prio="niedrig" data-search="graffiti an der hofeinfahrt marktplatz 3 außen 2044" aria-labelledby="tt-2044" aria-describedby="tm-2044">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--neutral">niedrig</span><span class="demo-muted">#2044</span></div>
+                    <h3 id="tt-2044">Graffiti an der Hofeinfahrt</h3>
+                    <p class="demo-ticket-meta" id="tm-2044"><span>Marktplatz 3 · Außen</span><span>17.11.2026 · Begehung</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 11" aria-hidden="true">MD</span><span class="demo-muted">Malerbetrieb Dörr</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2043" tabindex="0" draggable="true" data-prop="gartenstrasse" data-prio="mittel" data-search="treppenhausbeleuchtung 2. og ausgefallen gartenstraße 21 treppenhaus 2043" aria-labelledby="tt-2043" aria-describedby="tm-2043">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--brand-2">mittel</span><span class="demo-muted">#2043</span></div>
+                    <h3 id="tt-2043">Treppenhausbeleuchtung 2. OG ausgefallen</h3>
+                    <p class="demo-ticket-meta" id="tm-2043"><span>Gartenstraße 21 · Treppenhaus</span><span>17.11.2026 · Hausmeister</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-muted">nicht zugewiesen</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2041" tabindex="0" draggable="true" data-prop="lindenallee" data-prio="niedrig" data-search="dachrinne verstopft, wasser läuft über lindenallee 12 außen 2041" aria-labelledby="tt-2041" aria-describedby="tm-2041">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--neutral">niedrig</span><span class="demo-muted">#2041</span></div>
+                    <h3 id="tt-2041">Dachrinne verstopft, Wasser läuft über</h3>
+                    <p class="demo-ticket-meta" id="tm-2041"><span>Lindenallee 12 · Außen</span><span>14.11.2026 · Begehung</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-muted">nicht zugewiesen</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+              </ol>
+            </section>
+            <section class="demo-col" data-col="arbeit" aria-labelledby="col-arbeit" style="--demo-col-color: var(--ncss-color-warning)">
+              <div class="demo-col-head"><h2 id="col-arbeit">In Arbeit</h2><span class="ncss-badge ncss-badge--neutral" data-count>4</span></div>
+              <ol class="demo-cards" role="list">
+                  <li><article class="demo-ticket" id="t-2045" tabindex="0" draggable="true" data-prop="lindenallee" data-prio="dringend" data-search="heizung im 2. og ohne funktion lindenallee 12 we 05 2045" aria-labelledby="tt-2045" aria-describedby="tm-2045">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--danger">dringend</span><span class="demo-muted">#2045</span></div>
+                    <h3 id="tt-2045">Heizung im 2. OG ohne Funktion</h3>
+                    <p class="demo-ticket-meta" id="tm-2045"><span>Lindenallee 12 · WE 05</span><span>18.11.2026 · Telefon</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 275" aria-hidden="true">HK</span><span class="demo-muted">Heizungsbau Kessler</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2042" tabindex="0" draggable="true" data-prop="lindenallee" data-prio="hoch" data-search="abfluss im bad verstopft lindenallee 12 we 02 2042" aria-labelledby="tt-2042" aria-describedby="tm-2042">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--warning">hoch</span><span class="demo-muted">#2042</span></div>
+                    <h3 id="tt-2042">Abfluss im Bad verstopft</h3>
+                    <p class="demo-ticket-meta" id="tm-2042"><span>Lindenallee 12 · WE 02</span><span>16.11.2026 · Mieter-App</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 347" aria-hidden="true">SA</span><span class="demo-muted">Sanitär Albrecht</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2039" tabindex="0" draggable="true" data-prop="kastanienweg" data-prio="mittel" data-search="klingelanlage: taster 3 ohne funktion kastanienweg 7 eingang 2039" aria-labelledby="tt-2039" aria-describedby="tm-2039">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--brand-2">mittel</span><span class="demo-muted">#2039</span></div>
+                    <h3 id="tt-2039">Klingelanlage: Taster 3 ohne Funktion</h3>
+                    <p class="demo-ticket-meta" id="tm-2039"><span>Kastanienweg 7 · Eingang</span><span>12.11.2026 · E-Mail</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 252" aria-hidden="true">ES</span><span class="demo-muted">Elektro Sommer</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2036" tabindex="0" draggable="true" data-prop="rosenhoehe" data-prio="niedrig" data-search="tiefgaragentor öffnet nur verzögert quartier rosenhöhe, haus a tiefgarage 2036" aria-labelledby="tt-2036" aria-describedby="tm-2036">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--neutral">niedrig</span><span class="demo-muted">#2036</span></div>
+                    <h3 id="tt-2036">Tiefgaragentor öffnet nur verzögert</h3>
+                    <p class="demo-ticket-meta" id="tm-2036"><span>Rosenhöhe A · Tiefgarage</span><span>09.11.2026 · Hausmeister</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 262" aria-hidden="true">LS</span><span class="demo-muted">Lift &amp; Service Weber</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+              </ol>
+            </section>
+            <section class="demo-col" data-col="warten" aria-labelledby="col-warten" style="--demo-col-color: var(--ncss-color-neutral)">
+              <div class="demo-col-head"><h2 id="col-warten">Wartet auf Handwerker</h2><span class="ncss-badge ncss-badge--neutral" data-count>4</span></div>
+              <ol class="demo-cards" role="list">
+                  <li><article class="demo-ticket" id="t-2040" tabindex="0" draggable="true" data-prop="gartenstrasse" data-prio="hoch" data-search="feuchtigkeitsfleck an der schlafzimmerdecke gartenstraße 21 we 09 2040" aria-labelledby="tt-2040" aria-describedby="tm-2040">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--warning">hoch</span><span class="demo-muted">#2040</span></div>
+                    <h3 id="tt-2040">Feuchtigkeitsfleck an der Schlafzimmerdecke</h3>
+                    <p class="demo-ticket-meta" id="tm-2040"><span>Gartenstraße 21 · WE 09</span><span>13.11.2026 · Mieter-App</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 206" aria-hidden="true">DH</span><span class="demo-muted">Dachdeckerei Hofmann</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2038" tabindex="0" draggable="true" data-prop="rosenhoehe" data-prio="mittel" data-search="aufzug: wartungsmeldung „tür schließt hart“ quartier rosenhöhe, haus a aufzug haus a 2038" aria-labelledby="tt-2038" aria-describedby="tm-2038">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--brand-2">mittel</span><span class="demo-muted">#2038</span></div>
+                    <h3 id="tt-2038">Aufzug: Wartungsmeldung „Tür schließt hart“</h3>
+                    <p class="demo-ticket-meta" id="tm-2038"><span>Rosenhöhe A · Aufzug Haus A</span><span>11.11.2026 · Fernüberwachung</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 262" aria-hidden="true">LS</span><span class="demo-muted">Lift &amp; Service Weber</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2035" tabindex="0" draggable="true" data-prop="muehlbach" data-prio="mittel" data-search="fenster im wohnzimmer zieht am mühlbach 4 we 05 2035" aria-labelledby="tt-2035" aria-describedby="tm-2035">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--brand-2">mittel</span><span class="demo-muted">#2035</span></div>
+                    <h3 id="tt-2035">Fenster im Wohnzimmer zieht</h3>
+                    <p class="demo-ticket-meta" id="tm-2035"><span>Am Mühlbach 4 · WE 05</span><span>06.11.2026 · Telefon</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 206" aria-hidden="true">DH</span><span class="demo-muted">Dachdeckerei Hofmann</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2033" tabindex="0" draggable="true" data-prop="kastanienweg" data-prio="dringend" data-search="kellerraum riecht muffig kastanienweg 7 keller 2033" aria-labelledby="tt-2033" aria-describedby="tm-2033">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--danger">dringend</span><span class="demo-muted">#2033</span></div>
+                    <h3 id="tt-2033">Kellerraum riecht muffig</h3>
+                    <p class="demo-ticket-meta" id="tm-2033"><span>Kastanienweg 7 · Keller</span><span>04.11.2026 · Begehung</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 347" aria-hidden="true">SA</span><span class="demo-muted">Sanitär Albrecht</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+              </ol>
+            </section>
+            <section class="demo-col" data-col="erledigt" aria-labelledby="col-erledigt" style="--demo-col-color: var(--ncss-color-success)">
+              <div class="demo-col-head"><h2 id="col-erledigt">Erledigt</h2><span class="ncss-badge ncss-badge--neutral" data-count>3</span></div>
+              <ol class="demo-cards" role="list">
+                  <li><article class="demo-ticket" id="t-2031" tabindex="0" draggable="true" data-prop="gartenstrasse" data-prio="dringend" data-search="rohrbruch im keller behoben gartenstraße 21 keller 2031" aria-labelledby="tt-2031" aria-describedby="tm-2031">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--danger">dringend</span><span class="demo-muted">#2031</span></div>
+                    <h3 id="tt-2031">Rohrbruch im Keller behoben</h3>
+                    <p class="demo-ticket-meta" id="tm-2031"><span>Gartenstraße 21 · Keller</span><span>02.11.2026 · Notruf</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 347" aria-hidden="true">SA</span><span class="demo-muted">Sanitär Albrecht</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2029" tabindex="0" draggable="true" data-prop="rosenhoehe" data-prio="niedrig" data-search="briefkastenschloss getauscht quartier rosenhöhe, haus a we 21 2029" aria-labelledby="tt-2029" aria-describedby="tm-2029">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--neutral">niedrig</span><span class="demo-muted">#2029</span></div>
+                    <h3 id="tt-2029">Briefkastenschloss getauscht</h3>
+                    <p class="demo-ticket-meta" id="tm-2029"><span>Rosenhöhe A · WE 21</span><span>29.10.2026 · Mieter-App</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-muted">nicht zugewiesen</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+                  <li><article class="demo-ticket" id="t-2027" tabindex="0" draggable="true" data-prop="muehlbach" data-prio="mittel" data-search="mängel nach wohnungsübergabe beseitigt am mühlbach 4 we 03 2027" aria-labelledby="tt-2027" aria-describedby="tm-2027">
+                    <div class="ncss-cluster demo-between"><span class="ncss-badge ncss-badge--brand-2">mittel</span><span class="demo-muted">#2027</span></div>
+                    <h3 id="tt-2027">Mängel nach Wohnungsübergabe beseitigt</h3>
+                    <p class="demo-ticket-meta" id="tm-2027"><span>Am Mühlbach 4 · WE 03</span><span>27.10.2026 · Übergabe</span></p>
+                    <div class="demo-ticket-foot"><span class="demo-avatar demo-avatar--sm" style="--demo-hue: 11" aria-hidden="true">MD</span><span class="demo-muted">Malerbetrieb Dörr</span><button type="button" class="demo-iconbtn" data-move="-1" aria-label="Nach links verschieben" title="Nach links verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-left"></use></svg></button><button type="button" class="demo-iconbtn" data-move="1" aria-label="Nach rechts verschieben" title="Nach rechts verschieben"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-right"></use></svg></button></div>
+                  </article></li>
+              </ol>
+            </section>
+          </div>
+        </div>
+      </main>
+      <footer class="demo-app-footer">
+        <p>ImmoDesk ist ein Beispiel: Hausverwaltung, Personen, Adressen und Beträge sind frei erfunden.</p>
+        <p><a href="../product.html">Beispiel mit NativeCSS</a> · <a href="../index.html">zurück zur Übersicht</a> · <a href="bildnachweis.html">Bildnachweis</a></p>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<dialog id="appDrawer" class="ncss-offcanvas ncss-offcanvas--start demo-drawer" aria-label="Navigation">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="appDrawer" aria-label="Navigation schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+</dialog>
+
+<div id="notifPop" class="demo-popover" popover aria-labelledby="notifTitle">
+  <div class="ncss-cluster">
+    <h2 id="notifTitle">Benachrichtigungen</h2>
+    <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-markread>Alle gelesen</button>
+  </div>
+  <ul class="demo-menu" role="list">
+    <li><a class="demo-notice" href="mieter.html?mieter=m23" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg><p>Zahlung überfällig: Frieda Pohl (Kastanienweg 7, WE 11)</p><time datetime="2026-11-20T08:12">heute, 08:12</time></a></li>
+    <li><a class="demo-notice" href="tickets.html#t-2048" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><p>Neues Ticket #2048: Rauchwarnmelder piept dauerhaft</p><time datetime="2026-11-20T07:41">heute, 07:41</time></a></li>
+    <li><a class="demo-notice" href="dokumente.html" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><p>Heizungsbau Kessler hat einen Kostenvoranschlag hochgeladen</p><time datetime="2026-11-19T16:05">gestern, 16:05</time></a></li>
+    <li><a class="demo-notice" href="index.html#termine"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-calendar"></use></svg><p>Eigentümerversammlung Gartenstraße 21: Einladung versendet</p><time datetime="2026-11-18T11:30">18.11., 11:30</time></a></li>
+  </ul>
+</div>
+<div id="userPop" class="demo-popover demo-popover--menu" popover aria-label="Konto">
+  <div class="demo-person ncss-mb-sm"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span><strong>Julia Brenner</strong><span class="demo-sub">Objektbetreuung</span></span></div>
+  <ul class="demo-menu" role="list">
+    <li><a href="mieter.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg>Mein Profil</a></li>
+    <li><button type="button" data-ncss-theme-toggle><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg>Hell/Dunkel umschalten</button></li>
+    <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg>Bildnachweis</a></li>
+    <li><a href="../index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-logout"></use></svg>Zurück zur NativeCSS-Übersicht</a></li>
+  </ul>
+</div>
+
+<ncss-command-palette shortcut="k">
+  <dialog id="cmdPalette" class="ncss-command" aria-label="Suche und Befehle" closedby="any">
+    <div class="ncss-command-search">
+      <input class="ncss-command-input" type="text" aria-label="Suchen oder Befehl eingeben" placeholder="Objekt, Mieter, Seite oder Befehl …">
+    </div>
+    <div class="ncss-command-list" aria-label="Ergebnisse">
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Aktionen</p>
+      <a class="ncss-command-item" href="tickets.html#neu" data-keywords="reparatur schaden melden"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-plus"></use></svg></span><span>Neues Reparatur-Ticket</span><span class="ncss-command-item-hint">Ticket</span></a>
+      <a class="ncss-command-item" href="dokumente.html#upload" data-keywords="datei upload vertrag"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-upload"></use></svg></span><span>Dokument hochladen</span></a>
+      <a class="ncss-command-item" href="mieter.html?status=ueberfaellig" data-keywords="mahnung rückstand miete"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg></span><span>Überfällige Mieten anzeigen</span><span class="ncss-command-item-hint">11 offen</span></a>
+      <button type="button" class="ncss-command-item" data-ncss-theme-toggle data-keywords="dark mode hell dunkel theme"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg></span><span>Hell/Dunkel umschalten</span></button>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Seiten</p>
+      <a class="ncss-command-item" href="index.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg></span><span>Dashboard</span></a>
+      <a class="ncss-command-item" href="objekte.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Objekte & Einheiten</span></a>
+      <a class="ncss-command-item" href="mieter.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg></span><span>Mieter & Zahlungen</span></a>
+      <a class="ncss-command-item" href="tickets.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg></span><span>Reparaturen</span></a>
+      <a class="ncss-command-item" href="dokumente.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg></span><span>Dokumente</span></a>
+      <a class="ncss-command-item" href="bildnachweis.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg></span><span>Bildnachweis</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Objekte</p>
+      <a class="ncss-command-item" href="objekte.html#objekt-lindenallee" data-keywords="Altbau Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Lindenallee 12</span><span class="ncss-command-item-hint">8 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-muehlbach" data-keywords="Altbau Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Am Mühlbach 4</span><span class="ncss-command-item-hint">6 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-kastanienweg" data-keywords="Mehrfamilienhaus Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Kastanienweg 7</span><span class="ncss-command-item-hint">12 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-gartenstrasse" data-keywords="Altbau Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Gartenstraße 21</span><span class="ncss-command-item-hint">9 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-marktplatz" data-keywords="Wohn- &amp; Geschäftshaus Marktplatz 3"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Marktplatz 3</span><span class="ncss-command-item-hint">5 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-rosenhoehe" data-keywords="Neubau Rosenhöhe 2"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Quartier Rosenhöhe, Haus A</span><span class="ncss-command-item-hint">24 Einheiten</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Mieter</p>
+      <a class="ncss-command-item" href="mieter.html?mieter=m03" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Nele Oswald</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m05" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Sophie Lorenz</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 05</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m07" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elias Ebert</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 08</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m10" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Konrad Seidel</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m11" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Selin Demir</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m14" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Petersen</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 01</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m15" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Lea Vogt</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 02</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m19" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Ole Lindner</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 06</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m23" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Pohl</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 11</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m27" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Jonas Jansen</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m28" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elena Brückner</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m31" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Helga Möller</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 07</span></a>
+    </div>
+    </div>
+    <p class="ncss-command-empty" hidden>Keine Treffer – versuche einen Straßennamen oder „Ticket“.</p>
+    <div class="ncss-command-footer"><span><kbd>↑</kbd> <kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> öffnen</span><span><kbd>Esc</kbd> schließen</span></div>
+  </dialog>
+</ncss-command-palette>
+
+<dialog id="newTicket" class="ncss-modal demo-modal-wide" aria-labelledby="ntTitle">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="newTicket" aria-label="Schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+  <form class="demo-form" id="ticketForm" novalidate>
+    <div class="ncss-modal-header"><h2 id="ntTitle">Neues Reparatur-Ticket</h2></div>
+    <div class="ncss-modal-body demo-form">
+      <p class="ncss-field-error" id="ntSummary" role="alert"></p>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="ntName">Titel</label>
+        <input class="ncss-input" id="ntName" name="title" required minlength="5" maxlength="80" autocomplete="off" aria-describedby="ntNameHint ntNameErr" placeholder="z. B. Heizung im Bad bleibt kalt">
+        <p class="ncss-field-hint" id="ntNameHint">Kurz und konkret, mindestens 5 Zeichen.</p>
+        <p class="ncss-field-error" id="ntNameErr"></p>
+      </div>
+      <div class="demo-form-row">
+        <div class="ncss-field">
+          <label class="ncss-label ncss-label--required" for="ntProp">Objekt</label>
+          <select class="ncss-select" id="ntProp" name="prop" required aria-describedby="ntPropErr"><option value="">Bitte wählen …</option><option value="lindenallee">Lindenallee 12</option><option value="muehlbach">Am Mühlbach 4</option><option value="kastanienweg">Kastanienweg 7</option><option value="gartenstrasse">Gartenstraße 21</option><option value="marktplatz">Marktplatz 3</option><option value="rosenhoehe">Quartier Rosenhöhe, Haus A</option></select>
+          <p class="ncss-field-error" id="ntPropErr"></p>
+        </div>
+        <div class="ncss-field">
+          <label class="ncss-label" for="ntUnit">Einheit / Ort</label>
+          <input class="ncss-input" id="ntUnit" name="unit" placeholder="z. B. WE 04 oder Keller" autocomplete="off">
+        </div>
+      </div>
+      <fieldset aria-describedby="ntPrioErr">
+        <legend class="ncss-label ncss-label--required">Priorität</legend>
+        <div class="ncss-cluster"><label class="ncss-choice"><input type="radio" name="prio" value="niedrig" required> niedrig</label><label class="ncss-choice"><input type="radio" name="prio" value="mittel" required checked> mittel</label><label class="ncss-choice"><input type="radio" name="prio" value="hoch" required> hoch</label><label class="ncss-choice"><input type="radio" name="prio" value="dringend" required> dringend</label></div>
+        <p class="ncss-field-error" id="ntPrioErr"></p>
+      </fieldset>
+      <div class="demo-form-row">
+        <div class="ncss-field">
+          <label class="ncss-label" for="ntCraft">Handwerker</label>
+          <select class="ncss-select" id="ntCraft" name="craft"><option value="">Noch nicht zuweisen</option><option value="kessler">Heizungsbau Kessler – Heizung &amp; Sanitär</option><option value="albrecht">Sanitär Albrecht – Sanitär &amp; Abfluss</option><option value="hofmann">Dachdeckerei Hofmann – Dach &amp; Fassade</option><option value="sommer">Elektro Sommer – Elektro &amp; Klingelanlagen</option><option value="weber">Lift &amp; Service Weber – Aufzüge &amp; Tore</option><option value="doerr">Malerbetrieb Dörr – Maler &amp; Trockenbau</option></select>
+        </div>
+        <div class="ncss-field">
+          <label class="ncss-label" for="ntDue">Erledigen bis</label>
+          <input class="ncss-input" type="date" id="ntDue" name="due" min="2026-11-20" aria-describedby="ntDueErr">
+          <p class="ncss-field-error" id="ntDueErr"></p>
+        </div>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="ntDesc">Beschreibung</label>
+        <textarea class="ncss-textarea" id="ntDesc" name="desc" rows="3" placeholder="Was ist passiert? Seit wann? Zugang zur Wohnung?"></textarea>
+      </div>
+    </div>
+    <div class="ncss-modal-footer">
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="close" commandfor="newTicket">Abbrechen</button>
+      <button type="submit" class="ncss-btn ncss-btn--primary"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-plus"></use></svg>Ticket anlegen</button>
+    </div>
+  </form>
+</dialog>
+</body>
+</html>

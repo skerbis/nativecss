@@ -1,0 +1,5 @@
+[
+  {"title": "Hausordnung (Muster)", "url": "../assets/examples/immo/files/hausordnung.pdf", "size": 19034, "type": "pdf", "description": "Für Aushang und Mietvertrags-Anlage"},
+  {"title": "Wohnungsübergabeprotokoll (Vorlage)", "url": "../assets/examples/immo/files/uebergabeprotokoll-vorlage.pdf", "size": 18250, "type": "pdf", "description": "Ein- und Auszug, Zählerstände, Schlüssel"},
+  {"title": "Nebenkosten-Import (Vorlage)", "url": "../assets/examples/immo/files/nebenkosten-vorlage.csv", "size": 108, "type": "csv", "description": "Spalten für den Import in die Abrechnung"}
+]

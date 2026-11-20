@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Objekte & Einheiten · ImmoDesk – Beispiel mit NativeCSS</title>
+<meta name="description" content="ImmoDesk: Objektliste mit Filtern und Einheiten-Tabelle - Beispiel einer App-Oberfläche mit NativeCSS.">
+<link rel="icon" href="../assets/examples/immo/logo.svg" type="image/svg+xml">
+<script src="../../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../assets/examples/immo/immo.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/notification.js" defer></script>
+<script src="../assets/js/immo-table.js" defer></script>
+<script src="../assets/js/immo-objekte.js" defer></script>
+<script src="../assets/js/immo-app.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+</head>
+<body>
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+<div class="demo-app">
+  <div class="demo-app-grid">
+    <div class="demo-sidebar">
+      <div class="demo-sidebar-inner" id="sidebarNav">
+        <a class="demo-brand" href="index.html"><img src="../assets/examples/immo/logo.svg" alt="" width="32" height="32"><span><strong>ImmoDesk</strong><small>Brandt &amp; Partner Hausverwaltung</small></span></a>
+        <nav class="demo-sidenav" aria-label="Hauptnavigation">
+        <h2 id="nav-g0">Übersicht</h2>
+        <ul aria-labelledby="nav-g0">
+          <li><a href="index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg><span>Dashboard</span></a></li>
+        </ul>
+        <h2 id="nav-g1">Bestand</h2>
+        <ul aria-labelledby="nav-g1">
+          <li><a href="objekte.html" aria-current="page"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg><span>Objekte & Einheiten</span><span class="ncss-badge ncss-badge--neutral">6</span></a></li>
+          <li><a href="mieter.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg><span>Mieter & Zahlungen</span><span class="ncss-badge ncss-badge--danger">5<span class="ncss-visually-hidden"> in Mahnung</span></span></a></li>
+          <li><a href="tickets.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><span>Reparaturen</span><span class="ncss-badge ncss-badge--neutral">14<span class="ncss-visually-hidden"> offen</span></span></a></li>
+          <li><a href="dokumente.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><span>Dokumente</span></a></li>
+        </ul>
+        <h2 id="nav-g2">Sonstiges</h2>
+        <ul aria-labelledby="nav-g2">
+          <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg><span>Bildnachweis</span></a></li>
+        </ul>
+        </nav>
+        <div class="demo-sidebar-foot">
+          <p><strong>NK-Abrechnung 2025</strong></p>
+          <p class="demo-muted">4 von 6 Objekten abgerechnet</p>
+          <progress max="6" value="4" aria-label="Nebenkostenabrechnungen 2025: 4 von 6 abgerechnet"></progress>
+        </div>
+      </div>
+    </div>
+    <div class="demo-app-col">
+      <header class="ncss-topbar demo-topbar">
+        <div class="ncss-topbar-inner">
+          <button type="button" class="demo-iconbtn demo-nav-toggle" data-demo-drawer="appDrawer" aria-controls="appDrawer" aria-expanded="false" aria-label="Navigation öffnen"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-menu"></use></svg></button>
+          <button type="button" class="demo-searchbtn" command="show-modal" commandfor="cmdPalette" aria-haspopup="dialog"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-search"></use></svg><span>Suchen: Objekte, Mieter, Befehle …</span><kbd class="demo-hide-narrow" data-demo-shortcut>Strg K</kbd></button>
+          <div class="demo-topbar-actions">
+            <button type="button" class="ncss-btn ncss-btn--secondary demo-inspect-btn" data-demo-inspect aria-pressed="false">Inspect</button>
+            <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Dunkles Design">
+              <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+              <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="demo-iconbtn" popovertarget="notifPop" aria-label="Benachrichtigungen, 3 ungelesen" data-demo-bell><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-bell"></use></svg><span class="demo-dot" aria-hidden="true">3</span></button>
+            <button type="button" class="demo-userbtn" popovertarget="userPop" aria-label="Konto: Julia Brenner"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span class="demo-hide-narrow">Julia Brenner</span><svg class="demo-i demo-hide-narrow" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-chevron-down"></use></svg></button>
+          </div>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="demo-page">
+
+          <div class="demo-pagehead">
+            <div>
+              <h1>Objekte &amp; Einheiten</h1>
+              <p>6 Objekte · 64 Einheiten · 4.784 m² in Erlenbrunn</p>
+            </div>
+            <div class="demo-seg" role="group" aria-label="Ansicht">
+              <button type="button" aria-pressed="true" data-demo-view="cards"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-grid"></use></svg>Karten</button>
+              <button type="button" aria-pressed="false" data-demo-view="list"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-list"></use></svg>Liste</button>
+            </div>
+          </div>
+
+          <form class="demo-toolbar ncss-mb-sm" role="search" aria-label="Objekte filtern" data-demo-propfilter>
+            <div class="ncss-field demo-grow"><label class="ncss-label" for="propQ">Suche</label><input class="ncss-input" type="search" id="propQ" name="q" placeholder="Straße oder Objektname" autocomplete="off"></div>
+            <div class="ncss-field"><label class="ncss-label" for="propType">Objektart</label><select class="ncss-select" id="propType" name="type"><option value="">Alle</option><option>Altbau</option><option>Mehrfamilienhaus</option><option>Wohn- &amp; Geschäftshaus</option><option>Neubau</option></select></div>
+            <div class="ncss-field"><label class="ncss-label" for="propVac">Vermietung</label><select class="ncss-select" id="propVac" name="vacant"><option value="">Alle Objekte</option><option value="1">Nur mit Leerstand</option></select></div>
+            <p class="demo-toolbar-end"><output id="propCount" aria-live="polite">6 Objekte</output></p>
+          </form>
+
+          <div id="propCards" class="ncss-grid ncss-mb-sm" style="--ncss-grid-min: 21rem; --ncss-grid-gap: var(--ncss-space-xs)">
+            <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md demo-prop" data-prop="lindenallee" data-type="Altbau" data-vacant="1" data-search="lindenallee 12 lindenallee 12 altbau">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/lindenallee-thumb.webp" alt="Altbau-Fassade mit Efeu und begrünten Balkonen" width="640" height="400" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <div>
+                  <h3><a class="ncss-card-link" href="#objekt-lindenallee">Lindenallee 12</a></h3>
+                  <span class="demo-sub">Lindenallee 12, 61423 Erlenbrunn</span>
+                </div>
+                <div class="ncss-cluster"><span class="ncss-badge ncss-badge--neutral">Altbau</span><span class="ncss-badge ncss-badge--neutral">Bj. 1908</span><span class="ncss-badge ncss-badge--danger">1 leer</span></div>
+                <div class="demo-meter"><span>7 von 8 Einheiten vermietet</span><meter min="0" max="8" low="7.2" optimum="8" value="7" aria-hidden="true"></meter></div>
+              </div>
+            </article>
+            <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md demo-prop" data-prop="muehlbach" data-type="Altbau" data-vacant="0" data-search="am mühlbach 4 am mühlbach 4 altbau">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/muehlbach-thumb.webp" alt="Gelbes Eckhaus mit grünen Fensterläden und Balkonen" width="640" height="400" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <div>
+                  <h3><a class="ncss-card-link" href="#objekt-muehlbach">Am Mühlbach 4</a></h3>
+                  <span class="demo-sub">Am Mühlbach 4, 61423 Erlenbrunn</span>
+                </div>
+                <div class="ncss-cluster"><span class="ncss-badge ncss-badge--neutral">Altbau</span><span class="ncss-badge ncss-badge--neutral">Bj. 1926</span></div>
+                <div class="demo-meter"><span>6 von 6 Einheiten vermietet</span><meter min="0" max="6" low="5.4" optimum="6" value="6" aria-hidden="true"></meter></div>
+              </div>
+            </article>
+            <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md demo-prop" data-prop="kastanienweg" data-type="Mehrfamilienhaus" data-vacant="1" data-search="kastanienweg 7 kastanienweg 7 mehrfamilienhaus">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/kastanienweg-thumb.webp" alt="Mehrfamilienhaus mit gelben Balkonbrüstungen" width="640" height="400" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <div>
+                  <h3><a class="ncss-card-link" href="#objekt-kastanienweg">Kastanienweg 7</a></h3>
+                  <span class="demo-sub">Kastanienweg 7, 61423 Erlenbrunn</span>
+                </div>
+                <div class="ncss-cluster"><span class="ncss-badge ncss-badge--neutral">Mehrfamilienhaus</span><span class="ncss-badge ncss-badge--neutral">Bj. 1972</span><span class="ncss-badge ncss-badge--danger">1 leer</span></div>
+                <div class="demo-meter"><span>11 von 12 Einheiten vermietet</span><meter min="0" max="12" low="10.8" optimum="12" value="11" aria-hidden="true"></meter></div>
+              </div>
+            </article>
+            <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md demo-prop" data-prop="gartenstrasse" data-type="Altbau" data-vacant="0" data-search="gartenstraße 21 gartenstraße 21 altbau">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/gartenstrasse-thumb.webp" alt="Gelbe Fassade, fast vollständig mit Efeu bewachsen" width="640" height="400" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <div>
+                  <h3><a class="ncss-card-link" href="#objekt-gartenstrasse">Gartenstraße 21</a></h3>
+                  <span class="demo-sub">Gartenstraße 21, 61423 Erlenbrunn</span>
+                </div>
+                <div class="ncss-cluster"><span class="ncss-badge ncss-badge--neutral">Altbau</span><span class="ncss-badge ncss-badge--neutral">Bj. 1911</span></div>
+                <div class="demo-meter"><span>9 von 9 Einheiten vermietet</span><meter min="0" max="9" low="8.1" optimum="9" value="9" aria-hidden="true"></meter></div>
+              </div>
+            </article>
+            <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md demo-prop" data-prop="marktplatz" data-type="Wohn- &amp; Geschäftshaus" data-vacant="0" data-search="marktplatz 3 marktplatz 3 wohn- &amp; geschäftshaus">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/marktplatz-thumb.webp" alt="Historische, farbige Giebelfassaden am Platz" width="640" height="400" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <div>
+                  <h3><a class="ncss-card-link" href="#objekt-marktplatz">Marktplatz 3</a></h3>
+                  <span class="demo-sub">Marktplatz 3, 61423 Erlenbrunn</span>
+                </div>
+                <div class="ncss-cluster"><span class="ncss-badge ncss-badge--neutral">Wohn- &amp; Geschäftshaus</span><span class="ncss-badge ncss-badge--neutral">Bj. 1890</span></div>
+                <div class="demo-meter"><span>5 von 5 Einheiten vermietet</span><meter min="0" max="5" low="4.5" optimum="5" value="5" aria-hidden="true"></meter></div>
+              </div>
+            </article>
+            <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md demo-prop" data-prop="rosenhoehe" data-type="Neubau" data-vacant="1" data-search="quartier rosenhöhe, haus a rosenhöhe 2 neubau">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/rosenhoehe-thumb.webp" alt="Moderne Neubaufassade in kräftigem Blau und Grün" width="640" height="400" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <div>
+                  <h3><a class="ncss-card-link" href="#objekt-rosenhoehe">Quartier Rosenhöhe, Haus A</a></h3>
+                  <span class="demo-sub">Rosenhöhe 2, 61423 Erlenbrunn</span>
+                </div>
+                <div class="ncss-cluster"><span class="ncss-badge ncss-badge--neutral">Neubau</span><span class="ncss-badge ncss-badge--neutral">Bj. 2021</span><span class="ncss-badge ncss-badge--danger">1 leer</span></div>
+                <div class="demo-meter"><span>23 von 24 Einheiten vermietet</span><meter min="0" max="24" low="21.6" optimum="24" value="23" aria-hidden="true"></meter></div>
+              </div>
+            </article>
+          </div>
+          <div id="propList" class="ncss-card ncss-border ncss-radius-lg demo-panel ncss-mb-sm" hidden>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-label="Objektliste" tabindex="0">
+              <table class="demo-table" data-demo-sortable>
+                <thead><tr><th scope="col" data-sort-key="name" data-sort-type="text"><button type="button" class="demo-sort">Objekt<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" data-sort-key="type" data-sort-type="text"><button type="button" class="demo-sort">Art<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="year" data-sort-type="number"><button type="button" class="demo-sort">Baujahr<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="units" data-sort-type="number"><button type="button" class="demo-sort">Einheiten<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="vac" data-sort-type="number"><button type="button" class="demo-sort">Leerstand<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="kalt" data-sort-type="number"><button type="button" class="demo-sort">Soll-Kaltmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th></tr></thead>
+                <tbody>
+                  <tr data-prop="lindenallee" data-type="Altbau" data-vacant="1" data-search="lindenallee 12 lindenallee 12 altbau"><td data-sort="Lindenallee 12"><a href="#objekt-lindenallee">Lindenallee 12</a><span class="demo-sub">Lindenallee 12</span></td><td>Altbau</td><td class="demo-num" data-sort="1908">1908</td><td class="demo-num" data-sort="8">8</td><td class="demo-num" data-sort="1"><span class="ncss-badge ncss-badge--danger">1</span></td><td class="demo-num" data-sort="5805">5.805 €</td></tr>
+                  <tr data-prop="muehlbach" data-type="Altbau" data-vacant="0" data-search="am mühlbach 4 am mühlbach 4 altbau"><td data-sort="Am Mühlbach 4"><a href="#objekt-muehlbach">Am Mühlbach 4</a><span class="demo-sub">Am Mühlbach 4</span></td><td>Altbau</td><td class="demo-num" data-sort="1926">1926</td><td class="demo-num" data-sort="6">6</td><td class="demo-num" data-sort="0">0</td><td class="demo-num" data-sort="4200">4.200 €</td></tr>
+                  <tr data-prop="kastanienweg" data-type="Mehrfamilienhaus" data-vacant="1" data-search="kastanienweg 7 kastanienweg 7 mehrfamilienhaus"><td data-sort="Kastanienweg 7"><a href="#objekt-kastanienweg">Kastanienweg 7</a><span class="demo-sub">Kastanienweg 7</span></td><td>Mehrfamilienhaus</td><td class="demo-num" data-sort="1972">1972</td><td class="demo-num" data-sort="12">12</td><td class="demo-num" data-sort="1"><span class="ncss-badge ncss-badge--danger">1</span></td><td class="demo-num" data-sort="5385">5.385 €</td></tr>
+                  <tr data-prop="gartenstrasse" data-type="Altbau" data-vacant="0" data-search="gartenstraße 21 gartenstraße 21 altbau"><td data-sort="Gartenstraße 21"><a href="#objekt-gartenstrasse">Gartenstraße 21</a><span class="demo-sub">Gartenstraße 21</span></td><td>Altbau</td><td class="demo-num" data-sort="1911">1911</td><td class="demo-num" data-sort="9">9</td><td class="demo-num" data-sort="0">0</td><td class="demo-num" data-sort="6675">6.675 €</td></tr>
+                  <tr data-prop="marktplatz" data-type="Wohn- &amp; Geschäftshaus" data-vacant="0" data-search="marktplatz 3 marktplatz 3 wohn- &amp; geschäftshaus"><td data-sort="Marktplatz 3"><a href="#objekt-marktplatz">Marktplatz 3</a><span class="demo-sub">Marktplatz 3</span></td><td>Wohn- &amp; Geschäftshaus</td><td class="demo-num" data-sort="1890">1890</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="0">0</td><td class="demo-num" data-sort="5945">5.945 €</td></tr>
+                  <tr data-prop="rosenhoehe" data-type="Neubau" data-vacant="1" data-search="quartier rosenhöhe, haus a rosenhöhe 2 neubau"><td data-sort="Quartier Rosenhöhe, Haus A"><a href="#objekt-rosenhoehe">Quartier Rosenhöhe, Haus A</a><span class="demo-sub">Rosenhöhe 2</span></td><td>Neubau</td><td class="demo-num" data-sort="2021">2021</td><td class="demo-num" data-sort="24">24</td><td class="demo-num" data-sort="1"><span class="ncss-badge ncss-badge--danger">1</span></td><td class="demo-num" data-sort="20470">20.470 €</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h2 class="ncss-visually-hidden" id="detailsTitle">Objektdetails</h2>
+          <div class="ncss-stack" aria-labelledby="detailsTitle" role="region" id="propDetails">
+          <section class="ncss-card ncss-border ncss-radius-lg demo-panel demo-detail-section" id="objekt-lindenallee" aria-labelledby="h-lindenallee" tabindex="-1">
+            <div class="ncss-card-header">
+              <div>
+                <h2 id="h-lindenallee">Lindenallee 12</h2>
+                <span class="demo-sub"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-pin"></use></svg> Lindenallee 12, 61423 Erlenbrunn · Altbau, Baujahr 1908</span>
+              </div>
+              <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-export="units-lindenallee" data-filename="einheiten-lindenallee.csv"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg>CSV exportieren</button>
+            </div>
+            <div class="ncss-card-body ncss-stack">
+              <figure class="ncss-mb-0">
+                <div class="demo-hero-img"><img src="../assets/examples/immo/lindenallee.webp" alt="Altbau-Fassade mit Efeu und begrünten Balkonen" loading="lazy"><img src="../assets/examples/immo/treppenhaus-thumb.webp" alt="Blick ins Treppenhaus mit Geländer und Fliesenboden" loading="lazy"><img src="../assets/examples/immo/innen-wohnzimmer-thumb.webp" alt="Leeres, helles Wohnzimmer mit Holzboden" loading="lazy"></div>
+                <figcaption class="demo-sub ncss-mb-0">Symbolfotos: Vinay Reddy Sama, Bayram Yalçın, Curtis Adams / Pexels – <a href="bildnachweis.html">Bildnachweis</a></figcaption>
+              </figure>
+              <dl class="demo-facts">
+                <div><dt>Einheiten</dt><dd>8</dd></div>
+                <div><dt>Wohn-/Nutzfläche</dt><dd>688 m²</dd></div>
+                <div><dt>Soll-Kaltmiete / Monat</dt><dd>5.805 €</dd></div>
+                <div><dt>Leerstand</dt><dd>1 Einheit</dd></div>
+                <div><dt>Heizung</dt><dd>Gas-Zentralheizung (2019)</dd></div>
+                <div><dt>Hausmeister</dt><dd>Hausmeisterservice Bauer</dd></div>
+              </dl>
+            </div>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="cap-lindenallee" tabindex="0">
+              <table class="demo-table" id="units-lindenallee" data-demo-sortable>
+                <caption id="cap-lindenallee" class="ncss-visually-hidden">Einheiten Lindenallee 12</caption>
+                <thead><tr><th scope="col" data-sort-key="no" data-sort-type="text"><button type="button" class="demo-sort">Whg<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Lage</th><th scope="col" class="demo-num" data-sort-key="area" data-sort-type="number"><button type="button" class="demo-sort">m²<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="rooms" data-sort-type="number"><button type="button" class="demo-sort">Zimmer<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="kalt" data-sort-type="number"><button type="button" class="demo-sort">Kaltmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Mieter</th><th scope="col" data-sort-key="status" data-sort-type="text"><button type="button" class="demo-sort">Status<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th></tr></thead>
+                <tbody>
+                  <tr><td data-sort="WE 01"><strong>WE 01</strong></td><td>EG links</td><td class="demo-num" data-sort="98">98</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="950">950,00 €</td><td><a href="mieter.html?mieter=m01">Katarina Berger</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 02"><strong>WE 02</strong></td><td>EG rechts</td><td class="demo-num" data-sort="82">82</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="810">810,00 €</td><td><a href="mieter.html?mieter=m02">Sophie Demir</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 03"><strong>WE 03</strong></td><td>1. OG links</td><td class="demo-num" data-sort="103">103</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="965">965,00 €</td><td><a href="mieter.html?mieter=m03">Nele Oswald</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 04"><strong>WE 04</strong></td><td>1. OG rechts</td><td class="demo-num" data-sort="59">59</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="540">540,00 €</td><td><a href="mieter.html?mieter=m04">Nele Fuchs</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 05"><strong>WE 05</strong></td><td>2. OG links</td><td class="demo-num" data-sort="94">94</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="880">880,00 €</td><td><a href="mieter.html?mieter=m05">Sophie Lorenz</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 06"><strong>WE 06</strong></td><td>2. OG rechts</td><td class="demo-num" data-sort="78">78</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="715">715,00 €</td><td><span class="demo-muted">–</span></td><td data-sort="leer"><span class="ncss-badge ncss-badge--danger">leer</span></td></tr>
+                  <tr><td data-sort="WE 07"><strong>WE 07</strong></td><td>DG links</td><td class="demo-num" data-sort="72">72</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="695">695,00 €</td><td><a href="mieter.html?mieter=m06">Elena Kleinert</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 08"><strong>WE 08</strong></td><td>DG rechts</td><td class="demo-num" data-sort="102">102</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="965">965,00 €</td><td><a href="mieter.html?mieter=m07">Elias Ebert</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="ncss-card ncss-border ncss-radius-lg demo-panel demo-detail-section" id="objekt-muehlbach" aria-labelledby="h-muehlbach" tabindex="-1">
+            <div class="ncss-card-header">
+              <div>
+                <h2 id="h-muehlbach">Am Mühlbach 4</h2>
+                <span class="demo-sub"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-pin"></use></svg> Am Mühlbach 4, 61423 Erlenbrunn · Altbau, Baujahr 1926</span>
+              </div>
+              <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-export="units-muehlbach" data-filename="einheiten-muehlbach.csv"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg>CSV exportieren</button>
+            </div>
+            <div class="ncss-card-body ncss-stack">
+              <figure class="ncss-mb-0">
+                <div class="demo-hero-img"><img src="../assets/examples/immo/muehlbach.webp" alt="Gelbes Eckhaus mit grünen Fensterläden und Balkonen" loading="lazy"><img src="../assets/examples/immo/innen-flur-thumb.webp" alt="Leere Wohnung mit weißen Wänden und Parkett" loading="lazy"></div>
+                <figcaption class="demo-sub ncss-mb-0">Symbolfotos: Gül Işık, Gustavo Galeano Maz / Pexels – <a href="bildnachweis.html">Bildnachweis</a></figcaption>
+              </figure>
+              <dl class="demo-facts">
+                <div><dt>Einheiten</dt><dd>6</dd></div>
+                <div><dt>Wohn-/Nutzfläche</dt><dd>465 m²</dd></div>
+                <div><dt>Soll-Kaltmiete / Monat</dt><dd>4.200 €</dd></div>
+                <div><dt>Leerstand</dt><dd>0 Einheiten</dd></div>
+                <div><dt>Heizung</dt><dd>Fernwärme</dd></div>
+                <div><dt>Hausmeister</dt><dd>Hausmeisterservice Bauer</dd></div>
+              </dl>
+            </div>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="cap-muehlbach" tabindex="0">
+              <table class="demo-table" id="units-muehlbach" data-demo-sortable>
+                <caption id="cap-muehlbach" class="ncss-visually-hidden">Einheiten Am Mühlbach 4</caption>
+                <thead><tr><th scope="col" data-sort-key="no" data-sort-type="text"><button type="button" class="demo-sort">Whg<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Lage</th><th scope="col" class="demo-num" data-sort-key="area" data-sort-type="number"><button type="button" class="demo-sort">m²<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="rooms" data-sort-type="number"><button type="button" class="demo-sort">Zimmer<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="kalt" data-sort-type="number"><button type="button" class="demo-sort">Kaltmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Mieter</th><th scope="col" data-sort-key="status" data-sort-type="text"><button type="button" class="demo-sort">Status<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th></tr></thead>
+                <tbody>
+                  <tr><td data-sort="WE 01"><strong>WE 01</strong></td><td>EG links</td><td class="demo-num" data-sort="78">78</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="715">715,00 €</td><td><a href="mieter.html?mieter=m08">Helga Engel</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 02"><strong>WE 02</strong></td><td>EG rechts</td><td class="demo-num" data-sort="77">77</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="670">670,00 €</td><td><a href="mieter.html?mieter=m09">Elena Sauer</a></td><td data-sort="gekündigt"><span class="ncss-badge ncss-badge--warning">gekündigt</span><span class="demo-sub">zum 31.12.2026</span></td></tr>
+                  <tr><td data-sort="WE 03"><strong>WE 03</strong></td><td>1. OG links</td><td class="demo-num" data-sort="77">77</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="720">720,00 €</td><td><a href="mieter.html?mieter=m10">Konrad Seidel</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 04"><strong>WE 04</strong></td><td>1. OG rechts</td><td class="demo-num" data-sort="91">91</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="790">790,00 €</td><td><a href="mieter.html?mieter=m11">Selin Demir</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 05"><strong>WE 05</strong></td><td>2. OG links</td><td class="demo-num" data-sort="70">70</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="630">630,00 €</td><td><a href="mieter.html?mieter=m12">Noah Sauer</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 06"><strong>WE 06</strong></td><td>2. OG rechts</td><td class="demo-num" data-sort="72">72</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="675">675,00 €</td><td><a href="mieter.html?mieter=m13">Piotr Kraus</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="ncss-card ncss-border ncss-radius-lg demo-panel demo-detail-section" id="objekt-kastanienweg" aria-labelledby="h-kastanienweg" tabindex="-1">
+            <div class="ncss-card-header">
+              <div>
+                <h2 id="h-kastanienweg">Kastanienweg 7</h2>
+                <span class="demo-sub"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-pin"></use></svg> Kastanienweg 7, 61423 Erlenbrunn · Mehrfamilienhaus, Baujahr 1972</span>
+              </div>
+              <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-export="units-kastanienweg" data-filename="einheiten-kastanienweg.csv"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg>CSV exportieren</button>
+            </div>
+            <div class="ncss-card-body ncss-stack">
+              <figure class="ncss-mb-0">
+                <div class="demo-hero-img"><img src="../assets/examples/immo/kastanienweg.webp" alt="Mehrfamilienhaus mit gelben Balkonbrüstungen" loading="lazy"><img src="../assets/examples/immo/innen-wohnzimmer-thumb.webp" alt="Leeres, helles Wohnzimmer mit Holzboden" loading="lazy"></div>
+                <figcaption class="demo-sub ncss-mb-0">Symbolfotos: Nuray, Curtis Adams / Pexels – <a href="bildnachweis.html">Bildnachweis</a></figcaption>
+              </figure>
+              <dl class="demo-facts">
+                <div><dt>Einheiten</dt><dd>12</dd></div>
+                <div><dt>Wohn-/Nutzfläche</dt><dd>690 m²</dd></div>
+                <div><dt>Soll-Kaltmiete / Monat</dt><dd>5.385 €</dd></div>
+                <div><dt>Leerstand</dt><dd>1 Einheit</dd></div>
+                <div><dt>Heizung</dt><dd>Gas-Zentralheizung (2008)</dd></div>
+                <div><dt>Hausmeister</dt><dd>Grün &amp; Haus Erlenbrunn</dd></div>
+              </dl>
+            </div>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="cap-kastanienweg" tabindex="0">
+              <table class="demo-table" id="units-kastanienweg" data-demo-sortable>
+                <caption id="cap-kastanienweg" class="ncss-visually-hidden">Einheiten Kastanienweg 7</caption>
+                <thead><tr><th scope="col" data-sort-key="no" data-sort-type="text"><button type="button" class="demo-sort">Whg<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Lage</th><th scope="col" class="demo-num" data-sort-key="area" data-sort-type="number"><button type="button" class="demo-sort">m²<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="rooms" data-sort-type="number"><button type="button" class="demo-sort">Zimmer<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="kalt" data-sort-type="number"><button type="button" class="demo-sort">Kaltmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Mieter</th><th scope="col" data-sort-key="status" data-sort-type="text"><button type="button" class="demo-sort">Status<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th></tr></thead>
+                <tbody>
+                  <tr><td data-sort="WE 01"><strong>WE 01</strong></td><td>EG links</td><td class="demo-num" data-sort="45">45</td><td class="demo-num" data-sort="1.5">1,5</td><td class="demo-num" data-sort="375">375,00 €</td><td><a href="mieter.html?mieter=m14">Frieda Petersen</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 02"><strong>WE 02</strong></td><td>EG rechts</td><td class="demo-num" data-sort="48">48</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="395">395,00 €</td><td><a href="mieter.html?mieter=m15">Lea Vogt</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 03"><strong>WE 03</strong></td><td>1. OG links</td><td class="demo-num" data-sort="50">50</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="425">425,00 €</td><td><a href="mieter.html?mieter=m16">Konrad Gerlach</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 04"><strong>WE 04</strong></td><td>1. OG rechts</td><td class="demo-num" data-sort="68">68</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="580">580,00 €</td><td><a href="mieter.html?mieter=m17">Jakob Gerlach</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 05"><strong>WE 05</strong></td><td>2. OG links</td><td class="demo-num" data-sort="76">76</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="640">640,00 €</td><td><a href="mieter.html?mieter=m18">Lea Hartwig</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 06"><strong>WE 06</strong></td><td>2. OG rechts</td><td class="demo-num" data-sort="76">76</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="640">640,00 €</td><td><a href="mieter.html?mieter=m19">Ole Lindner</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 07"><strong>WE 07</strong></td><td>3. OG links</td><td class="demo-num" data-sort="60">60</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="485">485,00 €</td><td><a href="mieter.html?mieter=m20">Lukas Imhoff</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 08"><strong>WE 08</strong></td><td>3. OG rechts</td><td class="demo-num" data-sort="55">55</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="445">445,00 €</td><td><a href="mieter.html?mieter=m21">Aylin Lorenz</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 09"><strong>WE 09</strong></td><td>4. OG links</td><td class="demo-num" data-sort="45">45</td><td class="demo-num" data-sort="1.5">1,5</td><td class="demo-num" data-sort="380">380,00 €</td><td><span class="demo-muted">–</span></td><td data-sort="leer"><span class="ncss-badge ncss-badge--danger">leer</span></td></tr>
+                  <tr><td data-sort="WE 10"><strong>WE 10</strong></td><td>4. OG rechts</td><td class="demo-num" data-sort="47">47</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="410">410,00 €</td><td><a href="mieter.html?mieter=m22">Rüdiger Engel</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 11"><strong>WE 11</strong></td><td>DG links</td><td class="demo-num" data-sort="67">67</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="565">565,00 €</td><td><a href="mieter.html?mieter=m23">Frieda Pohl</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 12"><strong>WE 12</strong></td><td>DG rechts</td><td class="demo-num" data-sort="53">53</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="425">425,00 €</td><td><a href="mieter.html?mieter=m24">Ida Rieger</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="ncss-card ncss-border ncss-radius-lg demo-panel demo-detail-section" id="objekt-gartenstrasse" aria-labelledby="h-gartenstrasse" tabindex="-1">
+            <div class="ncss-card-header">
+              <div>
+                <h2 id="h-gartenstrasse">Gartenstraße 21</h2>
+                <span class="demo-sub"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-pin"></use></svg> Gartenstraße 21, 61423 Erlenbrunn · Altbau, Baujahr 1911</span>
+              </div>
+              <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-export="units-gartenstrasse" data-filename="einheiten-gartenstrasse.csv"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg>CSV exportieren</button>
+            </div>
+            <div class="ncss-card-body ncss-stack">
+              <figure class="ncss-mb-0">
+                <div class="demo-hero-img"><img src="../assets/examples/immo/gartenstrasse.webp" alt="Gelbe Fassade, fast vollständig mit Efeu bewachsen" loading="lazy"></div>
+                <figcaption class="demo-sub ncss-mb-0">Symbolfotos: Arndt-Peter Bergfeld / Pexels – <a href="bildnachweis.html">Bildnachweis</a></figcaption>
+              </figure>
+              <dl class="demo-facts">
+                <div><dt>Einheiten</dt><dd>9</dd></div>
+                <div><dt>Wohn-/Nutzfläche</dt><dd>700 m²</dd></div>
+                <div><dt>Soll-Kaltmiete / Monat</dt><dd>6.675 €</dd></div>
+                <div><dt>Leerstand</dt><dd>0 Einheiten</dd></div>
+                <div><dt>Heizung</dt><dd>Wärmepumpe (2024)</dd></div>
+                <div><dt>Hausmeister</dt><dd>Hausmeisterservice Bauer</dd></div>
+              </dl>
+            </div>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="cap-gartenstrasse" tabindex="0">
+              <table class="demo-table" id="units-gartenstrasse" data-demo-sortable>
+                <caption id="cap-gartenstrasse" class="ncss-visually-hidden">Einheiten Gartenstraße 21</caption>
+                <thead><tr><th scope="col" data-sort-key="no" data-sort-type="text"><button type="button" class="demo-sort">Whg<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Lage</th><th scope="col" class="demo-num" data-sort-key="area" data-sort-type="number"><button type="button" class="demo-sort">m²<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="rooms" data-sort-type="number"><button type="button" class="demo-sort">Zimmer<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="kalt" data-sort-type="number"><button type="button" class="demo-sort">Kaltmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Mieter</th><th scope="col" data-sort-key="status" data-sort-type="text"><button type="button" class="demo-sort">Status<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th></tr></thead>
+                <tbody>
+                  <tr><td data-sort="WE 01"><strong>WE 01</strong></td><td>EG links</td><td class="demo-num" data-sort="96">96</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="945">945,00 €</td><td><a href="mieter.html?mieter=m25">Jan Sauer</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 02"><strong>WE 02</strong></td><td>EG rechts</td><td class="demo-num" data-sort="61">61</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="585">585,00 €</td><td><a href="mieter.html?mieter=m26">Ingrid Wendt</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 03"><strong>WE 03</strong></td><td>1. OG links</td><td class="demo-num" data-sort="56">56</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="545">545,00 €</td><td><a href="mieter.html?mieter=m27">Jonas Jansen</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 04"><strong>WE 04</strong></td><td>1. OG rechts</td><td class="demo-num" data-sort="59">59</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="555">555,00 €</td><td><a href="mieter.html?mieter=m28">Elena Brückner</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 05"><strong>WE 05</strong></td><td>2. OG links</td><td class="demo-num" data-sort="96">96</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="935">935,00 €</td><td><a href="mieter.html?mieter=m29">Jonas Quast</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 06"><strong>WE 06</strong></td><td>2. OG rechts</td><td class="demo-num" data-sort="68">68</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="635">635,00 €</td><td><a href="mieter.html?mieter=m30">Dario Albers</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 07"><strong>WE 07</strong></td><td>3. OG links</td><td class="demo-num" data-sort="96">96</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="870">870,00 €</td><td><a href="mieter.html?mieter=m31">Helga Möller</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 08"><strong>WE 08</strong></td><td>3. OG rechts</td><td class="demo-num" data-sort="78">78</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="760">760,00 €</td><td><a href="mieter.html?mieter=m32">Brigitte Ulrich</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 09"><strong>WE 09</strong></td><td>DG links</td><td class="demo-num" data-sort="90">90</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="845">845,00 €</td><td><a href="mieter.html?mieter=m33">Anna Hartwig</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="ncss-card ncss-border ncss-radius-lg demo-panel demo-detail-section" id="objekt-marktplatz" aria-labelledby="h-marktplatz" tabindex="-1">
+            <div class="ncss-card-header">
+              <div>
+                <h2 id="h-marktplatz">Marktplatz 3</h2>
+                <span class="demo-sub"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-pin"></use></svg> Marktplatz 3, 61423 Erlenbrunn · Wohn- &amp; Geschäftshaus, Baujahr 1890</span>
+              </div>
+              <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-export="units-marktplatz" data-filename="einheiten-marktplatz.csv"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg>CSV exportieren</button>
+            </div>
+            <div class="ncss-card-body ncss-stack">
+              <figure class="ncss-mb-0">
+                <div class="demo-hero-img"><img src="../assets/examples/immo/marktplatz.webp" alt="Historische, farbige Giebelfassaden am Platz" loading="lazy"></div>
+                <figcaption class="demo-sub ncss-mb-0">Symbolfotos: Michaela St / Pexels – <a href="bildnachweis.html">Bildnachweis</a></figcaption>
+              </figure>
+              <dl class="demo-facts">
+                <div><dt>Einheiten</dt><dd>5 (2 Gewerbe)</dd></div>
+                <div><dt>Wohn-/Nutzfläche</dt><dd>535 m²</dd></div>
+                <div><dt>Soll-Kaltmiete / Monat</dt><dd>5.945 €</dd></div>
+                <div><dt>Leerstand</dt><dd>0 Einheiten</dd></div>
+                <div><dt>Heizung</dt><dd>Gas-Etagenheizungen</dd></div>
+                <div><dt>Hausmeister</dt><dd>Grün &amp; Haus Erlenbrunn</dd></div>
+              </dl>
+            </div>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="cap-marktplatz" tabindex="0">
+              <table class="demo-table" id="units-marktplatz" data-demo-sortable>
+                <caption id="cap-marktplatz" class="ncss-visually-hidden">Einheiten Marktplatz 3</caption>
+                <thead><tr><th scope="col" data-sort-key="no" data-sort-type="text"><button type="button" class="demo-sort">Whg<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Lage</th><th scope="col" class="demo-num" data-sort-key="area" data-sort-type="number"><button type="button" class="demo-sort">m²<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="rooms" data-sort-type="number"><button type="button" class="demo-sort">Zimmer<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="kalt" data-sort-type="number"><button type="button" class="demo-sort">Kaltmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Mieter</th><th scope="col" data-sort-key="status" data-sort-type="text"><button type="button" class="demo-sort">Status<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th></tr></thead>
+                <tbody>
+                  <tr><td data-sort="WE 01"><strong>WE 01</strong></td><td>EG, Laden</td><td class="demo-num" data-sort="103">103</td><td class="demo-num" data-sort="5">–</td><td class="demo-num" data-sort="1120">1.120,00 €</td><td><a href="mieter.html?mieter=m34">Buchhandlung Seitenwind</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 02"><strong>WE 02</strong></td><td>EG, Café</td><td class="demo-num" data-sort="103">103</td><td class="demo-num" data-sort="5">–</td><td class="demo-num" data-sort="1205">1.205,00 €</td><td><a href="mieter.html?mieter=m35">Café Lindgrün</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 03"><strong>WE 03</strong></td><td>1. OG</td><td class="demo-num" data-sort="118">118</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="1285">1.285,00 €</td><td><a href="mieter.html?mieter=m36">Greta Engel</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 04"><strong>WE 04</strong></td><td>2. OG</td><td class="demo-num" data-sort="101">101</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="1080">1.080,00 €</td><td><a href="mieter.html?mieter=m37">Frieda Kleinert</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 05"><strong>WE 05</strong></td><td>DG</td><td class="demo-num" data-sort="110">110</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="1255">1.255,00 €</td><td><a href="mieter.html?mieter=m38">Clara Nowak</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="ncss-card ncss-border ncss-radius-lg demo-panel demo-detail-section" id="objekt-rosenhoehe" aria-labelledby="h-rosenhoehe" tabindex="-1">
+            <div class="ncss-card-header">
+              <div>
+                <h2 id="h-rosenhoehe">Quartier Rosenhöhe, Haus A</h2>
+                <span class="demo-sub"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-pin"></use></svg> Rosenhöhe 2, 61423 Erlenbrunn · Neubau, Baujahr 2021</span>
+              </div>
+              <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-export="units-rosenhoehe" data-filename="einheiten-rosenhoehe.csv"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-download"></use></svg>CSV exportieren</button>
+            </div>
+            <div class="ncss-card-body ncss-stack">
+              <figure class="ncss-mb-0">
+                <div class="demo-hero-img"><img src="../assets/examples/immo/rosenhoehe.webp" alt="Moderne Neubaufassade in kräftigem Blau und Grün" loading="lazy"><img src="../assets/examples/immo/innen-flur-thumb.webp" alt="Leere Wohnung mit weißen Wänden und Parkett" loading="lazy"></div>
+                <figcaption class="demo-sub ncss-mb-0">Symbolfotos: Mike van Schoonderwalt, Gustavo Galeano Maz / Pexels – <a href="bildnachweis.html">Bildnachweis</a></figcaption>
+              </figure>
+              <dl class="demo-facts">
+                <div><dt>Einheiten</dt><dd>24</dd></div>
+                <div><dt>Wohn-/Nutzfläche</dt><dd>1.706 m²</dd></div>
+                <div><dt>Soll-Kaltmiete / Monat</dt><dd>20.470 €</dd></div>
+                <div><dt>Leerstand</dt><dd>1 Einheit</dd></div>
+                <div><dt>Heizung</dt><dd>Fernwärme, KfW 40</dd></div>
+                <div><dt>Hausmeister</dt><dd>Facility Rosenhöhe GmbH</dd></div>
+              </dl>
+            </div>
+            <div class="ncss-card-body demo-flush ncss-table-scroll" role="region" aria-labelledby="cap-rosenhoehe" tabindex="0">
+              <table class="demo-table" id="units-rosenhoehe" data-demo-sortable>
+                <caption id="cap-rosenhoehe" class="ncss-visually-hidden">Einheiten Quartier Rosenhöhe, Haus A</caption>
+                <thead><tr><th scope="col" data-sort-key="no" data-sort-type="text"><button type="button" class="demo-sort">Whg<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Lage</th><th scope="col" class="demo-num" data-sort-key="area" data-sort-type="number"><button type="button" class="demo-sort">m²<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="rooms" data-sort-type="number"><button type="button" class="demo-sort">Zimmer<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col" class="demo-num" data-sort-key="kalt" data-sort-type="number"><button type="button" class="demo-sort">Kaltmiete<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th><th scope="col">Mieter</th><th scope="col" data-sort-key="status" data-sort-type="text"><button type="button" class="demo-sort">Status<svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-sort"></use></svg></button></th></tr></thead>
+                <tbody>
+                  <tr><td data-sort="WE 01"><strong>WE 01</strong></td><td>EG, Whg 1</td><td class="demo-num" data-sort="78">78</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="1000">1.000,00 €</td><td><a href="mieter.html?mieter=m39">Aylin Kowalski</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 02"><strong>WE 02</strong></td><td>EG, Whg 2</td><td class="demo-num" data-sort="64">64</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="810">810,00 €</td><td><a href="mieter.html?mieter=m40">Noah Kowalski</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 03"><strong>WE 03</strong></td><td>EG, Whg 3</td><td class="demo-num" data-sort="104">104</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="1325">1.325,00 €</td><td><a href="mieter.html?mieter=m41">Selin Rossi</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 04"><strong>WE 04</strong></td><td>EG, Whg 4</td><td class="demo-num" data-sort="62">62</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="775">775,00 €</td><td><a href="mieter.html?mieter=m42">Selin Gerlach</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 05"><strong>WE 05</strong></td><td>1. OG, Whg 1</td><td class="demo-num" data-sort="76">76</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="955">955,00 €</td><td><a href="mieter.html?mieter=m43">Felix Quast</a></td><td data-sort="gekündigt"><span class="ncss-badge ncss-badge--warning">gekündigt</span><span class="demo-sub">zum 31.01.2027</span></td></tr>
+                  <tr><td data-sort="WE 06"><strong>WE 06</strong></td><td>1. OG, Whg 2</td><td class="demo-num" data-sort="93">93</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="1180">1.180,00 €</td><td><a href="mieter.html?mieter=m44">Jakob Demir</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 07"><strong>WE 07</strong></td><td>1. OG, Whg 3</td><td class="demo-num" data-sort="57">57</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="745">745,00 €</td><td><a href="mieter.html?mieter=m45">Henrik Hartwig</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 08"><strong>WE 08</strong></td><td>1. OG, Whg 4</td><td class="demo-num" data-sort="58">58</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="775">775,00 €</td><td><a href="mieter.html?mieter=m46">Aylin Brückner</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 09"><strong>WE 09</strong></td><td>2. OG, Whg 1</td><td class="demo-num" data-sort="45">45</td><td class="demo-num" data-sort="1.5">1,5</td><td class="demo-num" data-sort="555">555,00 €</td><td><a href="mieter.html?mieter=m47">Marie Lindner</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 10"><strong>WE 10</strong></td><td>2. OG, Whg 2</td><td class="demo-num" data-sort="76">76</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="1030">1.030,00 €</td><td><a href="mieter.html?mieter=m48">Lukas Kühn</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 11"><strong>WE 11</strong></td><td>2. OG, Whg 3</td><td class="demo-num" data-sort="54">54</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="665">665,00 €</td><td><a href="mieter.html?mieter=m49">Dario Demir</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 12"><strong>WE 12</strong></td><td>2. OG, Whg 4</td><td class="demo-num" data-sort="91">91</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="1120">1.120,00 €</td><td><a href="mieter.html?mieter=m50">Ben Brückner</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 13"><strong>WE 13</strong></td><td>3. OG, Whg 1</td><td class="demo-num" data-sort="45">45</td><td class="demo-num" data-sort="1.5">1,5</td><td class="demo-num" data-sort="560">560,00 €</td><td><a href="mieter.html?mieter=m51">Clara Haas</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 14"><strong>WE 14</strong></td><td>3. OG, Whg 2</td><td class="demo-num" data-sort="104">104</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="1375">1.375,00 €</td><td><a href="mieter.html?mieter=m52">Selin Quast</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 15"><strong>WE 15</strong></td><td>3. OG, Whg 3</td><td class="demo-num" data-sort="106">106</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="1335">1.335,00 €</td><td><a href="mieter.html?mieter=m53">Luca Fuchs</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 16"><strong>WE 16</strong></td><td>3. OG, Whg 4</td><td class="demo-num" data-sort="57">57</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="770">770,00 €</td><td><a href="mieter.html?mieter=m54">Yusuf Petersen</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 17"><strong>WE 17</strong></td><td>4. OG, Whg 1</td><td class="demo-num" data-sort="110">110</td><td class="demo-num" data-sort="5">5</td><td class="demo-num" data-sort="1465">1.465,00 €</td><td><span class="demo-muted">–</span></td><td data-sort="leer"><span class="ncss-badge ncss-badge--danger">leer</span></td></tr>
+                  <tr><td data-sort="WE 18"><strong>WE 18</strong></td><td>4. OG, Whg 2</td><td class="demo-num" data-sort="82">82</td><td class="demo-num" data-sort="4">4</td><td class="demo-num" data-sort="1065">1.065,00 €</td><td><a href="mieter.html?mieter=m55">Sophie Kühn</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 19"><strong>WE 19</strong></td><td>4. OG, Whg 3</td><td class="demo-num" data-sort="58">58</td><td class="demo-num" data-sort="2">2</td><td class="demo-num" data-sort="720">720,00 €</td><td><a href="mieter.html?mieter=m56">Clara Berger</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 20"><strong>WE 20</strong></td><td>4. OG, Whg 4</td><td class="demo-num" data-sort="45">45</td><td class="demo-num" data-sort="1.5">1,5</td><td class="demo-num" data-sort="570">570,00 €</td><td><a href="mieter.html?mieter=m57">Ben Kleinert</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 21"><strong>WE 21</strong></td><td>5. OG, Whg 1</td><td class="demo-num" data-sort="67">67</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="865">865,00 €</td><td><a href="mieter.html?mieter=m58">Elias Seidel</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 22"><strong>WE 22</strong></td><td>5. OG, Whg 2</td><td class="demo-num" data-sort="41">41</td><td class="demo-num" data-sort="1.5">1,5</td><td class="demo-num" data-sort="530">530,00 €</td><td><a href="mieter.html?mieter=m59">Rüdiger Rossi</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 23"><strong>WE 23</strong></td><td>5. OG, Whg 3</td><td class="demo-num" data-sort="63">63</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="810">810,00 €</td><td><a href="mieter.html?mieter=m60">Noah Brückner</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                  <tr><td data-sort="WE 24"><strong>WE 24</strong></td><td>5. OG, Whg 4</td><td class="demo-num" data-sort="70">70</td><td class="demo-num" data-sort="3">3</td><td class="demo-num" data-sort="935">935,00 €</td><td><a href="mieter.html?mieter=m61">Mia Engel</a></td><td data-sort="vermietet"><span class="ncss-badge ncss-badge--success">vermietet</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          </div>
+        </div>
+      </main>
+      <footer class="demo-app-footer">
+        <p>ImmoDesk ist ein Beispiel: Hausverwaltung, Personen, Adressen und Beträge sind frei erfunden.</p>
+        <p><a href="../product.html">Beispiel mit NativeCSS</a> · <a href="../index.html">zurück zur Übersicht</a> · <a href="bildnachweis.html">Bildnachweis</a></p>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<dialog id="appDrawer" class="ncss-offcanvas ncss-offcanvas--start demo-drawer" aria-label="Navigation">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="appDrawer" aria-label="Navigation schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+</dialog>
+
+<div id="notifPop" class="demo-popover" popover aria-labelledby="notifTitle">
+  <div class="ncss-cluster">
+    <h2 id="notifTitle">Benachrichtigungen</h2>
+    <button type="button" class="ncss-btn ncss-btn--secondary demo-btn-sm" data-demo-markread>Alle gelesen</button>
+  </div>
+  <ul class="demo-menu" role="list">
+    <li><a class="demo-notice" href="mieter.html?mieter=m23" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg><p>Zahlung überfällig: Frieda Pohl (Kastanienweg 7, WE 11)</p><time datetime="2026-11-20T08:12">heute, 08:12</time></a></li>
+    <li><a class="demo-notice" href="tickets.html#t-2048" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg><p>Neues Ticket #2048: Rauchwarnmelder piept dauerhaft</p><time datetime="2026-11-20T07:41">heute, 07:41</time></a></li>
+    <li><a class="demo-notice" href="dokumente.html" data-unread><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg><p>Heizungsbau Kessler hat einen Kostenvoranschlag hochgeladen</p><time datetime="2026-11-19T16:05">gestern, 16:05</time></a></li>
+    <li><a class="demo-notice" href="index.html#termine"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-calendar"></use></svg><p>Eigentümerversammlung Gartenstraße 21: Einladung versendet</p><time datetime="2026-11-18T11:30">18.11., 11:30</time></a></li>
+  </ul>
+</div>
+<div id="userPop" class="demo-popover demo-popover--menu" popover aria-label="Konto">
+  <div class="demo-person ncss-mb-sm"><span class="demo-avatar" style="--demo-hue: 116" aria-hidden="true">JB</span><span><strong>Julia Brenner</strong><span class="demo-sub">Objektbetreuung</span></span></div>
+  <ul class="demo-menu" role="list">
+    <li><a href="mieter.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg>Mein Profil</a></li>
+    <li><button type="button" data-ncss-theme-toggle><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg>Hell/Dunkel umschalten</button></li>
+    <li><a href="bildnachweis.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg>Bildnachweis</a></li>
+    <li><a href="../index.html"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-logout"></use></svg>Zurück zur NativeCSS-Übersicht</a></li>
+  </ul>
+</div>
+
+<ncss-command-palette shortcut="k">
+  <dialog id="cmdPalette" class="ncss-command" aria-label="Suche und Befehle" closedby="any">
+    <div class="ncss-command-search">
+      <input class="ncss-command-input" type="text" aria-label="Suchen oder Befehl eingeben" placeholder="Objekt, Mieter, Seite oder Befehl …">
+    </div>
+    <div class="ncss-command-list" aria-label="Ergebnisse">
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Aktionen</p>
+      <a class="ncss-command-item" href="tickets.html#neu" data-keywords="reparatur schaden melden"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-plus"></use></svg></span><span>Neues Reparatur-Ticket</span><span class="ncss-command-item-hint">Ticket</span></a>
+      <a class="ncss-command-item" href="dokumente.html#upload" data-keywords="datei upload vertrag"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-upload"></use></svg></span><span>Dokument hochladen</span></a>
+      <a class="ncss-command-item" href="mieter.html?status=ueberfaellig" data-keywords="mahnung rückstand miete"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-euro"></use></svg></span><span>Überfällige Mieten anzeigen</span><span class="ncss-command-item-hint">11 offen</span></a>
+      <button type="button" class="ncss-command-item" data-ncss-theme-toggle data-keywords="dark mode hell dunkel theme"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-settings"></use></svg></span><span>Hell/Dunkel umschalten</span></button>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Seiten</p>
+      <a class="ncss-command-item" href="index.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-dashboard"></use></svg></span><span>Dashboard</span></a>
+      <a class="ncss-command-item" href="objekte.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Objekte & Einheiten</span></a>
+      <a class="ncss-command-item" href="mieter.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-users"></use></svg></span><span>Mieter & Zahlungen</span></a>
+      <a class="ncss-command-item" href="tickets.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-wrench"></use></svg></span><span>Reparaturen</span></a>
+      <a class="ncss-command-item" href="dokumente.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-file"></use></svg></span><span>Dokumente</span></a>
+      <a class="ncss-command-item" href="bildnachweis.html"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-image"></use></svg></span><span>Bildnachweis</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Objekte</p>
+      <a class="ncss-command-item" href="objekte.html#objekt-lindenallee" data-keywords="Altbau Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Lindenallee 12</span><span class="ncss-command-item-hint">8 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-muehlbach" data-keywords="Altbau Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Am Mühlbach 4</span><span class="ncss-command-item-hint">6 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-kastanienweg" data-keywords="Mehrfamilienhaus Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Kastanienweg 7</span><span class="ncss-command-item-hint">12 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-gartenstrasse" data-keywords="Altbau Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Gartenstraße 21</span><span class="ncss-command-item-hint">9 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-marktplatz" data-keywords="Wohn- &amp; Geschäftshaus Marktplatz 3"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Marktplatz 3</span><span class="ncss-command-item-hint">5 Einheiten</span></a>
+      <a class="ncss-command-item" href="objekte.html#objekt-rosenhoehe" data-keywords="Neubau Rosenhöhe 2"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-building"></use></svg></span><span>Quartier Rosenhöhe, Haus A</span><span class="ncss-command-item-hint">24 Einheiten</span></a>
+    </div>
+    <div class="ncss-command-group">
+      <p class="ncss-command-group-label">Mieter</p>
+      <a class="ncss-command-item" href="mieter.html?mieter=m03" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Nele Oswald</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m05" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Sophie Lorenz</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 05</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m07" data-keywords="mieter Lindenallee 12"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elias Ebert</span><span class="ncss-command-item-hint">Lindenallee 12 · WE 08</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m10" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Konrad Seidel</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m11" data-keywords="mieter Am Mühlbach 4"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Selin Demir</span><span class="ncss-command-item-hint">Am Mühlbach 4 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m14" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Petersen</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 01</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m15" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Lea Vogt</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 02</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m19" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Ole Lindner</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 06</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m23" data-keywords="mieter Kastanienweg 7"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Frieda Pohl</span><span class="ncss-command-item-hint">Kastanienweg 7 · WE 11</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m27" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Jonas Jansen</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 03</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m28" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Elena Brückner</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 04</span></a>
+      <a class="ncss-command-item" href="mieter.html?mieter=m31" data-keywords="mieter Gartenstraße 21"><span class="ncss-command-item-icon"><svg class="demo-i" aria-hidden="true"><use href="../assets/examples/immo/icons.svg#i-user"></use></svg></span><span>Helga Möller</span><span class="ncss-command-item-hint">Gartenstraße 21 · WE 07</span></a>
+    </div>
+    </div>
+    <p class="ncss-command-empty" hidden>Keine Treffer – versuche einen Straßennamen oder „Ticket“.</p>
+    <div class="ncss-command-footer"><span><kbd>↑</kbd> <kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> öffnen</span><span><kbd>Esc</kbd> schließen</span></div>
+  </dialog>
+</ncss-command-palette>
+
+</body>
+</html>
