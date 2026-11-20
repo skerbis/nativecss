@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.2.1] - 2026-11-20
+
+### Behoben
+
+- Automatischer Kompakt-Modus: eine Nav-Liste mit `justify-content: flex-end` (oder `center`, RTL) lief zum Zeilenanfang über die Marke, ohne dass `js/nav.js` das erkannte - `scrollWidth` misst nur Überlauf zum Zeilenende. Jetzt werden die äußeren Kanten der Punkte geprüft.
+
 ## [1.2.0] - 2026-11-20
 
 ### Geändert (Verhalten)
