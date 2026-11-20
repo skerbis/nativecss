@@ -146,6 +146,23 @@
     <h3 class="ncss-tabs-heading">Übersicht</h3>
     <p>Ein Haus am See mit 24 Zimmern.</p>
   </section>
+
+<section class="ncss-stack" id="pillen-gruppe" data-subnav-label="Pillen-Gruppe">
+  <h2 class="demo-section-title">Pillen-Gruppe <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p>Mehrere unabhängige Buttons oder Links als <strong>eine</strong> Pille mit feinen Trennstrichen - für Werkzeuge in der Kopfleiste (wie oben auf dieser Website: Suche · Unterstützen · Sprache · Darstellung), Ansichts-Aktionen oder kompakte Toolbars. Anders als die <a href="app-ui.html#segmentiert">segmentierte Auswahl</a> ist das keine Auswahl - jedes Teil bleibt ein normaler Button oder Link.</p>
+  <div class="docs-live ncss-stack" role="group" aria-label="Pillen-Gruppe">
+    <div class="ncss-pill-group" role="group" aria-label="Artikel-Aktionen"><button type="button"><span class="ncss-icon ncss-icon-share" aria-hidden="true"></span>Teilen</button><button type="button"><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span>Herunterladen</button><button type="button"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span>Merken</button></div>
+    <div class="ncss-pill-group ncss-pill-group--sm" role="group" aria-label="Sprache"><a href="#pillen-gruppe" aria-current="true" lang="de">Deutsch</a><a href="#pillen-gruppe" lang="en">English</a><a href="#pillen-gruppe" lang="fr">Français</a></div>
+    <div class="ncss-pill-group ncss-pill-group--solid" role="group" aria-label="Editor"><button type="button" aria-pressed="true" aria-label="Fett"><strong>F</strong></button><button type="button" aria-pressed="false" aria-label="Kursiv"><em>K</em></button><button type="button" aria-pressed="false" aria-label="Unterstrichen"><u>U</u></button></div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-pill-group" role="group" aria-label="Artikel-Aktionen"&gt;
+  &lt;button type="button"&gt;Teilen&lt;/button&gt;
+  &lt;button type="button"&gt;Drucken&lt;/button&gt;
+  &lt;a href="/en/"&gt;English&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Klasse</th><th scope="col">Wirkung</th></tr></thead><tbody><tr><td><code>.ncss-pill-group</code></td><td>Pille mit Trennstrichen; direkte Kinder <code>a</code>/<code>button</code> werden zu Teilen</td></tr><tr><td><code>.ncss-pill-group-item</code></td><td>Für innere Buttons verschachtelter Elemente (z. B. eines Custom Elements)</td></tr><tr><td><code>--sm</code></td><td>kompakter</td></tr><tr><td><code>--solid</code></td><td>kräftigere Fläche</td></tr><tr><td><code>--plain</code></td><td>ohne Rahmen und Fläche</td></tr><tr><td><code>--no-dividers</code></td><td>ohne Trennstriche</td></tr><tr><td><code>aria-current / aria-pressed="true"</code></td><td>Teil als aktuell/eingeschaltet hervorgehoben</td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Barrierefreiheit: <code>role="group"</code> mit <code>aria-label</code> gibt der Gruppe einen Namen. Jedes Teil ist ein eigener Tab-Stopp; reine Icon-Teile brauchen einen Namen. Fokus-Ring liegt innen, damit er nicht von Nachbarn verdeckt wird. Im Kontrastmodus werden Trennstriche und der aktive Zustand in Systemfarben gezeichnet.</p>
+</section>
   <section class="ncss-tabs-panel" id="ta-de-a-1">
     <h3 class="ncss-tabs-heading">Ausstattung</h3>
     <p>Sauna, Bootssteg, E-Bike-Verleih.</p>

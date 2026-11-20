@@ -325,6 +325,8 @@ function buildTopbar(lang, page) {
     `        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="${s.closeLabel}"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>`,
     `        <ul class="ncss-nav-list">`,
     item("index.html", s.navDocs, docsState),
+    // Tour: alle Funktionen live in einem Rundgang (demo/showcase/, eigene Seiten je Sprache)
+    item(`../../demo/showcase/${lang === "de" ? "index" : "index-en"}.html`, s.navTour, "", newDot(lang)),
     item(`${nav.examplesPage.slug}.html`, s.navExamples, page.kind === "examples" ? "page" : "", anyNewExample ? newDot(lang, s.containsNewLabel) : ""),
     item(`${nav.start.slug}.html#neu`, s.navNew, "", ` <span class="ncss-badge-dot" aria-hidden="true"></span>`),
     `          <li class="ncss-nav-item site-panel-only"><a href="${nav.start.slug}.html#${s.supportAnchor}"><span class="ncss-icon ncss-icon-heart site-sponsor-heart" aria-hidden="true"></span> ${s.sponsorShort}</a></li>`,
@@ -528,7 +530,7 @@ function exampleSketch(ex) {
 
 function buildExamples(lang) {
   const cards = nav.examples
-    .map((ex) => card({ title: esc(ex[lang]), href: `../../demo/${ex.href}`, desc: ex.desc[lang], prev: examplePreview(ex, lang), isNew: ex.new, lang }))
+    .map((ex) => card({ title: esc(ex[lang]), href: `../../demo/${(lang === "en" && ex.hrefEn) || ex.href}`, desc: ex.desc[lang], prev: examplePreview(ex, lang), isNew: ex.new, lang }))
     .join("\n");
   return `  <div class="ncss-grid" style="--ncss-grid-min: 18rem;">\n${cards}\n  </div>`;
 }
@@ -586,6 +588,7 @@ function render(lang, page, classIndex) {
     __SPONSOR_NOTE__: s.sponsorNote,
     __IMPRINT_LABEL__: s.imprintLabel,
     __PRIVACY_LABEL__: s.privacyLabel,
+    __TOOLS_LABEL__: s.toolsLabel,
     __VERSION__: VERSION,
     __VERSION_LABEL__: s.versionLabel,
     __CHANGELOG_LABEL__: s.changelogLabel,

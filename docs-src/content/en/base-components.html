@@ -146,6 +146,23 @@
     <h3 class="ncss-tabs-heading">Overview</h3>
     <p>A lake house with 24 rooms.</p>
   </section>
+
+<section class="ncss-stack" id="pill-group" data-subnav-label="Pill group">
+  <h2 class="demo-section-title">Pill group <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p>Several independent buttons or links as <strong>one</strong> pill with fine dividers - for tools in a top bar (like at the top of this website: search · support · language · display), view actions or compact toolbars. Unlike the <a href="app-ui.html#segmented">segmented control</a> this is not a selection - every part stays a normal button or link.</p>
+  <div class="docs-live ncss-stack" role="group" aria-label="Pill group">
+    <div class="ncss-pill-group" role="group" aria-label="Article actions"><button type="button"><span class="ncss-icon ncss-icon-share" aria-hidden="true"></span>Share</button><button type="button"><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span>Download</button><button type="button"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span>Save</button></div>
+    <div class="ncss-pill-group ncss-pill-group--sm" role="group" aria-label="Language"><a href="#pill-group" lang="de">Deutsch</a><a href="#pill-group" aria-current="true" lang="en">English</a><a href="#pill-group" lang="fr">Français</a></div>
+    <div class="ncss-pill-group ncss-pill-group--solid" role="group" aria-label="Editor"><button type="button" aria-pressed="true" aria-label="Bold"><strong>B</strong></button><button type="button" aria-pressed="false" aria-label="Italic"><em>I</em></button><button type="button" aria-pressed="false" aria-label="Underline"><u>U</u></button></div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-pill-group" role="group" aria-label="Article actions"&gt;
+  &lt;button type="button"&gt;Share&lt;/button&gt;
+  &lt;button type="button"&gt;Print&lt;/button&gt;
+  &lt;a href="/en/"&gt;English&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Class</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.ncss-pill-group</code></td><td>Pill with dividers; direct <code>a</code>/<code>button</code> children become parts</td></tr><tr><td><code>.ncss-pill-group-item</code></td><td>For inner buttons of nested elements (e.g. a custom element)</td></tr><tr><td><code>--sm</code></td><td>more compact</td></tr><tr><td><code>--solid</code></td><td>stronger surface</td></tr><tr><td><code>--plain</code></td><td>no border and surface</td></tr><tr><td><code>--no-dividers</code></td><td>no dividers</td></tr><tr><td><code>aria-current / aria-pressed="true"</code></td><td>part highlighted as current/on</td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Accessibility: <code>role="group"</code> with <code>aria-label</code> names the group. Every part is its own tab stop; icon-only parts need a name. The focus ring sits inside so neighbours do not cover it. In contrast mode dividers and the active state use system colours.</p>
+</section>
   <section class="ncss-tabs-panel" id="ta-en-a-1">
     <h3 class="ncss-tabs-heading">Amenities</h3>
     <p>Sauna, jetty, e-bike rental.</p>

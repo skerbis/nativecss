@@ -233,6 +233,44 @@
     font-style: normal;
     line-height: 1.6;
   }
+  /* Werkzeug-Pille: Suche · Unterstützen · Sprache · Darstellung als EINE
+     .ncss-pill-group (components/pill-group.css). Hier nur die Anpassung der Teile, die
+     außerhalb der Pille eigene Rahmen/Flächen haben (Suche, Sprache, Darstellung). */
+  .site-tools .site-search-btn,
+  .site-tools .site-sponsor,
+  .site-tools .demo-topbar-lang,
+  .site-tools .site-prefs .ncss-preferences-toggle {
+    min-block-size: 2.25rem;
+    margin: 0;
+    border: 0;
+    border-radius: var(--ncss-radius-full);
+    background: transparent;
+    box-shadow: none;
+    color: var(--ncss-color-text);
+    font-size: var(--ncss-font-size-sm);
+    font-weight: 500;
+  }
+  .site-tools .demo-topbar-lang {
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 0.7rem;
+  }
+  .site-tools .site-prefs .ncss-preferences-toggle {
+    padding-inline: 0.7rem;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .site-tools .site-search-btn:hover:not(:active),
+    .site-tools .site-sponsor:hover,
+    .site-tools .demo-topbar-lang:hover,
+    .site-tools .site-prefs .ncss-preferences-toggle:hover {
+      background-color: color-mix(in oklch, var(--ncss-color-text) 8%, transparent);
+      color: var(--ncss-color-text);
+    }
+  }
+  .site-tools :is(.site-search-btn, .site-sponsor, .demo-topbar-lang, .ncss-preferences-toggle):focus-visible {
+    outline: 2px solid var(--ncss-color-focus-ring, var(--ncss-color-brand));
+    outline-offset: -2px;
+  }
   .docs-layout {
     display: grid;
     grid-template-columns: 15rem 1fr;
@@ -490,8 +528,10 @@ __HEAD_EXTRA__
     <a class="ncss-topbar-brand site-brand" href="__BRAND_HREF__"__BRAND_CURRENT__ aria-label="__BRAND_LABEL__">__WORDMARK__</a>
 __SITE_NAV__
     <div class="ncss-topbar-actions">
+      <div class="site-tools ncss-pill-group" role="group" aria-label="__TOOLS_LABEL__">
       <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">__SEARCH_LABEL__</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
 __SITE_ACTIONS__
+      </div>
     </div>
   </div>
 </header>
