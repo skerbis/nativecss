@@ -1,0 +1,219 @@
+/* ncss-Website (nicht Teil der Bibliothek): Handbuch-Seite "Icons" - Icon-Raster,
+   Live-Beispiele und Sprite-Baukasten. Logik: demo/assets/js/icons-page.mjs. */
+
+.demo-icons-frame {
+  padding: var(--ncss-space-md);
+  border: 1px solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-bg-subtle);
+}
+
+.demo-icons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: var(--ncss-space-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-icons-grid > li,
+.demo-icons-tile {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--ncss-space-2xs);
+  min-inline-size: 0;
+  padding: var(--ncss-space-sm) var(--ncss-space-2xs);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-surface);
+  text-align: center;
+}
+
+.demo-icons-grid > li:has(> .demo-icons-tile) {
+  padding: 0;
+  background: none;
+}
+
+.demo-icons-tile {
+  inline-size: 100%;
+  border: 1px solid transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.demo-icons-tile:focus-visible {
+  outline: 2px solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .demo-icons-tile:hover:not(:active) {
+    border-color: var(--ncss-color-border);
+  }
+}
+
+.demo-icons-tile:active {
+  scale: 0.97;
+}
+
+.demo-icons-grid code,
+.demo-icons-tile code {
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.demo-icons-big {
+  font-size: var(--ncss-font-size-2xl);
+}
+
+/* Reihe von Beispielen nebeneinander (Größen, Farben, Stärken). */
+.demo-icons-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--ncss-space-md) var(--ncss-space-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-icons-row > li {
+  display: grid;
+  justify-items: center;
+  gap: var(--ncss-space-2xs);
+}
+
+.demo-icons-row small {
+  color: var(--ncss-color-text-muted);
+}
+
+/* --- Sprite-Baukasten --------------------------------------------------------- */
+
+.demo-picker-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--ncss-space-sm) var(--ncss-space-md);
+}
+
+.demo-picker-search {
+  display: grid;
+  gap: var(--ncss-space-3xs);
+  flex: 1 1 14rem;
+}
+
+.demo-picker-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: var(--ncss-space-2xs);
+  max-block-size: 28rem;
+  margin: 0;
+  padding: var(--ncss-space-3xs);
+  overflow-y: auto;
+  list-style: none;
+}
+
+.demo-picker-results button {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--ncss-space-3xs);
+  inline-size: 100%;
+  block-size: 100%;
+  padding: var(--ncss-space-xs) var(--ncss-space-3xs);
+  border: 1px solid transparent;
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-surface);
+  color: inherit;
+  font: inherit;
+  font-size: 0.7rem;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.demo-picker-results ncss-icon {
+  font-size: 1.75rem;
+}
+
+.demo-picker-results button:focus-visible,
+.demo-picker-chip button:focus-visible {
+  outline: 2px solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .demo-picker-results button:hover:not(:active) {
+    border-color: var(--ncss-color-border);
+  }
+}
+
+.demo-picker-results button:active {
+  scale: 0.96;
+}
+
+.demo-picker-results button[aria-pressed="true"] {
+  border-color: var(--ncss-color-brand);
+  background-color: color-mix(in oklch, var(--ncss-color-brand) 12%, var(--ncss-color-surface));
+  box-shadow: inset 0 0 0 1px var(--ncss-color-brand);
+}
+
+.demo-picker-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-picker-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-2xs);
+  padding-block: var(--ncss-space-3xs);
+  padding-inline: var(--ncss-space-xs) var(--ncss-space-3xs);
+  border: 1px solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
+  font-size: var(--ncss-font-size-sm);
+}
+
+.demo-picker-chip ncss-icon {
+  font-size: 1.25rem;
+}
+
+.demo-picker-chip button {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ncss-radius-full);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .demo-picker-chip button:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 10%, transparent);
+  }
+}
+
+.demo-picker-chip button:active {
+  background-color: color-mix(in oklch, currentColor 18%, transparent);
+}
+
+/* Hochkontrast: Auswahlzustand nicht nur über Farbe/Schatten (die werden ersetzt). */
+@media (forced-colors: active) {
+  .demo-picker-results button[aria-pressed="true"] {
+    border: 2px solid Highlight;
+  }
+  .demo-icons-tile,
+  .demo-picker-results button {
+    border-color: CanvasText;
+  }
+}
