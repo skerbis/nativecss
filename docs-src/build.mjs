@@ -585,6 +585,7 @@ function render(lang, page, classIndex) {
     __SPONSOR_LABEL__: s.sponsorLabel,
     __SPONSOR_NOTE__: s.sponsorNote,
     __IMPRINT_LABEL__: s.imprintLabel,
+    __PRIVACY_LABEL__: s.privacyLabel,
     __VERSION__: VERSION,
     __VERSION_LABEL__: s.versionLabel,
     __CHANGELOG_LABEL__: s.changelogLabel,

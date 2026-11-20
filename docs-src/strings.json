@@ -51,7 +51,8 @@
     "a11yNoJs": "Ohne JavaScript",
     "a11yMore": "Mehr zur Barrierefreiheit",
     "statementLabel": "Erklärung zur Barrierefreiheit",
-    "imprintLabel": "Impressum"
+    "imprintLabel": "Impressum",
+    "privacyLabel": "Datenschutz"
   },
   "en": {
     "skipLink": "Skip to content",
@@ -105,6 +106,7 @@
     "a11yNoJs": "Without JavaScript",
     "a11yMore": "More on accessibility",
     "statementLabel": "Accessibility statement",
-    "imprintLabel": "Legal notice"
+    "imprintLabel": "Legal notice",
+    "privacyLabel": "Privacy"
   }
 }

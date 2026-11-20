@@ -192,7 +192,8 @@
         {
           "slug": "cards",
           "de": "Karten",
-          "en": "Cards"
+          "en": "Cards",
+          "new": true
         },
         {
           "slug": "lists",
@@ -517,6 +518,12 @@
       "slug": "impressum",
       "de": "Impressum",
       "en": "Legal notice",
+      "layout": "wide"
+    },
+    {
+      "slug": "datenschutz",
+      "de": "Datenschutz",
+      "en": "Privacy",
       "layout": "wide"
     }
   ]
