@@ -16,6 +16,17 @@ ncss-countdown {
   position: relative;
   display: inline-block;
 }
+/* Kachel-Variante: eigener Container, damit vier Kacheln in schmalem Platz 2×2 statt 3+1
+   umbrechen (Regel unten). Ein Größen-Container hat ohne Inhalt keine eigene Breite - in
+   einer Flex-Zeile (.ncss-cluster) o.ä. gilt deshalb contain-intrinsic-inline-size als
+   Breite, gleich der Umbruch-Schwelle (dort passen vier Kacheln nebeneinander). Die
+   Kompakt-Variante bleibt inline-block (steht oft mitten im Text). */
+ncss-countdown:not(.ncss-countdown--compact) {
+  display: block;
+  container: ncss-countdown / inline-size;
+  contain-intrinsic-inline-size: 26em;
+  max-inline-size: 100%;
+}
 .ncss-countdown-units {
   display: inline-flex;
   flex-wrap: wrap;
@@ -40,6 +51,14 @@ ncss-countdown {
 .ncss-countdown-label {
   font-size: var(--ncss-font-size-sm);
   color: var(--ncss-color-text-muted);
+}
+/* Vier Kacheln, zu wenig Platz für eine Reihe: 2×2 statt 3+1 (gleich breite Spalten).
+   Bei drei oder weniger Einheiten bleibt der normale Umbruch. */
+@container ncss-countdown (width < 26em) {
+  .ncss-countdown-units:has(> .ncss-countdown-unit:nth-child(4):last-child) {
+    display: inline-grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 .ncss-countdown-done {
   font-size: var(--ncss-font-size-lg);

@@ -26,9 +26,12 @@
   display: inline-flex;
   flex-wrap: wrap;
   /* Auch als Kind eines streckenden Flex-/Grid-Layouts (.ncss-stack) nur so breit wie
-     der Inhalt - volle Breite ist die eigene Variante --block. */
-  align-self: start;
-  justify-self: start;
+     der Inhalt - volle Breite ist die eigene Variante --block. Über die Breite statt über
+     align-self/justify-self: Strecken greift nur bei width:auto, fit-content verhindert es
+     in Spalten-Flex UND Grid. align-self:start wirkte in einer Zeile (.ncss-cluster)
+     dagegen vertikal und schob die Leiste aus der gemeinsamen Mittellinie. */
+  inline-size: fit-content;
+  max-inline-size: 100%;
   gap: var(--ncss-space-3xs);
   margin: 0;
   padding: var(--ncss-space-3xs);
@@ -93,6 +96,7 @@
 }
 .ncss-segmented--block {
   display: flex;
+  inline-size: auto;
   align-self: stretch;
   justify-self: stretch;
 }

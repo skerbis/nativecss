@@ -75,6 +75,11 @@
   font-size: var(--ncss-font-size-sm);
   color: var(--ncss-color-danger);
 }
+/* Hinweis/Fehler sind meist <p> und brächten den Absatz-Abstand aus base.css mit -
+   .ncss-field regelt den Abstand schon per gap, sonst doppelte Lücke unter dem Feld. */
+.ncss-field > :is(.ncss-field-hint, .ncss-field-error) {
+  margin-block: 0;
+}
 
 /* --- Datei-Upload -----------------------------------------------------------------------
    <input type="file"> ist der Input-Typ mit dem größten Cross-Browser-Unterschied - Chrome/

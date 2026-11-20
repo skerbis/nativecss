@@ -75,12 +75,6 @@
 
   /* Reveal-Pin */
   .demo-pin-intro { font-size: var(--ncss-font-size-xl); font-weight: 700; text-wrap: balance; }
-  /* Vorläufig (Bibliotheks-Fund reveal-pin.css): im Fallback/bei reduzierter Bewegung hat das
-     Panel keinen seitlichen Abstand und klebt in der vollbreiten Bühne am Bildschirmrand. */
-  .demo-pin-panel {
-    max-inline-size: min(36rem, 100% - 2 * var(--ncss-space-md));
-    margin-inline: auto;
-  }
 
   /* Morphing: Luft zwischen den beiden Morph-Sektionen (schmal stehen Bild und Text untereinander) */
   .demo-morph-next { margin-block-start: var(--ncss-space-xl); }
@@ -164,21 +158,6 @@
     border-radius: var(--ncss-radius-md);
   }
   .demo-package h3, .demo-package p { margin: 0; color: inherit; }
-  /* Vorläufig (Bibliotheks-Fund scroll-stack.css): bei reduzierter Bewegung bleibt sonst der
-     Ruhe-Stapel stehen – nur die oberste Karte lesbar, darunter viel Leerraum. Hier wie im
-     @supports-not-Fallback: Karten ganz normal untereinander. */
-  @media (prefers-reduced-motion: reduce) {
-    .demo-stack-section { height: auto; }
-    .demo-stack-stage {
-      position: static;
-      height: auto;
-      overflow: visible;
-      flex-direction: column;
-      gap: var(--ncss-space-lg);
-      padding-block: var(--ncss-space-lg);
-    }
-    .demo-stack-section .demo-package { position: relative; transform: none; height: auto; min-block-size: 22rem; }
-  }
   .demo-package-tag { font-size: var(--ncss-font-size-sm); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
   /* Scrollytelling */

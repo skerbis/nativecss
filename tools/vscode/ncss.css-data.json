@@ -1570,6 +1570,14 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-nav-scroll-fade",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-nav-scroll-fade: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/nav.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-notification-accent",
    "description": {
     "kind": "markdown",
@@ -1606,6 +1614,14 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-offcanvas-width: 20rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-overlay-scrim-extent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-overlay-scrim-extent: var(--ncss-space-2xl) (Fallback in var());\n```\nQuelle: `components/overlay.css`"
    },
    "syntax": "*"
   },
@@ -2322,6 +2338,14 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-stamped-base",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-base: 15% (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-stamped-dark",
    "description": {
     "kind": "markdown",
@@ -2341,7 +2365,7 @@
    "name": "--ncss-stamped-light",
    "description": {
     "kind": "markdown",
-    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-light: rgb(255 255 255 / 90%) (Fallback in var());\n```\nQuelle: `components/effects.css`"
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-light: rgb(255 255 255 / 55%) (Fallback in var());\n```\nQuelle: `components/effects.css`"
    },
    "syntax": "*"
   },
@@ -2365,7 +2389,7 @@
    "name": "--ncss-stamped-shadow-light",
    "description": {
     "kind": "markdown",
-    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-shadow-light: var(--ncss-stamped-light, rgb(255 255 255 / 90%));\n```\nQuelle: `components/effects.css`"
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-shadow-light: var(--ncss-stamped-light, rgb(255 255 255 / 55%));\n```\nQuelle: `components/effects.css`"
    },
    "syntax": "*"
   },
@@ -2702,6 +2726,14 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tooltip-offset: var(--ncss-space-2xs);\n```\nQuelle: `components/tooltip.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tooltip-viewport-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tooltip-viewport-gap: var(--ncss-space-xs);\n```\nQuelle: `components/tooltip.css`"
    },
    "syntax": "*"
   },

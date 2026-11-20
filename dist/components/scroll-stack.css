@@ -150,45 +150,42 @@
     view-timeline-inset: 100lvh var(--ncss-stack-stage-height, 100lvh);
   }
 
-  /* Eigenes @media (prefers-reduced-motion) hier, ZUSÄTZLICH zur globalen Regel in
-     reset.css: die globale Regel kappt animation-duration auf 0.01ms - sinnvoll für
-     zeitbasierte Animationen, aber eine scroll-timeline-gekoppelte Animation hat keine
-     echte Zeitdauer (der Fortschritt kommt vom Scroll-Offset), das Kappen könnte sich
-     deshalb unvorhersehbar verhalten statt die Animation sauber zu deaktivieren. Hier
-     stattdessen der ganze Mechanismus unter reduced-motion gar nicht erst aktiviert - der
-     Baseline-Endzustand (siehe oben, identische Ruheposition) bleibt unverändert stehen. */
-  @media (prefers-reduced-motion: no-preference) {
-    .ncss-stack-card {
-      animation: ncss-stack-arrive linear both;
-      animation-timeline: --ncss-stack-progress;
-      transform-style: preserve-3d;
-      /* Bereich über ZWEI Kartenbreiten der Gesamt-Timeline, beginnend an der EIGENEN
-         Scheibe dieser Karte (index bis index+2, NICHT zentriert - eine zentrierte
-         Version ließ Karten schon MITTEN in der eigenen, noch aktiven Scheibe
-         zurückweichen, per echtem Test mit Transform-Matrix-Auslese gefunden). Dadurch
-         liegt die 0%-Marke am Start der EIGENEN Scheibe, die 50%-Marke (siehe
-         @keyframes unten, "angekommen/flach") GENAU am ÜBERGANG zur nächsten Scheibe,
-         und die 100%-Marke ("zurückgewichen") am Ende der nächsten Scheibe. Ergebnis:
-         die Karte bleibt flach/unverzerrt, solange SIE die aktuell sichtbare ist
-         (0%-50% ist ihre eigene Anfahrt/Ankunft), und kippt/verkleinert sich erst
-         WÄHREND die nächste Karte sie bedeckt (50%-100%) - nicht vorher (User-Feedback:
-         "müsste erst nach hinten kippen animieren, wenn man vom Vollbild wegscrollt").
-         Der Wert nach 100% (bei der letzten Karte) wird von der Timeline automatisch
-         geklammert - sie erreicht das "zurückweichen"-Ende gar nicht erst (nichts kommt
-         danach, wovon sie bedeckt werden müsste), bleibt bei ihrer eigenen 50%-Marke
-         (flach) stehen. */
-      animation-range:
-        calc(var(--ncss-stack-index, 0) / var(--ncss-stack-count, 4) * 100%)
-        calc((var(--ncss-stack-index, 0) + 2) / var(--ncss-stack-count, 4) * 100%);
-    }
-    /* Karte 0 hat keine "eigene Scheibe davor" - sie ist schon da, wenn die Bühne
-       ankommt, statt erst hereinzufahren. Eigene Keyframes OHNE die
-       Anfahrt-Zwischenstufe bei 0% (die sonst als kurzes, unerwünschtes Aufblitzen
-       sichtbar würde) - sonst identisch zu .ncss-stack-arrive (dieselbe Bereich-Formel
-       oben gilt für alle Karten gleich, nur der Name hier unterscheidet sich). */
-    .ncss-stack-card:first-child {
-      animation-name: ncss-stack-settle;
-    }
+  /* Reduzierte Bewegung: NICHT hier per @media gegatet, sondern ganz unten ("Statische
+     Liste bei reduzierter Bewegung") - dort wird die Animation abgeschaltet UND der Stapel
+     zur normalen Kartenliste aufgelöst. Früher blieb unter reduced-motion nur der
+     Ruhe-Stapel stehen: Karten absolut übereinander, lesbar nur die oberste. So greift
+     außerdem die ausdrückliche Wahl data-motion="full" (js/preferences.js), die ein
+     System-"reduce" aufhebt. */
+  .ncss-stack-card {
+    animation: ncss-stack-arrive linear both;
+    animation-timeline: --ncss-stack-progress;
+    transform-style: preserve-3d;
+    /* Bereich über ZWEI Kartenbreiten der Gesamt-Timeline, beginnend an der EIGENEN
+       Scheibe dieser Karte (index bis index+2, NICHT zentriert - eine zentrierte
+       Version ließ Karten schon MITTEN in der eigenen, noch aktiven Scheibe
+       zurückweichen, per echtem Test mit Transform-Matrix-Auslese gefunden). Dadurch
+       liegt die 0%-Marke am Start der EIGENEN Scheibe, die 50%-Marke (siehe
+       @keyframes unten, "angekommen/flach") GENAU am ÜBERGANG zur nächsten Scheibe,
+       und die 100%-Marke ("zurückgewichen") am Ende der nächsten Scheibe. Ergebnis:
+       die Karte bleibt flach/unverzerrt, solange SIE die aktuell sichtbare ist
+       (0%-50% ist ihre eigene Anfahrt/Ankunft), und kippt/verkleinert sich erst
+       WÄHREND die nächste Karte sie bedeckt (50%-100%) - nicht vorher (User-Feedback:
+       "müsste erst nach hinten kippen animieren, wenn man vom Vollbild wegscrollt").
+       Der Wert nach 100% (bei der letzten Karte) wird von der Timeline automatisch
+       geklammert - sie erreicht das "zurückweichen"-Ende gar nicht erst (nichts kommt
+       danach, wovon sie bedeckt werden müsste), bleibt bei ihrer eigenen 50%-Marke
+       (flach) stehen. */
+    animation-range:
+      calc(var(--ncss-stack-index, 0) / var(--ncss-stack-count, 4) * 100%)
+      calc((var(--ncss-stack-index, 0) + 2) / var(--ncss-stack-count, 4) * 100%);
+  }
+  /* Karte 0 hat keine "eigene Scheibe davor" - sie ist schon da, wenn die Bühne
+     ankommt, statt erst hereinzufahren. Eigene Keyframes OHNE die
+     Anfahrt-Zwischenstufe bei 0% (die sonst als kurzes, unerwünschtes Aufblitzen
+     sichtbar würde) - sonst identisch zu .ncss-stack-arrive (dieselbe Bereich-Formel
+     oben gilt für alle Karten gleich, nur der Name hier unterscheidet sich). */
+  .ncss-stack-card:first-child {
+    animation-name: ncss-stack-settle;
   }
 }
 
@@ -254,13 +251,11 @@
 }
 
 @supports (view-timeline-name: --ncss-stack-progress) {
-  @media (prefers-reduced-motion: no-preference) {
-    .ncss-stack-section--horizontal .ncss-stack-card {
-      animation-name: ncss-stack-arrive-horizontal;
-    }
-    .ncss-stack-section--horizontal .ncss-stack-card:first-child {
-      animation-name: ncss-stack-settle-horizontal;
-    }
+  .ncss-stack-section--horizontal .ncss-stack-card {
+    animation-name: ncss-stack-arrive-horizontal;
+  }
+  .ncss-stack-section--horizontal .ncss-stack-card:first-child {
+    animation-name: ncss-stack-settle-horizontal;
   }
 }
 
@@ -360,4 +355,47 @@
 .ncss-stack-js-active .ncss-stack-card {
   position: absolute;
   transform-style: preserve-3d;
+}
+
+/* --- Statische Liste bei reduzierter Bewegung -----------------------------------------
+   Systemeinstellung "reduce" (sofern nicht ausdrücklich data-motion="full") ODER die
+   Nutzerwahl data-motion="reduce": dieselbe Auflösung wie im @supports-not-Fallback oben -
+   kein Pinning, keine Scroll-Distanz, Karten normal untereinander, jede einzeln lesbar.
+   animation:none, weil eine (auf 0.01ms gekappte bzw. per reset.css auf
+   animation-timeline:auto gesetzte) Animation sonst ihren Endzustand (zurückgekippt,
+   abgedunkelt) über die statische Position legen würde. Zwei Blöcke mit identischem
+   Inhalt, weil sich Media Query und Attribut nicht in EINEM Selektor verbinden lassen. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) .ncss-stack-section {
+    height: auto;
+  }
+  :root:not([data-motion="full"]) .ncss-stack-section .ncss-stack-stage {
+    position: static;
+    height: auto;
+    overflow: visible;
+    flex-direction: column;
+    gap: var(--ncss-stack-gap, var(--ncss-space-lg));
+    padding-block: var(--ncss-space-lg);
+  }
+  :root:not([data-motion="full"]) .ncss-stack-section .ncss-stack-card {
+    position: relative;
+    transform: none;
+    animation: none;
+  }
+}
+:root[data-motion="reduce"] .ncss-stack-section {
+  height: auto;
+}
+:root[data-motion="reduce"] .ncss-stack-section .ncss-stack-stage {
+  position: static;
+  height: auto;
+  overflow: visible;
+  flex-direction: column;
+  gap: var(--ncss-stack-gap, var(--ncss-space-lg));
+  padding-block: var(--ncss-space-lg);
+}
+:root[data-motion="reduce"] .ncss-stack-section .ncss-stack-card {
+  position: relative;
+  transform: none;
+  animation: none;
 }

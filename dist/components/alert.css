@@ -43,6 +43,9 @@
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: var(--ncss-space-xs);
   row-gap: var(--ncss-space-3xs);
+  /* Im gedehnten Raster (Nachbar-Box höher) Zeilen oben halten statt Titel und Text
+     auseinanderzuziehen. */
+  align-content: start;
   padding: var(--ncss-space-sm);
   border-radius: var(--ncss-radius-sm);
   background-color: var(--ncss-alert-bg);

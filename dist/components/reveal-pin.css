@@ -65,7 +65,10 @@
 }
 
 .ncss-reveal-pin-content {
-  max-inline-size: 36rem;
+  /* Fallback: die Bühne ist meist randlos (volle Breite) - seitlicher Abstand und
+     Zentrierung, sonst klebt das Panel am Bildschirmrand. */
+  max-inline-size: min(36rem, calc(100% - 2 * var(--ncss-space-md)));
+  margin-inline: auto;
   padding: var(--ncss-space-md);
   border-radius: var(--ncss-radius-lg);
   background-color: var(--ncss-color-surface);

@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 1007 Klassen, 25 Custom Elements, 58 data-ncss-Attribute, 230 Tokens.
+Stand: 1007 Klassen, 25 Custom Elements, 58 data-ncss-Attribute, 231 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -1405,7 +1405,7 @@ Optik. Rahmen (z.B. gestrichelt) bewusst nicht eingebaut, siehe helpers/elevatio
 
 ### `components/events.css`
 
-Klassen (22): `.ncss-agenda-group-title` `.ncss-agenda-item` `.ncss-agenda-list` `.ncss-agenda-title` `.ncss-btn` `.ncss-cal-day` `.ncss-cal-day--other-month` `.ncss-cal-day--today` `.ncss-cal-day-btn` `.ncss-cal-day-btn--empty` `.ncss-cal-day-dot` `.ncss-cal-day-more` `.ncss-cal-day-number` `.ncss-cal-grid` `.ncss-cal-header` `.ncss-cal-weekday` `.ncss-event-date` `.ncss-event-date-day` `.ncss-event-date-month` `.ncss-event-featured` `.ncss-event-title` `.ncss-events-empty`
+Klassen (23): `.ncss-agenda-body` `.ncss-agenda-group-title` `.ncss-agenda-item` `.ncss-agenda-list` `.ncss-agenda-title` `.ncss-btn` `.ncss-cal-day` `.ncss-cal-day--other-month` `.ncss-cal-day--today` `.ncss-cal-day-btn` `.ncss-cal-day-btn--empty` `.ncss-cal-day-dot` `.ncss-cal-day-more` `.ncss-cal-day-number` `.ncss-cal-grid` `.ncss-cal-header` `.ncss-cal-weekday` `.ncss-event-date` `.ncss-event-date-day` `.ncss-event-date-month` `.ncss-event-featured` `.ncss-event-title` `.ncss-events-empty`
 
 ```text
 ncss - Events-Widget (Layer "components"): Styling für die vier Ansichten aus
@@ -1897,7 +1897,7 @@ Benötigt: tokens.css. Optional js/marquee.js.
 
 ### `components/modal.css`
 
-Klassen (13): `.ncss-modal` `.ncss-modal--3d` `.ncss-modal--3d-flip` `.ncss-modal--3d-swing` `.ncss-modal--dark` `.ncss-modal--fullscreen` `.ncss-modal--slide-down` `.ncss-modal--slide-left` `.ncss-modal--slide-right` `.ncss-modal--slide-up` `.ncss-modal--zoom` `.ncss-modal-footer` `.ncss-modal-header`
+Klassen (14): `.ncss-modal` `.ncss-modal--3d` `.ncss-modal--3d-flip` `.ncss-modal--3d-swing` `.ncss-modal--dark` `.ncss-modal--fullscreen` `.ncss-modal--slide-down` `.ncss-modal--slide-left` `.ncss-modal--slide-right` `.ncss-modal--slide-up` `.ncss-modal--zoom` `.ncss-modal-body` `.ncss-modal-footer` `.ncss-modal-header`
 
 ```text
 ncss - Modal-Komponente (Layer "components"): natives <dialog>, zentriert, als
@@ -3630,7 +3630,8 @@ Drei Pfade (gleiche Logik wie hovercard.css, aber ohne Abhängigkeit davon):
 3. Ohne beides: Tooltip bleibt verborgen - aria-describedby liefert den Text trotzdem als
    Beschreibung an Screenreader (funktioniert auch auf verborgene Elemente).
 
-Tokens: --ncss-tooltip-max-width (Default 18rem), --ncss-tooltip-offset.
+Tokens: --ncss-tooltip-max-width (Default 18rem), --ncss-tooltip-offset,
+--ncss-tooltip-viewport-gap (Mindestabstand zum Viewport-Rand).
 Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base). Optional
 js/tooltip.js.
 ```
@@ -3804,7 +3805,7 @@ visually-hidden-Klasse (.ncss-video-player-sr).
 
 ### `components/video-text.css`
 
-Klassen (3): `.ncss-video-text` `.ncss-video-text-media` `.ncss-video-text-title`
+Klassen (6): `.ncss-video-bg-toggle` `.ncss-video-bg-toggle--top-end` `.ncss-video-bg-toggle--top-start` `.ncss-video-text` `.ncss-video-text-media` `.ncss-video-text-title`
 
 ```text
 ncss - Video in Schrift (Layer "components"): eine große Überschrift, deren Buchstaben
@@ -3844,7 +3845,7 @@ Benötigt: tokens.css + colors.css.
 
 ### `components/video.css`
 
-Klassen (2): `.ncss-video` `.ncss-video--responsive-crop`
+Klassen (5): `.ncss-ratio-portrait` `.ncss-ratio-square` `.ncss-ratio-video` `.ncss-video` `.ncss-video--responsive-crop`
 
 ```text
 ncss - Video-Komponente (Layer "components"). Lokales <video> soll genauso einfach zu
@@ -3868,6 +3869,10 @@ Mit Bildunterschrift (gleiches Muster wie .ncss-figure für <img>):
     <figcaption>Bildunterschrift</figcaption>
   </figure>
   (figcaption-Optik kommt bereits aus base.css, gemeinsam mit <img> genutzt.)
+  Mit <figcaption> gelten Seitenverhältnis, Rundung und Hintergrund automatisch dem
+  <video> statt der <figure> (siehe unten) - die Bildunterschrift steht darunter und wird
+  nicht abgeschnitten. Gleichwertig: Ratio-Klasse direkt ans <video>:
+  <figure class="ncss-video"><video class="ncss-ratio-video" ...></video><figcaption>…
 
 Absichtlich NICHT enthalten: ein eigener Play-Button-Overlay-Zustand über die CSS-
 Pseudoklassen :playing/:paused - die sind Stand jetzt (Interop-2026-Ziel) noch nicht
@@ -4511,6 +4516,8 @@ data-limit: max. Anzahl Termine in agenda/list (Default: kein Limit).
 data-month: Start-Monat für die Monatsansicht, "YYYY-MM" (Default: aktueller Monat).
 data-window-months: wie viele Monate voraus eine unbegrenzte ICS-RRULE (ohne COUNT/
   UNTIL) expandiert wird (Default: 18).
+Sprache: nächster [lang]-Vorfahre des Widgets (sonst <html lang>) - bestimmt Texte,
+  Monats-/Wochentagsnamen, Datumsformat und den Default-Wochenstart.
 
 Reine Vanilla-JS-Erweiterung, kein Framework, kein Build-Schritt - Rendering nutzt
 ausschließlich bereits vorhandene ncss-Komponenten (.ncss-card, .ncss-modal,
@@ -5576,9 +5583,11 @@ aria-current kommt aber nur von hier).
 Markup: <nav class="ncss-subnav" data-ncss-subnav> ... <a href="#abschnitt"> ... </nav>
 Zusätzlich: misst den klebenden Kopfbereich ([data-ncss-sticky-header] oder .ncss-topbar)
 und setzt --ncss-scroll-offset (+ ggf. --ncss-subnav-top), siehe trackHeader().
-"Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante der Leiste erreicht
-hat; am Seitenende immer der letzte Abschnitt (kurze Schluss-Abschnitte erreichen die
-Oberkante sonst nie).
+"Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante des klebenden
+Kopfbereichs erreicht hat; davor (ganz oben) der erste, am Seitenende immer der letzte
+(kurze Schluss-Abschnitte erreichen die Kante sonst nie). Beobachtet wird per
+IntersectionObserver eine 1px-Linie an dieser Kante (rootMargin aus der gemessenen
+Kopfhöhe), dazu scroll/scrollend gebündelt per requestAnimationFrame.
 ```
 
 ### `js/table-sort.js`

@@ -20,6 +20,10 @@
  *     <figcaption>Bildunterschrift</figcaption>
  *   </figure>
  *   (figcaption-Optik kommt bereits aus base.css, gemeinsam mit <img> genutzt.)
+ *   Mit <figcaption> gelten Seitenverhältnis, Rundung und Hintergrund automatisch dem
+ *   <video> statt der <figure> (siehe unten) - die Bildunterschrift steht darunter und wird
+ *   nicht abgeschnitten. Gleichwertig: Ratio-Klasse direkt ans <video>:
+ *   <figure class="ncss-video"><video class="ncss-ratio-video" ...></video><figcaption>…
  *
  * Absichtlich NICHT enthalten: ein eigener Play-Button-Overlay-Zustand über die CSS-
  * Pseudoklassen :playing/:paused - die sind Stand jetzt (Interop-2026-Ziel) noch nicht
@@ -50,6 +54,32 @@
   object-fit: cover;
   /* siehe --ncss-focus-point in tokens.css - Fokuspunkt pro Video überschreibbar. */
   object-position: var(--ncss-focus-point);
+}
+
+/* --- Bildunterschrift + Seitenverhältnis --------------------------------------------------
+   Das dokumentierte Muster figure.ncss-video.ncss-ratio-video gab das Seitenverhältnis der
+   FIGURE - mit overflow:hidden schnitt das die <figcaption> ab (sie passt nicht mehr in die
+   aus der Breite berechnete Höhe). Mit Bildunterschrift wandert der Rahmen deshalb aufs
+   <video>: Figure ohne eigenes Seitenverhältnis/Clipping, Video mit Verhältnis, Rundung und
+   Hintergrund. Ohne <figcaption> bleibt alles wie bisher. */
+figure.ncss-video:is(.ncss-ratio-video, .ncss-ratio-square, .ncss-ratio-portrait, .ncss-video--responsive-crop):has(> figcaption) {
+  aspect-ratio: auto;
+  overflow: visible;
+  border-radius: 0;
+  background-color: transparent;
+}
+figure.ncss-video:is(.ncss-ratio-video, .ncss-ratio-square, .ncss-ratio-portrait, .ncss-video--responsive-crop):has(> figcaption) > video {
+  height: auto;
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-bg-subtle);
+}
+figure.ncss-video.ncss-ratio-video:has(> figcaption) > video { aspect-ratio: var(--ncss-aspect-video); }
+figure.ncss-video.ncss-ratio-square:has(> figcaption) > video { aspect-ratio: var(--ncss-aspect-square); }
+figure.ncss-video.ncss-ratio-portrait:has(> figcaption) > video { aspect-ratio: var(--ncss-aspect-portrait); }
+figure.ncss-video--responsive-crop:has(> figcaption) > video { aspect-ratio: var(--ncss-aspect-portrait); }
+/* -- ncss breakpoint: md (768px) -- */
+@media (min-width: 48rem) {
+  figure.ncss-video--responsive-crop:has(> figcaption) > video { aspect-ratio: var(--ncss-aspect-video); }
 }
 
 /* Anderer Bildausschnitt (nicht andere Datei) je nach Viewport - z.B. hochkant auf dem

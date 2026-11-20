@@ -27,6 +27,7 @@
   "js/events.js"
  ],
  "ncss-agenda-body": [
+  "components/events.css",
   "js/events.js"
  ],
  "ncss-agenda-group-title": [
@@ -1783,6 +1784,7 @@
   "components/modal.css"
  ],
  "ncss-modal-body": [
+  "components/modal.css",
   "js/events.js"
  ],
  "ncss-modal-footer": [
@@ -2186,12 +2188,15 @@
   "components/rating.css"
  ],
  "ncss-ratio-portrait": [
+  "components/video.css",
   "helpers/media.css"
  ],
  "ncss-ratio-square": [
+  "components/video.css",
   "helpers/media.css"
  ],
  "ncss-ratio-video": [
+  "components/video.css",
   "helpers/media.css"
  ],
  "ncss-reveal": [
@@ -3079,16 +3084,19 @@
  "ncss-video-bg-toggle": [
   "components/morph.css",
   "components/video-bg.css",
+  "components/video-text.css",
   "js/video-bg.js"
  ],
  "ncss-video-bg-toggle--bottom-start": [
   "components/video-bg.css"
  ],
  "ncss-video-bg-toggle--top-end": [
-  "components/video-bg.css"
+  "components/video-bg.css",
+  "components/video-text.css"
  ],
  "ncss-video-bg-toggle--top-start": [
-  "components/video-bg.css"
+  "components/video-bg.css",
+  "components/video-text.css"
  ],
  "ncss-video-card": [
   "components/video-card.css",

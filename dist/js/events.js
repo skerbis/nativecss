@@ -20,6 +20,8 @@
  * data-month: Start-Monat für die Monatsansicht, "YYYY-MM" (Default: aktueller Monat).
  * data-window-months: wie viele Monate voraus eine unbegrenzte ICS-RRULE (ohne COUNT/
  *   UNTIL) expandiert wird (Default: 18).
+ * Sprache: nächster [lang]-Vorfahre des Widgets (sonst <html lang>) - bestimmt Texte,
+ *   Monats-/Wochentagsnamen, Datumsformat und den Default-Wochenstart.
  *
  * Reine Vanilla-JS-Erweiterung, kein Framework, kein Build-Schritt - Rendering nutzt
  * ausschließlich bereits vorhandene ncss-Komponenten (.ncss-card, .ncss-modal,
@@ -45,9 +47,13 @@
      6=Sa) explizit überschreibbar für Sonderfälle. */
   var WEEK_START_DEFAULT = { de: 1, en: 0 };
 
-  function locale() {
-    var lang = document.documentElement.getAttribute("lang") || "de";
-    return lang.slice(0, 2) === "en" ? "en" : "de";
+  /* Sprache: nächster [lang]-Vorfahre des Widgets (sonst <html lang>) - wie downloads.js,
+     damit ein englischer Abschnitt auf einer deutschen Seite (oder umgekehrt) auch
+     englische Monatsnamen, Texte und Wochenstart bekommt. */
+  function locale(el) {
+    var host = el && el.closest ? el.closest("[lang]") : null;
+    var lang = (host && host.getAttribute("lang")) || document.documentElement.getAttribute("lang") || "de";
+    return lang.slice(0, 2).toLowerCase() === "en" ? "en" : "de";
   }
 
   function weekStartFor(el, lang) {
@@ -135,14 +141,14 @@
   }
 
   function renderError(el, err) {
-    el.innerHTML = '<p class="ncss-events-empty">' + (locale() === "de" ? "Termine konnten nicht geladen werden." : "Could not load events.") + "</p>";
+    el.innerHTML = '<p class="ncss-events-empty">' + (locale(el) === "de" ? "Termine konnten nicht geladen werden." : "Could not load events.") + "</p>";
     if (window.console) {
       window.console.error("[ncss-events]", err);
     }
   }
 
-  function fmtDate(date, allDay) {
-    var lang = locale();
+  function fmtDate(date, allDay, lang) {
+    lang = lang || locale();
     var opts = allDay
       ? { day: "numeric", month: "short", year: "numeric" }
       : { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" };
@@ -156,8 +162,8 @@
   }
 
   /* --- Agenda-/Listen-Baustein: ein Termin-Eintrag mit Tages-/Monats-Badge ------------- */
-  function eventDateBadgeHtml(ev) {
-    var lang = locale();
+  function eventDateBadgeHtml(ev, lang) {
+    lang = lang || locale();
     var day = ev.start.getDate();
     var month = MONTH_NAMES[lang][ev.start.getMonth()].slice(0, 3);
     return (
@@ -185,7 +191,7 @@
 
   /* --- View: agenda (Kalender-Liste) --------------------------------------------------- */
   function renderAgenda(el, events) {
-    var lang = locale();
+    var lang = locale(el);
     var now = new Date();
     now.setHours(0, 0, 0, 0);
     var upcoming = events.filter(function (ev) {
@@ -217,7 +223,7 @@
       group.items.forEach(function (ev) {
         html +=
           '<li class="ncss-agenda-item">' +
-          eventDateBadgeHtml(ev) +
+          eventDateBadgeHtml(ev, lang) +
           '<div class="ncss-agenda-body"><p class="ncss-agenda-title">' +
           escapeHtml(ev.title) +
           "</p>" +
@@ -232,7 +238,7 @@
 
   /* --- View: list (Termin-Karten-Raster) ------------------------------------------------ */
   function renderList(el, events) {
-    var lang = locale();
+    var lang = locale(el);
     var now = new Date();
     now.setHours(0, 0, 0, 0);
     var upcoming = events.filter(function (ev) {
@@ -250,7 +256,7 @@
     upcoming.forEach(function (ev) {
       html +=
         '<article class="ncss-card"><div class="ncss-card-header ncss-cluster">' +
-        eventDateBadgeHtml(ev) +
+        eventDateBadgeHtml(ev, lang) +
         '<h3 class="ncss-event-title">' +
         escapeHtml(ev.title) +
         "</h3></div>" +
@@ -264,7 +270,7 @@
 
   /* --- View: single (ein hervorgehobener Termin) ----------------------------------------- */
   function renderSingle(el, events) {
-    var lang = locale();
+    var lang = locale(el);
     var eventId = el.getAttribute("data-event-id");
     var chosen = null;
 
@@ -292,11 +298,11 @@
 
     el.innerHTML =
       '<article class="ncss-card ncss-event-featured"><div class="ncss-card-header ncss-cluster">' +
-      eventDateBadgeHtml(chosen) +
+      eventDateBadgeHtml(chosen, lang) +
       '<div><h3 class="ncss-event-title">' +
       escapeHtml(chosen.title) +
       '</h3><p class="ncss-text-sm ncss-text-muted">' +
-      fmtDate(chosen.start, chosen.allDay) +
+      fmtDate(chosen.start, chosen.allDay, lang) +
       "</p></div></div>" +
       '<div class="ncss-card-body">' +
       eventMetaHtml(chosen) +
@@ -305,7 +311,7 @@
 
   /* --- View: month (Kalender-Monatsraster) ----------------------------------------------- */
   function renderMonth(el, events) {
-    var lang = locale();
+    var lang = locale(el);
     var weekStart = weekStartFor(el, lang);
     var monthAttr = el.getAttribute("data-month");
     var current;

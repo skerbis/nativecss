@@ -41,6 +41,10 @@
 .ncss-event-featured .ncss-event-title {
   font-size: var(--ncss-font-size-lg);
 }
+/* Datumszeile unter dem Titel (Einzeltermin): etwas Luft zum Titel, kein Absatz-Abstand */
+.ncss-event-title + p {
+  margin-block: var(--ncss-space-2xs) 0;
+}
 
 /* --- Agenda (Kalender-Liste) ---------------------------------------------------------- */
 .ncss-agenda-group-title {
@@ -75,6 +79,20 @@
   font-weight: 600;
   margin: 0;
 }
+/* Ort/Beschreibung/Link kommen als <p>/<a> aus events.js - eigener, enger Rhythmus statt
+   des Absatz-Abstands aus base.css (sonst große Lücken innerhalb eines Termins). */
+.ncss-agenda-body > * {
+  margin-block: 0;
+}
+.ncss-agenda-body > * + * {
+  margin-block-start: var(--ncss-space-3xs);
+}
+.ncss-agenda-body > p:not([class]) {
+  margin-block-start: var(--ncss-space-2xs);
+}
+.ncss-agenda-list:last-child {
+  margin-block-end: 0;
+}
 
 /* --- Monatsraster ----------------------------------------------------------------------- */
 .ncss-cal-header {
@@ -94,6 +112,7 @@
 }
 
 .ncss-cal-grid {
+  margin-block-end: 0;
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;

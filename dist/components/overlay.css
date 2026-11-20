@@ -72,6 +72,16 @@
 .ncss-overlay--scrim.ncss-overlay--top {
   background: linear-gradient(to bottom, var(--ncss-color-overlay-strong), transparent 60%);
 }
+/* An einem Rand (--bottom/--top) ist das Panel nur so hoch wie sein Text - der Verlauf
+   lief dann schon innerhalb der ersten Textzeile ins fast Transparente aus. Zusätzlicher
+   Innenabstand zur Bildmitte hin verlängert die Blende über den Text hinaus, der Text
+   selbst liegt im dichten Teil. Pro Instanz per --ncss-overlay-scrim-extent anpassbar. */
+.ncss-overlay--scrim.ncss-overlay--bottom {
+  padding-block-start: var(--ncss-overlay-scrim-extent, var(--ncss-space-2xl));
+}
+.ncss-overlay--scrim.ncss-overlay--top {
+  padding-block-end: var(--ncss-overlay-scrim-extent, var(--ncss-space-2xl));
+}
 /* Gleichmäßige, halbtransparente Fläche statt eines Verlaufs - z.B. für ein CTA, das
    die ganze Kachel abdeckt, nicht nur einen Rand. */
 .ncss-overlay--tint {

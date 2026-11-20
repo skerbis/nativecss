@@ -56,9 +56,6 @@
   @container ncss-container (max-width: 30rem) {
     .demo-site .ncss-topbar-inner { column-gap: var(--ncss-space-xs); }
   }
-  /* UMGEHUNG Bibliotheks-Fund: der Rand-Verlauf von .ncss-nav--scroll blendet auch am
-     Scroll-Anfang den ersten Punkt halb aus - Innenabstand schiebt ihn aus dem Verlauf. */
-  .demo-live .ncss-nav--scroll .ncss-nav-list { padding-inline: var(--ncss-space-md); }
 
   .demo-site-body {
     display: grid;
@@ -127,10 +124,6 @@
     border-radius: var(--ncss-radius-md);
     background-color: var(--ncss-color-surface);
   }
-  /* UMGEHUNG Bibliotheks-Fund: nav.css setzt unter 64rem auf JEDE .ncss-nav-list
-     margin-block-start (fürs Off-Canvas-Panel); .ncss-nav--tree setzt das nicht zurück
-     -> leerer Streifen über dem ersten Punkt. */
-  .demo-tree-layout .ncss-nav--tree .ncss-nav-list { margin-block-start: 0; }
   .demo-tree-layout h3 { font-size: var(--ncss-font-size-lg); margin-block-end: var(--ncss-space-2xs); }
 
   /* Priority-Nav: per Regler (showcase-navigation.js) verstellbarer Rahmen */

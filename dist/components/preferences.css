@@ -114,6 +114,12 @@ ncss-preferences[inline] .ncss-preferences-panel {
   font-size: var(--ncss-font-size-sm);
   color: var(--ncss-color-text-muted);
 }
+/* Der Bewegungs-Hinweis steckt im <fieldset>, nicht direkt im Panel - die Rücksetzung
+   oben (> *) erreicht ihn nicht, ohne diese Regel brächte er den Absatz-Abstand aus
+   base.css mit. */
+.ncss-preferences-hint {
+  margin-block: var(--ncss-space-3xs) 0;
+}
 .ncss-preferences-group {
   margin: 0;
   padding: 0;
