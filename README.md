@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="demo/assets/brand/banner-dark.webp">
+  <img src="demo/assets/brand/banner-light.webp" alt="NativeCSS – CSS, das der Browser schon kann. Designsystem aus reinem, modernem CSS, barrierefrei von Grund auf." width="1280">
+</picture>
+
 # NativeCSS
 
 *(Klassen-Präfix im Code: `ncss`)*
