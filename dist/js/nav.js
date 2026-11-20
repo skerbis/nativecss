@@ -51,6 +51,16 @@
     if (list.scrollWidth > list.clientWidth + 1 || nav.scrollWidth > nav.clientWidth + 1) {
       return false;
     }
+    /* scrollWidth erfasst nur Überlauf zum Zeilenende - bei justify-content:flex-end/center
+       (oder RTL) ragen die Punkte zum Anfang hinaus, über die Marke. Deshalb zusätzlich die
+       äußeren Kanten der Punkte gegen die Liste prüfen. */
+    var lb = list.getBoundingClientRect();
+    for (var j = 0; j < list.children.length; j++) {
+      var ib = list.children[j].getBoundingClientRect();
+      if (ib.width && (ib.left < lb.left - 1 || ib.right > lb.right + 1)) {
+        return false;
+      }
+    }
     if (row.scrollWidth > row.clientWidth + 1) {
       return false;
     }
