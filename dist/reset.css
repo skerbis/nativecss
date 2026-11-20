@@ -19,7 +19,9 @@ html {
      blockieren (anders als "-webkit-text-size-adjust: none", was a11y-schädlich wäre). */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  hanging-punctuation: first last;
+  /* Nur "first": hängende Satzzeichen am ZEILENENDE ("last") ragen über den rechten Rand und
+     erzeugten in WebKit bei 360px messbaren Seitenüberlauf (example-gemeinde-service.html, 6px). */
+  hanging-punctuation: first;
   /* Sanftes Scrollen SEITENWEIT (Anker-Klicks, .scrollIntoView() etc.), nicht nur in den
      einzelnen Komponenten, die es schon länger selbst setzen (slideshow.css,
      .ncss-scroll-snap-x/-y, .ncss-snap-sections - deren eigener overflow:auto-Container
