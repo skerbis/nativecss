@@ -26,7 +26,36 @@
     }
     var copies = el.querySelectorAll(':scope > .ncss-marquee-group[aria-hidden="true"]');
     for (var c = 0; c < copies.length; c++) copies[c].inert = true;
+    keyboardScroll(el);
   }
+
+  // Reduzierte Bewegung: das Laufband steht und wird stattdessen horizontal scrollbar
+  // (marquee.css) - dann per Tastatur erreichbar machen (WCAG 2.1.1). Eigenes tabindex
+  // des Autors bleibt unangetastet.
+  var reduceMq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  function reduced() {
+    var m = document.documentElement.getAttribute("data-motion");
+    if (m === "reduce") return true;
+    if (m === "full") return false;
+    return !!(reduceMq && reduceMq.matches);
+  }
+  function keyboardScroll(el) {
+    var scrollable = reduced() && el.scrollWidth > el.clientWidth + 1;
+    if (scrollable && !el.hasAttribute("tabindex")) {
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("data-ncss-marquee-tabindex", "");
+    } else if (!scrollable && el.hasAttribute("data-ncss-marquee-tabindex")) {
+      el.removeAttribute("tabindex");
+      el.removeAttribute("data-ncss-marquee-tabindex");
+    }
+  }
+  function refreshAll() {
+    var all = document.querySelectorAll("[data-ncss-marquee]");
+    for (var i = 0; i < all.length; i++) keyboardScroll(all[i]);
+  }
+  if (reduceMq && reduceMq.addEventListener) reduceMq.addEventListener("change", refreshAll);
+  document.addEventListener("ncss-preferences-change", refreshAll);
+  window.addEventListener("resize", refreshAll);
 
   // Pause-Schalter per Delegation am document statt pro Button - funktioniert dadurch
   // auch für später eingefügte Schalter ohne erneute Initialisierung.
