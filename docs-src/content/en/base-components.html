@@ -1,5 +1,6 @@
-<!--DESC: Base components without Web Awesome - tabs, tooltip, pagination and alerts: native, accessible, usable one file at a time.-->
-<!--FOOT: <script src="~/dist/js/tabs.js"></script><script src="~/dist/js/tooltip.js"></script><script src="~/dist/js/dismiss.js"></script><script src="~/dist/js/dialog-light-dismiss.js"></script>-->
+<!--DESC: Base components without Web Awesome - tabs, tooltip, pagination, alerts, display preferences and dialog behaviour: native, usable one file at a time.-->
+<!--FOOT: <script src="~/dist/js/tabs.js"></script><script src="~/dist/js/tooltip.js"></script><script src="~/dist/js/dismiss.js"></script><script src="~/dist/js/dialog-light-dismiss.js"></script><script src="~/dist/js/preferences.js"></script>-->
+<!--HEAD: <script src="~/dist/js/preferences-early.js"></script><link rel="stylesheet" href="~/dist/components/preferences-fonts.css">-->
 <section class="ncss-stack">
   <h1>Base components</h1>
   <p class="ncss-text-lg ncss-text-muted">The native alternative to <code>&lt;wa-tab-group&gt;</code>, <code>&lt;wa-tooltip&gt;</code> and <code>&lt;wa-callout&gt;</code>: no ES module, no shadow DOM, the markup stays plain HTML that works without JavaScript. Each file runs on its own with <code>colors.css</code>, <code>tokens.css</code>, <code>reset.css</code> and <code>base.css</code>. Web Awesome stays optional (see <a href="webawesome-bridge.html">Web Awesome</a>).</p>
@@ -12,10 +13,13 @@
 &lt;link rel="stylesheet" href="ncss/components/tooltip.css"&gt;
 &lt;link rel="stylesheet" href="ncss/components/pagination.css"&gt;  &lt;!-- pure CSS --&gt;
 &lt;link rel="stylesheet" href="ncss/components/alert.css"&gt;       &lt;!-- pure CSS --&gt;
+&lt;link rel="stylesheet" href="ncss/components/preferences.css"&gt;
 &lt;script src="ncss/js/tabs.js" defer&gt;&lt;/script&gt;      &lt;!-- &lt;ncss-tabs&gt; --&gt;
 &lt;script src="ncss/js/tooltip.js" defer&gt;&lt;/script&gt;   &lt;!-- fallback without interestfor --&gt;
 &lt;script src="ncss/js/dismiss.js" defer&gt;&lt;/script&gt;   &lt;!-- dismiss buttons --&gt;
-&lt;script src="ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;  &lt;!-- click outside closes --&gt;</code></pre>
+&lt;script src="ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;  &lt;!-- click outside closes --&gt;
+&lt;script src="ncss/js/preferences-early.js"&gt;&lt;/script&gt;   &lt;!-- in &lt;head&gt;, before stylesheets --&gt;
+&lt;script src="ncss/js/preferences.js" defer&gt;&lt;/script&gt;  &lt;!-- &lt;ncss-preferences&gt; --&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">All scripts are standalone and also work with markup inserted later (htmx, fetch, REDAXO frontend editing): tabs as a custom element via <code>connectedCallback</code>, tooltip and dismiss via event delegation - see <a href="dynamic-content.html">Dynamic content</a>.</p>
 </section>
 
@@ -43,7 +47,7 @@
 &lt;/ncss-tabs&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
   <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
-<ncss-tabs hash>
+<ncss-tabs class="ncss-tabs" hash>
   <div class="ncss-tabs-list" aria-label="Product details">
     <a href="#tab-description">Description</a>
     <a href="#tab-specs">Specifications</a>
@@ -64,7 +68,7 @@
 </ncss-tabs>
   </div>
   <p>Vertical with manual activation (<code>activation="manual"</code>): arrow keys only move focus, Enter/Space opens - useful when a panel loads expensive content. With little room the content wraps below the list (no fixed breakpoint).</p>
-  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs--vertical" activation="manual"&gt;
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual"&gt;
   &lt;div class="ncss-tabs-list" aria-label="Settings"&gt;
     &lt;a href="#set-profile"&gt;Profile&lt;/a&gt;
     &lt;a href="#set-account"&gt;Account&lt;/a&gt;
@@ -85,7 +89,7 @@
 &lt;/ncss-tabs&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
   <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
-<ncss-tabs class="ncss-tabs--vertical" activation="manual">
+<ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual">
   <div class="ncss-tabs-list" aria-label="Settings">
     <a href="#set-profile">Profile</a>
     <a href="#set-account">Account</a>
@@ -106,8 +110,8 @@
 </ncss-tabs>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Event <code>ncss-tabs-change</code> (bubbles, <code>detail.tab/panel/index</code>), method <code>el.select(index | "id")</code>.</p>
-  <div class="docs-a11y-notes">
-    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+  <div class="ncss-a11y-notes">
+    <h3>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -152,8 +156,8 @@
 </div>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Important: the tooltip is a <em>description</em>, never the name. The icon button above is named "Copy" via <code>aria-label</code>; without JS and without <code>interestfor</code> the tooltip stays invisible, the description still arrives via <code>aria-describedby</code>.</p>
-  <div class="docs-a11y-notes">
-    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+  <div class="ncss-a11y-notes">
+    <h3>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -227,8 +231,8 @@
   </ul>
 </nav>
   </div>
-  <div class="docs-a11y-notes">
-    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+  <div class="ncss-a11y-notes">
+    <h3>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -249,7 +253,7 @@
 <section class="ncss-stack" id="alert">
   <h2 class="demo-section-title">Alerts</h2>
   <p><code>.ncss-alert</code> with <code>--info</code> (brand colour), <code>--success</code>, <code>--warning</code>, <code>--danger</code>, <code>--neutral</code>; <code>--plain</code> without icon. The icon is decoration - the meaning is in the text ("Warning:"), colour alone is not enough.</p>
-  <pre><code class="language-html">&lt;div class="ncss-alert"&gt;
+  <pre><code class="language-html">&lt;div class="ncss-alert ncss-alert--info"&gt;
   &lt;p class="ncss-alert-title"&gt;Note:&lt;/p&gt;
   &lt;p&gt;Registration is open until 30 November.&lt;/p&gt;
 &lt;/div&gt;
@@ -267,7 +271,7 @@
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
   <div class="ncss-stack">
-<div class="ncss-alert">
+<div class="ncss-alert ncss-alert--info">
   <p class="ncss-alert-title">Note:</p>
   <p>Registration is open until 30 November.</p>
 </div>
@@ -305,8 +309,8 @@
 </div>
   </div>
   <p class="ncss-text-sm ncss-text-muted"><strong>Difference:</strong> <code>.ncss-card--success</code> etc. are <em>cards</em> in a status colour (any content, card grid, media). <code>.ncss-alert</code> is a <em>message</em> with icon, title and optional dismiss. Same colour tokens, deliberately no alias. For messages that disappear by themselves use the <a href="overlays.html">toasts</a> from <code>notification.css</code>.</p>
-  <div class="docs-a11y-notes">
-    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+  <div class="ncss-a11y-notes">
+    <h3>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -321,6 +325,46 @@
     <p>No animation. Text in the family's <code>-on-soft</code> step (contrast ≥ 4.5:1 light and dark). Forced colours: border instead of fill, icons in <code>CanvasText</code>. Reflows freely when zoomed.</p>
     <h4>Without JS</h4>
     <p>Alerts work fully. Only the dismiss button needs JS - with <code>hidden</code> in the markup it appears only once it works.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="display">
+  <h2 class="demo-section-title">Display preferences</h2>
+  <p><strong>Not an accessibility overlay.</strong> <code>&lt;ncss-preferences&gt;</code> does not make a site accessible and fixes nothing - the site has to be accessible already. It lets visitors adapt an accessible page to their personal needs. Device settings (colour scheme, contrast, reduced motion) are the default "System" and are never silently overridden.</p>
+  <p>A "Display" button opens a popover with native controls: colour scheme, contrast and motion (each System/…), text size 100/115/130 %, font, text spacing per WCAG 1.4.12, always underline links, stronger focus. Every change applies to the whole page at once and is saved (<code>localStorage</code>). It works through attributes on <code>&lt;html&gt;</code> - <code>colors.css</code> and <code>reset.css</code> react to them, no component needs its own rules. <code>js/preferences-early.js</code> in the <code>&lt;head&gt;</code> sets the attributes before first paint (no flash) and replaces <code>theme-toggle-early.js</code> (same storage key, one mechanism).</p>
+  <pre><code class="language-html">&lt;ncss-preferences&gt;&lt;/ncss-preferences&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<ncss-preferences></ncss-preferences>
+  </div>
+  <p><strong>Font:</strong> with <code>components/preferences-fonts.css</code> (opt-in, not part of <code>ncss.css</code>) the panel offers three reading fonts - each name shown in its own typeface as a preview. Only body text and headings change (<code>--ncss-font-family-base</code>/<code>-heading</code>), code stays monospace. All fonts live in <code>dist/fonts/</code> (SIL Open Font License, license texts and notes in <code>dist/fonts/README.md</code>), no Google Fonts request. The browser downloads a file only when it is needed: the selected font - and the preview fonts when the panel is opened.</p>
+  <div class="ncss-table-scroll" tabindex="0" role="region" aria-label="Reading fonts"><table><thead><tr><th scope="col">Font</th><th scope="col">What for</th><th scope="col">File</th></tr></thead><tbody><tr><td>Atkinson Hyperlegible Next</td><td>First recommendation: designed by the Braille Institute for low-vision readers, easily confused characters (I l 1, O 0, b d) are clearly distinct.</td><td>38 KB (variable, Latin subset)</td></tr><tr><td>Lexend</td><td>Wider typeface designed for more fluent reading.</td><td>44 KB (variable, Latin subset)</td></tr><tr><td>OpenDyslexic</td><td>Preferred by some people with dyslexia. <strong>To be honest:</strong> research shows no proven benefit over well-designed standard fonts - a personal preference, no promise.</td><td>101 KB + 106 KB (unmodified, the name is reserved)</td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Wider fonts like Lexend and OpenDyslexic need more room - NativeCSS layouts wrap instead of overflowing (checked at 130 % text size and narrow viewports).</p>
+  <p><code>inline</code> shows the panel directly (e.g. on a dedicated settings page), <code>settings</code> picks the offered settings and their order (<code>theme contrast motion text font spacing links focus</code>). Texts can be overridden with <code>data-label-…</code>.</p>
+  <pre><code class="language-html">&lt;ncss-preferences inline settings="text spacing links focus"&gt;&lt;/ncss-preferences&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="">
+<ncss-preferences inline settings="text spacing links focus"></ncss-preferences>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Motion "Full"</strong> is only possible as an explicit choice: it lifts the global damping NativeCSS applies for system "reduced motion", and the panel points this out. Effects a component explicitly offers only under <code>prefers-reduced-motion: no-preference</code> stay off - CSS cannot reinterpret a system setting. "Reduced" works everywhere: transitions, animations, scroll-driven effects and all scripts (they check <code>data-motion</code> too). Increased contrast uses the same values as <code>prefers-contrast: more</code>.</p>
+  <div class="ncss-a11y-notes">
+    <h3>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Button, then within the panel from group to group and to the switches.</td></tr>
+        <tr><td><kbd class="ncss-kbd">←</kbd> / <kbd class="ncss-kbd">→</kbd> / <kbd class="ncss-kbd">↑</kbd> / <kbd class="ncss-kbd">↓</kbd></td><td>Change the option within a radio group (colour scheme, contrast, motion, text size, font) - applies immediately.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Space</kbd></td><td>Toggle a switch.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd></td><td>Closes the popover, focus returns to the button.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Button with visible text "Display" and <code>aria-expanded</code>. Panel <code>role="dialog"</code> with a heading; each group is a <code>fieldset</code> with <code>legend</code>, switches are checkboxes with <code>role="switch"</code>. Every change is announced politely (<code>role="status"</code>, e.g. "Text size: 130 %").</p>
+    <h4>Settings</h4>
+    <p>The panel follows all settings itself. Selected option in <code>Highlight</code> in forced colours. Targets ≥ 40 px. At 130 % text + 400 % zoom it stays scrollable within the viewport.</p>
+    <h4>Without JS</h4>
+    <p>The element stays hidden (<code>:not(:defined)</code>), system settings apply. Already saved values are still applied by <code>preferences-early.js</code>.</p>
   </div>
 </section>
 
@@ -359,8 +403,8 @@
 </dialog>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Closing goes through <code>requestClose()</code>: the <code>cancel</code> event fires first, <code>event.preventDefault()</code> keeps the dialog open (e.g. "Discard unsaved changes?"). A text selection that starts in the panel and ends outside does not close it. Setup: <code>&lt;script src="ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;</code>.</p>
-  <div class="docs-a11y-notes">
-    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+  <div class="ncss-a11y-notes">
+    <h3>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>

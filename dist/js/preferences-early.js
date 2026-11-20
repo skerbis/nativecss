@@ -15,6 +15,8 @@
  *   data-contrast="more|normal"     Kontrast (normal = System-"more" bewusst zurücknehmen)
  *   data-motion="reduce|full"       Bewegung (full = System-"reduce" bewusst aufheben)
  *   data-text-scale="115|130"       Schriftgröße
+ *   data-ncss-font="hyperlegible|lexend|opendyslexic"   Lese-Schrift
+ *                                   (Wirkung in components/preferences-fonts.css)
  *   data-text-spacing               Textabstände nach WCAG 1.4.12
  *   data-links="underline"          Links immer unterstreichen
  *   data-focus="strong"             verstärkter Fokus-Rahmen
@@ -34,11 +36,13 @@
   var allowed = {
     contrast: ["more", "normal"],
     motion: ["reduce", "full"],
-    text: ["115", "130"]
+    text: ["115", "130"],
+    font: ["hyperlegible", "lexend", "opendyslexic"]
   };
   if (allowed.contrast.indexOf(prefs.contrast) > -1) root.setAttribute("data-contrast", prefs.contrast);
   if (allowed.motion.indexOf(prefs.motion) > -1) root.setAttribute("data-motion", prefs.motion);
   if (allowed.text.indexOf(String(prefs.text)) > -1) root.setAttribute("data-text-scale", String(prefs.text));
+  if (allowed.font.indexOf(prefs.font) > -1) root.setAttribute("data-ncss-font", prefs.font);
   if (prefs.spacing === true) root.setAttribute("data-text-spacing", "");
   if (prefs.links === true) root.setAttribute("data-links", "underline");
   if (prefs.focus === true) root.setAttribute("data-focus", "strong");

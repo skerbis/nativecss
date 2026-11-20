@@ -13,7 +13,8 @@
  *
  * Attribute am Element:
  *   inline                     Bedienfeld direkt anzeigen statt Button + Popover
- *   settings="theme contrast motion text spacing links focus"   Auswahl/Reihenfolge
+ *   settings="theme contrast motion text font spacing links focus"   Auswahl/Reihenfolge
+ *                              ("font" nur mit components/preferences-fonts.css)
  *   data-label-<schlüssel>="…"  jeden Text überschreiben (Schlüssel siehe TEXTS unten)
  * Event (am document): ncss-preferences-change, detail { key, value, prefs }
  *
@@ -35,7 +36,7 @@
   var root = document.documentElement;
   var THEME_KEY = "ncss-theme";
   var PREFS_KEY = "ncss-prefs";
-  var ALL = ["theme", "contrast", "motion", "text", "spacing", "links", "focus"];
+  var ALL = ["theme", "contrast", "motion", "text", "font", "spacing", "links", "focus"];
   var TEXTS = {
     de: {
       button: "Darstellung", title: "Darstellung anpassen",
@@ -46,6 +47,7 @@
       motion: "Bewegung", reduce: "Reduziert", full: "Voll",
       motionHint: "Dein Gerät wünscht reduzierte Bewegung - „Voll“ hebt das nur für diese Website auf.",
       text: "Schriftgröße",
+      font: "Schrift", fontDefault: "Standard", hyperlegible: "Atkinson Hyperlegible", lexend: "Lexend", opendyslexic: "OpenDyslexic",
       spacing: "Größere Text- und Zeilenabstände", links: "Links immer unterstreichen", focus: "Fokus-Rahmen verstärken",
       reset: "Zurücksetzen", resetDone: "Alle Einstellungen zurückgesetzt, es gilt dein Gerät.",
       on: "an", off: "aus", close: "Schließen"
@@ -59,6 +61,7 @@
       motion: "Motion", reduce: "Reduced", full: "Full",
       motionHint: "Your device asks for reduced motion - “Full” overrides that for this website only.",
       text: "Text size",
+      font: "Font", fontDefault: "Default", hyperlegible: "Atkinson Hyperlegible", lexend: "Lexend", opendyslexic: "OpenDyslexic",
       spacing: "Larger text and line spacing", links: "Always underline links", focus: "Stronger focus outline",
       reset: "Reset", resetDone: "All settings reset, your device settings apply.",
       on: "on", off: "off", close: "Close"
@@ -69,7 +72,8 @@
     theme: ["", "light", "dark"],
     contrast: ["", "normal", "more"],
     motion: ["", "reduce", "full"],
-    text: ["", "115", "130"]
+    text: ["", "115", "130"],
+    font: ["", "hyperlegible", "lexend", "opendyslexic"]
   };
   var SWITCHES = ["spacing", "links", "focus"];
   var anchorSupport = window.CSS && CSS.supports("anchor-name: --a") && CSS.supports("position-area: bottom");
@@ -95,7 +99,7 @@
         localStorage.removeItem(THEME_KEY);
       }
       var rest = {};
-      ["contrast", "motion", "text", "spacing", "links", "focus"].forEach(function (k) {
+      ["contrast", "motion", "text", "font", "spacing", "links", "focus"].forEach(function (k) {
         if (prefs[k]) rest[k] = prefs[k];
       });
       if (Object.keys(rest).length) {
@@ -120,11 +124,23 @@
     attr("data-contrast", prefs.contrast || null);
     attr("data-motion", prefs.motion || null);
     attr("data-text-scale", prefs.text || null);
+    attr("data-ncss-font", prefs.font || null);
     attr("data-text-spacing", prefs.spacing ? true : null);
     attr("data-links", prefs.links ? "underline" : null);
     attr("data-focus", prefs.focus ? "strong" : null);
     var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     root.setAttribute("data-theme-resolved", prefs.theme || (dark ? "dark" : "light"));
+  }
+
+  // Die Schriftwahl hat nur Sinn, wenn components/preferences-fonts.css eingebunden ist
+  // (deklariert die @font-face-Regeln) - sonst wird die Gruppe gar nicht angeboten.
+  function fontsAvailable() {
+    if (!document.fonts || typeof document.fonts.forEach !== "function") return false;
+    var found = false;
+    document.fonts.forEach(function (face) {
+      if (/Lexend|Atkinson Hyperlegible Next|OpenDyslexic/.test(face.family)) found = true;
+    });
+    return found;
   }
 
   customElements.define(
@@ -164,9 +180,11 @@
             html += '<fieldset class="ncss-preferences-group" data-key="' + key + '"><legend>' + t(key) + "</legend>" +
               '<div class="ncss-preferences-options">';
             GROUPS[key].forEach(function (value) {
-              var label = value === "" ? (key === "text" ? "100 %" : t("system")) :
+              var label = value === "" ? (key === "text" ? "100 %" : key === "font" ? t("fontDefault") : t("system")) :
                 key === "text" ? value + " %" : t(value);
-              html += '<label><input type="radio" name="' + id + "-" + key + '" value="' + value + '"><span>' + label + "</span></label>";
+              // Schriftnamen in ihrer eigenen Schrift als Vorschau (components/preferences-fonts.css).
+              var preview = key === "font" && value ? ' data-font-preview="' + value + '"' : "";
+              html += '<label><input type="radio" name="' + id + "-" + key + '" value="' + value + '"><span' + preview + ">" + label + "</span></label>";
             });
             html += "</div>";
             if (key === "motion") {
@@ -218,6 +236,20 @@
           var value = input.type === "checkbox" ? input.checked : input.value;
           prefs[key] = value;
           self._commit(prefs, key, value);
+          // Schriftgröße/Abstände/Schrift lassen die Seite neu umbrechen - der Button (und
+          // damit das an ihm verankerte Popover) wandert dabei oft aus dem Bild. Zurückholen,
+          // damit Bedienfeld und Fokus sichtbar bleiben.
+          // Mehrfach nachfassen: Bereiche mit content-visibility:auto, Bilder und Webfonts
+          // messen sich erst in den folgenden Frames neu.
+          if (self._button && self._panel.matches(":popover-open")) {
+            [0, 150, 400, 800].forEach(function (ms) {
+              window.setTimeout(function () {
+                if (!self._panel.matches(":popover-open")) return;
+                self._button.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
+                self._place();
+              }, ms);
+            });
+          }
           var name = input.type === "checkbox" ? t(key) + ": " + (value ? t("on") : t("off")) :
             t(key) + ": " + input.nextElementSibling.textContent;
           self._announce(name);
@@ -237,6 +269,17 @@
         document.addEventListener("ncss-preferences-change", this._onChange);
         window.addEventListener("storage", this._onStorage);
         this._sync();
+        // Schriftgruppe nur zeigen, wenn preferences-fonts.css geladen ist - per @import
+        // eingebundene Stylesheets sind beim Start evtl. noch nicht da, daher beim
+        // load-Event erneut prüfen.
+        var fontGroup = panel.querySelector('[data-key="font"]');
+        if (fontGroup) {
+          var check = function () { fontGroup.hidden = !fontsAvailable(); };
+          check();
+          if (document.readyState !== "complete") {
+            window.addEventListener("load", check, { once: true });
+          }
+        }
       }
 
       disconnectedCallback() {
@@ -296,6 +339,7 @@
         }
         panel.style.left = Math.round(left) + "px";
         panel.style.top = Math.round(top) + "px";
+        panel.style.maxHeight = Math.round(vh - top - gap) + "px";
       }
     }
   );

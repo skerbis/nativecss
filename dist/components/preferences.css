@@ -80,6 +80,17 @@ ncss-preferences[inline] {
   border-radius: var(--ncss-radius-lg);
   box-shadow: var(--ncss-shadow-lg);
 }
+/* Mit Anchor Positioning ist der Bezugsrahmen die position-area (vom Button bis zum
+   Viewport-Rand) - 100 % hält das Panel darin, längerer Inhalt scrollt im Panel statt
+   unter den Viewport-Rand zu ragen (bei 130 % Schrift wird es sonst höher als der Platz). */
+@supports (position-area: bottom) {
+  .ncss-preferences-panel[popover]:not([data-ncss-preferences-fallback]) {
+    max-block-size: calc(100% - var(--ncss-space-2xs));
+    /* Mindesthöhe, damit bei wenig Platz unter dem Button die Fallback-Position (darüber)
+       greift, statt das Panel auf ein paar Zeilen zusammenzudrücken. */
+    min-block-size: min(20rem, calc(100svh - 2 * var(--ncss-space-xs)));
+  }
+}
 .ncss-preferences-panel[popover]:not(:popover-open) {
   display: none;
 }

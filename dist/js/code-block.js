@@ -87,7 +87,7 @@
       need = range.getBoundingClientRect().width;
     }
     pre.classList.toggle("is-stacked", need > avail - reserve);
-    var scrollable = codeEl.scrollWidth > codeEl.clientWidth + 1;
+    var scrollable = codeEl.scrollWidth > codeEl.clientWidth;
     pre.classList.toggle("is-scrollable", scrollable);
     // Scrollbarer Code muss per Tastatur erreichbar sein (WCAG 2.1.1, axe
     // scrollable-region-focusable) - eigenes tabindex des Autors nie überschreiben.
@@ -166,10 +166,14 @@
   // Webfonts ändern die Zeilenbreite nach dem ersten Layout - einmal neu messen.
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () {
-      deepQueryAll("pre.ncss-code-block > code").forEach(function (codeEl) {
-        layout(codeEl.parentElement, codeEl);
-      });
+      relayoutAll();
     });
+    // Später nachgeladene Schriften (z.B. eine per Darstellungs-Einstellung gewählte).
+    if (document.fonts.addEventListener) {
+      document.fonts.addEventListener("loadingdone", function () {
+        relayoutAll();
+      });
+    }
   }
 
   function copyText(text, button, status, t) {
@@ -213,6 +217,18 @@
       status.textContent = "";
     }, 1500);
   }
+  // Darstellungs-Einstellungen (js/preferences.js: Schriftgröße, Textabstände, Schrift)
+  // ändern die Zeilenbreite, ohne dass sich die Breite des <pre> ändert - neu messen.
+  function relayoutAll() {
+    deepQueryAll("pre.ncss-code-block > code").forEach(function (codeEl) {
+      layout(codeEl.parentElement, codeEl);
+    });
+  }
+  document.addEventListener("ncss-preferences-change", function () {
+    window.requestAnimationFrame(relayoutAll);
+    window.setTimeout(relayoutAll, 400);
+  });
+
   // Erst am Ende starten: range/observer oben sind var-Zuweisungen, die beim Hoisting noch
   // undefined wären.
   scan(document);
