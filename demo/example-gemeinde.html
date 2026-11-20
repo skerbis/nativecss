@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemeinde Seeburg – Leben am Seeburger See</title>
+<meta name="description" content="Offizielle Website der Gemeinde Seeburg: Bürgerservice A–Z, Aktuelles, Veranstaltungen, Formulare und Öffnungszeiten des Rathauses. Fiktives Beispiel mit NativeCSS.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../dist/ncss.css">
+<link rel="stylesheet" href="../dist/components/nav-priority.css">
+<link rel="stylesheet" href="assets/inspector.css">
+<script src="../dist/js/nav-priority.js" defer></script>
+<script src="../dist/js/livesearch.js" defer></script>
+<script src="../dist/js/ics.js" defer></script>
+<script src="../dist/js/events.js" defer></script>
+<script src="../dist/js/downloads.js" defer></script>
+<script src="../dist/js/count-up.js" defer></script>
+<script src="../dist/js/theme-toggle.js" defer></script>
+<script src="assets/js/inspector.js" defer></script>
+<style>
+  /* Theme der fiktiven Gemeinde: Seeblau + Ufergrün. Nur Seed-Werte, die Skalen
+     (100/300/700/900, -on-soft) leitet colors.css selbst ab. */
+  :root {
+    --ncss-color-brand: light-dark(#0b5d74, #6cc3d9);
+    --ncss-color-brand-contrast: light-dark(#ffffff, #06222b);
+    --ncss-color-brand-2: light-dark(#2f6b3a, #8fcf8f);
+    --ncss-color-brand-2-contrast: light-dark(#ffffff, #0b1f0e);
+    --ncss-color-bg: light-dark(#ffffff, #0f171b);
+    --ncss-color-bg-subtle: light-dark(#eff5f6, #152126);
+    --ncss-color-surface: light-dark(#ffffff, #18262c);
+    --ncss-color-text: light-dark(#14232a, #e6eef0);
+    --ncss-color-text-muted: light-dark(#4b5d64, #a5b6bc);
+    --ncss-color-border: light-dark(#d3e0e4, #2b3d44);
+    --ncss-color-focus-ring: light-dark(#0b5d74, #6cc3d9);
+  }
+  /* ncss-stack/Card-Body bringen ihren Abstand selbst mit (gap bzw. margin-start) -
+     base.css' margin-block-end auf p/ul/... käme sonst noch dazu (doppelter Abstand). */
+  :where(.ncss-stack, .ncss-card-body, .ncss-overlay, .ncss-downloads-body, .ncss-agenda-body) > :where(p, ul, ol, dl, table, address) {
+    margin-block-end: 0;
+  }
+  address { font-style: normal; }
+  /* Topbar + Priority-Nav in EINER Zeile: Basis 0, damit die Nav den Restplatz nimmt
+     und das Skript überzählige Punkte ins "Mehr"-Menü schiebt, statt umzubrechen. */
+  .ncss-topbar-inner > .ncss-nav { flex-basis: 0; }
+  /* Mit Priority-Nav gibt es kein Off-Canvas - dessen Schließen-Button blieb sonst sichtbar. */
+  .ncss-nav:has(ncss-nav-priority:defined) .ncss-dialog-close { display: none; }
+  /* nav.css stellt Untermenüs unter 64rem für das Off-Canvas auf position:static - mit
+     Priority-Nav gibt es dort kein Off-Canvas, das "Mehr"-Menü muss weiter schweben. */
+  @media (width < 64rem) {
+    .ncss-nav:has(ncss-nav-priority:defined) .ncss-nav-dropdown > .ncss-nav-submenu {
+      position: absolute; inset-inline: auto 0; z-index: 5; min-inline-size: 14rem;
+      padding: var(--ncss-space-2xs); background-color: var(--ncss-color-surface);
+      border: 1px solid var(--ncss-color-border); border-radius: var(--ncss-radius-md); box-shadow: var(--ncss-shadow-lg);
+    }
+  }
+  /* Sehr schmal: Navigation in eine eigene, volle Zeile unter Logo und Aktionen. */
+  @media (width < 40rem) {
+    .ncss-topbar-inner > .ncss-nav { flex-basis: 100%; order: 3; }
+  }
+  .ncss-card h3, .ncss-overlay h3 { font-size: var(--ncss-font-size-md); }
+  .ncss-nav-list :is(a, summary) { white-space: nowrap; }
+  .ncss-card-link { text-decoration: none; }
+  .ncss-card--linked:focus-within .ncss-card-link,
+  .ncss-card-link:focus-visible { text-decoration: underline; }
+  @media (hover: hover) and (pointer: fine) {
+    .ncss-card--linked:hover .ncss-card-link { text-decoration: underline; }
+  }
+  .ncss-downloads-item { background-color: var(--ncss-color-surface); }
+  section[id], [id^="az-"] {
+    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-md));
+  }
+
+  /* Beispiel-Hinweis ganz oben (kein Teil der fiktiven Kundenseite) */
+  .demo-example-bar {
+    background-color: #12181b;
+    color: #e9eef0;
+    font-size: var(--ncss-font-size-sm);
+    padding: var(--ncss-space-3xs) var(--ncss-space-sm);
+    justify-content: space-between;
+  }
+  .demo-example-bar a { color: inherit; }
+
+  .demo-notice {
+    background-color: var(--ncss-color-warning-100);
+    color: var(--ncss-color-warning-on-soft);
+    padding-block: var(--ncss-space-2xs);
+    font-size: var(--ncss-font-size-sm);
+  }
+  .demo-notice a { color: inherit; font-weight: 600; }
+  .demo-notice p { margin-block: 0; }
+
+  .demo-meta-nav {
+    font-size: var(--ncss-font-size-sm);
+    justify-content: flex-end;
+    padding-block: var(--ncss-space-3xs);
+  }
+  .demo-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ncss-space-2xs);
+    line-height: 1.1;
+    text-decoration: none;
+    color: var(--ncss-color-text);
+  }
+  .demo-brand small {
+    display: block;
+    font-weight: 400;
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-brand svg { flex: 0 0 auto; }
+
+  .demo-hero { min-block-size: min(72svh, 38rem); }
+  .demo-hero .ncss-hero-media img { width: 100%; height: 100%; object-fit: cover; }
+  .demo-hero .ncss-hero-content { padding-block-end: calc(var(--ncss-space-2xl) + var(--ncss-space-lg)); }
+  /* Stärkerer Scrim als der Standard-Verlauf: das Foto ist hell, der Text steht weiter oben. */
+  .demo-hero .ncss-hero-media::after {
+    background: linear-gradient(to top, rgb(6 24 31 / 80%), rgb(6 24 31 / 45%) 55%, rgb(6 24 31 / 15%));
+  }
+  .demo-hero .ncss-eyebrow { color: #cdeff7; }
+  .demo-hero h1 { max-inline-size: 18ch; }
+  .demo-photo-credit {
+    position: absolute;
+    inset-block-end: var(--ncss-space-2xs);
+    inset-inline-end: var(--ncss-space-sm);
+    font-size: 0.75rem;
+  }
+  .demo-photo-credit a { color: inherit; }
+
+  /* Service-Panel überlappt den Hero - bewusst AUSSERHALB von .ncss-hero, dessen
+     overflow:clip sonst die Live-Suche-Trefferliste abschneiden würde. */
+  .demo-service-panel {
+    position: relative;
+    margin-block-start: calc(-1 * var(--ncss-space-2xl));
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-quicklink {
+    display: flex;
+    align-items: center;
+    gap: var(--ncss-space-xs);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-bg-subtle);
+    color: var(--ncss-color-text);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .demo-quicklink svg { flex: 0 0 auto; color: var(--ncss-color-brand-on-soft); }
+  .demo-quicklink small { display: block; font-weight: 400; color: var(--ncss-color-text-muted); }
+  .demo-quicklink:active { background-color: var(--ncss-color-brand-100); }
+  @media (hover: hover) and (pointer: fine) {
+    .demo-quicklink:hover:not(:active) { background-color: var(--ncss-color-brand-100); }
+  }
+
+  .demo-az-letters a {
+    display: inline-grid;
+    place-items: center;
+    min-inline-size: 2.25rem;
+    min-block-size: 2.25rem;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .demo-az { --ncss-columns-width: 17rem; }
+  .demo-az > div { break-inside: avoid; margin-block-end: var(--ncss-space-md); }
+  .demo-az h3 { color: var(--ncss-color-brand-on-soft); margin-block-end: var(--ncss-space-3xs); }
+  .demo-az li { padding-block: var(--ncss-space-3xs); border-radius: var(--ncss-radius-sm); }
+  .demo-az li:target { background-color: var(--ncss-color-warning-100); outline: 2px solid var(--ncss-color-warning); outline-offset: 2px; }
+
+  .demo-signature { font-family: "Snell Roundhand", "Segoe Script", cursive; font-size: var(--ncss-font-size-xl); }
+  .demo-hours th { text-align: start; font-weight: 600; padding-inline-end: var(--ncss-space-md); }
+  .demo-hours :is(th, td) { padding-block: var(--ncss-space-3xs); border-block-end: 1px solid var(--ncss-color-border); vertical-align: top; }
+  .demo-easy { font-size: var(--ncss-font-size-md); line-height: 1.7; }
+  .demo-credits a { color: inherit; }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<div class="demo-example-bar ncss-cluster" data-demo-inspect-ignore>
+  <span>Beispiel-Website mit NativeCSS · fiktive Gemeinde · <a href="index.html">zurück zur Übersicht</a> · <a href="product.html">NativeCSS</a></span>
+  <button type="button" class="demo-inspect-toggle" data-demo-inspect aria-pressed="false" title="Code-Inspektor: Element anklicken, um HTML und Quelldateien zu sehen (Alt+I)">Inspect</button>
+</div>
+
+<aside class="demo-notice" aria-label="Aktueller Hinweis">
+  <p class="ncss-container"><strong>Verkehrshinweis:</strong> Die Seestraße ist zwischen Kirchweg und Strandbad wegen Kanalarbeiten bis voraussichtlich 12. Dezember gesperrt. <a href="#aktuelles">Umleitung und Details</a></p>
+</aside>
+
+<div class="ncss-container">
+  <nav class="demo-meta-nav ncss-cluster" aria-label="Service-Navigation">
+    <a href="#leichte-sprache">Leichte Sprache</a>
+    <a href="#barrierefreiheit">Barrierefreiheit</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+</div>
+
+<header class="ncss-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand demo-brand" href="example-gemeinde.html" aria-label="Gemeinde Seeburg – Startseite">
+      <svg width="40" height="46" viewBox="0 0 40 46" aria-hidden="true">
+        <path d="M2 2h36v20c0 12-8 19-18 22C10 41 2 34 2 22z" fill="#0b5d74"/>
+        <path d="M11 22V10h4v3h3v-3h4v3h3v-3h4v12z" fill="#fff"/>
+        <path d="M5 28c3-2 6-2 9 0s6 2 9 0 6-2 9 0 4 1 4 1v2c-1 0-2-1-4-2-3-2-6-2-9 0s-6 2-9 0-6-2-9 0-4 1-4 1z" fill="#9fd9e6"/>
+        <path d="M7 34c3-2 5-2 8 0s5 2 8 0 5-2 8 0l2 1c-1 2-2 3-3 4-2-1-4-1-7 0-3 2-5 2-8 0-2-1-4-1-6 0-1-1-2-3-2-5z" fill="#9fd9e6"/>
+      </svg>
+      <span>Gemeinde Seeburg<small>am Seeburger See</small></span>
+    </a>
+    <nav class="ncss-nav" aria-label="Hauptnavigation">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ncss-nav-priority more-text="Mehr" more-label="Weitere Bereiche">
+          <ul class="ncss-nav-list">
+            <li class="ncss-nav-item"><a href="#buergerservice">Bürgerservice</a></li>
+            <li class="ncss-nav-item"><a href="#aktuelles">Aktuelles</a></li>
+            <li class="ncss-nav-item"><a href="#veranstaltungen">Veranstaltungen</a></li>
+            <li class="ncss-nav-item"><a href="#rathaus">Rathaus</a></li>
+            <li class="ncss-nav-item"><a href="#leben">Leben am See</a></li>
+            <li class="ncss-nav-item"><a href="#formulare">Formulare</a></li>
+            <li class="ncss-nav-item"><a href="#kontakt">Kontakt</a></li>
+          </ul>
+        </ncss-nav-priority>
+      </dialog>
+    </nav>
+    <div class="ncss-topbar-actions">
+      <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle aria-label="Dunkles Design einschalten">
+        <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+        <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="ncss-stretch">
+
+  <section class="ncss-hero demo-hero" aria-labelledby="hero-title">
+    <div class="ncss-hero-media"><img src="assets/examples/gemeinde/seeburg-ufer.webp" alt="" width="1600" height="1067" fetchpriority="high"></div>
+    <div class="ncss-hero-content ncss-container ncss-stack">
+      <p class="ncss-eyebrow">Willkommen in Seeburg</p>
+      <h1 id="hero-title" class="ncss-text-balance">Ihre Gemeinde am Seeburger See</h1>
+      <p class="ncss-text-lg ncss-text-light-900">4.812 Menschen, 12 Kilometer Uferweg und ein Rathaus, das für Sie da ist – vor Ort und online.</p>
+    </div>
+    <p class="demo-photo-credit ncss-text-light-700">Foto: <a href="https://www.pexels.com/photo/charming-german-village-by-reflective-lake-34577724/">Phalgunn Maharishi / Pexels</a></p>
+  </section>
+
+  <div class="ncss-container">
+    <section class="demo-service-panel ncss-stack ncss-radius-lg ncss-shadow-lg ncss-border ncss-px-lg ncss-py-lg" aria-labelledby="service-search-title">
+      <h2 id="service-search-title" class="ncss-text-lg">Was möchten Sie erledigen?</h2>
+      <form class="ncss-livesearch" action="#buergerservice" role="search" data-ncss-livesearch="assets/examples/gemeinde/buergerservice.json" data-mode="client">
+        <label class="ncss-visually-hidden" for="service-q">Dienstleistungen, Ansprechpartner und Formulare durchsuchen</label>
+        <div class="ncss-input-group">
+          <input class="ncss-input" type="search" id="service-q" name="q" placeholder="z. B. Personalausweis, Hundesteuer, Sperrmüll" autocomplete="off">
+          <button type="submit" class="ncss-btn ncss-btn--primary">Suchen</button>
+        </div>
+        <div class="ncss-livesearch-results" hidden></div>
+      </form>
+      <ul class="ncss-grid ncss-list--plain" role="list" style="--ncss-grid-min: 16rem;" aria-label="Schnellzugriff">
+        <li><a class="demo-quicklink" href="#buergerservice">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="2"/><circle cx="12" cy="15" r="3"/><path d="M7 22c1-3 3-4 5-4s4 1 5 4M20 13h5M20 17h4"/></svg>
+          <span>Bürgerservice A–Z<small>Ausweis, Ummeldung, Steuern</small></span></a></li>
+        <li><a class="demo-quicklink" href="#rathaus">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 27h24M6 27V13M26 27V13M3 13l13-8 13 8zM11 27v-9M16 27v-9M21 27v-9"/></svg>
+          <span>Rathaus<small>Grußwort, Verwaltung, Gemeinderat</small></span></a></li>
+        <li><a class="demo-quicklink" href="#veranstaltungen">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="6" width="24" height="22" rx="2"/><path d="M4 12h24M10 3v6M22 3v6M9 17h4M15 17h4M9 22h4"/></svg>
+          <span>Veranstaltungen<small>Markt, Feste, Sitzungen</small></span></a></li>
+        <li><a class="demo-quicklink" href="#leben">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 22c3-2 5-2 8 0s5 2 8 0 5-2 8 0M3 27c3-2 5-2 8 0s5 2 8 0 5-2 8 0M8 17l7-11 7 11"/></svg>
+          <span>Leben &amp; Freizeit<small>Strandbad, Hafen, Vereine</small></span></a></li>
+        <li><a class="demo-quicklink" href="#formulare">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3h11l6 6v20H8zM19 3v6h6M12 16h9M12 21h9"/></svg>
+          <span>Formulare<small>Anträge und Satzungen als PDF</small></span></a></li>
+        <li><a class="demo-quicklink" href="assets/examples/gemeinde/dokumente/abfallkalender-2027.pdf">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9h20M12 9V5h8v4M8 9l2 19h12l2-19M14 14v9M18 14v9"/></svg>
+          <span>Abfallkalender 2027<small>PDF, 35 KB</small></span></a></li>
+      </ul>
+    </section>
+  </div>
+
+  <section id="aktuelles" class="ncss-container ncss-stack ncss-py-xl" aria-labelledby="aktuelles-title">
+    <div class="ncss-flex ncss-flex--between ncss-flex--wrap">
+      <h2 id="aktuelles-title">Aktuelles aus Seeburg</h2>
+      <a href="#aktuelles">Alle Meldungen</a>
+    </div>
+    <div class="ncss-grid" style="--ncss-grid-min: 17rem;">
+      <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md">
+        <div class="ncss-card-media"><img src="assets/examples/gemeinde/marktplatz-thumb.webp" alt="Weiter Marktplatz mit Arkadenhäusern und Kirchturm unter blauem Himmel" width="640" height="360" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <p class="ncss-text-sm ncss-text-muted"><span class="ncss-badge">Bauen</span> <time datetime="2026-11-18">18. November 2026</time></p>
+          <h3><a class="ncss-card-link" href="#aktuelles">Seestraße: Kanalarbeiten bis 12. Dezember</a></h3>
+          <p class="ncss-text-sm">Der Abschnitt zwischen Kirchweg und Strandbad bleibt gesperrt. Die Umleitung führt über Kirchweg und Bahnhofstraße, die Buslinie 471 hält an der Ersatzhaltestelle „Bürgerhaus“.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md">
+        <div class="ncss-card-media"><img src="assets/examples/gemeinde/adventsmarkt-thumb.webp" alt="Beleuchtetes Karussell vor Fachwerkhäusern am Abend" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <p class="ncss-text-sm ncss-text-muted"><span class="ncss-badge ncss-badge--brand-2">Kultur</span> <time datetime="2026-11-12">12. November 2026</time></p>
+          <h3><a class="ncss-card-link" href="#veranstaltungen">Adventsmarkt mit Seebeleuchtung am 28. und 29. November</a></h3>
+          <p class="ncss-text-sm">32 Stände, die Chöre der Grundschule und erstmals ein Kinderkarussell auf dem Seeplatz. Der Erlös der Vereine geht an die Jugendarbeit.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-shadow-hover-md">
+        <div class="ncss-card-media"><img src="assets/examples/gemeinde/wochenmarkt-thumb.webp" alt="Marktstand mit Radieschen, Pastinaken, Lauch und Fenchel" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <p class="ncss-text-sm ncss-text-muted"><span class="ncss-badge ncss-badge--neutral">Markt</span> <time datetime="2026-11-05">5. November 2026</time></p>
+          <h3><a class="ncss-card-link" href="#veranstaltungen">Wochenmarkt: Winterzeiten ab Dezember</a></h3>
+          <p class="ncss-text-sm">Von Dezember bis Februar beginnt der Markt am Seeplatz samstags erst um 8 Uhr. Neu dabei: die Fischerei Ambach mit Renken und Saibling aus dem See.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="veranstaltungen" class="ncss-tile ncss-tile--muted" aria-labelledby="termine-title">
+    <div class="ncss-container ncss-grid ncss-grid--align-start" style="--ncss-grid-min: 20rem;">
+      <div class="ncss-stack ncss-col-span-2">
+        <h2 id="termine-title">Veranstaltungen &amp; Termine</h2>
+        <div class="ncss-events" data-view="agenda" data-ics="assets/examples/gemeinde/termine.ics" data-limit="7" data-window-months="6">
+          <p class="ncss-text-muted">Die Termine werden geladen …</p>
+        </div>
+      </div>
+      <aside class="ncss-card ncss-border ncss-radius-lg" aria-labelledby="kalender-title">
+        <div class="ncss-card-body">
+          <h3 id="kalender-title">Nichts mehr verpassen</h3>
+          <p class="ncss-text-sm">Abonnieren Sie den Gemeindekalender in Ihrer Kalender-App – Markttage, Ratssitzungen und Feste aktualisieren sich dann automatisch.</p>
+          <p><a class="ncss-btn ncss-btn--primary" href="assets/examples/gemeinde/termine.ics" download>Kalender abonnieren (ICS)</a></p>
+          <hr class="ncss-divider">
+          <h3>Veranstaltung melden</h3>
+          <p class="ncss-text-sm">Vereine und Initiativen tragen ihre Termine über das Kulturamt ein: <a href="mailto:kultur@seeburg.example">kultur@seeburg.example</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="buergerservice" class="ncss-container ncss-stack ncss-py-xl" aria-labelledby="az-title">
+    <h2 id="az-title">Bürgerservice von A bis Z</h2>
+    <p class="ncss-text-muted">Die häufigsten Anliegen mit zuständiger Stelle. Viele Leistungen können Sie vorab online beantragen – für persönliche Vorsprachen im Bürgerbüro empfehlen wir einen Termin.</p>
+    <nav aria-label="Buchstaben-Sprungmarken">
+      <ul class="demo-az-letters ncss-cluster ncss-list--plain" role="list">
+        <li><a href="#az-a">A</a></li><li><a href="#az-b">B</a></li><li><a href="#az-e">E</a></li><li><a href="#az-f">F</a></li><li><a href="#az-g">G</a></li><li><a href="#az-h">H</a></li><li><a href="#az-k">K</a></li><li><a href="#az-m">M</a></li><li><a href="#az-p">P</a></li><li><a href="#az-r">R</a></li><li><a href="#az-s">S</a></li><li><a href="#az-v">V</a></li><li><a href="#az-w">W</a></li>
+      </ul>
+    </nav>
+    <div class="demo-az ncss-columns">
+      <div id="az-a"><h3>A</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-abfall"><strong>Abfallkalender &amp; Müllabfuhr</strong><br><span class="ncss-text-sm ncss-text-muted">Bauhof · Wertstoffhof Di + Sa 9–12 Uhr</span></li>
+      </ul></div>
+      <div id="az-b"><h3>B</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-bauantrag"><strong>Bauantrag einreichen</strong><br><span class="ncss-text-sm ncss-text-muted">Bauamt · Bauberatung Do 14–17 Uhr</span></li>
+        <li id="az-bootsliegeplatz"><strong>Bootsliegeplatz am See</strong><br><span class="ncss-text-sm ncss-text-muted">Liegenschaftsamt · Warteliste</span></li>
+        <li id="az-briefwahl"><strong>Briefwahl beantragen</strong><br><span class="ncss-text-sm ncss-text-muted">Wahlamt · online oder persönlich</span></li>
+      </ul></div>
+      <div id="az-e"><h3>E</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-eheschliessung"><strong>Eheschließung</strong><br><span class="ncss-text-sm ncss-text-muted">Standesamt · Trauungen auch im Seepavillon</span></li>
+      </ul></div>
+      <div id="az-f"><h3>F</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-fuehrungszeugnis"><strong>Führungszeugnis</strong><br><span class="ncss-text-sm ncss-text-muted">Bürgerbüro · 13 €</span></li>
+        <li id="az-fundbuero"><strong>Fundsachen</strong><br><span class="ncss-text-sm ncss-text-muted">Bürgerbüro · Aufbewahrung sechs Monate</span></li>
+      </ul></div>
+      <div id="az-g"><h3>G</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-gewerbe"><strong>Gewerbe anmelden</strong><br><span class="ncss-text-sm ncss-text-muted">Ordnungsamt · 30 €</span></li>
+        <li id="az-grundsteuer"><strong>Grundsteuer</strong><br><span class="ncss-text-sm ncss-text-muted">Steueramt · fällig 15.2., 15.5., 15.8., 15.11.</span></li>
+      </ul></div>
+      <div id="az-h"><h3>H</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-hundesteuer"><strong>Hundesteuer an- und abmelden</strong><br><span class="ncss-text-sm ncss-text-muted">Steueramt · 60 € pro Jahr für den ersten Hund</span></li>
+      </ul></div>
+      <div id="az-k"><h3>K</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-kita"><strong>Kita-Platz anmelden</strong><br><span class="ncss-text-sm ncss-text-muted">Familienbüro · zentrale Vormerkung</span></li>
+      </ul></div>
+      <div id="az-m"><h3>M</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-meldebescheinigung"><strong>Meldebescheinigung</strong><br><span class="ncss-text-sm ncss-text-muted">Bürgerbüro · sofort, 10 €</span></li>
+      </ul></div>
+      <div id="az-p"><h3>P</h3><ul class="ncss-list--plain" role="list">
+        <li><a href="example-gemeinde-service.html"><strong>Personalausweis beantragen</strong></a><br><span class="ncss-text-sm ncss-text-muted">Bürgerbüro · Termin online buchen</span></li>
+      </ul></div>
+      <div id="az-r"><h3>R</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-reisepass"><strong>Reisepass beantragen</strong><br><span class="ncss-text-sm ncss-text-muted">Bürgerbüro · Express-Pass möglich</span></li>
+      </ul></div>
+      <div id="az-s"><h3>S</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-sperrmuell"><strong>Sperrmüll anmelden</strong><br><span class="ncss-text-sm ncss-text-muted">Bauhof · Abholung am 4. Donnerstag</span></li>
+        <li id="az-strassenbeleuchtung"><strong>Straßenlaterne defekt</strong><br><span class="ncss-text-sm ncss-text-muted">Bauhof · Mängelmelder rund um die Uhr</span></li>
+      </ul></div>
+      <div id="az-v"><h3>V</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-vereinsfoerderung"><strong>Vereinsförderung</strong><br><span class="ncss-text-sm ncss-text-muted">Kulturamt · Antragsfrist 31. Januar</span></li>
+      </ul></div>
+      <div id="az-w"><h3>W</h3><ul class="ncss-list--plain" role="list">
+        <li id="az-ummeldung"><strong>Wohnsitz an-, um- oder abmelden</strong><br><span class="ncss-text-sm ncss-text-muted">Bürgerbüro · innerhalb von zwei Wochen</span></li>
+        <li id="az-wohngeld"><strong>Wohngeld</strong><br><span class="ncss-text-sm ncss-text-muted">Sozialamt · Mietzuschuss, Lastenzuschuss</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="rathaus" class="ncss-tile ncss-tile--muted" aria-labelledby="gruss-title">
+    <div class="ncss-container ncss-split-container">
+      <div class="ncss-split ncss-split--align-start">
+        <figure class="ncss-split-media ncss-stack ncss-stack--tight">
+          <img class="ncss-radius-lg" src="assets/examples/gemeinde/kirche-am-see.webp" alt="Weiße Kirche mit Zwiebelturm am Seeufer, davor Schilf und Boote" width="1600" height="1067" loading="lazy">
+          <figcaption class="ncss-text-sm ncss-text-muted">St. Nikolaus am Nordufer · Foto: <a href="https://pexels.com/photo/a-church-by-a-lake-12842511/">Wolfgang Wendefeuer / Pexels</a></figcaption>
+        </figure>
+        <div class="ncss-split-content ncss-stack">
+          <p class="ncss-eyebrow">Grußwort der Bürgermeisterin</p>
+          <h2 id="gruss-title" class="ncss-text-balance">Liebe Seeburgerinnen und Seeburger, liebe Gäste,</h2>
+          <p>schön, dass Sie vorbeischauen. Seeburg lebt von seinen Menschen: von über zwanzig Vereinen, von einer Feuerwehr, die rund um die Uhr bereitsteht, und von Nachbarinnen und Nachbarn, die sich kümmern.</p>
+          <p>Mit dieser Website möchten wir Ihnen den Weg ins Rathaus erleichtern. Viele Anliegen erledigen Sie inzwischen online – und wenn Sie lieber persönlich vorbeikommen, nimmt sich das Team im Bürgerbüro gerne Zeit für Sie.</p>
+          <p>Meine Bürgersprechstunde findet jeden zweiten Dienstag statt. Kommen Sie einfach vorbei.</p>
+          <p class="demo-signature">Johanna Brandl</p>
+          <p class="ncss-text-sm ncss-text-muted">Erste Bürgermeisterin der Gemeinde Seeburg</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ncss-container ncss-stack ncss-py-xl" aria-labelledby="zahlen-title">
+    <h2 id="zahlen-title" class="ncss-visually-hidden">Seeburg in Zahlen</h2>
+    <dl class="ncss-dl--stats" data-ncss-count-up>
+      <div><dt>Einwohnerinnen und Einwohner</dt><dd><span class="ncss-count-up" style="--ncss-count-to: 4812">4.812</span></dd></div>
+      <div><dt>Kilometer Uferweg</dt><dd><span class="ncss-count-up" style="--ncss-count-to: 12">12</span></dd></div>
+      <div><dt>Vereine und Initiativen</dt><dd><span class="ncss-count-up" style="--ncss-count-to: 23">23</span></dd></div>
+      <div><dt>Erstmals erwähnt</dt><dd>1263</dd></div>
+    </dl>
+  </section>
+
+  <section id="leben" class="ncss-container ncss-stack ncss-py-lg" aria-labelledby="leben-title">
+    <h2 id="leben-title">Leben &amp; Freizeit am See</h2>
+    <div class="ncss-grid" style="--ncss-grid-min: 17rem;">
+      <article class="ncss-overlay-container ncss-overlay-container--zoom ncss-radius-lg ncss-card--linked">
+        <img class="ncss-ratio-portrait ncss-img-cover" src="assets/examples/gemeinde/badesteg-thumb.webp" alt="Hölzerner Badesteg, der weit in den klaren, ruhigen See hinausführt" width="480" height="720" loading="lazy">
+        <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+          <h3 class="ncss-text-inherit"><a class="ncss-card-link ncss-text-inherit" href="#leben">Strandbad &amp; Badestege</a></h3>
+          <p class="ncss-text-inherit ncss-text-sm">Eintritt frei · Wasserwacht an Wochenenden im Sommer</p>
+        </div>
+      </article>
+      <article class="ncss-overlay-container ncss-overlay-container--zoom ncss-radius-lg ncss-card--linked">
+        <img class="ncss-ratio-portrait ncss-img-cover" src="assets/examples/gemeinde/bootshafen-thumb.webp" alt="Ruderboote am Ufer, dahinter Bäume und Berge, die sich im See spiegeln" width="640" height="429" loading="lazy">
+        <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+          <h3 class="ncss-text-inherit"><a class="ncss-card-link ncss-text-inherit" href="#az-bootsliegeplatz">Bootshafen &amp; Liegeplätze</a></h3>
+          <p class="ncss-text-inherit ncss-text-sm">98 Steg- und Bojenplätze · Bootsverleih April–Oktober</p>
+        </div>
+      </article>
+      <article class="ncss-overlay-container ncss-overlay-container--zoom ncss-radius-lg ncss-card--linked">
+        <img class="ncss-ratio-portrait ncss-img-cover" src="assets/examples/gemeinde/wanderweg-thumb.webp" alt="Schmaler Wanderweg durch eine Bergwiese mit blühenden Alpenrosen" width="640" height="427" loading="lazy">
+        <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+          <h3 class="ncss-text-inherit"><a class="ncss-card-link ncss-text-inherit" href="#leben">Wandern rund um den See</a></h3>
+          <p class="ncss-text-inherit ncss-text-sm">Seerundweg 14 km · Panoramaweg zur Seeburger Alm</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="formulare" class="ncss-tile ncss-tile--muted" aria-labelledby="formulare-title">
+    <div class="ncss-container ncss-grid ncss-grid--align-start" style="--ncss-grid-min: 20rem;">
+      <div class="ncss-stack ncss-col-span-2">
+        <h2 id="formulare-title">Formulare &amp; Satzungen</h2>
+        <div class="ncss-downloads" data-src="assets/examples/gemeinde/downloads.json">
+          <p class="ncss-text-muted">Die Dateiliste wird geladen …</p>
+        </div>
+      </div>
+      <aside class="ncss-card ncss-border ncss-radius-lg" aria-labelledby="amtsblatt-title">
+        <div class="ncss-card-body">
+          <h3 id="amtsblatt-title">Amtliche Bekanntmachungen</h3>
+          <p class="ncss-text-sm">Satzungen, Bebauungspläne und Wahlbekanntmachungen hängen zusätzlich an der Amtstafel im Rathaus-Foyer aus und erscheinen im Mitteilungsblatt „Seeburger Bote“ (14-täglich, donnerstags).</p>
+          <p class="ncss-text-sm"><a href="assets/examples/gemeinde/dokumente/bebauungsplan-seewiese.pdf">Aktuell: Bebauungsplan „Seewiese“ (PDF)</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="kontakt" class="ncss-container ncss-py-xl ncss-split-container" aria-labelledby="kontakt-title">
+    <div class="ncss-split ncss-split--align-start">
+      <div class="ncss-split-content ncss-stack">
+        <h2 id="kontakt-title">Rathaus &amp; Öffnungszeiten</h2>
+        <address>
+          <strong>Gemeinde Seeburg</strong><br>
+          Rathausplatz 1, 82499 Seeburg<br>
+          Telefon <a href="tel:+498821447000">08821 4470-0</a><br>
+          E-Mail <a href="mailto:rathaus@seeburg.example">rathaus@seeburg.example</a>
+        </address>
+        <table class="demo-hours">
+          <caption class="ncss-text-start ncss-text-sm ncss-text-muted">Bürgerbüro und Fachämter</caption>
+          <tbody>
+            <tr><th scope="row">Montag – Freitag</th><td>8.00 – 12.00 Uhr</td></tr>
+            <tr><th scope="row">Dienstag</th><td>zusätzlich 14.00 – 18.00 Uhr</td></tr>
+            <tr><th scope="row">Donnerstag</th><td>zusätzlich 14.00 – 16.00 Uhr</td></tr>
+            <tr><th scope="row">1. Samstag im Monat</th><td>9.00 – 12.00 Uhr (nur Bürgerbüro)</td></tr>
+          </tbody>
+        </table>
+        <p class="ncss-text-sm">Das Rathaus ist barrierefrei über den Seiteneingang am Kirchweg erreichbar. Ein Behindertenparkplatz befindet sich direkt davor.</p>
+        <div class="ncss-card ncss-card--danger ncss-radius-md">
+          <div class="ncss-card-body">
+            <p><strong>Notruf</strong> Feuerwehr und Rettungsdienst <a href="tel:112">112</a> · Polizei <a href="tel:110">110</a> · Bereitschaft Wasserversorgung <a href="tel:+4917012345678">0170 1234 5678</a></p>
+          </div>
+        </div>
+      </div>
+      <figure class="ncss-split-media ncss-stack ncss-stack--tight">
+        <img class="ncss-radius-lg ncss-ratio-square ncss-img-cover" style="--ncss-focus-point: 50% 65%" src="assets/examples/gemeinde/rathaus.webp" alt="Weißes Rathaus mit Treppengiebel und gotischem Fenster" width="1002" height="1500" loading="lazy">
+        <figcaption class="ncss-text-sm ncss-text-muted">Foto: <a href="https://pexels.com/photo/historic-brakel-town-hall-in-summer-29511107/">Wolfgang Weiser / Pexels</a></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="leichte-sprache" class="ncss-tile ncss-tile--muted" aria-labelledby="ls-title">
+    <div class="ncss-container ncss-container--narrow ncss-stack demo-easy">
+      <h2 id="ls-title">Seeburg in Leichter Sprache</h2>
+      <p>Seeburg ist eine Gemeinde.<br>Seeburg liegt an einem See.</p>
+      <p>Im Rathaus arbeiten Menschen für Sie.<br>Dort bekommen Sie zum Beispiel einen Ausweis.</p>
+      <p>Das Rathaus ist von Montag bis Freitag offen.<br>Immer von 8 Uhr bis 12 Uhr.</p>
+      <p>Sie haben eine Frage?<br>Dann rufen Sie an: <a href="tel:+498821447000">08821 4470-0</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 13rem;">
+    <div class="ncss-stack ncss-stack--tight">
+      <strong class="ncss-text-base">Gemeinde Seeburg</strong>
+      <p class="ncss-text-sm">Rathausplatz 1<br>82499 Seeburg<br>08821 4470-0</p>
+    </div>
+    <nav class="ncss-nav ncss-nav--tree" aria-label="Service">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#buergerservice">Bürgerservice A–Z</a></li>
+        <li class="ncss-nav-item"><a href="#formulare">Formulare</a></li>
+        <li class="ncss-nav-item"><a href="#veranstaltungen">Veranstaltungen</a></li>
+        <li class="ncss-nav-item"><a href="example-gemeinde-service.html">Personalausweis</a></li>
+      </ul>
+    </nav>
+    <nav class="ncss-nav ncss-nav--tree" aria-label="Rechtliches">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#impressum">Impressum</a></li>
+        <li class="ncss-nav-item"><a href="#impressum">Datenschutz</a></li>
+        <li class="ncss-nav-item"><a href="#barrierefreiheit">Erklärung zur Barrierefreiheit</a></li>
+        <li class="ncss-nav-item"><a href="#leichte-sprache">Leichte Sprache</a></li>
+      </ul>
+    </nav>
+    <div id="barrierefreiheit" class="ncss-stack ncss-stack--tight">
+      <strong class="ncss-text-base">Barrierefreiheit</strong>
+      <p class="ncss-text-sm">Diese Website soll für alle gut nutzbar sein – mit Tastatur, Screenreader, Vergrößerung und im dunklen Modus. Barriere entdeckt? <a href="mailto:barrierefrei@seeburg.example">Schreiben Sie uns</a>.</p>
+    </div>
+  </div>
+  <div class="ncss-footer-bottom ncss-stack ncss-stack--tight ncss-text-sm">
+    <p id="impressum">© 2026 Gemeinde Seeburg – fiktive Beispielgemeinde, alle Namen, Adressen und Nummern sind erfunden.</p>
+    <p class="demo-credits"><strong>Bildnachweis:</strong> Fotos von Pexels (Pexels-Lizenz) –
+      <a href="https://www.pexels.com/photo/charming-german-village-by-reflective-lake-34577724/">Phalgunn Maharishi</a>,
+      <a href="https://pexels.com/photo/a-church-by-a-lake-12842511/">Wolfgang Wendefeuer</a>,
+      <a href="https://pexels.com/photo/wooden-pier-on-a-lake-in-summer-12842519/">Wolfgang Wendefeuer</a>,
+      <a href="https://pexels.com/photo/historic-brakel-town-hall-in-summer-29511107/">Wolfgang Weiser</a>,
+      <a href="https://pexels.com/photo/vibrant-farmer-s-market-fresh-vegetables-display-31930012/">Magda Ehlers</a>,
+      <a href="https://www.pexels.com/photo/illuminated-carousel-in-the-city-square-19480506/">Alina Chernii</a>,
+      <a href="https://www.pexels.com/photo/marktplatz-in-freudenstadt-germany-under-blue-sky-36931570/">Joerg Hartmann</a>,
+      <a href="https://pexels.com/photo/scenic-view-of-tranquil-lake-in-bavaria-31913082/">Branka Krnjaja</a>,
+      <a href="https://pexels.com/photo/scenic-pathway-through-alpine-meadow-in-summer-32713270/">Susanne Jutzeler</a>.
+      Gestaltet mit <a href="product.html">NativeCSS</a>.</p>
+  </div>
+</footer>
+
+</body>
+</html>

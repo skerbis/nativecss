@@ -1,0 +1,8 @@
+[
+  { "title": "Anmeldung zur Hundesteuer", "url": "assets/examples/gemeinde/dokumente/antrag-hundesteuer.pdf", "size": 34716, "description": "Formular – ausgefüllt im Bürgerbüro abgeben oder per Post senden" },
+  { "title": "Anmeldung Sperrmüllabholung", "url": "assets/examples/gemeinde/dokumente/sperrmuell-anmeldung.pdf", "size": 36054, "description": "Bis eine Woche vor dem Abholtermin beim Bauhof einreichen" },
+  { "title": "Antrag auf Vereinsförderung", "url": "assets/examples/gemeinde/dokumente/antrag-vereinsfoerderung.pdf", "size": 33840, "description": "Antragsfrist für das Förderjahr 2027: 31. Januar" },
+  { "title": "Abfallkalender 2027", "url": "assets/examples/gemeinde/dokumente/abfallkalender-2027.pdf", "size": 35534, "description": "Alle Abfuhrtermine für Rest-, Bio-, Papiermüll und Gelben Sack" },
+  { "title": "Hundesteuersatzung", "url": "assets/examples/gemeinde/dokumente/satzung-hundesteuer.pdf", "size": 35299, "description": "Satzung in der Fassung vom 1. Januar 2026" },
+  { "title": "Bebauungsplan „Seewiese“ – Begründung", "url": "assets/examples/gemeinde/dokumente/bebauungsplan-seewiese.pdf", "size": 35814, "description": "Öffentliche Auslegung – Stellungnahmen bis 15. Januar 2027" }
+]
