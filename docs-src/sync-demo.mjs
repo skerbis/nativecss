@@ -62,14 +62,15 @@ for (const [file, slug] of Object.entries(nav.redirects)) {
 // 2. Beispiel-Leiste
 export function exampleBar(ex, lang = "de", base = "../") {
   const s = strings[lang];
-  return `<div class="demo-example-bar" data-demo-inspect-ignore>
+  // <aside> mit Namen: eigener Landmark, sonst steht der Leisten-Text außerhalb jeder Region
+  return `<aside class="demo-example-bar" aria-label="${s.exampleLabel}: NativeCSS" data-demo-inspect-ignore>
   <a class="demo-example-bar-brand" href="${base}docs/${lang}/${nav.start.slug}.html">${WORDMARK}</a>
   <span class="demo-example-bar-label"><span aria-hidden="true">·</span> ${s.exampleLabel}: ${ex[lang]}</span>
   <nav class="demo-example-bar-links" aria-label="NativeCSS">
     <a href="${base}docs/${lang}/${nav.examplesPage.slug}.html">← ${s.allExamples}</a>
     <a href="${base}docs/${lang}/index.html">${s.navDocs}</a>
   </nav>
-</div>
+</aside>
 <button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="${s.inspectTitle}"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> ${s.inspectLabel} <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>`;
 }
 
