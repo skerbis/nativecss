@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 785 Klassen, 16 Custom Elements, 43 data-ncss-Attribute, 202 Tokens.
+Stand: 834 Klassen, 17 Custom Elements, 46 data-ncss-Attribute, 204 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -258,28 +258,34 @@ ncss-Prinzip). Fokus-Handling erbt von reset.css (:focus-visible), hier nur Look
 
 ### `helpers/icons.css`
 
-Klassen (10): `.ncss-icon` `.ncss-icon-check` `.ncss-icon-chevron-down` `.ncss-icon-close` `.ncss-icon-copy` `.ncss-icon-menu` `.ncss-icon-moon` `.ncss-icon-play` `.ncss-icon-search` `.ncss-icon-sun`
+Klassen (57): `.ncss-icon` `.ncss-icon-accessibility` `.ncss-icon-arrow-down` `.ncss-icon-arrow-left` `.ncss-icon-arrow-right` `.ncss-icon-arrow-up` `.ncss-icon-calendar` `.ncss-icon-check` `.ncss-icon-check-circle` `.ncss-icon-chevron-down` `.ncss-icon-chevron-left` `.ncss-icon-chevron-right` `.ncss-icon-chevron-up` `.ncss-icon-clock` `.ncss-icon-close` `.ncss-icon-copy` `.ncss-icon-download` `.ncss-icon-edit` `.ncss-icon-error` `.ncss-icon-external-link` `.ncss-icon-eye` `.ncss-icon-file` `.ncss-icon-filter` `.ncss-icon-fullscreen` `.ncss-icon-globe` `.ncss-icon-heart` `.ncss-icon-home` `.ncss-icon-image` `.ncss-icon-info` `.ncss-icon-link` `.ncss-icon-lock` `.ncss-icon-logout` `.ncss-icon-mail` `.ncss-icon-map-pin` `.ncss-icon-menu` `.ncss-icon-minus` `.ncss-icon-moon` `.ncss-icon-pause` `.ncss-icon-pencil` `.ncss-icon-phone` `.ncss-icon-play` `.ncss-icon-plus` `.ncss-icon-search` `.ncss-icon-settings` `.ncss-icon-share` `.ncss-icon-sort` `.ncss-icon-sprite` `.ncss-icon-star` `.ncss-icon-success` `.ncss-icon-sun` `.ncss-icon-trash` `.ncss-icon-upload` `.ncss-icon-user` `.ncss-icon-users` `.ncss-icon-volume` `.ncss-icon-warning` `.ncss-icon-x-circle`
 
 ```text
-ncss - Icon-Helper (Layer "helpers"). Eigene SVG-Icons als CSS mask-image statt Inline-
-SVG-Markup oder Icon-Font: erben currentColor (recolorbar ohne Markup-Änderung), skalieren
-mit font-size (1em), brauchen KEINEN Element-Inhalt - <span class="ncss-icon
-ncss-icon-close"></span> reicht.
+ncss - Icon-Helper (Layer "helpers"). Drei Wege, ein Größen-/Farbmodell (1em bzw.
+--ncss-icon-size, Farbe = currentColor):
 
-Austauschbarkeit ist der Punkt: jede Komponente, die ein Icon braucht (z.B.
-.ncss-dialog-close), schreibt nur die GRÖSSE/POSITION des Icon-Platzhalters vor, nicht
-die Icon-Quelle. Diese Default-Icons hier per Klasse einsetzen ODER einfach durch
-beliebiges anderes Markup ersetzen, z.B. Font Awesome:
-  <button class="ncss-dialog-close">
-    <span class="ncss-icon ncss-icon-close"></span>              <!-- Default -->
-    <i class="fa-solid fa-xmark" aria-hidden="true"></i>         <!-- oder Font Awesome -->
-  </button>
-Beide sitzen in derselben flex-zentrierten Fläche, keine Komponente muss dafür
-angepasst werden.
+1. KERN-SET (diese Datei, ohne JS): eigene SVGs als CSS mask-image. Erben currentColor
+   (recolorbar ohne Markup-Änderung), skalieren mit font-size, brauchen KEINEN Inhalt:
+     <span class="ncss-icon ncss-icon-close" aria-hidden="true"></span>
+   24er-Raster, runde Enden. Linien-Glyphen (Pfeile, Chevrons, plus/minus/close/check/
+   search) mit Strichstärke 2.5, Piktogramme mit 2, play/pause gefüllt.
+2. <ncss-icon name="house"> (js/icon.js): lädt eines der ~1500 Phosphor-Icons
+   (vendor/phosphor/, MIT) und setzt es inline ein. Die Regel unten reserviert die Fläche
+   schon VOR dem Laden (kein Layout-Sprung) - ohne JS bleibt sie leer. Für Icons, die
+   Bedeutung tragen, deshalb das Kern-Set oder Weg 3 nehmen.
+3. SVG-Sprite (ohne JS): Sprite per tools/icons/sprite.mjs oder Baukasten im Handbuch
+   erzeugen, dann <svg class="ncss-icon-sprite" aria-hidden="true"><use
+   href="icons.svg#house"></use></svg>.
 
-Bewusst klein gehalten (nur was aktuell wirklich gebraucht wird - close/chevron/menu/...) -
-weitere Icons nach demselben Muster ergänzen (eigene SVG, als mask-image data-URI),
-statt vorsorglich ein großes Set anzulegen.
+Austauschbar: jede Komponente, die ein Icon braucht (z.B. .ncss-dialog-close), schreibt
+nur GRÖSSE/POSITION des Icon-Platzhalters vor, nie die Quelle - Font Awesome
+(<i class="fa-solid fa-xmark" aria-hidden="true"></i>) oder ein Phosphor-Icon passt in
+dieselbe flex-zentrierte Fläche, ohne die Komponente anzufassen.
+
+Nur unpräfixiertes mask-image: Browser, die light-dark() können (Grundlage von ncss),
+können es alle - das -webkit-Duplikat hätte die Datei nur verdoppelt.
+Weitere Kern-Icons nach demselben Muster ergänzen (24er viewBox, stroke='black' - die
+Farbe der Maske ist egal, nur ihre Deckkraft zählt; '#' als %23 kodieren).
 ```
 
 ### `helpers/layout.css`
@@ -838,7 +844,7 @@ eigenen Breite umschalten soll.
 
 ### `components/code-block.css`
 
-Klassen (1): `.ncss-code-copy`
+Klassen (4): `.ncss-code-block` `.ncss-code-copy` `.ncss-code-status` `.ncss-icon`
 
 ```text
 ncss - Code-Block-Komponente (Layer "components"): Syntax-Highlighting + Copy-to-
@@ -1656,6 +1662,12 @@ Markup (Lightbox-artig, Bild):
           aria-label="Schließen">&times;</button>
   <img src="full.jpg" alt="Beschreibung">
 </dialog>
+Klick daneben (Backdrop) schließt: natives closedby="any" am <dialog> - js/dialog-light-
+dismiss.js setzt das für jedes ncss-Modal/-Off-Canvas ohne eigenes closedby automatisch
+(Default AN) und emuliert es in Browsern ohne closedby. Abschalten pro Dialog:
+closedby="closerequest" (nur Esc + Buttons) oder closedby="none" (nur Buttons, z.B. lange
+Formulare). Trefferfläche: der <dialog> selbst ist das Panel, alles außerhalb seiner Box
+ist Backdrop.
 ```
 
 ### `components/nav-drilldown.css`
@@ -1876,6 +1888,12 @@ Markup:
           commandfor="sidebar1" aria-label="Schließen">&times;</button>
   <nav>...</nav>
 </dialog>
+Klick daneben (Backdrop) schließt: natives closedby="any" am <dialog> - js/dialog-light-
+dismiss.js setzt das für jedes ncss-Modal/-Off-Canvas ohne eigenes closedby automatisch
+(Default AN) und emuliert es in Browsern ohne closedby. Abschalten pro Dialog:
+closedby="closerequest" (nur Esc + Buttons) oder closedby="none" (nur Buttons, z.B. lange
+Formulare). Trefferfläche: der <dialog> selbst ist das Panel, alles außerhalb seiner Box
+ist Backdrop.
 ```
 
 ### `components/overlay.css`
@@ -2661,12 +2679,23 @@ reines CSS), überall sonst und zusätzlich für Screenreader setzt js/subnav.js
 aria-current="location" am passenden Link. Ohne JS und ohne native Unterstützung:
 ganz normale Sprunglinks ohne Hervorhebung.
 
-Sprungziele: :root bekommt scroll-padding-block-start = Topbar + diese Leiste, damit
-Überschriften nicht unter den beiden klebenden Leisten verschwinden. Weiches Scrollen
+Empfohlen bei eigener Kopfleiste (One-Pager, Website-Header): Topbar UND Leiste in EINEN
+klebenden Container stecken - dann können beide nie gegeneinander verrutschen, egal wie
+hoch die Kopfleiste ist (Logo, Schriftgröße, 200 % Zoom, Mobil-Menü):
+  <div class="mein-header" data-ncss-sticky-header>   (selbst position: sticky; top: 0)
+    <header class="ncss-topbar">...</header>          (dort position: relative)
+    <nav class="ncss-subnav" ...>...</nav>             (klebt nicht mehr selbst)
+  </div>
+js/subnav.js misst die Höhe dieses Containers und setzt --ncss-scroll-offset an :root.
+
+Sprungziele: :root bekommt scroll-padding-block-start = gemessener Header
+(--ncss-scroll-offset), ohne Script Topbar + diese Leiste, damit Überschriften nicht
+unter den klebenden Leisten verschwinden. Weiches Scrollen
 kommt aus reset.css (scroll-behavior: smooth, bei reduzierter Bewegung aus).
 
 Tokens: --ncss-subnav-height (Höhe, Default 2.75rem), --ncss-subnav-top (Abstand oben,
-Default --ncss-topbar-height; 0 ohne Topbar).
+Default --ncss-topbar-height; 0 ohne Topbar), --ncss-scroll-offset (von js/subnav.js
+gemessene Gesamthöhe des klebenden Kopfbereichs).
 
 Benötigt: tokens.css/colors.css. Optional js/subnav.js.
 ```
@@ -3279,6 +3308,8 @@ components/backdrop.css - ohne dieses Script bleibt das erste Bild stehen.
 
 ### `js/code-block.js`
 
+data-Attribute: `data-ncss-code-tabindex`
+
 ```text
 ncss - Code-Block: ruft das self-hosted Prism.js (vendor/prismjs/) einmal
 kontrolliert auf (statt Prisms eigenem, unkontrolliertem DOMContentLoaded-Autostart -
@@ -3529,6 +3560,36 @@ erreicht wird - ist er beim Laden schon vorbei, zeigt das Element still den Endz
 Endzustand zusätzlich als Attribut data-ncss-ended (für CSS).
 ```
 
+### `js/dialog-light-dismiss.js`
+
+```text
+ncss - "Klick daneben schließt" (Light Dismiss) für ncss-Dialoge: .ncss-modal,
+.ncss-offcanvas (inkl. Nav-Panel), .ncss-command (Befehlspalette), Lightbox.
+
+Nativ heißt das <dialog closedby="any">: Klick auf den Backdrop UND Esc schließen. Dieses
+Script macht das zum DEFAULT, ohne dass jedes Markup das Attribut tragen muss:
+  (a) jeder passende <dialog> OHNE closedby-Attribut bekommt closedby="any" - beim Laden,
+      bei ncss-content-change (detail.root) und spätestens beim Öffnen (toggle-Event),
+      egal ob per command="show-modal", showModal() oder js/command-fallback.js;
+  (b) Browser ohne closedby (HTMLDialogElement.prototype.closedBy fehlt): dasselbe
+      Verhalten emuliert - pointerdown UND click müssen beide AUSSERHALB der Panel-Box
+      auf dem Dialog selbst (= Backdrop) liegen. Eine Textmarkierung, die im Panel
+      beginnt und daneben endet, schließt dadurch NICHT. Geschlossen wird per
+      requestClose() (feuert "cancel" - event.preventDefault() hält den Dialog offen),
+      ohne requestClose ein selbst gefeuertes, abbrechbares "cancel" + close().
+
+Abschalten pro Dialog - einfach das native Attribut selbst setzen, das Script fasst einen
+Dialog MIT closedby nie an:
+  closedby="closerequest"   nur Esc + Buttons (kein Klick daneben)
+  closedby="none"           nur Buttons (z.B. lange Formulare; im Emulations-Pfad wird
+                            dann auch Esc abgefangen)
+
+Fokus: der Browser gibt ihn beim Schließen eines per showModal() geöffneten Dialogs
+selbst an den Auslöser zurück - unabhängig davon, wie geschlossen wurde.
+
+Abhängigkeiten: keine anderen ncss-Scripts. Ohne <dialog>-Unterstützung tut es nichts.
+```
+
 ### `js/dismiss.js`
 
 data-Attribute: `data-ncss-dismiss`, `data-ncss-dismiss-focus`, `data-ncss-dismissible`
@@ -3719,6 +3780,50 @@ Events (am Element, bubbeln): ncss-hovercard-show / ncss-hovercard-hide
 
 Abhängigkeiten: keine anderen ncss-Scripts. Ohne customElements oder Popover-API wird
 nichts registriert - die Karte bleibt dann verborgen, der Link funktioniert normal.
+```
+
+### `js/icon.js`
+
+Elemente: `<ncss-icon>`
+
+Attribute: `name="house"`, `weight="regular"`, `label="…"`, `src="pfad/eigen.svg"`
+
+data-Attribute: `data-ncss-icon-path`
+
+Events: `ncss-icon-error`, `ncss-icon-load`
+
+```text
+ncss - <ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein.
+Reines Light-DOM-Custom-Element, Größe/Farbe kommen aus helpers/icons.css (1em bzw.
+--ncss-icon-size, fill: currentColor) - die Fläche ist dort schon VOR dem Laden
+reserviert, es springt nichts.
+
+  <ncss-icon name="house"></ncss-icon>                               dekorativ
+  <ncss-icon name="heart" weight="fill" label="Favorit"></ncss-icon>  mit Bedeutung
+
+Attribute:
+  name="house"            Phosphor-Name (Kleinbuchstaben/Ziffern/Bindestrich)
+  weight="regular"        regular | thin | light | bold | fill | duotone
+  label="…"               macht das Icon bedeutungstragend: role="img" + aria-label.
+                          Ohne label ist es dekorativ (aria-hidden="true").
+  src="pfad/eigen.svg"    statt name/weight eine beliebige eigene SVG-Datei laden
+  data-ncss-icon-path="…" Icon-Ordner, auf dem Element ODER einem Vorfahren (z.B.
+                          <html>); relativ zur SEITE aufgelöst. Default: der Ordner
+                          vendor/phosphor/ relativ zu DIESER Datei (dist/js/icon.js ->
+                          ../../vendor/phosphor/), per document.currentScript ermittelt -
+                          als ES-Modul geladen gibt es kein currentScript, dann
+                          data-ncss-icon-path setzen.
+
+Jede URL wird nur EINMAL geladen (Cache über alle Elemente der Seite). Die Datei wird
+bereinigt eingesetzt: nur SVG-Formelemente, keine <script>/<foreignObject>/<style>,
+keine on*-Attribute, keine externen href - wichtig, sobald src auf fremde Dateien zeigt.
+
+OHNE JS (oder vor der Definition) bleibt das Element leer: unsichtbar, aber mit
+reservierter Fläche. Für Icons, die Bedeutung tragen, deshalb das Kern-Set
+(.ncss-icon-*) oder ein SVG-Sprite nehmen (beide ohne JS), oder den Text daneben
+sichtbar lassen.
+
+Events (bubbles): "ncss-icon-load" (detail.url), "ncss-icon-error" (detail.url).
 ```
 
 ### `js/ics.js`
@@ -4361,7 +4466,7 @@ eine Messung (requestAnimationFrame), keine Layout-Arbeit im Event selbst.
 
 ### `js/subnav.js`
 
-data-Attribute: `data-ncss-subnav`, `data-ncss-subnav-ready`
+data-Attribute: `data-ncss-sticky-header`, `data-ncss-subnav`, `data-ncss-subnav-ready`
 
 ```text
 ncss - Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade
@@ -4372,7 +4477,8 @@ ohne dieses Script vollständig; Chromium 140+ hebt den Link zusätzlich nativ p
 aria-current kommt aber nur von hier).
 
 Markup: <nav class="ncss-subnav" data-ncss-subnav> ... <a href="#abschnitt"> ... </nav>
-Zusätzlich: misst die Höhe einer klebenden .ncss-topbar und setzt --ncss-subnav-top.
+Zusätzlich: misst den klebenden Kopfbereich ([data-ncss-sticky-header] oder .ncss-topbar)
+und setzt --ncss-scroll-offset (+ ggf. --ncss-subnav-top), siehe trackHeader().
 "Im Blick" = der letzte Abschnitt, dessen Oberkante die Unterkante der Leiste erreicht
 hat; am Seitenende immer der letzte Abschnitt (kurze Schluss-Abschnitte erreichen die
 Oberkante sonst nie).

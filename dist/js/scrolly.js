@@ -22,6 +22,15 @@
  */
 (function () {
   "use strict";
+  // Bewegung reduzieren? Systemeinstellung ODER ausdrückliche Wahl am <html>
+  // (data-motion="reduce"/"full", gesetzt von js/preferences.js) - "full" hebt ein
+  // System-"reduce" nur als bewusste Nutzerwahl auf, nie von selbst.
+  function ncssReducedMotion() {
+    var choice = document.documentElement.getAttribute("data-motion");
+    if (choice === "reduce") return true;
+    if (choice === "full") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
 
   if (!window.customElements || typeof IntersectionObserver === "undefined" || customElements.get("ncss-scrolly")) {
     return;
@@ -72,7 +81,7 @@
       set step(i) {
         var target = this._steps && this._steps[i];
         if (!target) return;
-        var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var reduce = ncssReducedMotion();
         target.scrollIntoView({ block: "center", behavior: reduce ? "instant" : "smooth" });
       }
 

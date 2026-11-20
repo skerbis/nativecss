@@ -37,9 +37,9 @@
   }
 }</code></pre>
   <p>This makes the custom component behave EXACTLY like a built-in one: general ncss utilities from <code>helpers/</code> (<code>.ncss-border</code>, <code>.ncss-radius-*</code>, <code>.ncss-shadow-*</code>, see <a href="components.html">Component Reference</a>) combine with it freely, because <code>helpers</code> comes BEFORE <code>components</code> in the layer order - a later layer rule always wins over an earlier one, regardless of selector specificity. The reverse does NOT hold: a <code>helpers</code> utility cannot override a same-named property from <code>components</code>, even if the utility class appears after the component class in the markup (layer order beats source order).</p>
-  <div class="ncss-field ncss-callout ncss-radius-md ncss-border" style="padding: var(--ncss-space-md); background-color: var(--ncss-color-bg-subtle);">
-    <strong>Unlayered only for one-off overrides, not for whole components</strong>
-    <p class="ncss-text-sm">The <code>theme.css</code> trick (unlayered CSS, always wins) suits individual properties of an EXISTING component (see <a href="custom-theme.html#schritt-7">Step 7</a>). Declaring a brand-new, custom component unlayered works too, but prevents anyone from later combining/adjusting it with an ncss <code>helpers</code> utility - unlayered wins against EVERYTHING, including utilities that are specifically meant to override something.</p>
+  <div class="ncss-alert ncss-alert--warning">
+    <p class="ncss-alert-title">Unlayered only for one-off overrides, not for whole components</p>
+    <p>The <code>theme.css</code> trick (unlayered CSS, always wins) suits individual properties of an EXISTING component (see <a href="custom-theme.html#schritt-7">Step 7</a>). Declaring a brand-new, custom component unlayered works too, but prevents anyone from later combining/adjusting it with an ncss <code>helpers</code> utility - unlayered wins against EVERYTHING, including utilities that are specifically meant to override something.</p>
   </div>
 </section>
 

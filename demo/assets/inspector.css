@@ -342,3 +342,17 @@
 
 /* Grid-Spalte darf nicht auf die Breite langer Code-Zeilen wachsen (die scrollen selbst). */
 .demo-inspect-body > * { min-width: 0; }
+
+/* Schriftzug in der Beispiel-Leiste (immer dunkle Leiste: "Native" hellblau). */
+.demo-example-bar .demo-wordmark {
+  display: block;
+  block-size: 1.45em;
+  inline-size: auto;
+}
+.demo-example-bar .demo-wordmark-native { fill: #8ab4ff; }
+.demo-example-bar .demo-wordmark-css { fill: currentColor; }
+.demo-example-bar-brand { display: inline-flex; align-items: center; }
+@media (forced-colors: active) {
+  .demo-example-bar .demo-wordmark-native { fill: LinkText; }
+  .demo-example-bar .demo-wordmark-css { fill: CanvasText; }
+}

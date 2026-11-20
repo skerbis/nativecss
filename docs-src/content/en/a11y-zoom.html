@@ -1,0 +1,148 @@
+<!--DESC: 200% zoom, reflow at 320 CSS pixels, fluid type, text spacing and target size - what ncss provides and what you need to watch out for.-->
+<section class="ncss-stack">
+  <h1>Zoom, Reflow &amp; Text Spacing</h1>
+  <p class="ncss-text-lg ncss-text-muted">Many people zoom pages, set a larger default font size or override line and letter spacing. A page has to cope with that without content being clipped, overlapping or only reachable by scrolling sideways.</p>
+</section>
+
+<section class="ncss-stack" id="zoom">
+  <h2 class="demo-section-title">200% zoom and text size (WCAG 1.4.4)</h2>
+  <p>Text must be resizable up to 200% without assistive technology and without losing content or functionality. There are two ways to do that, and both have to work:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Page zoom</strong> (<kbd class="ncss-kbd">Ctrl</kbd>/<kbd class="ncss-kbd">⌘</kbd> + <kbd class="ncss-kbd">+</kbd>) scales everything - text, spacing, images. The viewport effectively gets narrower and the page switches to its narrower layout.</li>
+    <li><strong>Text-only resizing</strong> (Firefox "Zoom text only", font size in browser or system settings) only changes the base font size. This only works if font sizes are relative (<code>rem</code>/<code>em</code>).</li>
+  </ul>
+  <p>ncss sets <code>text-size-adjust: 100%</code> in <code>reset.css</code>: it stops iOS from enlarging text automatically on rotation but does not block pinch zoom. Never block zoom in the viewport meta tag - <code>user-scalable=no</code> or <code>maximum-scale=1</code> are an accessibility failure.</p>
+  <pre><code class="language-html">&lt;!-- Correct --&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+
+&lt;!-- Wrong: locks zoom --&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="fluide-schrift">
+  <h2 class="demo-section-title">Fluid type with clamp() and rem</h2>
+  <p>All font size tokens in <code>tokens.css</code> are fluid: <code>clamp(min, preferred, max)</code>. The preferred value deliberately mixes a fixed <code>rem</code> part with a small <code>vw</code> part. Pure <code>vw</code> would ignore user zoom (the text would only depend on the window width) - the <code>rem</code> part makes sure a larger browser font size still takes effect.</p>
+  <pre><code class="language-css">/* from tokens.css */
+--ncss-font-size-base: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+--ncss-font-size-xl:   clamp(1.8rem, 1.5rem + 1.5vw, 2.6rem);</code></pre>
+  <p>The same applies to your own sizes: set text in <code>rem</code> (or via the tokens), never in <code>px</code> and never in <code>vw</code> alone. ncss sets line heights without a unit (<code>--ncss-line-height-base: 1.6</code>), so they scale with any font size.</p>
+  <p>One caveat with <code>clamp()</code>: the maximum is a fixed <code>rem</code> value. With page zoom <code>rem</code> grows, and so does the upper limit - the combination stays zoom-friendly. Still check your own <code>clamp()</code> values at 200%: a maximum that is too small can stop text from actually doubling in size.</p>
+</section>
+
+<section class="ncss-stack" id="reflow">
+  <h2 class="demo-section-title">Reflow at 320 CSS pixels (WCAG 1.4.10)</h2>
+  <p>At a width of 320 CSS pixels (that is 400% zoom in a 1280&nbsp;px wide window) content has to be readable in a single column without horizontal scrolling. Content that needs a two-dimensional layout is exempt - data tables, maps, diagrams, code.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><code>.ncss-grid</code> uses <code>repeat(auto-fit, minmax(min(var(--ncss-grid-min), 100%), 1fr))</code>. The <code>min(…, 100%)</code> stops a column from getting wider than its container - at 320&nbsp;px a single column remains, without any media query.</li>
+    <li><code>reset.css</code> sets <code>max-width: 100%</code> on <code>img</code>, <code>video</code>, <code>svg</code> and <code>canvas</code>, and <code>overflow-wrap: break-word</code> on paragraphs and headings - long words and URLs wrap instead of breaking the layout.</li>
+    <li>Tables sit inside <code>.ncss-table-scroll</code>: the table scrolls horizontally inside its own frame, the page does not. That is covered by the exception for two-dimensional content. So keyboard users can scroll the frame in older browsers too, give it <code>tabindex="0"</code>, <code>role="region"</code> and a name (<code>aria-label</code>).</li>
+    <li>The header of this website is checked for wrapping between 320 and 1920&nbsp;px. For your own navigation: <code>&lt;ncss-nav-priority&gt;</code> moves overflowing items into a "More" menu instead of cutting them off.</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-table-scroll" tabindex="0" role="region" aria-label="Pricing table"&gt;
+  &lt;table&gt;...&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="container-queries">
+  <h2 class="demo-section-title">Container queries instead of viewport breakpoints</h2>
+  <p>When you zoom, it is not just the viewport that changes but also the space each component has in its column. Container queries respond to exactly that: <code>.ncss-container</code> and <code>.ncss-card-container</code> set <code>container-type: inline-size</code>, and variants like <code>.ncss-grid--cols-3</code> or <code>.ncss-card--horizontal</code> only switch via <code>@container</code> once their own container is wide enough. A card in a narrow sidebar therefore stays single-column at 200%, even if the window is still wide.</p>
+  <p>Give container query thresholds in <code>rem</code> (ncss: <code>24rem</code>, <code>36rem</code>, <code>48rem</code>, <code>56rem</code>) - then they move along with larger text.</p>
+</section>
+
+<section class="ncss-stack" id="textabstaende">
+  <h2 class="demo-section-title">Text spacing (WCAG 1.4.12)</h2>
+  <p>Anyone who sets the following values with a browser extension or a user stylesheet must not lose any content:</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Property</th><th scope="col">Minimum (relative to font size)</th></tr></thead>
+      <tbody>
+        <tr><td>Line height</td><td>1.5</td></tr>
+        <tr><td>Spacing after paragraphs</td><td>2 times</td></tr>
+        <tr><td>Letter spacing</td><td>0.12 times</td></tr>
+        <tr><td>Word spacing</td><td>0.16 times</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>ncss already meets the line height for body text out of the box (1.6). What matters is that boxes grow: buttons, badges and cards in ncss have no fixed height - their size comes from padding and content. Icon buttons (<code>.ncss-btn--icon</code>) calculate their size from <code>1lh</code>, so they grow with the line height.</p>
+  <p><strong>Watch out</strong>: <code>.ncss-clamp-lines</code> truncates text to a few lines with <code>line-clamp</code>. With larger spacing, more text disappears. Only use it for important content together with a way to reach the full text (a link to the detail page, <code>&lt;details&gt;</code>).</p>
+  <p>To test, paste this CSS into your developer tools (or use a "Text Spacing" bookmarklet):</p>
+  <pre><code class="language-css">* {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+p {
+  margin-block-end: 2em !important;
+}</code></pre>
+</section>
+
+<section class="ncss-stack" id="hoehen">
+  <h2 class="demo-section-title">No fixed heights for text</h2>
+  <p>The most common cause of clipped text when zooming is a fixed <code>height</code> on an element that contains text - with <code>overflow: hidden</code> the rest disappears, without it the text overlaps whatever comes next.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Use <code>min-height</code>/<code>min-block-size</code> instead of <code>height</code>, or nothing at all - let padding and content decide the height.</li>
+    <li>For image areas use <code>aspect-ratio</code> (<code>.ncss-ratio-video</code> and friends) instead of fixed heights. Text does not belong in a box with a fixed aspect ratio unless that box is allowed to grow.</li>
+    <li>Build hero and full-screen sections with <code>min-height</code> instead of <code>height</code>: <code>.ncss-hero</code> uses <code>min-height</code>, so it grows with its content.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="viewport-einheiten">
+  <h2 class="demo-section-title">svh, dvh and zoom</h2>
+  <p>Viewport units stay the same size when you zoom, while the text grows. A box with <code>height: 100svh</code> and plenty of text inside will almost certainly overflow at 200%. Use the full screen height as a <strong>minimum</strong> (<code>min-height: 100svh</code>), never as a fixed height for text.</p>
+  <p>Which unit ncss uses for what (<code>svh</code> for modal and off-canvas, <code>lvh</code> for scroll-linked effects, why <code>dvh</code> stutters there): <a href="touch-mobile.html#viewport-einheiten">Touch &amp; Mobile Viewports</a>.</p>
+  <pre><code class="language-css">/* Good: grows with its content */
+.demo-intro { min-height: 100svh; }
+
+/* Bad: text overflows when zoomed */
+.demo-intro { height: 100svh; overflow: hidden; }</code></pre>
+</section>
+
+<section class="ncss-stack" id="zielgroesse">
+  <h2 class="demo-section-title">Target size (WCAG 2.5.8)</h2>
+  <p>Click and tap targets must be at least 24 × 24 CSS pixels - or have enough spacing that a 24&nbsp;px circle centred on each target does not touch another one. Links inside running text are exempt.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><code>.ncss-btn</code> gets its size from line height plus padding and is about 42&nbsp;px tall at the default font size, <code>.ncss-btn--sm</code> about 30&nbsp;px - both above 24&nbsp;px.</li>
+    <li>Checkboxes and radios in <code>.ncss-choice</code> are only about 18&nbsp;px themselves (<code>--ncss-choice-size: 1.1em</code>). That is fine as long as the <code>&lt;label&gt;</code> with its text wraps the control or is linked via <code>for</code> - then the whole row counts as the target.</li>
+    <li>Your own small icon links (social media bars, close crosses) need enough padding or spacing. 44 × 44&nbsp;px is the more comfortable recommendation (WCAG 2.5.5, AAA).</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Try it yourself</h2>
+  <p>The three cards below sit in an <code>.ncss-grid</code>. Zoom the page step by step with <kbd class="ncss-kbd">Ctrl</kbd>/<kbd class="ncss-kbd">⌘</kbd> + <kbd class="ncss-kbd">+</kbd> to 200% and on to 400%: the cards first move into two columns, then one, text and buttons grow with them, nothing gets clipped and the page never scrolls sideways.</p>
+  <div class="docs-live" role="group" aria-label="Live example">
+    <div class="ncss-grid" style="--ncss-grid-min: 13rem">
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <h3>Fluid type</h3>
+          <p>Font sizes built with <code>clamp()</code> and a <code>rem</code> part grow with zoom.</p>
+          <p><a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#fluide-schrift">Read more</a></p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <h3>Reflow</h3>
+          <p>The grid drops to fewer columns without a media query.</p>
+          <p><a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#reflow">Read more</a></p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <h3>No fixed height</h3>
+          <p>Cards and buttons are sized by their content and padding.</p>
+          <p><a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#hoehen">Read more</a></p>
+        </div>
+      </article>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-grid" style="--ncss-grid-min: 13rem"&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3&gt;Fluid type&lt;/h3&gt;
+      &lt;p&gt;Font sizes built with clamp() and a rem part grow with zoom.&lt;/p&gt;
+      &lt;p&gt;&lt;a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="..."&gt;Read more&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+  ...
+&lt;/div&gt;</code></pre>
+</section>

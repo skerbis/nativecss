@@ -35,10 +35,22 @@
         <tr><td><code>.ncss-subnav-inner</code></td><td>Innerer Rahmen in Containerbreite (gleiche Fluchtlinie wie der Seiteninhalt).</td></tr>
         <tr><td><code>.ncss-subnav-label</code></td><td>Sichtbare Beschriftung vor den Links, für Screenreader ausgeblendet (die nav trägt aria-label).</td></tr>
         <tr><td><code>.ncss-subnav-list</code></td><td>Die Linkliste: seitlich wischbar mit weichen Rändern, aktueller Link als Pille hervorgehoben.</td></tr>
+        <tr><td><code>[data-ncss-sticky-header]</code></td><td>Gemeinsamer klebender Container für Topbar + Leiste; die Leiste klebt darin nicht mehr selbst, <code>js/subnav.js</code> misst seine Höhe.</td></tr>
         <tr><td><code>[data-ncss-subnav]</code></td><td>Aktiviert <code>js/subnav.js</code>: setzt <code>aria-current="location"</code> am Link des Abschnitts im Blick und führt die Leiste seitlich nach.</td></tr>
       </tbody>
     </table>
   </div>
+</section>
+
+<section class="ncss-stack" id="sticky-header">
+  <h2 class="demo-section-title">Mit eigener Kopfleiste: eine klebende Einheit</h2>
+  <p>Klebt die Leiste einzeln unter einer Topbar, muss ihr Abstand nach oben exakt der Topbar-Höhe entsprechen - wächst die Kopfleiste (Logo, Schriftgröße, 200 % Zoom, Mobil-Menü), rutscht die Leiste beim Scrollen darunter. Robust: Topbar und Leiste in EINEN klebenden Container stecken und ihn mit <code>data-ncss-sticky-header</code> markieren. Dann klebt nur der Container, beide Zeilen bewegen sich immer gemeinsam, und <code>js/subnav.js</code> misst seine Höhe für den Sprung-Versatz (<code>--ncss-scroll-offset</code>). Diese Website nutzt genau dieses Muster.</p>
+  <pre><code class="language-html">&lt;div class="kopf" data-ncss-sticky-header&gt;
+  &lt;header class="ncss-topbar"&gt;...&lt;/header&gt;
+  &lt;nav class="ncss-subnav" aria-label="Auf dieser Seite" data-ncss-subnav&gt;...&lt;/nav&gt;
+&lt;/div&gt;</code></pre>
+  <pre><code class="language-css">.kopf { position: sticky; inset-block-start: 0; z-index: var(--ncss-topbar-z); }
+.kopf &gt; .ncss-topbar { position: relative; } /* nur der Container klebt */</code></pre>
 </section>
 
 <section class="ncss-stack" id="verhalten">
@@ -60,6 +72,7 @@
       <tbody>
         <tr><td><code>--ncss-subnav-height</code></td><td>Höhe der Leiste (Default <code>2.75rem</code>), fließt in den Sprung-Versatz ein.</td></tr>
         <tr><td><code>--ncss-subnav-top</code></td><td>Abstand nach oben (Default <code>--ncss-topbar-height</code>); <code>0</code> auf Seiten ohne klebende Topbar.</td></tr>
+        <tr><td><code>--ncss-scroll-offset</code></td><td>Von <code>js/subnav.js</code> gemessene Höhe des klebenden Kopfbereichs - Grundlage für <code>scroll-padding</code> und eigene Sticky-Abstände.</td></tr>
       </tbody>
     </table>
   </div>

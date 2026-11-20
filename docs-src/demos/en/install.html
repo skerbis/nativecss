@@ -1,0 +1,78 @@
+<!--HEAD:
+<style>
+  /* Drei gleichwertige Einbinde-Wege (Startseite + Handbuch-Überblick). */
+  .demo-install {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: var(--ncss-space-md);
+  }
+  .demo-install-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-xs);
+    min-inline-size: 0;
+    padding: var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-install-card h3 {
+    margin: 0;
+    font-size: var(--ncss-font-size-lg);
+  }
+  .demo-install-card p {
+    margin: 0;
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  /* Lange Zeilen (CDN-URL) umbrechen statt abschneiden; rechts Platz für den Kopier-Knopf. */
+  .demo-install-card pre {
+    margin: 0;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding-inline-end: 3rem;
+  }
+  .demo-install-step {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 1.6em;
+    block-size: 1.6em;
+    margin-inline-end: 0.35em;
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-brand-100);
+    color: var(--ncss-color-brand-on-soft);
+    font-size: 0.8em;
+  }
+</style>
+-->
+<div class="demo-install">
+  <article class="demo-install-card">
+    <h3><span class="demo-install-step" aria-hidden="true">1</span>Copy</h3>
+    <p>Recommended: unzip the <a href="https://github.com/skerbis/nativecss/releases/latest" target="_blank" rel="noopener">release ZIP from GitHub</a> (<code>nativecss-&lt;version&gt;.zip</code>, only <code>dist/</code> + licence, about 430 KB, from v1.1.0). Alternatively <code>git clone https://github.com/skerbis/nativecss.git</code> and use its <code>dist/</code>.</p>
+    <p>Copy <code>dist/</code> into your project (e.g. as <code>ncss/</code>) and link it - done.</p>
+    <pre><code class="language-html">&lt;link rel="stylesheet" href="ncss/ncss.css"&gt;
+&lt;link rel="stylesheet" href="ncss/theme.css"&gt;</code></pre>
+  </article>
+  <article class="demo-install-card">
+    <h3><span class="demo-install-step" aria-hidden="true">2</span>CDN</h3>
+    <p>Load straight from jsDelivr, no download.</p>
+    <pre><code class="language-html">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nativecss@1/dist/ncss.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nativecss@1/dist/theme.css"&gt;</code></pre>
+    <p>In production pin a version, e.g. <code>nativecss@1.1.0</code>.</p>
+  </article>
+  <article class="demo-install-card">
+    <h3><span class="demo-install-step" aria-hidden="true">3</span>npm (optional)</h3>
+    <p>For projects that already use a bundler.</p>
+    <pre><code class="language-javascript">npm i nativecss
+
+import "nativecss";              // JS entry
+@import "nativecss/ncss.css";    /* or in CSS */</code></pre>
+  </article>
+  <article class="demo-install-card demo-install-cms">
+    <h3><span class="demo-install-step" aria-hidden="true">4</span><a href="integration-cms.html">With a CMS</a></h3>
+    <p><strong>REDAXO 6 + fluid:</strong> the <a href="https://github.com/KLXM/fluid" target="_blank" rel="noopener">fluid</a> add-on ships a ready NativeCSS kit (Website → Kit → NativeCSS) - with blocks, design settings and front-end editing.</p>
+    <p><strong>KLXM Studio:</strong> NativeCSS kit for KLXM Studio - coming soon.</p>
+  </article>
+</div>
+<p class="ncss-text-sm ncss-text-muted">npm is just an extra option - NativeCSS needs no build step. Copy, CDN and npm deliver the same files - fluid and KLXM Studio already ship them.</p>

@@ -284,6 +284,44 @@
     }
    ]
   },
+  "ncss-icon": {
+   "script": "js/icon.js",
+   "css": [
+    "helpers/icons.css"
+   ],
+   "description": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein",
+   "attributes": [
+    {
+     "name": "name",
+     "default": "house",
+     "boolean": false,
+     "description": "Phosphor-Name (Kleinbuchstaben/Ziffern/Bindestrich)"
+    },
+    {
+     "name": "weight",
+     "default": "regular",
+     "boolean": false,
+     "description": "regular | thin | light | bold | fill | duotone"
+    },
+    {
+     "name": "label",
+     "default": "…",
+     "boolean": false,
+     "description": "macht das Icon bedeutungstragend: role=\"img\" + aria-label. Ohne label ist es dekorativ (aria-hidden=\"true\")."
+    },
+    {
+     "name": "src",
+     "default": "pfad/eigen.svg",
+     "boolean": false,
+     "description": "statt name/weight eine beliebige eigene SVG-Datei laden data-ncss-icon-path=\"…\" Icon-Ordner, auf dem Element ODER einem Vorfahren (z.B. <html>); relativ zur SEITE aufgelöst. Default: der Ordner vendor/phosphor/ relativ zu DIESER Datei (dist/js/icon.js -> ../../vendor/phosphor/), per document.currentScript ermittelt - als ES-Modul geladen gibt es kein currentScript, dann data-ncss-icon-path setzen."
+    }
+   ],
+   "events": [
+    "ncss-icon-error",
+    "ncss-icon-load"
+   ],
+   "api": []
+  },
   "ncss-nav-drilldown": {
    "script": "js/nav-drilldown.js",
    "css": [
@@ -680,6 +718,13 @@
    ],
    "description": "Backdrop: wechselt die Bilder von [data-ncss-backdrop] im Intervall (data-interval in ms, Default 6000)"
   },
+  "data-ncss-code-tabindex": {
+   "files": [
+    "js/code-block.js"
+   ],
+   "description": "Code-Block: ruft das self-hosted Prism.js (vendor/prismjs/) einmal kontrolliert auf (statt Prisms eigenem, unkontrolliertem DOMContentLoaded-Autostart - siehe code-block.css für die dafür nötige \"window.Prism = { manual: true }\"-Zeile ...",
+   "internal": true
+  },
   "data-ncss-combobox": {
    "files": [
     "js/combobox.js"
@@ -761,6 +806,12 @@
    ],
    "description": "<ncss-hovercard>: Vorschaukarte beim Überfahren/Fokussieren eines Links (siehe components/hovercard.css für Markup)",
    "internal": true
+  },
+  "data-ncss-icon-path": {
+   "files": [
+    "js/icon.js"
+   ],
+   "description": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein"
   },
   "data-ncss-index": {
    "files": [
@@ -867,6 +918,14 @@
    ],
    "description": "<ncss-container>: kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, damit sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen können, ohne dass Styles in beide Richtungen ...",
    "example": "- src (Pflicht, ODER data-ncss-src auf dem Loader-<script> als Seiten-Default - siehe"
+  },
+  "data-ncss-sticky-header": {
+   "files": [
+    "components/subnav.css",
+    "js/subnav.js"
+   ],
+   "description": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar",
+   "example": "<div class=\"mein-header\" data-ncss-sticky-header>   (selbst position: sticky; top: 0)"
   },
   "data-ncss-subnav": {
    "files": [
@@ -990,6 +1049,8 @@
   "ncss-dropzone-change",
   "ncss-hovercard-hide",
   "ncss-hovercard-show",
+  "ncss-icon-error",
+  "ncss-icon-load",
   "ncss-media-ended",
   "ncss-media-pause",
   "ncss-media-play",
@@ -1044,7 +1105,9 @@
   "js/code-block.js": {
    "description": "Code-Block: ruft das self-hosted Prism.js (vendor/prismjs/) einmal kontrolliert auf (statt Prisms eigenem, unkontrolliertem DOMContentLoaded-Autostart - siehe code-block.css für die dafür nötige \"window.Prism = { manual: true }\"-Zeile ...",
    "elements": [],
-   "dataAttributes": [],
+   "dataAttributes": [
+    "data-ncss-code-tabindex"
+   ],
    "events": [],
    "api": []
   },
@@ -1137,6 +1200,13 @@
    ],
    "api": []
   },
+  "js/dialog-light-dismiss.js": {
+   "description": "\"Klick daneben schließt\" (Light Dismiss) für ncss-Dialoge: .ncss-modal, .ncss-offcanvas (inkl. Nav-Panel), .ncss-command (Befehlspalette), Lightbox",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
   "js/dismiss.js": {
    "description": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)",
    "elements": [],
@@ -1212,6 +1282,20 @@
     "hide()",
     "open"
    ]
+  },
+  "js/icon.js": {
+   "description": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein",
+   "elements": [
+    "ncss-icon"
+   ],
+   "dataAttributes": [
+    "data-ncss-icon-path"
+   ],
+   "events": [
+    "ncss-icon-error",
+    "ncss-icon-load"
+   ],
+   "api": []
   },
   "js/ics.js": {
    "description": "ICS-Parser (iCalendar, RFC 5545)",
@@ -1411,6 +1495,7 @@
    "description": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar",
    "elements": [],
    "dataAttributes": [
+    "data-ncss-sticky-header",
     "data-ncss-subnav",
     "data-ncss-subnav-ready"
    ],

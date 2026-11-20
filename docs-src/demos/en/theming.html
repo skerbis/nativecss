@@ -1,0 +1,72 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .theming-demo-panel {
+    padding: var(--ncss-space-lg);
+    border-radius: var(--ncss-radius-lg);
+    border: 1px solid var(--ncss-color-border);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+</style>
+<link rel="stylesheet" href="~/demo/theming-example.css">
+-->
+  <div class="ncss-stack ncss-stack--tight">
+    <p class="ncss-text-lg ncss-text-muted">One file for all the important values - <code>theme.css</code> (repo root). Load it after <code>ncss.css</code>, override the values directly in it, don't touch any other file.</p>
+  </div>
+
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">How it works</h2>
+    <p class="ncss-text-muted"><code>theme.css</code> is deliberately UNLAYERED (no <code>@layer</code> of its own) - and per the spec, unlayered CSS always wins over any layered rule from <code>ncss.css</code> (layer <code>tokens</code>), regardless of selector specificity. A plain <code>:root { --ncss-color-brand: ... }</code> is enough, no <code>!important</code> needed.</p>
+    <pre><code class="language-html">&lt;link rel="stylesheet" href="ncss.css"&gt;
+&lt;link rel="stylesheet" href="theme.css"&gt;</code></pre>
+    <p class="ncss-text-muted">Only the BASE/SEED values belong there (brand colors, base surfaces, fonts, radii, shadows, motion) - the color scales derived from them (<code>--ncss-color-brand-100</code>/<code>-300</code>/<code>-700</code>/<code>-900</code>/<code>-on-soft</code>) are computed via <code>color-mix()</code> from EXACTLY ONE base value and follow along automatically.</p>
+  </section>
+
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Live example</h2>
+    <p class="ncss-text-muted">This box additionally loads <code>theming-example.css</code> - the same handful of seed values as a real <code>theme.css</code>, here just set locally on this area instead of on <code>:root</code> (a theme file can just as well recolor a single page area instead of the whole page). Button, card border/radius and focus ring react automatically, with no rules of their own for this theme.</p>
+    <p class="ncss-text-sm ncss-text-muted"><strong>Two pitfalls, relevant ONLY when applied locally</strong> (a real <code>theme.css</code> on <code>:root</code> is affected by NEITHER):</p>
+    <ul class="ncss-text-sm ncss-text-muted">
+      <li><code>font-family</code> is an inherited property; <code>.ncss-btn</code> doesn't declare it itself but inherits the already resolved value from <code>body</code> further up the tree - so setting <code>--ncss-font-family-base</code> here only as a custom property isn't enough, <code>font-family: var(--ncss-font-family-base)</code> must also be redeclared at this point (line below). Same pitfall as with <code>.ncss-scheme-dark</code>/<code>-light</code>, see <code>helpers/surfaces.css</code>.</li>
+      <li>The badges below DELIBERATELY keep the default color (blue/purple) - not a rendering bug but a real limitation: <code>.ncss-badge</code> uses <code>--ncss-color-brand-100</code>/<code>-on-soft</code> (the scale DERIVED via <code>color-mix()</code> in <code>colors.css</code>), and that is computed only ONCE on <code>:root</code>, then inherited as a finished value. Overriding <code>--ncss-color-brand</code> deeper in the tree does NOT recompute this already computed, inherited derivation - only rules that use <code>var(--ncss-color-brand)</code> (the seed itself) directly, like <code>.ncss-btn--primary</code>, react to a local override. A real <code>theme.css</code> on <code>:root</code> doesn't have this problem: there the whole scale IS computed fresh.</li>
+    </ul>
+    <div class="theming-demo-panel ncss-stack">
+      <div class="ncss-cluster">
+        <button type="button" class="ncss-btn ncss-btn--primary">Primary button</button>
+        <button type="button" class="ncss-btn ncss-btn--secondary">Secondary button</button>
+        <span class="ncss-badge">Badge (stays default, see above)</span>
+      </div>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <h3>Card in the example theme</h3>
+          <p class="ncss-text-sm ncss-text-muted">Different brand color, different radii, different font family - all via seven lines in <code>theming-example.css</code>.</p>
+          <a class="ncss-btn ncss-btn--primary" href="#main">Focusable (try the Tab key)</a>
+        </div>
+      </article>
+    </div>
+    <pre><code class="language-css">.theming-demo-panel {
+  --ncss-color-brand: light-dark(#b45309, #fb923c);
+  --ncss-color-brand-contrast: light-dark(#ffffff, #1a1204);
+  --ncss-color-brand-2: light-dark(#166534, #4ade80);
+  --ncss-color-brand-2-contrast: light-dark(#ffffff, #06210f);
+  --ncss-color-focus-ring: light-dark(#b45309, #fb923c);
+  --ncss-radius-sm: 0.1rem;
+  --ncss-radius-md: 0.2rem;
+  --ncss-radius-lg: 0.3rem;
+  --ncss-font-family-base: Georgia, "Times New Roman", serif;
+
+  /* only needed when applied locally, see text above */
+  font-family: var(--ncss-font-family-base);
+}</code></pre>
+  </section>
+
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Multiple themes</h2>
+    <p class="ncss-text-muted">Repeat the same structure in another file (e.g. <code>theme-sunset.css</code>) and load it instead of <code>theme.css</code> depending on the project/domain - or use the <code>[data-palette]</code> convention in <code>colors.css</code> for a purely attribute-driven switch without a second file: <code>&lt;html data-palette="sunset"&gt;</code>, see the <a href="~/demo/colors.html">Colors</a> demo.</p>
+  </section>

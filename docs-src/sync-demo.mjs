@@ -9,7 +9,7 @@
 //    ← Alle Beispiele · Handbuch" plus den schwebenden Inspect-Schalter - zwischen
 //    <!-- example-bar:start --> ... <!-- example-bar:end --> (nur Seiten mit Markern;
 //    fremd gepflegte Beispiele setzen die Marker selbst, siehe Skript-Ausgabe).
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +17,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const DEMO = join(HERE, "..", "demo");
 const nav = JSON.parse(readFileSync(join(HERE, "nav.json"), "utf8"));
 const strings = JSON.parse(readFileSync(join(HERE, "strings.json"), "utf8"));
+const WORDMARK = readFileSync(join(DEMO, "assets", "brand", "wordmark-inline.html"), "utf8").trim();
 
 const titleOf = (slug, lang) => {
   if (slug === nav.start.slug) return "NativeCSS";
@@ -62,7 +63,7 @@ for (const [file, slug] of Object.entries(nav.redirects)) {
 export function exampleBar(ex, lang = "de", base = "../") {
   const s = strings[lang];
   return `<div class="demo-example-bar" data-demo-inspect-ignore>
-  <a class="demo-example-bar-brand" href="${base}docs/${lang}/${nav.start.slug}.html">NativeCSS</a>
+  <a class="demo-example-bar-brand" href="${base}docs/${lang}/${nav.start.slug}.html">${WORDMARK}</a>
   <span class="demo-example-bar-label"><span aria-hidden="true">·</span> ${s.exampleLabel}: ${ex[lang]}</span>
   <nav class="demo-example-bar-links" aria-label="NativeCSS">
     <a href="${base}docs/${lang}/${nav.examplesPage.slug}.html">← ${s.allExamples}</a>
@@ -73,20 +74,40 @@ export function exampleBar(ex, lang = "de", base = "../") {
 }
 
 const BAR_RE = /<!-- example-bar:start -->[\s\S]*?<!-- example-bar:end -->/;
+// Alle HTML-Dateien in demo/ (inkl. Unterordner einer mehrseitigen Beispiel-App, ohne
+// assets/) mit Markern bekommen die Leiste; das zugehörige Beispiel aus nav.json ergibt
+// sich aus dem Pfad (example-immo/mieter.html -> ImmoDesk, example-gemeinde-service.html
+// -> Gemeinde Seeburg).
+const pages = [];
+const walk = (dir, rel = "") => {
+  for (const name of readdirSync(dir)) {
+    if (name === "assets") continue;
+    const full = join(dir, name);
+    if (statSync(full).isDirectory()) walk(full, `${rel}${name}/`);
+    else if (name.endsWith(".html")) pages.push(`${rel}${name}`);
+  }
+};
+walk(DEMO);
+const exampleFor = (rel) =>
+  nav.examples.find((ex) => ex.href === rel) ||
+  nav.examples.find((ex) => ex.href.includes("/") && rel.startsWith(ex.href.split("/")[0] + "/")) ||
+  nav.examples.find((ex) => rel.startsWith(ex.href.replace(/\.html$/, "") + "-"));
 const missing = [];
 for (const ex of nav.examples) {
   const path = join(DEMO, ex.href);
-  if (!existsSync(path)) {
-    missing.push(ex.href);
-    continue;
-  }
+  if (!existsSync(path) || !BAR_RE.test(readFileSync(path, "utf8"))) missing.push(ex.href);
+}
+for (const rel of pages) {
+  const path = join(DEMO, rel);
   const html = readFileSync(path, "utf8");
-  if (!BAR_RE.test(html)) {
-    missing.push(ex.href);
+  if (!BAR_RE.test(html)) continue;
+  const ex = exampleFor(rel);
+  if (!ex) {
+    console.warn(`Kein Beispiel in nav.json für ${rel} - Leiste übersprungen`);
     continue;
   }
   const lang = /<html lang="en"/.test(html) ? "en" : "de";
-  const base = "../".repeat(ex.href.split("/").length);
+  const base = "../".repeat(rel.split("/").length);
   write(path, html.replace(BAR_RE, `<!-- example-bar:start -->\n${exampleBar(ex, lang, base)}\n<!-- example-bar:end -->`));
 }
 

@@ -1,0 +1,142 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  /* Ziehbarer Rahmen um jedes Live-Beispiel - macht Container Queries SICHTBAR ohne JS:
+     am Ziehgriff unten rechts die Breite verändern und live beobachten, wie Grid-Spalten/
+     Breiten-Fraktionen/Sichtbarkeits-Klassen auf GENAU DIESE Breite reagieren, nicht auf
+     die des Browserfensters. */
+  .demo-resizable {
+    resize: horizontal;
+    overflow: auto;
+    max-width: 100%;
+    min-width: 16rem;
+    border: 2px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-md);
+  }
+  .demo-card-fill {
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm) var(--ncss-space-md);
+    text-align: center;
+  }
+</style>
+-->
+  <section class="ncss-stack">
+    <p class="ncss-text-muted">Every example below sits in a resizable frame (handle at the bottom right) - change the width and watch live how grid columns, width fractions and visibility adapt to the WIDTH OF THIS CONTAINER, not that of the browser window. Full reference: <a href="~/demo/layout.html">Layout</a> in the docs.</p>
+  </section>
+
+  <section id="live-grid-cols" class="ncss-stack">
+    <h2 class="demo-section-title">Grid: fixed column count</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-grid--cols-3</code> - fixed at 3 columns from a 36rem container width, 1 column below that. Make the frame narrower to see the wrap:</p>
+    <div class="ncss-container demo-resizable">
+      <div class="ncss-grid--cols-3">
+        <div class="demo-card-fill">1</div>
+        <div class="demo-card-fill">2</div>
+        <div class="demo-card-fill">3</div>
+      </div>
+    </div>
+    <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-container"&gt;
+  &lt;div class="ncss-grid--cols-3"&gt;
+    &lt;div&gt;1&lt;/div&gt;&lt;div&gt;2&lt;/div&gt;&lt;div&gt;3&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="live-flex-grid" class="ncss-stack">
+    <h2 class="demo-section-title">Flex grid: incomplete last row centered</h2>
+    <p class="ncss-text-muted ncss-text-sm">5 cards, <code>.ncss-width-1-3</code> - row 1 shows 3, row 2 the remaining 2, CENTERED instead of hanging left-aligned (<code>.ncss-flex-grid--center</code>). Something <code>.ncss-grid</code> alone can't do.</p>
+    <div class="demo-resizable" style="width: 40rem;">
+      <div class="ncss-flex-grid ncss-flex-grid--center">
+        <div class="ncss-width-1-3 demo-card-fill">1</div>
+        <div class="ncss-width-1-3 demo-card-fill">2</div>
+        <div class="ncss-width-1-3 demo-card-fill">3</div>
+        <div class="ncss-width-1-3 demo-card-fill">4</div>
+        <div class="ncss-width-1-3 demo-card-fill">5</div>
+      </div>
+    </div>
+    <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-flex-grid ncss-flex-grid--center"&gt;
+  &lt;div class="ncss-width-1-3"&gt;1&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;2&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;3&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;4&lt;/div&gt;
+  &lt;div class="ncss-width-1-3"&gt;5&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <p class="ncss-text-muted ncss-text-sm">Other fractions, mixed in one row (<code>.ncss-width-1-4</code> + <code>.ncss-width-1-2</code> + <code>.ncss-width-1-4</code>):</p>
+    <div class="demo-resizable" style="width: 60rem;">
+      <div class="ncss-flex-grid">
+        <div class="ncss-width-1-4 demo-card-fill">1/4</div>
+        <div class="ncss-width-1-2 demo-card-fill">1/2</div>
+        <div class="ncss-width-1-4 demo-card-fill">1/4</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="karten" class="ncss-stack">
+    <h2 class="demo-section-title">Cards in a flex grid</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-width-*</code> and <code>.ncss-card</code> combined - five cards, the same centering as above, now with a real card look (<code>.ncss-border</code>/<code>.ncss-radius-lg</code>/<code>.ncss-shadow-sm</code>, see <a href="cards.html">Cards</a>):</p>
+    <div class="demo-resizable" style="width: 45rem;">
+      <div class="ncss-flex-grid ncss-flex-grid--center">
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Card 1</h3>
+            <p class="ncss-text-sm ncss-text-muted">Any content, as tall as its neighbors thanks to flexbox stretch.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Card 2</h3>
+            <p class="ncss-text-sm ncss-text-muted">Short text.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Card 3</h3>
+            <p class="ncss-text-sm ncss-text-muted">A somewhat longer paragraph to show the height matching.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Card 4</h3>
+            <p class="ncss-text-sm ncss-text-muted">Short text.</p>
+          </div>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-width-1-3">
+          <div class="ncss-card-body ncss-stack ncss-stack--tight">
+            <h3>Card 5</h3>
+            <p class="ncss-text-sm ncss-text-muted">Short text.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="sichtbarkeit" class="ncss-stack">
+    <h2 class="demo-section-title">Container-based visibility</h2>
+    <p class="ncss-text-muted ncss-text-sm">Two paragraphs, exactly complementary - they respond to the width of the enclosing <code>.ncss-container</code>, not of the browser window:</p>
+    <div class="demo-resizable" style="width: 20rem;">
+      <div class="ncss-container" style="padding: 0;">
+        <p class="ncss-hide-below-container-md demo-card-fill">Visible FROM a 36rem container width</p>
+        <p class="ncss-hide-from-container-md demo-card-fill">Visible BELOW a 36rem container width</p>
+      </div>
+    </div>
+    <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-container"&gt;
+  &lt;p class="ncss-hide-below-container-md"&gt;Visible from 36rem&lt;/p&gt;
+  &lt;p class="ncss-hide-from-container-md"&gt;Visible below 36rem&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="live-flex" class="ncss-stack">
+    <h2 class="demo-section-title">Flex helpers</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-flex--between</code> - classic header row (title left, action right):</p>
+    <div class="ncss-flex ncss-flex--between demo-card-fill">
+      <strong>Title</strong>
+      <button type="button" class="ncss-btn ncss-btn--secondary">Action</button>
+    </div>
+  </section>

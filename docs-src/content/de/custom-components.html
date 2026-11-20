@@ -37,9 +37,9 @@
   }
 }</code></pre>
   <p>Dadurch verhält sich die eigene Komponente GENAU wie eine eingebaute: allgemeine ncss-Utilities aus <code>helpers/</code> (<code>.ncss-border</code>, <code>.ncss-radius-*</code>, <code>.ncss-shadow-*</code>, siehe <a href="components.html">Komponenten-Referenz</a>) lassen sich frei damit kombinieren, weil <code>helpers</code> VOR <code>components</code> in der Layer-Reihenfolge steht - eine spätere Layer-Regel gewinnt immer gegen eine frühere, unabhängig von Selektor-Spezifität. Genau umgekehrt gilt das NICHT: eine <code>helpers</code>-Utility kann eine gleichnamige Eigenschaft aus <code>components</code> nicht überschreiben, selbst wenn die Utility-Klasse im Markup nach der Komponenten-Klasse steht (Layer-Reihenfolge schlägt Quelltext-Reihenfolge).</p>
-  <div class="ncss-field ncss-callout ncss-radius-md ncss-border" style="padding: var(--ncss-space-md); background-color: var(--ncss-color-bg-subtle);">
-    <strong>Unlayered nur für punktuelle Overrides, nicht für ganze Komponenten</strong>
-    <p class="ncss-text-sm">Der <code>theme.css</code>-Trick (unlayered CSS, gewinnt immer) eignet sich für einzelne Eigenschaften einer BESTEHENDEN Komponente (siehe <a href="custom-theme.html#schritt-7">Schritt 7</a>). Eine komplett neue, eigene Komponente unlayered zu deklarieren funktioniert zwar auch, verhindert aber, dass jemand sie später mit einer ncss-<code>helpers</code>-Utility kombiniert/anpasst - unlayered gewinnt gegen ALLES, auch gegen Utilities, die eigentlich gezielt etwas überschreiben sollen.</p>
+  <div class="ncss-alert ncss-alert--warning">
+    <p class="ncss-alert-title">Unlayered nur für punktuelle Overrides, nicht für ganze Komponenten</p>
+    <p>Der <code>theme.css</code>-Trick (unlayered CSS, gewinnt immer) eignet sich für einzelne Eigenschaften einer BESTEHENDEN Komponente (siehe <a href="custom-theme.html#schritt-7">Schritt 7</a>). Eine komplett neue, eigene Komponente unlayered zu deklarieren funktioniert zwar auch, verhindert aber, dass jemand sie später mit einer ncss-<code>helpers</code>-Utility kombiniert/anpasst - unlayered gewinnt gegen ALLES, auch gegen Utilities, die eigentlich gezielt etwas überschreiben sollen.</p>
   </div>
 </section>
 

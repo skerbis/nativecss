@@ -1,0 +1,276 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-resize-hint {
+    border: 1px dashed var(--ncss-color-border);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    resize: horizontal;
+    overflow: auto;
+    min-width: 16rem;
+    max-width: 100%;
+  }
+  .demo-tree-nav {
+    max-width: 16rem;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-hide-scroll-bar {
+    background-color: var(--ncss-color-brand);
+    color: var(--ncss-color-brand-contrast);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    text-align: center;
+  }
+</style>
+-->
+  <section class="ncss-stack">
+    <p class="ncss-text-muted">
+      All variants use the same <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>
+      mechanism for submenus (click/keyboard, no hover problem) - see components/nav.css.
+    </p>
+    <pre><code class="language-html">&lt;nav class="ncss-nav"&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/" aria-current="page"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-nav-item"&gt;
+      &lt;details class="ncss-nav-dropdown"&gt;
+        &lt;summary&gt;More&lt;/summary&gt;
+        &lt;ul class="ncss-nav-submenu"&gt;
+          &lt;li&gt;&lt;a href="/a"&gt;Item A&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+  </section>
+
+  <!-- Verschachtelte Dropdowns -->
+  <section id="nested" class="ncss-stack">
+    <h2 class="demo-section-title">Nested dropdowns (2 levels)</h2>
+    <p class="ncss-text-muted ncss-text-sm">A <code>.ncss-nav-dropdown</code> inside a <code>.ncss-nav-submenu</code> - any depth possible.</p>
+    <nav class="ncss-nav">
+      <div class="ncss-nav-panel">
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="#nested">Home</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Products</summary>
+              <ul class="ncss-nav-submenu">
+                <li><a href="#nested">Overview</a></li>
+                <li>
+                  <details class="ncss-nav-dropdown ncss-nav-dropdown--nested">
+                    <summary>Components</summary>
+                    <ul class="ncss-nav-submenu">
+                      <li><a href="#nested">Card</a></li>
+                      <li><a href="#nested">Modal</a></li>
+                      <li><a href="#nested">Off-Canvas</a></li>
+                    </ul>
+                  </details>
+                </li>
+                <li><a href="#nested">Pricing</a></li>
+              </ul>
+            </details>
+          </li>
+          <li class="ncss-nav-item"><a href="#nested">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </section>
+
+  <!-- Mega-Menü -->
+  <section id="mega" class="ncss-stack">
+    <h2 class="demo-section-title">Mega menu</h2>
+    <p class="ncss-text-muted ncss-text-sm">Same <code>.ncss-nav-submenu</code> class, plus <code>--mega</code>: a multi-column grid instead of a simple list.</p>
+    <nav class="ncss-nav">
+      <div class="ncss-nav-panel">
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="#mega">Home</a></li>
+          <li class="ncss-nav-item">
+            <details class="ncss-nav-dropdown">
+              <summary>Components</summary>
+              <div class="ncss-nav-submenu ncss-nav-submenu--mega">
+                <div class="ncss-nav-mega-col">
+                  <span class="ncss-nav-mega-heading">Layout</span>
+                  <ul>
+                    <li><a href="#mega">Grid</a></li>
+                    <li><a href="#mega">Stack</a></li>
+                    <li><a href="#mega">Cluster</a></li>
+                  </ul>
+                </div>
+                <div class="ncss-nav-mega-col">
+                  <span class="ncss-nav-mega-heading">Forms</span>
+                  <ul>
+                    <li><a href="~/demo/forms.html#switch">Switch</a></li>
+                    <li><a href="~/demo/forms.html#range">Range</a></li>
+                    <li><a href="~/demo/forms.html">Select</a></li>
+                  </ul>
+                </div>
+                <div class="ncss-nav-mega-col">
+                  <span class="ncss-nav-mega-heading">Media</span>
+                  <ul>
+                    <li><a href="~/demo/media.html">Images</a></li>
+                    <li><a href="~/demo/media.html">Video</a></li>
+                    <li><a href="all-components.html#cards">Sparkline</a></li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </li>
+          <li class="ncss-nav-item"><a href="#mega">Pricing</a></li>
+          <li class="ncss-nav-item"><a href="#mega">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+    <p class="ncss-text-sm ncss-text-muted">Make the window narrower - below 64rem the mega column view automatically turns into a stacked list (the same nav-collapse convention as the regular dropdown).</p>
+  </section>
+
+  <!-- Tree-Navigation -->
+  <section id="tree" class="ncss-stack">
+    <h2 class="demo-section-title">Tree navigation (sidebar variant)</h2>
+    <p class="ncss-text-muted ncss-text-sm">No collapsing needed, nestable to any depth - typical for docs sidebars.</p>
+    <nav class="ncss-nav ncss-nav--tree demo-tree-nav">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#tree">Introduction</a></li>
+        <li class="ncss-nav-item">
+          <details class="ncss-nav-dropdown" open>
+            <summary>Components</summary>
+            <ul class="ncss-nav-submenu">
+              <li><a href="#tree">Card</a></li>
+              <li><a href="#tree">Modal</a></li>
+              <li>
+                <details class="ncss-nav-dropdown" open>
+                  <summary>Forms</summary>
+                  <ul class="ncss-nav-submenu">
+                    <li><a href="#tree">Switch</a></li>
+                    <li><a href="#tree">Range</a></li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </details>
+        </li>
+        <li class="ncss-nav-item"><a href="#tree">Changelog</a></li>
+      </ul>
+    </nav>
+  </section>
+
+  <!-- Off-Canvas -->
+  <section id="offcanvas" class="ncss-stack">
+    <h2 class="demo-section-title">Off-canvas (mobile collapse)</h2>
+    <p class="ncss-text-muted ncss-text-sm">The menu button in the top bar (make the window narrower than 64rem, or use a phone) opens the same panel as an off-canvas sidebar - one nav structure, two presentations, see components/nav.css.</p>
+  </section>
+
+  <!-- Priority-Navigation -->
+  <section id="priority" class="ncss-stack">
+    <h2 class="demo-section-title">Many items: priority navigation (opt-in, JS)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>&lt;ncss-nav-priority&gt;</code> (custom element, <code>components/nav-priority.css</code> +
+      <code>js/nav-priority.js</code>) automatically moves items that no longer fit on one line
+      into a "More" dropdown via <code>ResizeObserver</code> - works for any number of items, no fixed
+      breakpoint in the code. Without JS it is a plain passthrough (regular <code>flex-wrap</code>).
+    </p>
+    <pre><code class="language-html">&lt;ncss-nav-priority&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/a"&gt;Item A&lt;/a&gt;&lt;/li&gt;
+    ... (as many more as you like)
+  &lt;/ul&gt;
+&lt;/ncss-nav-priority&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Live - drag the slider to make the frame narrower/wider (an <code>&lt;iframe&gt;</code> has its OWN viewport, so a slider instead of resizing the whole browser window). Works at ANY width without switching to a ☰ button - "More" keeps growing the narrower the frame gets:</p>
+    <div class="ncss-stack ncss-stack--tight">
+      <label for="navPriorityWidthSlider" class="ncss-text-sm ncss-text-muted">Frame width: <output id="navPriorityWidthOutput">1100px</output></label>
+      <input type="range" id="navPriorityWidthSlider" min="320" max="1100" value="1100" step="10" style="width: min(100%, 40rem);">
+    </div>
+    <div style="overflow: hidden; width: min(100%, 68rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe id="navPriorityFrame" src="~/demo/assets/nav-priority-demo.html" style="display: block; width: 1100px; max-width: 100%; height: 4rem; border: 0;" title="Priority navigation, live demo"></iframe>
+    </div>
+    <script src="~/demo/assets/js/nav-priority-demo.js" defer></script>
+  </section>
+
+  <!-- Horizontal scrollbare Nav -->
+  <section id="scroll" class="ncss-stack">
+    <h2 class="demo-section-title">Many items: horizontally scrollable (pure CSS)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>.ncss-nav--scroll</code> for many SHORT items (tags, category pills) - shows all at once, none are hidden, the row scrolls instead. Edge fade gradient, <code>scroll-snap</code>, no JS.</p>
+    <pre><code class="language-html">&lt;nav class="ncss-nav ncss-nav--scroll"&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="#tag1"&gt;Tag one&lt;/a&gt;&lt;/li&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+    <nav class="ncss-nav ncss-nav--scroll" style="max-width: 24rem;">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#scroll">Conservation</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Forestry</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Wildlife management</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Hunting law</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Training</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Events</a></li>
+        <li class="ncss-nav-item"><a href="#scroll">Press</a></li>
+      </ul>
+    </nav>
+  </section>
+
+  <!-- Slide-Drilldown -->
+  <section id="drilldown" class="ncss-stack">
+    <h2 class="demo-section-title">Slide drilldown for mobile submenus (opt-in, JS)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>&lt;ncss-nav-drilldown&gt;</code> (<code>components/nav-drilldown.css</code> +
+      <code>js/nav-drilldown.js</code>) - instead of expanding inline, tapping a parent item slides
+      the WHOLE panel over to its child items (like iOS Settings), with a "Back" item
+      at the top. Only relevant on mobile, IDENTICAL markup to the regular nested
+      dropdown - without JS it simply expands inline. A parent item also stays reachable as its own
+      page if <code>&lt;summary&gt;</code> contains a real <code>&lt;a&gt;</code>
+      (see "Products" below) - clicking the link text navigates, clicking the chevron drills in.
+    </p>
+    <pre><code class="language-html">&lt;ncss-nav-drilldown&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;
+      &lt;details class="ncss-nav-dropdown"&gt;
+        &lt;summary&gt;&lt;a href="/produkte"&gt;Products&lt;/a&gt;&lt;/summary&gt;
+        &lt;ul class="ncss-nav-submenu"&gt;
+          &lt;li&gt;&lt;a href="/produkte/a"&gt;Product A&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/ncss-nav-drilldown&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Live - always in mobile off-canvas mode (its own narrow <code>&lt;iframe&gt;</code> viewport): tap ☰, then tap "Products".</p>
+    <div style="overflow: hidden; width: min(100%, 24rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe src="~/demo/assets/nav-drilldown-demo.html" style="display: block; width: 100%; height: 46rem; border: 0;" title="Slide drilldown, live demo"></iframe>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="breadcrumb" class="ncss-stack">
+    <h2 class="demo-section-title">Breadcrumb</h2>
+    <p class="ncss-text-muted ncss-text-sm">Comparison: <a href="~/demo/webawesome.html#breadcrumb"><code>&lt;wa-breadcrumb&gt;</code></a> - here the native variant (<code>&lt;nav&gt;&lt;ol&gt;</code>), no Web Awesome needed.</p>
+    <nav class="ncss-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="all-components.html">NativeCSS</a></li>
+        <li><a href="~/demo/navigation.html">Navigation</a></li>
+        <li aria-current="page">Breadcrumb</li>
+      </ol>
+    </nav>
+  </section>
+
+  <!-- Auto-Hide on Scroll -->
+  <section id="hide-on-scroll" class="ncss-stack">
+    <h2 class="demo-section-title">Hide/show bar on scroll</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Purely native CSS scroll-state container query (<code>@container scroll-state(scrolled: block-end)</code>),
+      no JS, no scroll event listener. Scroll down on THIS page (real page scroll) -
+      the bar below hides; scroll back up and it returns. Not yet
+      supported in every browser (<code>@supports</code> gate) - without support
+      it simply stays visible permanently, no broken behavior.
+    </p>
+    <div class="ncss-sticky ncss-hide-on-scroll demo-hide-scroll-bar" style="--ncss-sticky-z: 5;">
+      This bar reacts to the scroll direction
+    </div>
+  </section>

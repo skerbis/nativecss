@@ -1,0 +1,382 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+
+  /* Nur fürs Demo: Kacheln mit Inhalt unten, Kicker oben */
+  .demo-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-2xs);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-tile > p:last-child {
+    margin-block-start: auto;
+  }
+  .demo-tile h3 {
+    margin: 0;
+  }
+  .demo-kicker {
+    font-size: var(--ncss-font-size-sm);
+    font-weight: var(--ncss-font-weight-semibold);
+    color: var(--ncss-color-brand-on-soft);
+  }
+  .demo-tile-big h3 {
+    font-size: var(--ncss-font-size-xl);
+    line-height: var(--ncss-line-height-tight);
+  }
+
+  /* Zieh-Rahmen: Container schmaler ziehen, um die Container Queries live zu sehen */
+  .demo-resizable {
+    resize: horizontal;
+    overflow: auto;
+    min-width: 16rem;
+    max-width: 100%;
+    padding: var(--ncss-space-xs);
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+  }
+
+  .demo-compare {
+    max-width: 52rem;
+  }
+
+  .demo-aurora {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-xs);
+    min-height: 22rem;
+    padding: var(--ncss-space-xl) var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    text-align: center;
+  }
+  .demo-aurora h3 {
+    margin: 0;
+    font-size: var(--ncss-font-size-2xl);
+  }
+  .demo-aurora p {
+    max-width: 40ch;
+    margin-inline: auto;
+  }
+
+  .demo-kbd-hint {
+    margin-inline-start: var(--ncss-space-2xs);
+    font-size: var(--ncss-font-size-sm);
+    color: inherit;
+    opacity: 0.75;
+  }
+</style>
+<script src="~/dist/js/spotlight.js" defer></script>
+<script src="~/dist/js/compare.js" defer></script>
+<script src="~/dist/js/command-palette.js" defer></script>
+<script src="~/dist/js/hovercard.js" defer></script>
+<script src="~/dist/js/notification.js" defer></script>
+<script src="~/demo/assets/js/modern-ui-demo.js" defer></script>
+-->
+  <div class="ncss-stack ncss-stack--tight">
+    <p class="ncss-text-lg ncss-text-muted">Bento grid, spotlight, before/after comparison, expand panels, command palette, hovercards, notifications and aurora backgrounds - each component is its own CSS file (plus at most one script), includable individually.</p>
+    <p>
+      <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoCommand">Open command palette <kbd class="demo-kbd-hint" data-demo-shortcut>Ctrl J</kbd></button>
+    </p>
+  </div>
+
+  <!-- Bento -->
+  <section id="live-bento" class="ncss-stack">
+    <h2 class="demo-section-title">Bento grid</h2>
+    <p class="ncss-text-muted">Extends the existing <code>.ncss-bento</code> (<code>helpers/layout.css</code>): its own container - if it's too narrow for a span, the span is dropped instead of overflowing sideways. New: presets <code>.ncss-bento--hero</code> / <code>--mosaic</code> (spans by position, no classes on the tiles) and rows that grow with their content. Combined here with <code>.ncss-spotlight</code> as a group. Drag the frame at the bottom right to see the reflow.</p>
+
+    <div class="demo-resizable">
+      <div class="ncss-bento ncss-bento--hero" data-ncss-spotlight>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile demo-tile-big">
+          <span class="demo-kicker">No build step</span>
+          <h3>Native CSS, Cascade Layers, Container Queries</h3>
+          <p class="ncss-text-muted">The large tile takes up 2×2 cells - in a narrow grid it becomes a regular tile.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Fast</span>
+          <h3>No runtime</h3>
+          <p class="ncss-text-sm ncss-text-muted">Only what the page includes.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Fluid</span>
+          <h3>Flowing</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>auto-fit</code> + <code>minmax()</code>.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Accessible</span>
+          <h3>Visible focus</h3>
+          <p class="ncss-text-sm ncss-text-muted">The 4th tile is tall (2 rows).</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Customizable</span>
+          <h3>Tokens, not values</h3>
+          <p class="ncss-text-sm ncss-text-muted">The 5th tile is wide.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Light &amp; dark</span>
+          <h3>light-dark()</h3>
+          <p class="ncss-text-sm ncss-text-muted">One value for both modes.</p>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Layer</span>
+          <h3>No !important</h3>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Native</span>
+          <h3>dialog &amp; popover</h3>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Cherry-Picking</span>
+          <h3>One component per file</h3>
+        </article>
+        <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+          <span class="demo-kicker">Motion</span>
+          <h3>Reduced on request</h3>
+        </article>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-bento ncss-bento--hero"&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;Large (1st tile)&lt;/article&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;...&lt;/article&gt;
+&lt;/div&gt;
+
+&lt;!-- or free spans per tile --&gt;
+&lt;div class="ncss-bento"&gt;
+  &lt;article class="ncss-card ncss-col-span-2 ncss-row-span-2"&gt;...&lt;/article&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <!-- Spotlight -->
+  <section id="live-spotlight" class="ncss-stack">
+    <h2 class="demo-section-title">Spotlight</h2>
+    <p class="ncss-text-muted">A cone of light follows the mouse pointer, and the border segment near the pointer lights up. <code>data-ncss-spotlight</code> on the group: one listener for all, neighbors catch the edge of the light. Without JS and with keyboard focus, the light sits in the center. <code>components/spotlight.css</code> + <code>js/spotlight.js</code>.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 15rem;" data-ncss-spotlight>
+      <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-spotlight demo-tile">
+        <h3><a class="ncss-card-link" href="#live-spotlight">Default</a></h3>
+        <p class="ncss-text-sm ncss-text-muted">Whole card clickable (<code>.ncss-card--linked</code>) - tabbing to the link shows the light too.</p>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight ncss-spotlight--strong demo-tile">
+        <h3>Strong</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-spotlight--strong</code></p>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-spotlight demo-tile" style="--ncss-spotlight-color: color-mix(in oklch, var(--ncss-color-success) 28%, transparent); --ncss-spotlight-border: var(--ncss-color-success);">
+        <h3>Custom color</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>--ncss-spotlight-color</code> / <code>-border</code></p>
+      </article>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-grid" data-ncss-spotlight&gt;
+  &lt;article class="ncss-card ncss-spotlight"&gt;...&lt;/article&gt;
+  &lt;article class="ncss-card ncss-spotlight ncss-spotlight--strong"&gt;...&lt;/article&gt;
+&lt;/div&gt;
+&lt;script src="ncss/js/spotlight.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Compare -->
+  <section id="compare" class="ncss-stack">
+    <h2 class="demo-section-title">Before/after comparison</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-compare&gt;</code>: a real <code>&lt;input type="range"&gt;</code> over two images - drag with mouse or finger (vertical swipes keep scrolling the page), arrow keys, Home/End, screen reader announcement "50 % before". Without JS: a static 50/50 comparison.</p>
+    <ncss-compare class="demo-compare" style="--ncss-compare-ratio: 16 / 9;">
+      <img class="ncss-compare-before" src="~/demo/assets/modern-ui/compare-before.svg" alt="Mountain landscape in winter, gray and snow-covered" width="1600" height="900">
+      <img class="ncss-compare-after" src="~/demo/assets/modern-ui/compare-after.svg" alt="The same mountain landscape in summer, green under a blue sky" width="1600" height="900">
+      <span class="ncss-compare-label" aria-hidden="true">Winter</span>
+      <span class="ncss-compare-label ncss-compare-label--end" aria-hidden="true">Summer</span>
+      <input class="ncss-compare-range" type="range" min="0" max="100" value="50" aria-label="Move divider: winter on the left, summer on the right">
+    </ncss-compare>
+    <pre><code class="language-html">&lt;ncss-compare style="--ncss-compare-ratio: 16 / 9"&gt;
+  &lt;img class="ncss-compare-before" src="vorher.jpg" alt="..."&gt;
+  &lt;img class="ncss-compare-after" src="nachher.jpg" alt="..."&gt;
+  &lt;span class="ncss-compare-label" aria-hidden="true"&gt;Before&lt;/span&gt;
+  &lt;span class="ncss-compare-label ncss-compare-label--end" aria-hidden="true"&gt;After&lt;/span&gt;
+  &lt;input class="ncss-compare-range" type="range" min="0" max="100" value="50"
+         aria-label="Move divider: before on the left, after on the right"&gt;
+&lt;/ncss-compare&gt;
+&lt;script src="ncss/js/compare.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Expand panels -->
+  <section id="live-panels" class="ncss-stack">
+    <h2 class="demo-section-title">Expand panels</h2>
+    <p class="ncss-text-muted">Pure CSS: the hovered or Tab-focused panel grows, otherwise the active one (<code>.ncss-expand-panel--active</code> / <code>aria-current</code>). Below 36rem container width, the panels stack and grow in height - drag the frame narrower.</p>
+    <div class="demo-resizable">
+      <div class="ncss-expand-panels">
+        <a class="ncss-expand-panel ncss-expand-panel--active" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-1.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Afterglow</span>
+          <span class="ncss-expand-panel-body">Short hike to the viewpoint, ideal at sunset.</span>
+        </a>
+        <a class="ncss-expand-panel" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-2.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Night trail</span>
+          <span class="ncss-expand-panel-body">Across the ridge by headlamp - only under clear skies.</span>
+        </a>
+        <a class="ncss-expand-panel" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-3.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Valley loop</span>
+          <span class="ncss-expand-panel-body">Flat, shady, family-friendly. Three hours.</span>
+        </a>
+        <a class="ncss-expand-panel" href="#live-panels">
+          <span class="ncss-expand-panel-media"><img src="~/demo/assets/modern-ui/panel-4.svg" alt="" width="1600" height="900"></span>
+          <span class="ncss-expand-panel-title">Dusk</span>
+          <span class="ncss-expand-panel-body">Loop trail around the lake with two places to stop for food.</span>
+        </a>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-expand-panels"&gt;
+  &lt;a class="ncss-expand-panel ncss-expand-panel--active" href="/abendrot"&gt;
+    &lt;span class="ncss-expand-panel-media"&gt;&lt;img src="..." alt=""&gt;&lt;/span&gt;
+    &lt;span class="ncss-expand-panel-title"&gt;Afterglow&lt;/span&gt;
+    &lt;span class="ncss-expand-panel-body"&gt;Short hike ...&lt;/span&gt;
+  &lt;/a&gt;
+  ...
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <!-- Command palette -->
+  <section id="command" class="ncss-stack">
+    <h2 class="demo-section-title">Command palette</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-command-palette shortcut="k"&gt;</code> around a <code>&lt;dialog&gt;</code>: opens without JS via <code>command="show-modal"</code>, and with JS also via a keyboard shortcut (here <kbd>⌘J</kbd> / <kbd>Ctrl</kbd>+<kbd>J</kbd>, because <kbd>⌘K</kbd> opens search on this website). Combobox + listbox per APG: focus stays in the field, <kbd>↑</kbd>/<kbd>↓</kbd> selects, <kbd>Enter</kbd> runs, <kbd>Esc</kbd> closes. The filter ignores case and accents, <code>data-keywords</code> supply extra terms.</p>
+    <p><button type="button" class="ncss-btn ncss-btn--primary" command="show-modal" commandfor="demoCommand">Open command palette</button></p>
+
+    <ncss-command-palette shortcut="j">
+      <dialog id="demoCommand" class="ncss-command" aria-label="Command palette" closedby="any">
+        <div class="ncss-command-search">
+          <input class="ncss-command-input" type="text" aria-label="Search for a command or section" placeholder="Search for a command or section …">
+        </div>
+        <div class="ncss-command-list" aria-label="Commands">
+          <div class="ncss-command-group">
+            <p class="ncss-command-group-label">Sections</p>
+            <a class="ncss-command-item" href="#live-bento" data-keywords="grid layout tiles raster kacheln"><span class="ncss-command-item-icon" aria-hidden="true">▦</span>Go to bento grid</a>
+            <a class="ncss-command-item" href="#compare" data-keywords="before after slider image compare"><span class="ncss-command-item-icon" aria-hidden="true">⇆</span>Go to comparison</a>
+            <a class="ncss-command-item" href="#notifications" data-keywords="toast message alert sonner"><span class="ncss-command-item-icon" aria-hidden="true">✉</span>Go to notifications</a>
+            <a class="ncss-command-item" href="#live-aurora" data-keywords="background gradient mesh"><span class="ncss-command-item-icon" aria-hidden="true">◐</span>Go to aurora &amp; mesh</a>
+          </div>
+          <div class="ncss-command-group">
+            <p class="ncss-command-group-label">Appearance</p>
+            <button class="ncss-command-item" type="button" data-demo-theme="dark" data-keywords="night dark mode"><span class="ncss-command-item-icon" aria-hidden="true">☾</span>Dark theme<span class="ncss-command-item-hint">Theme</span></button>
+            <button class="ncss-command-item" type="button" data-demo-theme="light" data-keywords="day light mode"><span class="ncss-command-item-icon" aria-hidden="true">☀</span>Light theme<span class="ncss-command-item-hint">Theme</span></button>
+            <button class="ncss-command-item" type="button" data-demo-theme="" data-keywords="system automatic auto"><span class="ncss-command-item-icon" aria-hidden="true">◑</span>Match system<span class="ncss-command-item-hint">Theme</span></button>
+          </div>
+          <div class="ncss-command-group">
+            <p class="ncss-command-group-label">Actions</p>
+            <button class="ncss-command-item" type="button" data-ncss-notify="Triggered from the command palette" data-status="success" data-keywords="toast message notify notification"><span class="ncss-command-item-icon" aria-hidden="true">✓</span>Show test notification<span class="ncss-command-item-hint">Action</span></button>
+          </div>
+        </div>
+        <p class="ncss-command-empty" hidden>No results</p>
+        <div class="ncss-command-footer" aria-hidden="true"><span><kbd>↑</kbd> <kbd>↓</kbd> select</span><span><kbd>Enter</kbd> run</span><span><kbd>Esc</kbd> close</span></div>
+      </dialog>
+    </ncss-command-palette>
+
+    <pre><code class="language-html">&lt;button type="button" command="show-modal" commandfor="live-cmd"&gt;Commands&lt;/button&gt;
+&lt;ncss-command-palette shortcut="k"&gt;
+  &lt;dialog id="live-cmd" class="ncss-command" aria-label="Command palette" closedby="any"&gt;
+    &lt;div class="ncss-command-search"&gt;
+      &lt;input class="ncss-command-input" type="text" aria-label="Search commands"&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-command-list" aria-label="Commands"&gt;
+      &lt;div class="ncss-command-group"&gt;
+        &lt;p class="ncss-command-group-label"&gt;Pages&lt;/p&gt;
+        &lt;a class="ncss-command-item" href="/" data-keywords="start"&gt;Home&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p class="ncss-command-empty" hidden&gt;No results&lt;/p&gt;
+  &lt;/dialog&gt;
+&lt;/ncss-command-palette&gt;
+&lt;script src="ncss/js/command-palette.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Hovercards -->
+  <section id="live-hovercards" class="ncss-stack">
+    <h2 class="demo-section-title">Hovercards</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-hovercard&gt;</code>: <code>popover="hint"</code> + <code>interestfor</code> where the browser supports it (then entirely without JS), otherwise the script handles delay, hover/focus and <kbd>Esc</kbd>. The card stays open as long as the pointer or focus is inside it.</p>
+    <p>
+      The first programmer was
+      <ncss-hovercard>
+        <a href="#live-hovercards" interestfor="demoHcAda">Ada Lovelace</a><span id="demoHcAda" class="ncss-hovercard" popover="hint">
+          <span class="ncss-hovercard-header">
+            <span class="ncss-hovercard-avatar" aria-hidden="true">AL</span>
+            <span><strong class="ncss-hovercard-title">Ada Lovelace</strong><span class="ncss-hovercard-meta">Mathematician, 1815-1852</span></span>
+          </span>
+          <span class="ncss-hovercard-text">The first to describe an algorithm for Babbage's Analytical Engine. <a href="#live-hovercards">Open profile</a></span>
+        </span></ncss-hovercard>,
+      her mentor was
+      <ncss-hovercard>
+        <a href="#live-hovercards" interestfor="demoHcBabbage">Charles Babbage</a><span id="demoHcBabbage" class="ncss-hovercard" popover="hint">
+          <span class="ncss-hovercard-header">
+            <span class="ncss-hovercard-avatar" aria-hidden="true">CB</span>
+            <span><strong class="ncss-hovercard-title">Charles Babbage</strong><span class="ncss-hovercard-meta">Mathematician, 1791-1871</span></span>
+          </span>
+          <span class="ncss-hovercard-text">Designed the Difference Engine and the Analytical Engine.</span>
+        </span></ncss-hovercard>.
+    </p>
+    <pre><code class="language-html">&lt;ncss-hovercard&gt;
+  &lt;a href="/team/ada" interestfor="hc-ada"&gt;Ada Lovelace&lt;/a&gt;&lt;span id="live-hc-ada" class="ncss-hovercard" popover="hint"&gt;
+    &lt;span class="ncss-hovercard-header"&gt;
+      &lt;span class="ncss-hovercard-avatar" aria-hidden="true"&gt;AL&lt;/span&gt;
+      &lt;span&gt;&lt;strong class="ncss-hovercard-title"&gt;Ada Lovelace&lt;/strong&gt;
+            &lt;span class="ncss-hovercard-meta"&gt;Mathematician&lt;/span&gt;&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="ncss-hovercard-text"&gt;...&lt;/span&gt;
+  &lt;/span&gt;&lt;/ncss-hovercard&gt;
+&lt;script src="ncss/js/hovercard.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <!-- Notifications -->
+  <section id="notifications" class="ncss-stack">
+    <h2 class="demo-section-title">Notifications</h2>
+    <p class="ncss-text-muted"><code>ncss.notify()</code> or <code>data-ncss-notify</code> on the button. Timers pause while the pointer or focus is in the region. Errors (<code>danger</code>) stay until they are closed. The region lives in the top layer - notifications appear even above an open modal.</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="New version available." data-status="brand" data-position="top-end">Info top</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Your changes are live." data-title="Saved" data-status="success" data-position="top-end">Success top</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Only 2 GB of storage left." data-status="warning" data-position="top-center">Warning center</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="The file is larger than 20 MB." data-title="Upload failed" data-status="danger" data-position="top-start">Error left</button>
+    </div>
+    <h3>Stacked (Sonner style)</h3>
+    <p class="ncss-text-muted">Click several times: older notifications stack behind the newest one and fan out on hover or keyboard focus.</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary" data-demo-stack>Stacked notification (bottom right)</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-demo-close-all>Close all</button>
+    </div>
+    <pre><code class="language-javascript">ncss.notify("Saved", { status: "success" });
+ncss.notify({ title: "Upload failed", message: "File too large",
+              status: "danger", position: "top-start" });
+ncss.notify("Copied", { position: "bottom-end", stack: true, timeout: 8000 });</code></pre>
+    <pre><code class="language-html">&lt;button type="button" data-ncss-notify="Saved" data-status="success"&gt;Save&lt;/button&gt;
+&lt;script src="ncss/js/notification.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- server-rendered notification (simply stays put without JS) --&gt;
+&lt;ncss-toast-region position="top-end"&gt;
+  &lt;div class="ncss-notification ncss-notification--success" data-timeout="6000"&gt;
+    &lt;p class="ncss-notification-title"&gt;Saved&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/ncss-toast-region&gt;</code></pre>
+  </section>
+
+  <!-- Aurora -->
+  <section id="live-aurora" class="ncss-stack">
+    <h2 class="demo-section-title">Aurora &amp; Mesh</h2>
+    <p class="ncss-text-muted">Soft, drifting color fields from the brand colors - only <code>transform</code>, no blur filter. Static with reduced motion, off in forced colors.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 18rem;">
+      <div class="ncss-aurora demo-aurora">
+        <h3>Aurora</h3>
+        <p><code>.ncss-aurora</code> - two layers drifting in opposite directions.</p>
+      </div>
+      <div class="ncss-aurora ncss-aurora--vivid demo-aurora">
+        <h3>Aurora vivid</h3>
+        <p><code>.ncss-aurora--vivid</code> - for short texts and large headings.</p>
+      </div>
+      <div class="ncss-mesh demo-aurora">
+        <h3>Mesh</h3>
+        <p><code>.ncss-mesh</code> - four fields, slowly rotating.</p>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;section class="ncss-aurora"&gt;...&lt;/section&gt;
+&lt;section class="ncss-aurora ncss-aurora--vivid"&gt;...&lt;/section&gt;
+&lt;section class="ncss-mesh"&gt;...&lt;/section&gt;</code></pre>
+  </section>
+
+  <p class="ncss-text-sm ncss-text-muted">Loading states: <code>.ncss-skeleton</code> from <code>helpers/animations.css</code> already covers the shimmer - see <a href="animations.html">Animations</a>.</p>

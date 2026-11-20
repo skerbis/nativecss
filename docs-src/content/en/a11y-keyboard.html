@@ -1,0 +1,108 @@
+<!--DESC: Visible focus, logical order, skip link and every ncss component's key bindings in one table.-->
+<section class="ncss-stack">
+  <h1>Keyboard</h1>
+  <p class="ncss-text-lg ncss-text-muted">Everything you can do with a mouse must also work with a keyboard (WCAG 2.1.1) - and it must always be clear where focus currently is (WCAG 2.4.7).</p>
+</section>
+
+<section class="ncss-stack" id="grundsaetze">
+  <h2 class="demo-section-title">Principles</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li><strong>Focus is always visible</strong> - <code>reset.css</code> only removes the focus ring for mouse/touch (<code>:focus</code>) and gives <code>:focus-visible</code> a consistent ring in <code>--ncss-color-focus-ring</code> with a 2&nbsp;px offset. Components never gate <code>:focus-visible</code> behind <code>(hover: hover)</code>. In your own components: never remove the ring without a replacement.</li>
+    <li><strong>Logical order</strong> - tab order follows the DOM. Rearranging layout with <code>order</code>, <code>flex-direction: row-reverse</code> or grid placement only changes what you see, not the order - the source order itself has to make sense. No positive <code>tabindex</code>.</li>
+    <li><strong>No keyboard traps</strong> (WCAG 2.1.2) - the only intended exception is modal dialogs (<code>.ncss-modal</code>, <code>.ncss-offcanvas</code>, the mobile nav panel, lightbox, command palette): opened via <code>showModal()</code>, the rest of the page becomes inert, <kbd class="ncss-kbd">Esc</kbd> closes, and focus returns to the trigger.</li>
+    <li><strong>Skip link</strong> - <code>.ncss-skip-link</code> as the first element after <code>&lt;body&gt;</code>, targeting <code>&lt;main&gt;</code> with <code>id="main"</code> (see <a href="accessibility.html#klassen">Principles</a>). This website uses one on every page - press <kbd class="ncss-kbd">Tab</kbd> once after loading.</li>
+    <li><strong>Native controls</strong> - <code>&lt;button&gt;</code> instead of a clickable <code>&lt;div&gt;</code>, <code>&lt;a href&gt;</code> for navigation, <code>&lt;details&gt;</code> for disclosures. Then <kbd class="ncss-kbd">Enter</kbd>/<kbd class="ncss-kbd">Space</kbd> just work.</li>
+    <li><strong>Make scroll containers reachable</strong> - a wide table in <code>.ncss-table-scroll</code> gets <code>role="region"</code>, <code>aria-label</code> and <code>tabindex="0"</code> in the markup so it can be focused and scrolled with the keyboard (WCAG 1.4.10). The same is recommended for a <code>.ncss-slideshow-track</code>.</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-table-scroll" role="region" aria-label="Price comparison" tabindex="0"&gt;
+  &lt;table&gt;...&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="ausprobieren">
+  <h2 class="demo-section-title">Try It Yourself</h2>
+  <p>Click next to the example, then move forward and back with <kbd class="ncss-kbd">Tab</kbd> and <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Shift</kbd>+<kbd class="ncss-kbd">Tab</kbd></kbd>. <kbd class="ncss-kbd">Enter</kbd> or <kbd class="ncss-kbd">Space</kbd> expands the disclosure and opens the dialog. Inside the dialog, focus stays contained; <kbd class="ncss-kbd">Esc</kbd> or the close button ends it - afterwards focus is back on the button that opened it.</p>
+  <div class="docs-live" role="group" aria-label="Live example">
+    <details class="ncss-disclosure">
+      <summary>What happens when it expands?</summary>
+      <p>The native <code>&lt;details&gt;</code> responds to Enter and Space, and screen readers announce "expanded"/"collapsed" - with no script and no ARIA.</p>
+    </details>
+    <p class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary" command="show-modal" commandfor="demo-key-dialog">Open dialog</button>
+      <a href="#tabelle">Jump to the key table</a>
+    </p>
+    <dialog id="demo-key-dialog" class="ncss-modal" aria-labelledby="demo-key-dialog-title">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demo-key-dialog" aria-label="Close">&times;</button>
+      <div class="ncss-modal-header"><h3 id="demo-key-dialog-title">Modal dialog</h3></div>
+      <div class="ncss-modal-body">
+        <p>Tab and Shift+Tab stay inside the dialog; the rest of the page is inert. Esc closes it.</p>
+      </div>
+      <div class="ncss-modal-footer">
+        <button type="button" class="ncss-btn ncss-btn--secondary" command="close" commandfor="demo-key-dialog">Close</button>
+      </div>
+    </dialog>
+  </div>
+  <pre><code class="language-html">&lt;details class="ncss-disclosure"&gt;
+  &lt;summary&gt;What happens when it expands?&lt;/summary&gt;
+  &lt;p&gt;...&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;button type="button" class="ncss-btn ncss-btn--primary"
+        command="show-modal" commandfor="dialog1"&gt;Open dialog&lt;/button&gt;
+
+&lt;dialog id="dialog1" class="ncss-modal" aria-labelledby="dialog1-title"&gt;
+  &lt;button type="button" class="ncss-dialog-close" command="close"
+          commandfor="dialog1" aria-label="Close"&gt;&amp;times;&lt;/button&gt;
+  &lt;div class="ncss-modal-header"&gt;&lt;h3 id="dialog1-title"&gt;Modal dialog&lt;/h3&gt;&lt;/div&gt;
+  &lt;div class="ncss-modal-body"&gt;...&lt;/div&gt;
+&lt;/dialog&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><code>command</code>/<code>commandfor</code> works without any script in current browsers - for older ones, <code>js/command-fallback.js</code> fills in exactly <code>show-modal</code> and <code>close</code>.</p>
+</section>
+
+<section class="ncss-stack" id="tabelle">
+  <h2 class="demo-section-title">Key Bindings for All Components</h2>
+  <p class="ncss-text-muted ncss-text-sm">Compiled from the component code (<code>dist/js/</code>) and the behaviour of the native elements involved. "Native" means the browser provides the behaviour - ncss neither adds nor removes anything.</p>
+  <div class="ncss-table-scroll" role="region" aria-label="Key bindings" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Component</th><th scope="col">Keys</th><th scope="col">Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td>All controls</td><td><kbd class="ncss-kbd">Tab</kbd> / <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Shift</kbd>+<kbd class="ncss-kbd">Tab</kbd></kbd></td><td>Next/previous element, visible <code>:focus-visible</code> ring</td></tr>
+        <tr><td>Skip link <code>.ncss-skip-link</code></td><td><kbd class="ncss-kbd">Tab</kbd>, <kbd class="ncss-kbd">Enter</kbd></td><td>Appears on the first Tab, jumps to the main content</td></tr>
+        <tr><td>Link / button</td><td><kbd class="ncss-kbd">Enter</kbd>; buttons also <kbd class="ncss-kbd">Space</kbd></td><td>Native</td></tr>
+        <tr><td>Disclosure, accordion, <code>.ncss-accordion-split</code> (<code>&lt;details&gt;</code>)</td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd> on <code>&lt;summary&gt;</code></td><td>Open/close; with <code>name="..."</code> the previously open item in the group closes (native)</td></tr>
+        <tr><td>Nav dropdown <code>.ncss-nav-dropdown</code>, "More" menu of <code>&lt;ncss-nav-priority&gt;</code></td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd>, then <kbd class="ncss-kbd">Tab</kbd></td><td>Opens/closes the submenu (native <code>&lt;details&gt;</code>); choosing a submenu link closes the dropdown (<code>js/nav.js</code>)</td></tr>
+        <tr><td>Modal, off-canvas, mobile nav panel (<code>&lt;dialog&gt;</code>)</td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd> on the trigger, <kbd class="ncss-kbd">Esc</kbd></td><td>Opens via <code>command="show-modal"</code>; rest of the page inert, Esc closes, focus returns to the trigger (native). A nav link inside the panel closes it (<code>js/nav.js</code>)</td></tr>
+        <tr><td><code>&lt;ncss-nav-drilldown&gt;</code></td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd> on a parent item or the back button</td><td>Slides the submenu in, moves focus to the back button and makes the root list inert; going back returns focus to the parent item</td></tr>
+        <tr><td>Command palette <code>&lt;ncss-command-palette&gt;</code></td><td><kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">⌘</kbd>/<kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">K</kbd></kbd> (with <code>shortcut="k"</code>), <kbd class="ncss-kbd">/</kbd> (with <code>slash</code>), <kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">Home</kbd></kbd>/<kbd class="ncss-kbd">End</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Shortcut opens/closes (<kbd class="ncss-kbd">/</kbd> only when no input has focus); arrows select (wrapping around), Ctrl+Home/End jump to the first/last entry, Enter runs it, Esc closes. Focus stays in the search field (<code>aria-activedescendant</code>)</td></tr>
+        <tr><td>Live search <code>[data-ncss-livesearch]</code></td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Select a suggestion; Enter opens it (with nothing selected: normal submit to the results page); Esc closes the list</td></tr>
+        <tr><td>Combobox (<code>js/combobox.js</code>) with <code>&lt;input list&gt;</code></td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>List opens on focus/input; arrows select, Enter applies the value, Esc closes</td></tr>
+        <tr><td>Combobox with <code>&lt;select&gt;</code> (where <code>base-select</code> doesn't apply)</td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Arrows open and select, Enter/Space opens or applies, Esc closes. With <code>appearance: base-select</code>: the browser's native picker behaviour</td></tr>
+        <tr><td>Segmented control <code>.ncss-segmented</code>, rating <code>.ncss-rating</code></td><td><kbd class="ncss-kbd">Tab</kbd> into the group, <kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd> (<kbd class="ncss-kbd">↑</kbd> <kbd class="ncss-kbd">↓</kbd>)</td><td>A real radio group: one tab stop, arrows change the selection (native)</td></tr>
+        <tr><td>Before/after <code>&lt;ncss-compare&gt;</code></td><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd> <kbd class="ncss-kbd">↑</kbd> <kbd class="ncss-kbd">↓</kbd>, <kbd class="ncss-kbd">Home</kbd>/<kbd class="ncss-kbd">End</kbd>, <kbd class="ncss-kbd">PgUp</kbd>/<kbd class="ncss-kbd">PgDn</kbd></td><td>Native <code>&lt;input type="range"&gt;</code>; the script only sets the position and <code>aria-valuetext</code></td></tr>
+        <tr><td>Slideshow <code>.ncss-slideshow</code></td><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd> with the track focused</td><td>Native scroll snapping, no script of its own</td></tr>
+        <tr><td>Lightbox (<code>js/lightbox.js</code>)</td><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Previous/next image; Esc closes (native <code>&lt;dialog&gt;</code>), focus returns to the link that opened it</td></tr>
+        <tr><td>Hover card <code>&lt;ncss-hovercard&gt;</code></td><td><kbd class="ncss-kbd">Tab</kbd> to the link, <kbd class="ncss-kbd">Esc</kbd></td><td>Opens after a short delay on keyboard focus too, stays open while focus is in the link or the card; Esc closes and moves focus from the card back to the link</td></tr>
+        <tr><td>Video player <code>&lt;ncss-video-player&gt;</code> (focus inside the player)</td><td><kbd class="ncss-kbd">Space</kbd>/<kbd class="ncss-kbd">K</kbd>, <kbd class="ncss-kbd">J</kbd>/<kbd class="ncss-kbd">L</kbd>, <kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd>, <kbd class="ncss-kbd">↑</kbd> <kbd class="ncss-kbd">↓</kbd>, <kbd class="ncss-kbd">M</kbd>, <kbd class="ncss-kbd">F</kbd>, <kbd class="ncss-kbd">C</kbd>, <kbd class="ncss-kbd">0</kbd>-<kbd class="ncss-kbd">9</kbd>, <kbd class="ncss-kbd">Home</kbd>/<kbd class="ncss-kbd">End</kbd>, <kbd class="ncss-kbd">&lt;</kbd> <kbd class="ncss-kbd">&gt;</kbd>, <kbd class="ncss-kbd">N</kbd>/<kbd class="ncss-kbd">P</kbd></td><td>Play/pause · -/+10&nbsp;s · -/+5&nbsp;s · volume · mute · fullscreen · captions · jump to 0-90&nbsp;% · start/end · speed · next/previous video. Doesn't apply while a button (Space/Enter) or a slider (arrows) has focus itself</td></tr>
+        <tr><td>Audio player <code>&lt;ncss-audio-player&gt;</code> (focus inside the player)</td><td><kbd class="ncss-kbd">Space</kbd>/<kbd class="ncss-kbd">K</kbd>, <kbd class="ncss-kbd">J</kbd>/<kbd class="ncss-kbd">L</kbd>, <kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd>, <kbd class="ncss-kbd">M</kbd>, <kbd class="ncss-kbd">0</kbd>-<kbd class="ncss-kbd">9</kbd>, <kbd class="ncss-kbd">Home</kbd>/<kbd class="ncss-kbd">End</kbd></td><td>Play/pause · back/forward by <code>skip-back</code>/<code>skip-forward</code> (default 15/30&nbsp;s) · -/+5&nbsp;s · mute · jump to 0-90&nbsp;% · start/end</td></tr>
+        <tr><td>Menus in the video/audio player (settings, speed)</td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Home</kbd>/<kbd class="ncss-kbd">End</kbd>, <kbd class="ncss-kbd">Esc</kbd>, <kbd class="ncss-kbd">Tab</kbd></td><td>Move between items (wrapping), first/last item; Esc closes and returns focus to the menu button, Tab closes the menu</td></tr>
+        <tr><td>Floating video <code>&lt;ncss-video-float&gt;</code></td><td><kbd class="ncss-kbd">Esc</kbd> in the docked player</td><td>Pauses and undocks - same as the close button</td></tr>
+        <tr><td>Marquee <code>.ncss-marquee</code> (<code>js/marquee.js</code>)</td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd> on <code>[data-ncss-marquee-toggle]</code></td><td>Pauses/resumes, <code>aria-pressed</code> reflects the state. The duplicated marquee group is <code>inert</code> - no double tab stops</td></tr>
+        <tr><td>Toast <code>&lt;ncss-toast-region&gt;</code></td><td><kbd class="ncss-kbd">Tab</kbd> to the close button</td><td>Timers pause while focus (or the pointer) is inside the region</td></tr>
+        <tr><td>Light/dark <code>[data-ncss-theme-toggle]</code></td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd></td><td>Regular button, switches mode and <code>aria-label</code></td></tr>
+        <tr><td>Expand panels <code>.ncss-expand-panels</code></td><td><kbd class="ncss-kbd">Tab</kbd></td><td>The focused panel expands (<code>:focus-visible</code>/<code>:focus-within</code>)</td></tr>
+        <tr><td>Back to top <code>.ncss-back-to-top</code></td><td><kbd class="ncss-kbd">Enter</kbd></td><td>Jumps to the top; if the target has <code>id="top"</code> and <code>tabindex="-1"</code>, focus follows too</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="eigene-komponenten">
+  <h2 class="demo-section-title">Your Own Components</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li>First check whether a native element fits (<code>&lt;details&gt;</code>, <code>&lt;dialog&gt;</code>, a radio group, <code>popover</code>) - then the keyboard part is already solved.</li>
+    <li>If you build a widget yourself, follow the matching pattern in the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/">WAI-ARIA Authoring Practices Guide</a> - key bindings and roles go together.</li>
+    <li>Single-character shortcuts (like <kbd class="ncss-kbd">K</kbd> in the player) only while the element has focus, or make them switchable (WCAG 2.1.4). That's why the command palette's global shortcuts are opt-in attributes.</li>
+    <li>After closing an overlay, return focus somewhere sensible - usually the trigger.</li>
+    <li>Focused elements must not disappear under sticky headers (WCAG 2.4.11) - set <code>scroll-padding-top</code> to match the bar's height.</li>
+  </ul>
+</section>

@@ -1,0 +1,116 @@
+<!--DESC: Automatische Prüfung mit axe und Lighthouse, Tastatur- und Screenreader-Checks, Zoom, forced colors und reduzierte Bewegung - Checklisten zum Testen einer ncss-Seite.-->
+<section class="ncss-stack">
+  <h1>Testen</h1>
+  <p class="ncss-text-lg ncss-text-muted">ncss nimmt dir viel ab, aber nur ein Test deiner fertigen Seite zeigt, ob Inhalt, Reihenfolge und Beschriftungen stimmen. Automatische Werkzeuge finden nur einen Teil der Probleme - der Rest braucht Tastatur, Screenreader und ein paar Minuten Aufmerksamkeit.</p>
+</section>
+
+<section class="ncss-stack" id="automatisch">
+  <h2 class="demo-section-title">Automatische Prüfung</h2>
+  <p>Automatische Tests sind schnell und finden zuverlässig typische technische Fehler: fehlende <code>alt</code>-Attribute, Felder ohne Label, zu geringen Farbkontrast, doppelte IDs, falsche ARIA-Attribute. Ob ein Alternativtext sinnvoll oder eine Fehlermeldung verständlich ist, können sie nicht beurteilen.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>axe DevTools</strong> (Browser-Erweiterung für Chrome, Edge, Firefox) - prüft die aktuelle Seite inklusive dynamisch geöffneter Zustände. Öffne Menüs, Dialoge und Off-Canvas vor dem Scan, sonst werden sie nicht geprüft.</li>
+    <li><strong>Lighthouse</strong> (in den Chrome-Entwicklerwerkzeugen unter "Lighthouse", Kategorie "Barrierefreiheit") - baut auf axe auf und liefert einen Punktwert. 100 Punkte bedeuten nur: keine automatisch erkennbaren Fehler.</li>
+    <li><strong>Lighthouse auf der Kommandozeile</strong> - für mehrere Seiten oder regelmäßige Prüfungen:</li>
+  </ul>
+  <pre><code>npx lighthouse https://example.org/ --only-categories=accessibility --view
+
+# Ergebnis als JSON speichern, z. B. für einen Vergleich
+npx lighthouse https://example.org/kontakt/ --only-categories=accessibility --output=json --output-path=./a11y-kontakt.json</code></pre>
+  <ul class="ncss-list--dot" role="list">
+    <li>Für lokale Seiten zuerst einen lokalen Server starten (z. B. <code>npx serve</code>) und dessen Adresse prüfen.</li>
+    <li>Jeden Seitentyp einmal prüfen (Startseite, Inhaltsseite, Formular, Liste), nicht nur die Startseite.</li>
+    <li>In hellem <strong>und</strong> dunklem Modus prüfen - Kontraste können in einem Modus passen und im anderen nicht, vor allem bei eigenen Farben.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="tastatur">
+  <h2 class="demo-section-title">Tastatur-Check</h2>
+  <p>Maus zur Seite legen und die Seite nur mit <kbd class="ncss-kbd">Tab</kbd>, <kbd class="ncss-kbd">Umschalt</kbd>+<kbd class="ncss-kbd">Tab</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Leertaste</kbd>, Pfeiltasten und <kbd class="ncss-kbd">Esc</kbd> bedienen. In Safari vorher unter Einstellungen → Erweitert die Option einschalten, mit der Tabulatortaste alle Objekte einer Webseite zu markieren - sonst springt <kbd class="ncss-kbd">Tab</kbd> nicht zu Links.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Der erste <kbd class="ncss-kbd">Tab</kbd> zeigt den Skip-Link ("Zum Inhalt springen"), <kbd class="ncss-kbd">Enter</kbd> springt in den Hauptinhalt.</li>
+    <li>Jedes interaktive Element ist erreichbar - Links, Buttons, Felder, Menüs, Player, Karten mit Link.</li>
+    <li>Der Fokus ist immer sichtbar (ncss: Rahmen per <code>:focus-visible</code>) und nie von einer festen Kopfleiste, einem Cookie-Banner oder einem Toast verdeckt.</li>
+    <li>Die Reihenfolge folgt dem Lesefluss - kein Springen kreuz und quer durch das Layout.</li>
+    <li>Dialoge, Off-Canvas und Menüs lassen sich mit <kbd class="ncss-kbd">Esc</kbd> schließen; der Fokus kehrt danach zum auslösenden Button zurück.</li>
+    <li>Nirgends bleibt der Fokus hängen (Tastaturfalle) - auch nicht in eingebetteten Karten, Videos oder iframes.</li>
+    <li>Nichts passiert ungefragt beim Fokussieren oder Auswählen: kein automatisches Absenden beim Wechseln einer Auswahl, kein Seitenwechsel beim Fokus.</li>
+  </ul>
+  <p>Welche Tasten die ncss-Komponenten unterstützen: <a href="a11y-keyboard.html">Tastatur</a>.</p>
+</section>
+
+<section class="ncss-stack" id="screenreader">
+  <h2 class="demo-section-title">Screenreader-Schnelltest</h2>
+  <p>Ein kurzer Durchgang mit einem Screenreader zeigt, ob Struktur und Beschriftungen ankommen. Du musst dafür kein Profi sein - es reicht, die Überschriften- und Landmarken-Navigation zu nutzen und die Formulare einmal auszufüllen.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Screenreader</th><th scope="col">Starten</th><th scope="col">Nützliche Befehle</th></tr></thead>
+      <tbody>
+        <tr><td>VoiceOver (macOS, mit Safari)</td><td><kbd class="ncss-kbd">⌘</kbd>+<kbd class="ncss-kbd">F5</kbd></td><td><kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">⌥</kbd>+<kbd class="ncss-kbd">U</kbd> öffnet den Rotor (Überschriften, Links, Landmarken, Formularfelder), <kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">⌥</kbd>+<kbd class="ncss-kbd">→</kbd> liest weiter</td></tr>
+        <tr><td>VoiceOver (iOS, iPadOS)</td><td>Einstellungen → Bedienungshilfen → VoiceOver, oder - falls als Kurzbefehl eingerichtet - Seitentaste dreimal drücken</td><td>Wischen nach rechts/links: nächstes/voriges Element, Doppeltipp: aktivieren, Zwei-Finger-Drehen: Rotor</td></tr>
+        <tr><td>NVDA (Windows, kostenlos, mit Firefox oder Chrome)</td><td><kbd class="ncss-kbd">Strg</kbd>+<kbd class="ncss-kbd">Alt</kbd>+<kbd class="ncss-kbd">N</kbd> nach der Installation</td><td><kbd class="ncss-kbd">H</kbd> Überschriften, <kbd class="ncss-kbd">D</kbd> Landmarken, <kbd class="ncss-kbd">K</kbd> Links, <kbd class="ncss-kbd">F</kbd> Formularfelder, <kbd class="ncss-kbd">NVDA</kbd>+<kbd class="ncss-kbd">F7</kbd> Elementliste</td></tr>
+        <tr><td>TalkBack (Android, mit Chrome)</td><td>Einstellungen → Bedienungshilfen → TalkBack, oder - falls als Kurzbefehl eingerichtet - beide Lautstärketasten gedrückt halten</td><td>Wischen nach rechts/links: nächstes/voriges Element, Doppeltipp: aktivieren</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="ncss-list--dot" role="list">
+    <li>Der Seitentitel wird beim Laden angesagt und beschreibt die Seite.</li>
+    <li>Die Überschriftenliste ergibt ein sinnvolles Inhaltsverzeichnis - genau eine <code>h1</code>, keine übersprungenen Ebenen.</li>
+    <li>Landmarken sind vorhanden: Kopf (<code>header</code>), Navigation (<code>nav</code> mit Namen, wenn es mehrere gibt), Hauptinhalt (<code>main</code>), Fuß (<code>footer</code>).</li>
+    <li>Buttons und Links haben verständliche Namen - auch Icon-Buttons. Kein "Button", "Link" oder "Mehr" ohne Zusammenhang.</li>
+    <li>Formularfelder sagen Label, Pflicht-Status, Hinweis und Fehler an.</li>
+    <li>Statusmeldungen (Treffer der Live-Suche, Toasts, Player-Zustand) werden angesagt, ohne dass der Fokus springt.</li>
+    <li>Listen, die als Listen gestylt sind (<code>.ncss-list--dot</code>), werden als Liste mit Anzahl angesagt - dafür braucht das Markup <code>role="list"</code>.</li>
+  </ul>
+  <p>Mehr zu Rollen, Namen und Live-Regionen: <a href="a11y-screenreader.html">Screenreader &amp; ARIA</a>.</p>
+</section>
+
+<section class="ncss-stack" id="zoom-check">
+  <h2 class="demo-section-title">Zoom und Reflow prüfen</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>Browserfenster auf 1280&nbsp;px Breite, Zoom auf 200&nbsp;%: alles lesbar und bedienbar, nichts überlappt oder ist abgeschnitten.</li>
+    <li>Zoom auf 400&nbsp;% (entspricht 320 CSS-Pixeln): eine Spalte, kein seitliches Scrollen der Seite - Tabellen und Code dürfen in ihrem eigenen Rahmen scrollen.</li>
+    <li>Alternativ: Gerätemodus der Entwicklerwerkzeuge auf 320&nbsp;px Breite stellen.</li>
+    <li>Nur-Text-Zoom in Firefox (Ansicht → Zoom → Nur Text zoomen) auf 200&nbsp;%: Schrift wächst, Boxen wachsen mit.</li>
+    <li>Textabstände per CSS-Snippet oder Bookmarklet erhöhen: kein Text verschwindet.</li>
+    <li>Festsitzende Kopfleisten und Cookie-Banner nehmen bei 200&nbsp;% nicht den halben Bildschirm ein.</li>
+  </ul>
+  <p>Die Werte und das CSS-Snippet zum Prüfen der Textabstände: <a href="a11y-zoom.html">Zoom, Reflow &amp; Textabstände</a>.</p>
+</section>
+
+<section class="ncss-stack" id="forced-colors">
+  <h2 class="demo-section-title">Kontrastmodus (forced colors)</h2>
+  <p>Windows-Kontrastdesigns ersetzen alle Farben der Seite durch wenige Systemfarben. Hintergrundbilder, Schatten und Hintergrundfarben verschwinden dabei. Was nur über Farbe oder Schatten erkennbar war, ist dann unsichtbar.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Windows</strong>: Einstellungen → Barrierefreiheit → Kontrastdesigns, ein Design wählen (Tastenkürzel: linke <kbd class="ncss-kbd">Alt</kbd>+linke <kbd class="ncss-kbd">Umschalt</kbd>+<kbd class="ncss-kbd">Druck</kbd>).</li>
+    <li><strong>Chrome/Edge-Entwicklerwerkzeuge</strong>: Befehlsmenü (<kbd class="ncss-kbd">Strg</kbd>/<kbd class="ncss-kbd">⌘</kbd>+<kbd class="ncss-kbd">Umschalt</kbd>+<kbd class="ncss-kbd">P</kbd>) → "Show Rendering" → "Emulate CSS media feature forced-colors" auf <code>active</code>.</li>
+    <li>Prüfen: Buttons und Felder haben sichtbare Umrisse, der Fokusrahmen ist sichtbar, Icons sind erkennbar (SVG mit <code>currentColor</code>), Zustände wie "ausgewählt" oder "aktiv" sind nicht nur farblich markiert.</li>
+    <li>Hintergrundvideos (<code>js/video-bg.js</code>) laden in diesem Modus bewusst nicht, es bleibt das Poster.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="bewegung">
+  <h2 class="demo-section-title">Reduzierte Bewegung und Farbschema</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Emulation</strong>: Chrome/Edge-Entwicklerwerkzeuge, Befehlsmenü → "Show Rendering" → "Emulate CSS media feature prefers-reduced-motion" auf <code>reduce</code>; im selben Bereich <code>prefers-color-scheme</code> für hell/dunkel.</li>
+    <li><strong>System</strong>: macOS Einstellungen → Bedienungshilfen → Anzeige → "Bewegung reduzieren"; iOS Einstellungen → Bedienungshilfen → Bewegung; Windows Einstellungen → Barrierefreiheit → Visuelle Effekte → "Animationseffekte" aus.</li>
+    <li>Prüfen: keine Parallax- oder Scroll-Animationen, Laufbänder stehen, Hintergrundvideos zeigen nur das Poster, sanftes Scrollen ist aus. Inhalt bleibt trotzdem vollständig sichtbar - nichts darf erst durch eine Animation erscheinen.</li>
+    <li>Eigene JavaScript-Animationen prüfen: CSS-Regeln aus <code>reset.css</code> erreichen sie nicht.</li>
+  </ul>
+  <p>Welche Einstellungen ncss auswertet: <a href="a11y-preferences.html">Nutzer-Einstellungen</a>.</p>
+</section>
+
+<section class="ncss-stack" id="inspektor">
+  <h2 class="demo-section-title">Code prüfen mit dem Inspektor dieser Website</h2>
+  <p>Auf jeder Seite dieser Website gibt es unten rechts den Schalter <strong>Inspect</strong> (<kbd class="ncss-kbd">Alt</kbd>+<kbd class="ncss-kbd">I</kbd>, Mac <kbd class="ncss-kbd">⌥</kbd>+<kbd class="ncss-kbd">I</kbd>). Damit klickst du ein Element an und siehst das bereinigte HTML, die Erklärung jeder ncss-Klasse und die zugehörige Datei. Praktisch, um zu prüfen, wie ein Beispiel ARIA-Attribute, Labels und <code>role="list"</code> setzt, bevor du es übernimmst.</p>
+  <p>Für deine eigene Seite übernimmt diese Aufgabe der Barrierefreiheitsbaum der Browser-Entwicklerwerkzeuge (Chrome/Edge: Elemente → "Barrierefreiheit", Firefox: Tab "Barrierefreiheit"). Er zeigt Rolle, Name und Zustand jedes Elements so, wie Screenreader sie bekommen. Mehr zum Inspektor: <a href="inspector.html">Code-Inspektor</a>.</p>
+</section>
+
+<section class="ncss-stack" id="ablauf">
+  <h2 class="demo-section-title">Ein sinnvoller Ablauf</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>Bei jeder neuen Komponente oder Vorlage: Tastatur-Check und axe-Scan - das dauert wenige Minuten.</li>
+    <li>Vor einem Release: Lighthouse über alle Seitentypen, Zoom- und Kontrastmodus-Check, ein Screenreader-Durchgang durch die wichtigsten Abläufe (Navigation, Suche, Formular).</li>
+    <li>Gefundene Probleme festhalten und, solange sie offen sind, in der <a href="a11y-statement-guide.html">Barrierefreiheitserklärung</a> nennen.</li>
+    <li>Wo möglich mit Menschen testen, die selbst assistive Technik nutzen. Kein Werkzeug ersetzt ihre Erfahrung.</li>
+  </ul>
+</section>

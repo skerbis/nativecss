@@ -9,7 +9,16 @@
 // (detail.root = neu eingefügtes Element) bzw. js/content-observer.js ebenfalls erfasst.
 // Mehrfaches Erfassen ist unschädlich (Attribut entfernen + pause() sind idempotent).
 (function () {
-  if (!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // Bewegung reduzieren? Systemeinstellung ODER ausdrückliche Wahl am <html>
+  // (data-motion="reduce"/"full", gesetzt von js/preferences.js) - "full" hebt ein
+  // System-"reduce" nur als bewusste Nutzerwahl auf, nie von selbst.
+  function ncssReducedMotion() {
+    var choice = document.documentElement.getAttribute("data-motion");
+    if (choice === "reduce") return true;
+    if (choice === "full") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+  if (!window.matchMedia || !ncssReducedMotion()) return;
 
   var SELECTOR = ".ncss-hero-media > video[autoplay]";
   function scan(root) {

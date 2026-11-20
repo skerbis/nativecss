@@ -33,6 +33,15 @@
  * es sich exakt wie querySelectorAll (keine Elemente mit .shadowRoot zu durchsuchen).
  */
 (function () {
+  // Bewegung reduzieren? Systemeinstellung ODER ausdrückliche Wahl am <html>
+  // (data-motion="reduce"/"full", gesetzt von js/preferences.js) - "full" hebt ein
+  // System-"reduce" nur als bewusste Nutzerwahl auf, nie von selbst.
+  function ncssReducedMotion() {
+    var choice = document.documentElement.getAttribute("data-motion");
+    if (choice === "reduce") return true;
+    if (choice === "full") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
   function deepQueryAll(selector, root) {
     root = root || document;
     var found = Array.prototype.slice.call(root.querySelectorAll(selector));
@@ -49,7 +58,7 @@
     typeof CSS === "undefined" ||
     !CSS.supports ||
     CSS.supports("view-timeline-name", "--ncss-stack-progress") ||
-    (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    ncssReducedMotion()
   ) {
     return;
   }

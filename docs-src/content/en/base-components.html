@@ -43,7 +43,7 @@
 &lt;/ncss-tabs&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
   <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
-<ncss-tabs class="ncss-tabs" hash>
+<ncss-tabs hash>
   <div class="ncss-tabs-list" aria-label="Product details">
     <a href="#tab-description">Description</a>
     <a href="#tab-specs">Specifications</a>
@@ -64,7 +64,7 @@
 </ncss-tabs>
   </div>
   <p>Vertical with manual activation (<code>activation="manual"</code>): arrow keys only move focus, Enter/Space opens - useful when a panel loads expensive content. With little room the content wraps below the list (no fixed breakpoint).</p>
-  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual"&gt;
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs--vertical" activation="manual"&gt;
   &lt;div class="ncss-tabs-list" aria-label="Settings"&gt;
     &lt;a href="#set-profile"&gt;Profile&lt;/a&gt;
     &lt;a href="#set-account"&gt;Account&lt;/a&gt;
@@ -85,7 +85,7 @@
 &lt;/ncss-tabs&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
   <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
-<ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual">
+<ncss-tabs class="ncss-tabs--vertical" activation="manual">
   <div class="ncss-tabs-list" aria-label="Settings">
     <a href="#set-profile">Profile</a>
     <a href="#set-account">Account</a>
@@ -106,8 +106,8 @@
 </ncss-tabs>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Event <code>ncss-tabs-change</code> (bubbles, <code>detail.tab/panel/index</code>), method <code>el.select(index | "id")</code>.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Accessibility</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -152,8 +152,8 @@
 </div>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Important: the tooltip is a <em>description</em>, never the name. The icon button above is named "Copy" via <code>aria-label</code>; without JS and without <code>interestfor</code> the tooltip stays invisible, the description still arrives via <code>aria-describedby</code>.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Accessibility</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -227,8 +227,8 @@
   </ul>
 </nav>
   </div>
-  <div class="ncss-a11y-notes">
-    <h3>Accessibility</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -249,7 +249,7 @@
 <section class="ncss-stack" id="alert">
   <h2 class="demo-section-title">Alerts</h2>
   <p><code>.ncss-alert</code> with <code>--info</code> (brand colour), <code>--success</code>, <code>--warning</code>, <code>--danger</code>, <code>--neutral</code>; <code>--plain</code> without icon. The icon is decoration - the meaning is in the text ("Warning:"), colour alone is not enough.</p>
-  <pre><code class="language-html">&lt;div class="ncss-alert ncss-alert--info"&gt;
+  <pre><code class="language-html">&lt;div class="ncss-alert"&gt;
   &lt;p class="ncss-alert-title"&gt;Note:&lt;/p&gt;
   &lt;p&gt;Registration is open until 30 November.&lt;/p&gt;
 &lt;/div&gt;
@@ -267,7 +267,7 @@
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
   <div class="ncss-stack">
-<div class="ncss-alert ncss-alert--info">
+<div class="ncss-alert">
   <p class="ncss-alert-title">Note:</p>
   <p>Registration is open until 30 November.</p>
 </div>
@@ -305,8 +305,8 @@
 </div>
   </div>
   <p class="ncss-text-sm ncss-text-muted"><strong>Difference:</strong> <code>.ncss-card--success</code> etc. are <em>cards</em> in a status colour (any content, card grid, media). <code>.ncss-alert</code> is a <em>message</em> with icon, title and optional dismiss. Same colour tokens, deliberately no alias. For messages that disappear by themselves use the <a href="overlays.html">toasts</a> from <code>notification.css</code>.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Accessibility</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
@@ -359,8 +359,8 @@
 </dialog>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Closing goes through <code>requestClose()</code>: the <code>cancel</code> event fires first, <code>event.preventDefault()</code> keeps the dialog open (e.g. "Discard unsaved changes?"). A text selection that starts in the panel and ends outside does not close it. Setup: <code>&lt;script src="ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;</code>.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Accessibility</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
     <h4>Keyboard</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>

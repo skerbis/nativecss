@@ -1,0 +1,295 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-big-text {
+    font-size: var(--ncss-font-size-xl);
+    font-weight: var(--ncss-font-weight-semibold);
+    line-height: var(--ncss-line-height-tight);
+    max-inline-size: 40rem;
+  }
+  .demo-spacer {
+    min-block-size: 40vh;
+    display: grid;
+    place-items: center;
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-stat {
+    display: grid;
+    gap: var(--ncss-space-3xs);
+    padding: var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-stat-value {
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: var(--ncss-font-weight-bold);
+    color: var(--ncss-color-brand-on-soft);
+    line-height: 1;
+  }
+  .demo-logo {
+    padding: var(--ncss-space-2xs) var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-surface);
+    font-weight: var(--ncss-font-weight-semibold);
+    white-space: nowrap;
+  }
+  .demo-reveal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--ncss-space-md);
+  }
+  .demo-reveal-tile {
+    margin: 0;
+    display: grid;
+    gap: var(--ncss-space-2xs);
+  }
+  .demo-reveal-tile > .ncss-reveal,
+  .demo-reveal-tile img {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-reveal-tile figcaption {
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-reveal-panel {
+    display: grid;
+    place-items: center;
+    padding: var(--ncss-space-lg);
+    text-align: center;
+    background-color: var(--ncss-color-brand-900);
+    color: var(--ncss-color-brand-contrast);
+  }
+  .demo-hscroll-card {
+    display: grid;
+    align-content: end;
+    gap: var(--ncss-space-2xs);
+    min-block-size: min(60svh, 28rem);
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    border: 1px solid var(--ncss-color-border);
+    box-shadow: var(--ncss-shadow-md);
+  }
+  .demo-hscroll-card:nth-child(3n + 1) { background-color: var(--ncss-color-brand-100); }
+  .demo-hscroll-card:nth-child(3n + 2) { background-color: var(--ncss-color-brand-2-100); }
+  .demo-hscroll-num {
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: var(--ncss-font-weight-bold);
+    line-height: 1;
+  }
+  .demo-scrolly-visual {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--ncss-radius-lg);
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: var(--ncss-font-weight-bold);
+    color: var(--ncss-color-brand-contrast);
+  }
+  .demo-scrolly-visual--1 { background-color: var(--ncss-color-brand); }
+  .demo-scrolly-visual--2 { background-color: var(--ncss-color-brand-2-900); }
+  .demo-scrolly-visual--3 { background-color: var(--ncss-color-success-900); }
+  .demo-scrolly-visual--4 { background-color: var(--ncss-color-neutral-900); }
+  .demo-curtain-section {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-xl) var(--ncss-space-md);
+    text-align: center;
+  }
+  .demo-curtain-section--long {
+    align-content: space-between;
+    min-block-size: 150svh;
+  }
+  .demo-expand {
+    min-block-size: 70svh;
+  }
+</style>
+<script src="~/dist/js/hero-video-motion.js" defer></script>
+<script src="~/dist/js/scroll-horizontal.js" defer></script>
+<script src="~/dist/js/text-reveal.js" defer></script>
+<script src="~/dist/js/scrolly.js" defer></script>
+<script src="~/dist/js/count-up.js" defer></script>
+<script src="~/dist/js/marquee.js" defer></script>
+<script src="~/dist/js/reveal.js" defer></script>
+<script src="~/demo/assets/js/scroll-effects-demo.js" defer></script>
+-->
+  <div class="ncss-container ncss-stack ncss-py-xl">
+    <p class="ncss-text-lg ncss-text-muted">Scroll-driven effects, natively via <code>animation-timeline: view()</code> and (Chromium) scroll-triggered animations - JavaScript only as a small, opt-in fallback or where CSS can't reach (focus, state, events). Each effect is its own file and can be included individually. Without support and with reduced motion, everything stays perfectly readable.</p>
+  </div>
+
+  <section id="live-text-reveal" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Text reveal</h2>
+    <p class="ncss-text-muted"><code>components/text-reveal.css</code> - text lights up as you scroll through it. Lines and flow without JS, word by word with <code>js/text-reveal.js</code>.</p>
+    <p class="ncss-eyebrow">Lines (default)</p>
+    <p class="ncss-text-reveal demo-big-text">Native CSS can now do what used to require an animation library: tie progress to the scroll position, without any scroll listener.</p>
+    <p class="ncss-eyebrow">Flow (<code>--flow</code>)</p>
+    <p class="ncss-text-reveal ncss-text-reveal--flow demo-big-text"><span>In flow mode the brightness travels word by word across the lines in reading direction - a single gradient on an inline element.</span></p>
+    <p class="ncss-eyebrow">Words (<code>data-ncss-text-reveal</code>)</p>
+    <p class="ncss-text-reveal demo-big-text" data-ncss-text-reveal>Each word gets its own section and rises into view <em>individually</em>.</p>
+    <pre><code class="language-html">&lt;p class="ncss-text-reveal"&gt;...&lt;/p&gt;
+&lt;p class="ncss-text-reveal ncss-text-reveal--flow"&gt;&lt;span&gt;...&lt;/span&gt;&lt;/p&gt;
+&lt;p class="ncss-text-reveal" data-ncss-text-reveal&gt;...&lt;/p&gt;</code></pre>
+  </section>
+
+  <section id="live-count-up" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Count-up</h2>
+    <p class="ncss-text-muted"><code>components/count-up.css</code> - the real number stays in the DOM (screen readers, no JS), the counting happens in an <code>::after</code>. Chromium: once via a CSS scroll trigger; otherwise with <code>js/count-up.js</code>.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 12rem;">
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 12500">12,500</span></span><span class="ncss-text-muted">Projects</span></div>
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 98; --ncss-count-suffix: ' %'">98 %</span></span><span class="ncss-text-muted">Satisfaction</span></div>
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 40; --ncss-count-prefix: '+'">+40</span></span><span class="ncss-text-muted">Components</span></div>
+      <div class="demo-stat"><span class="demo-stat-value"><span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 0; --ncss-count-from: 100">0</span></span><span class="ncss-text-muted">Build steps</span></div>
+    </div>
+    <pre><code class="language-html">&lt;span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 12500"&gt;12,500&lt;/span&gt;</code></pre>
+  </section>
+
+  <section id="live-marquee" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Marquee</h2>
+    <p class="ncss-text-muted"><code>components/marquee.css</code> - endless ticker that stops on hover and focus; the button pauses it permanently (WCAG 2.2.2). Reduced motion: a static, swipeable row.</p>
+    <div id="demo-marquee" class="ncss-marquee ncss-marquee--fade" data-ncss-marquee>
+      <ul class="ncss-marquee-group" role="list">
+        <li class="demo-logo">Cascade Layers</li>
+        <li class="demo-logo">Container Queries</li>
+        <li class="demo-logo">light-dark()</li>
+        <li class="demo-logo">view()</li>
+        <li class="demo-logo">:has()</li>
+        <li class="demo-logo">@property</li>
+        <li class="demo-logo"><a href="#scrolly">Scrollytelling</a></li>
+      </ul>
+    </div>
+    <div class="ncss-marquee ncss-marquee--reverse ncss-marquee--fast" data-ncss-marquee>
+      <ul class="ncss-marquee-group" role="list">
+        <li class="demo-logo">No build step</li>
+        <li class="demo-logo">Native first</li>
+        <li class="demo-logo">Accessible</li>
+        <li class="demo-logo">Cherry-picking</li>
+        <li class="demo-logo">Dark mode</li>
+      </ul>
+    </div>
+    <p><button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-marquee-toggle aria-controls="demo-marquee">Pause top marquee</button></p>
+  </section>
+
+  <section id="live-reveal" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Reveal shapes</h2>
+    <p class="ncss-text-muted"><code>helpers/reveal.css</code> - for any element (image, video, section). Scroll-scrubbed by default (scrolling back rewinds); <code>--once</code> plays once, time-based.</p>
+    <div class="demo-reveal-grid">
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--circle" data-ncss-reveal src="~/demo/assets/slide-1.jpg" alt="Sample image 1" loading="lazy"><figcaption><code>--circle</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-right" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Sample image 2" loading="lazy"><figcaption><code>--wipe-right</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-left" data-ncss-reveal src="~/demo/assets/slide-3.jpg" alt="Sample image 3" loading="lazy"><figcaption><code>--wipe-left</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-up" data-ncss-reveal src="~/demo/assets/slide-1.jpg" alt="Sample image 1" loading="lazy"><figcaption><code>--wipe-up</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--wipe-down" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Sample image 2" loading="lazy"><figcaption><code>--wipe-down</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--inset" data-ncss-reveal src="~/demo/assets/slide-3.jpg" alt="Sample image 3" loading="lazy"><figcaption><code>--inset</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--split" data-ncss-reveal src="~/demo/assets/slide-1.jpg" alt="Sample image 1" loading="lazy"><figcaption><code>--split</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--diagonal" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Sample image 2" loading="lazy"><figcaption><code>--diagonal</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><div class="ncss-reveal ncss-reveal--zoom" data-ncss-reveal><img src="~/demo/assets/slide-3.jpg" alt="Sample image 3" loading="lazy"></div><figcaption><code>--zoom</code> (on a wrapper)</figcaption></figure>
+    </div>
+
+    <h3>Once mode (<code>--once</code>)</h3>
+    <div class="demo-reveal-grid">
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--circle ncss-reveal--once" data-ncss-reveal src="~/demo/assets/slide-2.jpg" alt="Sample image 2" loading="lazy"><figcaption><code>--circle --once</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><img class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal src="~/demo/assets/slide-3.jpg" alt="Sample image 3" loading="lazy"><figcaption><code>--split --once</code></figcaption></figure>
+      <figure class="demo-reveal-tile"><div class="ncss-reveal ncss-reveal--slide-up ncss-reveal--once demo-reveal-panel" data-ncss-reveal><p class="ncss-text-inherit">Any element, here a panel: <code>--slide-up --once</code></p></div><figcaption><code>--slide-up --once</code></figcaption></figure>
+    </div>
+    <pre><code class="language-html">&lt;img class="ncss-reveal ncss-reveal--circle" src="..." alt="..."&gt;
+&lt;figure class="ncss-reveal ncss-reveal--zoom"&gt;&lt;img src="..." alt="..."&gt;&lt;/figure&gt;
+&lt;section class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal&gt;...&lt;/section&gt;</code></pre>
+  </section>
+
+  <section class="ncss-reveal ncss-reveal--expand demo-reveal-panel demo-expand" data-ncss-reveal>
+    <div class="ncss-stack">
+      <h2 class="ncss-text-inherit"><code>--expand</code>: grows to full bleed</h2>
+      <p class="ncss-text-inherit">A full-width section starts as an inset, rounded card and expands to full width as you scroll.</p>
+    </div>
+  </section>
+
+  <section id="live-reveal-pin" aria-labelledby="reveal-pin-title">
+    <div class="ncss-container ncss-stack ncss-py-xl">
+      <h2 class="demo-section-title" id="reveal-pin-title">Reveal pin</h2>
+      <p class="ncss-text-muted"><code>components/reveal-pin.css</code> - pinned stage: the video expands from a card to full screen, the intro text leaves, a panel arrives.</p>
+    </div>
+    <div class="ncss-reveal-pin">
+      <div class="ncss-reveal-pin-stage">
+        <p class="ncss-reveal-pin-intro">An image that takes up the whole space.</p>
+        <video src="~/demo/assets/sample-clip.mp4" poster="~/demo/assets/sample-poster.jpg" muted playsinline loop autoplay></video>
+        <div class="ncss-reveal-pin-content">
+          <h3>Arrived</h3>
+          <p>The panel only fades in once the media fills the viewport.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="horizontal" aria-labelledby="horizontal-title">
+    <div class="ncss-container ncss-stack ncss-py-xl">
+      <h2 class="demo-section-title" id="horizontal-title">Horizontal scroll</h2>
+      <p class="ncss-text-muted"><code>components/scroll-horizontal.css</code> + <code>js/scroll-horizontal.js</code> - vertical scrolling moves the row sideways. Tab through the links: the script brings the focused element into view. Fallback: a swipeable snap row.</p>
+    </div>
+    <div class="ncss-scroll-horizontal" data-ncss-scroll-horizontal aria-label="Projects">
+      <div class="ncss-scroll-horizontal-viewport">
+        <div class="ncss-scroll-horizontal-track">
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">01</span><h3>Tokens</h3><p>One list of values for everything. <a href="tokens.html">More</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">02</span><h3>Layers</h3><p>Priority without !important. <a href="architecture.html">More</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">03</span><h3>Container</h3><p>Components that know their place. <a href="~/demo/layout.html">More</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">04</span><h3>Colors</h3><p>light-dark() instead of a second stylesheet. <a href="~/demo/colors.html">More</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">05</span><h3>Motion</h3><p>Scroll timelines instead of listeners. <a href="animations.html">More</a></p></article>
+          <article class="demo-hscroll-card"><span class="demo-hscroll-num">06</span><h3>Accessible</h3><p>Focus stays visible. <a href="accessibility.html">More</a></p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scrolly" class="ncss-container ncss-stack ncss-py-xl">
+    <h2 class="demo-section-title">Scrollytelling</h2>
+    <p class="ncss-text-muted"><code>&lt;ncss-scrolly&gt;</code> (<code>components/scrolly.css</code> + <code>js/scrolly.js</code>) - the step in the middle of the viewport is active and switches the media. Each step carries <code>data-ncss-time</code>; the <code>ncss-scrolly-step</code> event reports <code>{index, time}</code>, e.g. for a scroll-controlled video.</p>
+    <p class="ncss-text-sm">Last event: <output id="demo-scrolly-log" for="demo-scrolly">-</output></p>
+    <ncss-scrolly id="demo-scrolly" style="--ncss-scrolly-top: var(--ncss-topbar-height);">
+      <div class="ncss-scrolly-steps">
+        <div class="ncss-scrolly-step" data-ncss-time="0"><div><h3>1. Starting point</h3><p>Without JavaScript, all steps and images simply stack one below the other.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="2.5"><div><h3>2. Stage</h3><p>With the element, the media column sticks and one image is visible at a time.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="5"><div><h3>3. Hook</h3><p><code>data-ncss-time</code> gives each step a time marker in seconds.</p></div></div>
+        <div class="ncss-scrolly-step" data-ncss-time="7.5"><div><h3>4. End</h3><p>Narrow: the media sits on top, the steps scroll past below it.</p></div></div>
+      </div>
+      <div class="ncss-scrolly-media">
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--1" role="img" aria-label="Step 1">1</div></figure>
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--2" role="img" aria-label="Step 2">2</div></figure>
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--3" role="img" aria-label="Step 3">3</div></figure>
+        <figure class="ncss-scrolly-figure"><div class="demo-scrolly-visual demo-scrolly-visual--4" role="img" aria-label="Step 4">4</div></figure>
+      </div>
+    </ncss-scrolly>
+  </section>
+
+  <section id="live-curtain" aria-labelledby="curtain-title">
+    <div class="ncss-container ncss-stack ncss-py-xl">
+      <h2 class="demo-section-title" id="curtain-title">Curtain sections</h2>
+      <p class="ncss-text-muted"><code>components/curtain.css</code> - each section stays in place while the next one slides over it; <code>--scale</code> makes the covered one recede, <code>--dim</code> darkens it. No <code>position: sticky</code> - even extra-tall sections show all of their content.</p>
+    </div>
+    <div class="ncss-curtain ncss-curtain--scale ncss-curtain--dim">
+      <section class="demo-curtain-section ncss-surface--brand">
+        <h3 class="ncss-text-inherit">Section 1</h3>
+        <p class="ncss-text-inherit">Keep scrolling - the next section slides over this one.</p>
+      </section>
+      <section class="demo-curtain-section demo-curtain-section--long ncss-surface--neutral">
+        <h3 class="ncss-text-inherit">Section 2 (extra tall)</h3>
+        <p class="ncss-text-inherit">This section is one and a half screens tall and scrolls all the way through before it stays in place.</p>
+        <p class="ncss-text-inherit">Bottom edge of section 2 - only now does it stop and section 3 slides over it.</p>
+      </section>
+      <section class="demo-curtain-section ncss-surface--brand-2">
+        <h3 class="ncss-text-inherit">Section 3</h3>
+        <p class="ncss-text-inherit">The last section is never covered.</p>
+        <p><a href="all-components.html" class="ncss-btn ncss-btn--primary">Back to overview</a></p>
+      </section>
+    </div>
+  </section>

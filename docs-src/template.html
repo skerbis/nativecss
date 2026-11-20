@@ -24,6 +24,7 @@
 <script src="../../dist/js/theme-toggle.js" defer></script>
 <script src="../../dist/js/subnav.js" defer></script>
 <script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/dialog-light-dismiss.js" defer></script>
 <script src="../../demo/assets/js/inspector.js" defer></script>
 <style>
   /* --- Website-Hülle (Start, Handbuch, Beispiele) - nur diese Website, nicht dist/ ------
@@ -33,6 +34,15 @@
      selbst erscheint erst ab 64rem, damit Menü und Seitenleiste an derselben Schwelle
      wechseln (vorher 60rem vs. 64rem: dazwischen gab es beides bzw. ein eigenes
      Aufklapp-Element für die Seitenleiste). */
+  .site-sticky {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--ncss-topbar-z);
+  }
+  /* Innerhalb des gemeinsamen Containers klebt nur noch der Container selbst. */
+  .site-sticky > .ncss-topbar {
+    position: relative;
+  }
   .site-panel-tree {
     margin-block-start: var(--ncss-space-md);
     padding-block-start: var(--ncss-space-md);
@@ -122,13 +132,10 @@
   /* Klebt unter Kopfleiste UND (falls vorhanden) "Auf dieser Seite"-Leiste. */
   .docs-sidebar {
     position: sticky;
-    top: calc(var(--ncss-subnav-top, var(--ncss-topbar-height)) + var(--site-subnav-offset, 0px) + var(--ncss-space-md));
-    max-height: calc(100svh - var(--ncss-subnav-top, var(--ncss-topbar-height)) - var(--site-subnav-offset, 0px) - 2 * var(--ncss-space-md));
+    top: calc(var(--ncss-scroll-offset, var(--ncss-topbar-height)) + var(--ncss-space-md));
+    max-height: calc(100svh - var(--ncss-scroll-offset, var(--ncss-topbar-height)) - 2 * var(--ncss-space-md));
     overflow-y: auto;
     overscroll-behavior: contain;
-  }
-  :root:has(.ncss-subnav) {
-    --site-subnav-offset: var(--ncss-subnav-height, 2.75rem);
   }
   .docs-sidebar-group + .docs-sidebar-group {
     margin-block-start: var(--ncss-space-md);
@@ -181,13 +188,110 @@
     width: auto;
     margin-inline: 0;
   }
+  /* Live-Rahmen: das eingewebte Live-Beispiel eines Abschnitts (build.mjs, MERGE) -
+     neutrale Fläche mit kleiner Beschriftung, klar getrennt von Erklärung und Code. */
+  .docs-live {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-lg) var(--ncss-space-md) var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .docs-live::before {
+    content: "Live";
+    position: absolute;
+    inset-block-start: var(--ncss-space-2xs);
+    inset-inline-start: var(--ncss-space-sm);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ncss-color-text-muted);
+  }
+  /* Barrierefreiheits-Symbol (Kern-Icon, dekorativ) vor der Beschriftung - überall gleich
+     groß und mittig zur Textzeile. */
+  .demo-a11y-icon {
+    --ncss-icon-size: 1.1em;
+    margin-inline-end: 0.35em;
+    vertical-align: -0.2em;
+  }
+  /* Einheitlicher Barrierefreiheits-Block: am Seitenende (build.mjs, a11y.json) und je
+     Komponente innerhalb eines Abschnitts (.docs-a11y-notes mit h3/h4/Tabelle) - beide
+     im selben umrandeten Kasten. */
+  .docs-a11y-notes {
+    display: grid;
+    gap: var(--ncss-space-xs);
+    padding: var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-inline-start: 4px solid var(--ncss-color-brand);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .docs-a11y-notes > :is(h3, h4) {
+    margin: 0;
+  }
+  .docs-a11y-notes > h3 {
+    font-size: var(--ncss-font-size-md);
+  }
+  .docs-a11y-notes > h4 {
+    margin-block-start: var(--ncss-space-2xs);
+    font-size: var(--ncss-font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ncss-color-text-muted);
+  }
+  .docs-a11y-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--ncss-space-sm);
+    margin: 0;
+  }
+  .docs-a11y-list > div {
+    padding: var(--ncss-space-2xs) 0;
+  }
+  .docs-a11y-list dt {
+    font-weight: 700;
+  }
+  .docs-a11y-list dd {
+    margin: var(--ncss-space-3xs) 0 0;
+    font-size: var(--ncss-font-size-sm);
+  }
   /* Abschnitts-Titel der Live-Beispiele (früher je Demo-Seite einzeln definiert). */
   .demo-section-title {
     border-block-end: 1px solid var(--ncss-color-border);
     padding-block-end: var(--ncss-space-2xs);
   }
-  .docs-footer-brand {
+  /* Schriftzug (demo/assets/brand/wordmark-inline.html): "Native" in der Markenfarbe,
+     "CSS" in Textfarbe - folgt damit Hell/Dunkel und dem Theme-Umschalter automatisch. */
+  .demo-wordmark {
+    display: block;
+    block-size: 1.6em;
+    inline-size: auto;
+  }
+  .demo-wordmark-native {
+    fill: var(--ncss-color-brand);
+  }
+  .demo-wordmark-css {
+    fill: currentColor;
+  }
+  .site-brand {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    font-size: var(--ncss-font-size-md);
     color: var(--ncss-color-text);
+  }
+  .site-footer-brand {
+    display: inline-block;
+    color: var(--ncss-color-text);
+    font-size: var(--ncss-font-size-lg);
+  }
+  @media (forced-colors: active) {
+    .demo-wordmark-native { fill: LinkText; }
+    .demo-wordmark-css { fill: CanvasText; }
   }
 </style>
 __HEAD_EXTRA__
@@ -196,17 +300,22 @@ __HEAD_EXTRA__
 
 <a href="#main" class="ncss-skip-link">__SKIP_LINK__</a>
 
+<!-- Kopfleiste + "Auf dieser Seite" bilden EINE klebende Einheit: beide Zeilen stecken in
+     einem gemeinsamen Sticky-Container und können dadurch nie gegeneinander verrutschen,
+     egal wie hoch die Kopfleiste (Schriftzug, Schriftgröße, Zoom) gerade ist. -->
+<div class="site-sticky" data-ncss-sticky-header>
 <header class="ncss-topbar site-topbar">
   <div class="ncss-topbar-inner">
-    <a class="ncss-topbar-brand" href="__BRAND_HREF__"__BRAND_CURRENT__>NativeCSS</a>
+    <a class="ncss-topbar-brand site-brand" href="__BRAND_HREF__"__BRAND_CURRENT__ title="__BRAND_LABEL__">__WORDMARK__</a>
 __SITE_NAV__
     <div class="ncss-topbar-actions">
-      <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">__SEARCH_LABEL__</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
+      <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-label="__SEARCH_LABEL__" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">__SEARCH_LABEL__</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
 __SITE_ACTIONS__
     </div>
   </div>
 </header>
 __SUBNAV__
+</div>
 
 <ncss-command-palette shortcut="k" slash src="../search.__LANG__.json" limit="7">
   <dialog id="siteSearch" class="ncss-command" aria-label="__SEARCH_LABEL__" closedby="any">
@@ -231,8 +340,9 @@ __MAIN__
 <footer class="ncss-footer">
   <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
     <div class="ncss-stack ncss-stack--tight">
-      <strong class="docs-footer-brand">NativeCSS</strong>
+      <a class="site-footer-brand" href="__START_HREF__">__WORDMARK__</a>
       <p class="ncss-text-sm">__FOOTER_TAGLINE__</p>
+      <p class="ncss-text-sm">__VERSION_LABEL__ __VERSION__ · <a href="https://github.com/skerbis/nativecss/blob/main/CHANGELOG.md" target="_blank" rel="noopener">__CHANGELOG_LABEL__</a></p>
     </div>
     <nav class="ncss-nav ncss-nav--tree" aria-label="Footer">
       <ul class="ncss-nav-list">
@@ -240,7 +350,9 @@ __MAIN__
         <li class="ncss-nav-item"><a href="index.html">__NAV_DOCS__</a></li>
         <li class="ncss-nav-item"><a href="__EXAMPLES_HREF__">__NAV_EXAMPLES__</a></li>
         <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">GitHub</a></li>
+        <li class="ncss-nav-item"><a href="accessibility-statement.html"><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>__STATEMENT_LABEL__</a></li>
         <li class="ncss-nav-item"><a href="../../LICENSE">Lizenz / License</a></li>
+        <li class="ncss-nav-item"><a href="https://github.com/sponsors/skerbis" target="_blank" rel="noopener" aria-label="__SPONSOR_ARIA__">__SPONSOR_LABEL__</a></li>
       </ul>
     </nav>
   </div>

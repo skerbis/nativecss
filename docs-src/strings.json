@@ -34,7 +34,20 @@
     "searchSuggest": "Schnellzugriff",
     "searchHintSelect": "wählen",
     "searchHintOpen": "öffnen",
-    "searchHintClose": "schließen"
+    "searchHintClose": "schließen",
+    "sponsorLabel": "Unterstützen ♥",
+    "sponsorAria": "NativeCSS über GitHub Sponsors unterstützen (öffnet GitHub)",
+    "versionLabel": "Version",
+    "changelogLabel": "Änderungen",
+    "brandLabel": "NativeCSS – Startseite",
+    "navPanelLabel": "Hauptmenü",
+    "a11yTitle": "Barrierefreiheit",
+    "a11yKeyboard": "Tastatur",
+    "a11yScreenreader": "Screenreader",
+    "a11yPrefs": "Einstellungen",
+    "a11yNoJs": "Ohne JavaScript",
+    "a11yMore": "Mehr zur Barrierefreiheit",
+    "statementLabel": "Erklärung zur Barrierefreiheit"
   },
   "en": {
     "skipLink": "Skip to content",
@@ -71,6 +84,19 @@
     "searchSuggest": "Quick access",
     "searchHintSelect": "select",
     "searchHintOpen": "open",
-    "searchHintClose": "close"
+    "searchHintClose": "close",
+    "sponsorLabel": "Sponsor ♥",
+    "sponsorAria": "Support NativeCSS via GitHub Sponsors (opens GitHub)",
+    "versionLabel": "Version",
+    "changelogLabel": "Changelog",
+    "brandLabel": "NativeCSS – home",
+    "navPanelLabel": "Main menu",
+    "a11yTitle": "Accessibility",
+    "a11yKeyboard": "Keyboard",
+    "a11yScreenreader": "Screen readers",
+    "a11yPrefs": "User preferences",
+    "a11yNoJs": "Without JavaScript",
+    "a11yMore": "More on accessibility",
+    "statementLabel": "Accessibility statement"
   }
 }

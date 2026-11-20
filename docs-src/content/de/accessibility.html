@@ -1,7 +1,48 @@
-<!--DESC: Skip-Link, visually-hidden und die Barrierefreiheits-Prinzipien, die sich durch ganz ncss ziehen.-->
+<!--DESC: Warum Barrierefreiheit eine Kernsäule von NativeCSS ist - WCAG 2.2 AA als Ziel, BFSG-Kontext, Skip-Link, visually-hidden und die durchgängigen Prinzipien.-->
 <section class="ncss-stack">
   <h1>Barrierefreiheit</h1>
-  <p class="ncss-text-lg ncss-text-muted"><code>helpers/a11y.css</code> plus Prinzipien, die sich durch das gesamte System ziehen statt in einer einzelnen Datei zu stecken.</p>
+  <p class="ncss-text-lg ncss-text-muted">Barrierefreiheit ist in NativeCSS keine Zusatzdatei, sondern eine Grundentscheidung: native Elemente, sichtbarer Fokus, respektierte Nutzer-Einstellungen. <code>helpers/a11y.css</code> liefert die wenigen Hilfsklassen, der Rest steckt in jeder Komponente.</p>
+</section>
+
+<section class="ncss-stack" id="kernsaeule">
+  <h2 class="demo-section-title">Warum eine Kernsäule</h2>
+  <p>Eine Website, die sich nicht per Tastatur bedienen lässt, deren Texte bei 200&nbsp;% Zoom abgeschnitten werden oder deren Animationen Schwindel auslösen, ist für einen Teil der Besucher schlicht kaputt - das betrifft nicht nur Menschen mit dauerhafter Behinderung, sondern auch jemanden mit gebrochenem Arm, grellem Sonnenlicht auf dem Display oder einer langsamen Verbindung.</p>
+  <p>Weil NativeCSS auf native HTML-Elemente setzt (<code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>, echte Radio-Gruppen, <code>&lt;input type="range"&gt;</code>), bringen viele Komponenten Tastaturbedienung, Fokus-Verwaltung und Screenreader-Rollen vom Browser mit. Wo JavaScript nötig ist, folgt es den WAI-ARIA-Mustern (Combobox, Listbox, Menü) und bleibt ein Enhancement: ohne Script bleibt die native Grundfunktion nutzbar.</p>
+</section>
+
+<section class="ncss-stack" id="ziel-wcag">
+  <h2 class="demo-section-title">Ziel: WCAG 2.2 Stufe AA</h2>
+  <p>Maßstab für Komponenten, Tokens und dieses Handbuch sind die <a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines (WCAG) 2.2</a> auf Stufe AA. Die vier Prinzipien dahinter: <strong>wahrnehmbar</strong> (Kontrast, Textalternativen, Untertitel), <strong>bedienbar</strong> (Tastatur, genug Zeit, keine Bewegungsfallen), <strong>verständlich</strong> (klare Beschriftungen, Fehlermeldungen) und <strong>robust</strong> (korrektes Markup, das Hilfstechnologien verstehen).</p>
+  <p>Ein Design-System kann dabei nur die Bausteine liefern. Ob eine fertige Seite die Kriterien erfüllt, hängt von Inhalten und Einsatz ab: sinnvolle Alternativtexte, eine logische Überschriften-Struktur, verständliche Linktexte, Untertitel für Videos und ausreichend Kontrast bei eigenen Farben kann kein CSS automatisch herstellen.</p>
+</section>
+
+<section class="ncss-stack" id="bfsg">
+  <h2 class="demo-section-title">Kontext: Barrierefreiheitsstärkungsgesetz (BFSG)</h2>
+  <p>Seit dem <strong>28. Juni 2025</strong> gilt in Deutschland das Barrierefreiheitsstärkungsgesetz. Es setzt den European Accessibility Act (EU-Richtlinie 2019/882) um und betrifft viele digitale Produkte und Dienstleistungen für Verbraucher - etwa Online-Shops und andere Angebote des elektronischen Geschäftsverkehrs, Bankdienstleistungen, E-Books sowie Buchungs- und Ticketangebote im Personenverkehr. Für Dienstleistungen von Kleinstunternehmen gibt es Ausnahmen.</p>
+  <p>Technische Grundlage ist die harmonisierte europäische Norm <strong>EN 301 549</strong>, die für Web-Inhalte auf die WCAG verweist. Wer sich an WCAG 2.2 AA orientiert, deckt die dort referenzierten Web-Kriterien (aktuell WCAG 2.1 AA) mit ab. Zusätzlich verlangt das Gesetz u.a. Informationen darüber, wie ein Angebot die Anforderungen erfüllt - siehe <a href="a11y-statement-guide.html">Barrierefreiheitserklärung</a>.</p>
+  <div class="ncss-card ncss-border ncss-radius-md" role="note">
+    <p class="ncss-card-body"><strong>Kein Rechtsrat:</strong> NativeCSS hilft dabei, barrierefreie Websites zu bauen - es kann eine Website aber nicht von sich aus konform machen und ersetzt keine Prüfung. Ob und in welchem Umfang das BFSG für ein Angebot gilt, klärt im Zweifel eine fachkundige Beratung.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="unterseiten">
+  <h2 class="demo-section-title">Die Themen im Überblick</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Seite</th><th scope="col">Inhalt</th></tr></thead>
+      <tbody>
+        <tr><td><a href="a11y-keyboard.html">Tastatur</a></td><td>Sichtbarer Fokus, Reihenfolge, Skip-Link und alle Tastenbelegungen der Komponenten in einer Tabelle</td></tr>
+        <tr><td><a href="a11y-screenreader.html">Screenreader &amp; ARIA</a></td><td>Zugängliche Namen, Landmarks, Überschriften, Live-Regionen und die ARIA-Zustände, die ncss nutzt</td></tr>
+        <tr><td><a href="a11y-preferences.html">Nutzer-Einstellungen</a></td><td>Reduzierte Bewegung, mehr Kontrast, weniger Transparenz, Systemfarben, Hell/Dunkel - mit Live-Simulator</td></tr>
+        <tr><td><a href="a11y-zoom.html">Zoom, Reflow &amp; Textabstände</a></td><td>200&nbsp;% Textzoom, 320&nbsp;px Breite ohne seitliches Scrollen, anpassbare Textabstände</td></tr>
+        <tr><td><a href="a11y-forms.html">Formulare &amp; Fehlermeldungen</a></td><td>Labels, Pflichtfelder, Fehlerzustände und verständliche Meldungen</td></tr>
+        <tr><td><a href="a11y-media.html">Medien</a></td><td>Alternativtexte, Untertitel, Transkripte, Autoplay und Pausen-Mechanismen</td></tr>
+        <tr><td><a href="a11y-testing.html">Testen</a></td><td>Automatische Prüfwerkzeuge, manuelle Tests mit Tastatur und Screenreader</td></tr>
+        <tr><td><a href="a11y-checklist.html">Checkliste WCAG 2.2 AA</a></td><td>Die Erfolgskriterien als Arbeitsliste - was ncss mitbringt, was beim Projekt liegt</td></tr>
+        <tr><td><a href="a11y-statement-guide.html">Barrierefreiheitserklärung</a></td><td>Aufbau und Inhalte einer Erklärung zur Barrierefreiheit</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <section class="ncss-stack" id="klassen">
@@ -29,10 +70,10 @@
 
 <section class="ncss-stack" id="prinzipien">
   <h2 class="demo-section-title">Durchgängige Prinzipien</h2>
-  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
     <li><strong>Native Elemente zuerst</strong> - <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>, <code>&lt;fieldset&gt;</code>, <code>&lt;progress&gt;</code>/<code>&lt;meter&gt;</code> bringen Tastatursteuerung, Fokus-Management und Rollen kostenlos mit, ohne ARIA-Nachbau.</li>
-        <li><code>:focus-visible</code> bleibt immer ungated - anders als <code>:hover</code>, das nur bei echten Zeigegeräten aktiv ist (siehe <a href="touch-mobile.html">Touch &amp; mobile Viewports</a>).</li>
-    <li><strong><code>prefers-reduced-motion</code></strong> wird global respektiert (<code>*</code>-Selektor schließt <code>html</code> mit ein) - keine Animation muss das einzeln selbst prüfen.</li>
+    <li><code>:focus-visible</code> bleibt immer ungated - anders als <code>:hover</code>, das nur bei echten Zeigegeräten aktiv ist (siehe <a href="touch-mobile.html">Touch &amp; mobile Viewports</a>).</li>
+    <li><strong><code>prefers-reduced-motion</code></strong> wird global respektiert (<code>*</code>-Selektor schließt <code>html</code> mit ein) - keine Animation muss das einzeln selbst prüfen (Details unter <a href="a11y-preferences.html#bewegung">Nutzer-Einstellungen</a>).</li>
     <li><strong>Farbkontrast</strong> ist Teil der Token-Palette: <code>-on-soft</code>-Textfarben je Familie sind gegen ihre eigene <code>-100</code>-Fläche geprüft, nicht geraten (siehe <a href="colors.html">Farben &amp; Flächen</a>).</li>
     <li><code>.ncss-table-stacked</code> ist die eine bewusste Ausnahme - bricht programmatische Tabellensemantik zugunsten der Lesbarkeit auf schmalen Screens, siehe <a href="known-limitations.html">Bekannte Grenzen</a>.</li>
   </ul>

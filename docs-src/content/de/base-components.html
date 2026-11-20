@@ -43,7 +43,7 @@
 &lt;/ncss-tabs&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
   <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
-<ncss-tabs class="ncss-tabs" hash>
+<ncss-tabs hash>
   <div class="ncss-tabs-list" aria-label="Produktinfos">
     <a href="#tab-beschreibung">Beschreibung</a>
     <a href="#tab-technik">Technische Daten</a>
@@ -64,7 +64,7 @@
 </ncss-tabs>
   </div>
   <p>Vertikal mit manueller Aktivierung (<code>activation="manual"</code>): Pfeiltasten bewegen nur den Fokus, Enter/Leertaste öffnet - sinnvoll, wenn ein Panel teuren Inhalt lädt. Bei wenig Platz rutscht der Inhalt unter die Liste (kein fester Breakpoint).</p>
-  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual"&gt;
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs--vertical" activation="manual"&gt;
   &lt;div class="ncss-tabs-list" aria-label="Einstellungen"&gt;
     &lt;a href="#set-profil"&gt;Profil&lt;/a&gt;
     &lt;a href="#set-konto"&gt;Konto&lt;/a&gt;
@@ -85,7 +85,7 @@
 &lt;/ncss-tabs&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
   <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
-<ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual">
+<ncss-tabs class="ncss-tabs--vertical" activation="manual">
   <div class="ncss-tabs-list" aria-label="Einstellungen">
     <a href="#set-profil">Profil</a>
     <a href="#set-konto">Konto</a>
@@ -106,8 +106,8 @@
 </ncss-tabs>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Event <code>ncss-tabs-change</code> (bubbelt, <code>detail.tab/panel/index</code>), Methode <code>el.select(index | "id")</code>.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Barrierefreiheit</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
     <h4>Tastatur</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
@@ -152,8 +152,8 @@
 </div>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Wichtig: der Tooltip ist eine <em>Beschreibung</em>, nie der Name. Der Icon-Button oben heißt per <code>aria-label</code> "Kopieren"; ohne JS und ohne <code>interestfor</code> bleibt der Tooltip unsichtbar, die Beschreibung kommt über <code>aria-describedby</code> trotzdem an.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Barrierefreiheit</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
     <h4>Tastatur</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
@@ -227,8 +227,8 @@
   </ul>
 </nav>
   </div>
-  <div class="ncss-a11y-notes">
-    <h3>Barrierefreiheit</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
     <h4>Tastatur</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
@@ -249,7 +249,7 @@
 <section class="ncss-stack" id="alert">
   <h2 class="demo-section-title">Hinweis-Boxen (Alert)</h2>
   <p><code>.ncss-alert</code> mit <code>--info</code> (Markenfarbe), <code>--success</code>, <code>--warning</code>, <code>--danger</code>, <code>--neutral</code>; <code>--plain</code> ohne Symbol. Das Symbol ist Deko - die Bedeutung steht im Text ("Achtung:"), Farbe allein reicht nicht.</p>
-  <pre><code class="language-html">&lt;div class="ncss-alert ncss-alert--info"&gt;
+  <pre><code class="language-html">&lt;div class="ncss-alert"&gt;
   &lt;p class="ncss-alert-title"&gt;Hinweis:&lt;/p&gt;
   &lt;p&gt;Die Anmeldung ist bis 30. November geöffnet.&lt;/p&gt;
 &lt;/div&gt;
@@ -267,7 +267,7 @@
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
   <div class="ncss-stack">
-<div class="ncss-alert ncss-alert--info">
+<div class="ncss-alert">
   <p class="ncss-alert-title">Hinweis:</p>
   <p>Die Anmeldung ist bis 30. November geöffnet.</p>
 </div>
@@ -305,8 +305,8 @@
 </div>
   </div>
   <p class="ncss-text-sm ncss-text-muted"><strong>Abgrenzung:</strong> <code>.ncss-card--success</code> &amp; Co. sind <em>Karten</em> in Statusfarbe (beliebiger Inhalt, Kartenraster, Media). <code>.ncss-alert</code> ist eine <em>Meldung</em> mit Symbol, Titel und optionalem Schließen. Dieselben Farb-Tokens, bewusst kein Alias. Für Meldungen, die von selbst verschwinden, die <a href="overlays.html">Toasts</a> aus <code>notification.css</code>.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Barrierefreiheit</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
     <h4>Tastatur</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
@@ -359,8 +359,8 @@
 </dialog>
   </div>
   <p class="ncss-text-sm ncss-text-muted">Geschlossen wird über <code>requestClose()</code>: das <code>cancel</code>-Event feuert vorher, <code>event.preventDefault()</code> hält den Dialog offen (z. B. "Ungespeicherte Änderungen verwerfen?"). Eine Textmarkierung, die im Panel beginnt und daneben endet, schließt nicht. Einbindung: <code>&lt;script src="ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;</code>.</p>
-  <div class="ncss-a11y-notes">
-    <h3>Barrierefreiheit</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
     <h4>Tastatur</h4>
     <table class="ncss-table--compact">
       <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>

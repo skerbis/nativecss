@@ -3,8 +3,9 @@
 <section class="demo-start-hero" data-subnav="off">
   <div class="ncss-container">
     <a class="demo-start-pill" href="#neu"><span class="ncss-badge-dot" aria-hidden="true"></span> New: scroll effects, modern UI, video &amp; audio, example websites</a>
+    <p class="demo-start-wordmark"><!--WORDMARK--></p>
     <h1>CSS the browser <em>already knows</em>.</h1>
-    <p class="demo-start-lead">NativeCSS is a design system made of plain, modern CSS: cascade layers, container queries, <code>light-dark()</code> and native HTML elements instead of a preprocessor, a bundler and JavaScript re-implementations. Add two lines - done.</p>
+    <p class="demo-start-lead">NativeCSS is a design system made of plain, modern CSS: cascade layers, container queries, <code>light-dark()</code> and native HTML elements instead of a preprocessor, a bundler and JavaScript re-implementations - accessible from the ground up. Add two lines - done.</p>
     <div class="ncss-cluster demo-start-actions">
       <a class="ncss-btn ncss-btn--primary" href="index.html">Open the docs</a>
       <a class="ncss-btn ncss-btn--secondary" href="examples.html">See examples</a>
@@ -17,23 +18,17 @@
   <div class="ncss-container">
     <div class="demo-start-head">
       <h2>Two lines instead of a build chain</h2>
-      <p>No installing, compiling or purging: the files are finished CSS the browser loads directly.</p>
+      <p>No compiling, no purging: the files are finished CSS the browser loads directly - three equal ways to include them.</p>
     </div>
-    <div class="demo-start-vs">
-      <figure class="demo-start-chain">
-        <figcaption>Usual</figcaption>
-        <pre class="ncss-radius-lg ncss-border"><code class="language-markup">npm install -D sass postcss autoprefixer
+<!--INCLUDE: install-->
+    <details class="ncss-disclosure demo-start-chain-details">
+      <summary>For comparison - a typical build chain:</summary>
+      <pre class="ncss-radius-lg ncss-border"><code class="language-markup">npm install -D sass postcss autoprefixer
 npm install -D vite tailwindcss
 npx tailwindcss init
-# vite.config.js, postcss.config.js, purge rules …
+# vite.config.js, postcss.config.js, purge …
 npm run build</code></pre>
-      </figure>
-      <figure>
-        <figcaption>NativeCSS</figcaption>
-        <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss/ncss.css"&gt;
-&lt;link rel="stylesheet" href="ncss/theme.css"&gt;</code></pre>
-      </figure>
-    </div>
+    </details>
   </div>
 </section>
 
@@ -98,7 +93,44 @@ button { background: #b4400f; } /* unlayered: wins */</code></pre>
   </div>
 </section>
 
-<section class="demo-start-section demo-start-section--tinted" id="cherry-picking" data-subnav-label="Cherry-Picking">
+<section class="demo-start-section demo-start-section--tinted" id="barrierefrei" data-subnav-icon="accessibility" data-subnav-label="Accessibility">
+  <div class="ncss-container ncss-stack ncss-stack--loose">
+    <div class="demo-start-head">
+      <h2><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessible from the ground up</h2>
+      <p>Accessibility is not an add-on module but built into every building block - a foundation for websites targeting WCAG 2.2 AA.</p>
+    </div>
+    <div class="demo-start-a11y">
+      <ul class="ncss-list--dot" role="list">
+        <li><strong>Native, semantic elements</strong> - <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>, real buttons and links instead of re-built widgets.</li>
+        <li><strong>Visible focus everywhere</strong> and keyboard patterns following the WAI-ARIA Authoring Practices Guide.</li>
+        <li><strong>Contrast-safe tokens</strong> with <code>light-dark()</code> - light and dark from one source.</li>
+        <li><strong>User preferences respected:</strong> reduced motion, more contrast, reduced transparency, forced colors.</li>
+        <li><strong>200 % zoom and reflow</strong> thanks to fluid sizes and container queries.</li>
+        <li><strong>Works without JavaScript</strong> - scripts only enhance, they carry nothing.</li>
+      </ul>
+      <p class="ncss-text-sm ncss-text-muted">Since 28 June 2025 the German Accessibility Strengthening Act (BFSG, implementing the European Accessibility Act) applies to many digital products and services. NativeCSS helps you build accessible websites - but a site becomes compliant through its content and implementation; NativeCSS alone cannot guarantee that. More in the <a href="accessibility.html">accessibility docs</a>.</p>
+    </div>
+    <div class="docs-live" role="group" aria-label="Live example: user preferences">
+<!--INCLUDE: a11y-prefs-->
+    </div>
+    <div class="docs-live" role="group" aria-label="Live example: keyboard">
+      <p class="ncss-text-sm">Move through with <kbd>Tab</kbd>, activate with <kbd>Enter</kbd>/<kbd>Space</kbd>, <kbd>Esc</kbd> closes the dialog:</p>
+      <div class="demo-keys">
+        <a href="a11y-keyboard.html">A link</a>
+        <button type="button" class="ncss-btn ncss-btn--secondary">A button</button>
+        <details class="ncss-disclosure"><summary>Expand</summary><p>Content reachable by keyboard.</p></details>
+        <button type="button" class="ncss-btn ncss-btn--primary" command="show-modal" commandfor="demoStartKeyDialog">Open dialog</button>
+      </div>
+      <dialog id="demoStartKeyDialog" class="ncss-modal" aria-labelledby="demoStartKeyDialogTitle">
+        <div class="ncss-modal-header"><h3 id="demoStartKeyDialogTitle">Focus contained</h3></div>
+        <p>Focus stays inside the dialog, <kbd>Esc</kbd> closes it and focus returns to the trigger.</p>
+        <div class="ncss-modal-footer"><button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="demoStartKeyDialog">Close</button></div>
+      </dialog>
+    </div>
+  </div>
+</section>
+
+<section class="demo-start-section" id="cherry-picking" data-subnav-label="Cherry-Picking">
   <div class="ncss-container">
     <div class="demo-start-head">
       <h2>Include only what you need</h2>
@@ -131,7 +163,7 @@ button { background: #b4400f; } /* unlayered: wins */</code></pre>
   </div>
 </section>
 
-<section class="demo-start-section" id="neu" data-subnav-label="New">
+<section class="demo-start-section demo-start-section--tinted" id="neu" data-subnav-label="New">
   <div class="ncss-container">
     <div class="demo-start-head">
       <h2>New in NativeCSS <span class="ncss-badge-dot" aria-hidden="true"></span></h2>
@@ -148,7 +180,7 @@ button { background: #b4400f; } /* unlayered: wins */</code></pre>
       </article>
       <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
         <div class="demo-hub-preview demo-hub-preview--bleed"><ncss-compare><img class="ncss-compare-before" src="~/demo/assets/modern-ui/compare-before.svg" alt="Mountain landscape in winter" width="1600" height="900"><img class="ncss-compare-after" src="~/demo/assets/modern-ui/compare-after.svg" alt="The same landscape in summer" width="1600" height="900"><input class="ncss-compare-range" type="range" min="0" max="100" value="50" aria-label="Move the divider: winter on the left, summer on the right"></ncss-compare></div>
-        <div class="ncss-card-body"><h3 class="demo-hub-title">Before/After</h3><p class="ncss-text-sm ncss-text-muted">A real range slider over two images - drag it right here.</p><p class="demo-start-new-links"><a href="modern-ui.html#live-demo">Comparison in the docs</a></p></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Before/After</h3><p class="ncss-text-sm ncss-text-muted">A real range slider over two images - drag it right here.</p><p class="demo-start-new-links"><a href="modern-ui.html#vergleich">Comparison in the docs</a></p></div>
       </article>
       <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
         <div class="demo-hub-preview" aria-hidden="true" inert><div class="demo-hub-player"><span class="demo-hub-player-play"><span class="ncss-icon ncss-icon-play"></span></span><progress value="35" max="100" tabindex="-1"></progress><span class="ncss-text-muted">1:24</span></div></div>
@@ -157,6 +189,14 @@ button { background: #b4400f; } /* unlayered: wins */</code></pre>
       <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
         <div class="demo-hub-preview" aria-hidden="true" inert><div class="demo-hub-subnav"><span>On this page</span><span class="ncss-badge">Section 2</span><span>Section 3</span></div></div>
         <div class="ncss-card-body"><h3 class="demo-hub-title">Section Navigation</h3><p class="ncss-text-sm ncss-text-muted">Sticky "On this page" bar for one-pagers - like the one at the top of this page.</p><p class="demo-start-new-links"><a href="subnav.html">Section navigation in the docs</a></p></div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview" aria-hidden="true" inert><div class="ncss-stack ncss-stack--tight"><span class="ncss-cluster"><span class="ncss-badge">Tab 1</span><span class="ncss-badge ncss-badge--neutral">Tab 2</span><span class="ncss-badge ncss-badge--neutral">Tab 3</span></span><span class="ncss-cluster"><span class="ncss-badge ncss-badge--neutral">‹</span><span class="ncss-badge">1</span><span class="ncss-badge ncss-badge--neutral">2</span><span class="ncss-badge ncss-badge--neutral">›</span></span></div></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Base &amp; app building blocks</h3><p class="ncss-text-sm ncss-text-muted">Tabs, tooltip, pagination, alerts, file upload, countdown - and dialogs that close when you click outside.</p><p class="demo-start-new-links"><a href="base-components.html">Base components</a><a href="app-ui.html">App building blocks</a></p></div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
+        <div class="demo-hub-preview" aria-hidden="true" inert><div class="ncss-cluster ncss-text-xl"><span class="ncss-icon ncss-icon-search"></span><span class="ncss-icon ncss-icon-menu"></span><span class="ncss-icon ncss-icon-check"></span><span class="ncss-icon ncss-icon-sun"></span><span class="ncss-icon ncss-icon-moon"></span></div></div>
+        <div class="ncss-card-body"><h3 class="demo-hub-title">Icons</h3><p class="ncss-text-sm ncss-text-muted">51 core icons without JavaScript, plus around 1,500 Phosphor icons via <code>&lt;ncss-icon&gt;</code> and a sprite builder.</p><p class="demo-start-new-links"><a href="icons.html">Icons in the docs</a></p></div>
       </article>
       <article class="ncss-card ncss-border ncss-radius-lg demo-hub-card">
         <div class="demo-hub-preview" aria-hidden="true" inert><pre class="demo-hub-code">&lt;article class="ncss-card"&gt;
@@ -168,7 +208,7 @@ button { background: #b4400f; } /* unlayered: wins */</code></pre>
   </div>
 </section>
 
-<section class="demo-start-section demo-start-section--tinted" id="beispiele" data-subnav-label="Examples">
+<section class="demo-start-section" id="beispiele" data-subnav-label="Examples">
   <div class="ncss-container">
     <div class="demo-start-head">
       <h2>Whole websites, made only of NativeCSS</h2>
@@ -178,7 +218,7 @@ button { background: #b4400f; } /* unlayered: wins */</code></pre>
   </div>
 </section>
 
-<section class="demo-start-section" id="passt" data-subnav-label="Is it a fit?">
+<section class="demo-start-section demo-start-section--tinted" id="passt" data-subnav-label="Is it a fit?">
   <div class="ncss-container">
     <div class="demo-start-head">
       <h2>When NativeCSS - and when not</h2>
@@ -204,6 +244,16 @@ button { background: #b4400f; } /* unlayered: wins */</code></pre>
         <p class="ncss-text-sm ncss-text-muted">Details: <a href="known-limitations.html">Known limitations</a>.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="demo-start-section" id="unterstuetzen" data-subnav-label="Support">
+  <div class="ncss-container demo-start-sponsor">
+    <div class="demo-start-head">
+      <h2>Support NativeCSS</h2>
+      <p>NativeCSS is free and made in spare time - if you would like to support its further development, you can do so via GitHub Sponsors. Thank you!</p>
+    </div>
+    <p><a class="ncss-btn ncss-btn--secondary" href="https://github.com/sponsors/skerbis" target="_blank" rel="noopener" aria-label="Support NativeCSS via GitHub Sponsors (opens GitHub)">Support via GitHub Sponsors <span aria-hidden="true">♥</span></a></p>
   </div>
 </section>
 

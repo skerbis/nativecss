@@ -1,0 +1,239 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-narrow-form {
+    max-width: 28rem;
+  }
+  .demo-align-start {
+    align-self: start;
+  }
+</style>
+<script src="~/dist/js/combobox.js" defer></script>
+<script src="~/dist/js/livesearch.js" defer></script>
+-->
+  <section class="ncss-stack">
+    <p class="ncss-text-muted">Native form elements, fully styled (helpers/forms.css) - no web component replacement needed where HTML already does the job.</p>
+    <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="name"&gt;Name&lt;/label&gt;
+  &lt;input class="ncss-input" type="text" id="name" required&gt;
+  &lt;span class="ncss-field-hint"&gt;Required&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="live-basis" class="ncss-stack">
+    <h2 class="demo-section-title">Basic fields</h2>
+    <form class="ncss-stack demo-narrow-form" novalidate>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demoName">Name</label>
+        <input class="ncss-input" type="text" id="demoName" required>
+        <span class="ncss-field-hint">Try submitting it empty - it only turns red after interaction (:user-invalid).</span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoSelect">Selection</label>
+        <span class="ncss-select-wrapper">
+          <select class="ncss-select" id="demoSelect">
+            <button type="button">
+              <selectedcontent></selectedcontent>
+            </button>
+            <option>Option A</option>
+            <option>Option B</option>
+          </select>
+        </span>
+        <span class="ncss-field-hint">Popup styled via <code>appearance: base-select</code> (Chrome/Edge) - in browsers without this support (Firefox) AND deliberately also in Safari (known rendering bug, see the <a href="components.html">component reference</a>), <code>js/combobox.js</code> takes over automatically.</span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoSelectRich">Favorite fruit (rich option content)</label>
+        <span class="ncss-select-wrapper">
+          <select class="ncss-select" id="demoSelectRich">
+            <button type="button">
+              <selectedcontent></selectedcontent>
+            </button>
+            <option value="apfel">
+              <span aria-hidden="true">🍎</span>
+              <span>Apple</span>
+            </option>
+            <option value="orange">
+              <span aria-hidden="true">🍊</span>
+              <span>Orange</span>
+            </option>
+            <option value="zitrone">
+              <span aria-hidden="true">🍋</span>
+              <span>Lemon</span>
+            </option>
+          </select>
+        </span>
+        <span class="ncss-field-hint"><code>&lt;option&gt;</code> may contain any child elements with <code>appearance: base-select</code> (not just text) - here icon + label. <code>&lt;button&gt;&lt;selectedcontent&gt;</code> optionally controls what is shown in the closed state.</span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoMessage">Message</label>
+        <textarea class="ncss-textarea" id="demoMessage"></textarea>
+      </div>
+      <label class="ncss-choice"><input type="checkbox"> Checkbox option</label>
+      <label class="ncss-choice"><input type="radio" name="demoRadio"> Radio A</label>
+      <label class="ncss-choice"><input type="radio" name="demoRadio"> Radio B</label>
+      <button type="submit" class="ncss-btn ncss-btn--primary demo-align-start">Submit</button>
+    </form>
+  </section>
+
+  <section id="live-input-group" class="ncss-stack">
+    <h2 class="demo-section-title">Input-Group</h2>
+    <p class="ncss-text-muted ncss-text-sm">Form controls visually merged into ONE unit (<code>components/input-group.css</code>) - shared border instead of a gap, only the outer corners rounded. Two cases: field + button (search bar) and several fields side by side (first name/last name).</p>
+    <p class="ncss-text-muted ncss-text-sm"><strong>Accessibility</strong>: <code>placeholder</code> is NOT a substitute for a label - it disappears on input and is not reliably announced as the field name by every screen reader. Every field needs a real <code>&lt;label&gt;</code>, visually hidden via <code>.ncss-visually-hidden</code> if needed. The label goes BEFORE the <code>.ncss-input-group</code> as a sibling, not inside it as a child - otherwise it wrongly counts as <code>:first-child</code> and the corner rounding lands on the invisible label instead of the first real field.</p>
+    <div class="ncss-stack ncss-stack--tight demo-narrow-form">
+      <div class="ncss-field">
+        <label class="ncss-visually-hidden" for="demoSearchGroup">Search term</label>
+        <div class="ncss-input-group">
+          <input class="ncss-input" type="search" id="demoSearchGroup" placeholder="Search term…">
+          <button type="submit" class="ncss-btn ncss-btn--primary">Search</button>
+        </div>
+      </div>
+      <div class="ncss-input-group">
+        <input class="ncss-input" aria-label="First name" placeholder="First name">
+        <input class="ncss-input" aria-label="Last name" placeholder="Last name">
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;label class="ncss-visually-hidden" for="live-search"&gt;Search term&lt;/label&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" id="live-search" placeholder="Search term…"&gt;
+  &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Search&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Several directly merged fields with no room for a visible/hidden
+     sibling label per field: aria-label directly on the &lt;input&gt; is the right,
+     WCAG-compliant technique here (no structural change to the input group needed). --&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" aria-label="First name" placeholder="First name"&gt;
+  &lt;input class="ncss-input" aria-label="Last name" placeholder="Last name"&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="live-live-suche" class="ncss-stack">
+    <h2 class="demo-section-title">Live search</h2>
+    <p class="ncss-text-muted ncss-text-sm">Suggestions while you type, grouped and keyboard-operable (arrow keys, Enter, Esc) - <code>components/livesearch.css</code> + <code>js/livesearch.js</code>, WAI-ARIA combobox pattern. This demo uses a static JSON file in client mode (<code>data-mode="client"</code>); normally a server endpoint returns pre-filtered results. Without JS it stays a regular search form. Try e.g. “nav”, “farb” or “glass”.</p>
+    <form class="ncss-livesearch demo-narrow-form" action="#live-suche" role="search" data-ncss-livesearch="~/demo/assets/livesearch-demo.json" data-mode="client">
+      <label class="ncss-visually-hidden" for="demoLiveSearch">Search demo pages and docs</label>
+      <div class="ncss-input-group">
+        <input class="ncss-input" type="search" id="demoLiveSearch" name="q" placeholder="Search term…">
+        <button type="submit" class="ncss-btn ncss-btn--primary">Search</button>
+      </div>
+      <div class="ncss-livesearch-results" hidden></div>
+    </form>
+    <pre><code class="language-html">&lt;form class="ncss-livesearch" action="/suche/" role="search" data-ncss-livesearch="/api/suche"&gt;
+  &lt;label class="ncss-visually-hidden" for="live-q"&gt;Search&lt;/label&gt;
+  &lt;input id="live-q" class="ncss-input" type="search" name="q"&gt;
+  &lt;div class="ncss-livesearch-results" hidden&gt;&lt;/div&gt;
+&lt;/form&gt;
+&lt;script src="dist/js/livesearch.js" defer&gt;&lt;/script&gt;</code></pre>
+    <pre><code class="language-javascript">// Endpoint response (GET /api/suche?q=...)
+{
+  "groups": [
+    { "label": "Pages", "items": [ { "title": "Contact", "url": "/kontakt/", "text": "Directions and opening hours" } ] }
+  ],
+  "all": "/suche/?q=..."
+}</code></pre>
+  </section>
+
+  <section id="switch" class="ncss-stack">
+    <h2 class="demo-section-title">Switch</h2>
+    <p class="ncss-text-muted ncss-text-sm">Native <code>&lt;input type="checkbox"&gt;</code>, redrawn via <code>appearance:none</code> - no JS, no web component needed.</p>
+    <div class="ncss-stack ncss-stack--tight">
+      <label class="ncss-switch"><input type="checkbox" role="switch"> Notifications</label>
+      <label class="ncss-switch"><input type="checkbox" role="switch" checked> Dark mode (preselected)</label>
+      <label class="ncss-switch"><input type="checkbox" role="switch" disabled> Disabled</label>
+    </div>
+  </section>
+
+  <section id="range" class="ncss-stack">
+    <h2 class="demo-section-title">Range-Slider</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>accent-color</code> for the base color (like checkbox/radio), with track/thumb additionally unified.</p>
+    <div class="ncss-field demo-narrow-form">
+      <label class="ncss-label" for="demoRange">Volume</label>
+      <input class="ncss-range" type="range" id="demoRange" min="0" max="100" value="60">
+    </div>
+  </section>
+
+  <section id="datei-upload" class="ncss-stack">
+    <h2 class="demo-section-title">File upload</h2>
+    <p class="ncss-text-muted ncss-text-sm">The input type with the biggest cross-browser differences - Chrome/Edge/Safari draw their own button + file name, Firefox a "Browse…" button. <code>::file-selector-button</code> (+ <code>::-webkit-file-upload-button</code> for older Safari versions) gives the button the same look as <code>.ncss-btn--secondary</code>.</p>
+    <div class="ncss-field demo-narrow-form">
+      <label class="ncss-label" for="demoFile">Choose file</label>
+      <input class="ncss-input" type="file" id="demoFile">
+    </div>
+    <div class="ncss-field demo-narrow-form">
+      <label class="ncss-label" for="demoFileMulti">Multiple files, images only</label>
+      <input class="ncss-input" type="file" id="demoFileMulti" multiple accept="image/*">
+    </div>
+  </section>
+
+  <section id="weitere-feldtypen" class="ncss-stack">
+    <h2 class="demo-section-title">More field types</h2>
+    <p class="ncss-text-muted ncss-text-sm">All via the same <code>.ncss-input</code> base rule, with targeted additions per type where browsers bring their own pseudo-elements (color swatch, calendar/clock icon, clear icon in search).</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoColor">Color</label>
+        <input class="ncss-input" type="color" id="demoColor" value="#3399ff">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoDate">Date</label>
+        <input class="ncss-input" type="date" id="demoDate">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoTime">Time</label>
+        <input class="ncss-input" type="time" id="demoTime">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoDatetime">Date + time</label>
+        <input class="ncss-input" type="datetime-local" id="demoDatetime">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoSearch">Search</label>
+        <input class="ncss-input" type="search" id="demoSearch" placeholder="Search term…">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoNumber">Number</label>
+        <input class="ncss-input" type="number" id="demoNumber" min="0" max="10" value="5">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoCombobox">City (combobox)</label>
+        <input class="ncss-input" list="demoCities" id="demoCombobox" placeholder="Choose or type…">
+        <datalist id="demoCities">
+          <option value="Berlin"></option>
+          <option value="Hamburg"></option>
+          <option value="Munich"></option>
+        </datalist>
+      </div>
+    </div>
+    <p class="ncss-text-muted ncss-text-sm"><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code> - an editable text field WITH a suggestion list (unlike <code>&lt;select&gt;</code>, which only allows choosing without free input). <code>.ncss-input</code> applies without a special rule, since it targets every <code>&lt;input&gt;</code> generically. The native suggestion list itself is pure browser UI - not stylable via CSS in any browser. With the opt-in <code>js/combobox.js</code> (included here) it is replaced by a real, styled dropdown list (original markup unchanged, full native functionality remains without JS).</p>
+  </section>
+
+  <section id="fieldset" class="ncss-stack">
+    <h2 class="demo-section-title">Grouped fields</h2>
+    <p class="ncss-text-muted ncss-text-sm">Native <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code> instead of a custom "group" component - fully styled without its own class (like <code>&lt;blockquote&gt;</code> in base.css); otherwise the UA stylesheet's native 3D border would be the only remaining style break compared to the flat ncss fields.</p>
+    <fieldset class="demo-narrow-form">
+      <legend>Shipping</legend>
+      <label class="ncss-choice"><input type="radio" name="demoShipping" checked> Standard (free)</label>
+      <label class="ncss-choice"><input type="radio" name="demoShipping"> Express (+4,90&nbsp;€)</label>
+    </fieldset>
+  </section>
+
+  <section id="fortschritt" class="ncss-stack">
+    <h2 class="demo-section-title">Progress, meter &amp; output</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>&lt;progress&gt;</code> (an ongoing task, e.g. the upload above) and <code>&lt;meter&gt;</code> (a value within a scale, e.g. storage space) look similar but mean different things - <code>&lt;meter&gt;</code> deliberately keeps its own green/yellow/red rating logic instead of the brand color, as that is its actual purpose. <code>&lt;output&gt;</code> for a calculated result.</p>
+    <div class="ncss-stack ncss-stack--tight demo-narrow-form">
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoProgress">Upload progress</label>
+        <progress id="demoProgress" value="60" max="100"></progress>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoMeter">Storage used</label>
+        <meter id="demoMeter" value="0.6" min="0" max="1"></meter>
+      </div>
+      <p><output>Result: 42</output></p>
+    </div>
+  </section>

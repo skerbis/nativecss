@@ -46,9 +46,18 @@
  */
 (function () {
   "use strict";
+  // Bewegung reduzieren? Systemeinstellung ODER ausdrückliche Wahl am <html>
+  // (data-motion="reduce"/"full", gesetzt von js/preferences.js) - "full" hebt ein
+  // System-"reduce" nur als bewusste Nutzerwahl auf, nie von selbst.
+  function ncssReducedMotion() {
+    var choice = document.documentElement.getAttribute("data-motion");
+    if (choice === "reduce") return true;
+    if (choice === "full") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
 
   if (!document.startViewTransition) return;
-  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (ncssReducedMotion()) return;
 
   function enhanceExclusiveDetailsGroup(container, itemSelector, mediaItemSelector, namePrefix, transitionClass) {
     var mediaItems = container.querySelectorAll(mediaItemSelector);

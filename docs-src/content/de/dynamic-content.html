@@ -88,8 +88,8 @@ document.addEventListener("htmx:load", function (event) {
 
 <section class="ncss-stack" id="barrierefreiheit">
   <h2 class="demo-section-title">Barrierefreiheit</h2>
-  <div class="ncss-a11y-notes">
-    <h3>Worauf der Host-Code achten muss</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Worauf der Host-Code achten muss</h3>
     <dl class="ncss-stack ncss-stack--tight">
       <dt>Tastatur</dt>
       <dd>Die ncss-Scripts bewegen beim Initialisieren NIE den Fokus - eingefügtes Markup stiehlt ihn nicht. Fokus-Management nach einem Swap ist Sache des Host-Codes: Hat die Nutzerin das Nachladen selbst ausgelöst („Mehr laden“, Filter, Seite 2), den Fokus auf die Überschrift des neuen Bereichs setzen (<code>tabindex="-1"</code>, nicht in der Tab-Reihenfolge) - so wie die Demo oben. Ersetzt ein Swap das gerade fokussierte Element, geht der Fokus sonst an <code>&lt;body&gt;</code> verloren. Automatische Aktualisierungen (Polling, Live-Daten) dürfen den Fokus nie bewegen.</dd>

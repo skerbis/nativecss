@@ -34,6 +34,17 @@
   .demo-start-hero {
     padding-block: clamp(3.5rem, 10vw, 7.5rem) clamp(2.5rem, 6vw, 4.5rem);
   }
+  .demo-start-wordmark {
+    margin: var(--ncss-space-lg) 0 0;
+    font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3rem);
+    color: var(--ncss-color-text);
+  }
+  .demo-start-wordmark .demo-wordmark {
+    block-size: 1.6em;
+  }
+  .demo-start-chain-details {
+    margin-block-start: var(--ncss-space-lg);
+  }
   .demo-start-hero h1 {
     max-width: 18ch;
     margin: var(--ncss-space-md) 0 var(--ncss-space-sm);
@@ -279,6 +290,11 @@
     margin: 0 0 var(--ncss-space-xs);
   }
 
+  .demo-start-a11y {
+    display: grid;
+    gap: var(--ncss-space-sm);
+    max-width: 52rem;
+  }
   .demo-start-cta {
     text-align: center;
   }

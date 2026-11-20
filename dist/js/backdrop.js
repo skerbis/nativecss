@@ -12,6 +12,15 @@
  */
 (function () {
   "use strict";
+  // Bewegung reduzieren? Systemeinstellung ODER ausdrückliche Wahl am <html>
+  // (data-motion="reduce"/"full", gesetzt von js/preferences.js) - "full" hebt ein
+  // System-"reduce" nur als bewusste Nutzerwahl auf, nie von selbst.
+  function ncssReducedMotion() {
+    var choice = document.documentElement.getAttribute("data-motion");
+    if (choice === "reduce") return true;
+    if (choice === "full") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
 
   function init(root) {
     var items = Array.prototype.slice.call(root.querySelectorAll(".ncss-backdrop-item"));
@@ -26,7 +35,7 @@
     root.setAttribute("data-ready", "");
     items[0].classList.add("is-active");
 
-    if (items.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (items.length < 2 || ncssReducedMotion()) {
       return;
     }
 

@@ -1,0 +1,972 @@
+<!--HEAD:
+<style>
+  /* Nur für diese Demo-Seite selbst (Layout des Showcase-Rahmens) - kein Teil von NativeCSS. */
+  .demo-swatch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-3xs);
+  }
+  .demo-swatch-color {
+    height: 3.5rem;
+    border-radius: var(--ncss-radius-md);
+    border: 1px solid var(--ncss-color-border);
+  }
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-resize-hint {
+    border: 1px dashed var(--ncss-color-border);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    resize: horizontal;
+    overflow: auto;
+    min-width: 12rem;
+    max-width: 100%;
+  }
+  .demo-tree-nav {
+    max-width: 16rem;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-anim-loop-grid {
+    --ncss-grid-min: 10rem;
+    align-items: start;
+  }
+  .demo-anim-loop-item {
+    align-items: center;
+    text-align: center;
+  }
+  .demo-anim-spin-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--ncss-color-brand);
+  }
+  .demo-skeleton-line {
+    width: 100%;
+    height: 1rem;
+  }
+  .demo-skeleton-line--short {
+    width: 60%;
+  }
+  .demo-micro-card {
+    width: 10rem;
+  }
+  .demo-media-bottom {
+    max-width: 20rem;
+  }
+
+  /* Ab hier: benannte Klassen statt Inline-Styles fuer alle Demo-Platzhalter/Farbfelder.
+     --ncss-grid-min bleibt bewusst als style="--ncss-grid-min: Xrem" auf .ncss-grid stehen -
+     das ist Parametrisierung einer Custom Property (wie in tokens.css vorgesehen), keine
+     Deko, und wuerde als Klasse pro Wert (--min-8rem/-10rem/-12rem/...) genau die
+     Utility-Klassen-Matrix erzeugen, die wir vermeiden wollen. */
+  .demo-cq-context {
+    container-type: inline-size;
+    container-name: ncss-container;
+  }
+  .demo-float-sample {
+    background-color: var(--ncss-color-brand-300);
+    width: 8rem;
+    height: 8rem;
+  }
+  .demo-justify {
+    max-width: 12rem;
+    text-align: justify;
+  }
+  .demo-narrow-form {
+    max-width: 28rem;
+  }
+  .demo-align-start {
+    align-self: start;
+  }
+  /* Echte Platzhalter-Boxen (Bild-fehlt/Skeleton-Optik) sind jetzt components/placeholder.css
+     (.ncss-placeholder, kombinierbar mit .ncss-ratio-.../.ncss-card-media) - kein Demo-only-Klon
+     mehr. Hier nur noch, was wirklich seitenspezifisch ist. */
+  .demo-text-pad {
+    padding: var(--ncss-space-sm);
+  }
+  .demo-no-border {
+    padding: 0;
+    border: none;
+  }
+  .demo-sticky-box {
+    resize: vertical;
+    max-height: 10rem;
+    height: 10rem;
+  }
+  .demo-sticky-label {
+    background-color: var(--ncss-color-brand);
+    color: var(--ncss-color-brand-contrast);
+    padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  }
+  .demo-callout {
+    background-color: var(--ncss-color-bg-subtle);
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-hover-card {
+    position: relative;
+    padding: var(--ncss-space-sm);
+  }
+  .demo-hover-action {
+    position: absolute;
+    inset-block-start: var(--ncss-space-xs);
+    inset-inline-end: var(--ncss-space-xs);
+  }
+  .demo-slide {
+    aspect-ratio: var(--ncss-aspect-video);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ncss-color-brand-contrast);
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-slide--brand { background-color: var(--ncss-color-brand); }
+  .demo-slide--success { background-color: var(--ncss-color-success); }
+  .demo-slide--danger { background-color: var(--ncss-color-danger); }
+  .demo-thumb {
+    width: 8rem;
+    padding: 0;
+    border: none;
+    cursor: zoom-in;
+  }
+  .demo-lightbox-gallery img {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--ncss-aspect-square);
+    object-fit: cover;
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-lightbox-size {
+    width: 24rem;
+    max-width: 100%;
+  }
+  .demo-heading-inherit {
+    color: inherit;
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+
+  /* Farbfelder: je Token eine Modifier-Klasse statt style="background:var(...)" -
+     dieselbe demo-swatch-color--* Konvention wie an anderen Stellen dieser Seite. */
+  .demo-swatch-color--brand { background-color: var(--ncss-color-brand); }
+  .demo-swatch-color--bg-subtle { background-color: var(--ncss-color-bg-subtle); }
+  .demo-swatch-color--surface { background-color: var(--ncss-color-surface); }
+  .demo-swatch-color--success { background-color: var(--ncss-color-success); }
+  .demo-swatch-color--warning { background-color: var(--ncss-color-warning); }
+  .demo-swatch-color--danger { background-color: var(--ncss-color-danger); }
+
+  .demo-swatch-color--brand-100 { background-color: var(--ncss-color-brand-100); }
+  .demo-swatch-color--brand-300 { background-color: var(--ncss-color-brand-300); }
+  .demo-swatch-color--brand-500 { background-color: var(--ncss-color-brand-500); }
+  .demo-swatch-color--brand-700 { background-color: var(--ncss-color-brand-700); }
+  .demo-swatch-color--brand-900 { background-color: var(--ncss-color-brand-900); }
+
+  .demo-swatch-color--brand-2-100 { background-color: var(--ncss-color-brand-2-100); }
+  .demo-swatch-color--brand-2-300 { background-color: var(--ncss-color-brand-2-300); }
+  .demo-swatch-color--brand-2-500 { background-color: var(--ncss-color-brand-2-500); }
+  .demo-swatch-color--brand-2-700 { background-color: var(--ncss-color-brand-2-700); }
+  .demo-swatch-color--brand-2-900 { background-color: var(--ncss-color-brand-2-900); }
+
+  .demo-swatch-color--neutral-100 { background-color: var(--ncss-color-neutral-100); }
+  .demo-swatch-color--neutral-300 { background-color: var(--ncss-color-neutral-300); }
+  .demo-swatch-color--neutral-500 { background-color: var(--ncss-color-neutral-500); }
+  .demo-swatch-color--neutral-700 { background-color: var(--ncss-color-neutral-700); }
+  .demo-swatch-color--neutral-900 { background-color: var(--ncss-color-neutral-900); }
+</style>
+<script src="~/dist/js/view-transitions.js" defer></script>
+<script src="~/dist/js/lightbox.js" defer></script>
+<script src="~/dist/js/compare.js" defer></script>
+-->
+<!-- Typografie -->
+  <section id="typografie" class="ncss-stack">
+    <h2 class="demo-section-title">Typography</h2>
+    <h1>H1 - Main heading</h1>
+    <h2>H2 - Section heading</h2>
+    <h3>H3 - Subheading</h3>
+    <h4>H4 - Minor heading</h4>
+    <p>
+      A regular paragraph with <a href="#">a link</a>, <strong>bold</strong> and
+      <em>italic</em> text, <mark>highlighted text</mark> and a
+      <abbr title="Cascading Style Sheets">CSS</abbr> abbreviation. <code>Inline code</code>
+      is included too.
+    </p>
+    <blockquote>
+      A blockquote with somewhat longer text to show how line wrapping and the
+      left border look.
+    </blockquote>
+    <pre><code class="language-javascript">function hello() {
+  return "ncss";
+}</code></pre>
+    <ul>
+      <li>First list item</li>
+      <li>Second list item
+        <ul><li>Nested</li></ul>
+      </li>
+    </ul>
+    <table>
+      <thead><tr><th>Column A</th><th>Column B</th></tr></thead>
+      <tbody>
+        <tr><td>Value 1</td><td>Value 2</td></tr>
+        <tr><td>Value 3</td><td>Value 4</td></tr>
+      </tbody>
+    </table>
+    <hr>
+    <p class="ncss-text-sm ncss-text-muted">Small, muted hint text (.ncss-text-sm .ncss-text-muted).</p>
+
+    <h3>State-of-the-art typography</h3>
+    <p class="ncss-drop-cap">
+      This paragraph starts with a drop cap (<code>.ncss-drop-cap</code>, native
+      <code>initial-letter</code>). The headings above already use <code>text-box-trim</code>
+      - the invisible space above/below the text (font metric reserve) is gone, so spacing
+      now matches the design tokens exactly instead of "roughly".
+    </p>
+    <p class="ncss-hyphenate demo-justify">
+      Hyphenation (<code>.ncss-hyphenate</code>) in a narrow, justified
+      column: incomprehensibilities, internationalization, telecommunications infrastructure.
+    </p>
+    <p>
+      Tabular figures (<code>.ncss-nums-tabular</code>): <span class="ncss-nums-tabular">1111</span> vs.
+      <span class="ncss-nums-tabular">8888</span> - same width, no "wobble" side by side.
+    </p>
+
+    <h3>Text wrap (float + shape-outside, responsive via container query)</h3>
+    <div class="demo-resize-hint demo-cq-context">
+      <div class="ncss-float-start ncss-float-shape-circle demo-float-sample"></div>
+      <p>
+        This box is floated with <code>.ncss-float-start</code> and <code>.ncss-float-shape-circle</code>
+        - the text here flows around the actual circle shape, not just around the
+        rectangular box. Drag the container narrower than 28rem (bottom-right corner) - then the
+        float is dropped and the box becomes a normal block, so the text isn't squeezed into an
+        unreadably narrow column. There's enough text to wrap around so the effect is visible -
+        it takes several sentences for the lines to actually start and end next to the shape.
+      </p>
+      <div class="ncss-clear"></div>
+    </div>
+  </section>
+
+  <!-- Farben -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Colors</h2>
+    <div class="ncss-grid" style="--ncss-grid-min: 8rem;">
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand"></div><span class="ncss-text-sm">brand</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--bg-subtle"></div><span class="ncss-text-sm">bg-subtle</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--surface"></div><span class="ncss-text-sm">surface</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--success"></div><span class="ncss-text-sm">success</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--warning"></div><span class="ncss-text-sm">warning</span></div>
+      <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--danger"></div><span class="ncss-text-sm">danger</span></div>
+    </div>
+    <p>
+      <span class="ncss-text-brand">Text-Brand</span> ·
+      <span class="ncss-text-success">Text-Success</span> ·
+      <span class="ncss-text-warning">Text-Warning</span> ·
+      <span class="ncss-text-danger">Text-Danger</span>
+    </p>
+
+    <h3>Tonal scales (color-mix() in oklch, computed from one base color)</h3>
+    <div class="ncss-stack ncss-stack--tight">
+      <div class="ncss-cluster">
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-100"></div><span class="ncss-text-sm">brand-100</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-300"></div><span class="ncss-text-sm">brand-300</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-500"></div><span class="ncss-text-sm">brand-500</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-700"></div><span class="ncss-text-sm">brand-700</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-900"></div><span class="ncss-text-sm">brand-900</span></div>
+      </div>
+      <div class="ncss-cluster">
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-100"></div><span class="ncss-text-sm">brand-2-100</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-300"></div><span class="ncss-text-sm">brand-2-300</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-500"></div><span class="ncss-text-sm">brand-2-500</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-700"></div><span class="ncss-text-sm">brand-2-700</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--brand-2-900"></div><span class="ncss-text-sm">brand-2-900</span></div>
+      </div>
+      <div class="ncss-cluster">
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-100"></div><span class="ncss-text-sm">neutral-100</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-300"></div><span class="ncss-text-sm">neutral-300</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-500"></div><span class="ncss-text-sm">neutral-500</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-700"></div><span class="ncss-text-sm">neutral-700</span></div>
+        <div class="demo-swatch"><div class="demo-swatch-color demo-swatch-color--neutral-900"></div><span class="ncss-text-sm">neutral-900</span></div>
+      </div>
+    </div>
+
+    <h3>Badges (example use of the scale, no utility-class sprawl)</h3>
+    <div class="ncss-cluster">
+      <span class="ncss-badge">Brand</span>
+      <span class="ncss-badge ncss-badge--brand-2">Brand-2</span>
+      <span class="ncss-badge ncss-badge--neutral">Neutral</span>
+      <span class="ncss-badge ncss-badge--success">Success</span>
+      <span class="ncss-badge ncss-badge--warning">Warning</span>
+      <span class="ncss-badge ncss-badge--danger">Danger</span>
+    </div>
+  </section>
+
+  <!-- Listen -->
+  <section id="listen" class="ncss-stack">
+    <h2 class="demo-section-title">Lists</h2>
+    <p class="ncss-text-muted ncss-text-sm">Ready-made variants for <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code> - <code>components/lists.css</code>. Full reference in the <a href="lists.html">docs</a>.</p>
+    <div class="ncss-grid">
+      <div>
+        <h3 class="ncss-text-sm ncss-text-muted">.ncss-list--dot</h3>
+        <ul class="ncss-list--dot" role="list">
+          <li>Item one</li>
+          <li>Item two</li>
+          <li>Item three</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="ncss-text-sm ncss-text-muted">.ncss-list--icon</h3>
+        <ul class="ncss-list--icon" role="list">
+          <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> Included</li>
+          <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> Also included</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="ncss-text-sm ncss-text-muted">.ncss-list--steps (ol)</h3>
+        <ol class="ncss-list--steps" role="list">
+          <li>Copy the files</li>
+          <li>Adjust theme.css</li>
+          <li>Done</li>
+        </ol>
+      </div>
+      <div>
+        <h3 class="ncss-text-sm ncss-text-muted">.ncss-dl--stats</h3>
+        <dl class="ncss-dl--stats">
+          <div><dt>Users</dt><dd>1,204</dd></div>
+          <div><dt>Downloads</dt><dd>328</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- Buttons -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Buttons</h2>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary">Primary</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary">Secondary</button>
+      <button type="button" class="ncss-btn ncss-btn--danger">Danger</button>
+      <button type="button" class="ncss-btn ncss-btn--primary" disabled>Disabled</button>
+    </div>
+  </section>
+
+  <!-- Formulare -->
+  <section class="ncss-stack" id="formulare">
+    <h2 class="demo-section-title">Forms</h2>
+    <form class="ncss-stack demo-narrow-form" novalidate>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demoName">Name</label>
+        <input class="ncss-input" type="text" id="demoName" required>
+        <span class="ncss-field-hint">Try submitting the field empty - it only turns red after interaction (:user-invalid).</span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoSelect">Choice</label>
+        <span class="ncss-select-wrapper">
+          <select class="ncss-select" id="demoSelect">
+            <option>Option A</option>
+            <option>Option B</option>
+            <option>Option C</option>
+          </select>
+        </span>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demoMessage">Message</label>
+        <textarea class="ncss-textarea" id="demoMessage"></textarea>
+      </div>
+      <label class="ncss-choice"><input type="checkbox"> Checkbox option</label>
+      <label class="ncss-choice"><input type="radio" name="demoRadio"> Radio A</label>
+      <label class="ncss-choice"><input type="radio" name="demoRadio"> Radio B</label>
+      <button type="submit" class="ncss-btn ncss-btn--primary demo-align-start">Submit</button>
+    </form>
+  </section>
+
+  <!-- Layout: intrinsisches Grid -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Intrinsic grid (no breakpoint needed)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Make the window/container narrower - the cards reflow automatically, without any
+      media query.
+    </p>
+    <div class="ncss-grid" style="--ncss-grid-min: 12rem;">
+      <div class="ncss-placeholder">Card 1</div>
+      <div class="ncss-placeholder">Card 2</div>
+      <div class="ncss-placeholder">Card 3</div>
+      <div class="ncss-placeholder">Card 4</div>
+    </div>
+  </section>
+
+  <!-- Container Queries -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Container Queries</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Resize this box by its bottom-right corner - the card inside responds to
+      ITS container, not the viewport.
+    </p>
+    <div class="demo-resize-hint ncss-container">
+      <div class="ncss-grid ncss-grid--card-row" style="--ncss-grid-min: 8rem;">
+        <div class="ncss-placeholder">Image placeholder</div>
+        <div class="demo-text-pad">Text beside the image once the container is wide enough (min-width: 32rem in layout.css).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Suchfeld & Divider -->
+  <section class="ncss-stack" id="search-divider">
+    <h2 class="demo-section-title">Expanding search field &amp; divider</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-search</code> starts narrow and grows to full width on focus via a pure
+      <code>width</code> transition - no JS. It also stays wide
+      as long as text has been entered.
+    </p>
+    <div class="ncss-search">
+      <span class="ncss-icon ncss-icon-search" aria-hidden="true"></span>
+      <input type="search" class="ncss-input ncss-search-input" placeholder="Search..." aria-label="Search">
+    </div>
+
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-divider--vertical</code> (on an <code>&lt;hr&gt;</code>) for separators
+      within a flex row; horizontal is already the native <code>&lt;hr&gt;</code> default:
+    </p>
+    <hr>
+    <div class="ncss-cluster">
+      <span>One</span>
+      <hr class="ncss-divider--vertical" aria-orientation="vertical">
+      <span>Two</span>
+      <hr class="ncss-divider--vertical" aria-orientation="vertical">
+      <span>Three</span>
+    </div>
+  </section>
+
+  <!-- Transform-Center -->
+  <section class="ncss-stack" id="transform-center">
+    <h2 class="demo-section-title">Transform center</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-transform-center</code> centers an element on itself
+      (<code>position:absolute</code> + <code>translate:-50% -50%</code>) - the
+      parent container needs its own <code>position</code> for this (here
+      <code>position:relative</code> via inline style on the placeholder).
+    </p>
+    <div class="ncss-placeholder" style="position: relative; height: 8rem;">
+      <span class="ncss-badge ncss-badge--success ncss-transform-center">Centered</span>
+    </div>
+    <pre><code class="language-html">&lt;div style="position: relative;"&gt;
+  &lt;span class="ncss-badge ncss-transform-center"&gt;Centered&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <!-- Medien -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Media (aspect-ratio)</h2>
+    <div class="ncss-grid" style="--ncss-grid-min: 10rem;">
+      <div class="ncss-ratio-video ncss-placeholder"></div>
+      <div class="ncss-ratio-square ncss-placeholder"></div>
+      <div class="ncss-ratio-portrait ncss-placeholder"></div>
+    </div>
+  </section>
+
+  <!-- Native Komponenten -->
+
+
+  <!-- Cards -->
+  <section class="ncss-stack" id="cards">
+    <h2 class="demo-section-title">Cards</h2>
+    <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+        <div class="ncss-card-media ncss-placeholder"></div>
+        <div class="ncss-card-body">
+          <h3>Card title</h3>
+          <p class="ncss-text-muted ncss-text-sm">Short description text for this card.</p>
+        </div>
+        <div class="ncss-card-footer">
+          <button type="button" class="ncss-btn ncss-btn--primary">Action</button>
+        </div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-shadow-lg">
+        <div class="ncss-card-header">With header</div>
+        <div class="ncss-card-body">
+          <p>Border/corners/shadow are separate utilities (<code>helpers/elevation.css</code>), not card modifiers - here just <code>.ncss-radius-lg .ncss-shadow-lg</code>, deliberately without <code>.ncss-border</code>.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <p>Just <code>.ncss-border .ncss-radius-lg</code>, no shadow at all.</p>
+        </div>
+      </article>
+      <article class="ncss-card">
+        <div class="ncss-card-body">
+          <p><code>.ncss-card</code> on its own: no border, no corners, no shadow - pure structure.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-card--flush ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <p><code>.ncss-card--flush</code>: no padding at all in body/header/footer (not even top/bottom), content reaches every card edge.</p>
+        </div>
+      </article>
+    </div>
+    <p class="ncss-text-muted ncss-text-sm">Media position: left/right need a class (the flex direction flips), top is the natural order, bottom just needs .ncss-card-media as the LAST child in the markup. Left/right need at least 24rem of CONTAINER width to sit side by side - drag the box below to see the wrap:</p>
+    <div class="ncss-stack ncss-stack--tight">
+      <div class="demo-resize-hint ncss-card-container demo-no-border">
+        <article class="ncss-card ncss-card--horizontal ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+          <div class="ncss-card-media ncss-placeholder"></div>
+          <div class="ncss-card-body">
+            <h3>Media left</h3>
+            <p class="ncss-text-muted ncss-text-sm"><code>.ncss-card--horizontal</code></p>
+          </div>
+        </article>
+      </div>
+      <div class="ncss-card-container">
+        <article class="ncss-card ncss-card--horizontal-end ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+          <div class="ncss-card-media ncss-placeholder"></div>
+          <div class="ncss-card-body">
+            <h3>Media right</h3>
+            <p class="ncss-text-muted ncss-text-sm"><code>.ncss-card--horizontal-end</code></p>
+          </div>
+        </article>
+      </div>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md demo-media-bottom">
+        <div class="ncss-card-body">
+          <h3>Media bottom</h3>
+          <p class="ncss-text-muted ncss-text-sm">Simply <code>.ncss-card-media</code> as the last child instead of the first</p>
+        </div>
+        <div class="ncss-card-media ncss-placeholder"></div>
+      </article>
+    </div>
+
+    <p class="ncss-text-muted ncss-text-sm">The footer always stays aligned at the bottom, regardless of the text length of the neighboring card (<code>.ncss-card-body{flex:1 1 auto}</code> fills the rest, the footer follows directly after):</p>
+    <div class="ncss-grid demo-tool-grid">
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+        <div class="ncss-card-body"><p>Short.</p></div>
+        <div class="ncss-card-footer"><button type="button" class="ncss-btn ncss-btn--primary">Action</button></div>
+      </article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm">
+        <div class="ncss-card-body"><p>Much longer text that spans several lines and makes this card taller than the neighboring card.</p></div>
+        <div class="ncss-card-footer"><button type="button" class="ncss-btn ncss-btn--primary">Action</button></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Split: Text neben Bild -->
+  <section class="ncss-stack" id="split">
+    <h2 class="demo-section-title">Split: text beside image</h2>
+    <p class="ncss-text-muted ncss-text-sm">Image left vs. right needs no modifier - just document order (<code>.ncss-split-media</code> as the first or last child), exactly like the card above. From 36rem of CONTAINER width both columns sit side by side; below that they stack automatically:</p>
+    <div class="ncss-split-container">
+      <div class="ncss-split">
+        <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+        <div class="ncss-split-content ncss-stack ncss-stack--tight">
+          <h3>Image left</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>.ncss-split-media</code> as the first child. Vertical alignment is centered by default (<code>--ncss-split-align</code>).</p>
+        </div>
+      </div>
+    </div>
+    <div class="ncss-split-container">
+      <div class="ncss-split ncss-split--align-start">
+        <div class="ncss-split-content ncss-stack ncss-stack--tight">
+          <h3>Image right, top-aligned</h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>.ncss-split-media</code> as the last child + <code>.ncss-split--align-start</code> instead of the default centered alignment.</p>
+        </div>
+        <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-split-container"&gt;
+  &lt;div class="ncss-split"&gt;
+    &lt;div class="ncss-split-media"&gt;&lt;img src="foto.jpg" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-split-content"&gt;
+      &lt;h3&gt;Title&lt;/h3&gt;
+      &lt;p&gt;Text ...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <!-- Tile: Farbflächen-Sektionen -->
+  <section class="ncss-stack" id="tile">
+    <h2 class="demo-section-title">Tile: color-block sections</h2>
+    <p class="ncss-text-muted ncss-text-sm">Familiar from UIkit (<code>uk-tile-*</code>) - full-width blocks for structuring a long page. <code>--brand</code>/<code>--brand-2</code> automatically switch to light text, while cards/code blocks INSIDE them stay normal dark-on-white:</p>
+    <div class="ncss-tile ncss-tile--brand ncss-radius-md">
+      <h3>Brand surface (<code>--brand</code>)</h3>
+      <p class="ncss-text-sm">Light text automatically, no extra class needed.</p>
+    </div>
+    <div class="ncss-tile ncss-tile--brand-2 ncss-radius-md">
+      <h3>Secondary color surface (<code>--brand-2</code>)</h3>
+      <p class="ncss-text-sm">The same automatic text switch, a different brand color.</p>
+    </div>
+    <div class="ncss-tile ncss-tile--muted ncss-radius-md">
+      <h3>Muted surface (<code>--muted</code>)</h3>
+      <p class="ncss-text-sm ncss-text-muted"><code>--ncss-color-bg-subtle</code> as background, normal text.</p>
+    </div>
+    <pre><code class="language-html">&lt;section class="ncss-tile ncss-tile--brand"&gt;
+  &lt;h2&gt;Title&lt;/h2&gt;
+  &lt;p&gt;Text ...&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">By default a tile stays within its container - for full screen width up to the screen edge, also combine <code>.ncss-full-bleed</code>; see the <a href="layouts.html">docs (landing page building blocks)</a> for an example.</p>
+  </section>
+
+  <!-- Accordion-Split: transformierendes Akkordeon -->
+  <section class="ncss-stack" id="accordion-split">
+    <h2 class="demo-section-title">Accordion split: transforming accordion</h2>
+    <p class="ncss-text-muted ncss-text-sm">Familiar from apple.com - a text accordion on the left, the matching image on the right switches automatically. Fully native (<code>&lt;details name&gt;</code> + <code>:has()</code>), no JS. Make the window/panel narrower than 36rem to see the image inline in the open item:</p>
+    <div class="ncss-accordion-split-container">
+      <div class="ncss-accordion-split">
+        <div class="ncss-accordion-split-list">
+          <details name="demo-accordion" class="ncss-accordion-split-item" open>
+            <summary>Container Queries</summary>
+            <div class="ncss-accordion-split-body">
+              <p>Components respond to their own space, not the viewport.</p>
+              <div class="ncss-accordion-split-media-mobile"><img src="~/demo/assets/accordion-container-queries.svg" alt="Two containers of different widths; the same card layout adapts via container query" style="aspect-ratio: 4/3;"></div>
+            </div>
+          </details>
+          <details name="demo-accordion" class="ncss-accordion-split-item">
+            <summary>Cascade Layers</summary>
+            <div class="ncss-accordion-split-body">
+              <p>Order instead of specificity battles - no <code>!important</code> needed.</p>
+              <div class="ncss-accordion-split-media-mobile"><img src="~/demo/assets/accordion-cascade-layers.svg" alt="Four stacked, offset surfaces (reset, base, helpers, components) symbolize the layer order" style="aspect-ratio: 4/3;"></div>
+            </div>
+          </details>
+          <details name="demo-accordion" class="ncss-accordion-split-item">
+            <summary>light-dark()</summary>
+            <div class="ncss-accordion-split-body">
+              <p>One value per token covers light and dark - no second stylesheet.</p>
+              <div class="ncss-accordion-split-media-mobile"><img src="~/demo/assets/accordion-light-dark.svg" alt="A circle, half light with a sun, half dark with a moon and stars" style="aspect-ratio: 4/3;"></div>
+            </div>
+          </details>
+        </div>
+        <div class="ncss-accordion-split-media">
+          <img src="~/demo/assets/accordion-container-queries.svg" alt="Two containers of different widths; the same card layout adapts via container query">
+          <img src="~/demo/assets/accordion-cascade-layers.svg" alt="Four stacked, offset surfaces (reset, base, helpers, components) symbolize the layer order">
+          <img src="~/demo/assets/accordion-light-dark.svg" alt="A circle, half light with a sun, half dark with a moon and stars">
+        </div>
+      </div>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted">Detailed example incl. reproducible code in the <a href="layouts.html#accordion-split">docs (landing page building blocks)</a>.</p>
+  </section>
+
+  <section class="ncss-stack" id="marginnote">
+    <h2 class="demo-section-title">Margin notes (marginnote)</h2>
+    <p class="ncss-text-muted ncss-text-sm">An image or text breaks out of the text column but stays BESIDE the body text instead of landing at the screen edge (that's what <code>.ncss-bleed-start/-end</code> already does) - the sidenote pattern, fully native via CSS Grid. Make the panel narrower than 60rem to see the fallback (the margin note stacks normally in the text):</p>
+    <div class="ncss-marginnote-container">
+      <div class="ncss-marginnote-layout">
+        <p>CSS Grid's auto-placement places elements in document order and keeps using the same row as long as its own column in it is still free. A margin note placed directly AFTER this paragraph in the markup therefore automatically lands at the same height beside it.</p>
+        <aside class="ncss-marginnote-end"><p>That's exactly what happens here: this note comes directly after the paragraph on the left in the markup and therefore slides into the same row.</p></aside>
+        <aside class="ncss-marginnote-start"><p>This note, by contrast, comes BEFORE its paragraph in the markup - for the left margin column the rule is reversed.</p></aside>
+        <p>Second paragraph, with a note to its left.</p>
+        <p>Third paragraph, with no margin note at all - the space beside it simply stays empty.</p>
+      </div>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted">Detailed example incl. reproducible code in the <a href="layouts.html#marginnote">docs (landing page building blocks)</a>.</p>
+  </section>
+
+  <!-- Grid-Spaltenzahl & Bento -->
+  <section class="ncss-stack" id="grid-bento">
+    <h2 class="demo-section-title">Fixed column count, spans &amp; bento grid</h2>
+
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>minmax(MIN, MAX)</code> has long been behind <code>.ncss-grid</code> - MIN
+      prevents columns that are too narrow, MAX additionally caps growth (default
+      <code>1fr</code>, unlimited). Just 2 cards in a wide grid, once uncapped
+      and once with <code>--ncss-grid-max</code>:
+    </p>
+    <div class="ncss-grid demo-tool-grid">
+      <div class="demo-tool-card">
+        <code class="demo-tool-label">Without --ncss-grid-max</code>
+        <div class="ncss-grid" style="--ncss-grid-min: 8rem;">
+          <article class="ncss-card ncss-border ncss-radius-md"><div class="ncss-card-body">Grows without limit</div></article>
+          <article class="ncss-card ncss-border ncss-radius-md"><div class="ncss-card-body">Grows without limit</div></article>
+        </div>
+      </div>
+      <div class="demo-tool-card">
+        <code class="demo-tool-label">--ncss-grid-max: 10rem</code>
+        <div class="ncss-grid" style="--ncss-grid-min: 8rem; --ncss-grid-max: 10rem;">
+          <article class="ncss-card ncss-border ncss-radius-md"><div class="ncss-card-body">Capped</div></article>
+          <article class="ncss-card ncss-border ncss-radius-md"><div class="ncss-card-body">Capped</div></article>
+        </div>
+      </div>
+    </div>
+
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-grid--cols-3</code> instead of the intrinsic <code>.ncss-grid</code> - always
+      exactly 3 columns (from 36rem container width, 1 column below that). A card with
+      <code>.ncss-col-span-2</code> takes 2 of the 3 columns, the next one fills the rest:
+    </p>
+    <div class="ncss-grid--cols-3">
+      <article class="ncss-card ncss-col-span-2 ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">2/3 width (<code>.ncss-col-span-2</code>)</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1/3 width</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1/3</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1/3</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1/3</div></article>
+    </div>
+
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-bento</code>: mixed tile sizes, <code>grid-auto-flow: dense</code>
+      automatically fills gaps with subsequent smaller tiles:
+    </p>
+    <div class="ncss-bento">
+      <article class="ncss-card ncss-card--brand ncss-col-span-2 ncss-row-span-2 ncss-radius-lg"><div class="ncss-card-body">Large (2×2)</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1×1</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1×1</div></article>
+      <article class="ncss-card ncss-col-span-2 ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">Wide (2×1)</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1×1</div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm"><div class="ncss-card-body">1×1</div></article>
+    </div>
+  </section>
+
+  <!-- Responsive Tabelle -->
+  <section class="ncss-stack" id="tabellen">
+    <h2 class="demo-section-title">Responsive table (scroll strategy, a11y-safe)</h2>
+    <div class="ncss-table-scroll">
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Team</th><th>Location</th><th>Start</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Example A</td><td>Development</td><td>Web</td><td>Berlin</td><td>2024</td><td>Active</td></tr>
+          <tr><td>Example B</td><td>Design</td><td>Web</td><td>Cologne</td><td>2023</td><td>Active</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted">Stacked card variant (make the container narrower):</p>
+    <div class="ncss-table-stacked demo-resize-hint">
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Team</th></tr></thead>
+        <tbody>
+          <tr><td data-label="Name">Example A</td><td data-label="Role">Development</td><td data-label="Team">Web</td></tr>
+          <tr><td data-label="Name">Example B</td><td data-label="Role">Design</td><td data-label="Team">Web</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Tree-Navigation -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Tree navigation (sidebar variant)</h2>
+    <nav class="ncss-nav ncss-nav--tree demo-tree-nav">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#main">Introduction</a></li>
+        <li class="ncss-nav-item">
+          <details class="ncss-nav-dropdown" open>
+            <summary>Components</summary>
+            <ul class="ncss-nav-submenu">
+              <li><a href="#main">Cards</a></li>
+              <li><a href="#main">Select</a></li>
+              <li><a href="#main">Lightbox</a></li>
+            </ul>
+          </details>
+        </li>
+        <li class="ncss-nav-item"><a href="#main">Changelog</a></li>
+      </ul>
+    </nav>
+  </section>
+
+  <!-- Sticky / Scroll -->
+  <section id="sticky" class="ncss-stack">
+    <h2 class="demo-section-title">Sticky &amp; scroll reveal</h2>
+    <div class="ncss-sticky-container demo-resize-hint demo-sticky-box">
+      <div class="ncss-sticky demo-sticky-label">Stays on top (ncss-sticky-container)</div>
+      <p>Long content line 1</p><p>Line 2</p><p>Line 3</p><p>Line 4</p><p>Line 5</p><p>Line 6</p><p>Line 7</p><p>Line 8</p>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted">
+      The bar at the top (<code>.ncss-scroll-progress</code>) and the thin strip at the
+      right edge of the screen both show the same reading progress. Color/gradient need
+      NO extra class - just combine <code>.ncss-gradient-brand</code>/<code>-subtle</code>
+      or <code>.ncss-surface--brand-2</code>/<code>-neutral</code> (as with the
+      top bar). Vertical instead of horizontal: <code>.ncss-scroll-progress--vertical</code>
+      (+ optionally <code>--end</code> for the right instead of the left edge, as with the side
+      strip here).
+    </p>
+    <div class="ncss-animate-on-scroll demo-callout">
+      This element fades in as soon as it scrolls into the viewport (<code>.ncss-animate-on-scroll</code>, no JS).
+    </div>
+  </section>
+
+  <!-- Sichtbarkeit -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Visibility helpers</h2>
+    <div class="ncss-card demo-hover-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
+      Card with hover action (move the mouse over it)
+      <button type="button" class="ncss-btn ncss-btn--secondary ncss-reveal-on-hover demo-hover-action">Action</button>
+    </div>
+    <p class="ncss-print-only">This text is ONLY visible when printing.</p>
+    <p class="ncss-screen-only ncss-text-sm ncss-text-muted">This text is only visible on screen (hidden when printing).</p>
+  </section>
+
+  <!-- Gleich hohe Cards -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Equal-height cards (automatic, no extra CSS)</h2>
+    <div class="ncss-grid" style="--ncss-grid-min: 12rem;">
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Short.</p></div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Much longer text that spans several lines and makes this card taller.</p></div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Medium length.</p></div></article>
+    </div>
+  </section>
+
+  <!-- Masonry -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Masonry (CSS columns)</h2>
+    <div class="ncss-masonry">
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Short content.</p></div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Somewhat longer content with more text than the neighboring cards, to show the masonry effect.</p></div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Short.</p></div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Even more text here, so the columns end up with different heights and the effect becomes visible.</p></div></article>
+      <article class="ncss-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body"><p>Medium.</p></div></article>
+    </div>
+  </section>
+
+  <!-- Animationen -->
+  <section id="animationen" class="ncss-stack">
+    <h2 class="demo-section-title">Animations</h2>
+    <h3>Entrance animations</h3>
+    <button type="button" class="ncss-btn ncss-btn--secondary" id="replayAnimBtn">Play animation</button>
+    <div class="ncss-grid" style="--ncss-grid-min: 10rem;" id="animGrid">
+      <div class="ncss-card ncss-animate-fade-in ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">fade-in</div></div>
+      <div class="ncss-card ncss-animate-slide-in-up ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">slide-in-up</div></div>
+      <div class="ncss-card ncss-animate-slide-in-down ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">slide-in-down</div></div>
+      <div class="ncss-card ncss-animate-slide-in-left ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">slide-in-left</div></div>
+      <div class="ncss-card ncss-animate-slide-in-right ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">slide-in-right</div></div>
+      <div class="ncss-card ncss-animate-scale-in ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">scale-in</div></div>
+    </div>
+
+    <h3>Looping animations (attention/loading state)</h3>
+    <p class="ncss-text-sm ncss-text-muted">Under <code>prefers-reduced-motion: reduce</code> they automatically run only a single, practically invisible frame (global rule in reset.css) - no extra code needed per animation.</p>
+    <div class="ncss-grid demo-anim-loop-grid">
+      <div class="ncss-stack ncss-stack--tight demo-anim-loop-item">
+        <span class="ncss-icon ncss-icon-menu ncss-animate-spin demo-anim-spin-icon" aria-hidden="true"></span>
+        <span class="ncss-text-sm ncss-text-muted">.ncss-animate-spin</span>
+      </div>
+      <div class="ncss-stack ncss-stack--tight demo-anim-loop-item">
+        <span class="ncss-badge ncss-badge--danger ncss-animate-pulse">Live</span>
+        <span class="ncss-text-sm ncss-text-muted">.ncss-animate-pulse</span>
+      </div>
+      <div class="ncss-stack ncss-stack--tight demo-anim-loop-item">
+        <button type="button" class="ncss-btn ncss-btn--secondary" id="shakeBtn">Simulate invalid</button>
+        <span class="ncss-text-sm ncss-text-muted">.ncss-animate-shake (triggered via JS)</span>
+      </div>
+      <div class="ncss-stack ncss-stack--tight demo-anim-loop-item">
+        <div class="ncss-skeleton demo-skeleton-line"></div>
+        <div class="ncss-skeleton demo-skeleton-line demo-skeleton-line--short"></div>
+        <span class="ncss-text-sm ncss-text-muted">.ncss-skeleton</span>
+      </div>
+    </div>
+
+    <h3>Micro-interactions (hover/press)</h3>
+    <p class="ncss-text-sm ncss-text-muted">Transition-based, no <code>animation</code> - they respond to state instead of running once. Move the mouse over them or click/hold:</p>
+    <div class="ncss-cluster">
+      <article class="ncss-card ncss-hover-lift demo-micro-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">hover-lift</div></article>
+      <article class="ncss-card ncss-hover-grow demo-micro-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">hover-grow</div></article>
+      <button type="button" class="ncss-btn ncss-btn--primary ncss-press">press (click/hold)</button>
+      <article class="ncss-card ncss-hover-lift ncss-gpu-boost demo-micro-card ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md"><div class="ncss-card-body">+ gpu-boost</div></article>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted"><code>.ncss-gpu-boost</code> (<code>transform: translateZ(0)</code>) can be safely combined with hover-lift/-grow, because these use the standalone <code>translate</code>/<code>scale</code> properties, not <code>transform</code> - only use it specifically when you see visible jank, not preemptively everywhere (every additional compositor layer costs graphics memory).</p>
+  </section>
+
+  <!-- Slideshow -->
+  <section class="ncss-stack" id="slideshow">
+    <h2 class="demo-section-title">Slideshow (scroll snap, no JS)</h2>
+    <div class="ncss-slideshow">
+      <ul class="ncss-slideshow-track">
+        <li class="ncss-slideshow-item demo-slide demo-slide--brand">Slide 1</li>
+        <li class="ncss-slideshow-item demo-slide demo-slide--success">Slide 2</li>
+        <li class="ncss-slideshow-item demo-slide demo-slide--danger">Slide 3</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Off-Canvas -->
+
+
+  <!-- Modal (Lightbox-Variante) -->
+
+
+  <!-- Lightbox-Galerie -->
+
+
+  <!-- Breakpoint-Escape-Hatch -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Classic breakpoint escape hatch</h2>
+    <p class="ncss-hide-below-md">Visible from 768px (<code>.ncss-hide-below-md</code>).</p>
+    <p class="ncss-hide-from-md">Visible below 768px (<code>.ncss-hide-from-md</code>).</p>
+  </section>
+
+  <!-- Full-Bleed -->
+  <section class="ncss-stack">
+    <h2 class="demo-section-title">Full-bleed section</h2>
+    <p>
+      Several variants to make clear what <code>.ncss-full-bleed</code> does exactly - the trick
+      always breaks out to 100vw, no matter how wide or narrow the surrounding container currently is.
+    </p>
+
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-muted"><strong>1.</strong> Edge-to-edge background, content stays at normal width (the most common case)</p>
+      <section class="ncss-full-bleed ncss-surface--brand ncss-py-xl">
+        <div class="ncss-container">
+          <p class="demo-heading-inherit">
+            This &lt;section&gt; stays structurally nested in <code>&lt;main class="ncss-container"&gt;</code>,
+            but visually breaks out edge to edge (<code>.ncss-full-bleed</code>) - the
+            inner <code>.ncss-container</code> keeps the text at normal column width again,
+            only the background extends to the screen edge.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-muted"><strong>2.</strong> Without an inner <code>.ncss-container</code>: the content breaks out too</p>
+      <section class="ncss-full-bleed ncss-surface--brand-2 ncss-py-xl">
+        <p class="demo-heading-inherit">
+          Without the inner <code>.ncss-container</code>, the TEXT also runs to the
+          screen edge - usually only sensible for a single edge-to-edge image, video or a plain
+          color band, not for body text.
+        </p>
+      </section>
+    </div>
+
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-muted"><strong>3.</strong> Also breaks out of a narrow parent container</p>
+      <div class="ncss-container ncss-container--narrow ncss-surface--neutral ncss-py-sm">
+        <section class="ncss-full-bleed ncss-surface--brand ncss-py-md">
+          <div class="ncss-container">
+            <p class="demo-heading-inherit">
+              This block sits inside a narrow <code>.ncss-container--narrow</code> - the
+              full-bleed trick still breaks out to the real screen edge, regardless of
+              how tight its direct parent frame currently is.
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-muted"><strong>4.</strong> One-sided ("bookmark"): <code>.ncss-bleed-end</code> only breaks out to the right</p>
+      <blockquote class="ncss-bleed-end ncss-surface--brand-2 ncss-py-sm">
+        <p class="demo-heading-inherit">
+          On the left this quote stays normally in the text column, on the right it breaks out to the
+          screen edge - like a bookmark sticking out of the content. The
+          mirrored variant <code>.ncss-bleed-start</code> breaks out to the
+          left instead.
+        </p>
+      </blockquote>
+    </div>
+
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-muted"><strong>5.</strong> From the middle to the right: <code>.ncss-bleed-half-end</code> - the START edge (left) sits exactly at the middle of the parent element, the END edge (right) breaks out to the screen edge</p>
+      <blockquote class="ncss-bleed-half-end ncss-surface--brand ncss-py-sm">
+        <p class="demo-heading-inherit">Starts in the middle, breaks out to the right up to the screen edge.</p>
+      </blockquote>
+    </div>
+
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-muted"><strong>6.</strong> From the middle to the left: <code>.ncss-bleed-half-start</code> - mirror image of no. 5</p>
+      <blockquote class="ncss-bleed-half-start ncss-surface--brand-2 ncss-py-sm">
+        <p class="demo-heading-inherit">Breaks out to the left up to the screen edge, ends in the middle.</p>
+      </blockquote>
+    </div>
+
+    <div class="ncss-stack ncss-stack--tight">
+      <p class="ncss-text-sm ncss-text-muted"><strong>7.</strong> Symmetrically from the middle: <code>.ncss-bleed-center</code> grows equally on both sides by a fixed amount but stays centered on the middle of the parent element (a different mechanism, not tied to the viewport - so it also works in a non-centered container)</p>
+      <div class="ncss-card ncss-border ncss-radius-lg demo-text-pad">
+        <div class="ncss-bleed-center ncss-surface--brand ncss-py-sm ncss-px-md ncss-radius-md" style="--ncss-bleed-amount: 1.5rem;">
+          <p class="demo-heading-inherit">Grows 1.5rem beyond the card on each side, but stays centered.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+<!--FOOT:
+<script src="~/demo/assets/js/index-animations.js"></script>
+-->

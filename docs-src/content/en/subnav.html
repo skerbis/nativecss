@@ -35,10 +35,22 @@
         <tr><td><code>.ncss-subnav-inner</code></td><td>Inner frame at container width (same alignment as the page content).</td></tr>
         <tr><td><code>.ncss-subnav-label</code></td><td>Visible caption before the links, hidden from screen readers (the nav carries aria-label).</td></tr>
         <tr><td><code>.ncss-subnav-list</code></td><td>The link list: swipeable with soft edges, current link highlighted as a pill.</td></tr>
+        <tr><td><code>[data-ncss-sticky-header]</code></td><td>Shared sticky container for top bar + bar; the bar no longer sticks on its own inside it, <code>js/subnav.js</code> measures its height.</td></tr>
         <tr><td><code>[data-ncss-subnav]</code></td><td>Enables <code>js/subnav.js</code>: sets <code>aria-current="location"</code> on the link of the section in view and keeps it scrolled into the bar.</td></tr>
       </tbody>
     </table>
   </div>
+</section>
+
+<section class="ncss-stack" id="sticky-header">
+  <h2 class="demo-section-title">With your own header: one sticky unit</h2>
+  <p>If the bar sticks on its own below a top bar, its top offset must match the top bar's height exactly - when the header grows (logo, font size, 200 % zoom, mobile menu), the bar slides under it while scrolling. Robust: put the top bar AND the bar into ONE sticky container and mark it with <code>data-ncss-sticky-header</code>. Only the container sticks, both rows always move together, and <code>js/subnav.js</code> measures its height for the jump offset (<code>--ncss-scroll-offset</code>). This website uses exactly this pattern.</p>
+  <pre><code class="language-html">&lt;div class="site-head" data-ncss-sticky-header&gt;
+  &lt;header class="ncss-topbar"&gt;...&lt;/header&gt;
+  &lt;nav class="ncss-subnav" aria-label="On this page" data-ncss-subnav&gt;...&lt;/nav&gt;
+&lt;/div&gt;</code></pre>
+  <pre><code class="language-css">.site-head { position: sticky; inset-block-start: 0; z-index: var(--ncss-topbar-z); }
+.site-head &gt; .ncss-topbar { position: relative; } /* only the container sticks */</code></pre>
 </section>
 
 <section class="ncss-stack" id="verhalten">
@@ -60,6 +72,7 @@
       <tbody>
         <tr><td><code>--ncss-subnav-height</code></td><td>Height of the bar (default <code>2.75rem</code>), part of the jump offset.</td></tr>
         <tr><td><code>--ncss-subnav-top</code></td><td>Distance from the top (default <code>--ncss-topbar-height</code>); <code>0</code> on pages without a sticky top bar.</td></tr>
+        <tr><td><code>--ncss-scroll-offset</code></td><td>Height of the sticky header area measured by <code>js/subnav.js</code> - basis for <code>scroll-padding</code> and your own sticky offsets.</td></tr>
       </tbody>
     </table>
   </div>

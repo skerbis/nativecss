@@ -31,6 +31,15 @@
  */
 (function () {
   "use strict";
+  // Bewegung reduzieren? Systemeinstellung ODER ausdrückliche Wahl am <html>
+  // (data-motion="reduce"/"full", gesetzt von js/preferences.js) - "full" hebt ein
+  // System-"reduce" nur als bewusste Nutzerwahl auf, nie von selbst.
+  function ncssReducedMotion() {
+    var choice = document.documentElement.getAttribute("data-motion");
+    if (choice === "reduce") return true;
+    if (choice === "full") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
 
   if (!window.customElements || typeof IntersectionObserver === "undefined" ||
       typeof HTMLCanvasElement === "undefined" || customElements.get("ncss-scroll-frames")) {
@@ -244,7 +253,7 @@
           }
         }
         function refresh() {
-          active = !motionQuery.matches && !saveData();
+          active = !ncssReducedMotion() && !saveData();
           el.classList.toggle("is-active", active);
           current = null;
           dirty = true;

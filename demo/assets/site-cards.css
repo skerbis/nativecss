@@ -278,3 +278,15 @@
 .demo-hub-card:has(.ncss-card-link):active {
   translate: 0 0;
 }
+
+/* Echtes Vorschaubild einer Beispiel-Website: oben bündig zuschneiden. */
+.demo-hub-preview--shot {
+  block-size: auto;
+  aspect-ratio: 16 / 10;
+}
+.demo-hub-preview--shot img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: top;
+}

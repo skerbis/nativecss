@@ -174,6 +174,37 @@
    ]
   },
   {
+   "name": "ncss-icon",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein\n\nScript: `js/icon.js` · CSS: `helpers/icons.css`\n\nEvents: `ncss-icon-error`, `ncss-icon-load`"
+   },
+   "attributes": [
+    {
+     "name": "name",
+     "description": "Phosphor-Name (Kleinbuchstaben/Ziffern/Bindestrich) - Default/Beispiel: `house`"
+    },
+    {
+     "name": "weight",
+     "description": "regular | thin | light | bold | fill | duotone - Default/Beispiel: `regular`"
+    },
+    {
+     "name": "label",
+     "description": "macht das Icon bedeutungstragend: role=\"img\" + aria-label. Ohne label ist es dekorativ (aria-hidden=\"true\"). - Default/Beispiel: `…`"
+    },
+    {
+     "name": "src",
+     "description": "statt name/weight eine beliebige eigene SVG-Datei laden data-ncss-icon-path=\"…\" Icon-Ordner, auf dem Element ODER einem Vorfahren (z.B. <html>); relativ zur SEITE aufgelöst. Default: der Ordner vendor/phosphor/ relativ zu DIESER Datei (dist/js/icon.js -> ../../vendor/phosphor/), per document.currentScript ermittelt - als ES-Modul geladen gibt es kein currentScript, dann data-ncss-icon-path setzen. - Default/Beispiel: `pfad/eigen.svg`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
    "name": "ncss-nav-drilldown",
    "description": {
     "kind": "markdown",
@@ -417,6 +448,13 @@
    }
   },
   {
+   "name": "data-ncss-code-tabindex",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Code-Block: ruft das self-hosted Prism.js (vendor/prismjs/) einmal kontrolliert auf (statt Prisms eigenem, unkontrolliertem DOMContentLoaded-Autostart - siehe code-block.css für die dafür nötige \"window.Prism = { manual: true }\"-Zeile ...\n\nQuelle: `js/code-block.js`"
+   }
+  },
+  {
    "name": "data-ncss-combobox",
    "description": {
     "kind": "markdown",
@@ -498,6 +536,13 @@
    "description": {
     "kind": "markdown",
     "value": "(intern, vom Script gesetzt) <ncss-hovercard>: Vorschaukarte beim Überfahren/Fokussieren eines Links (siehe components/hovercard.css für Markup)\n\nQuelle: `components/hovercard.css`, `js/hovercard.js`"
+   }
+  },
+  {
+   "name": "data-ncss-icon-path",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein\n\nQuelle: `js/icon.js`"
    }
   },
   {
@@ -610,6 +655,13 @@
    "description": {
     "kind": "markdown",
     "value": "<ncss-container>: kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, damit sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen können, ohne dass Styles in beide Richtungen ...\n\n```html\n- src (Pflicht, ODER data-ncss-src auf dem Loader-<script> als Seiten-Default - siehe\n```\n\nQuelle: `js/ncss-container.js`"
+   }
+  },
+  {
+   "name": "data-ncss-sticky-header",
+   "description": {
+    "kind": "markdown",
+    "value": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar\n\n```html\n<div class=\"mein-header\" data-ncss-sticky-header>   (selbst position: sticky; top: 0)\n```\n\nQuelle: `components/subnav.css`, `js/subnav.js`"
    }
   },
   {

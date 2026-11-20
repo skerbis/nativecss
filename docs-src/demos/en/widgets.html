@@ -1,0 +1,58 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+</style>
+<script src="~/dist/js/ics.js" defer></script>
+<script src="~/dist/js/events.js" defer></script>
+<script src="~/dist/js/downloads.js" defer></script>
+-->
+  <div class="ncss-stack ncss-stack--tight">
+    <p class="ncss-text-lg ncss-text-muted">Data-driven widgets (JSON or .ics) as a native HTML alternative to iframe embeds - searchable, themeable via CSS, no cross-origin/height issues. Everything is opt-in: <code>js/ics.js</code>, <code>js/events.js</code>, <code>js/downloads.js</code> - include each only on pages that actually use it.</p>
+  </div>
+
+  <section class="ncss-stack" id="monat">
+    <h2 class="demo-section-title">Calendar (month grid)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="month"</code> - events as dots on the day, clicking opens the day as a <code>.ncss-modal</code>. Source here: <code>data/events.json</code>.</p>
+    <div class="ncss-events" data-view="month" data-src="~/demo/data/events.json"></div>
+  </section>
+
+  <section class="ncss-stack" id="agenda">
+    <h2 class="demo-section-title">Calendar list (agenda)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="agenda"</code> - upcoming events, grouped by month. Source here: an <code>.ics</code> file (<code>data/sample.ics</code>), including recurring events via <code>RRULE</code>.</p>
+    <div class="ncss-events" data-view="agenda" data-ics="~/demo/data/sample.ics" data-limit="8"></div>
+  </section>
+
+  <section class="ncss-stack" id="liste">
+    <h2 class="demo-section-title">Event list</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="list"</code> - events as a card grid, uses <code>.ncss-card</code> instead of its own styling.</p>
+    <div class="ncss-events" data-view="list" data-src="~/demo/data/events.json" data-limit="4"></div>
+  </section>
+
+  <section class="ncss-stack" id="einzeltermin">
+    <h2 class="demo-section-title">Single event</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="single"</code> - one highlighted event, chosen via <code>data-event-id</code> (here: <code>"conf"</code>), or the next upcoming one if omitted.</p>
+    <div class="ncss-events" data-view="single" data-src="~/demo/data/events.json" data-event-id="conf"></div>
+  </section>
+
+  <section class="ncss-stack" id="live-downloads">
+    <h2 class="demo-section-title">Downloads</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>js/downloads.js</code> - file list from <code>data/downloads.json</code>, icon/size derived automatically from <code>type</code>/<code>size</code> or the file extension.</p>
+    <div class="ncss-downloads" data-src="~/demo/data/downloads.json"></div>
+  </section>
+
+  <section class="ncss-stack" id="datenformat">
+    <h2 class="demo-section-title">Data format</h2>
+    <p class="ncss-text-muted ncss-text-sm">JSON events (every field except <code>title</code>/<code>start</code> is optional):</p>
+    <pre><code class="language-javascript">[
+  { "title": "Kickoff", "start": "2026-08-26T09:00", "end": "2026-08-26T10:30",
+    "location": "Room A", "description": "...", "url": "https://..." },
+  { "title": "Holiday", "start": "2026-10-03", "allDay": true }
+]</code></pre>
+    <p class="ncss-text-muted ncss-text-sm">.ics files (Google/Outlook/Apple exports) are supported too (<code>data-ics</code> instead of <code>data-src</code>) - see <code>js/ics.js</code> for the supported <code>RRULE</code> scope.</p>
+  </section>

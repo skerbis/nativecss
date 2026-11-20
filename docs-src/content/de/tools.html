@@ -1,0 +1,24 @@
+<!--DESC: Werkzeuge rund um NativeCSS: VS-Code-Vervollständigung, Paket für LLMs und Coding-Agents mit Markup-Prüfung, UIkit-Konverter.-->
+<section class="ncss-stack">
+  <h1>Werkzeuge</h1>
+  <p class="ncss-text-lg ncss-text-muted">Hilfen für die Arbeit mit NativeCSS - alle optional, alle ohne npm-Abhängigkeit, erzeugt aus <code>dist/</code> mit <code>node tools/index.mjs</code>.</p>
+</section>
+
+<section class="ncss-stack" id="vscode">
+  <h2 class="demo-section-title">VS Code</h2>
+  <p>Vervollständigung und Hover-Hilfe für <code>&lt;ncss-…&gt;</code>-Elemente, <code>data-ncss-</code>-Attribute und alle <code>--ncss-</code>-Tokens mit Wert, dazu Markup-Snippets (Präfix <code>ncss-</code> tippen) und Klassennamen über die Erweiterung "HTML CSS Support". Einrichtung: einen fertigen Block in <code>.vscode/settings.json</code> übernehmen.</p>
+  <p><a href="https://github.com/skerbis/nativecss/blob/main/tools/vscode/README.md" target="_blank" rel="noopener">tools/vscode/README.md</a> · <a href="https://github.com/skerbis/nativecss/blob/main/tools/vscode/settings.example.json" target="_blank" rel="noopener">settings.example.json</a></p>
+</section>
+
+<section class="ncss-stack" id="llms">
+  <h2 class="demo-section-title">Paket für LLMs und Coding-Agents</h2>
+  <p>Damit KI-Assistenten keine Klassen erfinden: <code>llms/GUIDE.md</code> als Projekt-Anleitung (z.B. als <code>CLAUDE.md</code>/<code>AGENTS.md</code>), vollständige Listen aller Klassen (<code>llms/classes.json</code>), Elemente, Attribute und Events (<code>llms/components.json</code>) sowie die Kopf-Dokumentation jeder Datei (<code>llms/reference.md</code>). <code>llms.txt</code> im Wurzelverzeichnis verweist darauf.</p>
+  <p>Die Markup-Prüfung <code>node llms/hooks/check-classes.mjs &lt;Dateien&gt;</code> meldet unbekannte <code>ncss-</code>-Klassen (mit Vorschlag), unbekannte Attribute/Elemente, UIkit-Reste, Modals ohne <code>&lt;dialog&gt;</code> sowie fehlende Alt-Texte, Namen und Labels - auch als Claude-Code-Hook nach jeder Bearbeitung.</p>
+  <p><a href="https://github.com/skerbis/nativecss/blob/main/llms/GUIDE.md" target="_blank" rel="noopener">llms/GUIDE.md</a> · <a href="https://github.com/skerbis/nativecss/blob/main/llms.txt" target="_blank" rel="noopener">llms.txt</a> · <a href="https://github.com/skerbis/nativecss/blob/main/llms/hooks/README.md" target="_blank" rel="noopener">llms/hooks/README.md</a></p>
+</section>
+
+<section class="ncss-stack" id="konverter">
+  <h2 class="demo-section-title">UIkit-Konverter</h2>
+  <p>Wandelt UIkit-3-Markup im Browser in NativeCSS-Markup um und zeigt, was von Hand nachzuarbeiten ist - als Einstieg für eine Migration (Hintergrund: <a href="uikit-migration.html">Von UIkit3 nach ncss</a>).</p>
+  <p><a class="ncss-btn ncss-btn--secondary" href="../../demo/uikit-converter.html">UIkit-Konverter öffnen</a></p>
+</section>

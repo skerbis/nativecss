@@ -1,0 +1,88 @@
+<!--DESC: What belongs in an accessibility statement, when one is required and a template to adapt - ncss cannot do this part for you.-->
+<section class="ncss-stack">
+  <h1>Accessibility Statement</h1>
+  <p class="ncss-text-lg ncss-text-muted">An accessibility statement describes honestly how accessible a website is, what does not work yet and how people can report problems. It belongs to your website, not to the framework - ncss cannot write it for you.</p>
+</section>
+
+<section class="ncss-stack" id="hinweis">
+  <h2 class="demo-section-title">Important note</h2>
+  <p>This page is <strong>not legal advice</strong>. Which obligations apply to your website depends on who runs it (public body or business), in which country, and which services it offers. Laws, regulations and standards change. Check the current legal requirements for your case, and get qualified advice if in doubt.</p>
+</section>
+
+<section class="ncss-stack" id="wann">
+  <h2 class="demo-section-title">When a statement is required</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Who</th><th scope="col">Legal framework (selection)</th><th scope="col">What is typically required</th></tr></thead>
+      <tbody>
+        <tr><td>Public sector bodies in the EU (authorities, municipalities, many publicly funded institutions)</td><td>EU Directive 2016/2102 (Web Accessibility Directive), implemented in national law - in Germany, for example, by the Disability Equality Act (BGG) and the BITV 2.0 at federal level plus state laws</td><td>An accessibility statement following the EU model (Implementing Decision 2018/1523), updated regularly and reachable from every page. In Germany the BITV 2.0 also requires information in Easy Read German and German Sign Language</td></tr>
+        <tr><td>Businesses offering certain products or services to consumers (e.g. online shops, banking and telecoms services)</td><td>European Accessibility Act (Directive 2019/882), applicable since 28 June 2025; in Germany implemented by the Accessibility Strengthening Act (BFSG). Microenterprises providing services are largely exempt</td><td>Information on how the service meets the accessibility requirements - in an accessible format, often as a dedicated "Accessibility" page. There is no EU model text, but the content is similar</td></tr>
+        <tr><td>Everyone else (personal sites, associations, many small businesses)</td><td>Often no legal obligation</td><td>Voluntary - but an honest statement and a feedback channel still help your visitors</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The technical benchmark in the EU is the harmonised standard EN 301 549, which incorporates WCAG level AA for websites (WCAG 2.1 in the current version). Meeting WCAG 2.2 AA also meets the WCAG 2.1 AA criteria. Outside the EU, other rules apply - for example the ADA and Section 508 in the US or the Equality Act in the UK.</p>
+</section>
+
+<section class="ncss-stack" id="inhalte">
+  <h2 class="demo-section-title">What goes into it</h2>
+  <p>The following parts are based on the EU model statement for public sector bodies. Even if you are not obliged to publish one, it is a good structure.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Scope</strong> - which website or app the statement covers (address).</li>
+    <li><strong>Compliance status</strong> - against which standard (e.g. WCAG 2.2 level AA, EN 301 549) and whether the website is <em>fully</em>, <em>partially</em> or <em>not</em> compliant. Only say "fully" if that has really been checked.</li>
+    <li><strong>Non-accessible content</strong> - name it specifically: which content, which problem, why (e.g. disproportionate burden, out of scope), and what alternative is available.</li>
+    <li><strong>Preparation of the statement</strong> - the date it was prepared and last reviewed, and how it was assessed (self-assessment, third-party audit, tools used).</li>
+    <li><strong>Feedback and contact</strong> - a simple way to report barriers or request content in an accessible format (email, phone, form), with an indication of when to expect a reply.</li>
+    <li><strong>Enforcement procedure</strong> - for public sector bodies, a reference to the responsible enforcement or conciliation body with contact details; under the European Accessibility Act, where applicable, the competent market surveillance authority.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="formulierung">
+  <h2 class="demo-section-title">Choosing your words carefully</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>Only claim what has been checked. "This website uses NativeCSS" says nothing about the accessibility of your content.</li>
+    <li>Name known issues openly - that is not an admission of weakness but exactly what the statement is for. Include a timeline if there is one.</li>
+    <li>Write plainly: short sentences, no unexplained jargon. The statement itself has to be accessible.</li>
+    <li>Keep the date current. Review and update after major changes to the website.</li>
+    <li>Make the statement reachable from every page - a link in the footer next to the legal notice and privacy policy is common.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="vorlage">
+  <h2 class="demo-section-title">Template</h2>
+  <p>A skeleton to adapt. Replace everything in square brackets and delete sections that do not apply. For a filled-in example, see the <a href="accessibility-statement.html">accessibility statement of this website</a>.</p>
+  <pre><code class="language-html">&lt;main id="main" class="ncss-container ncss-stack"&gt;
+  &lt;h1&gt;Accessibility statement&lt;/h1&gt;
+  &lt;p&gt;[Organisation name] is committed to making the website [https://example.org]
+     accessible.&lt;/p&gt;
+
+  &lt;h2&gt;Compliance status&lt;/h2&gt;
+  &lt;p&gt;This website is [fully / partially / not] compliant with the Web Content
+     Accessibility Guidelines (WCAG) 2.2, level AA.&lt;/p&gt;
+
+  &lt;h2&gt;Non-accessible content&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;[Content]: [problem]. [Reason]. [Alternative, e.g. "On request we can send
+        you the documents as an accessible PDF."]&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Preparation of this statement&lt;/h2&gt;
+  &lt;p&gt;This statement was prepared on [date] and last reviewed on [date].
+     It is based on a [self-assessment / third-party audit] using
+     [method, tools].&lt;/p&gt;
+
+  &lt;h2&gt;Feedback and contact&lt;/h2&gt;
+  &lt;p&gt;Have you found a problem or do you need content in a different format?
+     Email us at &lt;a href="mailto:[address]"&gt;[address]&lt;/a&gt; or call us on
+     [phone]. We usually reply within [time frame].&lt;/p&gt;
+
+  &lt;h2&gt;Enforcement procedure&lt;/h2&gt;
+  &lt;p&gt;[Only if applicable: responsible enforcement or conciliation body with
+     address and link.]&lt;/p&gt;
+&lt;/main&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="grundlage">
+  <h2 class="demo-section-title">Laying the groundwork</h2>
+  <p>A credible statement needs an assessment. The <a href="a11y-checklist.html">WCAG 2.2 AA Checklist</a> shows which criteria ncss supports and which you need to meet yourself; <a href="a11y-testing.html">Testing</a> explains how to check the finished page. Write down what you tested and how - that later becomes the "Preparation of this statement" section.</p>
+</section>

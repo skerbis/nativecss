@@ -88,8 +88,8 @@ document.addEventListener("htmx:load", function (event) {
 
 <section class="ncss-stack" id="accessibility">
   <h2 class="demo-section-title">Accessibility</h2>
-  <div class="ncss-a11y-notes">
-    <h3>What the host code has to take care of</h3>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>What the host code has to take care of</h3>
     <dl class="ncss-stack ncss-stack--tight">
       <dt>Keyboard</dt>
       <dd>The ncss scripts NEVER move focus while initialising - inserted markup does not steal it. Focus management after a swap is the host code's job: if the user triggered the load themselves (“Load more”, filters, page 2), move focus to the heading of the new region (<code>tabindex="-1"</code>, not in the tab order) - like the demo above. If a swap replaces the focused element, focus is otherwise lost to <code>&lt;body&gt;</code>. Automatic updates (polling, live data) must never move focus.</dd>

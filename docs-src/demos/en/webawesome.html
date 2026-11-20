@@ -1,0 +1,143 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-narrow {
+    max-width: 32rem;
+  }
+  .demo-avatar-row {
+    align-items: center;
+  }
+  .demo-comparison img {
+    display: block;
+    width: 100%;
+  }
+</style>
+<link rel="stylesheet" href="~/vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="~/dist/integrations/fontawesome-font-display-fix.css">
+<link rel="stylesheet" href="~/vendor/webawesome/dist-cdn/styles/themes/default.css">
+<link rel="stylesheet" href="~/dist/integrations/webawesome-bridge.css">
+<script src="~/dist/js/wa-close-on-scroll.js" defer></script>
+<script type="module" src="~/demo/assets/js/set-icon-path.js"></script>
+<script type="module" src="~/vendor/webawesome/dist-cdn/webawesome.loader.js" data-webawesome="~/vendor/webawesome/dist-cdn"></script>
+-->
+  <section class="ncss-stack">
+    <p class="ncss-text-muted">All in the NativeCSS look via the same <code>webawesome-bridge.css</code> - no extra CSS per component needed. Where NativeCSS already has a native building block for it (accordion/disclosure, carousel/slideshow, drawer/off-canvas), it is linked for comparison.</p>
+    <pre><code class="language-html">&lt;wa-accordion&gt;
+  &lt;wa-accordion-item label="Question 1"&gt;Answer 1&lt;/wa-accordion-item&gt;
+  &lt;wa-accordion-item label="Question 2"&gt;Answer 2&lt;/wa-accordion-item&gt;
+&lt;/wa-accordion&gt;</code></pre>
+  </section>
+
+  <section id="accordion" class="ncss-stack">
+    <h2 class="demo-section-title">Accordion</h2>
+    <p class="ncss-text-muted ncss-text-sm">Compare: native <a href="all-components.html#modal-demo"><code>.ncss-disclosure</code></a> (a <code>&lt;details&gt;</code>, no JS).</p>
+    <wa-accordion class="demo-narrow">
+      <wa-accordion-item label="What is NativeCSS?">A native CSS design system with no build step.</wa-accordion-item>
+      <wa-accordion-item label="Why no utility-class matrix?">Small, curated utility sets instead of Tailwind-style completeness.</wa-accordion-item>
+      <wa-accordion-item label="Does it work without Web Awesome?">Yes - Web Awesome is optional, NativeCSS itself is pure CSS.</wa-accordion-item>
+    </wa-accordion>
+  </section>
+
+  <section id="tabs" class="ncss-stack">
+    <h2 class="demo-section-title">Tabs</h2>
+    <wa-tab-group>
+      <wa-tab panel="prinzip">Principle</wa-tab>
+      <wa-tab panel="bridge">Bridge</wa-tab>
+      <wa-tab panel="icons">Icons</wa-tab>
+      <wa-tab-panel name="prinzip" active>Native mechanisms first, Web Awesome only as a supplement.</wa-tab-panel>
+      <wa-tab-panel name="bridge">One file (<code>webawesome-bridge.css</code>) maps Web Awesome's tokens to ncss tokens.</wa-tab-panel>
+      <wa-tab-panel name="icons">Font Awesome, self-hosted - both as a webfont icon and for <code>&lt;wa-icon&gt;</code>.</wa-tab-panel>
+    </wa-tab-group>
+  </section>
+
+  <section id="breadcrumb" class="ncss-stack">
+    <h2 class="demo-section-title">Breadcrumb</h2>
+    <wa-breadcrumb>
+      <wa-breadcrumb-item href="all-components.html">NativeCSS</wa-breadcrumb-item>
+      <wa-breadcrumb-item href="~/demo/webawesome.html">Web Awesome</wa-breadcrumb-item>
+      <wa-breadcrumb-item>Breadcrumb</wa-breadcrumb-item>
+    </wa-breadcrumb>
+  </section>
+
+  <section id="avatar" class="ncss-stack">
+    <h2 class="demo-section-title">Avatar</h2>
+    <div class="ncss-cluster demo-avatar-row">
+      <wa-avatar label="Anna K." initials="AK"></wa-avatar>
+      <wa-avatar label="Martin T." initials="MT"></wa-avatar>
+      <wa-avatar label="Unknown"><wa-icon slot="icon" name="user"></wa-icon></wa-avatar>
+    </div>
+  </section>
+
+  <section id="callout" class="ncss-stack">
+    <h2 class="demo-section-title">Callout</h2>
+    <div class="ncss-stack ncss-stack--tight">
+      <wa-callout variant="brand"><wa-icon slot="icon" name="circle-info"></wa-icon>Note: example only, not linked to anything live.</wa-callout>
+      <wa-callout variant="success"><wa-icon slot="icon" name="circle-check"></wa-icon>Saved successfully.</wa-callout>
+      <wa-callout variant="warning"><wa-icon slot="icon" name="triangle-exclamation"></wa-icon>Changes have not been published yet.</wa-callout>
+      <wa-callout variant="danger"><wa-icon slot="icon" name="circle-exclamation"></wa-icon>Error while saving - please try again.</wa-callout>
+    </div>
+  </section>
+
+  <section id="carousel" class="ncss-stack">
+    <h2 class="demo-section-title">Carousel</h2>
+    <p class="ncss-text-muted ncss-text-sm">Compare: native <a href="all-components.html#slideshow"><code>.ncss-slideshow</code></a> (scroll snap, no JS) - <code>&lt;wa-carousel&gt;</code> ships arrows/dots/loop as ready-made behavior, but depends on JS.</p>
+    <wa-carousel navigation pagination loop class="demo-narrow">
+      <wa-carousel-item><img src="~/demo/assets/slide-1.jpg" alt="Slide 1"></wa-carousel-item>
+      <wa-carousel-item><img src="~/demo/assets/slide-2.jpg" alt="Slide 2"></wa-carousel-item>
+      <wa-carousel-item><img src="~/demo/assets/slide-3.jpg" alt="Slide 3"></wa-carousel-item>
+    </wa-carousel>
+  </section>
+
+  <section id="drawer" class="ncss-stack">
+    <h2 class="demo-section-title">Drawer</h2>
+    <p class="ncss-text-muted ncss-text-sm">Compare: native <a href="~/demo/navigation.html#offcanvas"><code>.ncss-offcanvas</code></a> (native <code>&lt;dialog&gt;</code>).</p>
+    <wa-button variant="neutral" appearance="outlined" data-drawer="open demoDrawer">Open drawer</wa-button>
+    <wa-drawer label="Web Awesome drawer" id="demoDrawer" placement="end">
+      <p>Slides in from the edge - Web Awesome's own component, visually identical to the native off-canvas variant thanks to the bridge.</p>
+      <wa-button slot="footer" variant="neutral" appearance="plain" data-drawer="close">Close</wa-button>
+    </wa-drawer>
+  </section>
+
+  <section id="dropdown" class="ncss-stack">
+    <h2 class="demo-section-title">Dropdown (action menu)</h2>
+    <p class="ncss-text-muted ncss-text-sm">Unlike <a href="~/demo/navigation.html#nested"><code>.ncss-nav-dropdown</code></a> (navigation) - this is an action menu with selectable items.</p>
+    <wa-dropdown>
+      <wa-button slot="trigger" variant="neutral" appearance="outlined" with-caret>Actions</wa-button>
+      <wa-dropdown-item value="edit"><wa-icon slot="icon" name="pen"></wa-icon>Edit</wa-dropdown-item>
+      <wa-dropdown-item value="duplicate"><wa-icon slot="icon" name="copy"></wa-icon>Duplicate</wa-dropdown-item>
+      <wa-dropdown-item value="delete" variant="danger"><wa-icon slot="icon" name="trash"></wa-icon>Delete</wa-dropdown-item>
+    </wa-dropdown>
+    <p class="ncss-text-sm ncss-text-muted" id="dropdownResult"></p>
+  </section>
+
+  <section id="progress" class="ncss-stack">
+    <h2 class="demo-section-title">Progress</h2>
+    <wa-progress-bar value="70" class="demo-narrow" label="Upload progress"></wa-progress-bar>
+    <div class="ncss-cluster demo-avatar-row">
+      <wa-progress-ring value="70" label="Progress"></wa-progress-ring>
+      <wa-spinner></wa-spinner>
+    </div>
+  </section>
+
+  <section id="toast" class="ncss-stack">
+    <h2 class="demo-section-title">Toast</h2>
+    <wa-button variant="brand" appearance="accent" id="toastBtn">Show notification</wa-button>
+    <wa-toast id="demoToast"></wa-toast>
+  </section>
+
+  <section id="comparison" class="ncss-stack">
+    <h2 class="demo-section-title">Before/after comparison</h2>
+    <wa-comparison class="demo-narrow demo-comparison">
+      <img slot="before" src="~/demo/assets/art-direction-desktop.jpg" alt="Before">
+      <img slot="after" src="~/demo/assets/art-direction-mobile.jpg" alt="After">
+    </wa-comparison>
+  </section>
+<!--FOOT:
+<script src="~/demo/assets/js/webawesome-demo.js"></script>
+-->

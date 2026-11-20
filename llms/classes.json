@@ -557,7 +557,15 @@
   "helpers/layout.css",
   "js/events.js"
  ],
+ "ncss-code-block": [
+  "components/code-block.css",
+  "js/code-block.js"
+ ],
  "ncss-code-copy": [
+  "components/code-block.css",
+  "js/code-block.js"
+ ],
+ "ncss-code-status": [
   "components/code-block.css",
   "js/code-block.js"
  ],
@@ -595,7 +603,8 @@
   "js/combobox.js"
  ],
  "ncss-command": [
-  "components/command-palette.css"
+  "components/command-palette.css",
+  "js/dialog-light-dismiss.js"
  ],
  "ncss-command-empty": [
   "components/command-palette.css",
@@ -1143,6 +1152,7 @@
   "helpers/typography.css"
  ],
  "ncss-icon": [
+  "components/code-block.css",
   "components/lightbox.css",
   "components/lists.css",
   "components/search.css",
@@ -1151,11 +1161,44 @@
   "js/events.js",
   "js/lightbox.js"
  ],
+ "ncss-icon-accessibility": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-arrow-down": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-arrow-left": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-arrow-right": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-arrow-up": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-calendar": [
+  "helpers/icons.css"
+ ],
  "ncss-icon-check": [
   "helpers/icons.css",
   "js/code-block.js"
  ],
+ "ncss-icon-check-circle": [
+  "helpers/icons.css"
+ ],
  "ncss-icon-chevron-down": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-chevron-left": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-chevron-right": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-chevron-up": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-clock": [
   "helpers/icons.css"
  ],
  "ncss-icon-close": [
@@ -1166,19 +1209,127 @@
   "helpers/icons.css",
   "js/code-block.js"
  ],
+ "ncss-icon-download": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-edit": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-error": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-external-link": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-eye": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-file": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-filter": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-fullscreen": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-globe": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-heart": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-home": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-image": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-info": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-link": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-lock": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-logout": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-mail": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-map-pin": [
+  "helpers/icons.css"
+ ],
  "ncss-icon-menu": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-minus": [
   "helpers/icons.css"
  ],
  "ncss-icon-moon": [
   "helpers/icons.css"
  ],
+ "ncss-icon-pause": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-pencil": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-phone": [
+  "helpers/icons.css"
+ ],
  "ncss-icon-play": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-plus": [
   "helpers/icons.css"
  ],
  "ncss-icon-search": [
   "helpers/icons.css"
  ],
+ "ncss-icon-settings": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-share": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-sort": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-sprite": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-star": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-success": [
+  "helpers/icons.css"
+ ],
  "ncss-icon-sun": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-trash": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-upload": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-user": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-users": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-volume": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-warning": [
+  "helpers/icons.css"
+ ],
+ "ncss-icon-x-circle": [
   "helpers/icons.css"
  ],
  "ncss-img-circle": [
@@ -1227,6 +1378,7 @@
  ],
  "ncss-lightbox": [
   "components/lightbox.css",
+  "js/dialog-light-dismiss.js",
   "js/lightbox.js"
  ],
  "ncss-lightbox-bar": [
@@ -1367,6 +1519,7 @@
  ],
  "ncss-modal": [
   "components/modal.css",
+  "js/dialog-light-dismiss.js",
   "js/events.js",
   "js/lightbox.js"
  ],
@@ -1529,7 +1682,8 @@
   "helpers/typography.css"
  ],
  "ncss-offcanvas": [
-  "components/off-canvas.css"
+  "components/off-canvas.css",
+  "js/dialog-light-dismiss.js"
  ],
  "ncss-offcanvas--end": [
   "components/off-canvas.css"

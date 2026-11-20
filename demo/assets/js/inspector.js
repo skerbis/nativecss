@@ -48,8 +48,6 @@
   function explainFor(key) {
     if (!explain || !explain.entries) return "";
     var e = explain.entries[key];
-    // Modifier ohne eigenen Eintrag (.ncss-btn--primary): Erklärung der Basisklasse.
-    if (!e && key.indexOf("--") > 0) e = explain.entries[key.split("--")[0]];
     if (!e) return "";
     var href = new URL("docs/" + LANG + "/" + e.page + ".html" + (e.anchor ? "#" + e.anchor : ""), SITE_ROOT).href;
     return '<span class="demo-inspect-explain">' + esc(e.text) + ' <a href="' + esc(href) + '">' + T.docs + ": " + esc(e.title) + "</a></span>";
@@ -64,14 +62,14 @@
     html: "HTML", classes: "Classes → defining file", scripts: "JavaScript", imports: "Cherry-pick: @import lines for your own ncss.css",
     notLoaded: "not defined by a loaded stylesheet", noScript: "script not loaded on this page", ancestors: "Ancestors",
     needsBase: "always needed: colors, tokens, reset, base",
-    docs: "Docs", elements: "Custom elements", files: "Files"
+    docs: "Docs", elements: "Custom elements", files: "Files", noDesc: "No description - see"
   } : {
     title: "Inspektor", copy: "HTML kopieren", copied: "Kopiert", parent: "Eltern ↑", close: "Schließen",
     hint: "Ein beliebiges Element anklicken. Alt+I (⌥I) schaltet den Modus um, Esc beendet ihn.",
     html: "HTML", classes: "Klassen → definierende Datei", scripts: "JavaScript", imports: "Cherry-Picking: @import-Zeilen für die eigene ncss.css",
     notLoaded: "von keinem geladenen Stylesheet definiert", noScript: "Script auf dieser Seite nicht geladen", ancestors: "Vorfahren",
     needsBase: "immer nötig: colors, tokens, reset, base",
-    docs: "Handbuch", elements: "Eigene Elemente", files: "Dateien"
+    docs: "Handbuch", elements: "Eigene Elemente", files: "Dateien", noDesc: "Keine Beschreibung - siehe"
   };
 
   var active = false;
@@ -248,7 +246,9 @@
       var hrefs = index[c] || [];
       var paths = hrefs.map(distPath).filter(Boolean);
       paths.forEach(function (p) { files[p] = true; });
-      return "<li><code>." + esc(c) + "</code><span>" + (paths.length ? paths.map(function (p) { return "dist/" + esc(p); }).join(", ") : T.notLoaded) + "</span>" + explainFor(c) + "</li>";
+      // Keine passende Tabellenzeile im Handbuch: ehrlich sagen statt raten.
+      var note = explainFor(c) || (explain ? '<span class="demo-inspect-explain">' + T.noDesc + (paths.length ? " dist/" + esc(paths[0]) : "") + "</span>" : "");
+      return "<li><code>." + esc(c) + "</code><span>" + (paths.length ? paths.map(function (p) { return "dist/" + esc(p); }).join(", ") : T.notLoaded) + "</span>" + note + "</li>";
     }).join("");
 
     var scripts = Array.prototype.map.call(document.querySelectorAll("script[src]"), function (s) { return s.getAttribute("src"); })

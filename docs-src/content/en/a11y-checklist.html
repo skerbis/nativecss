@@ -1,0 +1,99 @@
+<!--DESC: The most important WCAG 2.2 criteria at levels A and AA - what NativeCSS provides for each and what you need to do for your own site.-->
+<section class="ncss-stack">
+  <h1>WCAG 2.2 AA Checklist</h1>
+  <p class="ncss-text-lg ncss-text-muted">A CSS framework cannot "make a site accessible". It can lay good foundations - most criteria depend on content, wording and markup, which means on you. This list shows honestly where the line runs.</p>
+</section>
+
+<section class="ncss-stack" id="hinweise">
+  <h2 class="demo-section-title">How to read the tables</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>The selection covers the criteria that matter most often on typical websites - not all 55 success criteria at levels A and AA. The full list is in <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a>, a readable explanation in <a href="https://www.w3.org/WAI/WCAG22/quickref/">How to Meet WCAG</a>.</li>
+    <li>"What NativeCSS provides" only applies if you use the components as described in this handbook. Your own colours, CSS and scripts need checking by you.</li>
+    <li>Whether your site meets a criterion can only be shown by testing the finished page - see <a href="a11y-testing.html">Testing</a>.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="wahrnehmbar">
+  <h2 class="demo-section-title">1 Perceivable</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Criterion</th><th scope="col">What NativeCSS provides</th><th scope="col">What you need to do</th></tr></thead>
+      <tbody>
+        <tr><td>1.1.1 Non-text Content (A)</td><td><code>.ncss-visually-hidden</code> for text meant only for screen readers; player buttons have names; the lightbox uses <code>alt</code>/<code>data-caption</code></td><td>Write meaningful <code>alt</code> text, give decorative images <code>alt=""</code>, label icon buttons, provide chart data as text (<a href="a11y-media.html#alternativtext">Media</a>)</td></tr>
+        <tr><td>1.2.1-1.2.5 Time-based Media (A/AA)</td><td><code>&lt;ncss-video-player&gt;</code> reads <code>&lt;track kind="captions|subtitles"&gt;</code>, CC toggle, language choice; chapter tracks; playlist for a version with audio description</td><td>Create captions, transcripts and, where needed, audio description - that is content no framework can supply</td></tr>
+        <tr><td>1.3.1 Info and Relationships (A)</td><td>Native elements first (<code>dialog</code>, <code>details</code>, <code>fieldset</code>, tables with <code>th</code>); list styles rely on <code>role="list"</code> so the semantics survive</td><td>Heading hierarchy, landmarks, labels, <code>th scope</code>, marking up lists as lists. Know the exception: <code>.ncss-table-stacked</code> breaks table semantics (<a href="known-limitations.html">Known Limitations</a>)</td></tr>
+        <tr><td>1.3.5 Identify Input Purpose (AA)</td><td>-</td><td>Matching <code>autocomplete</code> values on fields with personal data (<a href="a11y-forms.html#autocomplete">Forms</a>)</td></tr>
+        <tr><td>1.4.1 Use of Color (A)</td><td>Links in running text stay underlined; the error state shows a border, toast status has text as well as colour</td><td>Never convey meaning by colour alone: write error messages, explain required fields, label charts</td></tr>
+        <tr><td>1.4.2 Audio Control (A)</td><td>Players never start by themselves; only one player plays at a time</td><td>No autoplay with sound; videos with <code>autoplay</code> are always <code>muted</code></td></tr>
+        <tr><td>1.4.3 Contrast (Minimum) (AA)</td><td>Token palette with <code>-on-soft</code> text colours checked against their own surface, light and dark mode</td><td>Check your own colours, theme changes, text on images and videos (4.5:1, large text 3:1) - in both modes</td></tr>
+        <tr><td>1.4.4 Resize Text (AA)</td><td>Fluid type tokens with a <code>rem</code> part, unitless line heights, no zoom lock</td><td>Your own sizes in <code>rem</code>, no fixed heights for text, viewport meta tag without <code>maximum-scale</code></td></tr>
+        <tr><td>1.4.10 Reflow (AA)</td><td><code>.ncss-grid</code> wraps without media queries, container queries, <code>max-width: 100%</code> for media, word wrapping, <code>.ncss-table-scroll</code></td><td>Check at 320 CSS pixels, especially your own layouts, navigation and embedded content (<a href="a11y-zoom.html#reflow">Zoom</a>)</td></tr>
+        <tr><td>1.4.11 Non-text Contrast (AA)</td><td>Focus outline (2&nbsp;px, its own focus colour); native checkboxes and radios</td><td>Check field and button borders, icons and chart lines against their background (3:1) - especially with your own theme colours</td></tr>
+        <tr><td>1.4.12 Text Spacing (AA)</td><td>Boxes without fixed heights, icon buttons sized from <code>1lh</code>, line height 1.6</td><td>Test with increased spacing; only use <code>.ncss-clamp-lines</code> with a way to reach the full text</td></tr>
+        <tr><td>1.4.13 Content on Hover or Focus (AA)</td><td><code>js/hovercard.js</code> closes with <kbd class="ncss-kbd">Esc</kbd>; menus and popovers close with <kbd class="ncss-kbd">Esc</kbd></td><td>Your own tooltips: dismissible with <kbd class="ncss-kbd">Esc</kbd>, reachable with the pointer, visible as long as they are needed</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="bedienbar">
+  <h2 class="demo-section-title">2 Operable</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Criterion</th><th scope="col">What NativeCSS provides</th><th scope="col">What you need to do</th></tr></thead>
+      <tbody>
+        <tr><td>2.1.1 Keyboard (A)</td><td>Native elements; the scripted components (players, menus, live search, combobox, lightbox) work with the keyboard (<a href="a11y-keyboard.html">Keyboard</a>)</td><td>No <code>div</code> buttons; test your own scripts with the keyboard; check embedded third-party content</td></tr>
+        <tr><td>2.1.2 No Keyboard Trap (A)</td><td>Native <code>&lt;dialog&gt;</code> and <code>popover</code> with <kbd class="ncss-kbd">Esc</kbd>; the duplicate in the marquee is <code>inert</code></td><td>Check your own overlays and embeds (maps, chat widgets)</td></tr>
+        <tr><td>2.2.1 Timing Adjustable (A)</td><td>Toasts pause their timer while the pointer or focus is in the region and while the tab is in the background; <code>timeout: 0</code> for persistent messages</td><td>Do not let important messages disappear automatically; announce session timeouts and allow extending them</td></tr>
+        <tr><td>2.2.2 Pause, Stop, Hide (A)</td><td>Marquee: pause toggle via <code>js/marquee.js</code>, stops on focus; background video: pause toggle via <code>js/video-bg.js</code></td><td>Put the marquee's pause button in your markup; add a pause toggle for hero videos that only use <code>hero-video-motion.js</code>; make your own carousels pausable</td></tr>
+        <tr><td>2.3.3 Animation from Interactions (AAA - not part of AA)</td><td><code>prefers-reduced-motion: reduce</code> reduces animations and transitions to almost zero globally; background videos do not load</td><td>Not required for AA, but important for people with vestibular disorders: let users turn off your own JS animations too</td></tr>
+        <tr><td>2.4.1 Bypass Blocks (A)</td><td><code>.ncss-skip-link</code>, hidden with <code>translate</code> (stays out of view even with text zoom)</td><td>Make the skip link the first element, <code>&lt;main&gt;</code> with the ID <code>main</code> as its target, use landmarks</td></tr>
+        <tr><td>2.4.2 Page Titled (A)</td><td>-</td><td>A unique <code>&lt;title&gt;</code> on every page; prefix "Error:" after form errors</td></tr>
+        <tr><td>2.4.3 Focus Order (A)</td><td>Native dialogs move focus in and back; player menus return focus to their button when closed with <kbd class="ncss-kbd">Esc</kbd></td><td>DOM order = reading order; no positive <code>tabindex</code>; check layouts reordered with CSS (<code>order</code>, grid placement)</td></tr>
+        <tr><td>2.4.4 Link Purpose (In Context) (A)</td><td>-</td><td>Link text that names the destination - no "here" or "more" without context</td></tr>
+        <tr><td>2.4.6 Headings and Labels (AA)</td><td>-</td><td>Write descriptive headings and labels</td></tr>
+        <tr><td>2.4.7 Focus Visible (AA)</td><td>Global <code>:focus-visible</code> outline in <code>reset.css</code>, never tied to hover</td><td>Do not remove the outline with <code>outline: none</code>; keep it visible with your own colours</td></tr>
+        <tr><td>2.4.11 Focus Not Obscured (Minimum) (AA)</td><td>Focus inside the video player brings back the hidden control bar</td><td>Set <code>scroll-padding-block</code> for sticky headers and footers; cookie banners must not cover the focused element</td></tr>
+        <tr><td>2.5.3 Label in Name (A)</td><td>-</td><td>The accessible name contains the visible text (no different <code>aria-label</code> on buttons that have text)</td></tr>
+        <tr><td>2.5.7 Dragging Movements (AA)</td><td><code>&lt;ncss-compare&gt;</code> is driven by an <code>&lt;input type="range"&gt;</code> (click and keyboard work too); <code>&lt;ncss-dropzone&gt;</code> is built on a real <code>&lt;input type="file"&gt;</code></td><td>Offer an alternative without dragging for your own drag-and-drop features (sorting, sliders)</td></tr>
+        <tr><td>2.5.8 Target Size (Minimum) (AA)</td><td><code>.ncss-btn</code> and <code>.ncss-btn--sm</code> are well above 24&nbsp;px; labels enlarge the click area of checkboxes</td><td>Give your own small icon links enough size or spacing (<a href="a11y-zoom.html#zielgroesse">Target size</a>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="verstaendlich">
+  <h2 class="demo-section-title">3 Understandable</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Criterion</th><th scope="col">What NativeCSS provides</th><th scope="col">What you need to do</th></tr></thead>
+      <tbody>
+        <tr><td>3.1.1 Language of Page (A)</td><td>Texts in the scripted components (players, live search, lightbox) follow <code>&lt;html lang&gt;</code> (German/English)</td><td>Set <code>&lt;html lang="en"&gt;</code></td></tr>
+        <tr><td>3.1.2 Language of Parts (AA)</td><td>-</td><td>Mark up passages in another language with <code>lang</code></td></tr>
+        <tr><td>3.2.1 / 3.2.2 On Focus / On Input (A)</td><td>No ncss component changes the page on focus or selection; live search only shows a result list</td><td>No automatic redirect when a <code>&lt;select&gt;</code> changes; always submit with a button</td></tr>
+        <tr><td>3.2.3 / 3.2.4 Consistent Navigation / Identification (AA)</td><td>-</td><td>Arrange and name navigation and recurring elements the same way everywhere</td></tr>
+        <tr><td>3.2.6 Consistent Help (A)</td><td>-</td><td>Contact and help links in the same place on every page</td></tr>
+        <tr><td>3.3.1 Error Identification (A)</td><td><code>:user-invalid</code> border; <code>.ncss-field-error</code> for the error text</td><td>Write the error text and link it with <code>aria-describedby</code>; set <code>aria-invalid</code> (<a href="a11y-forms.html#validierung">Forms</a>)</td></tr>
+        <tr><td>3.3.2 Labels or Instructions (A)</td><td><code>.ncss-label</code>, <code>.ncss-label--required</code>, <code>.ncss-field-hint</code></td><td>Visible labels, <code>required</code>, format hints before input, explain the asterisk</td></tr>
+        <tr><td>3.3.3 Error Suggestion (AA)</td><td>-</td><td>Phrase error messages with a suggested fix</td></tr>
+        <tr><td>3.3.4 Error Prevention (Legal, Financial, Data) (AA)</td><td>-</td><td>For legally or financially binding input: let people review, confirm or undo</td></tr>
+        <tr><td>3.3.7 Redundant Entry (A)</td><td>-</td><td>Pre-fill or offer information already given in the same process; keep input after errors</td></tr>
+        <tr><td>3.3.8 Accessible Authentication (Minimum) (AA)</td><td>Native fields - password managers and pasting work as long as you do not block them</td><td>No cognitive function tests (puzzle CAPTCHAs, transcribing) without an alternative; <code>autocomplete="current-password"</code>, <code>one-time-code</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="robust">
+  <h2 class="demo-section-title">4 Robust</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Criterion</th><th scope="col">What NativeCSS provides</th><th scope="col">What you need to do</th></tr></thead>
+      <tbody>
+        <tr><td>4.1.2 Name, Role, Value (A)</td><td>Native elements; scripted components set <code>aria-expanded</code>, <code>aria-pressed</code>, <code>aria-checked</code>, <code>aria-controls</code>, <code>aria-activedescendant</code>; <code>role="switch"</code> for <code>.ncss-switch</code> is documented</td><td>Build your own widgets following the <a href="https://www.w3.org/WAI/ARIA/apg/">ARIA Authoring Practices</a>; set <code>role="switch"</code> and labels in your markup</td></tr>
+        <tr><td>4.1.3 Status Messages (AA)</td><td>Toast region with <code>aria-live="polite"</code>; live search result count via <code>role="status"</code>; players announce state changes</td><td>Write your own status messages ("Saved", "3 results") into a live region without moving focus</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>4.1.1 (Parsing) has been removed in WCAG 2.2. Valid HTML without duplicate IDs is still what makes labels, <code>aria-describedby</code> and in-page links work.</p>
+</section>

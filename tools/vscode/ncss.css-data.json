@@ -322,6 +322,22 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-code-copy-size",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-code-copy-size: calc(var(--ncss-space-md) + var(--ncss-space-3xs, 0.25rem));\n```\nQuelle: `components/code-block.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-code-reserve",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-code-reserve: calc(var(--ncss-code-copy-size) + var(--ncss-space-2xs));\n```\nQuelle: `components/code-block.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-color-bg",
    "description": {
     "kind": "markdown",
@@ -1206,6 +1222,14 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-hovercard-width: 20rem;\n```\nQuelle: `components/hovercard.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-icon-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-icon-size: 1em (Fallback in var());\n```\nQuelle: `helpers/icons.css`"
    },
    "syntax": "*"
   },

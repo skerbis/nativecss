@@ -14,9 +14,9 @@
 <section class="ncss-stack" id="seed-werte">
   <h2 class="demo-section-title">Nur Seed-Werte, keine Ableitungen</h2>
   <p><code>theme.css</code> enthält nur die BASIS-/SEED-Werte (Markenfarben, Grundflächen, Schriften, Radien, Schatten, Bewegung), nicht die daraus abgeleiteten Farbskalen. Farben wie <code>--ncss-color-brand-100</code>/<code>-300</code>/<code>-700</code>/<code>-900</code> werden aus GENAU EINEM Basiswert per <code>color-mix()</code> automatisch berechnet - die Markenfarbe in <code>theme.css</code> ändern genügt, die ganze Skala (helle/dunkle Stufen, "on-soft"-Textfarbe, Web-Awesome-Bridge) zieht automatisch mit.</p>
-  <div class="ncss-field ncss-callout ncss-radius-md ncss-border" style="padding: var(--ncss-space-md); background-color: var(--ncss-color-bg-subtle);">
-    <strong>Wichtige Einschränkung</strong>
-    <p class="ncss-text-sm">Nur auf <code>:root</code> angewendet funktioniert die automatische Ableitung. Wird derselbe Seed-Wert stattdessen NUR lokal auf ein einzelnes Element überschrieben, ziehen nur Regeln mit, die den Seed direkt referenzieren - die abgeleitete Skala bleibt beim alten Wert, weil sie nur einmal auf <code>:root</code> berechnet und als fertiger Wert vererbt wird.</p>
+  <div class="ncss-alert ncss-alert--warning">
+    <p class="ncss-alert-title">Wichtige Einschränkung</p>
+    <p>Nur auf <code>:root</code> angewendet funktioniert die automatische Ableitung. Wird derselbe Seed-Wert stattdessen NUR lokal auf ein einzelnes Element überschrieben, ziehen nur Regeln mit, die den Seed direkt referenzieren - die abgeleitete Skala bleibt beim alten Wert, weil sie nur einmal auf <code>:root</code> berechnet und als fertiger Wert vererbt wird.</p>
   </div>
 </section>
 
@@ -34,9 +34,5 @@
   <p class="ncss-text-muted ncss-text-sm">Bekannte Konsolen-Meldung in manchen Browsern (kein ncss-Bug, aktuell v.a. WebKit/Safari bei Zurück-/Vorwärts-Navigation während eine Transition läuft): <code>"AbortError: Skipping view transition because skipTransition() was called"</code> - spec-bedingt erwartet, die Navigation funktioniert trotzdem normal weiter. Optionaler Begleiter, der nur diese Konsolen-Meldung unterdrückt: <code>&lt;script src="js/page-transitions-quiet.js" defer&gt;&lt;/script&gt;</code>.</p>
 </section>
 
-<section class="ncss-stack" id="live-demo">
-  <h2 class="demo-section-title">Live-Beispiele</h2>
-  <p class="ncss-text-muted">Alle Bausteine dieser Seite live zum Ausprobieren - mit <strong>Inspect</strong> unten rechts lässt sich jedes Element anklicken, um sein HTML und die passende Erklärung zu sehen.</p>
-</section>
 
-<!--INCLUDE: theming-->
+<!--MERGE: theming-->
