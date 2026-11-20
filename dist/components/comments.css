@@ -174,9 +174,24 @@
 .ncss-comment:target {
   padding: var(--ncss-space-xs);
   margin: calc(var(--ncss-space-xs) * -1);
-  border-inline-start: 3px solid var(--ncss-color-brand);
   border-radius: var(--ncss-radius-md);
   background-color: var(--ncss-color-bg-subtle);
+  /* Akzent als eingerückter Balken mit runden Enden statt dicker Randkante (die würde
+     der Eckrundung folgen) */
+  background-image: linear-gradient(var(--ncss-color-brand), var(--ncss-color-brand));
+  background-repeat: no-repeat;
+  background-size: 3px calc(100% - 1.2rem);
+  background-position: left 0 top 0.6rem;
+}
+.ncss-comment--highlight:dir(rtl),
+.ncss-comment:target:dir(rtl) {
+  background-position: right 0 top 0.6rem;
+}
+@media (forced-colors: active) {
+  .ncss-comment--highlight,
+  .ncss-comment:target {
+    border-inline-start: 3px solid CanvasText;
+  }
 }
 
 /* --- Einzugstiefe begrenzen ------------------------------------------------------------- */

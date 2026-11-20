@@ -1,0 +1,139 @@
+/**
+ * ncss - Toolbar und Split-Button (Layer "components").
+ *
+ * 1. .ncss-toolbar: Werkzeugleiste (Editor, App-Kopf, Tabellen-Aktionen) - Gruppen links
+ *    und rechts, Trennstriche, bricht bei wenig Platz sauber um statt zu überlaufen.
+ *    Gern auf dunkler Fläche: class="ncss-toolbar ncss-scheme-dark" (helpers/surfaces.css).
+ *    Buttons darin: .ncss-btn mit --ghost / --pill / --icon (helpers/forms.css).
+ *
+ *    <div class="ncss-toolbar" role="toolbar" aria-label="Seite bearbeiten">
+ *      <div class="ncss-toolbar-group"> … Modus-Umschalter … </div>
+ *      <div class="ncss-toolbar-group ncss-toolbar-end"> … Aktionen … </div>
+ *    </div>
+ *
+ *    role="toolbar" NUR zusammen mit <ncss-toolbar> (js/toolbar.js): dann ist die Leiste
+ *    ein Tab-Stopp und Pfeiltasten wandern zwischen den Werkzeugen (WAI-ARIA-APG "Toolbar").
+ *    Ohne das Script ist sie eine normale Gruppe (role="group"), jedes Werkzeug ein
+ *    eigener Tab-Stopp - beides ist zugänglich.
+ *
+ * 2. .ncss-split-btn: Hauptaktion + angehängter Menü-Knopf ("Veröffentlichen ▾").
+ *    Der Menü-Knopf öffnet z.B. ein .ncss-dropdown (components/dropdown.css) per popovertarget.
+ *
+ *    <div class="ncss-split-btn">
+ *      <button type="button" class="ncss-btn ncss-btn--primary">Veröffentlichen</button>
+ *      <button type="button" class="ncss-btn ncss-btn--primary" popovertarget="pubMenu"
+ *              aria-label="Weitere Optionen zum Veröffentlichen">▾</button>
+ *    </div>
+ *    Mit --pill vollrund.
+ *
+ * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base); Buttons aus
+ * helpers/forms.css.
+ */
+
+.ncss-toolbar,
+ncss-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-2xs) var(--ncss-space-sm);
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  background-color: var(--ncss-color-bg);
+  color: var(--ncss-color-text);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.ncss-toolbar--floating {
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  /* großer, aber nicht voller Radius - bleibt schön, auch wenn die Leiste umbricht */
+  border-radius: var(--ncss-radius-xl, 1.5rem);
+  box-shadow: var(--ncss-shadow-md);
+}
+.ncss-toolbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+}
+/* Alles ab .ncss-toolbar-end rückt an die Endkante */
+.ncss-toolbar-end {
+  margin-inline-start: auto;
+}
+.ncss-toolbar-divider {
+  align-self: stretch;
+  inline-size: 0;
+  margin-block: var(--ncss-space-3xs);
+  border-inline-start: var(--ncss-border-width) solid color-mix(in oklch, currentColor 22%, transparent);
+}
+/* Werkzeug-Buttons in der Leiste: Rahmen in der Textfarbe der Fläche */
+.ncss-toolbar .ncss-btn--secondary,
+ncss-toolbar .ncss-btn--secondary {
+  border-color: color-mix(in oklch, currentColor 28%, transparent);
+}
+/* Primär-Button auf dunkler Leiste: helle Pille mit dunkler Schrift (wie üblich in
+   Editor-Leisten) - über color-scheme der Fläche, keine feste Farbe. */
+.ncss-toolbar.ncss-scheme-dark .ncss-btn--primary,
+ncss-toolbar.ncss-scheme-dark .ncss-btn--primary {
+  background-color: #fff;
+  border-color: #fff;
+  color: #0f172a;
+}
+
+/* --- Split-Button ------------------------------------------------------------------------ */
+.ncss-split-btn,
+.ncss-dropdown.ncss-split-btn {
+  display: inline-flex;
+  align-items: stretch;
+  isolation: isolate;
+}
+.ncss-split-btn > .ncss-btn:first-child {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+/* Menü-Knopf = zweiter Button (danach darf das Popover-Menü im Markup folgen) */
+.ncss-split-btn > .ncss-btn + .ncss-btn {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  margin-inline-start: 1px;
+  padding-inline: var(--ncss-space-xs);
+}
+.ncss-split-btn > .ncss-btn:focus-visible {
+  z-index: 1;
+}
+.ncss-split-btn--pill > .ncss-btn:first-child {
+  border-start-start-radius: var(--ncss-radius-full, 999px);
+  border-end-start-radius: var(--ncss-radius-full, 999px);
+  padding-inline-start: var(--ncss-space-md);
+}
+.ncss-split-btn--pill > .ncss-btn + .ncss-btn {
+  border-start-end-radius: var(--ncss-radius-full, 999px);
+  border-end-end-radius: var(--ncss-radius-full, 999px);
+  padding-inline-end: var(--ncss-space-sm);
+}
+/* Pfeil im Menü-Knopf, dreht sich bei offenem Menü */
+.ncss-split-btn-caret {
+  inline-size: 0.6em;
+  block-size: 0.6em;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  rotate: 45deg;
+  translate: 0 -20%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]) .ncss-split-btn-caret {
+    transition: rotate var(--ncss-motion-duration, 0.15s) var(--ncss-motion-easing, ease);
+  }
+}
+.ncss-split-btn > [aria-expanded="true"] .ncss-split-btn-caret {
+  rotate: 225deg;
+  translate: 0 20%;
+}
+
+/* Roving-Fokus (js/toolbar.js): nur das aktive Werkzeug liegt in der Tab-Reihenfolge */
+ncss-toolbar:focus-within [data-ncss-toolbar-item]:focus-visible {
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .ncss-toolbar-divider {
+    border-color: CanvasText;
+  }
+}

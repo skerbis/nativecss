@@ -188,22 +188,61 @@
 /* "Status"-Karte - dieselbe dezente 100-Fläche + -on-soft-Text, die auch .ncss-badge nutzt
    (siehe colors.css), zusätzlich ein farbiger Rand als Akzent. Für Hinweis-/Status-Inhalte,
    nicht als generelle "bunte Karte"-Deko gedacht. */
+/* Akzent-Balken statt dicker Randkante: eine dicke border-inline-start/-block-start
+   folgt bei abgerundeten Ecken der Rundung und wirkt dort "angefressen". Stattdessen
+   ein schmaler Balken mit runden Enden ZWISCHEN den Ecken (::before), der die Rundung
+   nicht berührt. Abstand zu den Ecken per --ncss-card-bar-inset (Standard 1rem, bei
+   sehr großem Eckradius erhöhen). Im Kontrastmodus (forced-colors) fallen Hintergründe weg - dort
+   übernimmt wieder eine echte Randkante. */
 .ncss-card--brand,
 .ncss-card--brand-2,
 .ncss-card--neutral,
 .ncss-card--success,
 .ncss-card--warning,
 .ncss-card--danger {
+  position: relative;
   border-width: 0;
-  border-inline-start-width: calc(var(--ncss-border-width) * 3);
   border-style: solid;
 }
-.ncss-card--brand { background-color: var(--ncss-color-brand-100); color: var(--ncss-color-brand-on-soft); border-color: var(--ncss-color-brand); }
-.ncss-card--brand-2 { background-color: var(--ncss-color-brand-2-100); color: var(--ncss-color-brand-2-on-soft); border-color: var(--ncss-color-brand-2); }
-.ncss-card--neutral { background-color: var(--ncss-color-neutral-100); color: var(--ncss-color-neutral-on-soft); border-color: var(--ncss-color-neutral); }
-.ncss-card--success { background-color: var(--ncss-color-success-100); color: var(--ncss-color-success-on-soft); border-color: var(--ncss-color-success); }
-.ncss-card--warning { background-color: var(--ncss-color-warning-100); color: var(--ncss-color-warning-on-soft); border-color: var(--ncss-color-warning); }
-.ncss-card--danger { background-color: var(--ncss-color-danger-100); color: var(--ncss-color-danger-on-soft); border-color: var(--ncss-color-danger); }
+/* Akzent-Varianten behalten einen vorhandenen Rahmen (z.B. .ncss-border) */
+.ncss-card--accent-start {
+  position: relative;
+}
+.ncss-card--brand::before,
+.ncss-card--brand-2::before,
+.ncss-card--neutral::before,
+.ncss-card--success::before,
+.ncss-card--warning::before,
+.ncss-card--danger::before,
+.ncss-card--accent-start::before,
+.ncss-card--accent::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  border-radius: 999px;
+  background-color: var(--_ncss-card-bar, currentColor);
+  pointer-events: none;
+}
+/* Startseite: senkrechter Balken, oben/unten um den Eckradius eingerückt */
+.ncss-card--brand::before,
+.ncss-card--brand-2::before,
+.ncss-card--neutral::before,
+.ncss-card--success::before,
+.ncss-card--warning::before,
+.ncss-card--danger::before,
+.ncss-card--accent-start::before {
+  inset-block: var(--ncss-card-bar-inset, 1rem);
+  inset-inline-start: 0;
+  inline-size: calc(var(--ncss-border-width) * 4);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.ncss-card--brand { background-color: var(--ncss-color-brand-100); color: var(--ncss-color-brand-on-soft); border-color: var(--ncss-color-brand); --_ncss-card-bar: var(--ncss-color-brand); }
+.ncss-card--brand-2 { background-color: var(--ncss-color-brand-2-100); color: var(--ncss-color-brand-2-on-soft); border-color: var(--ncss-color-brand-2); --_ncss-card-bar: var(--ncss-color-brand-2); }
+.ncss-card--neutral { background-color: var(--ncss-color-neutral-100); color: var(--ncss-color-neutral-on-soft); border-color: var(--ncss-color-neutral); --_ncss-card-bar: var(--ncss-color-neutral); }
+.ncss-card--success { background-color: var(--ncss-color-success-100); color: var(--ncss-color-success-on-soft); border-color: var(--ncss-color-success); --_ncss-card-bar: var(--ncss-color-success); }
+.ncss-card--warning { background-color: var(--ncss-color-warning-100); color: var(--ncss-color-warning-on-soft); border-color: var(--ncss-color-warning); --_ncss-card-bar: var(--ncss-color-warning); }
+.ncss-card--danger { background-color: var(--ncss-color-danger-100); color: var(--ncss-color-danger-on-soft); border-color: var(--ncss-color-danger); --_ncss-card-bar: var(--ncss-color-danger); }
 
 /* --- Media-Position ----------------------------------------------------------------------
    Media OBEN ist der Default - einfach die natürliche Dokumentreihenfolge (.ncss-card-media
@@ -365,11 +404,36 @@
 .ncss-card--accent-start {
   --ncss-card-accent: var(--ncss-color-brand);
 }
-.ncss-card--accent {
-  border-block-start: calc(var(--ncss-border-width) * 4) solid var(--ncss-card-accent);
-}
+.ncss-card--accent,
 .ncss-card--accent-start {
-  border-inline-start: calc(var(--ncss-border-width) * 4) solid var(--ncss-card-accent);
+  --_ncss-card-bar: var(--ncss-card-accent);
+}
+/* Oben: waagerechter Balken, links/rechts um den Eckradius eingerückt */
+.ncss-card--accent {
+  position: relative;
+}
+.ncss-card--accent::before {
+  inset-inline: var(--ncss-card-bar-inset, 1rem);
+  inset-block-start: 0;
+  block-size: calc(var(--ncss-border-width) * 4);
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+@media (forced-colors: active) {
+  .ncss-card--brand, .ncss-card--brand-2, .ncss-card--neutral,
+  .ncss-card--success, .ncss-card--warning, .ncss-card--danger,
+  .ncss-card--accent-start {
+    border: var(--ncss-border-width) solid CanvasText;
+    border-inline-start-width: calc(var(--ncss-border-width) * 4);
+  }
+  .ncss-card--accent {
+    border-block-start: calc(var(--ncss-border-width) * 4) solid CanvasText;
+  }
+  .ncss-card--brand::before, .ncss-card--brand-2::before, .ncss-card--neutral::before,
+  .ncss-card--success::before, .ncss-card--warning::before, .ncss-card--danger::before,
+  .ncss-card--accent-start::before, .ncss-card--accent::before {
+    display: none;
+  }
 }
 
 /* Hervorgehobene Karte ("Empfohlen", Preis-Tabellen): kräftiger Rahmen in Markenfarbe,

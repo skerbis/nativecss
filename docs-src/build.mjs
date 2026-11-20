@@ -351,7 +351,7 @@ function buildActions(lang, slug) {
   lines.push(`      <a class="site-sponsor" href="${nav.start.slug}.html#${s.supportAnchor}"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span><span class="site-sponsor-label">${s.sponsorShort}</span></a>`);
   if (existsSync(join(HERE, "content", other, `${slug}.html`))) {
     // Sehr schmal (unter 24rem) nur das Sprachkürzel, sonst bricht die Leiste um.
-    lines.push(`      <a class="demo-topbar-lang" href="../${other}/${slug}.html" hreflang="${other}" lang="${other}" aria-label="${s.otherLangName}"><span class="demo-topbar-lang-long">${s.otherLangName}</span><span class="demo-topbar-lang-short" aria-hidden="true">${other.toUpperCase()}</span></a>`);
+    lines.push(`      <a class="demo-topbar-lang" href="../${other}/${slug}.html" hreflang="${other}" lang="${other}"><span class="demo-topbar-lang-long">${s.otherLangName}</span><span class="demo-topbar-lang-short" aria-hidden="true">${other.toUpperCase()}</span></a>`);
   }
   // Darstellung (Farbschema, Kontrast, Bewegung, Schrift …) ersetzt den Hell/Dunkel-Knopf
   lines.push(`      <ncss-preferences class="site-prefs"></ncss-preferences>`);

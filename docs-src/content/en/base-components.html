@@ -163,6 +163,55 @@
   <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Class</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.ncss-pill-group</code></td><td>Pill with dividers; direct <code>a</code>/<code>button</code> children become parts</td></tr><tr><td><code>.ncss-pill-group-item</code></td><td>For inner buttons of nested elements (e.g. a custom element)</td></tr><tr><td><code>--sm</code></td><td>more compact</td></tr><tr><td><code>--solid</code></td><td>stronger surface</td></tr><tr><td><code>--plain</code></td><td>no border and surface</td></tr><tr><td><code>--no-dividers</code></td><td>no dividers</td></tr><tr><td><code>aria-current / aria-pressed="true"</code></td><td>part highlighted as current/on</td></tr></tbody></table></div>
   <p class="ncss-text-sm ncss-text-muted">Accessibility: <code>role="group"</code> with <code>aria-label</code> names the group. Every part is its own tab stop; icon-only parts need a name. The focus ring sits inside so neighbours do not cover it. In contrast mode dividers and the active state use system colours.</p>
 </section>
+
+<section class="ncss-stack" id="toolbar" data-subnav-label="Toolbar">
+  <h2 class="demo-section-title">Toolbar, mode switch and split button <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p>Building blocks for editor and app bars: a <strong>mode switch</strong> as a pill with sliding selection (<code>.ncss-segmented--pill --slide</code>), round icon buttons (<code>.ncss-btn--icon --pill --ghost</code>), pill buttons and a <strong>split button</strong> (main action + menu). <code>&lt;ncss-toolbar&gt;</code> turns the bar into one tab stop with arrow-key navigation.</p>
+  <div class="docs-live" role="group" aria-label="Toolbar, mode switch and split button">
+    <ncss-toolbar class="ncss-toolbar ncss-toolbar--floating ncss-scheme-dark" aria-label="Edit page">
+      <div class="ncss-toolbar-group">
+        <fieldset class="ncss-segmented ncss-segmented--pill ncss-segmented--slide">
+          <legend class="ncss-visually-hidden">Mode</legend>
+          <input type="radio" name="tb-mode-en" id="tb-view-en" value="view">
+          <label for="tb-view-en"><span class="ncss-icon ncss-icon-eye" aria-hidden="true"></span>View</label>
+          <input type="radio" name="tb-mode-en" id="tb-edit-en" value="edit" checked>
+          <label for="tb-edit-en"><span class="ncss-icon ncss-icon-edit" aria-hidden="true"></span>Edit</label>
+        </fieldset>
+      </div>
+      <div class="ncss-toolbar-group ncss-toolbar-end">
+        <button type="button" class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="Undo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+        <button type="button" class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="Redo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+        <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--pill">Cancel</button>
+        <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--pill" disabled>Save</button>
+        <ncss-dropdown class="ncss-dropdown ncss-split-btn ncss-split-btn--pill">
+          <button type="button" class="ncss-btn ncss-btn--primary">Publish</button>
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-dropdown-toggle" popovertarget="tb-pub-en" aria-haspopup="menu" aria-label="More publish options"></button>
+          <div class="ncss-dropdown-menu ncss-dropdown-menu--end" id="tb-pub-en" popover role="menu" aria-label="More publish options"><button type="button" class="ncss-dropdown-item" role="menuitem">Publish now</button><button type="button" class="ncss-dropdown-item" role="menuitem">Schedule …</button><button type="button" class="ncss-dropdown-item" role="menuitem">Save as draft</button></div>
+        </ncss-dropdown>
+        <span class="ncss-toolbar-divider" aria-hidden="true"></span>
+        <button type="button" class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="New page"><span class="ncss-icon ncss-icon-file" aria-hidden="true"></span></button>
+      </div>
+    </ncss-toolbar>
+  </div>
+  <pre><code class="language-html">&lt;ncss-toolbar class="ncss-toolbar ncss-scheme-dark" aria-label="Edit page"&gt;
+  &lt;fieldset class="ncss-segmented ncss-segmented--pill ncss-segmented--slide"&gt; … &lt;/fieldset&gt;
+  &lt;div class="ncss-toolbar-group ncss-toolbar-end"&gt;
+    &lt;button class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="Undo"&gt;…&lt;/button&gt;
+    &lt;button class="ncss-btn ncss-btn--secondary ncss-btn--pill"&gt;Cancel&lt;/button&gt;
+    &lt;ncss-dropdown class="ncss-dropdown ncss-split-btn ncss-split-btn--pill"&gt;
+      &lt;button class="ncss-btn ncss-btn--primary"&gt;Publish&lt;/button&gt;
+      &lt;button class="ncss-btn ncss-btn--primary ncss-dropdown-toggle" popovertarget="pub" aria-haspopup="menu" aria-label="More publish options"&gt;&lt;/button&gt;
+      &lt;div class="ncss-dropdown-menu ncss-dropdown-menu--end" id="pub" popover role="menu"&gt; … &lt;/div&gt;
+    &lt;/ncss-dropdown&gt;
+  &lt;/div&gt;
+&lt;/ncss-toolbar&gt;
+&lt;script src="js/toolbar.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/dropdown.js" defer&gt;&lt;/script&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Class / element</th><th scope="col">Purpose</th></tr></thead><tbody><tr><td><code>.ncss-toolbar / &lt;ncss-toolbar&gt;</code></td><td>Bar with groups; element = APG toolbar with roving focus (js/toolbar.js)</td></tr><tr><td><code>.ncss-toolbar-group, .ncss-toolbar-end, .ncss-toolbar-divider</code></td><td>Groups, end edge, divider</td></tr><tr><td><code>.ncss-toolbar--floating</code></td><td>floating pill with shadow</td></tr><tr><td><code>.ncss-segmented--pill (+ --slide)</code></td><td>Mode switch with round, sliding selection</td></tr><tr><td><code>.ncss-btn--pill, .ncss-btn--ghost</code></td><td>Pill shape, no border/surface; round with --icon</td></tr><tr><td><code>.ncss-split-btn (+ --pill), .ncss-split-btn-caret</code></td><td>Main action + attached menu button</td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Keyboard in <code>&lt;ncss-toolbar&gt;</code>: <kbd class="ncss-kbd">Tab</kbd> enters the bar (one tab stop), <kbd class="ncss-kbd">←</kbd>/<kbd class="ncss-kbd">→</kbd> move between tools, <kbd class="ncss-kbd">Home</kbd>/<kbd class="ncss-kbd">End</kbd> to first/last; in the mode switch <kbd class="ncss-kbd">Space</kbd> selects. Without the script every tool is its own tab stop. Disabled buttons (Save) are skipped.</p>
+  <script src="../../dist/js/toolbar.js" defer></script>
+  <script src="../../dist/js/dropdown.js" defer></script>
+</section>
   <section class="ncss-tabs-panel" id="ta-en-a-1">
     <h3 class="ncss-tabs-heading">Amenities</h3>
     <p>Sauna, jetty, e-bike rental.</p>

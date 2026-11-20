@@ -15,6 +15,8 @@
  *     <label for="a-karte">Karte</label>
  *   </fieldset>
  * --sm für dichte Toolbars, --block für volle Breite (Segmente teilen sich den Platz).
+ * --pill: vollrunde Leiste mit runder Auswahl-Pille (Modus-Umschalter wie
+ * "Ansehen | Bearbeiten", gern mit Icon im Label) - kombinierbar mit --slide.
  * --slide: die Auswahl-Fläche GLEITET zum neuen Segment (reines CSS per Anchor
  * Positioning + anchor-scope; ohne Unterstützung bzw. bei reduzierter Bewegung springt
  * sie wie gewohnt). Nur für einzeilige Leisten gedacht.
@@ -96,6 +98,34 @@
 }
 .ncss-segmented--block > label {
   flex: 1 1 0;
+}
+
+/* --- Pillen-Form (--pill) --------------------------------------------------------------- */
+.ncss-segmented--pill {
+  border-radius: var(--ncss-radius-full, 999px);
+  border-color: color-mix(in oklch, currentColor 18%, transparent);
+  background-color: color-mix(in oklch, currentColor 8%, transparent);
+}
+.ncss-segmented--pill > label {
+  border-radius: var(--ncss-radius-full, 999px);
+  padding-inline: var(--ncss-space-md);
+  color: inherit;
+}
+/* Auswahl als helle Pille mit dunkler Schrift - auf heller wie dunkler Fläche klar */
+.ncss-segmented--pill > input:checked + label {
+  background-color: #fff;
+  color: #0f172a;
+}
+.ncss-segmented--pill.ncss-segmented--slide > input:checked + label {
+  background-color: transparent;
+}
+.ncss-segmented--pill.ncss-segmented--slide::before {
+  border-radius: var(--ncss-radius-full, 999px);
+  background-color: #fff;
+}
+.ncss-segmented > label > .ncss-icon {
+  inline-size: 1.15em;
+  block-size: 1.15em;
 }
 
 /* --- Gleitende Auswahl (--slide) ------------------------------------------------------

@@ -336,7 +336,8 @@
 /* Sprachwechsel: unter 24rem nur das Kürzel (DE/EN), damit die Kopfleiste einzeilig bleibt. */
 .demo-topbar-lang-short { display: none; }
 @media (max-width: 23.99rem) {
-  .demo-topbar-lang-long { display: none; }
+  /* Langform nur optisch weg - bleibt Name des Links (WCAG 2.5.3 Label in Name) */
+  .demo-topbar-lang-long { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .demo-topbar-lang-short { display: inline; }
 }
 

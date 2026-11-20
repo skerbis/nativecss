@@ -44,7 +44,6 @@
   column-gap: var(--ncss-space-xs);
   row-gap: var(--ncss-space-3xs);
   padding: var(--ncss-space-sm);
-  border-inline-start: calc(var(--ncss-border-width) * 3) solid var(--ncss-alert-color);
   border-radius: var(--ncss-radius-sm);
   background-color: var(--ncss-alert-bg);
   color: var(--ncss-alert-text);
@@ -148,12 +147,29 @@
   }
 }
 
+/* Akzent-Balken statt dicker Randkante (die bei abgerundeten Ecken der Rundung folgt und
+   dort unschön wirkt): schmaler Balken mit runden Enden zwischen den Ecken. */
+.ncss-alert::after {
+  content: "";
+  position: absolute;
+  inset-block: var(--ncss-alert-bar-inset, 0.6rem);
+  inset-inline-start: 0;
+  inline-size: calc(var(--ncss-border-width) * 3);
+  border-start-end-radius: 999px;
+  border-end-end-radius: 999px;
+  background-color: var(--ncss-alert-color);
+  pointer-events: none;
+}
+
 /* Erzwungene Farben: Hintergrund/Masken-Füllung werden überschrieben - Rahmen als Ersatz,
    Symbole mit Systemfarbe sichtbar halten. */
 @media (forced-colors: active) {
   .ncss-alert {
     border: var(--ncss-border-width) solid CanvasText;
     border-inline-start-width: calc(var(--ncss-border-width) * 3);
+  }
+  .ncss-alert::after {
+    display: none;
   }
   .ncss-alert::before,
   .ncss-alert-close::before {

@@ -106,8 +106,13 @@ ncss-scroll-video.is-active > .ncss-scroll-video-stage {
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border: var(--ncss-border-width) solid var(--ncss-color-border);
-    border-inline-start: 4px solid var(--ncss-color-brand);
     border-radius: var(--ncss-radius-lg);
+    /* Akzent als eingerückter Balken (statt 4px-Randkante, die der Rundung folgt) */
+    background-image: linear-gradient(var(--ncss-color-brand), var(--ncss-color-brand));
+    background-repeat: no-repeat;
+    background-size: 4px calc(100% - 1.5rem);
+    background-position: left 0 center;
+    background-origin: border-box;
     box-shadow: var(--ncss-shadow-lg);
     opacity: 0;
     translate: 0 1.5rem;
@@ -153,5 +158,15 @@ ncss-scroll-video.is-inline > .ncss-scroll-video-stage > .ncss-scroll-video-capt
     visibility: visible;
     translate: none;
     box-shadow: none;
+  }
+}
+
+/* RTL: Akzent-Balken der angepinnten Untertitel an die rechte (Start-)Kante */
+.ncss-scroll-video-caption:dir(rtl) {
+  background-position: right 0 center;
+}
+@media (forced-colors: active) {
+  .ncss-scroll-video-caption {
+    border-inline-start: 4px solid CanvasText;
   }
 }
