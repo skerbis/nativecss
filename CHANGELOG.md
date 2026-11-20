@@ -9,6 +9,11 @@ Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versio
 - **Scroll-Effekte:** Curtain-Sektionen, Horizontal-Scroll (Tastaturfokus scrollt mit), Text-Reveal, Scrollytelling `<ncss-scrolly>`, Count-up, Marquee, Reveal-Formen (Kreis, Wipe, Split, Zoom, Expand …), Reveal-Pin und Morphing beim Scrollen (großes Bild/Video schrumpft an den Rand und macht Platz für Text, auch als Karte oder Kreis) - nativ über `view()`-Timelines, kleine JS-Fallbacks nur wo nötig.
 - **Moderne UI:** Bento-Raster, Spotlight, Vorher/Nachher-Vergleich `<ncss-compare>`, Aufklapp-Panels, Befehlspalette `<ncss-command-palette>`, Hovercards `<ncss-hovercard>`, Benachrichtigungen `<ncss-toast-region>` / `ncss.notify()` mit gestapeltem Modus, Aurora- und Mesh-Hintergründe.
 - **Video & Audio:** `<ncss-video-player>` und `<ncss-audio-player>` aus einem Guss (Kapitel, Playlist, Untertitel, Geschwindigkeit, Bild-in-Bild, Media Session, Tastatur), scroll-gesteuertes Video `<ncss-scroll-video>` und Bildsequenz `<ncss-scroll-frames>`, Hintergrundvideo für beliebige Sektionen (mit Pause-Knopf, WCAG 2.2.2), Video im Text, Mini-Player `<ncss-video-float>`, Vorschau-Karten.
+- **Karten** `<ncss-map>` (MapLibre GL): Proxy-Adressen für Stil, Kacheln, Schriften und Symbole (Präfix oder `{url}`-Vorlage) - Besucher haben keinen Kontakt zu Dritten; Zwei-Klick-Modus, lädt erst in Sichtweite, Fallback ohne JS, Dunkelmodus, 3D-Ansicht.
+- **Karten-Komponente ausgebaut:** ganze Karte als Link (innere Buttons bleiben bedienbar), Bild-Overlay, Seitenverhältnisse, Zoom, Auswahl-Karten (Radio/Checkbox), hervorgehobene, deaktivierte und Akzent-Karten, Kopf mit Aktionen, Meta-Zeile, Karten-Raster mit Subgrid, Lade-Skelett.
+- **Darstellungs-Einstellungen** `<ncss-preferences>`: Besucher wählen Farbschema, Kontrast, Bewegung, Schriftgröße, Textabstände, Link-Unterstreichung, Fokus-Rahmen und lesbare Schriften (Atkinson Hyperlegible Next, Lexend, OpenDyslexic, selbst gehostet) - kein „Overlay“, sondern Anpassung einer bereits barrierefreien Seite.
+- **Icons:** 52 Kern-Icons per Klasse, alle Phosphor-Icons per `<ncss-icon>`, Sprite-Builder.
+- **Dialoge** schließen standardmäßig beim Klick daneben (`closedby="any"`, abschaltbar).
 - **Abschnitts-Navigation** (`subnav`): klebende „Auf dieser Seite“-Leiste mit automatischer Hervorhebung.
 - **Neu-Markierung** `.ncss-badge-dot`.
 

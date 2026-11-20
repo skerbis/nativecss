@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 855 Klassen, 18 Custom Elements, 48 data-ncss-Attribute, 204 Tokens.
+Stand: 888 Klassen, 19 Custom Elements, 49 data-ncss-Attribute, 214 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -816,7 +816,7 @@ statt eines Links auf die eigene Seite. aria-label="Breadcrumb" auf <nav>, da me
 
 ### `components/card.css`
 
-Klassen (23): `.ncss-card` `.ncss-card--brand` `.ncss-card--brand-2` `.ncss-card--compact` `.ncss-card--danger` `.ncss-card--flush` `.ncss-card--horizontal` `.ncss-card--horizontal-end` `.ncss-card--linked` `.ncss-card--neutral` `.ncss-card--success` `.ncss-card--transparent` `.ncss-card--warning` `.ncss-card-body` `.ncss-card-container` `.ncss-card-footer` `.ncss-card-header` `.ncss-card-link` `.ncss-card-media` `.ncss-cluster` `.ncss-flex` `.ncss-grid` `.ncss-stack`
+Klassen (49): `.ncss-card` `.ncss-card--accent` `.ncss-card--accent-start` `.ncss-card--brand` `.ncss-card--brand-2` `.ncss-card--compact` `.ncss-card--danger` `.ncss-card--disabled` `.ncss-card--featured` `.ncss-card--flush` `.ncss-card--horizontal` `.ncss-card--horizontal-end` `.ncss-card--interactive` `.ncss-card--linked` `.ncss-card--neutral` `.ncss-card--overlay` `.ncss-card--selectable` `.ncss-card--success` `.ncss-card--transparent` `.ncss-card--warning` `.ncss-card--zoom` `.ncss-card-actions` `.ncss-card-badge` `.ncss-card-body` `.ncss-card-check` `.ncss-card-container` `.ncss-card-divider` `.ncss-card-footer` `.ncss-card-footer--between` `.ncss-card-footer--end` `.ncss-card-footer--plain` `.ncss-card-grid` `.ncss-card-header` `.ncss-card-link` `.ncss-card-list` `.ncss-card-media` `.ncss-card-media--auto` `.ncss-card-media--portrait` `.ncss-card-media--square` `.ncss-card-media--wide` `.ncss-card-meta` `.ncss-card-skeleton` `.ncss-card-skeleton--title` `.ncss-card-title` `.ncss-cluster` `.ncss-flex` `.ncss-grid` `.ncss-stack` `.ncss-text-muted`
 
 ```text
 ncss - Card-Komponente (Layer "components"). Reines HTML/CSS, kein JS nötig.
@@ -833,6 +833,22 @@ auch auf jedem anderen Element funktionieren). Beispiele:
 .ncss-card--flush ergänzt das um randlose Body/Header/Footer (KEIN Padding mehr, auch
 nicht oben/unten) für eine Karte, deren Inhalt bis an den eigenen Rand reicht - z.B. für
 ein Bild, das den ganzen Body ausfüllt, oder eine Liste ohne Card-typischen Abstand.
+
+Ausbau 1.1.0 (alles opt-in, siehe unten im Detail):
+  Media      .ncss-card-media--square/-portrait/-wide/-auto, --ncss-card-media-ratio,
+             .ncss-card--zoom (Bild-Zoom bei Hover/Fokus), .ncss-card--overlay (Text
+             auf dem Bild mit kontrastsicherem Verlauf)
+  Zustände   .ncss-card--interactive (Anheben), --accent/--accent-start (Farbstreifen,
+             --ncss-card-accent), --featured + .ncss-card-badge, --disabled bzw.
+             aria-disabled="true", --selectable + .ncss-card-check (Radio/Checkbox)
+  Abschnitte .ncss-card-title, .ncss-card-actions, .ncss-card-meta, .ncss-card-divider,
+             .ncss-card-list, .ncss-card-footer--end/--between/--plain
+  Raster     .ncss-card-grid (Subgrid: Header/Body/Footer einer Reihe auf gleicher Höhe,
+             --ncss-card-grid-min/-rows/-gap)
+  Laden      .ncss-card-skeleton (+ --title), mit aria-busy="true" an der Karte
+  Abstand    --ncss-card-padding überschreibt den Innenabstand von Header/Body/Footer/Liste
+  .ncss-card--linked: weitere Links/Buttons in der Karte bleiben klickbar (z-index), der
+  Fokusring umrahmt die ganze Karte.
 
 Für die Container-Query-Variante (.ncss-card--horizontal) die Karte zusätzlich in
 .ncss-card-container wrappen: <div class="ncss-card-container"><article class="ncss-card
@@ -1533,6 +1549,34 @@ Ergebnisseite, kein Funktionsverlust):
 
 Kombinierbar mit dem wachsenden Suchfeld aus search.css (.ncss-search) - die
 Trefferliste ist mindestens so breit wie dessen ausgeklappter Zustand.
+```
+
+### `components/map.css`
+
+Klassen (8): `.ncss-map-consent` `.ncss-map-error` `.ncss-map-fallback` `.ncss-map-marker` `.ncss-map-note` `.ncss-map-pin` `.ncss-map-show` `.ncss-map-stage`
+
+```text
+ncss - <ncss-map> (Layer "components"): interaktive Karte mit MapLibre GL, Script
+js/map.js. Datenschutz per Proxy-Attribut und Zwei-Klick-Modus, siehe dort.
+
+  <ncss-map lat="53.48" lng="13.26" zoom="12" label="Tollensesee" consent>
+    <p><strong>Tollensesee</strong>, Mecklenburg-Vorpommern</p>
+    <p><a href="https://www.openstreetmap.org/…">In OpenStreetMap öffnen</a></p>
+  </ncss-map>
+
+Zustände (data-state, vom Script gesetzt): idle (wartet auf Sichtweite), consent
+(Zwei-Klick-Hinweis), loading, ready, error. Ohne JS bzw. vor der Definition ist der
+Inhalt des Elements ein normaler Kasten - nie leer. Mit JS ist die Fläche schon vor dem
+Laden reserviert (Raster-Platzhalter), nichts springt. Fertig gezeichnet liegt die Karte
+über dem Ersatzinhalt; der bleibt für Screenreader im Baum und erscheint bei
+Tastatur-Fokus unten über der Karte. fallback="below" lässt ihn sichtbar darunter.
+
+Anpassbar: --ncss-map-height (Default clamp(16rem, 55vh, 28rem)), --ncss-map-radius,
+--ncss-map-accent (Markierung, Button), --ncss-map-bg, --ncss-map-line (Raster).
+
+Benötigt: tokens.css + colors.css. Die MapLibre-Styles (vendor/maplibre/maplibre-gl.css)
+lädt das Script selbst - in den Unter-Layer components.maplibre, damit die Regeln hier
+ohne Spezifitäts-Kampf gewinnen.
 ```
 
 ### `components/marginnote.css`
@@ -4021,9 +4065,92 @@ Texte: Deutsch/Englisch nach <html lang> (wie events.js/downloads.js), einzeln
 Platzhalter). Treffer-Markierung per <mark>, alle Inhalte werden escaped.
 ```
 
+### `js/map.js`
+
+Elemente: `<ncss-map>`
+
+Attribute: `zoom="14"`, `label="…"`, `marker="off"`, `style-url="…"`, `style-url-dark="…"`, `proxy="…"`, `proxy-origins="…"`, `vendor="…"`, `consent`, `privacy-url="…"`, `view3d`, `fallback="below"`, `lat`, `lng`
+
+Events: `ncss-map-`, `ncss-map-consent`, `ncss-map-error`, `ncss-map-load`, `ncss-map-theme`
+
+Öffentlich: `el.map`, `el.show()`
+
+```text
+ncss - <ncss-map>: interaktive Karte mit MapLibre GL (vendor/maplibre/, BSD-3-Clause).
+Light-DOM-Custom-Element, Styles in components/map.css. Datenschutz zuerst: per Attribut
+"proxy" laufen ALLE Anfragen der Karte (Stil, Kacheln, Schriften, Symbole) über den eigenen
+Server - Besucher verbinden sich dann nie direkt mit Dritten.
+
+  <ncss-map lat="53.48" lng="13.26" zoom="12" label="Tollensesee"
+            proxy="/proxy/ofm/" consent>
+    <p><strong>Tollensesee</strong>, Mecklenburg-Vorpommern</p>
+    <p><a href="https://www.openstreetmap.org/?mlat=53.48&amp;mlon=13.26#map=12/53.48/13.26">
+      In OpenStreetMap öffnen</a></p>
+  </ncss-map>
+
+Attribute:
+  lat, lng            Mittelpunkt (und Position der Markierung), Dezimalgrad
+  zoom="14"           Zoomstufe 0-22
+  label="…"           Name des Orts: Beschriftung der Markierung und der Karte
+  marker="off"        keine Markierung (Default: an)
+  style-url="…"       MapLibre-Stil (JSON-URL). Default: OpenFreeMap "liberty"
+                      (https://tiles.openfreemap.org/styles/liberty)
+  style-url-dark="…"  Stil im Dunkelmodus. Default: OpenFreeMap "dark", aber nur wenn
+                      auch style-url fehlt - ein eigener style-url gilt sonst für beide Modi
+  proxy="…"           schreibt jede Anfrage von MapLibre um (transformRequest), zwei Formen:
+                        Präfix:   proxy="/proxy/ofm/"
+                                  https://tiles.openfreemap.org/planet/1/0/0.pbf
+                                  -> /proxy/ofm/planet/1/0/0.pbf (Origin wird ersetzt)
+                        Vorlage:  proxy="/proxy?url={url}"
+                                  -> /proxy?url=https%3A%2F%2Ftiles.openfreemap.org%2F…
+                                  Platzhalter: {url} (komplette URL, URL-kodiert),
+                                  {host} (z.B. tiles.openfreemap.org), {path} (Pfad +
+                                  Query ohne führenden Schrägstrich)
+                      Relative Angaben gelten relativ zur SEITE.
+  proxy-origins="…"   nur diese Origins umschreiben (Leerzeichen/Komma getrennt, z.B.
+                      "tiles.openfreemap.org" oder "https://tiles.openfreemap.org").
+                      Default: jede fremde Origin (alles außer der Seite und dem Proxy selbst)
+  vendor="…"          Ordner mit maplibre-gl.mjs/.css (relativ zur Seite). Default:
+                      ../../vendor/maplibre/ relativ zu DIESER Datei (document.currentScript,
+                      wie bei <ncss-icon>) - als ES-Modul geladen das Attribut setzen
+  consent             Zwei-Klick-Modus: Hinweis + Button "Karte anzeigen", geladen wird erst
+                      nach dem Klick. Automatisch an, wenn das Gerät "Datensparen" (Save-Data)
+                      meldet. consent="off" schaltet auch das ab
+  privacy-url="…"     Link "Datenschutz" im Zwei-Klick-Hinweis
+  view3d              Gebäude in 3D und geneigte Kamera (Stile mit OpenMapTiles-Schema)
+  fallback="below"    Ersatzinhalt nach dem Laden sichtbar UNTER der Karte lassen (Default:
+                      visuell versteckt, für Screenreader und Tastatur weiter da)
+  data-label-<key>    jeden Text überschreiben, Schlüssel siehe TEXTS unten (show, note,
+                      noteproxy, privacy, error, map, canvas, marker, zoomin, zoomout,
+                      compass, attribution, winhelp, machelp, mobilehelp). In note steht
+                      {host} für den Kartenserver. Sprache nach <html lang> (Deutsch/Englisch)
+
+Ersatzinhalt: was im Element steht (Adresse, Link zu OpenStreetMap), ist ohne JS, vor dem
+Laden und bei einem Fehler sichtbar - das Element ist nie leer. Erst wenn die Karte fertig
+gezeichnet ist, liegt sie darüber; der Ersatzinhalt bleibt im Accessibility Tree und wird bei
+Tastatur-Fokus wieder eingeblendet.
+
+Laden: MapLibre (~1.1 MB) kommt erst, wenn die Karte in die Nähe des Viewports scrollt
+(IntersectionObserver) bzw. nach dem Klick im Zwei-Klick-Modus.
+
+Bedienung: Tab auf die Karte, Pfeiltasten verschieben, +/- zoomen, Umschalt + Pfeile
+drehen/neigen (MapLibre). cooperativeGestures: Mausrad zoomt nur mit Strg/⌘, auf Touch
+verschieben zwei Finger - die Seite scrollt normal weiter. "Bewegung reduzieren"
+(prefers-reduced-motion ODER <html data-motion="reduce">): keine Kamerafahrten.
+
+Dunkelmodus: folgt <html data-theme-resolved> / data-theme (sonst prefers-color-scheme) und
+wechselt live, auch auf das Event ncss-preferences-change.
+
+Events (bubbles): ncss-map-consent (Klick auf "Karte anzeigen"), ncss-map-load (detail.map),
+ncss-map-error (detail.error), ncss-map-theme (detail.dark, detail.style).
+Öffentlich: el.map (MapLibre-Instanz, nach dem Laden), el.show() (lädt sofort).
+
+Benötigt: components/map.css + vendor/maplibre/. Keine anderen ncss-Scripts.
+```
+
 ### `js/marquee.js`
 
-data-Attribute: `data-ncss-marquee`, `data-ncss-marquee-toggle`
+data-Attribute: `data-ncss-marquee`, `data-ncss-marquee-tabindex`, `data-ncss-marquee-toggle`
 
 ```text
 NativeCSS - opt-in Begleiter für components/marquee.css.

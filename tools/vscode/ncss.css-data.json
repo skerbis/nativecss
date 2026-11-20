@@ -298,10 +298,58 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-card-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-accent: var(--ncss-color-brand);\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-grid-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-grid-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-grid-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-grid-min: 16rem;\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-grid-rows",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-grid-rows: 3;\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-media-ratio",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-media-ratio: var(--ncss-aspect-square);\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-card-media-width-horizontal",
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-media-width-horizontal: 40%;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-skeleton-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-skeleton-width: 60%;\n```\nQuelle: `components/card.css`"
    },
    "syntax": "*"
   },
@@ -1262,6 +1310,46 @@
    "description": {
     "kind": "markdown",
     "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-livesearch-max-height: min(70vh, 34rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-accent: var(--ncss-color-brand, #2563eb);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-bg",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-bg: var(--ncss-color-bg-subtle, #f1f1f3);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-height: clamp(16rem, 55vh, 28rem);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-line",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-map-line: color-mix(in oklab, var(--ncss-color-border, #d4d4d8) 70%, transparent);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-radius: var(--ncss-radius-lg, 0.75rem);\n```\nQuelle: `components/map.css`"
    },
    "syntax": "*"
   },

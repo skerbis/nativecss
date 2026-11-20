@@ -322,6 +322,118 @@
    ],
    "api": []
   },
+  "ncss-map": {
+   "script": "js/map.js",
+   "css": [
+    "components/map.css"
+   ],
+   "description": "<ncss-map>: interaktive Karte mit MapLibre GL (vendor/maplibre/, BSD-3-Clause)",
+   "attributes": [
+    {
+     "name": "zoom",
+     "default": "14",
+     "boolean": false,
+     "description": "Zoomstufe 0-22"
+    },
+    {
+     "name": "label",
+     "default": "…",
+     "boolean": false,
+     "description": "Name des Orts: Beschriftung der Markierung und der Karte"
+    },
+    {
+     "name": "marker",
+     "default": "off",
+     "boolean": false,
+     "description": "keine Markierung (Default: an)"
+    },
+    {
+     "name": "style-url",
+     "default": "…",
+     "boolean": false,
+     "description": "MapLibre-Stil (JSON-URL). Default: OpenFreeMap \"liberty\" (https://tiles.openfreemap.org/styles/liberty)"
+    },
+    {
+     "name": "style-url-dark",
+     "default": "…",
+     "boolean": false,
+     "description": "Stil im Dunkelmodus. Default: OpenFreeMap \"dark\", aber nur wenn auch style-url fehlt - ein eigener style-url gilt sonst für beide Modi"
+    },
+    {
+     "name": "proxy",
+     "default": "…",
+     "boolean": false,
+     "description": "schreibt jede Anfrage von MapLibre um (transformRequest), zwei Formen: Präfix:   proxy=\"/proxy/ofm/\" https://tiles.openfreemap.org/planet/1/0/0.pbf -> /proxy/ofm/planet/1/0/0.pbf (Origin wird ersetzt) Vorlage:  proxy=\"/proxy?url={url}\" -> /proxy?url=https%3A%2F%2Ftiles.openfreemap.org%2F… Platzhalter: {url} (komplette URL, URL-kodiert), {host} (z.B. tiles.openfreemap.org), {path} (Pfad + Query ohne führenden Schrägstrich) Relative Angaben gelten relativ zur SEITE."
+    },
+    {
+     "name": "proxy-origins",
+     "default": "…",
+     "boolean": false,
+     "description": "nur diese Origins umschreiben (Leerzeichen/Komma getrennt, z.B. \"tiles.openfreemap.org\" oder \"https://tiles.openfreemap.org\"). Default: jede fremde Origin (alles außer der Seite und dem Proxy selbst)"
+    },
+    {
+     "name": "vendor",
+     "default": "…",
+     "boolean": false,
+     "description": "Ordner mit maplibre-gl.mjs/.css (relativ zur Seite). Default: ../../vendor/maplibre/ relativ zu DIESER Datei (document.currentScript, wie bei <ncss-icon>) - als ES-Modul geladen das Attribut setzen"
+    },
+    {
+     "name": "consent",
+     "default": null,
+     "boolean": false,
+     "description": "Zwei-Klick-Modus: Hinweis + Button \"Karte anzeigen\", geladen wird erst nach dem Klick. Automatisch an, wenn das Gerät \"Datensparen\" (Save-Data) meldet. consent=\"off\" schaltet auch das ab"
+    },
+    {
+     "name": "privacy-url",
+     "default": "…",
+     "boolean": false,
+     "description": "Link \"Datenschutz\" im Zwei-Klick-Hinweis"
+    },
+    {
+     "name": "view3d",
+     "default": null,
+     "boolean": false,
+     "description": "Gebäude in 3D und geneigte Kamera (Stile mit OpenMapTiles-Schema)"
+    },
+    {
+     "name": "fallback",
+     "default": "below",
+     "boolean": false,
+     "description": "Ersatzinhalt nach dem Laden sichtbar UNTER der Karte lassen (Default: visuell versteckt, für Screenreader und Tastatur weiter da) data-label-<key>    jeden Text überschreiben, Schlüssel siehe TEXTS unten (show, note, noteproxy, privacy, error, map, canvas, marker, zoomin, zoomout, compass, attribution, winhelp, machelp, mobilehelp). In note steht {host} für den Kartenserver. Sprache nach <html lang> (Deutsch/Englisch)"
+    },
+    {
+     "name": "lat",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "lng",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-map-",
+    "ncss-map-consent",
+    "ncss-map-error",
+    "ncss-map-load",
+    "ncss-map-theme"
+   ],
+   "api": [
+    {
+     "name": "map",
+     "kind": "property",
+     "signature": "map"
+    },
+    {
+     "name": "show",
+     "kind": "method",
+     "signature": "show()"
+    }
+   ]
+  },
   "ncss-nav-drilldown": {
    "script": "js/nav-drilldown.js",
    "css": [
@@ -875,6 +987,13 @@
    "description": "opt-in Begleiter für components/marquee.css.",
    "example": "1. <div class=\"ncss-marquee\" data-ncss-marquee> mit nur EINER .ncss-marquee-group:"
   },
+  "data-ncss-marquee-tabindex": {
+   "files": [
+    "js/marquee.js"
+   ],
+   "description": "opt-in Begleiter für components/marquee.css.",
+   "internal": true
+  },
   "data-ncss-marquee-toggle": {
    "files": [
     "js/marquee.js"
@@ -1093,6 +1212,11 @@
   "ncss-hovercard-show",
   "ncss-icon-error",
   "ncss-icon-load",
+  "ncss-map-",
+  "ncss-map-consent",
+  "ncss-map-error",
+  "ncss-map-load",
+  "ncss-map-theme",
   "ncss-media-ended",
   "ncss-media-pause",
   "ncss-media-play",
@@ -1365,11 +1489,30 @@
    "events": [],
    "api": []
   },
+  "js/map.js": {
+   "description": "<ncss-map>: interaktive Karte mit MapLibre GL (vendor/maplibre/, BSD-3-Clause)",
+   "elements": [
+    "ncss-map"
+   ],
+   "dataAttributes": [],
+   "events": [
+    "ncss-map-",
+    "ncss-map-consent",
+    "ncss-map-error",
+    "ncss-map-load",
+    "ncss-map-theme"
+   ],
+   "api": [
+    "map",
+    "show()"
+   ]
+  },
   "js/marquee.js": {
    "description": "opt-in Begleiter für components/marquee.css.",
    "elements": [],
    "dataAttributes": [
     "data-ncss-marquee",
+    "data-ncss-marquee-tabindex",
     "data-ncss-marquee-toggle"
    ],
    "events": [],

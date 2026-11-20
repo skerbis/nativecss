@@ -205,6 +205,75 @@
    ]
   },
   {
+   "name": "ncss-map",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-map>: interaktive Karte mit MapLibre GL (vendor/maplibre/, BSD-3-Clause)\n\nScript: `js/map.js` · CSS: `components/map.css`\n\nEvents: `ncss-map-`, `ncss-map-consent`, `ncss-map-error`, `ncss-map-load`, `ncss-map-theme`\n\nÖffentlich: `el.map`, `el.show()`"
+   },
+   "attributes": [
+    {
+     "name": "zoom",
+     "description": "Zoomstufe 0-22 - Default/Beispiel: `14`"
+    },
+    {
+     "name": "label",
+     "description": "Name des Orts: Beschriftung der Markierung und der Karte - Default/Beispiel: `…`"
+    },
+    {
+     "name": "marker",
+     "description": "keine Markierung (Default: an) - Default/Beispiel: `off`"
+    },
+    {
+     "name": "style-url",
+     "description": "MapLibre-Stil (JSON-URL). Default: OpenFreeMap \"liberty\" (https://tiles.openfreemap.org/styles/liberty) - Default/Beispiel: `…`"
+    },
+    {
+     "name": "style-url-dark",
+     "description": "Stil im Dunkelmodus. Default: OpenFreeMap \"dark\", aber nur wenn auch style-url fehlt - ein eigener style-url gilt sonst für beide Modi - Default/Beispiel: `…`"
+    },
+    {
+     "name": "proxy",
+     "description": "schreibt jede Anfrage von MapLibre um (transformRequest), zwei Formen: Präfix:   proxy=\"/proxy/ofm/\" https://tiles.openfreemap.org/planet/1/0/0.pbf -> /proxy/ofm/planet/1/0/0.pbf (Origin wird ersetzt) Vorlage:  proxy=\"/proxy?url={url}\" -> /proxy?url=https%3A%2F%2Ftiles.openfreemap.org%2F… Platzhalter: {url} (komplette URL, URL-kodiert), {host} (z.B. tiles.openfreemap.org), {path} (Pfad + Query ohne führenden Schrägstrich) Relative Angaben gelten relativ zur SEITE. - Default/Beispiel: `…`"
+    },
+    {
+     "name": "proxy-origins",
+     "description": "nur diese Origins umschreiben (Leerzeichen/Komma getrennt, z.B. \"tiles.openfreemap.org\" oder \"https://tiles.openfreemap.org\"). Default: jede fremde Origin (alles außer der Seite und dem Proxy selbst) - Default/Beispiel: `…`"
+    },
+    {
+     "name": "vendor",
+     "description": "Ordner mit maplibre-gl.mjs/.css (relativ zur Seite). Default: ../../vendor/maplibre/ relativ zu DIESER Datei (document.currentScript, wie bei <ncss-icon>) - als ES-Modul geladen das Attribut setzen - Default/Beispiel: `…`"
+    },
+    {
+     "name": "consent",
+     "description": "Zwei-Klick-Modus: Hinweis + Button \"Karte anzeigen\", geladen wird erst nach dem Klick. Automatisch an, wenn das Gerät \"Datensparen\" (Save-Data) meldet. consent=\"off\" schaltet auch das ab"
+    },
+    {
+     "name": "privacy-url",
+     "description": "Link \"Datenschutz\" im Zwei-Klick-Hinweis - Default/Beispiel: `…`"
+    },
+    {
+     "name": "view3d",
+     "description": "Gebäude in 3D und geneigte Kamera (Stile mit OpenMapTiles-Schema)"
+    },
+    {
+     "name": "fallback",
+     "description": "Ersatzinhalt nach dem Laden sichtbar UNTER der Karte lassen (Default: visuell versteckt, für Screenreader und Tastatur weiter da) data-label-<key>    jeden Text überschreiben, Schlüssel siehe TEXTS unten (show, note, noteproxy, privacy, error, map, canvas, marker, zoomin, zoomout, compass, attribution, winhelp, machelp, mobilehelp). In note steht {host} für den Kartenserver. Sprache nach <html lang> (Deutsch/Englisch) - Default/Beispiel: `below`"
+    },
+    {
+     "name": "lat"
+    },
+    {
+     "name": "lng"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
    "name": "ncss-nav-drilldown",
    "description": {
     "kind": "markdown",
@@ -602,6 +671,13 @@
    "description": {
     "kind": "markdown",
     "value": "opt-in Begleiter für components/marquee.css.\n\n```html\n1. <div class=\"ncss-marquee\" data-ncss-marquee> mit nur EINER .ncss-marquee-group:\n```\n\nQuelle: `js/marquee.js`"
+   }
+  },
+  {
+   "name": "data-ncss-marquee-tabindex",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) opt-in Begleiter für components/marquee.css.\n\nQuelle: `js/marquee.js`"
    }
   },
   {
