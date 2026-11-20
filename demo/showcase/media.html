@@ -68,18 +68,11 @@
   .demo-bg-card > * { margin: 0; }
   .demo-under-header { --ncss-scroll-video-top: var(--ncss-scroll-offset, 0px); }
   .demo-scroll-intro { margin-block-start: var(--ncss-space-md); }
-  /* Review: Verlauf hinter --bottom/--top-Overlays reicht über den Text hinaus (sonst liegt die
-     erste Zeile im fast transparenten Teil). Vorläufig hier – Ursache in components/overlay.css. */
-  .demo-scrim-room.ncss-overlay--bottom { padding-block-start: var(--ncss-space-2xl); }
-  .demo-scrim-room.ncss-overlay--top { padding-block-end: var(--ncss-space-2xl); }
   /* Raster mit Zwischenüberschriften: Überschriften- und Videozeilen fluchten (subgrid), gestapelt
      klar getrennt statt Überschrift näher am vorigen Video */
   .demo-headed-grid { row-gap: var(--ncss-space-xl); }
   .demo-headed-grid > .ncss-stack { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: var(--ncss-space-md); }
   .demo-headed-grid > .ncss-stack > * { align-self: start; }
-  /* Video in Schrift: auf schmaler Bühne Platz für den Pause-Schalter unter dem Wort lassen.
-     Vorläufig hier – Ursache in components/video-text.css + video-bg.css. */
-  @container (max-width: 40rem) { .demo-vt-title { padding-block-end: calc(2 * var(--ncss-space-sm) + 2.75rem); } }
   /* Scroll-Video ohne Animation (reduzierte Bewegung, kein JS): Video + Texte in Containerbreite
      statt randlos bis an den Fensterrand */
   .demo-scroll-intro:not(.is-active) > .ncss-scroll-video-stage { max-inline-size: var(--ncss-container-max); margin-inline: auto; padding-inline: var(--ncss-space-sm); }
@@ -546,13 +539,13 @@
         <div class="demo-media-grid" style="--demo-min: 15rem">
           <div class="ncss-overlay-container ncss-ratio-video ncss-radius-md">
             <img src="../assets/examples/gemeinde/seeburg-ufer-thumb.webp" width="640" height="427" loading="lazy" alt="Seeburg mit Kirchturm, gespiegelt im See">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
               <p class="ncss-text-light demo-overlay-text"><strong>Seeburger Ufer</strong></p>
             </div>
           </div>
           <div class="ncss-overlay-container ncss-ratio-video ncss-radius-md">
             <img src="../assets/examples/gemeinde/wochenmarkt-thumb.webp" width="640" height="427" loading="lazy" alt="Gemüse am Marktstand">
-            <div class="ncss-overlay ncss-overlay--top ncss-overlay--scrim demo-scrim-room">
+            <div class="ncss-overlay ncss-overlay--top ncss-overlay--scrim">
               <p class="ncss-text-light demo-overlay-text"><strong>Samstag: Wochenmarkt</strong></p>
             </div>
           </div>
@@ -578,19 +571,19 @@
         <div class="demo-media-grid demo-wide" style="--demo-min: 15rem">
           <div class="ncss-overlay-container ncss-overlay-container--zoom ncss-ratio-portrait ncss-radius-lg">
             <img src="../assets/examples/hotel/zimmer-seeblick-thumb.webp" width="480" height="720" loading="lazy" alt="Zimmer Seeblick mit Holzwänden">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
               <p class="ncss-text-light demo-overlay-text"><a class="ncss-text-light" href="../example-hotel.html"><strong>Zimmer Seeblick</strong></a><br><span class="ncss-text-light-700">ab 149 € pro Nacht</span></p>
             </div>
           </div>
           <div class="ncss-overlay-container ncss-overlay-container--zoom ncss-ratio-portrait ncss-radius-lg">
             <img src="../assets/examples/hotel/restaurant-thumb.webp" width="480" height="720" loading="lazy" alt="Restaurant mit gedeckten Tischen">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
               <p class="ncss-text-light demo-overlay-text"><a class="ncss-text-light" href="../example-hotel.html"><strong>Restaurant Seestube</strong></a><br><span class="ncss-text-light-700">regionale Küche, täglich ab 18 Uhr</span></p>
             </div>
           </div>
           <div class="ncss-overlay-container ncss-overlay-container--zoom ncss-ratio-portrait ncss-radius-lg">
             <img src="../assets/examples/hotel/sauna-thumb.webp" width="480" height="720" loading="lazy" alt="Holzsauna">
-            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim demo-scrim-room">
+            <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
               <p class="ncss-text-light demo-overlay-text"><a class="ncss-text-light" href="../example-hotel.html"><strong>Spa &amp; Sauna</strong></a><br><span class="ncss-text-light-700">10–21 Uhr, für Hausgäste frei</span></p>
             </div>
           </div>
@@ -820,9 +813,8 @@
         </div>
         <div class="ncss-stack">
           <h3>Mit Seitenverhältnis</h3>
-          <!-- Review: Seitenverhältnis am <video> statt an der <figure> – sonst schneidet overflow:hidden die Bildunterschrift ab (components/video.css) -->
-          <figure class="ncss-video">
-            <video class="ncss-ratio-video" controls playsinline muted preload="none" poster="../assets/media/aurora-poster.jpg" width="960" height="540">
+          <figure class="ncss-video ncss-ratio-video">
+            <video controls playsinline muted preload="none" poster="../assets/media/aurora-poster.jpg" width="960" height="540">
               <source src="../assets/media/aurora-loop.webm" type="video/webm">
               <source src="../assets/media/aurora-loop.mp4" type="video/mp4">
             </video>
@@ -1045,7 +1037,7 @@
             <source data-src="../assets/media/blobs-loop.webm" type="video/webm">
             <source data-src="../assets/media/blobs-loop.mp4" type="video/mp4">
           </video>
-          <h3 class="ncss-video-text-title demo-vt-title">Seeblick</h3>
+          <h3 class="ncss-video-text-title">Seeblick</h3>
         </div>
       </div>
     </div>

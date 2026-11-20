@@ -22,7 +22,8 @@
  * 3. Ohne beides: Tooltip bleibt verborgen - aria-describedby liefert den Text trotzdem als
  *    Beschreibung an Screenreader (funktioniert auch auf verborgene Elemente).
  *
- * Tokens: --ncss-tooltip-max-width (Default 18rem), --ncss-tooltip-offset.
+ * Tokens: --ncss-tooltip-max-width (Default 18rem), --ncss-tooltip-offset,
+ * --ncss-tooltip-viewport-gap (Mindestabstand zum Viewport-Rand).
  * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base). Optional
  * js/tooltip.js.
  */
@@ -35,10 +36,11 @@
 .ncss-tooltip {
   --ncss-tooltip-max-width: 18rem;
   --ncss-tooltip-offset: var(--ncss-space-2xs);
+  --ncss-tooltip-viewport-gap: var(--ncss-space-xs);
   /* UA-Popover-Defaults (inset:0, margin:auto, Rahmen) neutralisieren. */
   inset: auto;
   margin: 0;
-  max-inline-size: min(var(--ncss-tooltip-max-width), calc(100vw - 2 * var(--ncss-space-xs)));
+  max-inline-size: min(var(--ncss-tooltip-max-width), calc(100vw - 2 * var(--ncss-tooltip-viewport-gap)));
   padding: var(--ncss-space-3xs) var(--ncss-space-xs);
   border: 0;
   border-radius: var(--ncss-radius-sm);
@@ -57,6 +59,10 @@
   position-area: top;
   position-try-fallbacks: flip-block, flip-inline;
   margin-block: var(--ncss-tooltip-offset);
+  /* Abstand zum Viewport-Rand: Anchor Positioning hält die Margin-Box im Viewport - ohne
+     seitliche Margin klebte ein Tooltip an einem Auslöser nahe dem Rand bündig am
+     Bildschirmrand. Zentriert am Auslöser bleibt er trotzdem (Margin beidseitig gleich). */
+  margin-inline: var(--ncss-tooltip-viewport-gap);
   opacity: 0;
   transition: opacity var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
               display var(--ncss-motion-duration-fast) allow-discrete,

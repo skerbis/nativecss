@@ -70,6 +70,19 @@
   mix-blend-mode: hard-light;
 }
 
+/* Pause-Schalter (js/video-bg.js) bekommt auf schmaler Fläche eine eigene Zeile: das Wort
+   füllt dort fast die ganze Breite, der Schalter in der Ecke läge sonst über den
+   Buchstaben. Der Titel wird um Schalterhöhe + Randabstand höher - an der Seite, an der
+   der Schalter sitzt. Ohne Script (kein .is-ready) bleibt alles wie gehabt. */
+@container (max-width: 40rem) {
+  .ncss-video-text.is-ready:has(> .ncss-video-bg-toggle) > .ncss-video-text-title {
+    padding-block-end: calc(2 * var(--ncss-space-sm) + 2.75rem);
+  }
+  .ncss-video-text.is-ready:has(> :is(.ncss-video-bg-toggle--top-end, .ncss-video-bg-toggle--top-start)) > .ncss-video-text-title {
+    padding-block: calc(2 * var(--ncss-space-sm) + 2.75rem) var(--ncss-space-sm);
+  }
+}
+
 @media (forced-colors: active) {
   .ncss-video-text-media {
     display: none;
