@@ -1,0 +1,262 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+
+  /* Nur fürs Demo: dunkler, leicht gemusterter Hintergrund, damit der Glass-Effekt
+     (backdrop-filter) überhaupt etwas zum Durchscheinen hat. */
+  .demo-glass-stage {
+    padding: var(--ncss-space-xl);
+    border-radius: var(--ncss-radius-lg);
+    background-image:
+      radial-gradient(circle at 20% 20%, var(--ncss-color-brand-2) 0%, transparent 45%),
+      radial-gradient(circle at 80% 30%, var(--ncss-color-brand) 0%, transparent 45%),
+      radial-gradient(circle at 50% 90%, var(--ncss-color-success) 0%, transparent 40%);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .demo-glass-card {
+    padding: var(--ncss-space-lg);
+    border-radius: var(--ncss-radius-lg);
+  }
+
+  .demo-glow-card {
+    padding: var(--ncss-space-lg);
+    background-color: var(--ncss-color-surface);
+  }
+
+  .demo-siri-btn {
+    padding-inline: var(--ncss-space-lg);
+    padding-block: var(--ncss-space-sm);
+    border: none;
+    border-radius: 999px;
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Nur fürs Demo: zwei überlappende Farbkreise, damit ein Blend-Modus überhaupt
+     sichtbar wird - .ncss-blend-* selbst bringt keine eigene Fläche/Farbe mit. */
+  .demo-blend-pair {
+    position: relative;
+    height: 8rem;
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-md);
+  }
+  .demo-blend-circle {
+    position: absolute;
+    width: 5rem;
+    height: 5rem;
+    border-radius: var(--ncss-radius-full);
+  }
+  .demo-blend-circle--a {
+    inset-inline-start: var(--ncss-space-md);
+    inset-block-start: var(--ncss-space-md);
+    background-color: var(--ncss-color-brand);
+  }
+  .demo-blend-circle--b {
+    inset-inline-end: var(--ncss-space-md);
+    inset-block-end: var(--ncss-space-md);
+    background-color: var(--ncss-color-brand-2);
+  }
+
+  /* Nur fürs Demo: Bühne für die eingebettete Backdrop-Variante (--contained). Im echten
+     Einsatz sitzt .ncss-backdrop direkt in <body> und füllt den ganzen Viewport. */
+  .demo-backdrop-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 24rem;
+    padding: var(--ncss-space-lg);
+    border-radius: var(--ncss-radius-lg);
+    overflow: hidden;
+  }
+  .demo-backdrop-stage > .ncss-glass {
+    position: relative;
+    z-index: 1;
+    max-width: 28rem;
+  }
+</style>
+<script src="~/dist/js/backdrop.js" defer></script>
+-->
+  <div class="ncss-stack ncss-stack--tight">
+    <p class="ncss-text-lg ncss-text-muted">Purely decorative, optional components (layer "components", <code>components/effects.css</code>) - animated gradient border, pulsing glow and glassmorphism. Meant to be combined with other components, not part of <code>.ncss-card</code>/<code>.ncss-btn</code>.</p>
+  </div>
+
+  <!-- Glow-Border -->
+  <section id="glow-border" class="ncss-stack">
+    <h2 class="demo-section-title">Glow Border</h2>
+    <p class="ncss-text-muted">Rotating <code>conic-gradient()</code> ring on a <code>::before</code> - no wrapper element needed, works on any element with its own background. The angle runs through a custom property typed via <code>@property</code> (<code>--ncss-glow-angle</code>) so the browser can interpolate it cleanly.</p>
+
+    <div class="ncss-cluster">
+      <button type="button" class="demo-siri-btn ncss-glow-border">Ask AI</button>
+      <button type="button" class="demo-siri-btn ncss-glow-border" style="--ncss-glow-speed: 1.5s;">Faster</button>
+      <button type="button" class="demo-siri-btn ncss-glow-border" style="--ncss-glow-colors: var(--ncss-color-success), var(--ncss-color-warning), var(--ncss-color-danger), var(--ncss-color-success);">Other colors</button>
+    </div>
+
+    <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+      <div class="ncss-glow-border demo-glow-card ncss-radius-lg">
+        <h3>Card with border</h3>
+        <p class="ncss-text-sm ncss-text-muted">The same class also works on a regular <code>.ncss-card</code>-like surface, not just on buttons.</p>
+      </div>
+      <div class="ncss-glow-border ncss-glow-pulse demo-glow-card ncss-radius-lg">
+        <h3>Border + pulse combined</h3>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-glow-border</code> and <code>.ncss-glow-pulse</code> use different animation properties (<code>background</code> vs. <code>box-shadow</code>) - freely combinable.</p>
+      </div>
+    </div>
+
+    <pre><code class="language-html">&lt;button class="ncss-glow-border"&gt;Ask AI&lt;/button&gt;
+
+&lt;!-- customize via custom property, per instance --&gt;
+&lt;button class="ncss-glow-border" style="--ncss-glow-speed: 1.5s;"&gt;Faster&lt;/button&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-glow-colors</code> (default: brand/secondary/success color), <code>--ncss-glow-speed</code> (default 4s), <code>--ncss-glow-thickness</code> (default 2px), <code>--ncss-glow-radius</code> (default <code>--ncss-radius-lg</code>).</p>
+  </section>
+
+  <!-- Glow-Pulse -->
+  <section id="glow-pulse" class="ncss-stack">
+    <h2 class="demo-section-title">Glow Pulse</h2>
+    <p class="ncss-text-muted">Pulsing <code>box-shadow</code> - usable on its own, e.g. to highlight a single call to action.</p>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary ncss-glow-pulse">Get started</button>
+      <span class="ncss-badge ncss-badge--success ncss-glow-pulse">Live</span>
+    </div>
+    <pre><code class="language-html">&lt;button class="ncss-btn ncss-btn--primary ncss-glow-pulse"&gt;Get started&lt;/button&gt;</code></pre>
+  </section>
+
+  <!-- Glass -->
+  <section id="glass" class="ncss-stack">
+    <h2 class="demo-section-title">Glass (Glassmorphism)</h2>
+    <p class="ncss-text-muted">Semi-transparent surface + <code>backdrop-filter: blur() saturate()</code> - guarded with <code>@supports</code>; without support you get a plain semi-transparent surface without blur.</p>
+    <div class="demo-glass-stage ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-glass demo-glass-card">
+        <h3>Card 1</h3>
+        <p class="ncss-text-sm">Only shows its effect in front of a colorful/busy background - see the gradients behind these cards.</p>
+      </div>
+      <div class="ncss-glass demo-glass-card">
+        <h3>Card 2</h3>
+        <p class="ncss-text-sm">Combinable with <code>.ncss-glow-border</code> for an extra border accent.</p>
+      </div>
+      <div class="ncss-glass ncss-glow-border demo-glass-card">
+        <h3>Card 3</h3>
+        <p class="ncss-text-sm">Glass + glow border together.</p>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-glass"&gt;...&lt;/div&gt;
+
+&lt;!-- adjust blur/color --&gt;
+&lt;div class="ncss-glass" style="--ncss-glass-blur: 20px;"&gt;...&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-glass-bg</code>, <code>--ncss-glass-border</code>, <code>--ncss-glass-blur</code> (default 12px).</p>
+  </section>
+
+  <!-- Backdrop -->
+  <section id="backdrop" class="ncss-stack">
+    <h2 class="demo-section-title">Backdrop (background image slideshow)</h2>
+    <p class="ncss-text-muted">Images slowly crossfade while gently zooming out - typically used as a page-wide, fixed background behind glass surfaces (<code>components/backdrop.css</code> + <code>js/backdrop.js</code>). Shown here as the embedded variant <code>.ncss-backdrop--contained</code>; with <code>prefers-reduced-motion</code> it stays on the first image, without zoom.</p>
+    <div class="demo-backdrop-stage">
+      <div class="ncss-backdrop ncss-backdrop--contained" data-ncss-backdrop data-interval="4000" aria-hidden="true">
+        <img class="ncss-backdrop-item" src="~/demo/assets/slide-1.jpg" alt="">
+        <img class="ncss-backdrop-item" src="~/demo/assets/slide-2.jpg" alt="" loading="lazy">
+        <img class="ncss-backdrop-item" src="~/demo/assets/slide-3.jpg" alt="" loading="lazy">
+      </div>
+      <div class="ncss-glass demo-glass-card">
+        <h3>Content over the image</h3>
+        <p class="ncss-text-sm">Glass surfaces stay readable while the image sets the mood. Changes every 4 seconds, pauses in background tabs.</p>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;!-- page-wide, directly in &lt;body&gt; --&gt;
+&lt;div class="ncss-backdrop" data-ncss-backdrop data-interval="6000" aria-hidden="true"&gt;
+  &lt;img class="ncss-backdrop-item" src="a.jpg" alt="" fetchpriority="high"&gt;
+  &lt;img class="ncss-backdrop-item" src="b.jpg" alt="" loading="lazy"&gt;
+&lt;/div&gt;
+&lt;script src="dist/js/backdrop.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- fill a single section only: ancestor with position:relative --&gt;
+&lt;div class="ncss-backdrop ncss-backdrop--contained" data-ncss-backdrop&gt;...&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-backdrop-fade</code> (crossfade, default 1.6s), <code>--ncss-backdrop-zoom</code> (start scale, default 1.08, <code>1</code> = no zoom), <code>--ncss-backdrop-tint</code> (overlay tint, e.g. <code>light-dark(transparent, rgb(0 0 0 / 50%))</code> for calmer surfaces in dark mode).</p>
+  </section>
+
+  <!-- Stamped -->
+  <section id="stamped" class="ncss-stack">
+    <h2 class="demo-section-title">Stamped (engraved border)</h2>
+    <p class="ncss-text-muted">Just a hairline two-tone border (dark top-left to light bottom-right, like an edge engraved into the material) - no background color of its own, so it works on plain white too. <code>.ncss-stamped</code> alone lifts on hover ("comes forward"); adding <code>.ncss-stamped--press</code> reverses this and sinks deeper on hover. In both cases <code>:active</code> (click/touch held) sinks in even further.</p>
+    <div class="ncss-cluster" style="background-color: var(--ncss-color-bg); padding: var(--ncss-space-xl); border-radius: var(--ncss-radius-lg); border: 1px solid var(--ncss-color-border);">
+      <button type="button" class="ncss-stamped" style="padding-inline: var(--ncss-space-lg); padding-block: var(--ncss-space-sm); border: none; background: none; font-weight: 600;">Lifts (hover)</button>
+      <button type="button" class="ncss-stamped ncss-stamped--press" style="padding-inline: var(--ncss-space-lg); padding-block: var(--ncss-space-sm); border: none; background: none; font-weight: 600;">Sinks (hover)</button>
+    </div>
+    <pre><code class="language-html">&lt;button class="ncss-stamped"&gt;Lifts on hover&lt;/button&gt;
+&lt;button class="ncss-stamped ncss-stamped--press"&gt;Sinks on hover&lt;/button&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-stamped-thickness</code> (default 1px, ring thickness), <code>--ncss-stamped-dark</code>/<code>--ncss-stamped-light</code> (default <code>rgb(0 0 0 / 35%)</code>/<code>rgb(255 255 255 / 90%)</code>), <code>--ncss-stamped-lift</code> (default 3px, travel on hover/active), <code>--ncss-stamped-radius</code> (default <code>--ncss-radius-lg</code>).</p>
+
+    <p class="ncss-text-muted">Combined with <code>.ncss-btn</code> variants: the ring is semi-transparent black/white (<code>rgb(0 0 0 / 35%)</code>/<code>rgb(255 255 255 / 90%)</code>) instead of a fixed color - it automatically blends with each button's background color when painted (alpha compositing), WITHOUT <code>.ncss-stamped</code> itself needing to know anything about brand color/variant. Only the corner shape is NOT picked up automatically by <code>.ncss-stamped</code> (its own default is <code>--ncss-radius-lg</code>, larger than <code>.ncss-btn</code>'s <code>--ncss-radius-sm</code>) - so set <code>--ncss-stamped-radius</code> explicitly to the matching value:</p>
+    <div class="ncss-cluster" style="background-color: var(--ncss-color-bg); padding: var(--ncss-space-xl); border-radius: var(--ncss-radius-lg); border: 1px solid var(--ncss-color-border);">
+      <button type="button" class="ncss-btn ncss-btn--primary ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Primary + Stamped</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Secondary + Stamped</button>
+      <button type="button" class="ncss-btn ncss-btn--danger ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm);">Danger + Stamped</button>
+    </div>
+    <pre><code class="language-html">&lt;button class="ncss-btn ncss-btn--primary ncss-stamped"
+        style="--ncss-stamped-radius: var(--ncss-radius-sm);"&gt;
+  Primary + Stamped
+&lt;/button&gt;</code></pre>
+  </section>
+
+  <!-- Grain -->
+  <section id="grain" class="ncss-stack">
+    <h2 class="demo-section-title">Grain (grain/sand texture)</h2>
+    <p class="ncss-text-muted">Fine noise via an SVG <code>&lt;feTurbulence&gt;</code> filter as a data URI - no image asset, no build step. Subtle by default and adjustable via <code>--ncss-grain-opacity</code>; for a "sandy" look, adjust blend mode/opacity. The default blend mode <code>overlay</code> behaves like <code>multiply</code> on dark surfaces and like <code>screen</code> on light ones - so on a VERY dark/saturated surface (e.g. <code>.ncss-surface--brand-2</code>) the default opacity is practically invisible, while on a mid-tone surface (left) the same default shows clearly. For dark/saturated brand surfaces, either raise the opacity considerably or switch to <code>--ncss-grain-blend: soft-light</code> (right).</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-grain ncss-radius-lg" style="padding: var(--ncss-space-lg); background-color: #64748b; color: #fff;">
+        <h3>Subtle (default)</h3>
+        <p class="ncss-text-sm">--ncss-grain-opacity: 0.12 (default) on a mid-tone surface</p>
+      </div>
+      <div class="ncss-grain ncss-radius-lg ncss-surface--brand-2" style="padding: var(--ncss-space-lg); --ncss-grain-opacity: 0.4; --ncss-grain-blend: soft-light;">
+        <h3>Sandy</h3>
+        <p class="ncss-text-sm">--ncss-grain-opacity: 0.4, --ncss-grain-blend: soft-light</p>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-grain"&gt;...&lt;/div&gt;
+
+&lt;!-- stronger/different tint, for dark/saturated surfaces --&gt;
+&lt;div class="ncss-grain" style="--ncss-grain-opacity: 0.4; --ncss-grain-blend: soft-light;"&gt;...&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Tokens: <code>--ncss-grain-opacity</code> (default 0.12), <code>--ncss-grain-blend</code> (default <code>overlay</code>).</p>
+  </section>
+
+  <!-- Blend-Modi -->
+  <section id="blend-modes" class="ncss-stack">
+    <h2 class="demo-section-title">Blend modes</h2>
+    <p class="ncss-text-muted"><code>.ncss-blend-*</code> (<code>helpers/elevation.css</code>) are 1:1 utilities for <code>mix-blend-mode</code> - the element blends with whatever lies BEHIND it (a different case from <code>--ncss-grain-blend</code> above, which is <code>background-blend-mode</code> and only blends between an element's own background layers). Two overlapping color circles as an example: the top circle carries a different <code>.ncss-blend-*</code> class in each case.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 9rem;">
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-multiply"></div><p class="ncss-text-sm ncss-text-muted">multiply</p></div>
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-screen"></div><p class="ncss-text-sm ncss-text-muted">screen</p></div>
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-difference"></div><p class="ncss-text-sm ncss-text-muted">difference</p></div>
+      <div class="demo-blend-pair"><div class="demo-blend-circle demo-blend-circle--a"></div><div class="demo-blend-circle demo-blend-circle--b ncss-blend-overlay"></div><p class="ncss-text-sm ncss-text-muted">overlay</p></div>
+    </div>
+    <pre><code class="language-html">&lt;div style="position: relative;"&gt;
+  &lt;div class="demo-circle-a"&gt;&lt;/div&gt;
+  &lt;div class="demo-circle-b ncss-blend-multiply"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">All 15 CSS blend keywords as classes: <code>multiply</code>/<code>screen</code>/<code>overlay</code>/<code>darken</code>/<code>lighten</code>/<code>color-dodge</code>/<code>color-burn</code>/<code>hard-light</code>/<code>soft-light</code>/<code>difference</code>/<code>exclusion</code>/<code>hue</code>/<code>saturation</code>/<code>color</code>/<code>luminosity</code>.</p>
+  </section>
+
+  <!-- Erzwungenes Farbschema pro Element -->
+  <section id="scheme-override" class="ncss-stack">
+    <h2 class="demo-section-title">Forced color scheme per element</h2>
+    <p class="ncss-text-muted">Not to be confused with the page-wide theme override via <code>[data-theme]</code> (<code>colors.css</code>, e.g. a toggle in the UI) - same principle (<code>color-scheme</code>), just applied locally to a single element instead of <code>:root</code>. <code>color-scheme</code> is inherited - <code>.ncss-scheme-dark</code>/<code>.ncss-scheme-light</code> (<code>helpers/surfaces.css</code>) force a color scheme ONLY for an element and its descendants, regardless of the theme of the rest of the page. All <code>light-dark()</code> tokens in the content flip automatically, without duplicating any values.</p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-scheme-dark ncss-card ncss-radius-lg ncss-border ncss-shadow-sm" style="padding: var(--ncss-space-lg);">
+        <h3>Always dark</h3>
+        <p class="ncss-text-sm ncss-text-muted">.ncss-scheme-dark, regardless of the page theme.</p>
+      </div>
+      <div class="ncss-scheme-light ncss-card ncss-radius-lg ncss-border ncss-shadow-sm" style="padding: var(--ncss-space-lg);">
+        <h3>Always light</h3>
+        <p class="ncss-text-sm ncss-text-muted">.ncss-scheme-light, regardless of the page theme.</p>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-scheme-dark"&gt;...&lt;/div&gt;</code></pre>
+  </section>
+
+  <p class="ncss-text-sm ncss-text-muted">Motion respects <code>prefers-reduced-motion</code> automatically (globally in <code>reset.css</code>, not retrofitted per component) - with the setting enabled, only a single frame runs.</p>

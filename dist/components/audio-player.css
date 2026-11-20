@@ -1,0 +1,697 @@
+/**
+ * ncss - <ncss-audio-player> (Layer "components"): eigener Audioplayer über einem
+ * nativen <audio controls>, Logik in js/audio-player.js (Markup/Attribute dort).
+ *
+ *   Kompakt:  <ncss-audio-player><audio controls src="a.m4a"></audio></ncss-audio-player>
+ *   Karte:    <ncss-audio-player layout="card" waveform> + Cover/Titel/Interpret/
+ *             Playlist als Kinder (.ncss-audio-player-cover/-title/-artist/-playlist)
+ *
+ * Zustände:
+ *   - :not(:defined)/ohne .is-enhanced: das native <audio controls> bleibt sichtbar und
+ *     benutzbar, die Karte zeigt Cover/Titel/Playlist schon in ihrem Raster - die
+ *     Playlist-Links sind dann normale Links auf die Dateien.
+ *   - .is-enhanced: <audio> ausgeblendet, eigene Leiste.
+ * Folgt dem Seiten-Theme (Light/Dark über die Tokens) - anders als der Videoplayer, der
+ * immer dunkel ist (dort liegt die Leiste über beliebig hellem Bild).
+ *
+ * Unterscheidung zu components/audio.css: .ncss-audio/.ncss-audio-card stylen nur das
+ * native <audio controls> (Breite, Karten-Rahmen mit figcaption) - ganz ohne JS. Diese
+ * Datei ist der vollwertige Player mit eigenen Bedienelementen; beide sind unabhängig
+ * voneinander einsetzbar.
+ *
+ * Anpassbar (auf dem Element): --ncss-audio-player-accent (Default --ncss-color-brand),
+ * --ncss-audio-player-radius.
+ *
+ * Benötigt: tokens.css + colors.css (+ reset/base). Keine anderen ncss-Dateien - eigene
+ * visually-hidden-Klasse (.ncss-audio-player-sr).
+ */
+
+ncss-audio-player {
+  --ncss-audio-player-accent: var(--ncss-color-brand);
+  --ncss-audio-player-radius: var(--ncss-radius-lg);
+  --ncss-audio-player-track: color-mix(in oklch, var(--ncss-color-text) 18%, transparent);
+  --ncss-audio-player-btn: 2.25rem;
+  display: block;
+  container: ncss-audio-player / inline-size;
+  color: var(--ncss-color-text);
+
+  & > audio {
+    display: block;
+    width: 100%;
+  }
+  &.is-enhanced > audio {
+    display: none;
+  }
+}
+
+.ncss-audio-player-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Kompakt: eine Pillen-Zeile ---------------------------------------------------- */
+.ncss-audio-player-ui {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  box-shadow: var(--ncss-shadow-sm);
+
+  & > .ncss-audio-player-seek {
+    flex: 1 1 6rem;
+    margin-inline: 0.5rem;
+  }
+}
+.ncss-audio-player-time {
+  font-size: var(--ncss-font-size-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ncss-color-text-muted);
+}
+
+/* --- Buttons ------------------------------------------------------------------------ */
+.ncss-audio-player-btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: var(--ncss-audio-player-btn);
+  height: var(--ncss-audio-player-btn);
+  margin: 0;
+  padding: 0 0.35rem;
+  font: inherit;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: inherit;
+  background: transparent;
+  border: var(--ncss-border-width) solid transparent;
+  border-radius: var(--ncss-radius-md);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+    scale var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+
+  &[hidden] {
+    display: none;
+  }
+  &:active {
+    scale: 0.92;
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+    scale: 1;
+  }
+  &:focus-visible {
+    outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+    outline-offset: 1px;
+  }
+  &.is-on {
+    color: var(--ncss-color-brand-on-soft);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-audio-player-btn:hover:not(:active, :disabled) {
+    background-color: color-mix(in oklch, currentColor 10%, transparent);
+  }
+}
+.ncss-audio-player-btn:is(.ncss-audio-player-btn--play, .ncss-audio-player-btn--mute,
+  .ncss-audio-player-btn--prev, .ncss-audio-player-btn--next)::before {
+  content: "";
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: currentColor;
+  /* Longhands statt mask-Kurzform: die Kurzform setzte mask-image mit zurück und
+     gewann wegen der höheren Spezifität dieses Selektors gegen die Icon-Regeln
+     unten (sichtbar als gefülltes Quadrat). */
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.ncss-audio-player-btn--play::before {
+  translate: 6% 0;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.1v13.8a1 1 0 0 0 1.5.86l11-6.9a1 1 0 0 0 0-1.72l-11-6.9A1 1 0 0 0 8 5.1z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.1v13.8a1 1 0 0 0 1.5.86l11-6.9a1 1 0 0 0 0-1.72l-11-6.9A1 1 0 0 0 8 5.1z'/%3E%3C/svg%3E");
+}
+.ncss-audio-player-btn--play.is-alt::before {
+  translate: none;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5.5' y='4.5' width='4.5' height='15' rx='1.2'/%3E%3Crect x='14' y='4.5' width='4.5' height='15' rx='1.2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5.5' y='4.5' width='4.5' height='15' rx='1.2'/%3E%3Crect x='14' y='4.5' width='4.5' height='15' rx='1.2'/%3E%3C/svg%3E");
+}
+.ncss-audio-player-btn--mute::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z'/%3E%3C/svg%3E");
+}
+.ncss-audio-player-btn--mute.is-alt::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 9v6h4l5 5V4L7 9H3z'/%3E%3Cpath d='M15.5 9l5 6m0-6l-5 6' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 9v6h4l5 5V4L7 9H3z'/%3E%3Cpath d='M15.5 9l5 6m0-6l-5 6' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.ncss-audio-player-btn--prev::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='5' width='2.6' height='14' rx='1'/%3E%3Cpath d='M19 6.1v11.8a1 1 0 0 1-1.55.83L9.3 13.2a1.4 1.4 0 0 1 0-2.4l8.15-5.53A1 1 0 0 1 19 6.1z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='5' width='2.6' height='14' rx='1'/%3E%3Cpath d='M19 6.1v11.8a1 1 0 0 1-1.55.83L9.3 13.2a1.4 1.4 0 0 1 0-2.4l8.15-5.53A1 1 0 0 1 19 6.1z'/%3E%3C/svg%3E");
+}
+.ncss-audio-player-btn--next::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='16.4' y='5' width='2.6' height='14' rx='1'/%3E%3Cpath d='M5 6.1v11.8a1 1 0 0 0 1.55.83l8.15-5.53a1.4 1.4 0 0 0 0-2.4L6.55 5.27A1 1 0 0 0 5 6.1z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='16.4' y='5' width='2.6' height='14' rx='1'/%3E%3Cpath d='M5 6.1v11.8a1 1 0 0 0 1.55.83l8.15-5.53a1.4 1.4 0 0 0 0-2.4L6.55 5.27A1 1 0 0 0 5 6.1z'/%3E%3C/svg%3E");
+}
+/* Play: gefüllter Kreis in der Akzentfarbe */
+.ncss-audio-player-btn--play {
+  width: var(--ncss-audio-player-btn);
+  color: var(--ncss-color-brand-contrast);
+  background-color: var(--ncss-audio-player-accent);
+  border-radius: var(--ncss-radius-full);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-audio-player-btn--play:hover:not(:active) {
+    background-color: color-mix(in oklch, var(--ncss-audio-player-accent) 85%, var(--ncss-color-text));
+  }
+}
+.ncss-audio-player-btn--speed {
+  min-width: 2.75rem;
+  direction: ltr;
+}
+.ncss-audio-player-btn--skip {
+  min-width: 3rem;
+}
+
+/* --- Regler ------------------------------------------------------------------------- */
+.ncss-audio-player-range {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  height: 1.5rem;
+  background: transparent;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+    outline-offset: 1px;
+    border-radius: var(--ncss-radius-sm);
+  }
+  &:disabled {
+    cursor: default;
+  }
+  &::-webkit-slider-runnable-track {
+    height: 100%;
+    background: transparent;
+    border: 0;
+  }
+  &::-moz-range-track {
+    height: 100%;
+    background: transparent;
+    border: 0;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-top: 0.3125rem;
+    background-color: var(--ncss-audio-player-accent);
+    border: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--ncss-color-surface), var(--ncss-shadow-sm);
+  }
+  &::-moz-range-thumb {
+    width: 0.875rem;
+    height: 0.875rem;
+    background-color: var(--ncss-audio-player-accent);
+    border: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--ncss-color-surface);
+  }
+}
+.ncss-audio-player-volume {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+.ncss-audio-player-range--volume {
+  width: 4.5rem;
+  margin-inline: 0.25rem 0.5rem;
+
+  &::-webkit-slider-runnable-track {
+    height: 0.25rem;
+    margin-block: 0.625rem;
+    border-radius: var(--ncss-radius-full);
+    background: linear-gradient(to right, var(--ncss-audio-player-accent) calc(var(--ncss-audio-player-pct, 1) * 100%), var(--ncss-audio-player-track) 0);
+  }
+  &::-webkit-slider-thumb {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-top: -0.25rem;
+  }
+  &::-moz-range-track {
+    height: 0.25rem;
+    border-radius: var(--ncss-radius-full);
+    background: var(--ncss-audio-player-track);
+  }
+  &::-moz-range-progress {
+    height: 0.25rem;
+    border-radius: var(--ncss-radius-full);
+    background: var(--ncss-audio-player-accent);
+  }
+}
+.ncss-audio-player-seek {
+  position: relative;
+  height: 1.5rem;
+  min-width: 3rem;
+  touch-action: none;
+}
+.ncss-audio-player-track {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 0.3rem;
+  translate: 0 -50%;
+  overflow: hidden;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-audio-player-track);
+
+  & > * {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+  }
+}
+.ncss-audio-player-progress {
+  width: calc(var(--ncss-audio-player-pct, 0) * 100%);
+  background-color: var(--ncss-audio-player-accent);
+}
+.ncss-audio-player-marks {
+  inset-inline-end: 0;
+
+  & > span {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(var(--ncss-audio-player-start) * 100%);
+    width: 3px;
+    translate: -50% 0;
+    background-color: var(--ncss-color-surface);
+  }
+}
+.ncss-audio-player-range--seek {
+  position: absolute;
+  inset: 0 -0.4375rem;
+  width: calc(100% + 0.875rem);
+  height: 100%;
+}
+
+/* Wellenform: Canvas ersetzt die Spur, der Regler bleibt obenauf. color = gespielter
+   Teil, outline-color = Rest - das Script liest beide aus. */
+.ncss-audio-player-wave {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--ncss-audio-player-accent);
+  outline: 0 none color-mix(in oklch, var(--ncss-color-text-muted) 45%, transparent);
+  pointer-events: none;
+}
+.ncss-audio-player-seek--wave {
+  height: 3.5rem;
+
+  & .ncss-audio-player-wave {
+    display: block;
+  }
+  & .ncss-audio-player-track {
+    visibility: hidden;
+  }
+  & .ncss-audio-player-range--seek {
+    inset-inline: -1.5px;
+    width: calc(100% + 3px);
+  }
+  & .ncss-audio-player-range--seek::-webkit-slider-thumb {
+    width: 3px;
+    height: 3.5rem;
+    margin-top: 0;
+    border-radius: 2px;
+    background-color: var(--ncss-color-text);
+    box-shadow: none;
+  }
+  & .ncss-audio-player-range--seek::-moz-range-thumb {
+    width: 3px;
+    height: 3.5rem;
+    border-radius: 2px;
+    background-color: var(--ncss-color-text);
+    box-shadow: none;
+  }
+}
+
+/* --- Menü (Geschwindigkeit) ---------------------------------------------------------- */
+.ncss-audio-player-menu {
+  position: fixed;
+  inset: var(--ncss-audio-player-menu-top, auto) var(--ncss-audio-player-menu-right, auto) var(--ncss-audio-player-menu-bottom, auto) auto;
+  min-width: 9rem;
+  margin: 0;
+  padding: 0.25rem;
+  color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-sm);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-lg);
+}
+.ncss-audio-player-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.75rem 0.45rem 0.5rem;
+  font: inherit;
+  text-align: start;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--ncss-radius-sm);
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--ncss-color-brand-on-soft);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+    opacity: 0;
+  }
+  &[aria-checked="true"] {
+    font-weight: var(--ncss-font-weight-semibold);
+  }
+  &[aria-checked="true"]::before {
+    opacity: 1;
+  }
+  &:focus-visible {
+    outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+    outline-offset: -2px;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-audio-player-menu-item:hover {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+
+/* --- Karte -------------------------------------------------------------------------- */
+ncss-audio-player[layout="card"] {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--ncss-space-2xs) var(--ncss-space-sm);
+  padding: var(--ncss-space-sm);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-audio-player-radius);
+  box-shadow: var(--ncss-shadow-md);
+
+  & > :not(.ncss-audio-player-cover, .ncss-audio-player-title, .ncss-audio-player-artist) {
+    grid-column: 1 / -1;
+  }
+  & .ncss-audio-player-ui {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "seek seek seek" "times times times" "volume transport speed";
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+  & .ncss-audio-player-seek {
+    grid-area: seek;
+    margin-inline: 0.4375rem;
+  }
+  & .ncss-audio-player-volume {
+    grid-area: volume;
+    justify-self: start;
+  }
+  & .ncss-audio-player-btn--speed {
+    grid-area: speed;
+    justify-self: end;
+  }
+}
+/* Cover links über Titel UND Interpret */
+.ncss-audio-player-cover {
+  grid-row: span 2;
+  width: clamp(3.5rem, 18cqi, 5.5rem);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--ncss-radius-md);
+  box-shadow: var(--ncss-shadow-sm);
+  background-color: var(--ncss-color-bg-subtle);
+}
+.ncss-audio-player-title {
+  align-self: end;
+  margin: 0;
+  font-size: var(--ncss-font-size-md);
+  font-weight: var(--ncss-font-weight-bold);
+  line-height: var(--ncss-line-height-tight);
+  overflow-wrap: anywhere;
+}
+.ncss-audio-player-artist {
+  align-self: start;
+  margin: 0;
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-audio-player-times {
+  grid-area: times;
+  display: flex;
+  justify-content: space-between;
+}
+.ncss-audio-player-transport {
+  grid-area: transport;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+
+  & > .ncss-audio-player-btn--play {
+    --ncss-audio-player-btn: 3.25rem;
+    box-shadow: var(--ncss-shadow-md);
+
+    &::before {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+  }
+}
+@container ncss-audio-player (inline-size < 24rem) {
+  ncss-audio-player[layout="card"] .ncss-audio-player-ui {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "seek seek" "times times" "transport transport" "volume speed";
+  }
+  .ncss-audio-player-btn--skip {
+    min-width: 2.5rem;
+    padding-inline: 0.15rem;
+  }
+}
+@container ncss-audio-player (inline-size < 26rem) {
+  ncss-audio-player:not([layout="card"]) .ncss-audio-player-range--volume {
+    display: none;
+  }
+}
+@container ncss-audio-player (inline-size < 19rem) {
+  ncss-audio-player:not([layout="card"]) :is(.ncss-audio-player-time:last-of-type, .ncss-audio-player-btn--speed) {
+    display: none;
+  }
+}
+
+/* --- Kapitelliste ------------------------------------------------------------------- */
+.ncss-audio-player-chapters {
+  & ol {
+    display: grid;
+    gap: 0.125rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  & button {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    font: inherit;
+    font-size: var(--ncss-font-size-sm);
+    text-align: start;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: var(--ncss-radius-sm);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+      outline-offset: 0;
+    }
+    &[aria-current="true"] {
+      font-weight: var(--ncss-font-weight-semibold);
+      color: var(--ncss-color-brand-on-soft);
+      background-color: var(--ncss-color-brand-100);
+    }
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-audio-player-chapters button:hover:not([aria-current="true"]) {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+.ncss-audio-player-chapters-title {
+  margin: 0 0 0.25rem;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-bold);
+  letter-spacing: var(--ncss-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ncss-color-text-muted);
+}
+.ncss-audio-player-chapter-time {
+  min-width: 2.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ncss-color-text-muted);
+}
+
+/* --- Playlist ----------------------------------------------------------------------- */
+.ncss-audio-player-playlist {
+  display: grid;
+  gap: 0.125rem;
+  margin: 0;
+  padding: var(--ncss-space-2xs) 0 0;
+  list-style: none;
+  border-top: var(--ncss-border-width) solid var(--ncss-color-border);
+  counter-reset: ncss-audio-track;
+
+  & li {
+    counter-increment: ncss-audio-track;
+  }
+  & a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.45rem 0.6rem;
+    font-size: var(--ncss-font-size-sm);
+    color: inherit;
+    text-decoration: none;
+    border-radius: var(--ncss-radius-sm);
+
+    &::before {
+      content: counter(ncss-audio-track);
+      flex: none;
+      display: inline-grid;
+      place-items: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--ncss-color-text-muted);
+    }
+    &:focus-visible {
+      outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+      outline-offset: 0;
+    }
+    & > span:last-child {
+      margin-inline-start: auto;
+      font-variant-numeric: tabular-nums;
+      color: var(--ncss-color-text-muted);
+    }
+  }
+  & .is-active > a {
+    font-weight: var(--ncss-font-weight-semibold);
+    color: var(--ncss-color-brand-on-soft);
+    background-color: var(--ncss-color-brand-100);
+
+    /* aktiver Titel: Play-Symbol statt Nummer, beim Abspielen pulsierende Balken */
+    &::before {
+      content: "";
+      background-color: currentColor;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.1v13.8a1 1 0 0 0 1.5.86l11-6.9a1 1 0 0 0 0-1.72l-11-6.9A1 1 0 0 0 8 5.1z'/%3E%3C/svg%3E") center / 0.85rem no-repeat;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.1v13.8a1 1 0 0 0 1.5.86l11-6.9a1 1 0 0 0 0-1.72l-11-6.9A1 1 0 0 0 8 5.1z'/%3E%3C/svg%3E") center / 0.85rem no-repeat;
+    }
+  }
+  & .is-playing > a::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='4' y='9' width='4' height='11' rx='1'/%3E%3Crect x='10' y='4' width='4' height='16' rx='1'/%3E%3Crect x='16' y='12' width='4' height='8' rx='1'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='4' y='9' width='4' height='11' rx='1'/%3E%3Crect x='10' y='4' width='4' height='16' rx='1'/%3E%3Crect x='16' y='12' width='4' height='8' rx='1'/%3E%3C/svg%3E");
+    animation: ncss-audio-player-eq 0.9s var(--ncss-motion-easing) infinite alternate;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-audio-player-playlist li:not(.is-active) > a:hover {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+@keyframes ncss-audio-player-eq {
+  from { scale: 1 0.6; }
+  to { scale: 1 1; }
+}
+
+/* --- Präferenzen ---------------------------------------------------------------------- */
+@media (forced-colors: active) {
+  .ncss-audio-player-ui,
+  .ncss-audio-player-menu {
+    border: 1px solid CanvasText;
+  }
+  .ncss-audio-player-btn {
+    border-color: ButtonText;
+  }
+  .ncss-audio-player-btn::before,
+  .ncss-audio-player-menu-item::before,
+  .ncss-audio-player-playlist .is-active > a::before {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+  .ncss-audio-player-btn--play {
+    forced-color-adjust: none;
+    color: ButtonText;
+    background: ButtonFace;
+    border: 2px solid ButtonText;
+  }
+  .ncss-audio-player-track {
+    forced-color-adjust: none;
+    background: Canvas;
+    outline: 1px solid CanvasText;
+  }
+  .ncss-audio-player-progress {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+  .ncss-audio-player-range {
+    forced-color-adjust: none;
+  }
+  .ncss-audio-player-range::-webkit-slider-thumb {
+    background: Highlight;
+  }
+  .ncss-audio-player-wave {
+    forced-color-adjust: none;
+    color: Highlight;
+    outline-color: GrayText;
+  }
+  .ncss-audio-player-chapters button[aria-current="true"],
+  .ncss-audio-player-playlist .is-active > a {
+    forced-color-adjust: none;
+    color: HighlightText;
+    background: Highlight;
+  }
+  .ncss-audio-player-chapters button[aria-current="true"] .ncss-audio-player-chapter-time,
+  .ncss-audio-player-playlist .is-active > a > span:last-child {
+    color: inherit;
+  }
+}

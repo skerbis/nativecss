@@ -1,0 +1,52 @@
+<!--DESC: Accessibility statement for the NativeCSS website - compliance status with WCAG 2.2 AA, known limitations and how to send feedback.-->
+<section class="ncss-stack">
+  <h1>Accessibility statement</h1>
+  <p class="ncss-text-lg ncss-text-muted">We want this website to work for everyone - whether you use a mouse, keyboard, screen reader, magnification or voice control. This page explains how far we have got and where gaps remain.</p>
+</section>
+
+<section class="ncss-stack" id="geltungsbereich">
+  <h2 class="demo-section-title">Scope</h2>
+  <p>This statement applies to the website of the open-source project NativeCSS: the home page, the handbook (German and English), the examples overview and the linked example sites. It does not apply to external sites we link to, such as GitHub.</p>
+</section>
+
+<section class="ncss-stack" id="stand">
+  <h2 class="demo-section-title">Compliance status</h2>
+  <p>Our target is the Web Content Accessibility Guidelines (WCAG) 2.2, level AA. This website is <strong>partially compliant</strong> with that standard - it largely meets it: the handbook and home page are designed for it and checked whenever they change, but some content does not yet fully meet the requirements. That content is listed below.</p>
+  <p>What is already in place includes:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>A "Skip to content" link on every page, clear landmarks (header, navigation, main content, footer) and a consistent heading structure.</li>
+    <li>Full keyboard operation with visible focus.</li>
+    <li>Fluid font sizes that grow with browser zoom; the layout reflows down to a width of 320 CSS pixels without sideways scrolling. Tables and code examples scroll inside their own frame where needed.</li>
+    <li>Light and dark mode, following the system setting and switchable on the page.</li>
+    <li>Reduced motion is respected: animations and transitions are turned off and background videos are not loaded.</li>
+    <li>The language of every page is declared (<code>lang</code>).</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="einschraenkungen">
+  <h2 class="demo-section-title">Content that is not fully accessible</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>The example sites are demos.</strong> They show how components combine into complete pages and contain sample content (placeholder text, made-up companies, sample images). This content has not been edited as carefully as the handbook in every detail - the quality of every alt text, for example.</li>
+    <li><strong>Some demo media have no full transcripts or captions.</strong> The videos and audio files in the examples are there to demonstrate the players. They mostly contain no important information that is not also in the text.</li>
+    <li><strong>Live examples in the handbook are intentionally interactive.</strong> They show motion, marquees, scroll effects, dialogs or form error states because that is exactly what they are about. Where motion runs for longer, it can be paused or is dropped with reduced motion; individual examples may still differ from what you would expect on an ordinary content page.</li>
+    <li><strong>The example sites are in German, even in the English version.</strong> If you use the English handbook, the example content you reach from it is in German.</li>
+  </ul>
+  <p>If you need any of this content in a more accessible form, get in touch - see below.</p>
+</section>
+
+<section class="ncss-stack" id="erstellung">
+  <h2 class="demo-section-title">Preparation of this statement</h2>
+  <p>This statement was prepared on 20 November 2026. It is based on a self-assessment by the project using automated and manual checks - including keyboard operation, browser zoom and text zoom, page widths from 320 CSS pixels, light and dark mode, and reduced motion. No independent audit has taken place.</p>
+  <p>How we go about this is described in the handbook under <a href="a11y-testing.html">Testing</a>.</p>
+</section>
+
+<section class="ncss-stack" id="feedback">
+  <h2 class="demo-section-title">Feedback and contact</h2>
+  <p>Have you come across a barrier, or are you stuck somewhere? Please let us know through the issues on GitHub: <a href="https://github.com/skerbis/nativecss/issues">github.com/skerbis/nativecss/issues</a>. Briefly describe which page the problem is on, what happens and - if you like - which browser and assistive technology you use.</p>
+  <p>NativeCSS is maintained by volunteers. We read every report and try to fix barriers promptly, but we cannot promise fixed response times.</p>
+</section>
+
+<section class="ncss-stack" id="hinweis-projekt">
+  <h2 class="demo-section-title">About the project</h2>
+  <p>NativeCSS is a private open-source project, not a public sector body. We publish this statement voluntarily to be open about where the website stands.</p>
+</section>

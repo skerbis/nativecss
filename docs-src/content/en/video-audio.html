@@ -1,0 +1,255 @@
+<!--DESC: Custom video and audio players as web components, scroll-scrubbed video, image sequences, background video with a pause toggle, video in text, mini player, preview cards and an encoding guide.-->
+<section class="ncss-stack">
+  <h1>Video &amp; Audio</h1>
+  <p class="ncss-text-lg ncss-text-muted">Moving images and sound beyond the native elements - every component is its own CSS file plus at most one script, usable on its own (only <code>tokens.css</code>/<code>colors.css</code> required). Without JS the native <code>&lt;video&gt;</code>/<code>&lt;audio&gt;</code> stays fully usable everywhere. Live example: <a href="../../demo/video-audio.html">Video &amp; Audio demo</a>. Basics (aspect ratio, <code>object-fit</code>, hero): <a href="media.html">Media</a>.</p>
+</section>
+
+<section class="ncss-stack" id="overview">
+  <h2 class="demo-section-title">Overview</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Component</th><th scope="col">Files</th><th scope="col">Kind</th></tr></thead>
+      <tbody>
+        <tr><td><a href="#player"><code>&lt;ncss-video-player&gt;</code></a></td><td><code>components/video-player.css</code>, <code>js/video-player.js</code></td><td>Web component</td></tr>
+        <tr><td><a href="#audio"><code>&lt;ncss-audio-player&gt;</code></a></td><td><code>components/audio-player.css</code>, <code>js/audio-player.js</code></td><td>Web component</td></tr>
+        <tr><td><a href="#scroll-video"><code>&lt;ncss-scroll-video&gt;</code></a></td><td><code>components/scroll-video.css</code>, <code>js/scroll-video.js</code></td><td>Web component</td></tr>
+        <tr><td><a href="#scroll-frames"><code>&lt;ncss-scroll-frames&gt;</code></a></td><td><code>components/scroll-frames.css</code>, <code>js/scroll-frames.js</code></td><td>Web component</td></tr>
+        <tr><td><a href="#video-bg"><code>.ncss-video-bg</code></a></td><td><code>components/video-bg.css</code>, <code>js/video-bg.js</code></td><td>Class + <code>data-ncss-video-bg</code> attribute</td></tr>
+        <tr><td><a href="#video-text"><code>.ncss-video-text</code></a></td><td><code>components/video-text.css</code> (+ optional video-bg)</td><td>Pure CSS</td></tr>
+        <tr><td><a href="#video-float"><code>&lt;ncss-video-float&gt;</code></a></td><td><code>components/video-float.css</code>, <code>js/video-float.js</code></td><td>Web component</td></tr>
+        <tr><td><a href="#video-card"><code>.ncss-video-card</code></a></td><td><code>components/video-card.css</code>, <code>js/video-card.js</code></td><td>Class + small script</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">The web components are plain light-DOM elements (no shadow root) - page CSS and <code>theme.css</code> apply as usual. If a required browser API is missing, the element is never defined and stays on its native fallback. Labels and announcements follow <code>&lt;html lang&gt;</code> (German/English).</p>
+</section>
+
+<section class="ncss-stack" id="player">
+  <h2 class="demo-section-title">Video player</h2>
+  <p class="ncss-text-muted ncss-text-sm">The video and audio players are one family: the same icons, a round play button in the accent colour (<code>--ncss-color-brand</code>), the same 0.3rem seek bar with chapter gaps, the same chapter and playlist lists and menus. On video the controls float frameless on a soft gradient over the picture (fixed white there so they read on any frame); card, lists and menu follow the page theme.</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;!-- Stage only --&gt;
+&lt;ncss-video-player&gt;
+  &lt;video controls playsinline preload="metadata" poster="poster.jpg"&gt;
+    &lt;source src="film.mp4" type="video/mp4"&gt;
+    &lt;track kind="captions" src="en.vtt" srclang="en" label="English" default&gt;
+    &lt;track kind="captions" src="de.vtt" srclang="de" label="Deutsch"&gt;
+    &lt;track kind="chapters" src="chapters.vtt" srclang="en"&gt;
+  &lt;/video&gt;
+&lt;/ncss-video-player&gt;
+
+&lt;!-- Card with chapter list and playlist (like the audio card) --&gt;
+&lt;ncss-video-player layout="card"&gt;
+  &lt;video controls playsinline preload="metadata" poster="film.jpg"&gt;...&lt;/video&gt;
+  &lt;p class="ncss-video-player-title"&gt;Four moods&lt;/p&gt;
+  &lt;p class="ncss-video-player-meta"&gt;Short film&lt;/p&gt;
+  &lt;ol class="ncss-video-player-playlist"&gt;
+    &lt;li&gt;&lt;a href="film.mp4" data-poster="film.jpg" data-title="Four moods"
+           data-chapters="chapters.vtt" data-captions="en=en.vtt de=de.vtt"&gt;
+      &lt;img src="film.jpg" alt=""&gt;&lt;span&gt;Four moods&lt;/span&gt; &lt;span&gt;0:32&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="scene.mp4" data-poster="scene.jpg" data-title="Northern lights"&gt;
+      &lt;img src="scene.jpg" alt=""&gt;&lt;span&gt;Northern lights&lt;/span&gt; &lt;span&gt;0:10&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/ncss-video-player&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Adds a big play button, a seek bar with buffered ranges, chapter gaps and a time/chapter pill under the pointer, the current chapter, mute + an expanding volume slider, a CC toggle, <strong>one settings menu</strong> (gear: speed + caption language; a non-default speed shows as a badge on the gear), picture-in-picture, fullscreen on the stage (custom bar and captions come along), auto-hiding controls and cursor, a loading spinner and an error state. <code>layout="card"</code> adds a column with title, a clickable chapter list (current chapter highlighted) and a playlist (thumbnail, title, duration, previous/next, auto-advance) - beside the picture when there is room, below it otherwise (wraps without a breakpoint). Media Session: title and poster appear in the system media controls.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribute / API</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>layout="card"</code></td><td>Card with chapter/playlist column (like <code>&lt;ncss-audio-player layout="card"&gt;</code>)</td></tr>
+        <tr><td><code>speeds="0.5 0.75 1 1.25 1.5 2"</code></td><td>Speed entries in the settings menu</td></tr>
+        <tr><td><code>autohide="2500"</code></td><td>ms of pointer idle before the controls hide, <code>0</code> = never</td></tr>
+        <tr><td><code>captions="en"</code></td><td>Caption language at start (otherwise <code>&lt;track default&gt;</code>)</td></tr>
+        <tr><td><code>exclusive="false"</code></td><td>May play alongside other players</td></tr>
+        <tr><td><code>data-poster</code>, <code>data-title</code>, <code>data-meta</code>, <code>data-chapters</code>, <code>data-captions="en=a.vtt de=b.vtt"</code></td><td>On a playlist link (the link itself points to the video file - works without JS)</td></tr>
+        <tr><td><code>el.play()</code>, <code>pause()</code>, <code>toggle()</code>, <code>seek(s)</code>, <code>skip(±s)</code>, <code>fullscreen()</code>, <code>next()</code>, <code>previous()</code>, <code>load(i)</code>, <code>el.media</code></td><td>Public methods</td></tr>
+        <tr><td><code>ncss-media-play</code>, <code>-pause</code>, <code>-ended</code>, <code>ncss-video-trackchange</code></td><td>Events (bubbling)</td></tr>
+        <tr><td><code>--ncss-video-player-accent</code>, <code>-radius</code>, <code>-cue-size</code></td><td>Custom properties for theming</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Keyboard</strong> (focus inside the player): Space/K play-pause, J/L -/+10 s, arrow left/right -/+5 s, arrow up/down volume, M mute, F fullscreen, C captions, N/P next/previous video, 0-9 jump to 0-90 %, Home/End, &lt; and &gt; speed. Seek bar and volume are real <code>&lt;input type="range"&gt;</code> elements, the menu is a <code>popover</code> with <code>role="menu"</code> and groups; state changes are announced through a polite live region.</p>
+  <p class="ncss-text-muted ncss-text-sm"><strong>One player at a time:</strong> when a video or audio player starts, all others pause - via the <code>data-ncss-player-media</code> attribute convention, without a shared script. Background and scroll videos are excluded. Same look, separate files: the values are deliberately duplicated in <code>video-player.css</code> and <code>audio-player.css</code>, so each file still works on its own.</p>
+</section>
+
+<section class="ncss-stack" id="audio">
+  <h2 class="demo-section-title">Audio player</h2>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;!-- Compact, one line --&gt;
+&lt;ncss-audio-player&gt;
+  &lt;audio controls preload="metadata" src="episode.m4a"&gt;&lt;/audio&gt;
+&lt;/ncss-audio-player&gt;
+
+&lt;!-- Card with waveform, chapters and playlist --&gt;
+&lt;ncss-audio-player layout="card" waveform&gt;
+  &lt;img class="ncss-audio-player-cover" src="cover.svg" alt=""&gt;
+  &lt;p class="ncss-audio-player-title"&gt;Tide&lt;/p&gt;
+  &lt;p class="ncss-audio-player-artist"&gt;Ensemble&lt;/p&gt;
+  &lt;audio controls preload="metadata" src="tide.m4a"&gt;
+    &lt;track kind="chapters" src="tide-chapters.vtt" srclang="en"&gt;
+  &lt;/audio&gt;
+  &lt;ol class="ncss-audio-player-playlist"&gt;
+    &lt;li&gt;&lt;a href="dawn.m4a" data-title="Dawn" data-artist="Ensemble"
+           data-cover="dawn.svg"&gt;Dawn &lt;span&gt;0:32&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/ncss-audio-player&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Adds play/pause, -15/+30 s (text buttons), a seek bar with chapter marks, volume, speed, a clickable chapter list (card), an optional waveform instead of the track (<code>waveform</code>: the file is decoded once with Web Audio - same origin only, up to 8 MB), a playlist with previous/next and auto-advance, and Media Session (title and cover on the lock screen / system media controls, media keys). Without JS the native <code>&lt;audio controls&gt;</code> stays and playlist links are plain links to the files. Follows the page theme (light/dark).</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribute / API</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>layout="card"</code>, <code>waveform</code></td><td>Card layout, waveform</td></tr>
+        <tr><td><code>skip-back="15"</code>, <code>skip-forward="30"</code>, <code>speeds</code>, <code>exclusive</code></td><td>Skip distances, speeds, parallel playback</td></tr>
+        <tr><td><code>data-title</code>, <code>data-artist</code>, <code>data-cover</code>, <code>data-chapters</code>, <code>data-src</code></td><td>On a playlist link: metadata, chapters VTT, alternative formats</td></tr>
+        <tr><td><code>el.next()</code>, <code>previous()</code>, <code>load(i)</code> + the video methods</td><td>Public methods</td></tr>
+        <tr><td><code>ncss-audio-trackchange</code></td><td>Event on track change, <code>detail = { index, item }</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Not to be confused with <code>.ncss-audio</code>/<code>.ncss-audio-card</code> from <code>components/audio.css</code>, which only style the native element (width, framed card with title) without any JS - both are independent.</p>
+</section>
+
+<section class="ncss-stack" id="scroll-video">
+  <h2 class="demo-section-title">Scroll-scrubbed video</h2>
+  <p class="ncss-text-muted ncss-text-sm">Scrolling scrubs a video forwards <em>and</em> backwards. Pinned by default: the element becomes as tall as the scroll distance, the stage sticks in the viewport and the video fills it edge to edge (<code>object-fit: cover</code> - deliberately no black bars).</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ncss-scroll-video length="400"&gt;
+  &lt;div class="ncss-scroll-video-stage"&gt;
+    &lt;video muted playsinline controls preload="metadata" poster="poster.jpg" src="scrub.mp4"&gt;&lt;/video&gt;
+    &lt;p class="ncss-scroll-video-caption" data-ncss-time="1-3"&gt;Text between 1 and 3 s&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/ncss-scroll-video&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribute / property</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>length="300"</code></td><td>Scroll distance in % of the viewport height (sets <code>--ncss-scroll-video-length</code>, in <code>lvh</code> - does not jump with the mobile address bar)</td></tr>
+        <tr><td><code>start</code>, <code>end</code></td><td>Time range in seconds the distance maps to</td></tr>
+        <tr><td><code>smoothing="0.85"</code></td><td>Lag (0 = direct, up to 0.98 = very soft)</td></tr>
+        <tr><td><code>inline</code></td><td>Not pinned - scrubs while the video crosses the viewport</td></tr>
+        <tr><td><code>--ncss-scroll-video-top</code></td><td>Stage offset from the top, e.g. <code>var(--ncss-topbar-height)</code> below a sticky top bar</td></tr>
+        <tr><td><code>--ncss-scroll-video-fit</code>, <code>--ncss-scroll-video-position</code></td><td><code>cover</code> (default) or <code>contain</code>; visible part of the frame on tall screens</td></tr>
+        <tr><td><code>el.progress</code>, <code>el.time</code>, <code>el.active</code>, event <code>ncss-scroll-video-change</code></td><td>State for custom effects</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Scrollytelling:</strong> inside <code>&lt;ncss-scrolly&gt;</code> the video follows the steps. <code>data-ncss-time="2"</code> on a <code>.ncss-scrolly-step</code> seeks to 2 s, <code>data-ncss-time="2-4"</code> scrubs from 2 to 4 s while the step crosses the trigger line. The position is computed from the steps' geometry; the element also listens to the <code>ncss-scrolly-step</code> event (<code>detail.time</code>) - under reduced motion it uses it to jump per step instead of scrubbing. Inside a scrolly figure it is <code>inline</code> automatically.</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ncss-scrolly&gt;
+  &lt;div class="ncss-scrolly-steps"&gt;
+    &lt;div class="ncss-scrolly-step" data-ncss-time="0-2"&gt;&lt;div&gt;...&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="ncss-scrolly-step" data-ncss-time="2-4"&gt;&lt;div&gt;...&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-scrolly-media"&gt;
+    &lt;figure class="ncss-scrolly-figure"&gt;
+      &lt;ncss-scroll-video&gt;&lt;div class="ncss-scroll-video-stage"&gt;&lt;video muted playsinline src="scrub.mp4"&gt;&lt;/video&gt;&lt;/div&gt;&lt;/ncss-scroll-video&gt;
+    &lt;/figure&gt;
+  &lt;/div&gt;
+&lt;/ncss-scrolly&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Inactive</strong> (a normal video with controls and poster, texts listed below it): without JS, under <code>prefers-reduced-motion</code> (except scrollytelling, see above), <code>prefers-reduced-data</code> or Save-Data. Seeking: at most one seek in flight, the next starts on <code>seeked</code>; <code>fastSeek()</code> only for large jumps, the final frame is always exact.</p>
+</section>
+
+<section class="ncss-stack" id="scroll-frames">
+  <h2 class="demo-section-title">Image sequence instead of video</h2>
+  <p class="ncss-text-muted ncss-text-sm">The same idea with single frames on a canvas - every frame is complete, so scrubbing is smooth in every engine (no decoding, no seeking). The robust choice when Safari stutter is not acceptable; costs more requests.</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ncss-scroll-frames src="frames/f-%03d.webp" count="72" length="300"&gt;
+  &lt;div class="ncss-scroll-frames-stage"&gt;
+    &lt;img class="ncss-scroll-frames-poster" src="frames/f-020.webp" alt="What the sequence shows"
+         width="800" height="450"&gt;
+    &lt;div&gt;Optional text over the image&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/ncss-scroll-frames&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">The <code>&lt;img&gt;</code> is the fallback (no JS, reduced motion, Save-Data) and provides the aspect ratio and alternative text for the <code>&lt;canvas role="img"&gt;</code>. Attributes: <code>src</code> (<code>%d</code>/<code>%03d</code> = frame number), <code>count</code>, <code>first="1"</code>, <code>length</code>, <code>smoothing="0.6"</code>, <code>fit="cover|contain"</code>, <code>inline</code>. Loading starts near the viewport, coarse first (every 16th frame), then refined; gaps are filled with the nearest loaded frame.</p>
+</section>
+
+<section class="ncss-stack" id="video-bg">
+  <h2 class="demo-section-title">Background video</h2>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;section class="ncss-video-bg ncss-video-bg--dark" data-ncss-video-bg&gt;
+  &lt;video class="ncss-video-bg-media" muted loop playsinline preload="none"
+         poster="poster.jpg" aria-hidden="true"&gt;
+    &lt;source data-src="loop.webm" type="video/webm"&gt;
+    &lt;source data-src="loop.mp4" type="video/mp4"&gt;
+  &lt;/video&gt;
+  &lt;div&gt;... content ...&lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class / attribute</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-video-bg--dark</code> / <code>--light</code> / <code>--brand</code> / <code>--gradient</code></td><td>Tint for readable text - also sets <code>color-scheme</code>, so tokens inside resolve accordingly (buttons, cards)</td></tr>
+        <tr><td><code>--ncss-video-bg-strength</code></td><td>Tint opacity (default 55 %) - lower for dark footage, higher for bright footage</td></tr>
+        <tr><td><code>--ncss-video-bg-position</code></td><td>Visible part of the frame (<code>object-position</code>)</td></tr>
+        <tr><td><code>data-ncss-video-bg="top-end"</code></td><td>Corner of the pause toggle (<code>top-start</code>, <code>bottom-start</code>, default bottom end)</td></tr>
+        <tr><td>Event <code>ncss-video-bg-change</code></td><td><code>detail = { paused, user }</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">The script adds a visible pause/play toggle with a text label (WCAG 2.2.2: motion longer than 5 s needs a way to pause), loads only near the viewport (<code>data-src</code> → <code>src</code>), plays only while visible and pauses in a background tab. Under reduced motion, data saving or forced colors nothing is downloaded - only the poster, and the toggle offers "Play". Works the same on a <a href="media.html#hero"><code>.ncss-hero</code></a> with the video inside <code>.ncss-hero-media</code> and replaces <code>js/hero-video-motion.js</code> there. No <code>&lt;source media&gt;</code> for different files per breakpoint - that is not cross-browser for video (see <a href="media.html#video-audio">Media</a>).</p>
+</section>
+
+<section class="ncss-stack" id="video-text">
+  <h2 class="demo-section-title">Video in text</h2>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;div class="ncss-video-text" data-ncss-video-bg&gt;
+  &lt;video class="ncss-video-text-media" muted loop playsinline preload="none"
+         poster="poster.jpg" aria-hidden="true"&gt;
+    &lt;source data-src="loop.mp4" type="video/mp4"&gt;
+  &lt;/video&gt;
+  &lt;h2 class="ncss-video-text-title"&gt;Colour flow&lt;/h2&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">The headline stays real, selectable text. One blend mode for light and dark (<code>mix-blend-mode: hard-light</code>): 50 % grey lets the video show through the glyphs unchanged, the page colour (<code>--ncss-color-bg</code>) produces exactly that surface around them. Colourful mid-tone footage works best. <code>data-ncss-video-bg</code> + <code>video-bg.css/.js</code> add the pause toggle, lazy loading and reduced motion; without the script <code>src</code> + <code>autoplay</code> are enough. Size: <code>--ncss-video-text-size</code> (capped at 18cqi).</p>
+</section>
+
+<section class="ncss-stack" id="video-float">
+  <h2 class="demo-section-title">Mini player</h2>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;ncss-video-float&gt;
+  &lt;div class="ncss-video-float-frame"&gt;
+    &lt;ncss-video-player&gt;&lt;video controls ...&gt;&lt;/video&gt;&lt;/ncss-video-player&gt;
+  &lt;/div&gt;
+&lt;/ncss-video-float&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">A <em>playing</em> video that scrolls out of view docks to a window corner (<code>position="start"</code> left, <code>position="top-end"</code> top) and returns when you scroll back; the element keeps its height as a placeholder. "Close" (or Esc) pauses and undocks; focus is never moved. Works with a bare <code>&lt;video&gt;</code> as well as <code>&lt;ncss-video-player&gt;</code>. API: <code>el.dock()</code>, <code>undock()</code>, <code>docked</code>; events <code>ncss-video-float-dock</code>/<code>-undock</code>.</p>
+</section>
+
+<section class="ncss-stack" id="video-card">
+  <h2 class="demo-section-title">Preview cards</h2>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;a class="ncss-video-card" href="film.html"&gt;
+  &lt;div class="ncss-video-card-media"&gt;
+    &lt;video muted loop playsinline preload="none" poster="poster.jpg" src="preview.mp4" aria-hidden="true"&gt;&lt;/video&gt;
+    &lt;span class="ncss-video-card-badge"&gt;Preview&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-video-card-body"&gt;&lt;h3&gt;Title&lt;/h3&gt;&lt;p&gt;Text&lt;/p&gt;&lt;/div&gt;
+&lt;/a&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Plays a muted preview while the card is hovered with a mouse or focused with the keyboard, then returns to the poster. <code>preload="none"</code>: not a single video byte loads before that. Touch devices and reduced motion: nothing plays and the badge is hidden. Customisable: <code>--ncss-video-card-ratio</code>, <code>--ncss-video-card-radius</code>.</p>
+</section>
+
+<section class="ncss-stack" id="encoding">
+  <h2 class="demo-section-title">Encoding video for scrubbing</h2>
+  <p class="ncss-text-muted ncss-text-sm">Scrubbing means seeking, and a seek can only start decoding at a keyframe. Regular web video has a keyframe every 2-10 s - Chrome copes, Safari visibly stutters. For scroll video make <strong>every frame a keyframe</strong> (all-intra, <code>-g 1</code>) or use a very short GOP. All-intra files are 2-4× larger: keep them short (6-10 s), at most 1280 px wide and silent.</p>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-bash"># Scroll video: H.264, every frame a keyframe, no audio, metadata first
+ffmpeg -i source.mov -an -vf "scale=1280:-2,fps=24" \
+  -c:v libx264 -preset slow -crf 25 -g 1 -pix_fmt yuv420p \
+  -movflags +faststart scrub.mp4
+
+# Compromise: keyframe every 4 frames (about 35 % smaller, slightly less smooth in Safari)
+ffmpeg -i source.mov -an -vf "scale=1280:-2,fps=24" \
+  -c:v libx264 -preset slow -crf 27 -g 4 -keyint_min 4 -sc_threshold 0 \
+  -pix_fmt yuv420p -movflags +faststart scrub-gop4.mp4
+
+# Poster (a representative frame, here at 1.2 s)
+ffmpeg -ss 1.2 -i scrub.mp4 -frames:v 1 -q:v 4 poster.jpg
+
+# Image sequence for &lt;ncss-scroll-frames&gt;: 72 frames, 800 px wide
+ffmpeg -i source.mov -vf "fps=72/8,scale=800:-2" -q:v 6 frames/f-%03d.jpg
+#   (fps = frame count / seconds; WebP: with a libwebp build use -c:v libwebp -quality 70 f-%03d.webp)
+
+# Background loop: regular GOP (2 s), silent, small - MP4 + WebM
+ffmpeg -i source.mov -an -vf "scale=960:-2,fps=24" -c:v libx264 -preset slow -crf 28 -g 48 \
+  -pix_fmt yuv420p -movflags +faststart loop.mp4
+ffmpeg -i source.mov -an -vf "scale=960:-2,fps=24" -c:v libvpx-vp9 -crf 42 -b:v 0 -row-mt 1 -g 48 loop.webm
+
+# Player video with sound
+ffmpeg -i source.mov -vf "scale=1280:-2" -c:v libx264 -preset slow -crf 26 -g 48 \
+  -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart film.mp4
+
+# Audio for &lt;ncss-audio-player&gt;: AAC in M4A plays in every browser
+ffmpeg -i source.wav -c:a aac -b:a 96k -movflags +faststart episode.m4a</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Checklist:</strong> <code>muted playsinline</code> on every scroll and background video (iOS); <code>-movflags +faststart</code> so playback can begin before the whole file has loaded; the server must answer byte-range requests (<code>206 Partial Content</code>) - otherwise Safari refuses to play or seek (note: PHP's built-in dev server <code>php -S</code> does not answer range requests); a poster for the first paint and for reduced motion/Save-Data; seamless loops (first frame = the frame after the last).</p>
+</section>
+
+
+<!--MERGE: video-audio-->

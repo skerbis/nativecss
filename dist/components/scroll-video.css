@@ -1,0 +1,172 @@
+/**
+ * ncss - <ncss-scroll-video> (Layer "components"): Video, das beim Scrollen vor- und
+ * zurückspult. Logik/Attribute: js/scroll-video.js.
+ *
+ *   <ncss-scroll-video length="300">
+ *     <div class="ncss-scroll-video-stage">
+ *       <video muted playsinline controls preload="metadata" poster="p.jpg" src="s.mp4"></video>
+ *       <p class="ncss-scroll-video-caption" data-ncss-time="1-3">Text ...</p>
+ *     </div>
+ *   </ncss-scroll-video>
+ *
+ * Zustände:
+ *   - Inaktiv (kein JS, reduzierte Bewegung, Save-Data): normales Video mit Controls in
+ *     seinem Seitenverhältnis, Captions als Liste DARUNTER - nichts geht verloren.
+ *   - .is-active (Script): Element wird so hoch wie die Scroll-Strecke, die Bühne klebt
+ *     als volle Fläche im Viewport, das Video füllt sie RANDLOS (object-fit: cover) -
+ *     bewusst kein Letterboxing mit schwarzen Balken. Captions liegen als Karte über dem
+ *     Video und blenden in ihrem Zeitbereich ein.
+ *   - .is-inline (Attribut inline oder innerhalb <ncss-scrolly>): kein Anpinnen, das
+ *     Video bleibt in seinem Seitenverhältnis.
+ *
+ * Anpassbar (auf dem Element):
+ *   --ncss-scroll-video-length   Scroll-Strecke (Default 300lvh; Attribut length="400"
+ *                                setzt dasselbe) - lvh, damit die Strecke beim Ein-/
+ *                                Ausblenden der mobilen Adressleiste nicht springt
+ *   --ncss-scroll-video-top      Abstand der Bühne von oben, z.B. unter einer sticky
+ *                                Topbar: var(--ncss-topbar-height)
+ *   --ncss-scroll-video-fit      cover (Default) | contain (ganzes Bild, mit Balken)
+ *   --ncss-scroll-video-position object-position (Default --ncss-focus-point) - welcher
+ *                                Bildteil bei schmalen/hohen Bildschirmen sichtbar bleibt
+ *
+ * Benötigt: tokens.css + colors.css. Keine anderen ncss-Dateien.
+ */
+
+ncss-scroll-video {
+  --ncss-scroll-video-length: 300lvh;
+  --ncss-scroll-video-top: 0px;
+  --ncss-scroll-video-fit: cover;
+  --ncss-scroll-video-position: var(--ncss-focus-point, center);
+  position: relative;
+  display: block;
+}
+
+.ncss-scroll-video-stage {
+  display: grid;
+  gap: var(--ncss-space-xs);
+
+  & > video {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+
+/* Inaktiv: Captions als ruhige Liste unter dem Video */
+.ncss-scroll-video-caption {
+  margin: 0;
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  border-inline-start: 3px solid var(--ncss-color-brand);
+  color: var(--ncss-color-text);
+}
+
+/* --- Aktiv + angepinnt ------------------------------------------------------------- */
+ncss-scroll-video.is-active:not(.is-inline) {
+  height: var(--ncss-scroll-video-length);
+
+  & > .ncss-scroll-video-stage {
+    position: sticky;
+    top: var(--ncss-scroll-video-top);
+    height: calc(100vh - var(--ncss-scroll-video-top));
+    height: calc(100svh - var(--ncss-scroll-video-top));
+    overflow: clip;
+    grid-template-areas: "stack";
+    gap: 0;
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  & > .ncss-scroll-video-stage > video {
+    grid-area: stack;
+    height: 100%;
+    min-height: 0;
+    object-fit: var(--ncss-scroll-video-fit);
+    object-position: var(--ncss-scroll-video-position);
+  }
+}
+
+/* --- Aktiv: Captions als Karten über dem Video -------------------------------------- */
+ncss-scroll-video.is-active > .ncss-scroll-video-stage {
+  grid-template-areas: "stack";
+  gap: 0;
+
+  & > video {
+    grid-area: stack;
+  }
+  & > .ncss-scroll-video-caption {
+    grid-area: stack;
+    z-index: 1;
+    align-self: end;
+    justify-self: start;
+    max-width: min(32rem, calc(100% - 2 * var(--ncss-space-md)));
+    margin: var(--ncss-space-md) var(--ncss-space-md) calc(var(--ncss-space-xl) + var(--ncss-space-sm));
+    padding: var(--ncss-space-sm) var(--ncss-space-md);
+    font-size: var(--ncss-font-size-md);
+    color: var(--ncss-color-text);
+    background-color: color-mix(in oklch, var(--ncss-color-surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    /* Akzent als eingerückter Balken (statt 4px-Randkante, die der Rundung folgt) */
+    background-image: linear-gradient(var(--ncss-color-brand), var(--ncss-color-brand));
+    background-repeat: no-repeat;
+    background-size: 4px calc(100% - 1.5rem);
+    background-position: left 0 center;
+    background-origin: border-box;
+    box-shadow: var(--ncss-shadow-lg);
+    opacity: 0;
+    translate: 0 1.5rem;
+    visibility: hidden;
+    transition: opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      visibility 0s var(--ncss-motion-duration-slow);
+  }
+  & > .ncss-scroll-video-caption.is-active {
+    opacity: 1;
+    translate: 0 0;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+}
+ncss-scroll-video.is-inline > .ncss-scroll-video-stage > .ncss-scroll-video-caption {
+  margin: var(--ncss-space-sm);
+  font-size: var(--ncss-font-size-base);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  ncss-scroll-video.is-active .ncss-scroll-video-caption {
+    background-color: var(--ncss-color-surface);
+  }
+}
+@media (forced-colors: active) {
+  ncss-scroll-video.is-active .ncss-scroll-video-caption {
+    border: 2px solid CanvasText;
+  }
+}
+@media print {
+  ncss-scroll-video.is-active:not(.is-inline) {
+    height: auto;
+
+    & > .ncss-scroll-video-stage {
+      position: static;
+      height: auto;
+      display: block;
+    }
+  }
+  ncss-scroll-video.is-active .ncss-scroll-video-caption {
+    opacity: 1;
+    visibility: visible;
+    translate: none;
+    box-shadow: none;
+  }
+}
+
+/* RTL: Akzent-Balken der angepinnten Untertitel an die rechte (Start-)Kante */
+.ncss-scroll-video-caption:dir(rtl) {
+  background-position: right 0 center;
+}
+@media (forced-colors: active) {
+  .ncss-scroll-video-caption {
+    border-inline-start: 4px solid CanvasText;
+  }
+}

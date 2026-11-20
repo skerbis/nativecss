@@ -3,10 +3,23 @@
  * versteckt - das hier ist "zeig/verstecke dieses Element", kein Seiten-Layout. Für
  * "für Screenreader unsichtbar, aber vorlesbar" siehe stattdessen helpers/a11y.css
  * (.ncss-visually-hidden) - das ist konzeptionell etwas anderes als hier.
+ *
+ * Jedes display:none hier ist bewusst !important - die Layer-konforme Lösung, kein
+ * Spezifitäts-Kampf: eine Komponente/ein Helper mit eigenem display (.ncss-btn aus
+ * helpers/forms.css lädt im SELBEN Layer später, .ncss-card/.ncss-nav liegen im höheren
+ * Layer "components") gewann bisher gegen .ncss-hide-below-md & Co. (per Demo-Test
+ * gefunden: <a class="ncss-btn ncss-hide-below-md"> blieb mobil sichtbar). Wichtige
+ * Deklarationen kehren die Layer-Reihenfolge um - ein !important im Layer "helpers"
+ * schlägt jede normale Regel aller Layer und jede wichtige Regel der späteren Layer.
+ * Ein Verstecken-Helper soll genau das: immer verstecken, egal welche Komponente das
+ * Element sonst ist. Funktioniert identisch, wenn diese Datei einzeln (Cherry-Picking) in
+ * einem beliebigen Layer oder unlayered eingebunden wird - keine Abhängigkeit von der
+ * Layer-Reihenfolge in ncss.css. Gilt NUR für display:none, nicht für .ncss-invisible/
+ * .ncss-reveal-on-hover (opacity/visibility, kein Konflikt mit Komponenten-display).
  */
 
 .ncss-hidden {
-  display: none;
+  display: none !important;
 }
 
 /* Nimmt weiterhin Platz im Layout ein (anders als .ncss-hidden) - für Fälle, in denen
@@ -17,19 +30,19 @@
 
 /* Nur beim Drucken sichtbar/unsichtbar. Bewusst KEIN "display: revert/revert-layer" zum
    Wiederherstellen (unvorhersehbarer UA-Display-Default je nach Elementtyp - dieselbe
-   Begründung wie beim Breakpoint-Escape-Hatch in helpers/layout.css). Stattdessen zwei
-   eigenständige, medienabhängige Regeln, die sich nie überschneiden. */
-.ncss-print-only {
-  display: none;
+   Begründung wie beim Breakpoint-Escape-Hatch in helpers/layout.css). Stattdessen je
+   Klasse nur EIN display:none in der jeweils GEGENTEILIGEN Medienbedingung - im
+   "sichtbaren" Medium greift einfach das normale display des Elements/der Komponente
+   (früher erzwang print display:block, das machte ein inline/flex-Element beim Drucken
+   zum Block). */
+@media not print {
+  .ncss-print-only {
+    display: none !important;
+  }
 }
 @media print {
-  /* display:block als Annahme - für ein Element, das inline/flex/grid sein soll, direkt
-     die passende .ncss-print-only-Instanz mit style="display: ..." überschreiben. */
-  .ncss-print-only {
-    display: block;
-  }
   .ncss-screen-only {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -70,12 +83,12 @@
 /* -- ncss breakpoint: md (768px) -- */
 @media (max-width: 767px) {
   .ncss-hide-below-md {
-    display: none;
+    display: none !important;
   }
 }
 @media (min-width: 768px) {
   .ncss-hide-from-md {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -93,29 +106,29 @@
    display:none, nie ein- und wieder ausgeschaltet. */
 /* -- ncss container-query: ncss-container, sm (24rem) -- */
 @container ncss-container (max-width: 23.99rem) {
-  .ncss-hide-below-container-sm { display: none; }
+  .ncss-hide-below-container-sm { display: none !important; }
 }
 @container ncss-container (min-width: 24rem) {
-  .ncss-hide-from-container-sm { display: none; }
+  .ncss-hide-from-container-sm { display: none !important; }
 }
 /* -- ncss container-query: ncss-container, md (36rem) -- */
 @container ncss-container (max-width: 35.99rem) {
-  .ncss-hide-below-container-md { display: none; }
+  .ncss-hide-below-container-md { display: none !important; }
 }
 @container ncss-container (min-width: 36rem) {
-  .ncss-hide-from-container-md { display: none; }
+  .ncss-hide-from-container-md { display: none !important; }
 }
 /* -- ncss container-query: ncss-container, lg (48rem) -- */
 @container ncss-container (max-width: 47.99rem) {
-  .ncss-hide-below-container-lg { display: none; }
+  .ncss-hide-below-container-lg { display: none !important; }
 }
 @container ncss-container (min-width: 48rem) {
-  .ncss-hide-from-container-lg { display: none; }
+  .ncss-hide-from-container-lg { display: none !important; }
 }
 /* -- ncss container-query: ncss-container, xl (56rem) -- */
 @container ncss-container (max-width: 55.99rem) {
-  .ncss-hide-below-container-xl { display: none; }
+  .ncss-hide-below-container-xl { display: none !important; }
 }
 @container ncss-container (min-width: 56rem) {
-  .ncss-hide-from-container-xl { display: none; }
+  .ncss-hide-from-container-xl { display: none !important; }
 }

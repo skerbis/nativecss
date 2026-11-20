@@ -1,0 +1,117 @@
+<!--DESC: How ncss respects reduced motion, more contrast, reduced transparency, forced colors and light/dark - with a live simulator.-->
+<section class="ncss-stack">
+  <h1>User Preferences</h1>
+  <p class="ncss-text-lg ncss-text-muted">Operating systems and browsers offer settings for less motion, more contrast, less transparency, custom system colors and light/dark mode. CSS can query them with media queries - ncss does so centrally and inside the components where it's needed.</p>
+</section>
+
+<section class="ncss-stack" id="simulator">
+  <h2 class="demo-section-title">Try the Settings</h2>
+  <p>The checkboxes simulate each setting on the sample area only. The real settings live, for example, under "Accessibility &gt; Display" on macOS and under "Accessibility" or "Contrast themes" on Windows; Chrome/Edge DevTools can emulate them in the "Rendering" panel.</p>
+  <div class="docs-live" role="group" aria-label="Live example">
+<!--INCLUDE: a11y-prefs-->
+  </div>
+</section>
+
+<section class="ncss-stack" id="bewegung">
+  <h2 class="demo-section-title">Reduced Motion: prefers-reduced-motion</h2>
+  <p>Large movements, parallax and zoom can cause dizziness and nausea (WCAG 2.3.3). So <code>reset.css</code> globally caps all animations and transitions to practically zero and turns off smooth scrolling - no component has to check this on its own. <code>::details-content</code> is listed explicitly because the universal selector doesn't reach that pseudo-element.</p>
+  <pre><code class="language-css">/* reset.css */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after, *::details-content {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}</code></pre>
+  <p>Where the global rule isn't enough, components take care of the rest:</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li><strong>Marquee</strong> <code>.ncss-marquee</code> - the animation only starts under <code>no-preference</code>; with reduced motion the row becomes a regular horizontally scrollable area and the copy disappears.</li>
+    <li><strong>Scripts</strong> check <code>matchMedia("(prefers-reduced-motion: reduce)")</code>: <code>js/backdrop.js</code> doesn't cycle images automatically, <code>js/count-up.js</code> shows the final number straight away, <code>js/view-transitions.js</code> skips transitions, <code>js/video-card.js</code> doesn't play previews.</li>
+    <li><strong>Background video</strong> - CSS can't stop <code>&lt;video autoplay&gt;</code>. That's why <code>js/hero-video-motion.js</code> removes <code>autoplay</code> and pauses the video under reduced motion; the poster stays visible.</li>
+    <li><strong>Light/dark switch</strong> - the soft cross-fade while switching only runs under <code>no-preference</code>.</li>
+  </ul>
+  <p>For your own effects: write motion as an addition, not as the starting state. Then "no motion" is automatically the stable case.</p>
+  <pre><code class="language-css">.my-teaser {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .my-teaser {
+    animation: fade-in 600ms ease-out both;
+  }
+}</code></pre>
+  <pre><code class="language-html">&lt;!-- Only on pages with a background video in the hero --&gt;
+&lt;script src="dist/js/hero-video-motion.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Regardless of the setting: anything that moves automatically for more than 5 seconds needs a way to pause it (WCAG 2.2.2) - for the marquee that's <code>[data-ncss-marquee-toggle]</code>, see <a href="a11y-media.html">Media</a>.</p>
+</section>
+
+<section class="ncss-stack" id="kontrast">
+  <h2 class="demo-section-title">More Contrast: prefers-contrast</h2>
+  <p>The ncss color tokens are already calibrated for AA contrast (see <a href="colors.html">Colors &amp; Surfaces</a>), so there's no global override. The video player uses <code>prefers-contrast: more</code>: a darker gradient behind the control bar and a more distinct timeline over moving footage.</p>
+  <p>In your own design, the query pays off wherever you deliberately went subtle - muted helper text, hairline borders, text on images:</p>
+  <pre><code class="language-css">@media (prefers-contrast: more) {
+  .my-area {
+    --ncss-color-text-muted: var(--ncss-color-text);
+    --ncss-color-border: currentColor;
+  }
+}</code></pre>
+</section>
+
+<section class="ncss-stack" id="transparenz">
+  <h2 class="demo-section-title">Reduced Transparency: prefers-reduced-transparency</h2>
+  <p>Frosted-glass surfaces (<code>backdrop-filter</code>) and semi-transparent backgrounds make reading harder because whatever is underneath shows through. Under <code>prefers-reduced-transparency: reduce</code>, ncss gives the video player's on-screen flash and the caption of <code>&lt;ncss-scroll-video&gt;</code> a solid surface.</p>
+  <pre><code class="language-css">.my-glass-bar {
+  background-color: color-mix(in oklch, var(--ncss-color-surface) 60%, transparent);
+  backdrop-filter: blur(8px);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .my-glass-bar {
+    background-color: var(--ncss-color-surface);
+    backdrop-filter: none;
+  }
+}</code></pre>
+</section>
+
+<section class="ncss-stack" id="systemfarben">
+  <h2 class="demo-section-title">Forced Colors: forced-colors</h2>
+  <p>In Windows contrast themes (and similar modes), the browser replaces every color with a small palette of system colors, and background images and shadows disappear. Anything that was only visible through color, a shadow or <code>background-color</code> is gone. ncss handles this with <code>@media (forced-colors: active)</code> in many components, including icons, badges, tags, toasts, the command palette, section navigation, spinner, before/after, segmented control and the media players.</p>
+  <p>Take icons: <code>.ncss-icon</code> is a shape cut out with <code>mask-image</code> and filled with <code>background-color: currentColor</code> - in forced colors mode it came out empty. The fix:</p>
+  <pre><code class="language-css">@media (forced-colors: active) {
+  .ncss-icon {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+}</code></pre>
+  <p>Rules of thumb for your own components:</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li>Never show state through background color alone - a border (even a <code>transparent</code> one) becomes visible in forced colors mode.</li>
+    <li>Use the system color keywords: <code>Canvas</code>, <code>CanvasText</code>, <code>LinkText</code>, <code>ButtonText</code>, <code>Highlight</code>, <code>GrayText</code>.</li>
+    <li>Use <code>forced-color-adjust: none</code> sparingly and set system colors yourself when you do - never to override the user's choice.</li>
+    <li>The <code>:focus-visible</code> ring uses <code>outline</code>, so it stays visible in forced colors mode too.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="farbschema">
+  <h2 class="demo-section-title">Light and Dark: prefers-color-scheme and light-dark()</h2>
+  <p>Every color token in <code>colors.css</code> is defined with <code>light-dark()</code> and follows the system setting automatically through <code>color-scheme: light dark</code>. <code>data-theme="light"</code> or <code>"dark"</code> on <code>&lt;html&gt;</code> overrides it; <code>.ncss-scheme-dark</code>/<code>-light</code> switch individual areas. Both palettes are contrast-checked - your own colors have to pass in both modes.</p>
+  <pre><code class="language-css">:root {
+  color-scheme: light dark;
+  --ncss-color-text: light-dark(#1a1a1a, #f0f0f0);
+  --ncss-color-focus-ring: light-dark(#0057d8, #6ea8ff);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}</code></pre>
+  <p>A toggle is optional: <code>js/theme-toggle.js</code> stores the choice, follows the system live when nothing is stored, and sets <code>aria-pressed</code> plus a changing <code>aria-label</code> that says what the click will do ("Switch to dark theme"). <code>js/theme-toggle-early.js</code> in the <code>&lt;head&gt;</code> prevents a flash of the wrong mode.</p>
+  <pre><code class="language-html">&lt;head&gt;
+  &lt;script src="dist/js/theme-toggle-early.js"&gt;&lt;/script&gt;
+  &lt;link rel="stylesheet" href="dist/ncss.css"&gt;
+  &lt;script src="dist/js/theme-toggle.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+...
+&lt;button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle&gt;
+  &lt;span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">The <code>data-ncss-theme-toggle="cycle"</code> variant steps through System, Light and Dark and shows the current name in a child element <code>[data-ncss-theme-label]</code>.</p>
+</section>

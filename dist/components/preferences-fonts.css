@@ -1,0 +1,65 @@
+/**
+ * ncss - Lese-Schriften für die Darstellungs-Einstellungen (Layer "components"), opt-in,
+ * NICHT in ncss.css enthalten - bewusst eigene Datei, damit eine Seite ohne Schriftwahl
+ * keine @font-face-Zeile ausliefert:
+ *   <link rel="stylesheet" href="ncss/components/preferences-fonts.css">
+ * Selbst gehostet unter fonts/ (Lizenzen + Größen: fonts/README.md), kein CDN-Request.
+ *
+ * Gewählt wird über <html data-ncss-font="hyperlegible|lexend|opendyslexic"> (gesetzt von
+ * js/preferences-early.js / js/preferences.js, Einstellung "font" in <ncss-preferences>).
+ * Ein @font-face lädt seine Datei erst, wenn ein Element die Familie tatsächlich nutzt -
+ * ohne Wahl wird also keine einzige Schriftdatei angefragt.
+ *
+ * Gewirkt wird über die Tokens --ncss-font-family-base/-heading (Fließtext + Überschriften),
+ * NICHT über --ncss-font-family-mono - Code bleibt in Festbreitenschrift. Die eigene
+ * Seitenschrift bleibt als Fallback in der Liste (font-display: swap: Text ist sofort
+ * lesbar, die gewählte Schrift tauscht nach dem Laden ein). !important aus demselben Grund
+ * wie beim Kontrast (colors.css): theme.css setzt die Schrift-Tokens unlayered.
+ */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  src: url("../fonts/atkinson-hyperlegible-next/atkinson-hyperlegible-next.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lexend";
+  src: url("../fonts/lexend/lexend.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("../fonts/opendyslexic/OpenDyslexic-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("../fonts/opendyslexic/OpenDyslexic-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root[data-ncss-font="hyperlegible"] {
+  --ncss-font-family-base: "Atkinson Hyperlegible Next", system-ui, sans-serif !important;
+  --ncss-font-family-heading: "Atkinson Hyperlegible Next", system-ui, sans-serif !important;
+}
+:root[data-ncss-font="lexend"] {
+  --ncss-font-family-base: "Lexend", system-ui, sans-serif !important;
+  --ncss-font-family-heading: "Lexend", system-ui, sans-serif !important;
+}
+:root[data-ncss-font="opendyslexic"] {
+  --ncss-font-family-base: "OpenDyslexic", system-ui, sans-serif !important;
+  --ncss-font-family-heading: "OpenDyslexic", system-ui, sans-serif !important;
+}
+
+/* Vorschau im Bedienfeld: jeder Optionsname in seiner eigenen Schrift (lädt die Datei erst,
+   wenn das Panel offen ist - das Panel ist bis dahin display:none). */
+.ncss-preferences-options [data-font-preview="hyperlegible"] { font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif; }
+.ncss-preferences-options [data-font-preview="lexend"] { font-family: "Lexend", system-ui, sans-serif; }
+.ncss-preferences-options [data-font-preview="opendyslexic"] { font-family: "OpenDyslexic", system-ui, sans-serif; }

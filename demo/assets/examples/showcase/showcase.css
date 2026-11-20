@@ -1,0 +1,334 @@
+/**
+ * NativeCSS-Rundgang (demo/showcase/) - gemeinsame Seiten-Styles aller Kapitel.
+ * Nur Website/Demo, NICHT Teil von dist/. Ausschließlich demo-Klassen; alles, was eine
+ * ncss-Komponente zeigt, kommt unverändert aus dist/ncss.css. Unlayered (wie der
+ * <style>-Block der anderen Beispiele) - gewinnt damit gegen jede Layer-Regel.
+ *
+ * Aufbau einer Kapitel-Seite:
+ *   Kopfleiste           die der Website (site-shell.css) + Kapitel-Leiste .demo-chapterbar,
+ *                        beide per docs-src/sync-demo.mjs zwischen Markern eingesetzt
+ *   .demo-chapter        Kapitel-Kopf (h1, Einleitung)
+ *   .demo-feature        ein Baustein: Kopf (h2, Erklärung, Klassen, Handbuch-Link) + Live
+ *   .demo-pager          vorheriges/nächstes Kapitel
+ */
+
+/* --- Kopfbereich ----------------------------------------------------------------------
+   EINE klebende Einheit (wie im Handbuch, [data-ncss-sticky-header]): Kopfleiste der
+   Website (demo/assets/site-shell.css), darunter die Kapitel als Pillen (.demo-chapterbar,
+   aktuelles Kapitel gefüllt), darunter "Auf dieser Seite" (.ncss-subnav, components/
+   subnav.css, Scrollspy per js/subnav.js). Markup per docs-src/sync-demo.mjs. Unter 48rem
+   wandern die Kapitel in einen Auswahl-Knopf vorn in "Auf dieser Seite" (eine Zeile weniger). */
+.demo-chapterbar {
+  --_fade: var(--ncss-space-md);
+  background-color: var(--ncss-color-bg-subtle);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.demo-chapterbar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  max-inline-size: var(--ncss-container-max);
+  min-block-size: 3rem;
+  margin-inline: auto;
+  padding-inline: var(--ncss-space-sm);
+}
+.demo-chapterbar-label {
+  flex: none;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+  color: var(--ncss-color-text-muted);
+}
+.demo-chapterbar-list {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0.3rem var(--_fade);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, transparent, #000 var(--_fade), #000 calc(100% - var(--_fade)), transparent);
+}
+.demo-chapterbar-list::-webkit-scrollbar { display: none; }
+.demo-chapterbar-list a {
+  display: block;
+  padding: 0.3em 0.9em;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.demo-chapterbar-list a[aria-current="page"] {
+  border-color: var(--ncss-color-brand);
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+  font-weight: 600;
+}
+.demo-chapterbar-list a:focus-visible {
+  outline: 2px solid var(--ncss-color-focus-ring, var(--ncss-color-brand));
+  outline-offset: -2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-chapterbar-list a:not([aria-current="page"]):hover { border-color: var(--ncss-color-brand); }
+}
+@media (forced-colors: active) {
+  .demo-chapterbar-list { mask-image: none; }
+  .demo-chapterbar-list a[aria-current="page"] { outline: 2px solid Highlight; outline-offset: -2px; }
+}
+/* Kapitel-Auswahl in "Auf dieser Seite" - nur schmal sichtbar */
+.demo-chapter-pick { display: none; flex: none; }
+.demo-chapter-pick-btn {
+  min-block-size: 2.1rem;
+  padding-block: 0.2rem;
+  padding-inline: 0.75rem;
+  font-size: var(--ncss-font-size-sm);
+  white-space: nowrap;
+}
+@media (width < 48rem) {
+  .demo-chapterbar--collapsible { display: none; }
+  .demo-chapter-pick { display: block; }
+  .demo-onpage .ncss-subnav-label { display: none; }
+}
+
+/* Inhaltsverzeichnis im Kapitel-Kopf (aus den Abschnitten erzeugt) */
+.demo-contents {
+  margin-block-start: var(--ncss-space-sm);
+  padding: var(--ncss-space-sm) var(--ncss-space-md);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+}
+.demo-contents-title {
+  margin: 0 0 var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ncss-color-text-muted);
+}
+.demo-contents-list {
+  margin: 0;
+  padding-inline-start: 1.6em;
+  columns: 15rem;
+  column-gap: var(--ncss-space-lg);
+  font-size: var(--ncss-font-size-sm);
+}
+.demo-contents-list li {
+  break-inside: avoid;
+  padding-block: 0.15em;
+}
+.demo-contents-list li::marker { color: var(--ncss-color-text-muted); }
+
+/* Gesamt-Inhaltsverzeichnis auf der Übersicht */
+.demo-alltoc {
+  padding-block: var(--ncss-space-md) var(--ncss-space-xl);
+}
+.demo-alltoc h2 { font-size: var(--ncss-font-size-xl); }
+.demo-alltoc-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 17rem;
+  column-gap: var(--ncss-space-lg);
+}
+.demo-alltoc-list > li {
+  break-inside: avoid;
+  margin-block-end: var(--ncss-space-md);
+}
+.demo-alltoc-chapter {
+  font-weight: 700;
+  font-size: var(--ncss-font-size-md);
+}
+.demo-alltoc-list ol {
+  margin: var(--ncss-space-3xs) 0 0;
+  padding-inline-start: 1.6em;
+  font-size: var(--ncss-font-size-sm);
+}
+.demo-alltoc-list ol li { padding-block: 0.1em; }
+
+/* --- Kapitel-Kopf --------------------------------------------------------------------- */
+.demo-chapter {
+  padding-block: var(--ncss-space-xl) var(--ncss-space-lg);
+}
+.demo-chapter h1 {
+  font-size: var(--ncss-font-size-2xl);
+  line-height: 1.05;
+  text-wrap: balance;
+  margin-block-end: 0;
+}
+.demo-chapter-lead {
+  max-inline-size: 62ch;
+  font-size: var(--ncss-font-size-md);
+  color: var(--ncss-color-text-muted);
+}
+
+/* --- Ein Baustein ---------------------------------------------------------------------- */
+.demo-feature {
+  padding-block: var(--ncss-space-xl);
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.demo-feature:nth-of-type(even) {
+  background-color: var(--ncss-color-bg-subtle);
+}
+.demo-feature-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--ncss-space-sm) var(--ncss-space-lg);
+  margin-block-end: var(--ncss-space-md);
+}
+/* -- Kopf zweispaltig, sobald der Container Platz hat (36rem) -- */
+@container ncss-container (min-width: 48rem) {
+  .demo-feature-head {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem);
+    align-items: start;
+  }
+}
+.demo-feature-head h2 {
+  font-size: var(--ncss-font-size-xl);
+  text-wrap: balance;
+  margin-block-end: var(--ncss-space-2xs);
+}
+.demo-feature-text > p {
+  max-inline-size: 68ch;
+  margin-block-end: var(--ncss-space-2xs);
+}
+.demo-feature-text > p:last-child { margin-block-end: 0; }
+.demo-gotcha {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.demo-gotcha strong { color: var(--ncss-color-text); }
+
+.demo-feature-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
+}
+.demo-classes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.demo-classes code {
+  display: inline-block;
+  padding: 0.15em 0.5em;
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+.demo-handbook {
+  font-weight: 600;
+}
+
+/* Hinweis "Fenster schmaler ziehen" */
+.demo-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-2xs);
+  margin: 0 0 var(--ncss-space-xs);
+  padding: 0.25em 0.75em;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 600;
+}
+
+/* --- Live-Bereich ---------------------------------------------------------------------- */
+.demo-live {
+  position: relative;
+}
+.demo-live + .demo-live { margin-block-start: var(--ncss-space-md); }
+.demo-live-label {
+  margin-block: 0 var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: 700;
+  color: var(--ncss-color-text-muted);
+}
+.demo-live-label code { font-weight: 400; }
+/* Ziehbarer Rahmen: macht Container Queries ohne Fenster-Ziehen sichtbar. */
+.demo-resizable {
+  resize: horizontal;
+  overflow: auto;
+  max-inline-size: 100%;
+  min-inline-size: min(16rem, 100%);
+  padding: var(--ncss-space-sm);
+  border: 2px dashed var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-bg);
+}
+.demo-frame {
+  padding: var(--ncss-space-sm);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+}
+/* Ausgefüllte Beispiel-Kachel, wenn ein Foto nicht passt */
+.demo-fill {
+  display: grid;
+  place-items: center;
+  min-block-size: 4.5rem;
+  padding: var(--ncss-space-xs);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-weight: 600;
+  text-align: center;
+}
+.demo-fill--alt {
+  background-color: var(--ncss-color-bg-subtle);
+  color: var(--ncss-color-text);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+/* Fotos füllen ihre Kachel */
+.demo-photo {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: var(--ncss-radius-md);
+}
+.demo-caption {
+  margin-block-start: var(--ncss-space-3xs);
+  font-size: 0.75rem;
+  color: var(--ncss-color-text-muted);
+}
+.demo-caption a { color: inherit; }
+
+/* --- Blättern + Fuß -------------------------------------------------------------------- */
+.demo-pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--ncss-space-sm);
+  padding-block: var(--ncss-space-lg);
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.demo-pager a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  padding: var(--ncss-space-xs) var(--ncss-space-sm);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  text-decoration: none;
+  min-inline-size: min(14rem, 100%);
+}
+.demo-pager a small { color: var(--ncss-color-text-muted); }
+.demo-pager-next { margin-inline-start: auto; text-align: end; }
+@media (hover: hover) and (pointer: fine) {
+  .demo-pager a:hover { border-color: var(--ncss-color-brand); }
+}
+.demo-credits a { color: inherit; }

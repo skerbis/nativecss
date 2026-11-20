@@ -1,0 +1,198 @@
+<!--DESC: Scroll-driven effects - reveal shapes, text reveal, count-up, marquee, horizontal scroll, scrollytelling, curtain sections, morphing. Native first, JS only as fallback.-->
+<section class="ncss-stack">
+  <h1>Scroll Effects</h1>
+  <p class="ncss-text-lg ncss-text-muted">Effects tied to the scroll position - native via <code>animation-timeline: view()</code> and (Chromium) scroll-triggered animations. JavaScript only as a small opt-in fallback or where CSS cannot reach (keyboard focus, state, events). <a href="../../demo/scroll-effects.html">Live demo</a>.</p>
+  <p class="ncss-text-muted">Every effect is its own file and can be cherry-picked: it only needs <code>colors.css</code>/<code>tokens.css</code>/<code>reset.css</code>/<code>base.css</code> plus its own script where noted. Without support, with <code>prefers-reduced-motion</code> and in print everything stays plainly readable - no broken state.</p>
+</section>
+
+<section class="ncss-stack" id="support">
+  <h2 class="demo-section-title">What runs where</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Effect</th><th scope="col">Chromium</th><th scope="col">Safari 26</th><th scope="col">Without <code>view()</code> (e.g. Firefox)</th></tr></thead>
+      <tbody>
+        <tr><td>Reveal (scrub)</td><td>CSS</td><td>CSS</td><td>one-shot reveal with <code>js/reveal.js</code>, otherwise visible</td></tr>
+        <tr><td>Reveal <code>--once</code></td><td>CSS (<code>timeline-trigger</code>)</td><td><code>js/reveal.js</code>, without JS: scrub</td><td><code>js/reveal.js</code>, otherwise visible</td></tr>
+        <tr><td>Text reveal lines/flow</td><td>CSS</td><td>CSS</td><td>plain text</td></tr>
+        <tr><td>Text reveal words</td><td>CSS + <code>js/text-reveal.js</code> (splitting)</td><td>same</td><td>JS, time-based</td></tr>
+        <tr><td>Count-up</td><td>CSS (trigger, once)</td><td>CSS scrub, time-based with <code>js/count-up.js</code></td><td><code>js/count-up.js</code>, otherwise final number</td></tr>
+        <tr><td>Marquee</td><td colspan="3">CSS everywhere (copy via optional <code>js/marquee.js</code>)</td></tr>
+        <tr><td>Horizontal scroll</td><td>CSS (+ JS for focus/height)</td><td>same</td><td>swipeable snap row</td></tr>
+        <tr><td>Scrollytelling</td><td colspan="3"><code>&lt;ncss-scrolly&gt;</code> (JS), readable flow without JS</td></tr>
+        <tr><td>Curtain / reveal pin</td><td>CSS</td><td>CSS</td><td>plain sections</td></tr>
+        <tr><td>Morphing</td><td>CSS</td><td>CSS</td><td>final state, static (media beside text)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="reveal">
+  <h2 class="demo-section-title">Reveal shapes</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>helpers/reveal.css</code> + optional <code>js/reveal.js</code>. Base class <code>.ncss-reveal</code> plus exactly one shape - on any element (image, <code>&lt;video&gt;</code>, section, card). Default: scroll-scrubbed (scrolling back rewinds). <code>.ncss-reveal--once</code>: plays once, time-based, when it scrolls in. No <code>clip-path</code> is left afterwards - focus rings and shadows are not cut off.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Modifier</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>--circle</code></td><td>iris from <code>--ncss-reveal-x</code>/<code>-y</code> (default centre)</td></tr>
+        <tr><td><code>--wipe-right</code> / <code>-left</code> / <code>-up</code> / <code>-down</code></td><td>edge moves in the named direction</td></tr>
+        <tr><td><code>--inset</code> / <code>--split</code> / <code>--diagonal</code></td><td>box from the centre / curtain to both sides / diagonal edge</td></tr>
+        <tr><td><code>--zoom</code></td><td>window opens while the media inside scales 1.15 → 1 - put it on a wrapper</td></tr>
+        <tr><td><code>--expand</code></td><td>inset, rounded box grows to full size (full-bleed on a full-width element)</td></tr>
+        <tr><td><code>--fade</code> / <code>--slide-up</code> / <code>--scale</code></td><td>classic entrances with the same mechanics (including <code>--once</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code class="language-html">&lt;img class="ncss-reveal ncss-reveal--circle" src="..." alt="..."&gt;
+&lt;figure class="ncss-reveal ncss-reveal--zoom"&gt;&lt;img src="..." alt="..."&gt;&lt;/figure&gt;
+&lt;section class="ncss-reveal ncss-reveal--split ncss-reveal--once" data-ncss-reveal&gt;...&lt;/section&gt;
+&lt;script src="ncss/js/reveal.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-reveal-start</code>/<code>-end</code> (default <code>entry 25%</code> / <code>cover 45%</code> - finishes just before the viewport centre), <code>--ncss-reveal-inset</code>, <code>--ncss-reveal-radius</code>, <code>--ncss-reveal-scale</code>, <code>--ncss-reveal-duration</code> (<code>--once</code>, 0.9s). Event <code>ncss-reveal</code> when the JS path starts.</p>
+  <p class="ncss-text-muted ncss-text-sm">Relation to <code>.ncss-animate-on-scroll</code> (<a href="animations.html">Animations</a>): that remains the lightweight shorthand (fade/slide only, scrub only). <code>.ncss-reveal</code> is the larger, self-contained variant with shapes, once mode and fallback - own keyframes, no dependency between the two files.</p>
+</section>
+
+<section class="ncss-stack" id="reveal-pin">
+  <h2 class="demo-section-title">Reveal pin (media grows to full screen)</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/reveal-pin.css</code>, no JS. Pinned stage: an image/video grows from a card to the full viewport, the intro fades out, a panel fades in. Fallback: everything stacked, media at 16:9. For <code>&lt;video autoplay&gt;</code> under reduced motion also add <code>js/hero-video-motion.js</code>.</p>
+  <pre><code class="language-html">&lt;section class="ncss-reveal-pin" aria-label="..."&gt;
+  &lt;div class="ncss-reveal-pin-stage"&gt;
+    &lt;p class="ncss-reveal-pin-intro"&gt;Heading&lt;/p&gt;
+    &lt;video src="clip.mp4" muted playsinline loop autoplay poster="frame.jpg"&gt;&lt;/video&gt;
+    &lt;div class="ncss-reveal-pin-content"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-reveal-pin-length</code> (250vh), <code>--ncss-reveal-pin-inset</code> (<code>32% 14% 6%</code>), <code>--ncss-reveal-pin-radius</code>.</p>
+</section>
+
+<section class="ncss-stack" id="morph" data-subnav-label="Morphing">
+  <h2 class="demo-section-title">Morphing on scroll</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/morph.css</code>, no JS. A large image, video or any element starts at full width and smoothly shrinks to about 45&nbsp;% at the edge while you scroll through - text (or another element) is uncovered beside it and slides in. Or the other way round. Technique: pinned lanes in a tall stage, a <code>view-timeline</code> drives a progress number typed via <code>@property</code>, and size, radius and fade are calculated from it.</p>
+  <pre><code class="language-html">&lt;section class="ncss-morph" aria-label="The house"&gt;
+  &lt;div class="ncss-morph-stage"&gt;
+    &lt;div class="ncss-morph-media"&gt;&lt;img src="house.webp" alt="..."&gt;&lt;/div&gt;
+    &lt;div class="ncss-morph-content"&gt;
+      &lt;h3&gt;Room for text&lt;/h3&gt;
+      &lt;p&gt;...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Video into a circle, with pause button (video-bg.css + js/video-bg.js) --&gt;
+&lt;section class="ncss-morph ncss-morph--circle" aria-label="..."&gt;
+  &lt;div class="ncss-morph-stage"&gt;
+    &lt;div class="ncss-morph-media" data-ncss-video-bg&gt;
+      &lt;video muted loop playsinline preload="none"
+             poster="frame.jpg" aria-hidden="true"&gt;
+        &lt;source data-src="loop.webm" type="video/webm"&gt;
+      &lt;/video&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-morph-content"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class / parameter</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-morph</code></td><td>Container (container query) - carries modifiers and parameters</td></tr>
+        <tr><td><code>.ncss-morph-stage</code></td><td>Stage: the tall scroll distance in scroll mode, otherwise a two-column grid</td></tr>
+        <tr><td><code>.ncss-morph-media</code></td><td>Media lane - the first child morphs (<code>img</code>, <code>video</code>, <code>picture</code>, <code>canvas</code> or any element)</td></tr>
+        <tr><td><code>.ncss-morph-content</code></td><td>Text/element beside it (keep it shorter than one screen height)</td></tr>
+        <tr><td><code>--start</code></td><td>Media moves to the start (left), text at the end</td></tr>
+        <tr><td><code>--reverse</code></td><td>The other way round: starts side by side, the media grows to full width, the text leaves</td></tr>
+        <tr><td><code>--card</code> / <code>--circle</code></td><td>Shape morph into a rounded card with shadow / into a circle</td></tr>
+        <tr><td><code>--ncss-morph-size</code></td><td>Final media width (default <code>45%</code>)</td></tr>
+        <tr><td><code>--ncss-morph-radius</code></td><td>Final radius (default <code>--ncss-radius-lg</code>, doubled with <code>--card</code>)</td></tr>
+        <tr><td><code>--ncss-morph-height</code></td><td>Scroll distance = stage height (default <code>250vh</code>)</td></tr>
+        <tr><td><code>--ncss-morph-gap</code> / <code>--ncss-morph-top</code></td><td>Gap between media and text; offset for a sticky header (e.g. <code>var(--ncss-topbar-height)</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Fallback and accessibility: without <code>animation-timeline</code> (e.g. Firefox), with <code>prefers-reduced-motion</code> or <code>&lt;html data-motion="reduce"&gt;</code> (<a href="a11y-preferences.html">preferences</a>; <code>data-motion="full"</code> lifts a system "reduce") and in print the final state is shown statically - media and text side by side, nothing sticks, no tall section. In narrow containers (below 40rem) the media sits above the text, without morphing. The text is always in the DOM and readable; when something in the stage receives keyboard focus, it jumps to the final state. Videos: pause button (WCAG 2.2.2) and loading/pausing according to the motion preference via <code>data-ncss-video-bg</code> + <code>js/video-bg.js</code>, as with the <a href="video-audio.html#video-bg">background video</a>.</p>
+</section>
+
+<section class="ncss-stack" id="text-reveal">
+  <h2 class="demo-section-title">Text reveal</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/text-reveal.css</code> - text starts faint and brightens as it scrolls through. Lines (default) and flow (<code>--flow</code>, one inline child) without JS; word by word with <code>js/text-reveal.js</code> (the text stays identical for screen readers).</p>
+  <pre><code class="language-html">&lt;p class="ncss-text-reveal"&gt;...&lt;/p&gt;
+&lt;p class="ncss-text-reveal ncss-text-reveal--flow"&gt;&lt;span&gt;...&lt;/span&gt;&lt;/p&gt;
+&lt;p class="ncss-text-reveal" data-ncss-text-reveal&gt;...&lt;/p&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-text-reveal-color</code>, <code>--ncss-text-reveal-from</code>, <code>--ncss-text-reveal-start</code>/<code>-end</code> (default <code>cover 15%</code> / <code>cover 50%</code>).</p>
+</section>
+
+<section class="ncss-stack" id="count-up">
+  <h2 class="demo-section-title">Count-up</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/count-up.css</code> + optional <code>js/count-up.js</code>. The real, formatted number is in the DOM (screen readers, copying, no JS); the counting happens in an <code>::after</code> that is silent for assistive tech and fades back to the real text at the end. Thousands separators are missing while counting (<code>counter()</code> has none).</p>
+  <pre><code class="language-html">&lt;span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 12500"&gt;12,500&lt;/span&gt;
+&lt;span class="ncss-count-up" data-ncss-count-up style="--ncss-count-to: 98; --ncss-count-suffix: '%'"&gt;98%&lt;/span&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-count-to</code> (required integer - if missing, the script reads it from the text), <code>--ncss-count-from</code>, <code>--ncss-count-prefix</code>/<code>-suffix</code>, <code>--ncss-count-duration</code> (2s).</p>
+</section>
+
+<section class="ncss-stack" id="marquee">
+  <h2 class="demo-section-title">Marquee</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/marquee.css</code> + optional <code>js/marquee.js</code>. Endless ticker from two identical groups (the copy is <code>aria-hidden</code> + <code>inert</code> - the script creates it when only one group is in the markup). Pauses on hover (real pointing devices only) and focus. For meaningful content add a pause button (WCAG 2.2.2) - the script wires it up. Reduced motion: a static, swipeable row.</p>
+  <pre><code class="language-html">&lt;div id="logos" class="ncss-marquee ncss-marquee--fade" data-ncss-marquee&gt;
+  &lt;ul class="ncss-marquee-group" role="list"&gt;&lt;li&gt;...&lt;/li&gt;&lt;/ul&gt;
+&lt;/div&gt;
+&lt;button type="button" data-ncss-marquee-toggle aria-controls="logos"&gt;Pause ticker&lt;/button&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Modifiers: <code>--reverse</code>, <code>--slow</code>, <code>--fast</code>, <code>--fade</code>, <code>--paused</code>. Parameters: <code>--ncss-marquee-duration</code> (30s), <code>--ncss-marquee-gap</code>.</p>
+</section>
+
+<section class="ncss-stack" id="horizontal-scroll">
+  <h2 class="demo-section-title">Horizontal scroll</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/scroll-horizontal.css</code> + recommended <code>js/scroll-horizontal.js</code>. Vertical scrolling moves a row sideways through a sticky stage. The script sizes the section to the row (1px down = 1px sideways, speed via attribute value) and brings tab-focused items into view (WCAG 2.4.11) - required for rows with links/buttons. Fallback: swipeable snap row.</p>
+  <pre><code class="language-html">&lt;section class="ncss-scroll-horizontal" data-ncss-scroll-horizontal aria-label="Projects"&gt;
+  &lt;div class="ncss-scroll-horizontal-viewport"&gt;
+    &lt;div class="ncss-scroll-horizontal-track"&gt;
+      &lt;article&gt;...&lt;/article&gt; &lt;article&gt;...&lt;/article&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-scroll-horizontal-length</code> (300vh, overridden by the script), <code>--ncss-scroll-horizontal-item</code>, <code>--ncss-scroll-horizontal-gap</code>, <code>--ncss-scroll-horizontal-padding</code>.</p>
+</section>
+
+<section class="ncss-stack" id="scrollytelling">
+  <h2 class="demo-section-title">Scrollytelling: &lt;ncss-scrolly&gt;</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/scrolly.css</code> + <code>js/scrolly.js</code> (light-DOM custom element). The step crossing the trigger line becomes active (<code>.is-active</code>) and shows the media item with the same index; the media column sticks. Narrow: media on top, steps scroll underneath. Without JS: everything stacked.</p>
+  <pre><code class="language-html">&lt;ncss-scrolly line="50" style="--ncss-scrolly-top: var(--ncss-topbar-height)"&gt;
+  &lt;div class="ncss-scrolly-steps"&gt;
+    &lt;div class="ncss-scrolly-step" data-ncss-time="0"&gt;&lt;div&gt;...&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="ncss-scrolly-step" data-ncss-time="4.5"&gt;&lt;div&gt;...&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-scrolly-media"&gt;
+    &lt;figure class="ncss-scrolly-figure"&gt;...&lt;/figure&gt;
+    &lt;figure class="ncss-scrolly-figure"&gt;...&lt;/figure&gt;
+  &lt;/div&gt;
+&lt;/ncss-scrolly&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">API</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>line</code> (attribute)</td><td>trigger line in % from the top (default 50)</td></tr>
+        <tr><td><code>media-start</code> (attribute)</td><td>media column on the left instead of the right</td></tr>
+        <tr><td><code>el.step</code></td><td>index of the active step; assigning scrolls that step to the centre</td></tr>
+        <tr><td><code>data-ncss-time</code> (step)</td><td>time mark in seconds - hook for a scroll-driven video</td></tr>
+        <tr><td>Event <code>ncss-scrolly-step</code></td><td>bubbles, <code>detail = { index, time, step, figure }</code> (<code>time</code> = number or <code>null</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code class="language-javascript">document.querySelector("ncss-scrolly").addEventListener("ncss-scrolly-step", (e) =&gt; {
+  if (e.detail.time !== null) video.currentTime = e.detail.time;
+});</code></pre>
+</section>
+
+<section class="ncss-stack" id="curtain">
+  <h2 class="demo-section-title">Curtain sections</h2>
+  <p class="ncss-text-muted ncss-text-sm"><code>components/curtain.css</code>, no JS. Each section holds still while the next one slides over it; <code>--scale</code> makes the covered one recede, <code>--dim</code> darkens it. No <code>position: sticky</code> - tall sections scroll through completely first. Every section needs an opaque background (e.g. <code>.ncss-surface--*</code> on the section itself). Combines with <code>.ncss-snap-sections</code> (snapping + curtain, see <a href="scroll.html">Scroll &amp; Visibility</a>).</p>
+  <pre><code class="language-html">&lt;div class="ncss-curtain ncss-curtain--scale ncss-curtain--dim"&gt;
+  &lt;section class="ncss-surface--brand"&gt;...&lt;/section&gt;
+  &lt;section class="ncss-surface--neutral"&gt;...&lt;/section&gt;
+&lt;/div&gt;
+
+&lt;div class="ncss-snap-sections ncss-curtain ncss-curtain--dim"&gt;
+  &lt;section class="ncss-snap-section ncss-surface--brand"&gt;...&lt;/section&gt;
+  ...
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Parameters: <code>--ncss-curtain-height</code> (100svh), <code>--ncss-curtain-scale</code> (0.88), <code>--ncss-curtain-dim</code> (0.45), <code>--ncss-curtain-radius</code>. For a pinned stage with cards instead of real sections: <code>components/scroll-stack.css</code> (<a href="../../demo/stacked-cards.html">Stacked Cards</a>).</p>
+</section>
+
+
+<!--MERGE: scroll-effects-->

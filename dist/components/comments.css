@@ -1,0 +1,243 @@
+/**
+ * ncss - Kommentare / Diskussions-Thread (Layer "components"): Kommentar mit Avatar,
+ * Name, Zeit (<time>), Text und Aktionen (Antworten, Gefällt mir), verschachtelte
+ * Antworten mit Einzugslinien und ein "Autor"-Badge. Reines CSS; das Verhalten der
+ * Buttons (Antwortformular öffnen, aria-pressed umschalten) liefert die Anwendung.
+ *
+ * Braucht colors.css + tokens.css (+ reset/base). Optionaler Begleiter:
+ *   components/avatar.css   für .ncss-avatar (Bild oder Initialen)
+ *
+ * Einzugstiefe: in schmalen Containern (< 30rem) rückt nur die ERSTE Antwortebene ein,
+ * tiefere Ebenen stehen bündig unter ihrem Elternkommentar (innerhalb von dessen Linie) - sonst
+ * bliebe auf dem Handy nach drei Ebenen kaum Platz für Text. Ab 30rem rücken bis zu drei
+ * Antwortebenen ein, tiefere bleiben auf Ebene drei. Container Query auf .ncss-comments.
+ *
+ * Markup:
+ *   <section class="ncss-comments" aria-labelledby="c-title">
+ *     <h2 id="c-title">3 Kommentare</h2>
+ *     <ol class="ncss-comment-list" role="list">
+ *       <li>
+ *         <article class="ncss-comment" aria-labelledby="c1-name">
+ *           <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+ *           <header class="ncss-comment-header">
+ *             <span class="ncss-comment-author" id="c1-name">Julia Brenner</span>
+ *             <span class="ncss-comment-badge">Autorin</span>
+ *             <time class="ncss-comment-time" datetime="2026-11-18T09:12">vor 2 Tagen</time>
+ *           </header>
+ *           <div class="ncss-comment-body"><p>Text ...</p></div>
+ *           <footer class="ncss-comment-actions">
+ *             <button type="button" class="ncss-comment-action">Antworten</button>
+ *             <button type="button" class="ncss-comment-action" aria-pressed="false">Gefällt mir (4)</button>
+ *           </footer>
+ *         </article>
+ *         <ol class="ncss-comment-list" role="list"> ... Antworten ... </ol>
+ *       </li>
+ *     </ol>
+ *   </section>
+ * <article> je Kommentar entspricht der HTML-Spec (Kommentare als verschachtelte
+ * Artikel); aria-labelledby gibt ihm den Autornamen als Namen. Der Badge ist echter
+ * Text ("Autorin"), nicht nur eine Farbe. Relative Zeit ("vor 2 Tagen") sichtbar, das
+ * exakte Datum steht maschinenlesbar in datetime - gern zusätzlich als title.
+ */
+
+.ncss-comments {
+  container-type: inline-size;
+  container-name: ncss-comments;
+  --ncss-comment-avatar: 1.75rem;
+  --ncss-comment-indent: calc(var(--ncss-comment-avatar) + var(--ncss-space-xs));
+}
+
+.ncss-comment-list {
+  display: grid;
+  gap: var(--ncss-space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ncss-comments > .ncss-comment-list {
+  margin-block-end: var(--ncss-space-md);
+}
+
+/* Antworten: Linie unter der Mitte des Eltern-Avatars, Text um einen Avatar eingerückt. */
+.ncss-comment-list .ncss-comment-list {
+  margin-block-start: var(--ncss-space-sm);
+  margin-inline-start: calc(var(--ncss-comment-avatar) / 2 - 1px);
+  padding-inline-start: calc(var(--ncss-comment-indent) - var(--ncss-comment-avatar) / 2 + 1px);
+  border-inline-start: 2px solid var(--ncss-color-border);
+}
+
+.ncss-comment {
+  display: grid;
+  grid-template-columns: var(--ncss-comment-avatar) minmax(0, 1fr);
+  column-gap: var(--ncss-space-xs);
+  row-gap: var(--ncss-space-3xs);
+  align-items: start;
+}
+.ncss-comment > .ncss-avatar {
+  --ncss-avatar-size: var(--ncss-comment-avatar);
+  grid-column: 1;
+  grid-row: 1 / span 3;
+}
+.ncss-comment > :not(.ncss-avatar) {
+  grid-column: 2;
+  min-inline-size: 0;
+}
+
+.ncss-comment-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ncss-space-3xs) var(--ncss-space-xs);
+  min-block-size: var(--ncss-comment-avatar);
+  align-content: center;
+}
+.ncss-comment-author {
+  font-weight: var(--ncss-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+.ncss-comment-badge {
+  padding: 0.05em 0.5em;
+  border: var(--ncss-border-width) solid var(--ncss-color-brand);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1.4;
+}
+.ncss-comment-time {
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+}
+
+.ncss-comment-body {
+  overflow-wrap: anywhere;
+}
+.ncss-comment-body > :last-child {
+  margin-block-end: 0;
+}
+.ncss-comment-body > * {
+  margin-block-end: var(--ncss-space-xs);
+}
+
+/* Aktionen als ruhige Text-Buttons (eigene Optik, damit kein helpers/forms.css nötig). */
+.ncss-comment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-3xs) var(--ncss-space-xs);
+  margin-inline-start: calc(var(--ncss-space-2xs) * -1);
+}
+.ncss-comment-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  min-block-size: 2rem;
+  padding: 0 var(--ncss-space-2xs);
+  border: 0;
+  border-radius: var(--ncss-radius-sm);
+  background: none;
+  color: var(--ncss-color-text-muted);
+  font: inherit;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+              background-color var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+.ncss-comment-action:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-comment-action:hover {
+    color: var(--ncss-color-text);
+    background-color: color-mix(in oklch, currentColor 8%, transparent);
+  }
+}
+/* "Gefällt mir" aktiv: Markenfarbe UND gefülltes Herz statt leerem (Form, nicht nur
+   Farbe). Das Herz ist Deko - den Zustand sagt aria-pressed an. */
+.ncss-comment-action[aria-pressed]::before {
+  content: "\2661" / "";
+  font-size: 1.15em;
+  line-height: 1;
+}
+.ncss-comment-action[aria-pressed="true"] {
+  color: var(--ncss-color-brand-on-soft);
+}
+.ncss-comment-action[aria-pressed="true"]::before {
+  content: "\2665" / "";
+}
+
+/* Hervorgehobener Kommentar (z.B. Antwort der Autorin, angepinnt, per Link angesprungen). */
+.ncss-comment--highlight,
+.ncss-comment:target {
+  padding: var(--ncss-space-xs);
+  margin: calc(var(--ncss-space-xs) * -1);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-bg-subtle);
+  /* Akzent als eingerückter Balken mit runden Enden statt dicker Randkante (die würde
+     der Eckrundung folgen) */
+  background-image: linear-gradient(var(--ncss-color-brand), var(--ncss-color-brand));
+  background-repeat: no-repeat;
+  background-size: 3px calc(100% - 1.2rem);
+  background-position: left 0 top 0.6rem;
+}
+.ncss-comment--highlight:dir(rtl),
+.ncss-comment:target:dir(rtl) {
+  background-position: right 0 top 0.6rem;
+}
+@media (forced-colors: active) {
+  .ncss-comment--highlight,
+  .ncss-comment:target {
+    border-inline-start: 3px solid CanvasText;
+  }
+}
+
+/* --- Einzugstiefe begrenzen ------------------------------------------------------------- */
+@container ncss-comments (max-width: 30rem) {
+  .ncss-comment-list .ncss-comment-list .ncss-comment-list {
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+}
+@container ncss-comments (min-width: 30rem) {
+  /* Ein Container kann sich nicht selbst abfragen - die größeren Maße deshalb auf der
+     obersten Liste setzen (beide Werte, die abgeleitete Einrückung rechnet sonst nicht
+     neu). */
+  .ncss-comments > .ncss-comment-list {
+    --ncss-comment-avatar: 2.5rem;
+    --ncss-comment-indent: calc(2.5rem + var(--ncss-space-sm));
+  }
+  .ncss-comment-list .ncss-comment-list .ncss-comment-list .ncss-comment-list .ncss-comment-list {
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ncss-comment-action {
+    transition: none;
+  }
+}
+:root[data-motion="reduce"] .ncss-comment-action {
+  transition: none;
+}
+
+@media (forced-colors: active) {
+  .ncss-comment-badge {
+    border-color: CanvasText;
+  }
+  .ncss-comment-list .ncss-comment-list {
+    border-inline-start-color: GrayText;
+  }
+  .ncss-comment--highlight,
+  .ncss-comment:target {
+    outline: 2px solid Highlight;
+  }
+  .ncss-comment-action {
+    color: ButtonText;
+  }
+}

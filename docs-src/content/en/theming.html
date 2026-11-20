@@ -14,9 +14,9 @@
 <section class="ncss-stack" id="seed-werte">
   <h2 class="demo-section-title">Only seed values, no derivations</h2>
   <p><code>theme.css</code> contains only the BASE/SEED values (brand colors, base surfaces, fonts, radii, shadows, motion), not the color scales derived from them. Colors like <code>--ncss-color-brand-100</code>/<code>-300</code>/<code>-700</code>/<code>-900</code> are computed automatically from EXACTLY ONE base value via <code>color-mix()</code> - changing the brand color in <code>theme.css</code> is enough, the whole scale (light/dark steps, "on-soft" text color, Web Awesome bridge) follows automatically.</p>
-  <div class="ncss-field ncss-callout ncss-radius-md ncss-border" style="padding: var(--ncss-space-md); background-color: var(--ncss-color-bg-subtle);">
-    <strong>Important limitation</strong>
-    <p class="ncss-text-sm">Automatic derivation only works when applied on <code>:root</code>. If the same seed value is instead overridden locally on a single element ONLY, only rules that directly reference the seed follow along - the derived scale stays at the old value, because it's computed only once on <code>:root</code> and inherited as a finished value.</p>
+  <div class="ncss-alert ncss-alert--warning">
+    <p class="ncss-alert-title">Important limitation</p>
+    <p>Automatic derivation only works when applied on <code>:root</code>. If the same seed value is instead overridden locally on a single element ONLY, only rules that directly reference the seed follow along - the derived scale stays at the old value, because it's computed only once on <code>:root</code> and inherited as a finished value.</p>
   </div>
 </section>
 
@@ -33,3 +33,6 @@
   <p>Pure CSS (<code>@view-transition { navigation: auto; }</code>), no JavaScript needed. Currently not Baseline (Chromium family) - no effect on older browsers, an unknown <code>@</code>-rule is simply ignored during parsing, no <code>@supports</code> needed. Four presets are included: cross-fade (default), <code>slide</code>, <code>zoom</code>, <code>wipe</code> - enabled via the <code>types</code> descriptor.</p>
   <p class="ncss-text-muted ncss-text-sm">Known console message in some browsers (not an ncss bug, currently mainly WebKit/Safari during back/forward navigation while a transition is running): <code>"AbortError: Skipping view transition because skipTransition() was called"</code> - expected per spec, the navigation itself still works normally. Optional companion that only suppresses this console message: <code>&lt;script src="js/page-transitions-quiet.js" defer&gt;&lt;/script&gt;</code>.</p>
 </section>
+
+
+<!--MERGE: theming-->

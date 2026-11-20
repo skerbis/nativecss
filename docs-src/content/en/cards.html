@@ -112,7 +112,22 @@
         <tr><td><code>.ncss-card--flush</code></td><td>No more padding in header/body/footer (not even top/bottom) - content reaches every card edge, e.g. for an image or a list without the usual card spacing</td></tr>
         <tr><td><code>.ncss-card--transparent</code></td><td>Removes the only remaining decoration (background-color) - combined with <code>--flush</code> and without <code>.ncss-border</code>/<code>.ncss-radius-*</code>/<code>.ncss-shadow-*</code>, the card becomes an invisible wrapper while keeping the flex-column structure</td></tr>
         <tr><td><code>.ncss-card--brand/-brand-2/-neutral/-success/-warning/-danger</code></td><td>"Status" card: subtle tint background + colored accent border, for notice/status content - not meant as a general "colorful card" decoration</td></tr>
-        <tr><td><code>.ncss-card--linked</code> + <code>.ncss-card-link</code></td><td>Whole card clickable (teaser pattern) - the link stays the only interactive focus point (stretched link instead of wrapping the entire card in <code>&lt;a&gt;</code>, see below)</td></tr>
+        <tr><td><code>.ncss-card--linked</code> + <code>.ncss-card-link</code></td><td>Whole card clickable (teaser pattern) - the link stays the only interactive focus point (stretched link instead of wrapping the entire card in <code>&lt;a&gt;</code>). Further buttons/links inside the card stay clickable, the focus ring outlines the whole card (see section 7)</td></tr>
+        <tr><td><code>.ncss-card--interactive</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Lifts the card slightly on hover/keyboard focus, more shadow (motion only when allowed)</td></tr>
+        <tr><td><code>.ncss-card--zoom</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Image in <code>.ncss-card-media</code> grows on hover/focus (only when motion is allowed)</td></tr>
+        <tr><td><code>.ncss-card--overlay</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Text sits at the bottom of the image, with a contrast-safe gradient</td></tr>
+        <tr><td><code>.ncss-card-media--square/-portrait/-wide/-auto</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Media aspect ratio (1:1, 3:4, 21:9, natural image height); freely via <code>--ncss-card-media-ratio</code></td></tr>
+        <tr><td><code>.ncss-card--accent/-accent-start</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Colour stripe at the top/start side without a tinted surface, colour via <code>--ncss-card-accent</code></td></tr>
+        <tr><td><code>.ncss-card--featured + .ncss-card-badge</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Highlighted card with a strong border and a labelled badge</td></tr>
+        <tr><td><code>.ncss-card--disabled / aria-disabled="true"</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Unavailable: muted surface, dashed border, no pointer interaction, text stays readable</td></tr>
+        <tr><td><code>.ncss-card--selectable + .ncss-card-check</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Selectable card around a native radio/checkbox inside a <code>&lt;label&gt;</code></td></tr>
+        <tr><td><code>.ncss-card-title / .ncss-card-actions</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Title and actions in one header row</td></tr>
+        <tr><td><code>.ncss-card-meta</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Meta row (avatar, date, tags)</td></tr>
+        <tr><td><code>.ncss-card-divider / .ncss-card-list</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Edge-to-edge divider or list as a card section</td></tr>
+        <tr><td><code>.ncss-card-footer--end/-between/-plain</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Footer aligned to the end, spread out, or without a divider line</td></tr>
+        <tr><td><code>.ncss-card-grid</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Grid of equal-height cards with subgrid-aligned rows (<code>--ncss-card-grid-min/-rows/-gap</code>)</td></tr>
+        <tr><td><code>.ncss-card-skeleton (+ --title)</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Placeholder bars for the loading state</td></tr>
+        <tr><td><code>--ncss-card-padding</code> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></td><td>Overrides the padding of header/body/footer/list</td></tr>
       </tbody>
     </table>
   </div>
@@ -162,8 +177,345 @@
   </div>
 </section>
 
+<section class="ncss-stack" id="ganze-karte" data-subnav-label="7. Whole card clickable, buttons inside stay separate">
+  <h2 class="demo-section-title">7. Whole card clickable, buttons inside stay separate <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>.ncss-card--linked</code> stretches the title link over the whole card via <code>::after</code>. Since 1.1.0, further links and buttons inside the card automatically sit above it (<code>z-index</code>) and stay separate targets with their own tab stop. The focus ring outlines the whole card as soon as the title link receives keyboard focus. <code>.ncss-card--interactive</code> lifts the card slightly on hover/focus, <code>.ncss-card--zoom</code> enlarges the image - both only when motion is allowed (system setting or <code>data-motion</code>).</p>
+  <div class="docs-live" role="group" aria-label="Live example: Whole card clickable, buttons inside stay separate">
+    <div class="ncss-card-grid" style="--ncss-card-grid-min: 15rem;">
+      <article class="ncss-card ncss-card--linked ncss-card--interactive ncss-card--zoom ncss-border ncss-radius-lg">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/zimmer-seeblick-thumb.webp" alt="Hotel room with a large window facing the lake" width="480" height="720" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title"><a class="ncss-card-link" href="#ganze-karte">Room with lake view</a></h3>
+          <p class="ncss-text-sm ncss-text-muted">One tab stop for the card, the whole surface leads to the room.</p>
+        </div>
+        <div class="ncss-card-footer ncss-card-footer--between">
+          <span class="ncss-text-sm">from €189</span>
+          <button type="button" class="ncss-btn ncss-btn--secondary">Save</button>
+        </div>
+      </article>
+      <article class="ncss-card ncss-card--linked ncss-card--interactive ncss-card--zoom ncss-border ncss-radius-lg">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/fruehstueck-thumb.webp" alt="Breakfast table set for guests" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title"><a class="ncss-card-link" href="#ganze-karte">Breakfast by the water</a></h3>
+          <p class="ncss-text-sm ncss-text-muted">The button below is a separate target and is not covered by the card surface.</p>
+        </div>
+        <div class="ncss-card-footer ncss-card-footer--between">
+          <span class="ncss-text-sm">daily 7-11 am</span>
+          <button type="button" class="ncss-btn ncss-btn--secondary">Save</button>
+        </div>
+      </article>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-card-grid" style="--ncss-card-grid-min: 15rem;"&gt;
+  &lt;article class="ncss-card ncss-card--linked ncss-card--interactive ncss-card--zoom ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media"&gt;&lt;img src="zimmer-seeblick-thumb.webp" alt="Hotel room with a large window facing the lake"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3 class="ncss-card-title"&gt;&lt;a class="ncss-card-link" href="#ganze-karte"&gt;Room with lake view&lt;/a&gt;&lt;/h3&gt;
+      &lt;p class="ncss-text-sm ncss-text-muted"&gt;One tab stop for the card, the whole surface leads to the room.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-card-footer ncss-card-footer--between"&gt;
+      &lt;span class="ncss-text-sm"&gt;from €189&lt;/span&gt;
+      &lt;button type="button" class="ncss-btn ncss-btn--secondary"&gt;Save&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+  &lt;article class="ncss-card ncss-card--linked ncss-card--interactive ncss-card--zoom ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media"&gt;&lt;img src="fruehstueck-thumb.webp" alt="Breakfast table set for guests"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3 class="ncss-card-title"&gt;&lt;a class="ncss-card-link" href="#ganze-karte"&gt;Breakfast by the water&lt;/a&gt;&lt;/h3&gt;
+      &lt;p class="ncss-text-sm ncss-text-muted"&gt;The button below is a separate target and is not covered by the card surface.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="ncss-card-footer ncss-card-footer--between"&gt;
+      &lt;span class="ncss-text-sm"&gt;daily 7-11 am&lt;/span&gt;
+      &lt;button type="button" class="ncss-btn ncss-btn--secondary"&gt;Save&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">No JavaScript. Make the title the only link with meaningful text (screen readers announce just that as the link target), put extra actions next to it as real <code>&lt;button&gt;</code>/<code>&lt;a&gt;</code> elements - never nested.</p>
+</section>
+
+<section class="ncss-stack" id="media-varianten" data-subnav-label="8. Media: aspect ratio and text on the image">
+  <h2 class="demo-section-title">8. Media: aspect ratio and text on the image <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p>Pick the media aspect ratio with <code>.ncss-card-media--square</code>, <code>--portrait</code>, <code>--wide</code> (21:9) and <code>--auto</code> (the image sets the height) - or freely via <code>style="--ncss-card-media-ratio: 4 / 3"</code>. <code>.ncss-card--overlay</code> places the body at the bottom of the image; a gradient beneath reaches at least about 63&nbsp;% black under the text, so light text stays readable even on bright image areas - in light and dark theme alike.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Media: aspect ratio and text on the image">
+    <div class="ncss-card-grid" style="--ncss-card-grid-min: 13rem; --ncss-card-grid-rows: 2;">
+      <article class="ncss-card ncss-card--overlay ncss-radius-lg">
+        <div class="ncss-card-media ncss-card-media--portrait"><img src="../../demo/assets/examples/gemeinde/seeburg-ufer-thumb.webp" alt="Lakeside promenade with a castle in the evening light" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Seeburg shore</h3>
+          <p class="ncss-text-sm">Overlay on portrait (3:4).</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-card--overlay ncss-card--linked ncss-card--zoom ncss-radius-lg">
+        <div class="ncss-card-media ncss-card-media--square"><img src="../../demo/assets/examples/gemeinde/wochenmarkt-thumb.webp" alt="Market stalls with fruit and vegetables" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title"><a class="ncss-card-link" href="#media-varianten">Weekly market</a></h3>
+          <p class="ncss-text-sm">Square, whole card linked.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-media ncss-card-media--wide"><img src="../../demo/assets/examples/gemeinde/bootshafen-thumb.webp" alt="Boats in the small harbour" width="640" height="429" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Boat harbour</h3>
+          <p class="ncss-text-sm ncss-text-muted">Wide 21:9 via <code>--wide</code>.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-card-grid" style="--ncss-card-grid-min: 13rem; --ncss-card-grid-rows: 2;"&gt;
+  &lt;article class="ncss-card ncss-card--overlay ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media ncss-card-media--portrait"&gt;&lt;img src="seeburg-ufer-thumb.webp" alt="Lakeside promenade with a castle in the evening light"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3 class="ncss-card-title"&gt;Seeburg shore&lt;/h3&gt;
+      &lt;p class="ncss-text-sm"&gt;Overlay on portrait (3:4).&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+  &lt;article class="ncss-card ncss-card--overlay ncss-card--linked ncss-card--zoom ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media ncss-card-media--square"&gt;&lt;img src="wochenmarkt-thumb.webp" alt="Market stalls with fruit and vegetables"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3 class="ncss-card-title"&gt;&lt;a class="ncss-card-link" href="#media-varianten"&gt;Weekly market&lt;/a&gt;&lt;/h3&gt;
+      &lt;p class="ncss-text-sm"&gt;Square, whole card linked.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media ncss-card-media--wide"&gt;&lt;img src="bootshafen-thumb.webp" alt="Boats in the small harbour"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3 class="ncss-card-title"&gt;Boat harbour&lt;/h3&gt;
+      &lt;p class="ncss-text-sm ncss-text-muted"&gt;Wide 21:9 via &lt;code&gt;--wide&lt;/code&gt;.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="akzente" data-subnav-label="9. Accent, featured, disabled">
+  <h2 class="demo-section-title">9. Accent, featured, disabled <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>.ncss-card--accent</code> adds a colour stripe at the top, <code>--accent-start</code> on the start side - without a tinted surface (unlike the status variants). Colour via <code>--ncss-card-accent</code>. <code>.ncss-card--featured</code> highlights a card with a strong border, <code>.ncss-card-badge</code> labels it in the top corner - so the emphasis does not rely on colour alone. <code>.ncss-card--disabled</code> (or <code>aria-disabled="true"</code>) mutes an unavailable card without lowering opacity: the text stays readable.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Accent, featured, disabled">
+    <div class="ncss-card-grid" style="--ncss-card-grid-min: 13rem;">
+      <article class="ncss-card ncss-card--accent ncss-border ncss-radius-lg">
+        <div class="ncss-card-header">Single room</div>
+        <div class="ncss-card-body"><p class="ncss-text-sm">Colour stripe at the top in the brand colour.</p></div>
+        <div class="ncss-card-footer ncss-card-footer--plain">€89 / night</div>
+      </article>
+      <article class="ncss-card ncss-card--featured ncss-radius-lg ncss-shadow-md">
+        <span class="ncss-card-badge">Recommended</span>
+        <div class="ncss-card-header">Double room</div>
+        <div class="ncss-card-body"><p class="ncss-text-sm">Highlighted with border and badge.</p></div>
+        <div class="ncss-card-footer ncss-card-footer--plain">€139 / night</div>
+      </article>
+      <article class="ncss-card ncss-card--disabled ncss-border ncss-radius-lg" aria-disabled="true">
+        <div class="ncss-card-header">Suite</div>
+        <div class="ncss-card-body"><p class="ncss-text-sm">Fully booked - muted, dashed border.</p></div>
+        <div class="ncss-card-footer ncss-card-footer--plain">€229 / night</div>
+      </article>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-card-grid" style="--ncss-card-grid-min: 13rem;"&gt;
+  &lt;article class="ncss-card ncss-card--accent ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-header"&gt;Single room&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;&lt;p class="ncss-text-sm"&gt;Colour stripe at the top in the brand colour.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-footer ncss-card-footer--plain"&gt;€89 / night&lt;/div&gt;
+  &lt;/article&gt;
+  &lt;article class="ncss-card ncss-card--featured ncss-radius-lg ncss-shadow-md"&gt;
+    &lt;span class="ncss-card-badge"&gt;Recommended&lt;/span&gt;
+    &lt;div class="ncss-card-header"&gt;Double room&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;&lt;p class="ncss-text-sm"&gt;Highlighted with border and badge.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-footer ncss-card-footer--plain"&gt;€139 / night&lt;/div&gt;
+  &lt;/article&gt;
+  &lt;article class="ncss-card ncss-card--disabled ncss-border ncss-radius-lg" aria-disabled="true"&gt;
+    &lt;div class="ncss-card-header"&gt;Suite&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;&lt;p class="ncss-text-sm"&gt;Fully booked - muted, dashed border.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-footer ncss-card-footer--plain"&gt;€229 / night&lt;/div&gt;
+  &lt;/article&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">The cards in this grid are deliberately built with three children (header, body, footer) - the badge is absolutely positioned and does not count as a row. For numbers with a trend there is <a href="components.html#stat">.ncss-stat</a>, which fits into a card.</p>
+</section>
+
+<section class="ncss-stack" id="auswahl" data-subnav-label="10. Selectable cards (radio/checkbox)">
+  <h2 class="demo-section-title">10. Selectable cards (radio/checkbox) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>.ncss-card--selectable</code> on a <code>&lt;label&gt;</code> turns the whole card into the click target of a native input (<code>.ncss-card-check</code>). Everything is browser standard: arrow keys move within a radio group, space toggles a checkbox, the focus ring surrounds the whole card. The control stays visible, so the selected state is not conveyed by colour alone. Group several cards in a <code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code>.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Selectable cards (radio/checkbox)">
+    <fieldset class="ncss-stack ncss-stack--tight" style="border: 0; padding: 0; margin: 0;">
+      <legend class="ncss-text-sm">Room category</legend>
+      <div class="ncss-card-grid" style="--ncss-card-grid-min: 12rem; --ncss-card-grid-rows: 2;">
+        <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+          <input class="ncss-card-check" type="radio" name="room-en" value="classic" checked>
+          <span class="ncss-card-header">Classic</span>
+          <span class="ncss-card-body ncss-text-sm ncss-text-muted">Facing the courtyard, 22 m²</span>
+        </label>
+        <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+          <input class="ncss-card-check" type="radio" name="room-en" value="seeblick">
+          <span class="ncss-card-header">Lake view</span>
+          <span class="ncss-card-body ncss-text-sm ncss-text-muted">Balcony facing the lake, 28 m²</span>
+        </label>
+        <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+          <input class="ncss-card-check" type="radio" name="room-en" value="suite" disabled>
+          <span class="ncss-card-header">Suite</span>
+          <span class="ncss-card-body ncss-text-sm ncss-text-muted">Fully booked</span>
+        </label>
+      </div>
+    </fieldset>
+    <label class="ncss-card ncss-card--selectable ncss-radius-lg" style="max-width: 24rem;">
+      <input class="ncss-card-check" type="checkbox" name="extra-en" value="fruehstueck">
+      <span class="ncss-card-header">Add breakfast</span>
+      <span class="ncss-card-body ncss-text-sm ncss-text-muted">Checkbox card, €18 per person and day</span>
+    </label>
+  </div>
+  <pre><code class="language-html">&lt;fieldset class="ncss-stack ncss-stack--tight" style="border: 0; padding: 0; margin: 0;"&gt;
+  &lt;legend class="ncss-text-sm"&gt;Room category&lt;/legend&gt;
+  &lt;div class="ncss-card-grid" style="--ncss-card-grid-min: 12rem; --ncss-card-grid-rows: 2;"&gt;
+    &lt;label class="ncss-card ncss-card--selectable ncss-radius-lg"&gt;
+      &lt;input class="ncss-card-check" type="radio" name="room-en" value="classic" checked&gt;
+      &lt;span class="ncss-card-header"&gt;Classic&lt;/span&gt;
+      &lt;span class="ncss-card-body ncss-text-sm ncss-text-muted"&gt;Facing the courtyard, 22 m²&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;label class="ncss-card ncss-card--selectable ncss-radius-lg"&gt;
+      &lt;input class="ncss-card-check" type="radio" name="room-en" value="seeblick"&gt;
+      &lt;span class="ncss-card-header"&gt;Lake view&lt;/span&gt;
+      &lt;span class="ncss-card-body ncss-text-sm ncss-text-muted"&gt;Balcony facing the lake, 28 m²&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;label class="ncss-card ncss-card--selectable ncss-radius-lg"&gt;
+      &lt;input class="ncss-card-check" type="radio" name="room-en" value="suite" disabled&gt;
+      &lt;span class="ncss-card-header"&gt;Suite&lt;/span&gt;
+      &lt;span class="ncss-card-body ncss-text-sm ncss-text-muted"&gt;Fully booked&lt;/span&gt;
+    &lt;/label&gt;
+  &lt;/div&gt;
+&lt;/fieldset&gt;
+&lt;label class="ncss-card ncss-card--selectable ncss-radius-lg" style="max-width: 24rem;"&gt;
+  &lt;input class="ncss-card-check" type="checkbox" name="extra-en" value="fruehstueck"&gt;
+  &lt;span class="ncss-card-header"&gt;Add breakfast&lt;/span&gt;
+  &lt;span class="ncss-card-body ncss-text-sm ncss-text-muted"&gt;Checkbox card, €18 per person and day&lt;/span&gt;
+&lt;/label&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Only inline elements are allowed inside <code>&lt;label&gt;</code> - hence <code>&lt;span class="ncss-card-header"&gt;</code> instead of <code>&lt;div&gt;</code>; the card turns them into blocks itself. A disabled input (<code>disabled</code>) mutes its card automatically.</p>
+</section>
+
+<section class="ncss-stack" id="abschnitte" data-subnav-label="11. Header with actions, meta row, divider, list">
+  <h2 class="demo-section-title">11. Header with actions, meta row, divider, list <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p>When <code>.ncss-card-header</code> contains a <code>.ncss-card-actions</code>, it becomes a row: title (<code>.ncss-card-title</code>) at the start, actions at the end. <code>.ncss-card-meta</code> is a small, muted row for avatar, date and tags. <code>&lt;hr class="ncss-card-divider"&gt;</code> separates two sections edge to edge, <code>.ncss-card-list</code> is a list as its own card section. Align the footer with <code>--end</code>, <code>--between</code> and <code>--plain</code> (no line).</p>
+  <div class="docs-live" role="group" aria-label="Live example: Header with actions, meta row, divider, list">
+    <article class="ncss-card ncss-border ncss-radius-lg" style="max-width: 32rem;">
+      <div class="ncss-card-header">
+        <h3 class="ncss-card-title">Advent events</h3>
+        <div class="ncss-card-actions">
+          <button type="button" class="ncss-btn ncss-btn--secondary">Subscribe</button>
+        </div>
+      </div>
+      <div class="ncss-card-body">
+        <p class="ncss-card-meta">
+          <img src="../../demo/assets/examples/gemeinde/rathaus-thumb.webp" alt="" width="480" height="720" loading="lazy">
+          <span>Municipal office</span>
+          <time datetime="2026-11-20">20 November 2026</time>
+          <span>Culture</span>
+        </p>
+        <p>All events around the Advent market at a glance.</p>
+      </div>
+      <hr class="ncss-card-divider">
+      <ul class="ncss-card-list">
+        <li>Sat, 28 Nov - Opening on the market square</li>
+        <li>So, 6.12. - Nikolaus am Boat harbour</li>
+        <li>Sat, 19 Dec - Concert in the lakeside church</li>
+      </ul>
+      <div class="ncss-card-footer ncss-card-footer--end">
+        <a href="#abschnitte">All events</a>
+      </div>
+    </article>
+  </div>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg" style="max-width: 32rem;"&gt;
+  &lt;div class="ncss-card-header"&gt;
+    &lt;h3 class="ncss-card-title"&gt;Advent events&lt;/h3&gt;
+    &lt;div class="ncss-card-actions"&gt;
+      &lt;button type="button" class="ncss-btn ncss-btn--secondary"&gt;Subscribe&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;p class="ncss-card-meta"&gt;
+      &lt;img src="rathaus-thumb.webp" alt=""&gt;
+      &lt;span&gt;Municipal office&lt;/span&gt;
+      &lt;time datetime="2026-11-20"&gt;20 November 2026&lt;/time&gt;
+      &lt;span&gt;Culture&lt;/span&gt;
+    &lt;/p&gt;
+    &lt;p&gt;All events around the Advent market at a glance.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;hr class="ncss-card-divider"&gt;
+  &lt;ul class="ncss-card-list"&gt;
+    &lt;li&gt;Sat, 28 Nov - Opening on the market square&lt;/li&gt;
+    &lt;li&gt;So, 6.12. - Nikolaus am Boat harbour&lt;/li&gt;
+    &lt;li&gt;Sat, 19 Dec - Concert in the lakeside church&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="ncss-card-footer ncss-card-footer--end"&gt;
+    &lt;a href="#abschnitte"&gt;All events&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">An image in <code>.ncss-card-meta</code> is shown as a round avatar (2rem); if it is purely decorative like here next to the name, give it <code>alt=""</code>.</p>
+</section>
+
+<section class="ncss-stack" id="raster" data-subnav-label="12. Card grid with aligned rows">
+  <h2 class="demo-section-title">12. Card grid with aligned rows <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>.ncss-card-grid</code> is a grid of equal-height cards with footers pinned to the bottom. With subgrid (all current browsers) the cards of one row additionally share the same rows: image, text and footer line up across the row, even if a title wraps onto two lines. Each card needs exactly as many direct children as <code>--ncss-card-grid-rows</code> (default 3). Column width: <code>--ncss-card-grid-min</code> (16rem), gap: <code>--ncss-card-grid-gap</code>.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Card grid with aligned rows">
+    <ul class="ncss-card-grid" style="--ncss-card-grid-min: 12rem;">
+      <li class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/sauna-thumb.webp" alt="Wooden sauna with benches" width="480" height="720" loading="lazy"></div>
+        <div class="ncss-card-body"><h3 class="ncss-card-title">Sauna</h3><p class="ncss-text-sm ncss-text-muted">Short text.</p></div>
+        <div class="ncss-card-footer">from €15</div>
+      </li>
+      <li class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/ruheraum-thumb.webp" alt="Relaxation room with loungers in front of large windows" width="480" height="543" loading="lazy"></div>
+        <div class="ncss-card-body"><h3 class="ncss-card-title">Relaxation room with a view across the lake</h3><p class="ncss-text-sm ncss-text-muted">A longer title and more text - the row's footers still line up.</p></div>
+        <div class="ncss-card-footer">included</div>
+      </li>
+      <li class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/spa-pool-thumb.webp" alt="Indoor pool with a view outside" width="480" height="640" loading="lazy"></div>
+        <div class="ncss-card-body"><h3 class="ncss-card-title">Pool</h3><p class="ncss-text-sm ncss-text-muted">Short text.</p></div>
+        <div class="ncss-card-footer">included</div>
+      </li>
+    </ul>
+  </div>
+  <pre><code class="language-html">&lt;ul class="ncss-card-grid" style="--ncss-card-grid-min: 12rem;"&gt;
+  &lt;li class="ncss-card ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media"&gt;&lt;img src="sauna-thumb.webp" alt="Wooden sauna with benches"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;&lt;h3 class="ncss-card-title"&gt;Sauna&lt;/h3&gt;&lt;p class="ncss-text-sm ncss-text-muted"&gt;Short text.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-footer"&gt;from €15&lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li class="ncss-card ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media"&gt;&lt;img src="ruheraum-thumb.webp" alt="Relaxation room with loungers in front of large windows"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;&lt;h3 class="ncss-card-title"&gt;Relaxation room with a view across the lake&lt;/h3&gt;&lt;p class="ncss-text-sm ncss-text-muted"&gt;A longer title and more text - the row's footers still line up.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-footer"&gt;included&lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li class="ncss-card ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-media"&gt;&lt;img src="spa-pool-thumb.webp" alt="Indoor pool with a view outside"&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-body"&gt;&lt;h3 class="ncss-card-title"&gt;Pool&lt;/h3&gt;&lt;p class="ncss-text-sm ncss-text-muted"&gt;Short text.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="ncss-card-footer"&gt;included&lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="laden" data-subnav-label="13. Loading state (skeleton)">
+  <h2 class="demo-section-title">13. Loading state (skeleton) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p>While content is loading, <code>.ncss-card-skeleton</code> bars hint at its later shape (<code>--title</code> for the heading, width via <code>--ncss-card-skeleton-width</code>, also usable on <code>.ncss-card-media</code>). The card carries <code>aria-busy="true"</code> and a hidden "Loading …" text; the bars themselves are <code>aria-hidden</code>. The shimmer only runs when motion is allowed.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Loading state (skeleton)">
+    <article class="ncss-card ncss-border ncss-radius-lg" aria-busy="true" style="max-width: 20rem;">
+      <div class="ncss-card-media ncss-card-skeleton" aria-hidden="true"></div>
+      <div class="ncss-card-body">
+        <span class="ncss-visually-hidden">Loading …</span>
+        <span class="ncss-card-skeleton ncss-card-skeleton--title" aria-hidden="true"></span>
+        <span class="ncss-card-skeleton" aria-hidden="true"></span>
+        <span class="ncss-card-skeleton" style="--ncss-card-skeleton-width: 70%;" aria-hidden="true"></span>
+      </div>
+    </article>
+  </div>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg" aria-busy="true" style="max-width: 20rem;"&gt;
+  &lt;div class="ncss-card-media ncss-card-skeleton" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;span class="ncss-visually-hidden"&gt;Loading …&lt;/span&gt;
+    &lt;span class="ncss-card-skeleton ncss-card-skeleton--title" aria-hidden="true"&gt;&lt;/span&gt;
+    &lt;span class="ncss-card-skeleton" aria-hidden="true"&gt;&lt;/span&gt;
+    &lt;span class="ncss-card-skeleton" style="--ncss-card-skeleton-width: 70%;" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+</section>
+
 <section class="ncss-stack" id="adaptiver-radius">
-  <h2 class="demo-section-title">7. Advanced: adaptive radius for mobile</h2>
+  <h2 class="demo-section-title">14. Advanced: adaptive radius for mobile</h2>
   <p>A common problem: a card should look nicely rounded on wide screens, but deliberately goes edge-to-edge on mobile (e.g. inside <code>.ncss-full-bleed</code>, or simply because the surrounding container drops its padding at that width) - the rounded corners then suddenly look wrong, because the card touches the screen edge directly. Instead of toggling that by hand with a <code>@media</code> breakpoint, there's <code>.ncss-radius-adaptive-sm/-md/-lg</code> (<code>helpers/elevation.css</code>): it only rounds when the card actually has room around it.</p>
   <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-adaptive-lg ncss-shadow-sm"&gt;
   ...

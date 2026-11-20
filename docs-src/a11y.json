@@ -1,0 +1,324 @@
+{
+  "cards": {
+    "de": {
+      "keyboard": "Karten selbst sind nicht fokussierbar, nur ihre Links und Buttons. Bei <code>.ncss-card--linked</code> ist der Titel-Link (<code>.ncss-card-link</code>) der einzige Tab-Stopp, der Fokus-Ring sitzt am Link.",
+      "screenreader": "Der Stretched-Link vermeidet verschachtelte interaktive Elemente - angesagt wird nur der Linktext, also einen aussagekräftigen Titel verwenden. Jedes Bild in <code>.ncss-card-media</code> braucht ein passendes <code>alt</code> (rein dekorativ: <code>alt=\"\"</code>).",
+      "prefs": "Farben kommen aus <code>light-dark()</code>-Tokens und folgen dem Farbschema. Schatten verschwinden im Forced-Colors-Modus - dort trennt nur <code>.ncss-border</code> die Karte vom Hintergrund.",
+      "nojs": "Reines CSS, alles funktioniert ohne JavaScript."
+    },
+    "en": {
+      "keyboard": "Cards themselves are not focusable, only their links and buttons. With <code>.ncss-card--linked</code> the title link (<code>.ncss-card-link</code>) is the only tab stop and carries the focus ring.",
+      "screenreader": "The stretched link avoids nested interactive elements - only the link text is announced, so use a meaningful title. Every image in <code>.ncss-card-media</code> needs fitting <code>alt</code> text (purely decorative: <code>alt=\"\"</code>).",
+      "prefs": "Colours come from <code>light-dark()</code> tokens and follow the colour scheme. Shadows disappear in forced colors mode - there only <code>.ncss-border</code> separates the card from the background.",
+      "nojs": "Pure CSS, everything works without JavaScript."
+    }
+  },
+  "lists": {
+    "de": {
+      "keyboard": "Listen sind nicht interaktiv, enthaltene Links folgen der normalen Tab-Reihenfolge. Ausnahme <code>&lt;ncss-sortable&gt;</code>: Griff fokussieren, <kbd>Leertaste</kbd> aufnehmen, Pfeiltasten verschieben, <kbd>Leertaste</kbd> ablegen, <kbd>Esc</kbd> bricht ab - oder die Hoch/Runter-Schaltflächen.",
+      "screenreader": "Alle Varianten mit <code>list-style: none</code> brauchen <code>role=\"list\"</code>, sonst verliert VoiceOver/Safari die Listensemantik. Icons in <code>.ncss-list--icon</code> mit <code>aria-hidden=\"true\"</code> versehen, die Bedeutung steht im Text.",
+      "prefs": "Die Punkte von <code>.ncss-list--dot</code> sind per Hintergrundfarbe gezeichnet und können im Forced-Colors-Modus verschwinden; Schritt-Nummern und <code>.ncss-list--dash</code> bleiben als Text sichtbar.",
+      "nojs": "Reines CSS, alles funktioniert ohne JavaScript. Nur <code>&lt;ncss-sortable&gt;</code> braucht <code>js/sortable.js</code> - ohne bleibt eine normale Liste."
+    },
+    "en": {
+      "keyboard": "Lists are not interactive; links inside follow the normal tab order. Exception <code>&lt;ncss-sortable&gt;</code>: focus the handle, <kbd>Space</kbd> picks up, arrow keys move, <kbd>Space</kbd> drops, <kbd>Esc</kbd> cancels - or use the up/down buttons.",
+      "screenreader": "Every variant with <code>list-style: none</code> needs <code>role=\"list\"</code>, otherwise VoiceOver/Safari drops the list semantics. Mark icons in <code>.ncss-list--icon</code> with <code>aria-hidden=\"true\"</code>; the meaning lives in the text.",
+      "prefs": "The dots of <code>.ncss-list--dot</code> are painted as background colour and may vanish in forced colors mode; step numbers and <code>.ncss-list--dash</code> stay visible as text.",
+      "nojs": "Pure CSS, everything works without JavaScript. Only <code>&lt;ncss-sortable&gt;</code> needs <code>js/sortable.js</code> - without it a normal list remains."
+    }
+  },
+  "tables": {
+    "de": {
+      "keyboard": "<code>.ncss-table-scroll</code> ist nur per Tastatur scrollbar, wenn der Container fokussierbar ist - dafür <code>tabindex=\"0\"</code> im Markup setzen, danach scrollen die Pfeiltasten.",
+      "screenreader": "Den Scroll-Container mit <code>role=\"region\"</code> und <code>aria-label</code> benennen; die Tabelle behält ihre volle Semantik. <code>.ncss-table-stacked</code> bricht die Tabellensemantik bewusst, <code>data-label</code> pro <code>&lt;td&gt;</code> ist Pflicht.",
+      "prefs": "Rahmen und Flächen aus Farb-Tokens, folgen Hell/Dunkel und werden im Forced-Colors-Modus zu Systemfarben. Keine Animation.",
+      "nojs": "Reines CSS, beide Strategien funktionieren ohne JavaScript. Die Sortierung (<code>js/table-sort.js</code>) ist eine Ergänzung - ohne sie bleibt die Tabelle in der Reihenfolge des Markups."
+    },
+    "en": {
+      "keyboard": "<code>.ncss-table-scroll</code> can only be scrolled by keyboard when the container is focusable - add <code>tabindex=\"0\"</code> in the markup, then the arrow keys scroll it.",
+      "screenreader": "Name the scroll container with <code>role=\"region\"</code> and <code>aria-label</code>; the table keeps its full semantics. <code>.ncss-table-stacked</code> deliberately breaks table semantics and requires <code>data-label</code> on every <code>&lt;td&gt;</code>.",
+      "prefs": "Borders and fills come from colour tokens, follow light/dark and turn into system colours in forced colors mode. No animation.",
+      "nojs": "Pure CSS, both strategies work without JavaScript. Sorting (<code>js/table-sort.js</code>) is an enhancement - without it the table keeps its markup order."
+    }
+  },
+  "forms": {
+    "de": {
+      "keyboard": "Native Felder mit sichtbarem <code>:focus-visible</code>-Ring. <code>js/combobox.js</code> und die Live-Suche: <kbd>↑</kbd>/<kbd>↓</kbd> wählen, <kbd>Enter</kbd> übernimmt, <kbd>Esc</kbd> schließt - der Fokus bleibt im Feld. Mehr unter <a href=\"a11y-forms.html\">Formulare</a>.",
+      "screenreader": "Jedes Feld braucht ein echtes <code>&lt;label&gt;</code> (ggf. <code>.ncss-visually-hidden</code>), <code>placeholder</code> ersetzt es nicht; bei <code>.ncss-switch</code> <code>role=\"switch\"</code> ergänzen. Combobox und Live-Suche setzen <code>aria-expanded</code>/<code>aria-activedescendant</code>, die Live-Suche meldet die Trefferzahl über <code>role=\"status\"</code>.",
+      "prefs": "Datums-Icons und Steuerelemente folgen <code>color-scheme</code>, Fehler erscheinen erst nach Interaktion (<code>:user-invalid</code>). <code>.ncss-switch</code> ist über Hintergrundfarben gezeichnet und hat kein eigenes Forced-Colors-Styling - im Kontrastmodus prüfen.",
+      "nojs": "Alle Felder, Validierung und der Switch sind natives HTML/CSS. Combobox fällt ohne JS auf <code>&lt;select&gt;</code>/<code>&lt;datalist&gt;</code> zurück, die Live-Suche auf ein normales Suchformular (<code>action</code>)."
+    },
+    "en": {
+      "keyboard": "Native fields with a visible <code>:focus-visible</code> ring. <code>js/combobox.js</code> and live search: <kbd>↑</kbd>/<kbd>↓</kbd> choose, <kbd>Enter</kbd> accepts, <kbd>Esc</kbd> closes - focus stays in the field. More in <a href=\"a11y-forms.html\">Forms</a>.",
+      "screenreader": "Every field needs a real <code>&lt;label&gt;</code> (visually hidden via <code>.ncss-visually-hidden</code> if needed); <code>placeholder</code> is no substitute. Add <code>role=\"switch\"</code> to <code>.ncss-switch</code>. Combobox and live search set <code>aria-expanded</code>/<code>aria-activedescendant</code>; live search announces the result count via <code>role=\"status\"</code>.",
+      "prefs": "Date icons and controls follow <code>color-scheme</code>; errors only show after interaction (<code>:user-invalid</code>). <code>.ncss-switch</code> is painted with background colours and has no forced colors styling of its own - test it in high contrast mode.",
+      "nojs": "All fields, validation and the switch are native HTML/CSS. Without JS the combobox falls back to <code>&lt;select&gt;</code>/<code>&lt;datalist&gt;</code>, and live search to a plain search form (<code>action</code>)."
+    }
+  },
+  "widgets": {
+    "de": {
+      "keyboard": "Gerendert werden echte Links und Buttons: Monat vor/zurück, Tage mit Terminen als <code>&lt;button&gt;</code>, die ein natives Modal öffnen (Fokusfalle, <kbd>Esc</kbd>). Download-Links sind normale Links.",
+      "screenreader": "Download-Links tragen einen eindeutigen Namen mit Typ, Titel und Größe (z.B. \"PDF herunterladen: Preisliste 2026, 1,2 MB\"). Im Monatsraster hören Screenreader am Tages-Button nur die Zahl, die Termin-Punkte haben nur <code>title</code> - für Hilfstechnik ist die Agenda- oder Listen-Ansicht besser.",
+      "prefs": "Nutzt Karte, Modal und Badge - Farben folgen Hell/Dunkel, Bewegung wird global reduziert. Die Termin-Punkte sind Hintergrundflächen und können im Forced-Colors-Modus fehlen, der Zähler \"+N\" bleibt.",
+      "nojs": "Ohne JavaScript wird nichts geladen; der Inhalt des Containers bleibt stehen - dort einen Fallback einsetzen, z.B. einen Link auf die <code>.ics</code>- bzw. Datei-Liste."
+    },
+    "en": {
+      "keyboard": "The output is real links and buttons: previous/next month, days with events as <code>&lt;button&gt;</code> elements that open a native modal (focus trap, <kbd>Esc</kbd>). Download links are ordinary links.",
+      "screenreader": "Download links get a unique name with type, title and size (e.g. \"Download PDF: Price list 2026, 1.2 MB\"). In the month grid a day button only announces its number and the event dots carry just a <code>title</code> - the agenda or list view works better with assistive tech.",
+      "prefs": "Builds on card, modal and badge - colours follow light/dark, motion is reduced globally. The event dots are background fills and may vanish in forced colors mode; the \"+N\" counter remains.",
+      "nojs": "Without JavaScript nothing is loaded; whatever the container holds stays in place - put a fallback there, such as a link to the <code>.ics</code> file or file list."
+    }
+  },
+  "navigation": {
+    "de": {
+      "keyboard": "Untermenüs sind <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> (<kbd>Enter</kbd>/<kbd>Leertaste</kbd>), das Mobil-Menü ein <code>&lt;dialog&gt;</code> mit Fokusfalle und <kbd>Esc</kbd>. Im Drilldown springt der Fokus auf \"Zurück\" und danach wieder auf den Elternpunkt.",
+      "screenreader": "<code>&lt;nav aria-label&gt;</code> und <code>aria-current=\"page\"</code> setzen; der Menü-Button braucht einen Namen, Icons <code>aria-hidden</code>. Der \"Mehr\"-Punkt der Priority-Navigation heißt \"Weitere Punkte\" (<code>more-label</code>), im Drilldown wird die verdeckte Ebene <code>inert</code>.",
+      "prefs": "Fokus-Ring per <code>outline</code>, bleibt auch im Forced-Colors-Modus sichtbar. Slide-Übergänge im Drilldown und das Aus-/Einblenden der Leiste entfallen bei <code>prefers-reduced-motion</code>.",
+      "nojs": "Dropdowns, Mega-Menü, Tree und Breadcrumb funktionieren ohne JS, das Off-Canvas-Menü über <code>command</code>/<code>commandfor</code> (ältere Browser: <code>js/command-fallback.js</code>). Priority- und Drilldown-Navigation fallen auf die normale Liste bzw. Inline-Aufklappen zurück."
+    },
+    "en": {
+      "keyboard": "Submenus are <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> (<kbd>Enter</kbd>/<kbd>Space</kbd>); the mobile menu is a <code>&lt;dialog&gt;</code> with focus trap and <kbd>Esc</kbd>. In the drilldown, focus moves to \"Back\" and then returns to the parent item.",
+      "screenreader": "Set <code>&lt;nav aria-label&gt;</code> and <code>aria-current=\"page\"</code>; the menu button needs a name and icons <code>aria-hidden</code>. The priority nav's \"More\" item is labelled via <code>more-label</code>, and the drilldown makes the hidden level <code>inert</code>.",
+      "prefs": "The focus ring is an <code>outline</code>, so it stays visible in forced colors mode. Drilldown slide transitions and the hide-on-scroll bar are dropped under <code>prefers-reduced-motion</code>.",
+      "nojs": "Dropdowns, mega menu, tree and breadcrumb work without JS; the off-canvas menu uses <code>command</code>/<code>commandfor</code> (older browsers: <code>js/command-fallback.js</code>). Priority and drilldown navigation fall back to the plain list or inline expanding."
+    }
+  },
+  "subnav": {
+    "de": {
+      "keyboard": "Normale Sprunglinks per <kbd>Tab</kbd>; <code>scroll-padding</code> sorgt dafür, dass das Ziel nicht unter Topbar und Leiste verschwindet. Die Leiste scrollt seitlich zum aktiven Link mit.",
+      "screenreader": "Die <code>&lt;nav&gt;</code> trägt <code>aria-label=\"Auf dieser Seite\"</code>, die sichtbare Beschriftung ist <code>aria-hidden</code>. <code>js/subnav.js</code> setzt <code>aria-current=\"location\"</code> am Link des sichtbaren Abschnitts.",
+      "prefs": "Weiches Scrollen entfällt bei <code>prefers-reduced-motion</code>, auch beim Nachführen der Leiste. Im Forced-Colors-Modus fällt die Kanten-Maske weg, der aktive Link bekommt einen <code>Highlight</code>-Rahmen.",
+      "nojs": "Ohne JS normale Sprunglinks; in Chromium 140+ markiert <code>:target-current</code> den aktuellen Abschnitt trotzdem rein per CSS."
+    },
+    "en": {
+      "keyboard": "Plain jump links via <kbd>Tab</kbd>; <code>scroll-padding</code> keeps the target from hiding under the top bar and the strip. The strip scrolls sideways to keep the active link in view.",
+      "screenreader": "The <code>&lt;nav&gt;</code> carries <code>aria-label=\"On this page\"</code>; the visible label is <code>aria-hidden</code>. <code>js/subnav.js</code> sets <code>aria-current=\"location\"</code> on the link of the section in view.",
+      "prefs": "Smooth scrolling is dropped under <code>prefers-reduced-motion</code>, including when the strip follows along. In forced colors mode the edge mask is removed and the active link gets a <code>Highlight</code> outline.",
+      "nojs": "Without JS these are plain jump links; in Chromium 140+ <code>:target-current</code> still marks the current section in pure CSS."
+    }
+  },
+  "overlays": {
+    "de": {
+      "keyboard": "Native <code>&lt;dialog&gt;</code>: Fokus wandert hinein, <kbd>Tab</kbd> bleibt gefangen, <kbd>Esc</kbd> schließt, danach kehrt der Fokus zum Auslöser zurück. Die Lightbox blättert mit <kbd>←</kbd>/<kbd>→</kbd>.",
+      "screenreader": "Dialog per <code>aria-labelledby</code> (Überschrift) oder <code>aria-label</code> benennen, Schließen-Buttons brauchen <code>aria-label</code>. Die Lightbox nimmt <code>data-caption</code> oder das <code>alt</code> des Vorschaubilds als Bildtext und sagt die Unterschrift über <code>aria-live=\"polite\"</code> an.",
+      "prefs": "Ein-/Ausblend- und 3D-Animationen werden bei <code>prefers-reduced-motion</code> global gekappt, die Lightbox animiert nur bei <code>no-preference</code>. Der <code>::backdrop</code> nutzt ein halbtransparentes Token mit leichtem Blur.",
+      "nojs": "Modal und Off-Canvas öffnen über <code>command=\"show-modal\"</code>/<code>commandfor</code> ganz ohne JS; ältere Browser brauchen <code>js/command-fallback.js</code>. Ohne <code>js/lightbox.js</code> öffnet der Link einfach das große Bild. Ein Dropdown als Link-Liste funktioniert ohne JS, ein Aktionsmenü (<code>role=\"menu\"</code>) braucht <code>js/dropdown.js</code> für die Pfeiltasten."
+    },
+    "en": {
+      "keyboard": "Native <code>&lt;dialog&gt;</code>: focus moves inside, <kbd>Tab</kbd> stays trapped, <kbd>Esc</kbd> closes and focus returns to the trigger. The lightbox pages with <kbd>←</kbd>/<kbd>→</kbd>.",
+      "screenreader": "Name the dialog with <code>aria-labelledby</code> (its heading) or <code>aria-label</code>; close buttons need an <code>aria-label</code>. The lightbox uses <code>data-caption</code> or the thumbnail's <code>alt</code> as image text and announces the caption via <code>aria-live=\"polite\"</code>.",
+      "prefs": "Fade and 3D animations are cut globally under <code>prefers-reduced-motion</code>; the lightbox only animates with <code>no-preference</code>. The <code>::backdrop</code> uses a semi-transparent token with a light blur.",
+      "nojs": "Modal and off-canvas open via <code>command=\"show-modal\"</code>/<code>commandfor</code> without any JS; older browsers need <code>js/command-fallback.js</code>. Without <code>js/lightbox.js</code> the link simply opens the large image. A dropdown link list works without JS, an action menu (<code>role=\"menu\"</code>) needs <code>js/dropdown.js</code> for the arrow keys."
+    }
+  },
+  "media": {
+    "de": {
+      "keyboard": "Die Slideshow ist ein Scroll-Snap-Container: fokussiert scrollen <kbd>←</kbd>/<kbd>→</kbd>, ggf. <code>tabindex=\"0\"</code> ergänzen. Native <code>&lt;video controls&gt;</code>/<code>&lt;audio controls&gt;</code> bringen die Browser-Tastatursteuerung mit.",
+      "screenreader": "Inhaltsbilder brauchen <code>alt</code>, Hintergrund-Medien (Backdrop, Hero-Video) <code>alt=\"\"</code> bzw. <code>aria-hidden=\"true\"</code>. Für Videos mit Sprache Untertitel per <code>&lt;track kind=\"captions\"&gt;</code> liefern, siehe <a href=\"a11y-media.html\">Medien</a>.",
+      "prefs": "Parallax entfällt bei reduzierter Bewegung; <code>js/hero-video-motion.js</code> unterdrückt dann Autoplay im Hero. <code>.ncss-img-dim-in-dark</code> dämpft helle Grafiken im Dark Mode, Scrim/Tint sichern den Textkontrast über Fotos.",
+      "nojs": "Bilder, Art Direction, Cover, Overlay, Hero inkl. Parallax und Slideshow sind reines CSS. Nur die Autoplay-Sperre bei reduzierter Bewegung braucht <code>js/hero-video-motion.js</code>."
+    },
+    "en": {
+      "keyboard": "The slideshow is a scroll-snap container: once focused, <kbd>←</kbd>/<kbd>→</kbd> scroll it; add <code>tabindex=\"0\"</code> if needed. Native <code>&lt;video controls&gt;</code>/<code>&lt;audio controls&gt;</code> bring the browser's keyboard controls.",
+      "screenreader": "Content images need <code>alt</code>; background media (backdrop, hero video) get <code>alt=\"\"</code> or <code>aria-hidden=\"true\"</code>. Provide captions for videos with speech via <code>&lt;track kind=\"captions\"&gt;</code>, see <a href=\"a11y-media.html\">Media</a>.",
+      "prefs": "Parallax is dropped under reduced motion; <code>js/hero-video-motion.js</code> then suppresses hero autoplay. <code>.ncss-img-dim-in-dark</code> tones down bright graphics in dark mode, scrim/tint keep text readable over photos.",
+      "nojs": "Images, art direction, cover, overlay, hero including parallax, and the slideshow are pure CSS. Only blocking autoplay under reduced motion needs <code>js/hero-video-motion.js</code>."
+    }
+  },
+  "scroll": {
+    "de": {
+      "keyboard": "Snap-Container (<code>.ncss-scroll-snap-x/-y</code>, <code>.ncss-snap-sections</code>) scrollen fokussiert mit Pfeil- und Bildtasten. <code>.ncss-reveal-on-hover</code> wird auch bei <code>:focus-within</code> sichtbar, auf Touch-Geräten dauerhaft.",
+      "screenreader": "<code>.ncss-hidden</code>, <code>.ncss-invisible</code> und alle <code>.ncss-hide-*</code>-Klassen verbergen auch vor Screenreadern. Für nur vorgelesenen Text <code>.ncss-visually-hidden</code> verwenden.",
+      "prefs": "<code>scroll-behavior: smooth</code> wird bei <code>prefers-reduced-motion</code> global auf <code>auto</code> gesetzt, das Ein-/Ausblenden von <code>.ncss-hide-on-scroll</code> springt dann ohne Übergang.",
+      "nojs": "Sticky, Snap, Vollbild-Sektionen und Sichtbarkeit sind reines CSS. <code>.ncss-hide-on-scroll</code> läuft nativ nur in Chromium; in Firefox/Safari bleibt die Leiste ohne <code>js/hide-on-scroll-fallback.js</code> einfach stehen."
+    },
+    "en": {
+      "keyboard": "Snap containers (<code>.ncss-scroll-snap-x/-y</code>, <code>.ncss-snap-sections</code>) scroll with arrow and page keys once focused. <code>.ncss-reveal-on-hover</code> also appears on <code>:focus-within</code>, and permanently on touch devices.",
+      "screenreader": "<code>.ncss-hidden</code>, <code>.ncss-invisible</code> and all <code>.ncss-hide-*</code> classes hide content from screen readers too. For text that should only be read aloud, use <code>.ncss-visually-hidden</code>.",
+      "prefs": "<code>scroll-behavior: smooth</code> is reset to <code>auto</code> globally under <code>prefers-reduced-motion</code>; <code>.ncss-hide-on-scroll</code> then hides and shows without a transition.",
+      "nojs": "Sticky, snap, full-screen sections and visibility are pure CSS. <code>.ncss-hide-on-scroll</code> runs natively only in Chromium; in Firefox/Safari the bar simply stays put without <code>js/hide-on-scroll-fallback.js</code>."
+    }
+  },
+  "animations": {
+    "de": {
+      "keyboard": "Effekte sind dekorativ und nicht fokussierbar. Hover-Effekte wie <code>.ncss-stamped</code> greifen nur bei echtem Zeigegerät; Tastaturnutzer sehen den globalen <code>:focus-visible</code>-Ring.",
+      "screenreader": "Kein Einfluss auf Inhalt oder Rollen. Rein dekorative Ebenen wie <code>.ncss-backdrop</code> mit <code>aria-hidden=\"true\"</code> und <code>alt=\"\"</code> auszeichnen.",
+      "prefs": "<code>prefers-reduced-motion</code> kappt alle Animationen und Übergänge global (reset.css) auf einen Frame, Endlos-Animationen laufen nicht mehr; Backdrop bleibt beim ersten Bild. Glass hat keine eigene Regel für <code>prefers-reduced-transparency</code>; <code>.ncss-scheme-dark/-light</code> erzwingen lokal ein Farbschema.",
+      "nojs": "Alles reines CSS bis auf den Bildwechsel von <code>.ncss-backdrop</code> (<code>js/backdrop.js</code>) - ohne Script bleibt das erste Bild stehen."
+    },
+    "en": {
+      "keyboard": "Effects are decorative and not focusable. Hover effects such as <code>.ncss-stamped</code> only apply with a real pointing device; keyboard users see the global <code>:focus-visible</code> ring.",
+      "screenreader": "No effect on content or roles. Mark purely decorative layers such as <code>.ncss-backdrop</code> with <code>aria-hidden=\"true\"</code> and <code>alt=\"\"</code>.",
+      "prefs": "<code>prefers-reduced-motion</code> cuts every animation and transition globally (reset.css) to a single frame, so infinite animations stop; the backdrop keeps its first image. Glass has no rule of its own for <code>prefers-reduced-transparency</code>; <code>.ncss-scheme-dark/-light</code> force a colour scheme locally.",
+      "nojs": "Everything is pure CSS except the image rotation of <code>.ncss-backdrop</code> (<code>js/backdrop.js</code>) - without it the first image stays."
+    }
+  },
+  "scroll-effects": {
+    "de": {
+      "keyboard": "<code>js/scroll-horizontal.js</code> holt per <kbd>Tab</kbd> fokussierte Elemente ins Bild - für Reihen mit Links Pflicht. Das Marquee hält bei Fokus an, sein Pause-Button schaltet dauerhaft um.",
+      "screenreader": "Text-Reveal und Count-up lassen den echten Text im DOM, gezählt wird in einem stummen <code>::after</code>. Die Marquee-Kopie ist <code>aria-hidden</code> + <code>inert</code>, der Pause-Button pflegt <code>aria-pressed</code>; Bühnen wie Reveal-Pin per <code>aria-label</code> benennen.",
+      "prefs": "Bei <code>prefers-reduced-motion</code> bleibt alles statisch lesbar: kein Clip, kein Pinning, Marquee als wischbare Reihe. Im Forced-Colors-Modus fallen Text-Reveal- und Count-up-Animationen weg, Curtain/Reveal-Pin bekommen <code>Canvas</code>-Flächen mit Rahmen.",
+      "nojs": "Reveal, Reveal-Pin, Text-Reveal (Zeilen/Fluss) und Curtain sind reines CSS. Ohne JS ist <code>&lt;ncss-scrolly&gt;</code> ein lesbarer Fluss, Horizontal-Scroll eine wischbare Snap-Reihe und Count-up zeigt direkt die Endzahl."
+    },
+    "en": {
+      "keyboard": "<code>js/scroll-horizontal.js</code> brings elements focused with <kbd>Tab</kbd> into view - required for rows with links. The marquee pauses on focus, and its pause button toggles it permanently.",
+      "screenreader": "Text reveal and count-up keep the real text in the DOM; counting happens in a silent <code>::after</code>. The marquee copy is <code>aria-hidden</code> + <code>inert</code>, the pause button maintains <code>aria-pressed</code>; name stages such as reveal-pin with <code>aria-label</code>.",
+      "prefs": "Under <code>prefers-reduced-motion</code> everything stays static and readable: no clipping, no pinning, the marquee becomes a swipeable row. In forced colors mode text-reveal and count-up animations are dropped, curtain/reveal-pin get <code>Canvas</code> surfaces with borders.",
+      "nojs": "Reveal, reveal-pin, text reveal (lines/flow) and curtain are pure CSS. Without JS <code>&lt;ncss-scrolly&gt;</code> is a readable flow, horizontal scroll a swipeable snap row, and count-up shows the final number."
+    }
+  },
+  "modern-ui": {
+    "de": {
+      "keyboard": "Befehlspalette: <kbd>↑</kbd>/<kbd>↓</kbd> wählen, <kbd>Enter</kbd> führt aus, <kbd>Esc</kbd> schließt, <kbd>⌘</kbd>/<kbd>Strg</kbd>+<kbd>K</kbd> opt-in per <code>shortcut</code>. Compare ist ein echter Range-Slider (<kbd>←</kbd>/<kbd>→</kbd>, <kbd>Pos1</kbd>/<kbd>Ende</kbd>); Hovercards öffnen auch bei Fokus und schließen mit <kbd>Esc</kbd>, Spotlight und Aufklapp-Panels reagieren auf Fokus.",
+      "screenreader": "Palette nach APG-Combobox mit Listbox; Compare setzt <code>aria-valuetext</code> (\"30 % vorher\"), beide Bilder brauchen <code>alt</code>. Benachrichtigungen landen in einer <code>aria-live=\"polite\"</code>-Region, danger/warning zusätzlich <code>role=\"alert\"</code>. Achtung: <code>grid-auto-flow: dense</code> im Bento ändert nur die visuelle Reihenfolge.",
+      "prefs": "Alle Bausteine respektieren <code>prefers-reduced-motion</code> (Aurora/Mesh statisch) und schalten im Forced-Colors-Modus dekorative Effekte ab bzw. auf Systemfarben um. Benachrichtigungs-Timer pausieren bei Hover, Fokus und im Hintergrund-Tab.",
+      "nojs": "Grundzustand ohne JS: Spotlight steht mittig, Compare zeigt 50/50, die Palette öffnet per <code>command=\"show-modal\"</code>, Hovercards laufen in Chromium nativ über <code>interestfor</code>. Serverseitig gerenderte Meldungen bleiben einfach stehen; Bento, Panels und Aurora sind reines CSS."
+    },
+    "en": {
+      "keyboard": "Command palette: <kbd>↑</kbd>/<kbd>↓</kbd> choose, <kbd>Enter</kbd> runs, <kbd>Esc</kbd> closes, <kbd>⌘</kbd>/<kbd>Ctrl</kbd>+<kbd>K</kbd> is opt-in via <code>shortcut</code>. Compare is a real range slider (<kbd>←</kbd>/<kbd>→</kbd>, <kbd>Home</kbd>/<kbd>End</kbd>); hovercards also open on focus and close with <kbd>Esc</kbd>; spotlight and expand panels respond to focus.",
+      "screenreader": "The palette follows the APG combobox with listbox; compare sets <code>aria-valuetext</code> (\"30% before\"), and both images need <code>alt</code>. Notifications go into an <code>aria-live=\"polite\"</code> region, danger/warning also get <code>role=\"alert\"</code>. Note: <code>grid-auto-flow: dense</code> in the bento grid changes only the visual order.",
+      "prefs": "Every component respects <code>prefers-reduced-motion</code> (aurora/mesh turn static) and drops decorative effects or switches to system colours in forced colors mode. Notification timers pause on hover, focus and in background tabs.",
+      "nojs": "Baseline without JS: spotlight sits centred, compare shows 50/50, the palette opens via <code>command=\"show-modal\"</code>, and hovercards run natively in Chromium via <code>interestfor</code>. Server-rendered notifications simply stay; bento, panels and aurora are pure CSS."
+    }
+  },
+  "video-audio": {
+    "de": {
+      "keyboard": "Im fokussierten Player: <kbd>Leertaste</kbd>/<kbd>K</kbd> Play/Pause, <kbd>J</kbd>/<kbd>L</kbd> und Pfeile spulen, <kbd>M</kbd> Ton, <kbd>F</kbd> Vollbild, <kbd>C</kbd> Untertitel, <kbd>0</kbd>-<kbd>9</kbd> springen; Zeitleiste und Lautstärke sind echte Range-Inputs. Vorschaukarten spielen auch bei Fokus, der Mini-Player schließt mit <kbd>Esc</kbd> ohne den Fokus zu verschieben.",
+      "screenreader": "Zustandswechsel werden über eine <code>role=\"status\"</code>-Region höflich angesagt, Beschriftungen folgen <code>&lt;html lang&gt;</code>. Untertitel per <code>&lt;track kind=\"captions\"&gt;</code> liefern, dekorative Videos <code>aria-hidden</code>; <code>&lt;ncss-scroll-frames&gt;</code> übernimmt das <code>alt</code> des Fallback-Bilds für sein <code>canvas role=\"img\"</code>.",
+      "prefs": "Bei <code>prefers-reduced-motion</code>, Datensparmodus oder Forced Colors lädt das Hintergrund-Video nicht (nur Poster), Scroll-Video wird ein normales Video mit Steuerung. Der Player reagiert zusätzlich auf <code>prefers-contrast: more</code> und <code>prefers-reduced-transparency</code>; Hintergrund-Videos bekommen einen sichtbaren Pause-Schalter (WCAG 2.2.2).",
+      "nojs": "Ohne JS bleibt überall das native <code>&lt;video&gt;</code>/<code>&lt;audio&gt;</code> mit Browser-Steuerung, Playlist-Links zeigen direkt auf die Dateien. Scroll-Video und Bildsequenz zeigen Video bzw. Bild mit den Texten darunter."
+    },
+    "en": {
+      "keyboard": "In the focused player: <kbd>Space</kbd>/<kbd>K</kbd> play/pause, <kbd>J</kbd>/<kbd>L</kbd> and arrows seek, <kbd>M</kbd> mute, <kbd>F</kbd> fullscreen, <kbd>C</kbd> captions, <kbd>0</kbd>-<kbd>9</kbd> jump; timeline and volume are real range inputs. Preview cards also play on focus, and the mini player closes with <kbd>Esc</kbd> without moving focus.",
+      "screenreader": "State changes are announced politely via a <code>role=\"status\"</code> region; labels follow <code>&lt;html lang&gt;</code>. Provide captions via <code>&lt;track kind=\"captions\"&gt;</code> and mark decorative videos <code>aria-hidden</code>; <code>&lt;ncss-scroll-frames&gt;</code> reuses the fallback image's <code>alt</code> for its <code>canvas role=\"img\"</code>.",
+      "prefs": "Under <code>prefers-reduced-motion</code>, data saver or forced colors the background video does not load (poster only), and scroll video becomes a normal video with controls. The player also reacts to <code>prefers-contrast: more</code> and <code>prefers-reduced-transparency</code>; background videos get a visible pause button (WCAG 2.2.2).",
+      "nojs": "Without JS the native <code>&lt;video&gt;</code>/<code>&lt;audio&gt;</code> with browser controls remains everywhere, and playlist links point straight to the files. Scroll video and image sequence show the video or image with the texts below."
+    }
+  },
+  "layout": {
+    "de": {
+      "keyboard": "Nicht zutreffend - Layout-Helfer sind nicht interaktiv. Tab-Reihenfolge = DOM-Reihenfolge; bei <code>.ncss-bento</code> (<code>grid-auto-flow: dense</code>) kann die sichtbare Anordnung davon abweichen.",
+      "screenreader": "Grid, Flex, Stack und Bleed ändern keine Semantik. Die Container-Sichtbarkeitsklassen (<code>.ncss-hide-below-container-*</code>) nutzen <code>display: none</code> und verbergen Inhalte auch vor Screenreadern.",
+      "prefs": "Keine Bewegung, keine Farben. Fließende Abstände und intrinsische Raster reagieren auf Zoom und Textgröße, ohne horizontal zu scrollen.",
+      "nojs": "Reines CSS, alles funktioniert ohne JavaScript; <code>.ncss-masonry</code> nutzt <code>grid-lanes</code>, wo verfügbar, sonst CSS-Spalten."
+    },
+    "en": {
+      "keyboard": "Not applicable - layout helpers are not interactive. Tab order equals DOM order; with <code>.ncss-bento</code> (<code>grid-auto-flow: dense</code>) the visual arrangement may differ from it.",
+      "screenreader": "Grid, flex, stack and bleed change no semantics. The container visibility classes (<code>.ncss-hide-below-container-*</code>) use <code>display: none</code> and hide content from screen readers too.",
+      "prefs": "No motion, no colours. Fluid spacing and intrinsic grids adapt to zoom and text size without horizontal scrolling.",
+      "nojs": "Pure CSS, everything works without JavaScript; <code>.ncss-masonry</code> uses <code>grid-lanes</code> where available, otherwise CSS columns."
+    }
+  },
+  "layouts": {
+    "de": {
+      "keyboard": "Das transformierende Akkordeon ist natives <code>&lt;details name&gt;</code> (<kbd>Enter</kbd>/<kbd>Leertaste</kbd>), immer nur ein Punkt offen. Split setzt das Bild per Dokumentreihenfolge - kein <code>row-reverse</code>, Fokus- und Lesereihenfolge passen zur Optik.",
+      "screenreader": "Bilder in Split, Tile und Akkordeon brauchen <code>alt</code>. Im Akkordeon steht jedes Bild doppelt im Markup, die jeweils nicht passende Kopie ist per <code>display: none</code> ausgeblendet und wird nicht vorgelesen.",
+      "prefs": "Tile-Flächen setzen garantiert passende Textfarben für ausreichenden Kontrast. Der weiche Bildwechsel per View Transitions entfällt bei <code>prefers-reduced-motion</code>.",
+      "nojs": "Split, Tile, Akkordeon und Randnotizen sind reines CSS. <code>js/view-transitions.js</code> ergänzt nur die Überblendung, ohne Script wechselt das Bild hart."
+    },
+    "en": {
+      "keyboard": "The transforming accordion is native <code>&lt;details name&gt;</code> (<kbd>Enter</kbd>/<kbd>Space</kbd>), only one item open at a time. Split places the image by document order - no <code>row-reverse</code>, so focus and reading order match the visuals.",
+      "screenreader": "Images in split, tile and accordion need <code>alt</code>. In the accordion each image appears twice in the markup; the copy that does not apply is hidden with <code>display: none</code> and not read aloud.",
+      "prefs": "Tile surfaces set guaranteed matching text colours for sufficient contrast. The soft image change via view transitions is dropped under <code>prefers-reduced-motion</code>.",
+      "nojs": "Split, tile, accordion and margin notes are pure CSS. <code>js/view-transitions.js</code> only adds the crossfade; without it the image switches instantly."
+    }
+  },
+  "float": {
+    "de": {
+      "keyboard": "Nicht zutreffend - Textumfluss ist rein visuell, Links im Text bleiben in Dokumentreihenfolge.",
+      "screenreader": "Das gefloatete Bild steht im Fließtext; beim Kreisbild gehört die Beschreibung ins <code>alt</code>, eine sichtbare <code>&lt;figcaption&gt;</code> würde die Kreisform verzerren.",
+      "prefs": "Keine Bewegung oder Farbe. Umflossen wird erst ab 28rem Containerbreite (Container Query), darunter steht das Bild über dem Text - so entstehen auch bei Zoom keine zu schmalen Textspalten.",
+      "nojs": "Reines CSS, alles funktioniert ohne JavaScript."
+    },
+    "en": {
+      "keyboard": "Not applicable - text wrapping is purely visual; links in the text stay in document order.",
+      "screenreader": "The floated image sits in the running text; for the circular image the description belongs in <code>alt</code>, since a visible <code>&lt;figcaption&gt;</code> would distort the circle shape.",
+      "prefs": "No motion or colour. Wrapping only starts at a 28rem container width (container query); below that the image sits above the text, so zooming never produces cramped text columns.",
+      "nojs": "Pure CSS, everything works without JavaScript."
+    }
+  },
+  "typography": {
+    "de": {
+      "keyboard": "Nicht zutreffend - Typografie-Klassen sind nicht interaktiv.",
+      "screenreader": "Überschriften-Hierarchie (<code>h1</code>-<code>h6</code>) bleibt Aufgabe des Markups, Größenklassen ändern nur die Optik. Die Drop Cap ist <code>::first-letter</code> und lässt den Text unverändert.",
+      "prefs": "Schriftgrößen sind fließend per <code>clamp()</code> mit festem <code>rem</code>-Anteil, Browser-Zoom und Schriftgröße wirken also mit. Textfarben kommen aus <code>light-dark()</code>-Tokens und folgen dem Farbschema.",
+      "nojs": "Reines CSS, alles funktioniert ohne JavaScript."
+    },
+    "en": {
+      "keyboard": "Not applicable - typography classes are not interactive.",
+      "screenreader": "Heading hierarchy (<code>h1</code>-<code>h6</code>) remains the markup's job; size classes only change the look. The drop cap is <code>::first-letter</code> and leaves the text unchanged.",
+      "prefs": "Font sizes are fluid via <code>clamp()</code> with a fixed <code>rem</code> part, so browser zoom and font-size settings take effect. Text colours come from <code>light-dark()</code> tokens and follow the colour scheme.",
+      "nojs": "Pure CSS, everything works without JavaScript."
+    }
+  },
+  "icons": {
+    "de": {
+      "keyboard": "Nicht zutreffend - Icons sind nie selbst fokussierbar; der umgebende Button oder Link trägt den Fokus.",
+      "screenreader": "Icons per <code>mask-image</code> haben keinen Inhalt und werden mit <code>aria-hidden=\"true\"</code> ausgezeichnet. Icon-Only-Buttons brauchen deshalb <code>aria-label</code> oder Text in <code>.ncss-visually-hidden</code>.",
+      "prefs": "Färben sich per <code>currentColor</code> und folgen so Hell/Dunkel. Im Forced-Colors-Modus werden sie mit <code>CanvasText</code> gemalt, damit sie nicht verschwinden.",
+      "nojs": "Die Kern-Icons (<code>.ncss-icon-*</code>, Masken) und das SVG-Sprite (<code>.ncss-icon-sprite</code>) funktionieren ohne JavaScript. <code>&lt;ncss-icon&gt;</code> (Phosphor) braucht <code>js/icon.js</code> - ohne Script bleibt nur der reservierte, leere Platz; das Element ist standardmäßig dekorativ."
+    },
+    "en": {
+      "keyboard": "Not applicable - icons are never focusable themselves; the surrounding button or link takes focus.",
+      "screenreader": "Icons built with <code>mask-image</code> have no content and are marked <code>aria-hidden=\"true\"</code>. Icon-only buttons therefore need an <code>aria-label</code> or text in <code>.ncss-visually-hidden</code>.",
+      "prefs": "They are coloured via <code>currentColor</code> and so follow light/dark. In forced colors mode they are painted with <code>CanvasText</code> so they do not disappear.",
+      "nojs": "Core icons (<code>.ncss-icon-*</code>, masks) and the SVG sprite (<code>.ncss-icon-sprite</code>) work without JavaScript. <code>&lt;ncss-icon&gt;</code> (Phosphor) needs <code>js/icon.js</code> - without the script only the reserved, empty space remains; the element is decorative by default."
+    }
+  },
+  "colors": {
+    "de": {
+      "keyboard": "Der Theme-Umschalter ist ein normaler <code>&lt;button&gt;</code> (<kbd>Enter</kbd>/<kbd>Leertaste</kbd>); der Fokus-Ring nutzt das Token <code>--ncss-color-focus-ring</code>.",
+      "screenreader": "Der Icon-Button pflegt <code>aria-pressed</code> und ein wechselndes <code>aria-label</code> (\"Dunkles Design einschalten\"), die <code>cycle</code>-Variante nennt den aktuellen Modus. Farbe nie als einzigen Bedeutungsträger einsetzen.",
+      "prefs": "Ohne Wahl gilt <code>prefers-color-scheme</code> (auch live), <code>[data-theme]</code> überschreibt es. <code>.ncss-surface--*</code> liefern Fläche plus garantiert lesbare Textfarbe; der weiche Farbwechsel entfällt bei <code>prefers-reduced-motion</code>.",
+      "nojs": "Hell/Dunkel per <code>light-dark()</code> funktioniert ohne JS nach Systemeinstellung, <code>data-theme</code> lässt sich auch serverseitig setzen. Nur Umschalter und gespeicherte Wahl brauchen <code>js/theme-toggle.js</code> - ohne Script ist der Button wirkungslos."
+    },
+    "en": {
+      "keyboard": "The theme toggle is a regular <code>&lt;button&gt;</code> (<kbd>Enter</kbd>/<kbd>Space</kbd>); the focus ring uses the <code>--ncss-color-focus-ring</code> token.",
+      "screenreader": "The icon button maintains <code>aria-pressed</code> and a changing <code>aria-label</code> (\"Switch to dark theme\"); the <code>cycle</code> variant names the current mode. Never use colour as the only carrier of meaning.",
+      "prefs": "With no choice stored, <code>prefers-color-scheme</code> applies (live), and <code>[data-theme]</code> overrides it. <code>.ncss-surface--*</code> provide a fill plus a guaranteed readable text colour; the soft colour transition is dropped under <code>prefers-reduced-motion</code>.",
+      "nojs": "Light/dark via <code>light-dark()</code> works without JS following the system setting, and <code>data-theme</code> can also be set server-side. Only the toggle and the stored choice need <code>js/theme-toggle.js</code> - without it the button does nothing."
+    }
+  },
+  "webawesome-bridge": {
+    "de": {
+      "keyboard": "Tastaturbedienung der <code>&lt;wa-*&gt;</code>-Komponenten kommt von Web Awesome selbst; die Bridge mappt nur den Fokus-Ring auf <code>--ncss-color-focus-ring</code>, damit er wie bei ncss aussieht.",
+      "screenreader": "Rollen und Namen liefert Web Awesome im Shadow DOM - Beschriftungen wie <code>label</code> am Element setzen. Die Bridge ändert nur Farben, keine Semantik.",
+      "prefs": "Hell/Dunkel entscheidet ncss' <code>color-scheme</code>, nicht <code>.wa-dark</code>/<code>.wa-light</code>; Formular-Texte in <code>&lt;wa-input&gt;</code> & Co. bekommen auf <code>.ncss-surface--*</code> automatisch lesbare Farben. <code>js/scroll-stack-fallback.js</code> respektiert <code>prefers-reduced-motion</code>.",
+      "nojs": "Web-Awesome-Komponenten brauchen JavaScript, ohne Script bleibt nur ihr Text-Inhalt. Die Fallback-Scripts sind reines Enhancement: ohne sie bleibt die Leiste stehen bzw. der Stapel als normale, unanimierte Abfolge."
+    },
+    "en": {
+      "keyboard": "Keyboard handling for <code>&lt;wa-*&gt;</code> components comes from Web Awesome itself; the bridge only maps the focus ring to <code>--ncss-color-focus-ring</code> so it matches ncss.",
+      "screenreader": "Web Awesome provides roles and names inside its shadow DOM - set labels such as <code>label</code> on the element. The bridge only changes colours, never semantics.",
+      "prefs": "Light/dark is decided by ncss' <code>color-scheme</code>, not <code>.wa-dark</code>/<code>.wa-light</code>; form text in <code>&lt;wa-input&gt;</code> and friends automatically gets readable colours on <code>.ncss-surface--*</code>. <code>js/scroll-stack-fallback.js</code> respects <code>prefers-reduced-motion</code>.",
+      "nojs": "Web Awesome components need JavaScript; without it only their text content remains. The fallback scripts are pure enhancement: without them the bar stays put and the stack stays a normal, unanimated sequence."
+    }
+  },
+  "ncss-container": {
+    "de": {
+      "keyboard": "Unverändert: der Inhalt behält im Shadow Root seine DOM- und damit Tab-Reihenfolge, Fokus-Ringe kommen aus der ncss-Kopie im Container.",
+      "screenreader": "Shadow DOM ist für den Accessibility Tree transparent. ID-Verweise (<code>for</code>, <code>aria-labelledby</code>, <code>aria-controls</code>) wirken aber nicht über die Grenze - Label und Feld müssen beide im selben Container liegen.",
+      "prefs": "Die Token-Kopie im Container (<code>:host</code>) enthält dieselben <code>light-dark()</code>- und Reduced-Motion-Regeln wie die Seite; ein eigenes <code>theme</code> pro Container ist möglich.",
+      "nojs": "Ohne JS bleibt der Inhalt im Light DOM sichtbar, aber ohne ncss-Styles und ungeschützt vor dem CSS der Host-Seite."
+    },
+    "en": {
+      "keyboard": "Unchanged: content keeps its DOM order and therefore tab order inside the shadow root; focus rings come from the ncss copy inside the container.",
+      "screenreader": "Shadow DOM is transparent to the accessibility tree. ID references (<code>for</code>, <code>aria-labelledby</code>, <code>aria-controls</code>) do not cross the boundary, though - label and field must live in the same container.",
+      "prefs": "The token copy inside the container (<code>:host</code>) carries the same <code>light-dark()</code> and reduced motion rules as the page; a separate <code>theme</code> per container is possible.",
+      "nojs": "Without JS the content stays visible in the light DOM, but without ncss styles and unprotected from the host page's CSS."
+    }
+  },
+  "inspector": {
+    "de": {
+      "keyboard": "<kbd>Alt</kbd>+<kbd>I</kbd> (Mac <kbd>⌥</kbd><kbd>I</kbd>) schaltet den Modus um, <kbd>Esc</kbd> beendet ihn. Gewählt wird per Klick - per Tastatur nur fokussierbare Elemente (<kbd>Enter</kbd>); von dort führen \"Eltern ↑\" und die Vorfahren-Leiste zu umgebenden Elementen.",
+      "screenreader": "Der Schalter pflegt <code>aria-pressed</code>, das Panel ist eine benannte <code>&lt;section&gt;</code> mit Vorfahren-<code>&lt;nav&gt;</code> und <code>aria-current</code>. Ein Wechsel der Auswahl wird nicht live angesagt.",
+      "prefs": "Website-Werkzeug mit den ncss-Tokens - folgt Hell/Dunkel und der globalen Reduced-Motion-Regel.",
+      "nojs": "Nicht zutreffend - der Inspektor ist ein reines JavaScript-Werkzeug dieser Website (<code>demo/assets/js/inspector.js</code>), nicht Teil von <code>dist/</code>."
+    },
+    "en": {
+      "keyboard": "<kbd>Alt</kbd>+<kbd>I</kbd> (Mac <kbd>⌥</kbd><kbd>I</kbd>) toggles the mode, <kbd>Esc</kbd> ends it. Selection is by click - by keyboard only focusable elements (<kbd>Enter</kbd>); from there \"Parent ↑\" and the ancestor bar lead to surrounding elements.",
+      "screenreader": "The toggle maintains <code>aria-pressed</code>; the panel is a labelled <code>&lt;section&gt;</code> with an ancestor <code>&lt;nav&gt;</code> and <code>aria-current</code>. Changing the selection is not announced live.",
+      "prefs": "A site tool built on the ncss tokens - follows light/dark and the global reduced motion rule.",
+      "nojs": "Not applicable - the inspector is a JavaScript-only tool of this website (<code>demo/assets/js/inspector.js</code>), not part of <code>dist/</code>."
+    }
+  }
+}

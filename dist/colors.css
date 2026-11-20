@@ -234,6 +234,28 @@
   color-scheme: dark;
 }
 
+/* Erhöhter Kontrast: Systemeinstellung (prefers-contrast: more) UND ausdrückliche Wahl
+   (<html data-contrast="more">, js/preferences.js) schalten DIESELBEN Werte - eine Liste,
+   zwei Auslöser. data-contrast="normal" nimmt die Systemeinstellung bewusst zurück. Nur
+   Seed-nahe Basis-Tokens: gedämpfter Text wird fast voll deckend, Rahmen klar sichtbar
+   (>= 3:1, WCAG 1.4.11), Text reines Schwarz/Weiß. !important, weil theme.css diese Tokens
+   UNLAYERED setzt (schlägt sonst jede Layer-Regel) - wichtige Layer-Deklarationen gewinnen
+   gegen unlayered normale. Eigene Kontrastwerte: im Theme ebenfalls mit !important. */
+@media (prefers-contrast: more) {
+  :root:not([data-contrast="normal"]), :host(:not([data-contrast="normal"])) {
+    --ncss-color-text: light-dark(#000000, #ffffff) !important;
+    --ncss-color-text-muted: light-dark(#2b2f36, #dcdfe5) !important;
+    --ncss-color-border: light-dark(#5c6370, #a3a9b4) !important;
+    --ncss-focus-ring-width: 3px !important;
+  }
+}
+:root[data-contrast="more"], :host([data-contrast="more"]) {
+  --ncss-color-text: light-dark(#000000, #ffffff) !important;
+  --ncss-color-text-muted: light-dark(#2b2f36, #dcdfe5) !important;
+  --ncss-color-border: light-dark(#5c6370, #a3a9b4) !important;
+  --ncss-focus-ring-width: 3px !important;
+}
+
 /**
  * --- Farbpaletten (data-palette) ----------------------------------------------------
  * Orthogonal zu [data-theme] (Hell/Dunkel) - eine ZWEITE, unabhängige Achse für die

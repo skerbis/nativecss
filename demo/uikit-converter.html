@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - UIkit-Konverter</title>
+<meta name="description" content="UIkit-3-Markup im Browser nach NativeCSS umstellen - PHP/Twig bleiben unangetastet, Bericht mit Zeilennummern.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../dist/js/theme-toggle-early.js"></script>
+<link rel="stylesheet" href="../dist/ncss.css">
+<link rel="stylesheet" href="assets/uikit-converter.css">
+<script src="../dist/js/theme-toggle.js" defer></script>
+<script type="module" src="assets/js/uikit-converter.js"></script>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<main id="main">
+  <div class="ncss-container ncss-stack ncss-py-xl">
+    <div class="ncss-flex ncss-flex--between">
+      <h1>UIkit → NativeCSS</h1>
+      <button type="button" class="ncss-theme-toggle" data-ncss-theme-toggle>
+        <span class="ncss-icon ncss-icon-moon ncss-theme-icon-dark" aria-hidden="true"></span>
+        <span class="ncss-icon ncss-icon-sun ncss-theme-icon-light" aria-hidden="true"></span>
+      </button>
+    </div>
+    <p class="ncss-text-lead">UIkit-3-Markup einfügen oder Dateien wählen: Klassen werden umbenannt, <code>uk-modal</code>/<code>uk-offcanvas</code> zu <code>&lt;dialog&gt;</code>, <code>uk-toggle</code> zu <code>command</code>/<code>commandfor</code>, Akkordeons zu <code>&lt;details name&gt;</code>, <code>uk-grid</code> zu <code>.ncss-grid</code> ohne Breakpoints. PHP, Twig und REDAXO-Platzhalter bleiben Zeichen für Zeichen erhalten. Was ein Mensch prüfen muss, steht mit Zeilennummer im Bericht. Alles läuft lokal im Browser - nichts wird hochgeladen.</p>
+    <p class="ncss-text-sm ncss-text-muted">Kommandozeile für ganze Projekte: <code>node tools/uikit-to-ncss/convert.mjs templates/ --write</code> · Grundlage: <a href="../docs/de/uikit-migration.html">Von UIkit3 nach ncss</a></p>
+
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="uc-pick">Dateien wählen</button>
+      <input hidden type="file" id="uc-files" aria-label="UIkit-Dateien" multiple accept=".html,.htm,.php,.phtml,.twig,.tpl,.vue,.svelte,.astro,.hbs,.njk,.liquid,.erb">
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="uc-example">Beispiel laden</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" id="uc-clear">Leeren</button>
+      <label class="ncss-label" for="uc-lang">Sprache der eingefügten Labels</label>
+      <select class="ncss-select uc-lang" id="uc-lang">
+        <option value="">automatisch (&lt;html lang&gt;)</option>
+        <option value="de">Deutsch</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+    <ul class="ncss-cluster ncss-list--plain" id="uc-file-list" role="list" aria-label="Konvertierte Dateien" hidden></ul>
+
+    <div class="ncss-grid" style="--ncss-grid-min: 22rem;">
+      <div class="ncss-field">
+        <label class="ncss-label" for="uc-input">UIkit-Markup</label>
+        <textarea class="ncss-textarea uc-code" id="uc-input" rows="22" spellcheck="false" placeholder="&lt;div class=&quot;uk-card uk-card-default&quot;&gt;…"></textarea>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="uc-output">NativeCSS-Markup</label>
+        <textarea class="ncss-textarea uc-code" id="uc-output" rows="22" spellcheck="false" readonly></textarea>
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--primary" id="uc-copy">Kopieren</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary" id="uc-download">Herunterladen</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="ncss-stack" aria-labelledby="uc-report-title">
+      <h2 id="uc-report-title">Bericht</h2>
+      <p id="uc-summary" role="status" aria-live="polite">Noch nichts konvertiert.</p>
+      <ol class="ncss-list--divided uc-report" id="uc-report" role="list"></ol>
+    </section>
+  </div>
+</main>
+</body>
+</html>

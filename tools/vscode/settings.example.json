@@ -1,0 +1,5 @@
+{
+  "html.customData": ["./tools/vscode/ncss.html-data.json"],
+  "css.customData": ["./tools/vscode/ncss.css-data.json"],
+  "css.styleSheets": ["dist/**/*.css"]
+}

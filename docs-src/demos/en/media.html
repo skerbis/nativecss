@@ -1,0 +1,210 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .demo-video-single {
+    /* min(), nicht nur 32rem: sonst überschreibt diese Regel reset.css' max-width:100%
+       auf sehr schmalen Viewports (per echtem Test bei 375px gefunden) - eine
+       Seiten-eigene Klasse soll die Sicherheitsgrenze verengen dürfen, nie aufheben. */
+    max-width: min(32rem, 100%);
+  }
+  .demo-video-grid {
+    --ncss-grid-min: 14rem;
+  }
+</style>
+<script src="~/dist/js/hero-video-motion.js" defer></script>
+-->
+  <section class="ncss-stack">
+    <p class="ncss-text-muted">Images and local videos should be equally easy to handle - reset.css treats both identically (<code>display:block; max-width:100%; height:auto</code>).</p>
+    <pre><code class="language-html">&lt;img class="ncss-ratio-video ncss-img-cover ncss-radius-md" src="image.jpg" alt="Description"&gt;</code></pre>
+  </section>
+
+  <section id="video" class="ncss-stack">
+    <h2 class="demo-section-title">Video</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Simplest case - no class needed, <code>poster</code> + <code>controls</code>
+      give you "click to play" fully natively:
+    </p>
+    <video src="~/demo/assets/sample-clip.mp4" poster="~/demo/assets/sample-poster.jpg" controls class="demo-video-single"></video>
+
+    <p class="ncss-text-muted ncss-text-sm">With a fixed aspect ratio (<code>.ncss-video</code> + <code>.ncss-ratio-video</code>, e.g. for a grid):</p>
+    <div class="ncss-grid demo-video-grid">
+      <div class="ncss-video ncss-ratio-video">
+        <video src="~/demo/assets/sample-clip.mp4" poster="~/demo/assets/sample-poster.jpg" controls></video>
+      </div>
+      <figure class="ncss-video ncss-ratio-video">
+        <video src="~/demo/assets/sample-clip.mp4" poster="~/demo/assets/sample-poster.jpg" controls></video>
+        <figcaption>With a caption (figcaption, as with &lt;img&gt;)</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="video-art-direction" class="ncss-stack">
+    <h2 class="demo-section-title">Video: crop per screen size</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      For <code>&lt;video&gt;</code> there is (unlike <code>&lt;picture&gt;</code> for
+      images) NO reliable native "different file per breakpoint" -
+      <code>&lt;source media="..."&gt;</code> was removed again from the spec and most
+      browsers (only Safari still supports it as a legacy feature). <code>.ncss-video--responsive-crop</code>
+      instead crops THE SAME video differently via <code>object-fit</code> -
+      make the window narrower and the crop turns portrait.
+    </p>
+    <div class="ncss-video ncss-video--responsive-crop demo-video-single">
+      <video src="~/demo/assets/sample-clip.mp4" poster="~/demo/assets/sample-poster.jpg" controls></video>
+    </div>
+  </section>
+
+  <section id="live-cover" class="ncss-stack">
+    <h2 class="demo-section-title">Cover: fully cropping embeds</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-img-cover</code> (above) is enough for <code>&lt;img&gt;</code>/<code>&lt;video&gt;</code> -
+      <code>components/cover.css</code> covers the one case native
+      <code>object-fit</code> does NOT solve: <code>&lt;iframe&gt;</code> embeds. Two containers with
+      the same 16:9 embed and different aspect ratios - both completely
+      filled, no borders, no distortion:
+    </p>
+    <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+      <div class="ncss-cover-container ncss-radius-md" style="height: 8rem;">
+        <iframe class="ncss-cover" title="Demo embed (wide)" srcdoc="&lt;body style='margin:0;height:100vh;background:linear-gradient(135deg,#4f46e5,#0f766e);display:flex;align-items:center;justify-content:center;font-family:sans-serif;color:#fff;'&gt;16:9&lt;/body&gt;"></iframe>
+      </div>
+      <div class="ncss-cover-container ncss-radius-md" style="height: 16rem;">
+        <iframe class="ncss-cover" title="Demo embed (tall)" srcdoc="&lt;body style='margin:0;height:100vh;background:linear-gradient(135deg,#4f46e5,#0f766e);display:flex;align-items:center;justify-content:center;font-family:sans-serif;color:#fff;'&gt;16:9&lt;/body&gt;"></iframe>
+      </div>
+    </div>
+    <pre><code class="language-html">&lt;div class="ncss-cover-container" style="height: 20rem;"&gt;
+  &lt;iframe class="ncss-cover" src="https://www.youtube.com/embed/..." title="..." allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+
+  <section id="live-overlay" class="ncss-stack">
+    <h2 class="demo-section-title">Overlay: panel over an image</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>components/overlay.css</code> - a caption (<code>--bottom --scrim</code>,
+      always visible) and a CTA that only appears on hover (<code>--center</code>,
+      combined with <code>.ncss-reveal-on-hover</code>):
+    </p>
+    <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+      <div class="ncss-overlay-container ncss-radius-md">
+        <img src="~/demo/assets/art-direction-desktop.jpg" alt="Sample image">
+        <div class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim">
+          <p class="ncss-text-light">Always visible</p>
+        </div>
+      </div>
+      <div class="ncss-overlay-container ncss-radius-md">
+        <img src="~/demo/assets/art-direction-desktop.jpg" alt="Sample image">
+        <div class="ncss-overlay ncss-overlay--tint ncss-reveal-on-hover">
+          <div class="ncss-overlay ncss-overlay--center">
+            <button type="button" class="ncss-btn ncss-btn--primary">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="art-direction" class="ncss-stack">
+    <h2 class="demo-section-title">Images: art direction (&lt;picture&gt;)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      For images this IS possible natively and reliably - <code>&lt;picture&gt;</code> with
+      several <code>&lt;source media="..."&gt;</code> loads a different image file (not just
+      a different crop of the same file) depending on the viewport. Make the window narrower than
+      48rem to see the other file (orange instead of color bars):
+    </p>
+    <picture>
+      <source media="(max-width: 47.99rem)" srcset="~/demo/assets/art-direction-mobile.jpg">
+      <img src="~/demo/assets/art-direction-desktop.jpg" alt="Sample image for art direction" class="demo-video-single">
+    </picture>
+  </section>
+
+  <section id="live-bilder" class="ncss-stack">
+    <h2 class="demo-section-title">Images (aspect-ratio, focal point)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>--ncss-focus-point</code> (tokens.css) controls <code>object-position</code> -
+      default <code>center</code>, overridable per image
+      (<code>style="--ncss-focus-point: 20% 80%"</code>) when the subject shouldn't sit
+      centered after cropping. Both tiles below show the same image, just with a different
+      focal point:
+    </p>
+    <div class="ncss-grid demo-video-grid">
+      <div class="ncss-ratio-square"><img src="~/demo/assets/art-direction-desktop.jpg" alt=""></div>
+      <div class="ncss-ratio-square" style="--ncss-focus-point: 100% 50%;"><img src="~/demo/assets/art-direction-desktop.jpg" alt=""></div>
+    </div>
+    <p class="ncss-text-muted ncss-text-sm">Placeholder tiles (without a real image):</p>
+    <div class="ncss-grid demo-video-grid">
+      <div class="ncss-ratio-video ncss-placeholder"></div>
+      <div class="ncss-ratio-square ncss-placeholder"></div>
+      <div class="ncss-ratio-portrait ncss-placeholder"></div>
+    </div>
+  </section>
+
+  <section id="live-hero" class="ncss-stack">
+    <h2 class="demo-section-title">Hero section (image background + content on top)</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      <code>.ncss-hero</code> places content over a background image - two independent
+      options: the content panel <code>--transparent</code> (text directly on the image, with a
+      gradient scrim) or <code>--filled</code> (opaque card), and optionally
+      <code>.ncss-hero--parallax</code> (the image scrolls slower than the content - scroll
+      the page to try it).
+    </p>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>1.</strong> Transparent - text directly on the image</p>
+    <section class="ncss-hero">
+      <div class="ncss-hero-media" style="background-image: url(~/demo/assets/art-direction-desktop.jpg);"></div>
+      <div class="ncss-hero-content ncss-hero-content--transparent">
+        <h3 class="ncss-text-inherit">Text right on the image</h3>
+        <p class="ncss-text-inherit">A gradient scrim (<code>.ncss-hero-media::after</code>) keeps it readable, whatever the subject underneath.</p>
+      </div>
+    </section>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>2.</strong> Filled - opaque card on top</p>
+    <section class="ncss-hero">
+      <div class="ncss-hero-media" style="background-image: url(~/demo/assets/art-direction-desktop.jpg);"></div>
+      <div class="ncss-hero-content ncss-hero-content--filled">
+        <h3>Card on top</h3>
+        <p>The image stays visible, but the text sits on its own opaque surface (<code>--ncss-color-surface</code>) instead of directly on the subject.</p>
+      </div>
+    </section>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>3.</strong> Parallax (<code>.ncss-hero--parallax</code>) - watch while scrolling</p>
+    <section class="ncss-hero ncss-hero--parallax">
+      <div class="ncss-hero-media" style="background-image: url(~/demo/assets/art-direction-desktop.jpg);"></div>
+      <div class="ncss-hero-content ncss-hero-content--transparent">
+        <h3 class="ncss-text-inherit">Parallax hero</h3>
+        <p class="ncss-text-inherit">
+          Runs purely on <code>animation-timeline: view()</code> - no JS, no
+          <code>background-attachment: fixed</code> (deliberately never supported on
+          iOS Safari). Without support or with reduced motion it simply stays
+          a static hero image like the one above.
+        </p>
+      </div>
+    </section>
+
+    <p class="ncss-text-sm ncss-text-muted"><strong>4.</strong> Background video instead of an image (<code>&lt;video&gt;</code> in <code>.ncss-hero-media</code>)</p>
+    <section class="ncss-hero">
+      <div class="ncss-hero-media">
+        <video src="~/demo/assets/sample-clip.mp4" autoplay muted loop playsinline poster="~/demo/assets/sample-poster.jpg"></video>
+      </div>
+      <div class="ncss-hero-content ncss-hero-content--transparent">
+        <h3 class="ncss-text-inherit">Video hero</h3>
+        <p class="ncss-text-inherit"><code>object-fit: cover</code> instead of <code>background-size</code> - works reliably with <code>&lt;video&gt;</code>. <code>js/hero-video-motion.js</code> (included below) suppresses <code>autoplay</code> under <code>prefers-reduced-motion: reduce</code>.</p>
+      </div>
+    </section>
+  </section>
+
+  <section id="audio" class="ncss-stack">
+    <h2 class="demo-section-title">Audio</h2>
+    <p class="ncss-text-muted ncss-text-sm">
+      Native <code>&lt;audio controls&gt;</code> can hardly be restyled (browser-owned
+      controls) - <code>.ncss-audio</code> only ensures a consistent width,
+      <code>.ncss-audio-card</code> optionally adds a title.
+    </p>
+    <audio src="~/demo/assets/sample-audio.m4a" controls class="ncss-audio"></audio>
+    <figure class="ncss-audio-card">
+      <figcaption>Sample sound (sine wave, 6s)</figcaption>
+      <audio src="~/demo/assets/sample-audio.m4a" controls class="ncss-audio"></audio>
+    </figure>
+  </section>

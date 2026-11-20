@@ -69,9 +69,12 @@
         var name = choice === "light" ? label(btn, "lightName") : choice === "dark" ? label(btn, "darkName") : label(btn, "system");
         var target = btn.querySelector("[data-ncss-theme-label]");
         if (target) {
+          // Sichtbarer Text ist der Name (WCAG 2.5.3 Label in Name) - kein abweichendes aria-label
           target.textContent = name;
+          btn.removeAttribute("aria-label");
+        } else {
+          btn.setAttribute("aria-label", label(btn, "cycle") + ": " + name);
         }
-        btn.setAttribute("aria-label", label(btn, "cycle") + ": " + name);
         return;
       }
       var dark = mode === "dark";
@@ -124,4 +127,9 @@
   } else {
     sync();
   }
+  // Klicks laufen bereits per Delegation am document (funktionieren also auch für später
+  // eingefügte Schalter) - nur aria-pressed/-label/Beschriftung neuer Schalter muss nach
+  // einem "ncss-content-change"-Event (htmx, fetch+innerHTML, siehe
+  // js/content-observer.js) einmal nachgezogen werden. sync() ist idempotent.
+  document.addEventListener("ncss-content-change", sync);
 })();

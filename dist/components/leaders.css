@@ -1,0 +1,99 @@
+/**
+ * ncss - Führungspunkte / Leader Lines (Layer "components"): "Kaffee ........ 3,50 €" für
+ * Preislisten, Speisekarten, Inhaltsverzeichnisse, technische Daten. Reines CSS, kein JS.
+ * Braucht nur colors.css + tokens.css (+ reset/base).
+ *
+ * Die Punkte sind ein leeres ::after mit gepunktetem Rand - kein Text, also liest der
+ * Screenreader nur Name und Preis ("Kaffee, 3,50 €"), keine "Punkt Punkt Punkt". Bricht
+ * der Name um, stehen Punkte und Preis an der LETZTEN Zeile (align-items: last baseline).
+ * Alles in logischen Eigenschaften - in RTL laufen die Punkte automatisch von rechts.
+ *
+ * Markup A - Beschreibungsliste (empfohlen für Name/Wert-Paare):
+ *   <dl class="ncss-leaders">
+ *     <div class="ncss-leaders-item">
+ *       <dt>Kaffee</dt>
+ *       <dd>3,50 €</dd>
+ *       <dd class="ncss-leaders-desc">Bohnen aus Äthiopien, Hafermilch +0,50 €</dd>   (optional)
+ *     </div>
+ *   </dl>
+ * Ein <div> je Paar ist laut HTML-Spec erlaubt und hier nötig (Flex-Zeile pro Eintrag).
+ *
+ * Markup B - Liste (z.B. Inhaltsverzeichnis mit Seitenzahl):
+ *   <ul class="ncss-leaders" role="list">
+ *     <li class="ncss-leaders-item">
+ *       <span class="ncss-leaders-name"><a href="#k1">Einleitung</a></span>
+ *       <span class="ncss-leaders-value">4</span>
+ *     </li>
+ *   </ul>
+ *
+ * Gemischter Inhalt im Namen (Text + <small>/<a>/Icon) bitte in EIN <span> fassen - der
+ * Name ist intern eine Flex-Zeile, jedes lose Kind würde sonst ein eigenes Stück.
+ *
+ * Varianten: .ncss-leaders--dashed / --line (Strich statt Punkte), .ncss-leaders--compact.
+ * Properties: --ncss-leaders-style (dotted|dashed|solid), --ncss-leaders-color,
+ * --ncss-leaders-gap (Abstand zwischen den Einträgen).
+ */
+
+.ncss-leaders {
+  --ncss-leaders-style: dotted;
+  display: grid;
+  gap: var(--ncss-leaders-gap, var(--ncss-space-xs));
+  margin: 0 0 var(--ncss-space-md);
+  padding: 0;
+  list-style: none;
+}
+
+.ncss-leaders-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: last baseline;
+  column-gap: var(--ncss-space-2xs);
+}
+
+/* Name: darf schrumpfen und umbrechen; das ::after-Füllstück wächst in den Restplatz. */
+.ncss-leaders-item > :is(dt, .ncss-leaders-name) {
+  flex: 1 1 0;
+  display: flex;
+  align-items: last baseline;
+  min-inline-size: min(8rem, 100%);
+  margin: 0;
+  font-weight: var(--ncss-font-weight-semibold);
+}
+.ncss-leaders-item > :is(dt, .ncss-leaders-name)::after {
+  content: "";
+  flex: 1 0 1.5rem;
+  min-inline-size: 1.5rem;
+  margin-inline-start: var(--ncss-space-2xs);
+  /* Leeres Element: seine "Grundlinie" ist die Unterkante - der Rand landet dadurch
+     knapp unter der Textgrundlinie; ein kleiner Versatz hebt ihn auf Punkthöhe. */
+  translate: 0 -0.25em;
+  border-block-end: 2px var(--ncss-leaders-style) var(--ncss-leaders-color, var(--ncss-color-text-muted));
+}
+
+/* Wert (Preis, Seitenzahl): nie umbrechen, rechtsbündig (in RTL linksbündig). */
+.ncss-leaders-item > :is(dd, .ncss-leaders-value):not(.ncss-leaders-desc) {
+  flex: none;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--ncss-font-weight-semibold);
+  text-align: end;
+  white-space: nowrap;
+}
+
+/* Beschreibung: eigene Zeile unter dem Paar. */
+.ncss-leaders-desc {
+  flex: 1 1 100%;
+  margin: var(--ncss-space-3xs) 0 0;
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+}
+
+.ncss-leaders--dashed { --ncss-leaders-style: dashed; }
+.ncss-leaders--line   { --ncss-leaders-style: solid; }
+.ncss-leaders--compact { --ncss-leaders-gap: var(--ncss-space-3xs); }
+
+@media (forced-colors: active) {
+  .ncss-leaders-item > :is(dt, .ncss-leaders-name)::after {
+    border-block-end-color: CanvasText;
+  }
+}

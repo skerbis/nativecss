@@ -1,0 +1,137 @@
+<!--DESC: Maps with MapLibre GL as the <ncss-map> web component: proxy addresses for privacy without third-party contact, two-click mode, lazy loading, dark mode, keyboard and fallback content without JS.-->
+<!--FOOT: <script src="~/dist/js/map.js"></script>-->
+<section class="ncss-stack">
+  <h1>Maps</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>&lt;ncss-map&gt;</code> shows an interactive vector map with <a href="https://maplibre.org/">MapLibre GL</a> (self-hosted in <code>vendor/maplibre/</code>, BSD-3-Clause). The main goal is privacy: with the <code>proxy</code> attribute <strong>every</strong> request of the map goes through your own server - visitors never connect to a map provider directly. Files: <code>components/map.css</code> + <code>js/map.js</code>, usable on their own (only <code>colors.css</code>/<code>tokens.css</code>/<code>reset.css</code>/<code>base.css</code> required).</p>
+</section>
+
+<section class="ncss-stack" id="example">
+  <h2 class="demo-section-title">Live example</h2>
+  <p class="ncss-text-muted ncss-text-sm">This documentation is a static site (GitHub Pages) without a server proxy. The map below therefore loads directly from <a href="https://openfreemap.org/">OpenFreeMap</a> (<code>tiles.openfreemap.org</code>) - but <strong>only after you click</strong> “Show map” (two-click mode). Nothing is loaded from third parties before that. On your own website set <code>proxy</code> instead, then the click is no longer needed.</p>
+  <ncss-map lat="53.50" lng="13.20" zoom="11" label="Lake Tollense" consent>
+    <p><strong>Lake Tollense</strong> (Tollensesee) near Neubrandenburg, Mecklenburg-Western Pomerania, Germany</p>
+    <p><a href="https://www.openstreetmap.org/?mlat=53.50&amp;mlon=13.20#map=11/53.50/13.20">Open Lake Tollense in OpenStreetMap</a></p>
+  </ncss-map>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss/components/map.css"&gt;   &lt;!-- already part of ncss.css --&gt;
+&lt;script src="ncss/js/map.js"&gt;&lt;/script&gt;
+
+&lt;ncss-map lat="53.50" lng="13.20" zoom="11" label="Lake Tollense"
+          proxy="/proxy/ofm/"&gt;
+  &lt;p&gt;&lt;strong&gt;Lake Tollense&lt;/strong&gt; near Neubrandenburg&lt;/p&gt;
+  &lt;p&gt;&lt;a href="https://www.openstreetmap.org/?mlat=53.50&amp;amp;mlon=13.20#map=11/53.50/13.20"&gt;
+    Open in OpenStreetMap&lt;/a&gt;&lt;/p&gt;
+&lt;/ncss-map&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Controls: <kbd>Tab</kbd> to the map, <kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> pan, <kbd>+</kbd>/<kbd>−</kbd> zoom, with <code>view3d</code> <kbd>Shift</kbd> + arrows rotate and tilt. The mouse wheel only zooms with <kbd>Ctrl</kbd>/<kbd>⌘</kbd>, on touch two fingers pan (<code>cooperativeGestures</code>) - so page scrolling is never hijacked.</p>
+</section>
+
+<section class="ncss-stack" id="privacy">
+  <h2 class="demo-section-title">Privacy: a proxy instead of third parties</h2>
+  <p>A web map loads a style (JSON), tiles, fonts (glyphs) and icons (sprites) - normally straight from the map provider, and every request transmits the visitor's IP address. With <code>proxy</code>, <code>&lt;ncss-map&gt;</code> rewrites each of these requests through MapLibre's <code>transformRequest</code> to your server, which fetches (and can cache) the data. Result: <strong>no contact with third parties</strong>, no consent required, no cookies.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Form</th><th scope="col">Example</th><th scope="col"><code>https://tiles.openfreemap.org/planet/…/1/0/0.pbf</code> becomes</th></tr></thead>
+      <tbody>
+        <tr><td>Prefix (origin is replaced)</td><td><code>proxy="/proxy/ofm/"</code></td><td><code>/proxy/ofm/planet/…/1/0/0.pbf</code></td></tr>
+        <tr><td>Template with <code>{url}</code> (URL-encoded)</td><td><code>proxy="/proxy?url={url}"</code></td><td><code>/proxy?url=https%3A%2F%2Ftiles.openfreemap.org%2Fplanet%2F…</code></td></tr>
+        <tr><td>Template with <code>{host}</code>/<code>{path}</code></td><td><code>proxy="/proxy/{host}/{path}"</code></td><td><code>/proxy/tiles.openfreemap.org/planet/…/1/0/0.pbf</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">By default every foreign origin is rewritten (everything except your own page and the proxy itself); <code>proxy-origins="tiles.openfreemap.org"</code> limits this to specific servers. The prefix form fits when all data comes from one server (OpenFreeMap: style, TileJSON, tiles, glyphs and sprites all live on <code>tiles.openfreemap.org</code>). If your style references several servers, use the <code>{url}</code> template.</p>
+
+  <h3>nginx</h3>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-nginx"># /proxy/ofm/… -> https://tiles.openfreemap.org/… (cached)
+proxy_cache_path /var/cache/nginx/ofm levels=1:2 keys_zone=ofm:10m max_size=2g inactive=30d;
+
+server {
+  # …
+  location /proxy/ofm/ {
+    proxy_pass https://tiles.openfreemap.org/;
+    proxy_ssl_server_name on;
+    proxy_set_header Host tiles.openfreemap.org;
+    proxy_set_header Cookie "";
+    proxy_set_header X-Forwarded-For "";      # do NOT pass on the visitor's IP
+    proxy_hide_header Set-Cookie;
+    proxy_cache ofm;
+    proxy_cache_valid 200 1d;
+    add_header X-Cache $upstream_cache_status;
+  }
+}</code></pre>
+
+  <h3>PHP (one file, with an allowlist)</h3>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-php">&lt;?php
+// proxy.php - call: /proxy.php?url={url}  →  &lt;ncss-map proxy="/proxy.php?url={url}"&gt;
+// Sketch: add caching, a size limit and rate limiting before production use.
+$allow = ['tiles.openfreemap.org'];               // ONLY these hosts - otherwise an open relay
+$url   = (string) ($_GET['url'] ?? '');
+$parts = parse_url($url);
+if (($parts['scheme'] ?? '') !== 'https' || !in_array($parts['host'] ?? '', $allow, true)) {
+    http_response_code(403);
+    exit;
+}
+$ch = curl_init($url);
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER =&gt; true,
+    CURLOPT_FOLLOWLOCATION =&gt; false,
+    CURLOPT_TIMEOUT        =&gt; 15,
+    CURLOPT_USERAGENT      =&gt; 'site-map-proxy',     // pass on no visitor data
+]);
+$body = curl_exec($ch);
+$code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE) ?: 502;
+$type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE) ?: 'application/octet-stream';
+http_response_code($code);
+header('Content-Type: ' . $type);
+header('Cache-Control: public, max-age=86400');
+echo $body;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">The <strong>allowlist</strong> matters: a proxy that fetches arbitrary URLs is an open relay. A proxy that serves style JSON with already rewritten addresses is fine too - addresses on your own page or the proxy are not rewritten a second time.</p>
+  <div class="ncss-alert ncss-alert--info">
+    <p><strong>Built in:</strong> the REDAXO add-on <em>fluid</em> already ships a map proxy for OpenFreeMap (<code>/proxy/ofm/…</code>, with caching and an area limit) - there <code>proxy="/proxy/ofm/"</code> is all you need.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="fallback">
+  <h2 class="demo-section-title">Fallback content and two-click mode</h2>
+  <p>Whatever you put inside <code>&lt;ncss-map&gt;</code> - an address, directions, a link to OpenStreetMap - is the <strong>fallback content</strong>. It is visible without JavaScript, while the map has not loaded yet and if loading fails (then with the note “The map could not be loaded.”). The element is never empty. Only once the map has finished drawing does it cover the fallback; the fallback stays in the accessibility tree and reappears at the bottom of the map when a link inside it receives keyboard focus. With <code>fallback="below"</code> it stays visible below the map.</p>
+  <p><strong>Lazy loading:</strong> MapLibre (about 1.1 MB) loads only when the map scrolls near the viewport. Until then a calm grid reserves the space, nothing jumps.</p>
+  <p><strong>Two-click mode</strong> (<code>consent</code>): instead of loading automatically, the map shows a short privacy note and a “Show map” button. Without <code>proxy</code> the note names the map server and says that the IP address is transmitted; with <code>proxy</code> it says that your server fetches the data. <code>privacy-url</code> adds a link to your privacy policy. When the device reports Save-Data the mode turns on automatically - nobody downloads a megabyte of map unasked.</p>
+</section>
+
+<section class="ncss-stack" id="attributes">
+  <h2 class="demo-section-title">Attributes</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribute / API</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>lat</code>, <code>lng</code></td><td>Center and marker position (decimal degrees)</td></tr>
+        <tr><td><code>zoom="14"</code></td><td>Zoom level (0-22)</td></tr>
+        <tr><td><code>label</code></td><td>Name of the place - label of the marker and the map (“Map: …”)</td></tr>
+        <tr><td><code>marker="off"</code></td><td>no marker</td></tr>
+        <tr><td><code>style-url</code></td><td>MapLibre style (JSON URL). Default: OpenFreeMap “liberty”</td></tr>
+        <tr><td><code>style-url-dark</code></td><td>Style in dark mode. Default: OpenFreeMap “dark” (only if <code>style-url</code> is missing too)</td></tr>
+        <tr><td><code>proxy</code></td><td>Prefix (<code>/proxy/ofm/</code>) or template with <code>{url}</code>, <code>{host}</code>, <code>{path}</code> - see <a href="#privacy">Privacy</a></td></tr>
+        <tr><td><code>proxy-origins</code></td><td>rewrite only these origins (space/comma separated). Default: all foreign ones</td></tr>
+        <tr><td><code>consent</code></td><td>Two-click mode; automatic with Save-Data, <code>consent="off"</code> disables both</td></tr>
+        <tr><td><code>privacy-url</code></td><td>“Privacy” link in the two-click note</td></tr>
+        <tr><td><code>view3d</code></td><td>3D buildings, tilted camera, compass/pitch control (styles using the OpenMapTiles schema)</td></tr>
+        <tr><td><code>fallback="below"</code></td><td>keep the fallback visible below the map after loading</td></tr>
+        <tr><td><code>vendor</code></td><td>Folder with <code>maplibre-gl.mjs</code>/<code>.css</code>. Default: <code>../../vendor/maplibre/</code> relative to <code>js/map.js</code> (like <code>&lt;ncss-icon&gt;</code>); set it when loading as an ES module</td></tr>
+        <tr><td><code>data-label-show</code>, <code>-note</code>, <code>-noteproxy</code>, <code>-privacy</code>, <code>-error</code>, <code>-map</code>, <code>-canvas</code>, <code>-marker</code>, <code>-zoomin</code>, <code>-zoomout</code>, <code>-compass</code>, <code>-attribution</code>, <code>-winhelp</code>, <code>-machelp</code>, <code>-mobilehelp</code></td><td>Override texts (German/English by <code>&lt;html lang&gt;</code>); <code>{host}</code> in <code>note</code> = map server</td></tr>
+        <tr><td><code>el.map</code>, <code>el.show()</code></td><td>MapLibre instance (after loading), load now</td></tr>
+        <tr><td><code>ncss-map-consent</code>, <code>ncss-map-load</code>, <code>ncss-map-error</code>, <code>ncss-map-theme</code></td><td>Events (bubble); <code>load</code>: <code>detail.map</code>, <code>theme</code>: <code>detail.dark</code>, <code>detail.style</code></td></tr>
+        <tr><td><code>--ncss-map-height</code>, <code>-radius</code>, <code>-accent</code>, <code>-bg</code>, <code>-line</code></td><td>Custom properties (height, corners, marker/button, placeholder grid)</td></tr>
+        <tr><td><code>data-state</code></td><td>set by the script: <code>idle</code>, <code>consent</code>, <code>loading</code>, <code>ready</code>, <code>error</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="accessibility">
+  <h2 class="demo-section-title">Accessibility, dark mode, motion</h2>
+  <ul>
+    <li>The map is a named region (“Map: Lake Tollense”); the map surface itself is focusable and announces its keys, the marker has an <code>aria-label</code>. Focus is clearly visible on the map, buttons and links.</li>
+    <li>A map is barely usable with a screen reader - so the fallback content is the real text alternative: always put the address and a link in it.</li>
+    <li><strong>Dark mode:</strong> when <code>&lt;html data-theme-resolved="dark"&gt;</code> (or <code>data-theme="dark"</code>, or a dark system setting) applies, the map loads <code>style-url-dark</code> - live when switching, including via <a href="a11y-preferences.html"><code>&lt;ncss-preferences&gt;</code></a>.</li>
+    <li><strong>Reduced motion</strong> (<code>prefers-reduced-motion</code> or <code>&lt;html data-motion="reduce"&gt;</code>): no camera flights, no cross-fade, <code>view3d</code> starts tilted right away.</li>
+    <li><strong>Forced colors:</strong> system colors for border, note and button, the marker stays visible.</li>
+  </ul>
+</section>

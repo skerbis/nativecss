@@ -1,0 +1,142 @@
+/**
+ * ncss - <ncss-video-float> (Layer "components"): schwebender Mini-Player. Ein
+ * LAUFENDES Video, das aus dem Bild gescrollt wird, dockt an eine Fensterecke an und
+ * kehrt beim Zurückscrollen an seinen Platz zurück (js/video-float.js).
+ *
+ *   <ncss-video-float>
+ *     <div class="ncss-video-float-frame">
+ *       <video controls playsinline poster="poster.jpg" src="film.mp4"></video>
+ *       <!-- oder ein <ncss-video-player> -->
+ *     </div>
+ *   </ncss-video-float>
+ *
+ * Das Element bleibt als Platzhalter im Fluss (hält seine Höhe, nichts springt), nur der
+ * Rahmen (.ncss-video-float-frame) wird fixiert. Angedockt erhält er eine Kopfleiste mit
+ * "Schließen"-Button (Text + Symbol) - pausiert und dockt ab; erst nach erneutem
+ * Sichtbarwerden dockt der Player wieder an. Esc im angedockten Player tut dasselbe.
+ *
+ * Attribut position="start" (links unten statt rechts) bzw. position="top-end".
+ * Anpassbar: --ncss-video-float-width (Default min(22rem, 100vw - 2 × Abstand)),
+ * --ncss-video-float-gap (Abstand zum Fensterrand), --ncss-video-float-z.
+ *
+ * Ohne JS: normales Video im Fluss.
+ * Benötigt: tokens.css + colors.css.
+ */
+
+ncss-video-float {
+  --ncss-video-float-gap: var(--ncss-space-sm);
+  --ncss-video-float-width: min(22rem, calc(100vw - 2 * var(--ncss-video-float-gap)));
+  --ncss-video-float-z: calc(var(--ncss-topbar-z, 50) - 1);
+  position: relative;
+  display: block;
+}
+
+.ncss-video-float-frame {
+  position: relative;
+  border-radius: inherit;
+
+  & > video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: inherit;
+  }
+}
+
+ncss-video-float.is-docked {
+  min-height: var(--ncss-video-float-height, auto);
+}
+
+.ncss-video-float-close {
+  display: none;
+}
+
+/* --- angedockt ------------------------------------------------------------------------ */
+ncss-video-float.is-docked > .ncss-video-float-frame {
+  position: fixed;
+  z-index: var(--ncss-video-float-z);
+  bottom: var(--ncss-video-float-gap);
+  inset-inline-end: var(--ncss-video-float-gap);
+  width: var(--ncss-video-float-width);
+  padding-top: 2.5rem;
+  overflow: clip;
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  box-shadow: var(--ncss-shadow-lg);
+  animation: ncss-video-float-in var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized) both;
+
+  & > video,
+  & > ncss-video-player {
+    border-radius: 0;
+  }
+  & > .ncss-video-float-close {
+    position: absolute;
+    top: 0.25rem;
+    inset-inline-end: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: 2rem;
+    padding: 0.25em 0.75em;
+    font: inherit;
+    font-size: var(--ncss-font-size-sm);
+    line-height: 1;
+    color: var(--ncss-color-text);
+    background-color: var(--ncss-color-surface);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-full);
+    cursor: pointer;
+
+    &::before {
+      content: "";
+      width: 0.85em;
+      height: 0.85em;
+      background-color: currentColor;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6L18 18M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+    &:active {
+      background-color: var(--ncss-color-bg-subtle);
+    }
+    &:focus-visible {
+      outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+      outline-offset: 2px;
+    }
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  ncss-video-float.is-docked .ncss-video-float-close:hover:not(:active) {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+ncss-video-float[position="start"].is-docked > .ncss-video-float-frame {
+  inset-inline: var(--ncss-video-float-gap) auto;
+}
+ncss-video-float[position="top-end"].is-docked > .ncss-video-float-frame {
+  top: calc(var(--ncss-video-float-gap) + var(--ncss-topbar-height, 0px));
+  bottom: auto;
+}
+
+@keyframes ncss-video-float-in {
+  from {
+    opacity: 0;
+    translate: 0 1.5rem;
+  }
+}
+
+@media (forced-colors: active) {
+  ncss-video-float.is-docked > .ncss-video-float-frame {
+    border: 2px solid CanvasText;
+  }
+}
+@media print {
+  ncss-video-float.is-docked > .ncss-video-float-frame {
+    position: static;
+    animation: none;
+    box-shadow: none;
+  }
+  .ncss-video-float-close {
+    visibility: hidden;
+  }
+}

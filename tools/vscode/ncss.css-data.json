@@ -1,0 +1,2957 @@
+{
+ "version": 1.1,
+ "properties": [
+  {
+   "name": "--ncss-alert-bar-inset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-alert-bar-inset: 0.6rem (Fallback in var());\n```\nQuelle: `components/alert.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-alert-bg",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-alert-bg: var(--ncss-color-brand-100);\n```\nQuelle: `components/alert.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-alert-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-alert-color: var(--ncss-color-brand);\n```\nQuelle: `components/alert.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-alert-icon",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-alert-icon: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.5'/%3E%3C/svg%3E\");\n```\nQuelle: `components/alert.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-alert-text",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-alert-text: var(--ncss-color-brand-on-soft);\n```\nQuelle: `components/alert.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-app-shell-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-app-shell-height: 100svh (Fallback in var());\n```\nQuelle: `components/app-shell.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-app-shell-sidebar-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-app-shell-sidebar-width: 16rem (Fallback in var());\n```\nQuelle: `components/app-shell.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aspect-portrait",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-aspect-portrait: 3 / 4;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aspect-square",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-aspect-square: 1 / 1;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aspect-video",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-aspect-video: 16 / 9;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-accent: var(--ncss-color-brand);\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-btn",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-btn: 2.25rem;\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-menu-bottom",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-menu-bottom: auto (Fallback in var());\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-menu-right",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-menu-right: auto (Fallback in var());\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-menu-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-menu-top: auto (Fallback in var());\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-pct",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-pct: 1 (Fallback in var());\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-radius: var(--ncss-radius-lg);\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-start",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-audio-player-start: nicht global gesetzt - Parameter pro Element;\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-audio-player-track",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-audio-player-track: color-mix(in oklch, var(--ncss-color-text) 18%, transparent);\n```\nQuelle: `components/audio-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aurora-1",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-aurora-1: color-mix(in oklch, var(--ncss-color-brand) 60%, var(--ncss-color-bg));\n```\nQuelle: `components/aurora.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aurora-2",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-aurora-2: color-mix(in oklch, var(--ncss-color-brand-2) 60%, var(--ncss-color-bg));\n```\nQuelle: `components/aurora.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aurora-3",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-aurora-3: color-mix(in oklch, var(--ncss-color-success) 50%, var(--ncss-color-bg));\n```\nQuelle: `components/aurora.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aurora-opacity",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-aurora-opacity: 0.7;\n```\nQuelle: `components/aurora.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-aurora-speed",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-aurora-speed: 14s;\n```\nQuelle: `components/aurora.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-avatar-ring",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-avatar-ring: var(--ncss-color-bg);\n```\nQuelle: `components/avatar.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-avatar-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-avatar-size: 2.5rem;\n```\nQuelle: `components/avatar.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-back-to-top-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-back-to-top-offset: 0px (Fallback in var());\n```\nQuelle: `components/back-to-top.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-backdrop-duration",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-backdrop-duration: 8s (Fallback in var());\n```\nQuelle: `components/backdrop.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-backdrop-fade",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-backdrop-fade: 1.6s;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-backdrop-tint",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-backdrop-tint: transparent;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-backdrop-zoom",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-backdrop-zoom: 1.08;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-badge-dot-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-badge-dot-color: var(--ncss-color-success) (Fallback in var());\n```\nQuelle: `components/badge.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-badge-dot-ring",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-badge-dot-ring: var(--ncss-color-surface) (Fallback in var());\n```\nQuelle: `components/badge.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-bento-max",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-bento-max: 1fr (Fallback in var());\n```\nQuelle: `helpers/layout.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-bento-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-bento-min: 12rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-bento-row-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-bento-row-height: 12rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-bleed-amount",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-bleed-amount: 2rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-border-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-border-width: 1px;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-accent: var(--ncss-color-brand);\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-bar-inset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-bar-inset: 1rem (Fallback in var());\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-grid-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-grid-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-grid-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-grid-min: 16rem;\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-grid-rows",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-grid-rows: 3;\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-media-ratio",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-media-ratio: var(--ncss-aspect-square);\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-media-width-horizontal",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-media-width-horizontal: 40%;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-card-skeleton-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-card-skeleton-width: 60%;\n```\nQuelle: `components/card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-choice-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-choice-size: 1.1em;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-clamp-lines",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-clamp-lines: 3 (Fallback in var());\n```\nQuelle: `helpers/typography.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-code-copy-size",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-code-copy-size: calc(var(--ncss-space-md) + var(--ncss-space-3xs, 0.25rem));\n```\nQuelle: `components/code-block.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-code-reserve",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-code-reserve: calc(var(--ncss-code-copy-size) + var(--ncss-space-2xs));\n```\nQuelle: `components/code-block.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-bg",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-bg: light-dark(#ffffff, #121212);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-bg-subtle",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-bg-subtle: light-dark(#f4f5f7, #1c1c1e);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-border",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-border: light-dark(#dcdfe4, #33353a);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-brand: light-dark(#0057d8, #6ea8ff);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-100",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-100: light-dark( color-mix(in oklch, var(--ncss-color-brand) 15%, white), color-mix(in oklch, var(--ncss-color-brand) 18%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-brand-2: light-dark(#7c3aed, #b794f6);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2-100",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-2-100: light-dark( color-mix(in oklch, var(--ncss-color-brand-2) 15%, white), color-mix(in oklch, var(--ncss-color-brand-2) 18%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2-300",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-2-300: light-dark( color-mix(in oklch, var(--ncss-color-brand-2) 45%, white), color-mix(in oklch, var(--ncss-color-brand-2) 35%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2-500",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-brand-2-500: var(--ncss-color-brand-2);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2-700",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-2-700: light-dark( color-mix(in oklch, var(--ncss-color-brand-2) 80%, black), color-mix(in oklch, var(--ncss-color-brand-2) 45%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2-900",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-2-900: light-dark( color-mix(in oklch, var(--ncss-color-brand-2) 60%, black), color-mix(in oklch, var(--ncss-color-brand-2) 60%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2-contrast",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-brand-2-contrast: light-dark(#ffffff, #0a0a0a);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-2-on-soft",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-brand-2-on-soft: light-dark(var(--ncss-color-brand-2-700), var(--ncss-color-brand-2));\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-300",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-300: light-dark( color-mix(in oklch, var(--ncss-color-brand) 45%, white), color-mix(in oklch, var(--ncss-color-brand) 35%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-500",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-brand-500: var(--ncss-color-brand);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-700",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-700: light-dark( color-mix(in oklch, var(--ncss-color-brand) 80%, black), color-mix(in oklch, var(--ncss-color-brand) 45%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-900",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-brand-900: light-dark( color-mix(in oklch, var(--ncss-color-brand) 60%, black), color-mix(in oklch, var(--ncss-color-brand) 60%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-contrast",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-brand-contrast: light-dark(#ffffff, #0a0a0a);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-brand-on-soft",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-brand-on-soft: light-dark(var(--ncss-color-brand-700), var(--ncss-color-brand));\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-danger",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-danger: light-dark(#c0322d, #f87171);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-danger-100",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-danger-100: light-dark( color-mix(in oklch, var(--ncss-color-danger) 15%, white), color-mix(in oklch, var(--ncss-color-danger) 18%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-danger-300",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-danger-300: light-dark( color-mix(in oklch, var(--ncss-color-danger) 45%, white), color-mix(in oklch, var(--ncss-color-danger) 35%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-danger-700",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-danger-700: light-dark( color-mix(in oklch, var(--ncss-color-danger) 80%, black), color-mix(in oklch, var(--ncss-color-danger) 45%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-danger-900",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-danger-900: light-dark( color-mix(in oklch, var(--ncss-color-danger) 60%, black), color-mix(in oklch, var(--ncss-color-danger) 60%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-danger-on-soft",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-danger-on-soft: light-dark(var(--ncss-color-danger-700), var(--ncss-color-danger));\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-focus-ring",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-focus-ring: light-dark(#0057d8, #6ea8ff);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-neutral",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-neutral: light-dark(#64748b, #94a3b8);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-neutral-100",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-neutral-100: light-dark( color-mix(in oklch, var(--ncss-color-neutral) 8%, white), color-mix(in oklch, var(--ncss-color-neutral) 12%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-neutral-300",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-neutral-300: light-dark( color-mix(in oklch, var(--ncss-color-neutral) 30%, white), color-mix(in oklch, var(--ncss-color-neutral) 28%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-neutral-500",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-neutral-500: var(--ncss-color-neutral);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-neutral-700",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-neutral-700: light-dark( color-mix(in oklch, var(--ncss-color-neutral) 80%, black), color-mix(in oklch, var(--ncss-color-neutral) 40%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-neutral-900",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-neutral-900: light-dark( color-mix(in oklch, var(--ncss-color-neutral) 55%, black), color-mix(in oklch, var(--ncss-color-neutral) 60%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-neutral-on-soft",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-neutral-on-soft: light-dark(var(--ncss-color-neutral-700), var(--ncss-color-neutral));\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-overlay",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-overlay: rgb(0 0 0 / 45%);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-overlay-strong",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-overlay-strong: rgb(0 0 0 / 90%);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-success",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-success: light-dark(#1a7f37, #4ade80);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-success-100",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-success-100: light-dark( color-mix(in oklch, var(--ncss-color-success) 15%, white), color-mix(in oklch, var(--ncss-color-success) 18%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-success-300",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-success-300: light-dark( color-mix(in oklch, var(--ncss-color-success) 45%, white), color-mix(in oklch, var(--ncss-color-success) 35%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-success-700",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-success-700: light-dark( color-mix(in oklch, var(--ncss-color-success) 80%, black), color-mix(in oklch, var(--ncss-color-success) 45%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-success-900",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-success-900: light-dark( color-mix(in oklch, var(--ncss-color-success) 60%, black), color-mix(in oklch, var(--ncss-color-success) 60%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-success-on-soft",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-success-on-soft: light-dark(var(--ncss-color-success-700), var(--ncss-color-success));\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-surface",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-surface: light-dark(#ffffff, #1e1e20);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-text",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-text: light-dark(#1a1a1a, #f0f0f0);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-text-muted",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-text-muted: light-dark(#5a5f6a, #a3a7b0);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-warning",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-color-warning: light-dark(#b45309, #facc15);\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-warning-100",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-warning-100: light-dark( color-mix(in oklch, var(--ncss-color-warning) 15%, white), color-mix(in oklch, var(--ncss-color-warning) 18%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-warning-300",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-warning-300: light-dark( color-mix(in oklch, var(--ncss-color-warning) 45%, white), color-mix(in oklch, var(--ncss-color-warning) 35%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-warning-700",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-warning-700: light-dark( color-mix(in oklch, var(--ncss-color-warning) 80%, black), color-mix(in oklch, var(--ncss-color-warning) 45%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-warning-900",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-color-warning-900: light-dark( color-mix(in oklch, var(--ncss-color-warning) 60%, black), color-mix(in oklch, var(--ncss-color-warning) 60%, black) );\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-color-warning-on-soft",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-color-warning-on-soft: light-dark(var(--ncss-color-warning-700), var(--ncss-color-warning));\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-columns-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-columns-width: 20rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-command-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-command-height: min(26rem, 60vh);\n```\nQuelle: `components/command-palette.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-command-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-command-offset: 12vh;\n```\nQuelle: `components/command-palette.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-command-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-command-width: 40rem;\n```\nQuelle: `components/command-palette.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-comment-avatar",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-comment-avatar: 1.75rem;\n```\nQuelle: `components/comments.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-comment-indent",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-comment-indent: calc(var(--ncss-comment-avatar) + var(--ncss-space-xs));\n```\nQuelle: `components/comments.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-compare-handle",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-compare-handle: 2.75rem;\n```\nQuelle: `components/compare.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-compare-line",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-compare-line: 3px;\n```\nQuelle: `components/compare.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-compare-position",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-compare-position: 50%;\n```\nQuelle: `components/compare.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-compare-ratio",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-compare-ratio: 16 / 9 (Fallback in var());\n```\nQuelle: `components/compare.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-container-max",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-container-max: 75rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-container-max-narrow",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-container-max-narrow: 45rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-count-duration",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-count-duration: 2s (Fallback in var());\n```\nQuelle: `components/count-up.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-count-from",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-count-from: 0 (Fallback in var());\n```\nQuelle: `components/count-up.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-count-prefix",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-count-prefix: \"\" (Fallback in var());\n```\nQuelle: `components/count-up.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-count-suffix",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-count-suffix: \"\" (Fallback in var());\n```\nQuelle: `components/count-up.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-count-to",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-count-to: 0 (Fallback in var());\n```\nQuelle: `components/count-up.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-curtain-dim",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-curtain-dim: 0.45 (Fallback in var());\n```\nQuelle: `components/curtain.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-curtain-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-curtain-height: 100svh (Fallback in var());\n```\nQuelle: `components/curtain.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-curtain-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-curtain-radius: var(--ncss-radius-lg) (Fallback in var());\n```\nQuelle: `components/curtain.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-curtain-scale",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-curtain-scale: 0.88 (Fallback in var());\n```\nQuelle: `components/curtain.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-dialog-max-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-dialog-max-width: 32rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-dropdown-min-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-dropdown-min-width: 12rem;\n```\nQuelle: `components/dropdown.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-dropdown-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-dropdown-offset: var(--ncss-space-3xs);\n```\nQuelle: `components/dropdown.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-expand-collapsed",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-expand-collapsed: 4.5rem;\n```\nQuelle: `components/expand-panels.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-expand-expanded",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-expand-expanded: 16rem;\n```\nQuelle: `components/expand-panels.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-expand-grow",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-expand-grow: 4;\n```\nQuelle: `components/expand-panels.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-expand-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-expand-height: 24rem;\n```\nQuelle: `components/expand-panels.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-expand-panel-grow",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-expand-panel-grow: 1;\n```\nQuelle: `components/expand-panels.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-float-max-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-float-max-width: 16rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-focus-point",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-focus-point: center;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-focus-ring-width",
+   "description": {
+    "kind": "markdown",
+    "value": "**Seed-Wert** - in der eigenen `theme.css` überschreiben (`:root, :host { ... }`).\n\n```css\n--ncss-focus-ring-width: 3px !important;\n```\nQuelle: `colors.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-family-base",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-family-base: system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-family-heading",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-family-heading: var(--ncss-font-family-base);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-family-mono",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-family-mono: ui-monospace, \"SF Mono\", Consolas, monospace;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-2xl",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-2xl: clamp(2.3rem, 1.8rem + 2.5vw, 3.6rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-base",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-base: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-lg",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-lg: clamp(1.35rem, 1.2rem + 0.75vw, 1.8rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-md",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-md: clamp(1.13rem, 1.06rem + 0.35vw, 1.35rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-sm",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-sm: clamp(0.8rem, 0.77rem + 0.15vw, 0.89rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-xl",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-xl: clamp(1.8rem, 1.5rem + 1.5vw, 2.6rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-size-xs",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-size-xs: 0.8rem (Fallback in var());\n```\nQuelle: `components/pill-group.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-weight-body",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-weight-body: var(--ncss-font-weight-normal);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-weight-bold",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-weight-bold: 700;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-weight-heading",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-weight-heading: var(--ncss-font-weight-bold);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-weight-medium",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-weight-medium: 500;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-weight-normal",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-weight-normal: 400;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-weight-semibold",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-weight-semibold: 600;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-font-weight-variable",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-font-weight-variable: 400;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-glass-blur",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-glass-blur: 12px (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-glow-angle",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-glow-angle: 360deg;\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-glow-colors",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-glow-colors: var(--ncss-color-brand), var(--ncss-color-brand-2), var(--ncss-color-success), var(--ncss-color-brand) (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-glow-pulse-speed",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-glow-pulse-speed: 3s (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-glow-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-glow-radius: var(--ncss-radius-lg) (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-glow-speed",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-glow-speed: 4s (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-glow-thickness",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-glow-thickness: 2px (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-gpu-hint",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-gpu-hint: nicht global gesetzt - Parameter pro Element;\n```\nQuelle: `components/hero.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-gradient-angle",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-gradient-angle: 135deg;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-grain-blend",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-grain-blend: overlay (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-grain-opacity",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-grain-opacity: 0.12 (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-grid-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-grid-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `helpers/layout.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-grid-max",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-grid-max: 1fr (Fallback in var());\n```\nQuelle: `helpers/layout.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-grid-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-grid-min: var(--ncss-grid-min-default) (Fallback in var());\n```\nQuelle: `helpers/layout.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-grid-min-default",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-grid-min-default: 14rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-hovercard-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-hovercard-offset: var(--ncss-space-2xs);\n```\nQuelle: `components/hovercard.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-hovercard-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-hovercard-width: 20rem;\n```\nQuelle: `components/hovercard.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-icon-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-icon-size: 1em (Fallback in var());\n```\nQuelle: `helpers/icons.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-icon-size-sm",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-icon-size-sm: 0.8em;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-leaders-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-leaders-color: var(--ncss-color-text-muted) (Fallback in var());\n```\nQuelle: `components/leaders.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-leaders-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-leaders-gap: var(--ncss-space-3xs);\n```\nQuelle: `components/leaders.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-leaders-style",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-leaders-style: dotted;\n```\nQuelle: `components/leaders.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-line-height-base",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-line-height-base: 1.6;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-line-height-tight",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-line-height-tight: 1.1;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-livesearch-max-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-livesearch-max-height: min(70vh, 34rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-accent: var(--ncss-color-brand, #2563eb);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-bg",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-bg: var(--ncss-color-bg-subtle, #f1f1f3);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-height: clamp(16rem, 55vh, 28rem);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-line",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-map-line: color-mix(in oklab, var(--ncss-color-border, #d4d4d8) 70%, transparent);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-map-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-map-radius: var(--ncss-radius-lg, 0.75rem);\n```\nQuelle: `components/map.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-marquee-duration",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-marquee-duration: 30s (Fallback in var());\n```\nQuelle: `components/marquee.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-marquee-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-marquee-gap: var(--ncss-space-lg) (Fallback in var());\n```\nQuelle: `components/marquee.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-masonry-column-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-masonry-column-min: 16rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-mesh-speed",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-mesh-speed: 28s;\n```\nQuelle: `components/aurora.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-modal-3d-depth",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-modal-3d-depth: -24rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-modal-max-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-modal-max-width: var(--ncss-dialog-max-width) (Fallback in var());\n```\nQuelle: `components/modal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-morph-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-morph-gap: var(--ncss-space-lg) (Fallback in var());\n```\nQuelle: `components/morph.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-morph-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-morph-height: 250vh (Fallback in var());\n```\nQuelle: `components/morph.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-morph-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-morph-radius: var(--ncss-radius-lg) (Fallback in var());\n```\nQuelle: `components/morph.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-morph-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-morph-size: 45% (Fallback in var());\n```\nQuelle: `components/morph.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-morph-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-morph-top: 0px (Fallback in var());\n```\nQuelle: `components/morph.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-motion-duration",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-motion-duration: 200ms;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-motion-duration-fast",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-motion-duration-fast: 100ms;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-motion-duration-slow",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-motion-duration-slow: 400ms;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-motion-easing",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-motion-easing-emphasized",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-motion-easing-emphasized: cubic-bezier(0.16, 1, 0.3, 1);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-nav-priority-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-nav-priority-min: 8rem (Fallback in var());\n```\nQuelle: `components/nav-priority.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-notification-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-notification-accent: var(--ncss-color-neutral);\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-notification-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-notification-gap: var(--ncss-space-2xs);\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-notification-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-notification-offset: var(--ncss-space-sm);\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-notification-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-notification-width: 24rem;\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-offcanvas-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-offcanvas-width: 20rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-overlay-zoom-grayscale",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-overlay-zoom-grayscale: 45% (Fallback in var());\n```\nQuelle: `components/overlay.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-overlay-zoom-scale",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-overlay-zoom-scale: 1.05 (Fallback in var());\n```\nQuelle: `components/overlay.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pill-group-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pill-group-gap: 2px (Fallback in var());\n```\nQuelle: `components/pill-group.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pill-group-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pill-group-height: 2.25rem (Fallback in var());\n```\nQuelle: `components/pill-group.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-min: 15rem (Fallback in var());\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-padding",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-padding: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-pricing-rows",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-pricing-rows: 4;\n```\nQuelle: `components/pricing.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-adaptive-lg",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-radius-adaptive-lg: max(0px, min(var(--ncss-radius-lg), calc((100vw - 16px - 100%) * 999)));\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-adaptive-md",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-radius-adaptive-md: max(0px, min(var(--ncss-radius-md), calc((100vw - 16px - 100%) * 999)));\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-adaptive-sm",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-radius-adaptive-sm: max(0px, min(var(--ncss-radius-sm), calc((100vw - 16px - 100%) * 999)));\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-full",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-radius-full: 999px;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-lg",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-radius-lg: 1rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-md",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-radius-md: 0.5rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-sm",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-radius-sm: 0.25rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-radius-xl",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-radius-xl: 1.5rem (Fallback in var());\n```\nQuelle: `components/toolbar.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-rating-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-rating-color: var(--ncss-color-warning);\n```\nQuelle: `components/rating.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-rating-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-rating-size: 1.75rem;\n```\nQuelle: `components/rating.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-duration",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-duration: 0.9s (Fallback in var());\n```\nQuelle: `helpers/reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-end",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-end: cover 45% (Fallback in var());\n```\nQuelle: `helpers/reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-inset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-inset: var(--_ncss-reveal-inset) (Fallback in var());\n```\nQuelle: `helpers/reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-pin-inset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-pin-inset: 32% 14% 6% (Fallback in var());\n```\nQuelle: `components/reveal-pin.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-pin-length",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-pin-length: 250vh (Fallback in var());\n```\nQuelle: `components/reveal-pin.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-scale",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-scale: 1.15 (Fallback in var());\n```\nQuelle: `helpers/reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-start",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-start: entry 25% (Fallback in var());\n```\nQuelle: `helpers/reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-x",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-x: 50% (Fallback in var());\n```\nQuelle: `helpers/reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-reveal-y",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-reveal-y: 50% (Fallback in var());\n```\nQuelle: `helpers/reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-roadmap-dot-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-roadmap-dot-color: var(--ncss-color-brand) (Fallback in var());\n```\nQuelle: `components/roadmap.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-roadmap-dot-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-roadmap-dot-size: 0.75rem (Fallback in var());\n```\nQuelle: `components/roadmap.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-roadmap-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-roadmap-gap: var(--ncss-space-xl) (Fallback in var());\n```\nQuelle: `components/roadmap.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-roadmap-gutter",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-roadmap-gutter: 2.5rem (Fallback in var());\n```\nQuelle: `components/roadmap.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-roadmap-line-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-roadmap-line-color: var(--ncss-color-brand) (Fallback in var());\n```\nQuelle: `components/roadmap.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-roadmap-line-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-roadmap-line-width: 2px (Fallback in var());\n```\nQuelle: `components/roadmap.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-roadmap-track-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-roadmap-track-color: var(--ncss-color-border) (Fallback in var());\n```\nQuelle: `components/roadmap.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-frames-length",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-frames-length: 300lvh;\n```\nQuelle: `components/scroll-frames.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-frames-ratio",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-frames-ratio: 16 / 9 (Fallback in var());\n```\nQuelle: `components/scroll-frames.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-frames-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-frames-top: 0px;\n```\nQuelle: `components/scroll-frames.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-horizontal-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-horizontal-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/scroll-horizontal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-horizontal-item",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-horizontal-item: min(80cqi, 26rem) (Fallback in var());\n```\nQuelle: `components/scroll-horizontal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-horizontal-length",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-horizontal-length: 300vh (Fallback in var());\n```\nQuelle: `components/scroll-horizontal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-horizontal-padding",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-horizontal-padding: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/scroll-horizontal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-shadow-cover",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-shadow-cover: var(--ncss-color-bg) (Fallback in var());\n```\nQuelle: `helpers/scroll-shadow.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-shadow-max-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-shadow-max-height: none (Fallback in var());\n```\nQuelle: `helpers/scroll-shadow.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-shadow-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-shadow-size: 1rem (Fallback in var());\n```\nQuelle: `helpers/scroll-shadow.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-video-fit",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-video-fit: cover;\n```\nQuelle: `components/scroll-video.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-video-length",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-video-length: 300lvh;\n```\nQuelle: `components/scroll-video.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-video-position",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-video-position: var(--ncss-focus-point, center);\n```\nQuelle: `components/scroll-video.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scroll-video-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scroll-video-top: 0px;\n```\nQuelle: `components/scroll-video.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scrolly-step-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scrolly-step-height: 75svh (Fallback in var());\n```\nQuelle: `components/scrolly.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-scrolly-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-scrolly-top: 0px (Fallback in var());\n```\nQuelle: `components/scrolly.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-search-expanded-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-search-expanded-width: 16rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-shadow-lg",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-shadow-lg: 0 12px 32px rgb(0 0 0 / 14%);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-shadow-md",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-shadow-md: 0 4px 12px rgb(0 0 0 / 10%);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-shadow-sm",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-shadow-sm: 0 1px 2px rgb(0 0 0 / 8%);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-slideshow-item-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-slideshow-item-width: 85%;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-slideshow-shadow-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-slideshow-shadow-size: 3rem (Fallback in var());\n```\nQuelle: `components/slideshow.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-sortable-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-sortable-gap: var(--ncss-space-2xs);\n```\nQuelle: `components/sortable.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-2xl",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-2xl: clamp(4.5rem, 4rem + 2.5vw, 6.5rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-2xs",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-2xs: clamp(0.5rem, 0.47rem + 0.15vw, 0.63rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-3xs",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-3xs: clamp(0.25rem, 0.24rem + 0.1vw, 0.31rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-lg",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-lg: clamp(2rem, 1.85rem + 0.75vw, 2.5rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-md",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-md: clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-sm",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-sm: clamp(1rem, 0.94rem + 0.3vw, 1.25rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-xl",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-xl: clamp(3rem, 2.7rem + 1.5vw, 4rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-space-xs",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-space-xs: clamp(0.75rem, 0.71rem + 0.2vw, 0.88rem);\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-spinner-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-spinner-size: 1.5em;\n```\nQuelle: `components/spinner.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-spinner-width",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-spinner-width: max(2px, calc(var(--ncss-spinner-size) / 8));\n```\nQuelle: `components/spinner.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-split-align",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-split-align: start;\n```\nQuelle: `components/split.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-split-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-split-gap: var(--ncss-space-xl) (Fallback in var());\n```\nQuelle: `components/split.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-split-media-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-split-media-width: 50% (Fallback in var());\n```\nQuelle: `components/split.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-spotlight-border",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-spotlight-border: var(--ncss-color-brand);\n```\nQuelle: `components/spotlight.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-spotlight-color",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-spotlight-color: color-mix(in oklch, var(--ncss-color-brand) 22%, transparent);\n```\nQuelle: `components/spotlight.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-spotlight-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-spotlight-size: 24rem;\n```\nQuelle: `components/spotlight.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-spotlight-x",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-spotlight-x: 50% (Fallback in var());\n```\nQuelle: `components/spotlight.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-spotlight-y",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-spotlight-y: 50% (Fallback in var());\n```\nQuelle: `components/spotlight.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-brightness",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-brightness: 0.75 (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-card-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-card-height: 60vh (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-card-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-card-width: min(90vw, 40rem) (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-count",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-count: 4 (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-depth",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-depth: -80px (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-fan",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-fan: 1.25rem (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-gap: var(--ncss-space-lg) (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-index",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-index: 0 (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-perspective",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-perspective: 1200px (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-radius: var(--ncss-radius-lg) (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-scale",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-scale: 0.92 (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-stage-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-stage-height: 100lvh (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-stage-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-stage-top: 0px (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stack-tilt",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stack-tilt: 6deg (Fallback in var());\n```\nQuelle: `components/scroll-stack.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stamped-dark",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-dark: rgb(0 0 0 / 35%) (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stamped-lift",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-lift: 3px (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stamped-light",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-light: rgb(255 255 255 / 90%) (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stamped-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-radius: var(--ncss-radius-lg) (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stamped-shadow-dark",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-shadow-dark: var(--ncss-stamped-dark, rgb(0 0 0 / 35%));\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stamped-shadow-light",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-shadow-light: var(--ncss-stamped-light, rgb(255 255 255 / 90%));\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stamped-thickness",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stamped-thickness: 1px (Fallback in var());\n```\nQuelle: `components/effects.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stepper-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stepper-color: var(--ncss-color-brand);\n```\nQuelle: `components/stepper.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stepper-line-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stepper-line-width: 2px;\n```\nQuelle: `components/stepper.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-stepper-marker",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-stepper-marker: 2rem;\n```\nQuelle: `components/stepper.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-sticky-container-max-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-sticky-container-max-height: 100vh;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-sticky-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-sticky-offset: 0;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-sticky-z",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-sticky-z: 10;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-subnav-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-subnav-height: 2.75rem (Fallback in var());\n```\nQuelle: `components/subnav.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-subnav-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-subnav-top: var(--ncss-topbar-height) (Fallback in var());\n```\nQuelle: `components/subnav.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-duration",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-duration: var(--ncss-motion-duration-slow, 0.3s) (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-h",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-h: 0px (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-panel-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-panel-min: 18rem;\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-w",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-w: 0 (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-x",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-x: 0 (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tabs-y",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tabs-y: 0 (Fallback in var());\n```\nQuelle: `components/tabs.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tag-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tag-accent: var(--ncss-color-neutral);\n```\nQuelle: `components/tag.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-gap: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-min",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-min: 18rem (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-padding",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-padding: var(--ncss-space-md) (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-testimonial-rating-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-testimonial-rating-color: var(--ncss-color-warning) (Fallback in var());\n```\nQuelle: `components/testimonial.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-text-reveal-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-text-reveal-color: var(--ncss-color-text) (Fallback in var());\n```\nQuelle: `components/text-reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-text-reveal-end",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-text-reveal-end: cover 50% (Fallback in var());\n```\nQuelle: `components/text-reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-text-reveal-start",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-text-reveal-start: cover 15% (Fallback in var());\n```\nQuelle: `components/text-reveal.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-textarea-min-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-textarea-min-height: 6rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tile-padding-block",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tile-padding-block: var(--ncss-space-2xl) (Fallback in var());\n```\nQuelle: `components/tile.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tile-padding-inline",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tile-padding-inline: var(--ncss-space-lg) (Fallback in var());\n```\nQuelle: `components/tile.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-col-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-col-gap: var(--ncss-space-sm);\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-dot",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-dot: 0.875rem;\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-gap: var(--ncss-space-sm);\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-line-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-line-color: var(--ncss-color-border) (Fallback in var());\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-line-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-line-width: 2px;\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-marker-color",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-marker-color: var(--ncss-color-brand) (Fallback in var());\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-rail",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-rail: 2rem;\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-timeline-ring",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-timeline-ring: var(--ncss-color-bg) (Fallback in var());\n```\nQuelle: `components/timeline.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-toast-dir",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-toast-dir: 1;\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-toast-front-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-toast-front-height: auto (Fallback in var());\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-toast-i",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-toast-i: var(--ncss-toast-index, 0);\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-toast-index",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-toast-index: 0 (Fallback in var());\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-toast-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-toast-offset: 0px (Fallback in var());\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-toast-peek",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-toast-peek: 0.75rem;\n```\nQuelle: `components/notification.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tooltip-max-width",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tooltip-max-width: 18rem;\n```\nQuelle: `components/tooltip.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tooltip-offset",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tooltip-offset: var(--ncss-space-2xs);\n```\nQuelle: `components/tooltip.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-topbar-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-topbar-height: 3.5rem;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-topbar-z",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-topbar-z: 50;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tracking-normal",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tracking-normal: normal;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tracking-tight",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tracking-tight: -0.02em;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tracking-wide",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tracking-wide: 0.03em;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tracking-wider",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tracking-wider: 0.08em;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-tracking-widest",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-tracking-widest: 0.16em;\n```\nQuelle: `tokens.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-bg-position",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-bg-position: var(--ncss-focus-point, center);\n```\nQuelle: `components/video-bg.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-bg-strength",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-bg-strength: 55%;\n```\nQuelle: `components/video-bg.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-bg-tint",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-bg-tint: transparent;\n```\nQuelle: `components/video-bg.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-card-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-card-radius: var(--ncss-radius-lg);\n```\nQuelle: `components/video-card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-card-ratio",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-card-ratio: 16 / 9;\n```\nQuelle: `components/video-card.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-float-gap",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-float-gap: var(--ncss-space-sm);\n```\nQuelle: `components/video-float.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-float-height",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-float-height: auto (Fallback in var());\n```\nQuelle: `components/video-float.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-float-width",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-video-float-width: min(22rem, calc(100vw - 2 * var(--ncss-video-float-gap)));\n```\nQuelle: `components/video-float.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-float-z",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-video-float-z: calc(var(--ncss-topbar-z, 50) - 1);\n```\nQuelle: `components/video-float.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-accent",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-accent: var(--ncss-color-brand);\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-btn",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-btn: 2.25rem;\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-cue-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-cue-size: clamp(0.875rem, 3.2cqi, 2rem);\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-fade",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-fade: 400ms;\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-menu-bottom",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-menu-bottom: auto (Fallback in var());\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-menu-max",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-menu-max: 24rem (Fallback in var());\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-menu-right",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-menu-right: auto (Fallback in var());\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-menu-top",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-menu-top: auto (Fallback in var());\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-pct",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-pct: 1 (Fallback in var());\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-radius",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-radius: var(--ncss-radius-lg);\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-size",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-size: nicht global gesetzt - Parameter pro Element;\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-start",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-start: nicht global gesetzt - Parameter pro Element;\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-player-tip",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-player-tip: 0 (Fallback in var());\n```\nQuelle: `components/video-player.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-text-size",
+   "description": {
+    "kind": "markdown",
+    "value": "Abgeleiteter Wert - nicht einzeln setzen, folgt dem Seed.\n\n```css\n--ncss-video-text-size: calc(var(--ncss-font-size-2xl) * 2);\n```\nQuelle: `components/video-text.css`"
+   },
+   "syntax": "*"
+  },
+  {
+   "name": "--ncss-video-text-weight",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-video-text-weight: 900;\n```\nQuelle: `components/video-text.css`"
+   },
+   "syntax": "*"
+  }
+ ]
+}

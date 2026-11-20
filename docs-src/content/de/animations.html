@@ -47,3 +47,8 @@
   <h2 class="demo-section-title">GPU-Compositing-Hinweis</h2>
   <p class="ncss-text-muted ncss-text-sm">Opt-in, <code>translateZ(0)</code>: <code>.ncss-gpu-boost</code> hebt ein Element auf eine eigene Compositor-Ebene an - gegen Ruckeln bei häufig animierten/gescrollten Elementen mit teurem Repaint. Nutzt die eigenständige <code>transform</code>-Eigenschaft, kombinierbar mit <code>.ncss-hover-lift</code>/<code>-grow</code>/<code>-press</code> (die <code>translate</code>/<code>scale</code> nutzen, nicht <code>transform</code>) ohne Konflikt. Bewusst NICHT automatisch angewendet - jede zusätzliche Compositor-Ebene kostet Grafikspeicher, nur bei sichtbarem Ruckeln gezielt einsetzen. Für ein Element, das selbst schon <code>transform</code> nutzt (z.B. <code>.ncss-hero--parallax</code>), stattdessen den <code>--ncss-gpu-hint</code>-Token direkt in der eigenen <code>transform</code>-Deklaration setzen - zwei <code>transform</code>-Deklarationen auf demselben Element würden sich sonst gegenseitig überschreiben statt zu kombinieren.</p>
 </section>
+
+
+<!--MERGE: effects-->
+
+<!--MERGE: all-components#animationen-->

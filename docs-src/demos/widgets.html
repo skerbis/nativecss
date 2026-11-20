@@ -1,0 +1,58 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+</style>
+<script src="~/dist/js/ics.js" defer></script>
+<script src="~/dist/js/events.js" defer></script>
+<script src="~/dist/js/downloads.js" defer></script>
+-->
+  <div class="ncss-stack ncss-stack--tight">
+    <p class="ncss-text-lg ncss-text-muted">Datengetriebene Widgets (JSON oder .ics) als native HTML-Alternative zur iframe-Einbettung - durchsuchbar, per CSS themebar, kein Cross-Origin-/Höhenproblem. Alles opt-in: <code>js/ics.js</code>, <code>js/events.js</code>, <code>js/downloads.js</code>, jeweils nur auf Seiten einbinden, die sie wirklich nutzen.</p>
+  </div>
+
+  <section class="ncss-stack" id="monat">
+    <h2 class="demo-section-title">Kalender (Monatsraster)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="month"</code> - Termine als Punkte im Tag, Klick öffnet den Tag als <code>.ncss-modal</code>. Quelle hier: <code>data/events.json</code>.</p>
+    <div class="ncss-events" data-view="month" data-src="~/demo/data/events.json"></div>
+  </section>
+
+  <section class="ncss-stack" id="agenda">
+    <h2 class="demo-section-title">Kalender-Liste (Agenda)</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="agenda"</code> - anstehende Termine, nach Monat gruppiert. Quelle hier: eine <code>.ics</code>-Datei (<code>data/sample.ics</code>), inkl. wiederkehrender Termine über <code>RRULE</code>.</p>
+    <div class="ncss-events" data-view="agenda" data-ics="~/demo/data/sample.ics" data-limit="8"></div>
+  </section>
+
+  <section class="ncss-stack" id="liste">
+    <h2 class="demo-section-title">Termin-Liste</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="list"</code> - Termine als Karten-Raster, nutzt <code>.ncss-card</code> statt eigener Optik.</p>
+    <div class="ncss-events" data-view="list" data-src="~/demo/data/events.json" data-limit="4"></div>
+  </section>
+
+  <section class="ncss-stack" id="einzeltermin">
+    <h2 class="demo-section-title">Einzeltermin</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>data-view="single"</code> - ein hervorgehobener Termin, per <code>data-event-id</code> gewählt (hier: <code>"conf"</code>) oder ohne diese Angabe der nächste anstehende.</p>
+    <div class="ncss-events" data-view="single" data-src="~/demo/data/events.json" data-event-id="conf"></div>
+  </section>
+
+  <section class="ncss-stack" id="live-downloads">
+    <h2 class="demo-section-title">Downloads</h2>
+    <p class="ncss-text-muted ncss-text-sm"><code>js/downloads.js</code> - Datei-Liste aus <code>data/downloads.json</code>, Icon/Größe automatisch aus <code>type</code>/<code>size</code> bzw. der Datei-Endung.</p>
+    <div class="ncss-downloads" data-src="~/demo/data/downloads.json"></div>
+  </section>
+
+  <section class="ncss-stack" id="datenformat">
+    <h2 class="demo-section-title">Datenformat</h2>
+    <p class="ncss-text-muted ncss-text-sm">JSON-Termine (jedes Feld außer <code>title</code>/<code>start</code> optional):</p>
+    <pre><code class="language-javascript">[
+  { "title": "Kickoff", "start": "2026-08-26T09:00", "end": "2026-08-26T10:30",
+    "location": "Raum A", "description": "...", "url": "https://..." },
+  { "title": "Feiertag", "start": "2026-10-03", "allDay": true }
+]</code></pre>
+    <p class="ncss-text-muted ncss-text-sm">.ics-Dateien (Google-/Outlook-/Apple-Export) werden ebenfalls unterstützt (<code>data-ics</code> statt <code>data-src</code>) - siehe <code>js/ics.js</code> für den abgedeckten <code>RRULE</code>-Umfang.</p>
+  </section>

@@ -24,6 +24,11 @@ jobs:
       - name: Build docs site
         run: node docs-src/build.mjs
 
+      # Weiterleitungen + Beispiel-Leisten in demo/ aus docs-src/nav.json - normalerweise
+      # schon lokal synchronisiert und eingecheckt, hier nur als Absicherung (idempotent).
+      - name: Sync demo pages
+        run: node docs-src/sync-demo.mjs
+
       - name: Assemble site (repo tree + generated root index.html)
         run: |
           mkdir -p _site

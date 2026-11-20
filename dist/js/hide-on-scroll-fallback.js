@@ -45,8 +45,26 @@
     return;
   }
 
-  var els = deepQueryAll(".ncss-hide-on-scroll");
-  if (!els.length) return;
+  // Dynamische Inhalte: später eingefügte .ncss-hide-on-scroll-Elemente per
+  // "ncss-content-change"-Event (detail.root, siehe js/content-observer.js) nachmelden -
+  // ein WeakSet verhindert Doppel-Einträge, entfernte Elemente fallen beim nächsten
+  // Scroll-Durchlauf (isConnected) automatisch heraus.
+  var els = [];
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = deepQueryAll(".ncss-hide-on-scroll", root);
+    if (root.matches && root.matches(".ncss-hide-on-scroll")) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      els.push(el);
+    });
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
 
   // Erst ab dieser Schwelle überhaupt ausblenden - sonst würde ein winziges Scrollen
   // ganz oben auf der Seite den Header sofort verstecken, bevor der Nutzer überhaupt
@@ -61,6 +79,9 @@
     var y = window.scrollY;
     var goingDown = y > lastY;
     var shouldHide = goingDown && y > HIDE_THRESHOLD;
+    els = els.filter(function (el) {
+      return el.isConnected;
+    });
     els.forEach(function (el) {
       el.style.translate = shouldHide ? "0 -100%" : "0 0";
     });

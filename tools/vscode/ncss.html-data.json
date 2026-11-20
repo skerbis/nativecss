@@ -1,0 +1,1060 @@
+{
+ "version": 1.1,
+ "tags": [
+  {
+   "name": "ncss-audio-player",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)\n\nScript: `js/audio-player.js` · CSS: `components/audio-player.css`\n\nEvents: `ncss-audio-trackchange`, `ncss-media-ended`, `ncss-media-pause`, `ncss-media-play`\n\nÖffentlich: `el.play()`, `el.pause()`, `el.toggle()`, `el.seek(s)`, `el.skip(+/-s)`, `el.next()`, `el.previous()`, `el.load(index)`, `el.media`"
+   },
+   "attributes": [
+    {
+     "name": "layout",
+     "description": "Kartenlayout (sonst kompakt) - Default/Beispiel: `card`"
+    },
+    {
+     "name": "waveform",
+     "description": "Wellenform zeichnen (nur gleiche Herkunft, Datei wird einmal per Web Audio dekodiert, bis 8 MB)",
+     "valueSet": "v"
+    },
+    {
+     "name": "skip-back",
+     "description": "Default/Beispiel: `15`"
+    },
+    {
+     "name": "skip-forward",
+     "description": "Default/Beispiel: `30`"
+    },
+    {
+     "name": "speeds",
+     "description": "Default/Beispiel: `0.75 1 1.25 1.5 1.75 2`"
+    },
+    {
+     "name": "exclusive",
+     "description": "darf parallel zu anderen Playern laufen - Default/Beispiel: `false`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-command-palette",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-command-palette>: Befehlspalette (siehe components/command-palette.css für Markup)\n\nScript: `js/command-palette.js` · CSS: `components/command-palette.css`\n\nEvents: `ncss-command-hide`, `ncss-command-select`, `ncss-command-show`\n\nÖffentlich: `el.show()`, `el.hide()`, `el.toggle()`, `el.filter(text)`"
+   },
+   "attributes": [
+    {
+     "name": "shortcut",
+     "description": "opt-in Tastenkürzel: ⌘K auf Apple-Geräten, sonst Strg+K (öffnet/schließt) - Default/Beispiel: `k`"
+    },
+    {
+     "name": "slash",
+     "description": "zusätzlich \"/\" als Kürzel (nur wenn gerade kein Eingabefeld Fokus hat)",
+     "valueSet": "v"
+    },
+    {
+     "name": "status-text",
+     "description": "Ansage der Trefferzahl, Default nach <html lang> - Default/Beispiel: `{n} Treffer`"
+    },
+    {
+     "name": "src",
+     "description": "opt-in SUCHMODUS für große Listen: die Einträge kommen aus einer JSON-Datei (beim ersten Öffnen geladen, kein Server nötig) und werden erst beim Tippen gerendert - gerankt, je Gruppe begrenzt, Treffer mit <mark> hervorgehoben. Format: { \"groups\": [{ \"id\": \"pages\", \"label\": \"Seiten\" }, ...], \"items\":  [{ \"g\": \"pages\", \"t\": \"Titel\", \"u\": \"de/seite.html#anker\", \"h\": \"Hinweis rechts\", \"s\": \"Textauszug\", \"k\": \"Stichwörter\" }] } \"u\" gilt relativ zur JSON-Datei (dieselbe Liste funktioniert von jeder Seite aus). Einträge im Markup bleiben erhalten (z.B. als Vorschläge bei leerem Feld und als Inhalt ohne JS). - Default/Beispiel: `suche.json`"
+    },
+    {
+     "name": "limit",
+     "description": "Suchmodus: höchstens so viele Treffer je Gruppe (Default 8) - Default/Beispiel: `8`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-compare",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-compare>: Vorher/Nachher-Vergleich (siehe components/compare.css für Markup)\n\nScript: `js/compare.js` · CSS: `components/compare.css`\n\nEvents: `ncss-compare-change`\n\nÖffentlich: `el.value`"
+   },
+   "attributes": [
+    {
+     "name": "value-text",
+     "description": "gesprochener Wert ({n} = Prozent), Default nach <html lang> - Default/Beispiel: `{n} % vorher`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-container",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-container>: kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, damit sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen können, ohne dass Styles in beide Richtungen ...\n\nScript: `js/ncss-container.js`"
+   },
+   "attributes": [
+    {
+     "name": "src"
+    },
+    {
+     "name": "theme"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-countdown",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)\n\nScript: `js/countdown.js` · CSS: `components/countdown.css`\n\nEvents: `ncss-countdown-end`"
+   },
+   "attributes": [
+    {
+     "name": "datetime",
+     "description": "Zielzeitpunkt (Pflicht, ISO 8601; ohne Zone = lokale Zeit des Besuchers) - Default/Beispiel: `2026-12-24T18:00:00+01:00`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-dropdown",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)\n\nScript: `js/dropdown.js` · CSS: `components/dropdown.css`\n\nEvents: `ncss-dropdown-hide`, `ncss-dropdown-select`, `ncss-dropdown-show`\n\nÖffentlich: `el.show()`, `el.hide()`, `el.open`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-dropzone",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)\n\nScript: `js/dropzone.js` · CSS: `components/dropzone.css`\n\nEvents: `ncss-dropzone-change`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-filter",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1\n\nScript: `js/filter.js` · CSS: `components/filter.css`\n\nEvents: `ncss-content-change`, `ncss-filter-change`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-hovercard",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-hovercard>: Vorschaukarte beim Überfahren/Fokussieren eines Links (siehe components/hovercard.css für Markup)\n\nScript: `js/hovercard.js` · CSS: `components/hovercard.css`\n\nEvents: `ncss-hovercard-hide`, `ncss-hovercard-show`\n\nÖffentlich: `el.show()`, `el.hide()`, `el.open`"
+   },
+   "attributes": [
+    {
+     "name": "delay",
+     "description": "(ms bis zum Öffnen) - Default/Beispiel: `400`"
+    },
+    {
+     "name": "hide-delay",
+     "description": "Default/Beispiel: `250`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-icon",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein\n\nScript: `js/icon.js` · CSS: `helpers/icons.css`\n\nEvents: `ncss-icon-error`, `ncss-icon-load`"
+   },
+   "attributes": [
+    {
+     "name": "name",
+     "description": "Phosphor-Name (Kleinbuchstaben/Ziffern/Bindestrich) - Default/Beispiel: `house`"
+    },
+    {
+     "name": "weight",
+     "description": "regular | thin | light | bold | fill | duotone - Default/Beispiel: `regular`"
+    },
+    {
+     "name": "label",
+     "description": "macht das Icon bedeutungstragend: role=\"img\" + aria-label. Ohne label ist es dekorativ (aria-hidden=\"true\"). - Default/Beispiel: `…`"
+    },
+    {
+     "name": "src",
+     "description": "statt name/weight eine beliebige eigene SVG-Datei laden data-ncss-icon-path=\"…\" Icon-Ordner, auf dem Element ODER einem Vorfahren (z.B. <html>); relativ zur SEITE aufgelöst. Default: der Ordner vendor/phosphor/ relativ zu DIESER Datei (dist/js/icon.js -> ../../vendor/phosphor/), per document.currentScript ermittelt - als ES-Modul geladen gibt es kein currentScript, dann data-ncss-icon-path setzen. - Default/Beispiel: `pfad/eigen.svg`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-map",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-map>: interaktive Karte mit MapLibre GL (vendor/maplibre/, BSD-3-Clause)\n\nScript: `js/map.js` · CSS: `components/map.css`\n\nEvents: `ncss-map-`, `ncss-map-consent`, `ncss-map-error`, `ncss-map-load`, `ncss-map-theme`\n\nÖffentlich: `el.map`, `el.show()`"
+   },
+   "attributes": [
+    {
+     "name": "zoom",
+     "description": "Zoomstufe 0-22 - Default/Beispiel: `14`"
+    },
+    {
+     "name": "label",
+     "description": "Name des Orts: Beschriftung der Markierung und der Karte - Default/Beispiel: `…`"
+    },
+    {
+     "name": "marker",
+     "description": "keine Markierung (Default: an) - Default/Beispiel: `off`"
+    },
+    {
+     "name": "style-url",
+     "description": "MapLibre-Stil (JSON-URL). Default: OpenFreeMap \"liberty\" (https://tiles.openfreemap.org/styles/liberty) - Default/Beispiel: `…`"
+    },
+    {
+     "name": "style-url-dark",
+     "description": "Stil im Dunkelmodus. Default: OpenFreeMap \"dark\", aber nur wenn auch style-url fehlt - ein eigener style-url gilt sonst für beide Modi - Default/Beispiel: `…`"
+    },
+    {
+     "name": "proxy",
+     "description": "schreibt jede Anfrage von MapLibre um (transformRequest), zwei Formen: Präfix:   proxy=\"/proxy/ofm/\" https://tiles.openfreemap.org/planet/1/0/0.pbf -> /proxy/ofm/planet/1/0/0.pbf (Origin wird ersetzt) Vorlage:  proxy=\"/proxy?url={url}\" -> /proxy?url=https%3A%2F%2Ftiles.openfreemap.org%2F… Platzhalter: {url} (komplette URL, URL-kodiert), {host} (z.B. tiles.openfreemap.org), {path} (Pfad + Query ohne führenden Schrägstrich) Relative Angaben gelten relativ zur SEITE. - Default/Beispiel: `…`"
+    },
+    {
+     "name": "proxy-origins",
+     "description": "nur diese Origins umschreiben (Leerzeichen/Komma getrennt, z.B. \"tiles.openfreemap.org\" oder \"https://tiles.openfreemap.org\"). Default: jede fremde Origin (alles außer der Seite und dem Proxy selbst) - Default/Beispiel: `…`"
+    },
+    {
+     "name": "vendor",
+     "description": "Ordner mit maplibre-gl.mjs/.css (relativ zur Seite). Default: ../../vendor/maplibre/ relativ zu DIESER Datei (document.currentScript, wie bei <ncss-icon>) - als ES-Modul geladen das Attribut setzen - Default/Beispiel: `…`"
+    },
+    {
+     "name": "consent",
+     "description": "Zwei-Klick-Modus: Hinweis + Button \"Karte anzeigen\", geladen wird erst nach dem Klick. Automatisch an, wenn das Gerät \"Datensparen\" (Save-Data) meldet. consent=\"off\" schaltet auch das ab"
+    },
+    {
+     "name": "privacy-url",
+     "description": "Link \"Datenschutz\" im Zwei-Klick-Hinweis - Default/Beispiel: `…`"
+    },
+    {
+     "name": "view3d",
+     "description": "Gebäude in 3D und geneigte Kamera (Stile mit OpenMapTiles-Schema)"
+    },
+    {
+     "name": "fallback",
+     "description": "Ersatzinhalt nach dem Laden sichtbar UNTER der Karte lassen (Default: visuell versteckt, für Screenreader und Tastatur weiter da) data-label-<key>    jeden Text überschreiben, Schlüssel siehe TEXTS unten (show, note, noteproxy, privacy, error, map, canvas, marker, zoomin, zoomout, compass, attribution, winhelp, machelp, mobilehelp). In note steht {host} für den Kartenserver. Sprache nach <html lang> (Deutsch/Englisch) - Default/Beispiel: `below`"
+    },
+    {
+     "name": "lat"
+    },
+    {
+     "name": "lng"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-nav-drilldown",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-nav-drilldown>: verschachtelte mobile Menüs als Slide-Screens statt Inline-Aufklappen (siehe components/nav-drilldown.css für Markup/Einbindung/Optik)\n\nScript: `js/nav-drilldown.js` · CSS: `components/nav-drilldown.css`"
+   },
+   "attributes": [
+    {
+     "name": "back-text"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-nav-priority",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-nav-priority>: verschiebt Navigationspunkte, die nicht mehr in eine Zeile passen, automatisch in ein \"Mehr\"-Dropdown (siehe components/nav-priority.css für Markup/Einbindung)\n\nScript: `js/nav-priority.js` · CSS: `components/nav-priority.css`"
+   },
+   "attributes": [
+    {
+     "name": "more-label"
+    },
+    {
+     "name": "more-text"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-preferences",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)\n\nScript: `js/preferences.js` · CSS: `components/preferences.css`\n\nEvents: `ncss-preferences-change`"
+   },
+   "attributes": [
+    {
+     "name": "inline",
+     "description": "Bedienfeld direkt anzeigen statt Button + Popover",
+     "valueSet": "v"
+    },
+    {
+     "name": "settings",
+     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten) - Default/Beispiel: `theme contrast motion text font spacing links focus`"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-scroll-frames",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-scroll-frames>: Bildsequenz statt Video - zeichnet passend zur Scroll-Position ein Einzelbild auf ein <canvas>\n\nScript: `js/scroll-frames.js` · CSS: `components/scroll-frames.css`\n\nÖffentlich: `el.frame`, `el.loaded`, `el.progress`"
+   },
+   "attributes": [
+    {
+     "name": "src",
+     "description": "(Muster, %d bzw. %03d = Bildnummer mit Nullen)"
+    },
+    {
+     "name": "count"
+    },
+    {
+     "name": "first",
+     "description": "Default/Beispiel: `1`"
+    },
+    {
+     "name": "length",
+     "description": "(Scroll-Strecke in % der Viewport-Höhe) - Default/Beispiel: `300`"
+    },
+    {
+     "name": "smoothing",
+     "description": "Default/Beispiel: `0.6`"
+    },
+    {
+     "name": "fit",
+     "description": "(oder contain) - Default/Beispiel: `cover`"
+    },
+    {
+     "name": "inline",
+     "description": "(nicht anpinnen, spult beim Durchqueren des Viewports).",
+     "valueSet": "v"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-scroll-video",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-scroll-video>: Scrollen spult ein Video vor UND zurück (Scroll-Position -> video.currentTime)\n\nScript: `js/scroll-video.js` · CSS: `components/scroll-video.css`\n\nEvents: `ncss-scroll-video-change`, `ncss-scrolly-step`\n\nÖffentlich: `el.progress`, `el.time`, `el.active`, `el.refresh()`"
+   },
+   "attributes": [
+    {
+     "name": "start",
+     "description": "/ end (Sekunden-Bereich, auf den die Scroll-Strecke abgebildet wird, end = Default Dauer)"
+    },
+    {
+     "name": "length",
+     "description": "(Scroll-Strecke in % der Viewport-Höhe) - Default/Beispiel: `300`"
+    },
+    {
+     "name": "smoothing",
+     "description": "(0 = direkt, bis 0.98 = träge nachlaufend) - Default/Beispiel: `0.85`"
+    },
+    {
+     "name": "inline",
+     "valueSet": "v"
+    },
+    {
+     "name": "line",
+     "description": "(Auslöse-Linie für Schritte, % von oben). - Default/Beispiel: `50`"
+    },
+    {
+     "name": "end"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-scrolly",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-scrolly>: Scrollytelling-Element (Markup/Optik: components/scrolly.css)\n\nScript: `js/scrolly.js` · CSS: `components/scrolly.css`\n\nEvents: `ncss-scrolly-step`\n\nÖffentlich: `el.step`"
+   },
+   "attributes": [
+    {
+     "name": "line"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-slideshow",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...\n\nScript: `js/slideshow.js` · CSS: `components/slideshow.css`\n\nEvents: `ncss-slideshow-change`, `ncss-slideshow-pause`, `ncss-slideshow-play`\n\nÖffentlich: `el.next()`, `el.prev()`, `el.goTo(index)`, `el.play()`, `el.pause()`, `el.index`"
+   },
+   "attributes": [
+    {
+     "name": "autoplay"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-sortable",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)\n\nScript: `js/sortable.js` · CSS: `components/sortable.css`\n\nEvents: `ncss-sortable-change`\n\nÖffentlich: `el.items`, `el.order`, `el.move(eintragOderIndex, zielIndex)`"
+   },
+   "attributes": [
+    {
+     "name": "no-buttons",
+     "description": "Hoch/Runter-Schaltflächen weglassen - NUR, wenn die Seite selbst eine gleichwertige Alternative ohne Ziehen anbietet data-label-<schlüssel>=\"…\"  Texte überschreiben ({label}, {pos}, {total} werden ersetzt), Schlüssel: handle, up, down, instructions, grabbed, moved, dropped, cancelled",
+     "valueSet": "v"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-table-sort",
+   "description": {
+    "kind": "markdown",
+    "value": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)\n\nScript: `js/table-sort.js` · CSS: `components/table-sort.css`\n\nEvents: `ncss-table-sort-change`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-tabs",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nScript: `js/tabs.js` · CSS: `components/tabs.css`\n\nEvents: `ncss-tabs-change`\n\nÖffentlich: `el.select(indexOderId)`"
+   },
+   "attributes": [
+    {
+     "name": "hash",
+     "valueSet": "v"
+    },
+    {
+     "name": "activation"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-toast-region",
+   "description": {
+    "kind": "markdown",
+    "value": "Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)\n\nScript: `js/notification.js` · CSS: `components/notification.css`\n\nEvents: `ncss-notification-close`"
+   },
+   "attributes": [
+    {
+     "name": "stack",
+     "valueSet": "v"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-toolbar",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)\n\nScript: `js/toolbar.js` · CSS: `components/toolbar.css`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-video-float",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-video-float>: Mini-Player, der beim Wegscrollen eines LAUFENDEN Videos an eine Fensterecke andockt (components/video-float.css)\n\nScript: `js/video-float.js` · CSS: `components/video-float.css`\n\nEvents: `ncss-video-float-dock`, `ncss-video-float-undock`\n\nÖffentlich: `el.dock()`, `el.undock()`, `el.docked`"
+   },
+   "attributes": [],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  },
+  {
+   "name": "ncss-video-player",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-video-player>: eigener Videoplayer als Light-DOM-Custom-Element (kein Shadow Root - Seiten-CSS/theme.css greifen ganz normal)\n\nScript: `js/video-player.js` · CSS: `components/video-float.css`, `components/video-player.css`\n\nEvents: `ncss-media-ended`, `ncss-media-pause`, `ncss-media-play`, `ncss-video-trackchange`\n\nÖffentlich: `el.play()`, `el.pause()`, `el.toggle()`, `el.seek(s)`, `el.skip(+/-s)`, `el.fullscreen()`, `el.next()`, `el.previous()`, `el.load(index)`, `el.media`"
+   },
+   "attributes": [
+    {
+     "name": "speeds",
+     "description": "Einträge des Geschwindigkeitsmenüs - Default/Beispiel: `0.5 0.75 1 1.25 1.5 2`"
+    },
+    {
+     "name": "autohide",
+     "description": "ms ohne Zeigerbewegung, bis die Leiste ausblendet (\"0\" = nie ausblenden) - Default/Beispiel: `2500`"
+    },
+    {
+     "name": "captions",
+     "description": "Untertitel-Sprache beim Start (sonst <track default>) - Default/Beispiel: `en`"
+    },
+    {
+     "name": "exclusive",
+     "description": "darf parallel zu anderen Playern laufen - Default/Beispiel: `false`"
+    },
+    {
+     "name": "layout"
+    }
+   ],
+   "references": [
+    {
+     "name": "NativeCSS-Handbuch",
+     "url": "https://skerbis.github.io/nativecss/docs/de/all-components.html"
+    }
+   ]
+  }
+ ],
+ "globalAttributes": [
+  {
+   "name": "data-ncss-announce",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)\n\nQuelle: `js/countdown.js`"
+   }
+  },
+  {
+   "name": "data-ncss-backdrop",
+   "description": {
+    "kind": "markdown",
+    "value": "Backdrop: wechselt die Bilder von [data-ncss-backdrop] im Intervall (data-interval in ms, Default 6000)\n\nQuelle: `js/backdrop.js`"
+   }
+  },
+  {
+   "name": "data-ncss-code-tabindex",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Code-Block: ruft das self-hosted Prism.js (vendor/prismjs/) einmal kontrolliert auf (statt Prisms eigenem, unkontrolliertem DOMContentLoaded-Autostart - siehe code-block.css für die dafür nötige \"window.Prism = { manual: true }\"-Zeile ...\n\nQuelle: `js/code-block.js`"
+   }
+  },
+  {
+   "name": "data-ncss-combobox",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Combobox: opt-in JS-Enhancement für zwei native Muster mit unstylebarem Popup (siehe combobox.css für die Begründung, warum reines CSS hier nicht reicht):\n\nQuelle: `js/combobox.js`"
+   }
+  },
+  {
+   "name": "data-ncss-command-key",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-command-palette>: Befehlspalette (siehe components/command-palette.css für Markup)\n\n```html\nElemente mit [data-ncss-command-key] (z.B. das <kbd> im Öffnen-Button) bekommen den\n```\n\nQuelle: `js/command-palette.js`"
+   }
+  },
+  {
+   "name": "data-ncss-count-decimals",
+   "description": {
+    "kind": "markdown",
+    "value": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ...\n\nQuelle: `js/count-up.js`"
+   }
+  },
+  {
+   "name": "data-ncss-count-text",
+   "description": {
+    "kind": "markdown",
+    "value": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ...\n\nQuelle: `js/count-up.js`"
+   }
+  },
+  {
+   "name": "data-ncss-count-up",
+   "description": {
+    "kind": "markdown",
+    "value": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ...\n\n```html\n(<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>,\n```\n\nQuelle: `js/count-up.js`"
+   }
+  },
+  {
+   "name": "data-ncss-direction",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nQuelle: `components/tabs.css`, `js/tabs.js`"
+   }
+  },
+  {
+   "name": "data-ncss-dismiss",
+   "description": {
+    "kind": "markdown",
+    "value": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)\n\n```html\n<div class=\"ncss-alert\" data-ncss-dismissible> ...\n```\n\nQuelle: `js/dismiss.js`"
+   }
+  },
+  {
+   "name": "data-ncss-dismiss-focus",
+   "description": {
+    "kind": "markdown",
+    "value": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)\n\nQuelle: `js/dismiss.js`"
+   }
+  },
+  {
+   "name": "data-ncss-dismissible",
+   "description": {
+    "kind": "markdown",
+    "value": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)\n\n```html\n<div class=\"ncss-alert\" data-ncss-dismissible> ...\n```\n\nQuelle: `components/alert.css`, `js/dismiss.js`"
+   }
+  },
+  {
+   "name": "data-ncss-done-text",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)\n\nQuelle: `js/countdown.js`"
+   }
+  },
+  {
+   "name": "data-ncss-dragover",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)\n\nQuelle: `components/dropzone.css`, `js/dropzone.js`"
+   }
+  },
+  {
+   "name": "data-ncss-dropdown-fallback",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)\n\nQuelle: `components/dropdown.css`, `js/dropdown.js`"
+   }
+  },
+  {
+   "name": "data-ncss-ended",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)\n\nQuelle: `js/countdown.js`"
+   }
+  },
+  {
+   "name": "data-ncss-filter-out",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1\n\nQuelle: `components/filter.css`, `js/filter.js`"
+   }
+  },
+  {
+   "name": "data-ncss-filter-status",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1\n\n```html\n<p class=\"ncss-filter-status\" data-ncss-filter-status></p> irgendwo im Filter,\n```\n\nQuelle: `js/filter.js`"
+   }
+  },
+  {
+   "name": "data-ncss-font",
+   "description": {
+    "kind": "markdown",
+    "value": "Darstellungs-Einstellungen, früher Teil: setzt gespeicherte Besucher-Einstellungen (<ncss-preferences>, js/preferences.js) als Attribute am <html>, BEVOR die Seite gezeichnet wird - kein Aufblitzen in falscher Schriftgröße/Farbe beim Laden\n\n```html\nGewählt wird über <html data-ncss-font=\"hyperlegible|lexend|opendyslexic\"> (gesetzt von\n```\n\nQuelle: `components/preferences-fonts.css`, `js/preferences-early.js`, `js/preferences.js`"
+   }
+  },
+  {
+   "name": "data-ncss-hovercard-manual",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-hovercard>: Vorschaukarte beim Überfahren/Fokussieren eines Links (siehe components/hovercard.css für Markup)\n\nQuelle: `components/hovercard.css`, `js/hovercard.js`"
+   }
+  },
+  {
+   "name": "data-ncss-icon-path",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein\n\nQuelle: `js/icon.js`"
+   }
+  },
+  {
+   "name": "data-ncss-index",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)\n\nQuelle: `js/dropzone.js`"
+   }
+  },
+  {
+   "name": "data-ncss-indicator",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nQuelle: `components/tabs.css`, `js/tabs.js`"
+   }
+  },
+  {
+   "name": "data-ncss-lightbox",
+   "description": {
+    "kind": "markdown",
+    "value": "Lightbox-Galerie: blättert durch alle Links mit demselben data-ncss-lightbox-Wert (siehe components/lightbox.css)\n\n```html\n<a href=\"gross-1.jpg\" data-ncss-lightbox=\"ausstellung\" data-caption=\"Titel, 2024\">\n```\n\nQuelle: `components/lightbox.css`, `js/lightbox.js`"
+   }
+  },
+  {
+   "name": "data-ncss-livesearch",
+   "description": {
+    "kind": "markdown",
+    "value": "Live-Suche: Vorschläge während der Eingabe für [data-ncss-livesearch]-Formulare (siehe components/livesearch.css)\n\nQuelle: `js/livesearch.js`"
+   }
+  },
+  {
+   "name": "data-ncss-marquee",
+   "description": {
+    "kind": "markdown",
+    "value": "opt-in Begleiter für components/marquee.css.\n\n```html\n1. <div class=\"ncss-marquee\" data-ncss-marquee> mit nur EINER .ncss-marquee-group:\n```\n\nQuelle: `js/marquee.js`"
+   }
+  },
+  {
+   "name": "data-ncss-marquee-tabindex",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) opt-in Begleiter für components/marquee.css.\n\nQuelle: `js/marquee.js`"
+   }
+  },
+  {
+   "name": "data-ncss-marquee-toggle",
+   "description": {
+    "kind": "markdown",
+    "value": "opt-in Begleiter für components/marquee.css.\n\n```html\n2. <button type=\"button\" data-ncss-marquee-toggle aria-controls=\"marquee-id\">: schaltet\n```\n\nQuelle: `js/marquee.js`"
+   }
+  },
+  {
+   "name": "data-ncss-max-size",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)\n\nQuelle: `js/dropzone.js`"
+   }
+  },
+  {
+   "name": "data-ncss-notify",
+   "description": {
+    "kind": "markdown",
+    "value": "Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)\n\n```html\nDeklarativ: <button type=\"button\" data-ncss-notify=\"Gespeichert\" data-status=\"success\"\n```\n\nQuelle: `js/notification.js`"
+   }
+  },
+  {
+   "name": "data-ncss-observe",
+   "description": {
+    "kind": "markdown",
+    "value": "Content-Observer (opt-in): meldet neu eingefügtes Markup automatisch per \"ncss-content-change\"-Event, damit die Attribut-Scripts aus js/ (count-up, reveal, marquee, sparkline, downloads, events, code-block, combobox, livesearch, ...) es ...\n\nQuelle: `js/content-observer.js`"
+   }
+  },
+  {
+   "name": "data-ncss-overflow",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...\n\nQuelle: `components/slideshow.css`, `js/slideshow.js`"
+   }
+  },
+  {
+   "name": "data-ncss-own-label",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)\n\nQuelle: `js/sortable.js`"
+   }
+  },
+  {
+   "name": "data-ncss-player-media",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)\n\nQuelle: `js/audio-player.js`, `js/video-player.js`"
+   }
+  },
+  {
+   "name": "data-ncss-preferences-fallback",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)\n\nQuelle: `components/preferences.css`, `js/preferences.js`"
+   }
+  },
+  {
+   "name": "data-ncss-reveal",
+   "description": {
+    "kind": "markdown",
+    "value": "opt-in Begleiter für helpers/reveal.css (Elemente mit data-ncss-reveal)\n\nQuelle: `js/reveal.js`"
+   }
+  },
+  {
+   "name": "data-ncss-scroll-horizontal",
+   "description": {
+    "kind": "markdown",
+    "value": "Begleit-Script für components/scroll-horizontal.css (.ncss-scroll-horizontal mit data-ncss-scroll-horizontal)\n\nQuelle: `js/scroll-horizontal.js`"
+   }
+  },
+  {
+   "name": "data-ncss-selected",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nQuelle: `js/tabs.js`"
+   }
+  },
+  {
+   "name": "data-ncss-sort",
+   "description": {
+    "kind": "markdown",
+    "value": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)\n\n```html\nncss - Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt\n```\n\nQuelle: `js/table-sort.js`"
+   }
+  },
+  {
+   "name": "data-ncss-sparkline-table",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Sparkline-Datenbindung (opt-in, ergänzt components/sparkline.css): berechnet polyline/-area/-dot aus echten Werten statt sie von Hand als SVG-Koordinaten ausrechnen zu müssen, UND liefert die Werte gleichzeitig als barrierefreie Tabelle ...\n\nQuelle: `js/sparkline.js`"
+   }
+  },
+  {
+   "name": "data-ncss-spotlight",
+   "description": {
+    "kind": "markdown",
+    "value": "Spotlight: schreibt die Zeigerposition als --ncss-spotlight-x/-y (px, relativ zur jeweiligen Fläche) in jedes .ncss-spotlight innerhalb von [data-ncss-spotlight] (oder das Element selbst, wenn es die Klasse trägt)\n\nQuelle: `js/spotlight.js`"
+   }
+  },
+  {
+   "name": "data-ncss-spotlight-active",
+   "description": {
+    "kind": "markdown",
+    "value": "Spotlight: schreibt die Zeigerposition als --ncss-spotlight-x/-y (px, relativ zur jeweiligen Fläche) in jedes .ncss-spotlight innerhalb von [data-ncss-spotlight] (oder das Element selbst, wenn es die Klasse trägt)\n\nQuelle: `components/spotlight.css`, `js/spotlight.js`"
+   }
+  },
+  {
+   "name": "data-ncss-src",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-container>: kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, damit sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen können, ohne dass Styles in beide Richtungen ...\n\n```html\n- src (Pflicht, ODER data-ncss-src auf dem Loader-<script> als Seiten-Default - siehe\n```\n\nQuelle: `js/ncss-container.js`"
+   }
+  },
+  {
+   "name": "data-ncss-sticky-header",
+   "description": {
+    "kind": "markdown",
+    "value": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar\n\n```html\n<div class=\"mein-header\" data-ncss-sticky-header>   (selbst position: sticky; top: 0)\n```\n\nQuelle: `components/subnav.css`, `js/subnav.js`"
+   }
+  },
+  {
+   "name": "data-ncss-subnav",
+   "description": {
+    "kind": "markdown",
+    "value": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar\n\n```html\nMarkup: <nav class=\"ncss-subnav\" data-ncss-subnav> ... <a href=\"#abschnitt\"> ... </nav>\n```\n\nQuelle: `js/subnav.js`"
+   }
+  },
+  {
+   "name": "data-ncss-subnav-ready",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar\n\nQuelle: `components/subnav.css`, `js/subnav.js`"
+   }
+  },
+  {
+   "name": "data-ncss-tab",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)\n\nQuelle: `js/tabs.js`"
+   }
+  },
+  {
+   "name": "data-ncss-text-reveal",
+   "description": {
+    "kind": "markdown",
+    "value": "Wort-Variante für components/text-reveal.css (<p class=\"ncss-text-reveal\" data-ncss-text-reveal>)\n\n```html\n(<p class=\"ncss-text-reveal\" data-ncss-text-reveal>). Die Zeilen-/Fluss-Varianten\n```\n\nQuelle: `js/text-reveal.js`"
+   }
+  },
+  {
+   "name": "data-ncss-theme-label",
+   "description": {
+    "kind": "markdown",
+    "value": "Hell/Dunkel-Umschalter für Buttons mit [data-ncss-theme-toggle]\n\nQuelle: `js/theme-toggle.js`"
+   }
+  },
+  {
+   "name": "data-ncss-theme-toggle",
+   "description": {
+    "kind": "markdown",
+    "value": "Hell/Dunkel-Umschalter für Buttons mit [data-ncss-theme-toggle]\n\n```html\n1. data-ncss-theme-toggle (leer) - Hell <-> Dunkel. Entspricht die neue Wahl wieder\n```\n\nQuelle: `js/theme-toggle.js`"
+   }
+  },
+  {
+   "name": "data-ncss-time",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-scroll-video>: Scrollen spult ein Video vor UND zurück (Scroll-Position -> video.currentTime)\n\n```html\n<p class=\"ncss-scroll-video-caption\" data-ncss-time=\"1-3\">Text ...</p>\n```\n\nQuelle: `js/scroll-video.js`, `js/scrolly.js`"
+   }
+  },
+  {
+   "name": "data-ncss-toast-expanded",
+   "description": {
+    "kind": "markdown",
+    "value": "Benachrichtigungen / Toasts (Layer \"components\"): <ncss-toast-region> ist der feste Bereich am Bildschirmrand, .ncss-notification eine einzelne Meldung\n\nQuelle: `components/notification.css`"
+   }
+  },
+  {
+   "name": "data-ncss-toast-front",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)\n\nQuelle: `components/notification.css`, `js/notification.js`"
+   }
+  },
+  {
+   "name": "data-ncss-toolbar-item",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) <ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)\n\nQuelle: `components/toolbar.css`, `js/toolbar.js`"
+   }
+  },
+  {
+   "name": "data-ncss-tooltip-fallback",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Tooltip-Fallback + Absicherung (siehe components/tooltip.css für Markup)\n\nQuelle: `components/tooltip.css`, `js/tooltip.js`"
+   }
+  },
+  {
+   "name": "data-ncss-units",
+   "description": {
+    "kind": "markdown",
+    "value": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)\n\nQuelle: `js/countdown.js`"
+   }
+  },
+  {
+   "name": "data-ncss-video-bg",
+   "description": {
+    "kind": "markdown",
+    "value": "Hintergrund-Video für beliebige Flächen (Sektion, Hero, Karte, Banner), siehe components/video-bg.css. Bewusst KEIN Custom Element: die Fläche ist normales Seiten- Markup (oft ein <section> oder .ncss-hero), das Script ergänzt nur Verhalten\n\n```html\n<section class=\"ncss-video-bg ncss-video-bg--dark\" data-ncss-video-bg>\n```\n\nQuelle: `js/video-bg.js`"
+   }
+  },
+  {
+   "name": "data-ncss-video-bg-ready",
+   "description": {
+    "kind": "markdown",
+    "value": "(intern, vom Script gesetzt) Hintergrund-Video für beliebige Flächen (Sektion, Hero, Karte, Banner), siehe components/video-bg.css. Bewusst KEIN Custom Element: die Fläche ist normales Seiten- Markup (oft ein <section> oder .ncss-hero), das Script ergänzt nur Verhalten\n\nQuelle: `js/video-bg.js`"
+   }
+  },
+  {
+   "name": "data-theme",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS: erzwingt Hell/Dunkel am `<html>` (sonst Systemeinstellung)."
+   },
+   "values": [
+    {
+     "name": "light"
+    },
+    {
+     "name": "dark"
+    }
+   ]
+  },
+  {
+   "name": "data-palette",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS: Paletten-Konvention aus `colors.css` (Beispiele `sunset`, `football`)."
+   },
+   "values": [
+    {
+     "name": "sunset"
+    },
+    {
+     "name": "football"
+    }
+   ]
+  }
+ ]
+}

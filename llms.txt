@@ -1,0 +1,27 @@
+# NativeCSS
+
+> Natives CSS-Designsystem ohne Build-Schritt (Klassen-Präfix `ncss-`): reine CSS-Dateien, verbunden über `@import` + Cascade Layers, ein Token-System, fließende Typografie, Container Queries statt Viewport-Breakpoints, `light-dark()` für Dark Mode, native `<dialog>`/`<details>`/`command`+`commandfor` statt JS-Widgets, opt-in JS je Komponente. Kein npm, kein Bundler. / A build-free native CSS design system (`ncss-` prefix): cascade layers, container queries, light-dark(), native dialog/details; no npm, no bundler.
+
+Agents: read llms/GUIDE.md first and never invent class names - every valid class is in llms/classes.json, every custom element, data-ncss-* attribute and event in llms/components.json. Check your markup with `node llms/hooks/check-classes.mjs <files>`.
+
+## Anleitung / Guide
+- [Mit NativeCSS bauen (für LLMs)](llms/GUIDE.md): Einrichten, welche Datei wofür, Kernmuster, Theme-Seeds, Gestaltungsregeln, häufige Fehler (English summary at the top)
+- [README](README.md): Konzept, Schnellstart, Lizenz
+- [Handbuch](docs/de/index.html): Live-Beispiele jeder Komponente (EN: docs/en/index.html)
+- [Von UIkit3 nach ncss](docs/de/uikit-migration.html): Zuordnung UIkit -> NativeCSS
+
+## Referenz (aus dist/ generiert)
+- [Klassen-Index](llms/classes.json): jede ncss-Klasse -> definierende Datei
+- [Elemente, Attribute, Events](llms/components.json): <ncss-*>-Elemente, data-ncss-*-Attribute, Scripts
+- [Datei-Referenz](llms/reference.md): Header-Dokumentation jeder CSS-/JS-Datei mit Markup-Beispielen
+- [Theme-Vorlage](dist/theme.css): alle Seed-Werte mit Defaults
+
+## Beispiele
+- [Alle Komponenten](docs/de/all-components.html)
+- [Demo-Seiten](demo/): Landing, Hotel, Gemeinde, Magazin, Immo-App
+
+## Werkzeuge
+- [Markup-Prüfer / Claude-Code-Hook](llms/hooks/README.md)
+- [UIkit -> NativeCSS Konverter](tools/uikit-to-ncss/README.md) (CLI + demo/uikit-converter.html)
+- [VS Code: Autovervollständigung + Snippets](tools/vscode/README.md)
+- [Claude-Code-Skill: Gestalten mit NativeCSS](.claude/skills/ncss-design/SKILL.md)

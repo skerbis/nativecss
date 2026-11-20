@@ -1,0 +1,188 @@
+/**
+ * ncss - Kundenstimmen / Zitatkarten (Layer "components"): Zitat, Person (Avatar, Name,
+ * Rolle), optionale Sterne-Bewertung und Firmenlogo. Einzelkarte, Raster und eine große
+ * hervorgehobene Variante für Landingpages. Reines CSS, kein JS.
+ *
+ * Braucht colors.css + tokens.css (+ reset/base). Optionale Begleiter:
+ *   components/avatar.css   für .ncss-avatar (Bild oder Initialen) in der Bildunterschrift
+ *   helpers/a11y.css        falls zusätzlicher versteckter Text gebraucht wird
+ * Die Sterne hier sind eine reine ANZEIGE (.ncss-testimonial-rating) - components/
+ * rating.css ist die Eingabe-Variante (Radio-Buttons) und für ein fertiges Zitat die
+ * falsche Semantik.
+ *
+ * Semantik: <figure> + <blockquote> + <figcaption> (HTML-Spec-Muster für Zitate mit
+ * Quelle). Der Name steht als Text in der figcaption, NICHT in <cite> - <cite> ist per
+ * Spec der Titel eines Werks, kein Personenname.
+ *
+ * Markup:
+ *   <figure class="ncss-testimonial">
+ *     <p class="ncss-testimonial-rating" role="img" aria-label="5 von 5 Sternen"><span aria-hidden="true">★★★★★</span></p>
+ *     <blockquote class="ncss-testimonial-quote"><p>Zitat ...</p></blockquote>
+ *     <figcaption class="ncss-testimonial-author">
+ *       <span class="ncss-avatar" aria-hidden="true">JB</span>
+ *       <span class="ncss-testimonial-person">
+ *         <span class="ncss-testimonial-name">Julia Brenner</span>
+ *         <span class="ncss-testimonial-role">Leitung Einkauf, Nordlicht GmbH</span>
+ *       </span>
+ *       <img class="ncss-testimonial-logo" src="logo.svg" alt="" width="96" height="24">
+ *     </figcaption>
+ *   </figure>
+ * Logo mit alt="", wenn die Firma schon in der Rolle steht (sonst doppelt vorgelesen);
+ * steht sie nirgends als Text, alt="Firmenname". Statt <img> geht auch ein Text-
+ * Schriftzug (<span class="ncss-testimonial-logo">).
+ *
+ * Varianten:
+ *   .ncss-testimonial-grid       Raster gleich hoher Karten, Personenzeile unten bündig
+ *                                (--ncss-testimonial-min, Default 18rem)
+ *   .ncss-testimonial--featured  großes Zitat mit Anführungszeichen, zentriert
+ *   .ncss-testimonial--plain     ohne Rahmen/Fläche (z.B. auf einer farbigen Tile)
+ */
+
+.ncss-testimonial {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-sm);
+  margin: 0;
+  padding: var(--ncss-testimonial-padding, var(--ncss-space-md));
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+}
+
+/* base.css gibt <blockquote> eine Randlinie + gedämpfte Farbe - in der Karte ist das
+   Zitat der Hauptinhalt und bleibt in voller Textfarbe. */
+.ncss-testimonial-quote {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-size: var(--ncss-font-size-md);
+  line-height: var(--ncss-line-height-base);
+}
+.ncss-testimonial-quote > :last-child {
+  margin-block-end: 0;
+}
+
+.ncss-testimonial-rating {
+  margin: 0;
+  color: var(--ncss-testimonial-rating-color, var(--ncss-color-warning));
+  font-size: var(--ncss-font-size-lg);
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.ncss-testimonial-author {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-xs) var(--ncss-space-sm);
+  margin: 0;
+  padding-block-start: var(--ncss-space-sm);
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  /* base.css setzt figcaption klein + gedämpft - hier bestimmen Name/Rolle selbst. */
+  font-size: var(--ncss-font-size-base);
+  color: var(--ncss-color-text);
+}
+.ncss-testimonial-person {
+  flex: 1 1 10rem;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.ncss-testimonial-name {
+  font-weight: var(--ncss-font-weight-semibold);
+}
+.ncss-testimonial-role {
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+}
+.ncss-testimonial-logo {
+  flex: none;
+  /* Bleibt am Zeilenende, auch wenn es in eine eigene Zeile umbricht. */
+  margin-inline-start: auto;
+  max-block-size: 1.75rem;
+  inline-size: auto;
+  max-inline-size: 7rem;
+  color: var(--ncss-color-text-muted);
+  font-weight: var(--ncss-font-weight-bold);
+  font-size: var(--ncss-font-size-sm);
+  letter-spacing: var(--ncss-tracking-wide);
+  text-transform: uppercase;
+}
+img.ncss-testimonial-logo {
+  object-fit: contain;
+}
+
+/* --- Raster ------------------------------------------------------------------------------
+   Gleich hohe Karten; das Zitat wächst (flex 1), die Personenzeile steht unten bündig. */
+.ncss-testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--ncss-testimonial-min, 18rem), 100%), 1fr));
+  gap: var(--ncss-testimonial-gap, var(--ncss-space-md));
+  margin: 0 0 var(--ncss-space-md);
+  padding: 0;
+  list-style: none;
+}
+.ncss-testimonial-grid > li {
+  display: flex;
+}
+.ncss-testimonial-grid > li > .ncss-testimonial {
+  flex: 1 1 auto;
+}
+
+/* --- Hervorgehoben ---------------------------------------------------------------------
+   Für die eine große Stimme auf der Landingpage. Das Anführungszeichen ist Deko
+   (Alternativtext "") - der Screenreader liest nur das Zitat selbst. */
+.ncss-testimonial--featured {
+  container-type: inline-size;
+  align-items: center;
+  gap: var(--ncss-space-md);
+  padding: var(--ncss-testimonial-padding, var(--ncss-space-lg));
+  text-align: center;
+}
+.ncss-testimonial--featured > .ncss-testimonial-quote {
+  font-size: var(--ncss-font-size-lg);
+  font-weight: var(--ncss-font-weight-medium);
+  line-height: var(--ncss-line-height-tight);
+  text-wrap: balance;
+}
+.ncss-testimonial--featured > .ncss-testimonial-quote::before {
+  content: "\201C" / "";
+  display: block;
+  color: var(--ncss-color-brand);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4em;
+  line-height: 0.6;
+  margin-block-end: var(--ncss-space-2xs);
+}
+.ncss-testimonial--featured > .ncss-testimonial-author {
+  justify-content: center;
+  border-block-start: 0;
+  padding-block-start: 0;
+}
+.ncss-testimonial--featured .ncss-testimonial-person {
+  flex: 0 1 auto;
+  text-align: start;
+}
+@container (min-width: 40rem) {
+  .ncss-testimonial--featured > .ncss-testimonial-quote {
+    font-size: var(--ncss-font-size-xl);
+  }
+}
+
+.ncss-testimonial--plain {
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+}
+
+@media (forced-colors: active) {
+  .ncss-testimonial--plain {
+    border: 0;
+  }
+  .ncss-testimonial-rating {
+    color: CanvasText;
+  }
+}

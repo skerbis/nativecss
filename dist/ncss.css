@@ -42,9 +42,11 @@
 @import url("helpers/tables.css") layer(helpers);
 @import url("helpers/media.css") layer(helpers);
 @import url("helpers/scroll.css") layer(helpers);
+@import url("helpers/scroll-shadow.css") layer(helpers);
 @import url("helpers/surfaces.css") layer(helpers);
 @import url("helpers/float.css") layer(helpers);
 @import url("helpers/animations.css") layer(helpers);
+@import url("helpers/reveal.css") layer(helpers);
 @import url("helpers/elevation.css") layer(helpers);
 
 @import url("components/hero.css") layer(components);
@@ -57,12 +59,21 @@
 @import url("components/sparkline.css") layer(components);
 @import url("components/video.css") layer(components);
 @import url("components/audio.css") layer(components);
+@import url("components/video-player.css") layer(components);
+@import url("components/audio-player.css") layer(components);
+@import url("components/scroll-video.css") layer(components);
+@import url("components/scroll-frames.css") layer(components);
+@import url("components/video-bg.css") layer(components);
+@import url("components/video-text.css") layer(components);
+@import url("components/video-float.css") layer(components);
+@import url("components/video-card.css") layer(components);
 @import url("components/card.css") layer(components);
 @import url("components/split.css") layer(components);
 @import url("components/tile.css") layer(components);
 @import url("components/accordion-split.css") layer(components);
 @import url("components/marginnote.css") layer(components);
 @import url("components/slideshow.css") layer(components);
+@import url("components/filter.css") layer(components);
 @import url("components/dialog-close.css") layer(components);
 @import url("components/theme-toggle.css") layer(components);
 @import url("components/modal.css") layer(components);
@@ -76,16 +87,62 @@
 @import url("components/disclosure.css") layer(components);
 @import url("components/badge.css") layer(components);
 @import url("components/breadcrumb.css") layer(components);
+@import url("components/subnav.css") layer(components);
 @import url("components/lists.css") layer(components);
 @import url("components/cover.css") layer(components);
 @import url("components/overlay.css") layer(components);
 @import url("components/footer.css") layer(components);
 @import url("components/effects.css") layer(components);
+@import url("components/spotlight.css") layer(components);
+@import url("components/compare.css") layer(components);
+@import url("components/expand-panels.css") layer(components);
+@import url("components/command-palette.css") layer(components);
+@import url("components/hovercard.css") layer(components);
+@import url("components/notification.css") layer(components);
+@import url("components/aurora.css") layer(components);
 @import url("components/backdrop.css") layer(components);
 @import url("components/code-block.css") layer(components);
 @import url("components/events.css") layer(components);
 @import url("components/downloads.css") layer(components);
-/* Weitere Komponenten (Tabs, Accordion, ...) folgen hier, je eine Datei.
+@import url("components/curtain.css") layer(components);
+@import url("components/scroll-horizontal.css") layer(components);
+@import url("components/text-reveal.css") layer(components);
+@import url("components/scrolly.css") layer(components);
+@import url("components/count-up.css") layer(components);
+@import url("components/marquee.css") layer(components);
+@import url("components/reveal-pin.css") layer(components);
+@import url("components/morph.css") layer(components);
+@import url("components/tabs.css") layer(components);
+@import url("components/tooltip.css") layer(components);
+@import url("components/pagination.css") layer(components);
+@import url("components/alert.css") layer(components);
+@import url("components/avatar.css") layer(components);
+@import url("components/tag.css") layer(components);
+@import url("components/stat.css") layer(components);
+@import url("components/empty-state.css") layer(components);
+@import url("components/spinner.css") layer(components);
+@import url("components/kbd.css") layer(components);
+@import url("components/floating-label.css") layer(components);
+@import url("components/segmented.css") layer(components);
+@import url("components/pill-group.css") layer(components);
+@import url("components/toolbar.css") layer(components);
+@import url("components/rating.css") layer(components);
+@import url("components/timeline.css") layer(components);
+@import url("components/stepper.css") layer(components);
+@import url("components/testimonial.css") layer(components);
+@import url("components/pricing.css") layer(components);
+@import url("components/leaders.css") layer(components);
+@import url("components/comments.css") layer(components);
+@import url("components/dropzone.css") layer(components);
+@import url("components/countdown.css") layer(components);
+@import url("components/back-to-top.css") layer(components);
+@import url("components/app-shell.css") layer(components);
+@import url("components/preferences.css") layer(components);
+@import url("components/map.css") layer(components);
+@import url("components/dropdown.css") layer(components);
+@import url("components/table-sort.css") layer(components);
+@import url("components/sortable.css") layer(components);
+/* Weitere Komponenten folgen hier, je eine Datei.
    JS liegt gesammelt unter js/, nicht neben dem jeweiligen Komponenten-CSS - separat
    einbinden (<script src="ncss/js/command-fallback.js">) - generischer Fallback für
    command/commandfor (Modal/Off-Canvas/Nav), nur nötig für Browser ohne native

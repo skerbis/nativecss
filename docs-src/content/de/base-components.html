@@ -1,0 +1,577 @@
+<!--DESC: Basis-Komponenten ohne Web Awesome - Tabs, Tooltip, Pagination, Hinweis-Boxen, Darstellungs-Einstellungen und Dialog-Verhalten, nativ und einzeln einbindbar.-->
+<!--FOOT: <script src="~/dist/js/tabs.js"></script><script src="~/dist/js/tooltip.js"></script><script src="~/dist/js/dismiss.js"></script><script src="~/dist/js/dialog-light-dismiss.js"></script><script src="~/dist/js/preferences.js"></script>-->
+<!--HEAD: <script src="~/dist/js/preferences-early.js"></script><link rel="stylesheet" href="~/dist/components/preferences-fonts.css">-->
+<section class="ncss-stack">
+  <h1>Basis-Komponenten</h1>
+  <p class="ncss-text-lg ncss-text-muted">Die native Alternative zu <code>&lt;wa-tab-group&gt;</code>, <code>&lt;wa-tooltip&gt;</code> und <code>&lt;wa-callout&gt;</code>: kein ES-Modul, kein Shadow DOM, das Markup bleibt normales HTML, das auch ohne JavaScript funktioniert. Jede Datei läuft allein mit <code>colors.css</code>, <code>tokens.css</code>, <code>reset.css</code> und <code>base.css</code>. Web Awesome bleibt optional (siehe <a href="webawesome-bridge.html">Web Awesome</a>).</p>
+</section>
+
+<section class="ncss-stack" id="einbindung">
+  <h2 class="demo-section-title">Einbindung</h2>
+  <p>In <code>ncss.css</code> enthalten. Einzeln (Cherry-Picking):</p>
+  <pre><code class="language-html">&lt;link rel="stylesheet" href="ncss/components/tabs.css"&gt;        &lt;!-- je im Layer components --&gt;
+&lt;link rel="stylesheet" href="ncss/components/tooltip.css"&gt;
+&lt;link rel="stylesheet" href="ncss/components/pagination.css"&gt;  &lt;!-- reines CSS --&gt;
+&lt;link rel="stylesheet" href="ncss/components/alert.css"&gt;       &lt;!-- reines CSS --&gt;
+&lt;link rel="stylesheet" href="ncss/components/preferences.css"&gt;
+&lt;script src="ncss/js/tabs.js" defer&gt;&lt;/script&gt;      &lt;!-- &lt;ncss-tabs&gt; --&gt;
+&lt;script src="ncss/js/tooltip.js" defer&gt;&lt;/script&gt;   &lt;!-- Fallback ohne interestfor --&gt;
+&lt;script src="ncss/js/dismiss.js" defer&gt;&lt;/script&gt;   &lt;!-- Schließen-Buttons --&gt;
+&lt;script src="ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;  &lt;!-- Klick daneben schließt --&gt;
+&lt;script src="ncss/js/preferences-early.js"&gt;&lt;/script&gt;   &lt;!-- im &lt;head&gt;, vor den Stylesheets --&gt;
+&lt;script src="ncss/js/preferences.js" defer&gt;&lt;/script&gt;  &lt;!-- &lt;ncss-preferences&gt; --&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Alle Scripts sind eigenständig und funktionieren auch mit nachgeladenem Markup (htmx, fetch, REDAXO-Frontend-Editing): Tabs als Custom Element über <code>connectedCallback</code>, Tooltip und Dismiss über Ereignis-Delegation - siehe <a href="dynamic-content.html">Dynamische Inhalte</a>.</p>
+</section>
+
+<section class="ncss-stack" id="tabs">
+  <h2 class="demo-section-title">Tabs</h2>
+  <p><code>&lt;ncss-tabs&gt;</code> folgt dem WAI-ARIA-APG-Muster "Tabs". Ausgangspunkt ist eine Sprungmarken-Liste über Abschnitten - ohne JavaScript bleibt genau das stehen (alle Inhalte sichtbar, jeder Link springt zu seinem Abschnitt). Mit <code>js/tabs.js</code> werden daraus Tabs mit Rollen, Roving-Tabindex und Pfeiltasten. <code>hash</code> spiegelt den aktiven Tab in der Adresse (teilbar, z. B. <code>#tab-technik</code>).</p>
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs" hash&gt;
+  &lt;div class="ncss-tabs-list" aria-label="Produktinfos"&gt;
+    &lt;a href="#tab-beschreibung"&gt;Beschreibung&lt;/a&gt;
+    &lt;a href="#tab-technik"&gt;Technische Daten&lt;/a&gt;
+    &lt;a href="#tab-lieferung"&gt;Lieferung&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;section class="ncss-tabs-panel" id="tab-beschreibung"&gt;
+    &lt;h3 class="ncss-tabs-heading"&gt;Beschreibung&lt;/h3&gt;
+    &lt;p&gt;Handgefertigte Leuchte aus Eichenholz, gedimmt per Drehregler.&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;section class="ncss-tabs-panel" id="tab-technik"&gt;
+    &lt;h3 class="ncss-tabs-heading"&gt;Technische Daten&lt;/h3&gt;
+    &lt;p&gt;LED, 2700 K, 9 W, Kabel 2 m, Höhe 38 cm.&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;section class="ncss-tabs-panel" id="tab-lieferung"&gt;
+    &lt;h3 class="ncss-tabs-heading"&gt;Lieferung&lt;/h3&gt;
+    &lt;p&gt;Versand innerhalb von 3 Werktagen, Rückgabe 30 Tage.&lt;/p&gt;
+  &lt;/section&gt;
+&lt;/ncss-tabs&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<ncss-tabs class="ncss-tabs" hash>
+  <div class="ncss-tabs-list" aria-label="Produktinfos">
+    <a href="#tab-beschreibung">Beschreibung</a>
+    <a href="#tab-technik">Technische Daten</a>
+    <a href="#tab-lieferung">Lieferung</a>
+  </div>
+  <section class="ncss-tabs-panel" id="tab-beschreibung">
+    <h3 class="ncss-tabs-heading">Beschreibung</h3>
+    <p>Handgefertigte Leuchte aus Eichenholz, gedimmt per Drehregler.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="tab-technik">
+    <h3 class="ncss-tabs-heading">Technische Daten</h3>
+    <p>LED, 2700 K, 9 W, Kabel 2 m, Höhe 38 cm.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="tab-lieferung">
+    <h3 class="ncss-tabs-heading">Lieferung</h3>
+    <p>Versand innerhalb von 3 Werktagen, Rückgabe 30 Tage.</p>
+  </section>
+</ncss-tabs>
+  </div>
+  <p>Vertikal mit manueller Aktivierung (<code>activation="manual"</code>): Pfeiltasten bewegen nur den Fokus, Enter/Leertaste öffnet - sinnvoll, wenn ein Panel teuren Inhalt lädt. Bei wenig Platz rutscht der Inhalt unter die Liste (kein fester Breakpoint).</p>
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual"&gt;
+  &lt;div class="ncss-tabs-list" aria-label="Einstellungen"&gt;
+    &lt;a href="#set-profil"&gt;Profil&lt;/a&gt;
+    &lt;a href="#set-konto"&gt;Konto&lt;/a&gt;
+    &lt;a href="#set-benachrichtigungen"&gt;Benachrichtigungen&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;section class="ncss-tabs-panel" id="set-profil"&gt;
+    &lt;h3 class="ncss-tabs-heading"&gt;Profil&lt;/h3&gt;
+    &lt;p&gt;Name, Foto und Kurzbeschreibung.&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;section class="ncss-tabs-panel" id="set-konto"&gt;
+    &lt;h3 class="ncss-tabs-heading"&gt;Konto&lt;/h3&gt;
+    &lt;p&gt;E-Mail-Adresse, Passwort, Zwei-Faktor-Anmeldung.&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;section class="ncss-tabs-panel" id="set-benachrichtigungen"&gt;
+    &lt;h3 class="ncss-tabs-heading"&gt;Benachrichtigungen&lt;/h3&gt;
+    &lt;p&gt;Welche E-Mails du bekommst.&lt;/p&gt;
+  &lt;/section&gt;
+&lt;/ncss-tabs&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<ncss-tabs class="ncss-tabs ncss-tabs--vertical" activation="manual">
+  <div class="ncss-tabs-list" aria-label="Einstellungen">
+    <a href="#set-profil">Profil</a>
+    <a href="#set-konto">Konto</a>
+    <a href="#set-benachrichtigungen">Benachrichtigungen</a>
+  </div>
+  <section class="ncss-tabs-panel" id="set-profil">
+    <h3 class="ncss-tabs-heading">Profil</h3>
+    <p>Name, Foto und Kurzbeschreibung.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="set-konto">
+    <h3 class="ncss-tabs-heading">Konto</h3>
+    <p>E-Mail-Adresse, Passwort, Zwei-Faktor-Anmeldung.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="set-benachrichtigungen">
+    <h3 class="ncss-tabs-heading">Benachrichtigungen</h3>
+    <p>Welche E-Mails du bekommst.</p>
+  </section>
+</ncss-tabs>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Event <code>ncss-tabs-change</code> (bubbelt, <code>detail.tab/panel/index</code>), Methode <code>el.select(index | "id")</code>.</p>
+  <div class="ncss-a11y-notes">
+    <h3>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Springt auf den aktiven Tab, der nächste Tab-Schritt ins Panel (die anderen Tabs liegen nicht in der Tab-Reihenfolge).</td></tr>
+        <tr><td><kbd class="ncss-kbd">←</kbd> / <kbd class="ncss-kbd">→</kbd></td><td>Vorheriger/nächster Tab, am Ende wieder von vorn (vertikal: ↑ / ↓).</td></tr>
+        <tr><td><kbd class="ncss-kbd">Pos1</kbd> / <kbd class="ncss-kbd">Ende</kbd></td><td>Erster/letzter Tab.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd></td><td>Aktiviert den fokussierten Tab (nur bei <code>activation="manual"</code> nötig).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Liste <code>role="tablist"</code> mit Namen aus <code>aria-label</code>, je Tab <code>role="tab"</code> + <code>aria-selected</code> + <code>aria-controls</code>, Panel <code>role="tabpanel"</code> mit <code>aria-labelledby</code>. Screenreader sagen z. B. "Technische Daten, Tab, ausgewählt, 2 von 3". Vertikal zusätzlich <code>aria-orientation="vertical"</code>.</p>
+    <h4>Einstellungen</h4>
+    <p>Keine Animation beim Wechsel (nichts für reduzierte Bewegung abzuschalten). Aktiver Tab hat neben der Farbe einen 3px-Unterstrich, im Hochkontrastmodus eine <code>Highlight</code>-Kontur. Bei Zoom scrollt die Tab-Leiste horizontal in sich, die Seite nicht.</p>
+    <h4>Ohne JS</h4>
+    <p>Sprungmarken-Liste + alle Abschnitte untereinander, die Überschriften <code>.ncss-tabs-heading</code> gliedern die Seite. Mit JS werden sie nur optisch ausgeblendet.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="tabs-animation" data-subnav-label="Tabs mit Animation">
+  <h2 class="demo-section-title">Tabs mit Animation <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p>Alle Animationen sind optional und schalten sich bei reduzierter Bewegung (System oder „Darstellung“) automatisch ab - dann wechseln die Tabs sofort.</p>
+  <div class="docs-live" role="group" aria-label="Tabs mit Animation">
+    <p class="ncss-text-sm ncss-text-muted">Gleitender Unterstrich + Panel schiebt aus der Richtung des Tabs herein</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--slide" animate="fade slide">
+  <div class="ncss-tabs-list" aria-label="Gleitender Unterstrich + Panel schiebt aus der Richtung des Tabs herein">
+    <a href="#ta-de-a-0">Übersicht</a>
+    <a href="#ta-de-a-1">Ausstattung</a>
+    <a href="#ta-de-a-2">Preise</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-de-a-0">
+    <h3 class="ncss-tabs-heading">Übersicht</h3>
+    <p>Ein Haus am See mit 24 Zimmern.</p>
+  </section>
+
+<section class="ncss-stack" id="pillen-gruppe" data-subnav-label="Pillen-Gruppe">
+  <h2 class="demo-section-title">Pillen-Gruppe <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p>Mehrere unabhängige Buttons oder Links als <strong>eine</strong> Pille mit feinen Trennstrichen - für Werkzeuge in der Kopfleiste (wie oben auf dieser Website: Suche · Unterstützen · Sprache · Darstellung), Ansichts-Aktionen oder kompakte Toolbars. Anders als die <a href="app-ui.html#segmentiert">segmentierte Auswahl</a> ist das keine Auswahl - jedes Teil bleibt ein normaler Button oder Link.</p>
+  <div class="docs-live ncss-stack" role="group" aria-label="Pillen-Gruppe">
+    <div class="ncss-pill-group" role="group" aria-label="Artikel-Aktionen"><button type="button"><span class="ncss-icon ncss-icon-share" aria-hidden="true"></span>Teilen</button><button type="button"><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span>Herunterladen</button><button type="button"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span>Merken</button></div>
+    <div class="ncss-pill-group ncss-pill-group--sm" role="group" aria-label="Sprache"><a href="#pillen-gruppe" aria-current="true" lang="de">Deutsch</a><a href="#pillen-gruppe" lang="en">English</a><a href="#pillen-gruppe" lang="fr">Français</a></div>
+    <div class="ncss-pill-group ncss-pill-group--solid" role="group" aria-label="Editor"><button type="button" aria-pressed="true" aria-label="Fett"><strong>F</strong></button><button type="button" aria-pressed="false" aria-label="Kursiv"><em>K</em></button><button type="button" aria-pressed="false" aria-label="Unterstrichen"><u>U</u></button></div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-pill-group" role="group" aria-label="Artikel-Aktionen"&gt;
+  &lt;button type="button"&gt;Teilen&lt;/button&gt;
+  &lt;button type="button"&gt;Drucken&lt;/button&gt;
+  &lt;a href="/en/"&gt;English&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Klasse</th><th scope="col">Wirkung</th></tr></thead><tbody><tr><td><code>.ncss-pill-group</code></td><td>Pille mit Trennstrichen; direkte Kinder <code>a</code>/<code>button</code> werden zu Teilen</td></tr><tr><td><code>.ncss-pill-group-item</code></td><td>Für innere Buttons verschachtelter Elemente (z. B. eines Custom Elements)</td></tr><tr><td><code>--sm</code></td><td>kompakter</td></tr><tr><td><code>--solid</code></td><td>kräftigere Fläche</td></tr><tr><td><code>--plain</code></td><td>ohne Rahmen und Fläche</td></tr><tr><td><code>--no-dividers</code></td><td>ohne Trennstriche</td></tr><tr><td><code>aria-current / aria-pressed="true"</code></td><td>Teil als aktuell/eingeschaltet hervorgehoben</td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Barrierefreiheit: <code>role="group"</code> mit <code>aria-label</code> gibt der Gruppe einen Namen. Jedes Teil ist ein eigener Tab-Stopp; reine Icon-Teile brauchen einen Namen. Fokus-Ring liegt innen, damit er nicht von Nachbarn verdeckt wird. Im Kontrastmodus werden Trennstriche und der aktive Zustand in Systemfarben gezeichnet.</p>
+</section>
+
+<section class="ncss-stack" id="toolbar" data-subnav-label="Toolbar">
+  <h2 class="demo-section-title">Toolbar, Modus-Umschalter und Split-Button <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p>Bausteine für Editor- und App-Leisten: ein <strong>Modus-Umschalter</strong> als Pille mit gleitender Auswahl (<code>.ncss-segmented--pill --slide</code>), runde Icon-Buttons (<code>.ncss-btn--icon --pill --ghost</code>), Pillen-Buttons und ein <strong>Split-Button</strong> (Hauptaktion + Menü). <code>&lt;ncss-toolbar&gt;</code> macht die Leiste zu einem Tab-Stopp mit Pfeiltasten-Navigation.</p>
+  <div class="docs-live" role="group" aria-label="Toolbar, Modus-Umschalter und Split-Button">
+    <ncss-toolbar class="ncss-toolbar ncss-toolbar--floating ncss-scheme-dark" aria-label="Seite bearbeiten">
+      <div class="ncss-toolbar-group">
+        <fieldset class="ncss-segmented ncss-segmented--pill ncss-segmented--slide">
+          <legend class="ncss-visually-hidden">Modus</legend>
+          <input type="radio" name="tb-mode-de" id="tb-view-de" value="view">
+          <label for="tb-view-de"><span class="ncss-icon ncss-icon-eye" aria-hidden="true"></span>Ansehen</label>
+          <input type="radio" name="tb-mode-de" id="tb-edit-de" value="edit" checked>
+          <label for="tb-edit-de"><span class="ncss-icon ncss-icon-edit" aria-hidden="true"></span>Bearbeiten</label>
+        </fieldset>
+      </div>
+      <div class="ncss-toolbar-group ncss-toolbar-end">
+        <button type="button" class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="Rückgängig"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+        <button type="button" class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="Wiederholen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+        <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--pill">Abbrechen</button>
+        <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--pill" disabled>Speichern</button>
+        <ncss-dropdown class="ncss-dropdown ncss-split-btn ncss-split-btn--pill">
+          <button type="button" class="ncss-btn ncss-btn--primary">Veröffentlichen</button>
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-dropdown-toggle" popovertarget="tb-pub-de" aria-haspopup="menu" aria-label="Weitere Optionen zum Veröffentlichen"></button>
+          <div class="ncss-dropdown-menu ncss-dropdown-menu--end" id="tb-pub-de" popover role="menu" aria-label="Weitere Optionen zum Veröffentlichen"><button type="button" class="ncss-dropdown-item" role="menuitem">Jetzt veröffentlichen</button><button type="button" class="ncss-dropdown-item" role="menuitem">Veröffentlichung planen …</button><button type="button" class="ncss-dropdown-item" role="menuitem">Als Entwurf speichern</button></div>
+        </ncss-dropdown>
+        <span class="ncss-toolbar-divider" aria-hidden="true"></span>
+        <button type="button" class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="Neue Seite"><span class="ncss-icon ncss-icon-file" aria-hidden="true"></span></button>
+      </div>
+    </ncss-toolbar>
+  </div>
+  <pre><code class="language-html">&lt;ncss-toolbar class="ncss-toolbar ncss-scheme-dark" aria-label="Seite bearbeiten"&gt;
+  &lt;fieldset class="ncss-segmented ncss-segmented--pill ncss-segmented--slide"&gt; … &lt;/fieldset&gt;
+  &lt;div class="ncss-toolbar-group ncss-toolbar-end"&gt;
+    &lt;button class="ncss-btn ncss-btn--icon ncss-btn--pill ncss-btn--ghost" aria-label="Rückgängig"&gt;…&lt;/button&gt;
+    &lt;button class="ncss-btn ncss-btn--secondary ncss-btn--pill"&gt;Abbrechen&lt;/button&gt;
+    &lt;ncss-dropdown class="ncss-dropdown ncss-split-btn ncss-split-btn--pill"&gt;
+      &lt;button class="ncss-btn ncss-btn--primary"&gt;Veröffentlichen&lt;/button&gt;
+      &lt;button class="ncss-btn ncss-btn--primary ncss-dropdown-toggle" popovertarget="pub" aria-haspopup="menu" aria-label="Weitere Optionen zum Veröffentlichen"&gt;&lt;/button&gt;
+      &lt;div class="ncss-dropdown-menu ncss-dropdown-menu--end" id="pub" popover role="menu"&gt; … &lt;/div&gt;
+    &lt;/ncss-dropdown&gt;
+  &lt;/div&gt;
+&lt;/ncss-toolbar&gt;
+&lt;script src="js/toolbar.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/dropdown.js" defer&gt;&lt;/script&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Klasse / Element</th><th scope="col">Zweck</th></tr></thead><tbody><tr><td><code>.ncss-toolbar / &lt;ncss-toolbar&gt;</code></td><td>Leiste mit Gruppen; Element = APG-Toolbar mit Roving-Fokus (js/toolbar.js)</td></tr><tr><td><code>.ncss-toolbar-group, .ncss-toolbar-end, .ncss-toolbar-divider</code></td><td>Gruppen, Endkante, Trennstrich</td></tr><tr><td><code>.ncss-toolbar--floating</code></td><td>schwebende Pille mit Schatten</td></tr><tr><td><code>.ncss-segmented--pill (+ --slide)</code></td><td>Modus-Umschalter mit runder, gleitender Auswahl</td></tr><tr><td><code>.ncss-btn--pill, .ncss-btn--ghost</code></td><td>Pillen-Form, ohne Rahmen/Fläche; mit --icon rund</td></tr><tr><td><code>.ncss-split-btn (+ --pill), .ncss-split-btn-caret</code></td><td>Hauptaktion + angehängter Menü-Knopf</td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Tastatur in <code>&lt;ncss-toolbar&gt;</code>: <kbd class="ncss-kbd">Tab</kbd> springt in die Leiste (ein Tab-Stopp), <kbd class="ncss-kbd">←</kbd>/<kbd class="ncss-kbd">→</kbd> wandern zwischen den Werkzeugen, <kbd class="ncss-kbd">Pos1</kbd>/<kbd class="ncss-kbd">Ende</kbd> an Anfang/Ende; im Modus-Umschalter wählt <kbd class="ncss-kbd">Leertaste</kbd>. Ohne Script ist jedes Werkzeug ein eigener Tab-Stopp. Deaktivierte Buttons (Speichern) werden übersprungen.</p>
+  <script src="../../dist/js/toolbar.js" defer></script>
+  <script src="../../dist/js/dropdown.js" defer></script>
+</section>
+  <section class="ncss-tabs-panel" id="ta-de-a-1">
+    <h3 class="ncss-tabs-heading">Ausstattung</h3>
+    <p>Sauna, Bootssteg, E-Bike-Verleih.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-a-2">
+    <h3 class="ncss-tabs-heading">Preise</h3>
+    <p>Ab 89 € pro Nacht inklusive Frühstück.</p>
+  </section>
+</ncss-tabs>
+    <p class="ncss-text-sm ncss-text-muted">Pillen mit gleitendem Hintergrund + Einblenden</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--pills" animate="fade">
+  <div class="ncss-tabs-list" aria-label="Pillen mit gleitendem Hintergrund + Einblenden">
+    <a href="#ta-de-b-0">Monatlich</a>
+    <a href="#ta-de-b-1">Jährlich</a>
+    <a href="#ta-de-b-2">Team</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-de-b-0">
+    <h3 class="ncss-tabs-heading">Monatlich</h3>
+    <p>9 € im Monat, jederzeit kündbar.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-b-1">
+    <h3 class="ncss-tabs-heading">Jährlich</h3>
+    <p>90 € im Jahr - zwei Monate geschenkt.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-b-2">
+    <h3 class="ncss-tabs-heading">Team</h3>
+    <p>Ab 5 Personen: 7 € pro Person und Monat.</p>
+  </section>
+</ncss-tabs>
+    <p class="ncss-text-sm ncss-text-muted">Vertikal: Strich gleitet, Panel wächst auf, Höhe gleitet mit</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--vertical ncss-tabs--slide" animate="fade scale height">
+  <div class="ncss-tabs-list" aria-label="Vertikal: Strich gleitet, Panel wächst auf, Höhe gleitet mit">
+    <a href="#ta-de-c-0">Profil</a>
+    <a href="#ta-de-c-1">Konto</a>
+    <a href="#ta-de-c-2">Benachrichtigungen</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-de-c-0">
+    <h3 class="ncss-tabs-heading">Profil</h3>
+    <p>Name, Foto und Kurzbeschreibung.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-c-1">
+    <h3 class="ncss-tabs-heading">Konto</h3>
+    <p>E-Mail-Adresse, Passwort und Zwei-Faktor-Anmeldung - dieser Abschnitt ist bewusst länger, damit man sieht, wie die Höhe mitgleitet, wenn das neue Panel mehr Inhalt hat als das alte.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-c-2">
+    <h3 class="ncss-tabs-heading">Benachrichtigungen</h3>
+    <p>Welche E-Mails du bekommst.</p>
+  </section>
+</ncss-tabs>
+  </div>
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs ncss-tabs--slide" animate="fade slide"&gt; … &lt;/ncss-tabs&gt;
+&lt;ncss-tabs class="ncss-tabs ncss-tabs--pills" animate="fade"&gt; … &lt;/ncss-tabs&gt;
+&lt;ncss-tabs class="ncss-tabs ncss-tabs--vertical ncss-tabs--slide" animate="fade scale height"&gt; … &lt;/ncss-tabs&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Klasse / Attribut</th><th scope="col">Wirkung</th></tr></thead><tbody><tr><td><code>.ncss-tabs--slide</code></td><td>Unterstrich (vertikal: Strich an der Seite) gleitet zum neuen Tab</td></tr><tr><td><code>.ncss-tabs--pills</code></td><td>Pillen-Leiste, die aktive Pille gleitet hinter dem Text</td></tr><tr><td><code>animate="fade"</code></td><td>Panel blendet weich ein</td></tr><tr><td><code>animate="slide"</code></td><td>Panel kommt aus der Richtung des neuen Tabs (vorwärts von der Endseite, rückwärts von der Startseite; RTL gespiegelt)</td></tr><tr><td><code>animate="scale"</code></td><td>Panel wächst leicht auf</td></tr><tr><td><code>animate="height"</code></td><td>Höhe des Bereichs gleitet mit (wo <code>interpolate-size</code> unterstützt wird)</td></tr><tr><td><code>--ncss-tabs-duration</code></td><td>Dauer, Standard <code>--ncss-motion-duration-slow</code></td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Barrierefreiheit: Die Animation ändert nichts an Rollen, Tastatur und Fokus. Bei reduzierter Bewegung und <code>data-motion="reduce"</code> ist alles aus, <code>data-motion="full"</code> schaltet sie trotz System-Einstellung wieder ein. In Windows-Kontrastmodus ersetzt eine echte Kontur die gleitende Markierung.</p>
+</section>
+
+<section class="ncss-stack" id="tooltip">
+  <h2 class="demo-section-title">Tooltip</h2>
+  <p>Kurzer <strong>Text</strong>-Hinweis zu einem Bedienelement (WAI-ARIA-APG "Tooltip"), als natives <code>popover="hint"</code> mit <code>interestfor</code>: in Chromium erledigt der Browser Hover, Fokus, Verzögerung und Esc ganz ohne JS; <code>js/tooltip.js</code> liefert dasselbe Verhalten in anderen Browsern. Positionierung per CSS Anchor Positioning, sonst rechnet das Script. Für Links, Bilder oder Profile im Overlay stattdessen die <a href="modern-ui.html">Hovercard</a> - ein Tooltip enthält nie etwas Anklickbares.</p>
+  <pre><code class="language-html">&lt;div class="ncss-cluster"&gt;
+  &lt;button type="button" class="ncss-btn ncss-btn--primary" interestfor="tip-save" aria-describedby="tip-save"&gt;Speichern&lt;/button&gt;
+  &lt;span class="ncss-tooltip" id="tip-save" popover="hint" role="tooltip"&gt;Tastenkürzel: Strg + S&lt;/span&gt;
+
+  &lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Kopieren" interestfor="tip-copy" aria-describedby="tip-copy"&gt;
+    &lt;span class="ncss-icon ncss-icon-copy" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;span class="ncss-tooltip" id="tip-copy" popover="hint" role="tooltip"&gt;Link in die Zwischenablage kopieren&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<div class="ncss-cluster">
+  <button type="button" class="ncss-btn ncss-btn--primary" interestfor="tip-save" aria-describedby="tip-save">Speichern</button>
+  <span class="ncss-tooltip" id="tip-save" popover="hint" role="tooltip">Tastenkürzel: Strg + S</span>
+
+  <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Kopieren" interestfor="tip-copy" aria-describedby="tip-copy">
+    <span class="ncss-icon ncss-icon-copy" aria-hidden="true"></span>
+  </button>
+  <span class="ncss-tooltip" id="tip-copy" popover="hint" role="tooltip">Link in die Zwischenablage kopieren</span>
+</div>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Wichtig: der Tooltip ist eine <em>Beschreibung</em>, nie der Name. Der Icon-Button oben heißt per <code>aria-label</code> "Kopieren"; ohne JS und ohne <code>interestfor</code> bleibt der Tooltip unsichtbar, die Beschreibung kommt über <code>aria-describedby</code> trotzdem an.</p>
+  <div class="ncss-a11y-notes">
+    <h3>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Fokus auf den Auslöser zeigt den Tooltip nach kurzer Verzögerung.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd></td><td>Schließt den Tooltip, der Fokus bleibt auf dem Auslöser (WCAG 1.4.13).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p><code>role="tooltip"</code>, verbunden per <code>aria-describedby</code>: der Text wird als Beschreibung nach Name und Rolle vorgelesen ("Speichern, Taste, Tastenkürzel: Strg + S"). Keine Live-Ansage.</p>
+    <h4>Einstellungen</h4>
+    <p>Zeiger kann vom Auslöser auf den Tooltip wandern, ohne dass er schließt (hoverable). Einblenden nur als kurze Deckkraft-Animation, bei reduzierter Bewegung sofort. Invertierte Fläche aus Text-/Hintergrund-Token (Kontrast in Hell und Dunkel), im Hochkontrastmodus mit Rahmen. Maximal 18rem breit, bricht um.</p>
+    <h4>Ohne JS</h4>
+    <p>Mit <code>interestfor</code> (Chromium) voll funktionsfähig. Sonst unsichtbar - deshalb darf er nie die einzige Quelle einer Information sein.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="pagination">
+  <h2 class="demo-section-title">Pagination</h2>
+  <p>Reines CSS über echten Links: aktuelle Seite per <code>aria-current="page"</code>, Zurück/Weiter mit <code>rel</code>. Die Leiste ist selbst ein Container: unter 32rem <strong>eigener</strong> Breite bleiben nur Zurück, erste, aktuelle, letzte Seite und Weiter sichtbar, die Beschriftung wird zum Pfeil (Fenster verkleinern zum Ausprobieren).</p>
+  <pre><code class="language-html">&lt;nav class="ncss-pagination" aria-label="Seiten"&gt;
+  &lt;ul role="list"&gt;
+    &lt;li&gt;&lt;a class="ncss-pagination-prev" href="?seite=3" rel="prev"&gt;&lt;span class="ncss-pagination-label"&gt;Zurück&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=1"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;1&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-pagination-gap" aria-hidden="true"&gt;…&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=3"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;3&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=4" aria-current="page"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;4&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=5"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;5&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-pagination-gap" aria-hidden="true"&gt;…&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=12"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;12&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class="ncss-pagination-next" href="?seite=5" rel="next"&gt;&lt;span class="ncss-pagination-label"&gt;Weiter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<nav class="ncss-pagination" aria-label="Seiten">
+  <ul role="list">
+    <li><a class="ncss-pagination-prev" href="?seite=3" rel="prev"><span class="ncss-pagination-label">Zurück</span></a></li>
+    <li><a href="?seite=1"><span class="ncss-pagination-sr">Seite </span>1</a></li>
+    <li class="ncss-pagination-gap" aria-hidden="true">…</li>
+    <li><a href="?seite=3"><span class="ncss-pagination-sr">Seite </span>3</a></li>
+    <li><a href="?seite=4" aria-current="page"><span class="ncss-pagination-sr">Seite </span>4</a></li>
+    <li><a href="?seite=5"><span class="ncss-pagination-sr">Seite </span>5</a></li>
+    <li class="ncss-pagination-gap" aria-hidden="true">…</li>
+    <li><a href="?seite=12"><span class="ncss-pagination-sr">Seite </span>12</a></li>
+    <li><a class="ncss-pagination-next" href="?seite=5" rel="next"><span class="ncss-pagination-label">Weiter</span></a></li>
+  </ul>
+</nav>
+  </div>
+  <p><code>.ncss-pagination--compact</code> erzwingt die kompakte Ansicht. Auf der ersten Seite ist "Zurück" ein <code>&lt;a&gt;</code> <strong>ohne</strong> <code>href</code> - nicht fokussierbar, nicht klickbar, hält aber den Platz.</p>
+  <pre><code class="language-html">&lt;nav class="ncss-pagination ncss-pagination--compact" aria-label="Seiten (kompakt)"&gt;
+  &lt;ul role="list"&gt;
+    &lt;li&gt;&lt;a class="ncss-pagination-prev" aria-disabled="true"&gt;&lt;span class="ncss-pagination-label"&gt;Zurück&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=1" aria-current="page"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;1&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=2"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;2&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=3"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;3&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?seite=8"&gt;&lt;span class="ncss-pagination-sr"&gt;Seite &lt;/span&gt;8&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class="ncss-pagination-next" href="?seite=2" rel="next"&gt;&lt;span class="ncss-pagination-label"&gt;Weiter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<nav class="ncss-pagination ncss-pagination--compact" aria-label="Seiten (kompakt)">
+  <ul role="list">
+    <li><a class="ncss-pagination-prev" aria-disabled="true"><span class="ncss-pagination-label">Zurück</span></a></li>
+    <li><a href="?seite=1" aria-current="page"><span class="ncss-pagination-sr">Seite </span>1</a></li>
+    <li><a href="?seite=2"><span class="ncss-pagination-sr">Seite </span>2</a></li>
+    <li><a href="?seite=3"><span class="ncss-pagination-sr">Seite </span>3</a></li>
+    <li><a href="?seite=8"><span class="ncss-pagination-sr">Seite </span>8</a></li>
+    <li><a class="ncss-pagination-next" href="?seite=2" rel="next"><span class="ncss-pagination-label">Weiter</span></a></li>
+  </ul>
+</nav>
+  </div>
+  <div class="ncss-a11y-notes">
+    <h3>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Von Link zu Link; der deaktivierte Zurück-Link wird übersprungen.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd></td><td>Öffnet die Seite.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p><code>&lt;nav aria-label="Seiten"&gt;</code>-Landmark mit Liste. Jede Zahl liest sich als "Seite 4" (versteckter Präfix <code>.ncss-pagination-sr</code>), die aktuelle als "aktuelle Seite". Die Lücke "…" ist <code>aria-hidden</code>. Im kompakten Modus bleibt "Zurück"/"Weiter" als Text hörbar.</p>
+    <h4>Einstellungen</h4>
+    <p>Zielgröße 44 × 44 px. Aktuelle Seite nicht nur über Farbe: gefüllte Fläche, im Hochkontrastmodus <code>Highlight</code>. Bei Zoom/schmalem Platz greift die kompakte Ansicht statt horizontalen Scrollens.</p>
+    <h4>Ohne JS</h4>
+    <p>Kein JS beteiligt.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="alert">
+  <h2 class="demo-section-title">Hinweis-Boxen (Alert)</h2>
+  <p><code>.ncss-alert</code> mit <code>--info</code> (Markenfarbe), <code>--success</code>, <code>--warning</code>, <code>--danger</code>, <code>--neutral</code>; <code>--plain</code> ohne Symbol. Das Symbol ist Deko - die Bedeutung steht im Text ("Achtung:"), Farbe allein reicht nicht.</p>
+  <pre><code class="language-html">&lt;div class="ncss-alert ncss-alert--info"&gt;
+  &lt;p class="ncss-alert-title"&gt;Hinweis:&lt;/p&gt;
+  &lt;p&gt;Die Anmeldung ist bis 30. November geöffnet.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="ncss-alert ncss-alert--success"&gt;
+  &lt;p class="ncss-alert-title"&gt;Erfolg:&lt;/p&gt;
+  &lt;p&gt;Deine Änderungen wurden gespeichert.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="ncss-alert ncss-alert--warning"&gt;
+  &lt;p class="ncss-alert-title"&gt;Achtung:&lt;/p&gt;
+  &lt;p&gt;Wartung am Freitag zwischen 18 und 20 Uhr.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="ncss-alert ncss-alert--danger"&gt;
+  &lt;p class="ncss-alert-title"&gt;Fehler:&lt;/p&gt;
+  &lt;p&gt;Die Zahlung konnte nicht verarbeitet werden. &lt;a href="#alert"&gt;Zahlungsart ändern&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-stack">
+<div class="ncss-alert ncss-alert--info">
+  <p class="ncss-alert-title">Hinweis:</p>
+  <p>Die Anmeldung ist bis 30. November geöffnet.</p>
+</div>
+<div class="ncss-alert ncss-alert--success">
+  <p class="ncss-alert-title">Erfolg:</p>
+  <p>Deine Änderungen wurden gespeichert.</p>
+</div>
+<div class="ncss-alert ncss-alert--warning">
+  <p class="ncss-alert-title">Achtung:</p>
+  <p>Wartung am Freitag zwischen 18 und 20 Uhr.</p>
+</div>
+<div class="ncss-alert ncss-alert--danger">
+  <p class="ncss-alert-title">Fehler:</p>
+  <p>Die Zahlung konnte nicht verarbeitet werden. <a href="#alert">Zahlungsart ändern</a></p>
+</div>
+  </div>
+  <p>Schließbar über das generische <code>js/dismiss.js</code>: <code>data-ncss-dismissible</code> am Hinweis, <code>data-ncss-dismiss</code> am Button. <code>hidden</code> am Button versteckt ihn ohne JS (kein toter Button), das Script blendet ihn ein. Event <code>ncss-dismiss-remove</code> ist abbrechbar (z. B. erst serverseitig speichern).</p>
+  <pre><code class="language-html">&lt;div class="ncss-alert ncss-alert--neutral" data-ncss-dismissible&gt;
+  &lt;p class="ncss-alert-title"&gt;Neu: Dunkelmodus&lt;/p&gt;
+  &lt;p&gt;Oben rechts lässt sich das Farbschema umschalten.&lt;/p&gt;
+  &lt;div class="ncss-alert-actions"&gt;
+    &lt;a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#alert"&gt;Mehr erfahren&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;button type="button" class="ncss-alert-close" data-ncss-dismiss aria-label="Hinweis schließen" hidden&gt;&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-stack">
+<div class="ncss-alert ncss-alert--neutral" data-ncss-dismissible>
+  <p class="ncss-alert-title">Neu: Dunkelmodus</p>
+  <p>Oben rechts lässt sich das Farbschema umschalten.</p>
+  <div class="ncss-alert-actions">
+    <a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#alert">Mehr erfahren</a>
+  </div>
+  <button type="button" class="ncss-alert-close" data-ncss-dismiss aria-label="Hinweis schließen" hidden></button>
+</div>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Abgrenzung:</strong> <code>.ncss-card--success</code> &amp; Co. sind <em>Karten</em> in Statusfarbe (beliebiger Inhalt, Kartenraster, Media). <code>.ncss-alert</code> ist eine <em>Meldung</em> mit Symbol, Titel und optionalem Schließen. Dieselben Farb-Tokens, bewusst kein Alias. Für Meldungen, die von selbst verschwinden, die <a href="overlays.html">Toasts</a> aus <code>notification.css</code>.</p>
+  <div class="ncss-a11y-notes">
+    <h3>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Erreicht Links/Buttons im Hinweis und den Schließen-Button.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd></td><td>Schließt den Hinweis. Der Fokus springt auf den nächsten schließbaren Hinweis, sonst auf den umgebenden Bereich - nie ins Leere.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Statische Hinweise beim Laden bekommen <strong>keine</strong> Rolle (werden normal gelesen). Erst später eingefügt: <code>role="alert"</code> für dringende Fehler (sofortige Ansage), <code>role="status"</code> für Bestätigungen (höfliche Ansage). Schließen-Button mit <code>aria-label</code>.</p>
+    <h4>Einstellungen</h4>
+    <p>Keine Animation. Text in der <code>-on-soft</code>-Stufe der Familie (Kontrast ≥ 4,5:1 hell und dunkel). Im Hochkontrastmodus Rahmen statt Fläche, Symbole in <code>CanvasText</code>. Fließt bei Zoom frei um.</p>
+    <h4>Ohne JS</h4>
+    <p>Hinweise funktionieren voll. Nur der Schließen-Button braucht JS - mit <code>hidden</code> im Markup erscheint er erst, wenn er auch funktioniert.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="darstellung">
+  <h2 class="demo-section-title">Darstellungs-Einstellungen</h2>
+  <p><strong>Kein Barrierefreiheits-Overlay.</strong> <code>&lt;ncss-preferences&gt;</code> macht keine Seite barrierefrei und repariert nichts - die Seite muss es schon sein. Es lässt Besucher eine barrierefreie Seite an persönliche Bedürfnisse anpassen. Die Einstellungen des Geräts (Farbschema, Kontrast, reduzierte Bewegung) sind der Default "System" und werden nie stillschweigend überschrieben.</p>
+  <p>Ein Button "Darstellung" öffnet ein Popover mit nativen Bedienelementen: Farbschema, Kontrast und Bewegung (je System/…), Schriftgröße 100/115/130 %, Schrift, Textabstände nach WCAG 1.4.12, Links immer unterstreichen, verstärkter Fokus. Jede Änderung wirkt sofort auf der ganzen Seite und bleibt gespeichert (<code>localStorage</code>). Gewirkt wird über Attribute am <code>&lt;html&gt;</code> - <code>colors.css</code> und <code>reset.css</code> reagieren darauf, keine Komponente braucht eigene Regeln. <code>js/preferences-early.js</code> im <code>&lt;head&gt;</code> setzt die Attribute vor dem ersten Zeichnen (kein Aufblitzen) und ersetzt <code>theme-toggle-early.js</code> (gleicher Speicher-Schlüssel, ein Mechanismus).</p>
+  <pre><code class="language-html">&lt;ncss-preferences&gt;&lt;/ncss-preferences&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<ncss-preferences></ncss-preferences>
+  </div>
+  <p><strong>Schrift:</strong> mit <code>components/preferences-fonts.css</code> (opt-in, nicht in <code>ncss.css</code>) bietet das Panel drei Lese-Schriften an - jeder Name in seiner eigenen Schrift als Vorschau. Gewechselt werden nur Fließtext und Überschriften (<code>--ncss-font-family-base</code>/<code>-heading</code>), Code bleibt in Festbreitenschrift. Alle Schriften liegen unter <code>dist/fonts/</code> (SIL Open Font License, Lizenztexte und Hinweise in <code>dist/fonts/README.md</code>), kein Google-Fonts-Request. Der Browser lädt eine Datei erst, wenn sie gebraucht wird: die gewählte Schrift - und beim Öffnen des Panels die Vorschau-Schriften.</p>
+  <div class="ncss-table-scroll" tabindex="0" role="region" aria-label="Lese-Schriften"><table><thead><tr><th scope="col">Schrift</th><th scope="col">Wofür</th><th scope="col">Datei</th></tr></thead><tbody><tr><td>Atkinson Hyperlegible Next</td><td>Erste Empfehlung: vom Braille Institute für Menschen mit eingeschränktem Sehvermögen entwickelt, leicht verwechselbare Zeichen (I l 1, O 0, b d) sind klar unterscheidbar.</td><td>38 KB (variabel, auf Latein reduziert)</td></tr><tr><td>Lexend</td><td>Breiter laufende Schrift, entworfen für flüssigeres Lesen.</td><td>44 KB (variabel, auf Latein reduziert)</td></tr><tr><td>OpenDyslexic</td><td>Wird von manchen Menschen mit Legasthenie bevorzugt. <strong>Ehrlich gesagt:</strong> Studien zeigen keinen belegten Vorteil gegenüber gut lesbaren Standardschriften - eine persönliche Vorliebe, kein Versprechen.</td><td>101 KB + 106 KB (unverändert, der Name ist geschützt)</td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Breitere Schriften wie Lexend und OpenDyslexic brauchen mehr Platz - Layouts aus NativeCSS brechen dafür um statt überzulaufen (geprüft mit 130 % Schriftgröße und schmalem Viewport).</p>
+  <p><code>inline</code> zeigt das Bedienfeld direkt (z. B. auf einer eigenen Einstellungs-Seite), <code>settings</code> wählt die angebotenen Einstellungen und ihre Reihenfolge (<code>theme contrast motion text font spacing links focus</code>). Texte per <code>data-label-…</code> überschreibbar.</p>
+  <pre><code class="language-html">&lt;ncss-preferences inline settings="text spacing links focus"&gt;&lt;/ncss-preferences&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="">
+<ncss-preferences inline settings="text spacing links focus"></ncss-preferences>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Bewegung "Voll"</strong> ist nur als ausdrückliche Wahl möglich: sie hebt die globale Dämpfung auf, die NativeCSS bei System-"reduzierte Bewegung" setzt, und das Panel weist dann darauf hin. Effekte, die eine Komponente ausdrücklich nur bei <code>prefers-reduced-motion: no-preference</code> anbietet, bleiben trotzdem aus - CSS kann eine Systemeinstellung nicht umdeuten. "Reduziert" wirkt dagegen überall: Übergänge, Animationen, scroll-getriebene Effekte und alle Scripts (sie fragen <code>data-motion</code> mit ab). Erhöhter Kontrast nutzt dieselben Werte wie <code>prefers-contrast: more</code>.</p>
+  <div class="ncss-a11y-notes">
+    <h3>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Button, dann im Bedienfeld von Gruppe zu Gruppe und zu den Schaltern.</td></tr>
+        <tr><td><kbd class="ncss-kbd">←</kbd> / <kbd class="ncss-kbd">→</kbd> / <kbd class="ncss-kbd">↑</kbd> / <kbd class="ncss-kbd">↓</kbd></td><td>Innerhalb einer Radiogruppe (Farbschema, Kontrast, Bewegung, Schriftgröße, Schrift) die Option wechseln - wirkt sofort.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Leertaste</kbd></td><td>Schalter an/aus.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd></td><td>Schließt das Popover, der Fokus geht zurück auf den Button.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Button mit sichtbarem Text "Darstellung" und <code>aria-expanded</code>. Bedienfeld <code>role="dialog"</code> mit Überschrift; jede Gruppe ist ein <code>fieldset</code> mit <code>legend</code>, Schalter sind Checkboxen mit <code>role="switch"</code>. Jede Änderung wird höflich angesagt (<code>role="status"</code>, z. B. "Schriftgröße: 130 %").</p>
+    <h4>Einstellungen</h4>
+    <p>Das Bedienfeld folgt selbst allen Einstellungen. Ausgewählte Option im Hochkontrastmodus in <code>Highlight</code>. Zielgrößen ≥ 40 px. Bei 130 % Schrift + 400 % Zoom bleibt es scrollbar im Viewport.</p>
+    <h4>Ohne JS</h4>
+    <p>Das Element bleibt verborgen (<code>:not(:defined)</code>), es gelten die Systemeinstellungen. Bereits gespeicherte Werte setzt <code>preferences-early.js</code> trotzdem.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="dialoge">
+  <h2 class="demo-section-title">Dialoge: Klick daneben schließt</h2>
+  <p>Modal, Off-Canvas, Befehlspalette und Lightbox schließen per Klick auf die abgedunkelte Fläche - nativ über <code>&lt;dialog closedby="any"&gt;</code>. <code>js/dialog-light-dismiss.js</code> macht das zum Default (setzt <code>closedby="any"</code> an jedem ncss-Dialog ohne eigenes Attribut, auch an später eingefügten und per JS geöffneten) und emuliert es in Browsern ohne <code>closedby</code>. Abschalten pro Dialog mit dem nativen Attribut: <code>closedby="closerequest"</code> (nur Esc + Buttons) oder <code>closedby="none"</code> (nur Buttons, z. B. lange Formulare).</p>
+  <pre><code class="language-html">&lt;div class="ncss-cluster"&gt;
+  &lt;button type="button" class="ncss-btn ncss-btn--primary" command="show-modal" commandfor="ld-demo"&gt;Modal öffnen&lt;/button&gt;
+  &lt;button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="ld-form"&gt;Formular (closedby="none")&lt;/button&gt;
+&lt;/div&gt;
+&lt;dialog id="ld-demo" class="ncss-modal" aria-labelledby="ld-demo-title"&gt;
+  &lt;button type="button" class="ncss-dialog-close" command="close" commandfor="ld-demo" aria-label="Schließen"&gt;&amp;times;&lt;/button&gt;
+  &lt;div class="ncss-modal-header"&gt;&lt;h3 id="ld-demo-title"&gt;Klick daneben schließt&lt;/h3&gt;&lt;/div&gt;
+  &lt;div class="ncss-modal-body"&gt;&lt;p&gt;Klick auf die abgedunkelte Fläche, Esc oder der Button schließen. Text darin lässt sich markieren, ohne dass der Dialog zugeht.&lt;/p&gt;&lt;/div&gt;
+&lt;/dialog&gt;
+&lt;dialog id="ld-form" class="ncss-modal" closedby="none" aria-labelledby="ld-form-title"&gt;
+  &lt;div class="ncss-modal-header"&gt;&lt;h3 id="ld-form-title"&gt;Langes Formular&lt;/h3&gt;&lt;/div&gt;
+  &lt;div class="ncss-modal-body"&gt;&lt;p&gt;Hier schließt nur der Button - weder Klick daneben noch Esc verwerfen versehentlich Eingaben.&lt;/p&gt;&lt;/div&gt;
+  &lt;div class="ncss-modal-footer"&gt;&lt;button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="ld-form"&gt;Fertig&lt;/button&gt;&lt;/div&gt;
+&lt;/dialog&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Ergebnis (live, dieselben Klassen):</p>
+  <div class="ncss-border ncss-radius-md ncss-px-sm ncss-py-sm">
+<div class="ncss-cluster">
+  <button type="button" class="ncss-btn ncss-btn--primary" command="show-modal" commandfor="ld-demo">Modal öffnen</button>
+  <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="ld-form">Formular (closedby="none")</button>
+</div>
+<dialog id="ld-demo" class="ncss-modal" aria-labelledby="ld-demo-title">
+  <button type="button" class="ncss-dialog-close" command="close" commandfor="ld-demo" aria-label="Schließen">&times;</button>
+  <div class="ncss-modal-header"><h3 id="ld-demo-title">Klick daneben schließt</h3></div>
+  <div class="ncss-modal-body"><p>Klick auf die abgedunkelte Fläche, Esc oder der Button schließen. Text darin lässt sich markieren, ohne dass der Dialog zugeht.</p></div>
+</dialog>
+<dialog id="ld-form" class="ncss-modal" closedby="none" aria-labelledby="ld-form-title">
+  <div class="ncss-modal-header"><h3 id="ld-form-title">Langes Formular</h3></div>
+  <div class="ncss-modal-body"><p>Hier schließt nur der Button - weder Klick daneben noch Esc verwerfen versehentlich Eingaben.</p></div>
+  <div class="ncss-modal-footer"><button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="ld-form">Fertig</button></div>
+</dialog>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Geschlossen wird über <code>requestClose()</code>: das <code>cancel</code>-Event feuert vorher, <code>event.preventDefault()</code> hält den Dialog offen (z. B. "Ungespeicherte Änderungen verwerfen?"). Eine Textmarkierung, die im Panel beginnt und daneben endet, schließt nicht. Einbindung: <code>&lt;script src="ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;</code>.</p>
+  <div class="ncss-a11y-notes">
+    <h3>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd></td><td>Schließt (außer bei <code>closedby="none"</code>).</td></tr>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Bleibt im offenen Modal gefangen (nativer Top-Layer-Dialog), der Rest der Seite ist <code>inert</code>.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd></td><td>Auf dem Schließen-Button: schließt. Der Fokus geht danach an den Button zurück, der den Dialog geöffnet hat.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p><code>&lt;dialog&gt;</code> per <code>showModal()</code>/<code>command="show-modal"</code> ist ein modaler Dialog mit Namen aus <code>aria-labelledby</code>. Klick daneben ist eine reine Maus-/Touch-Abkürzung - jeder Dialog braucht trotzdem einen sichtbaren Schließen-Button (<code>aria-label</code>).</p>
+    <h4>Einstellungen</h4>
+    <p>Ein- und Ausblenden folgen der Modal-Animation, bei reduzierter Bewegung sofort. Der Backdrop bleibt auch im Hochkontrastmodus als Fläche klickbar. Bei Zoom scrollt das Panel in sich.</p>
+    <h4>Ohne JS</h4>
+    <p>Öffnen per <code>command</code> braucht in alten Browsern <code>js/command-fallback.js</code>. Ohne <code>dialog-light-dismiss.js</code> gilt das, was im Markup steht: ohne <code>closedby</code> schließen nur Esc und Buttons.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="web-awesome">
+  <h2 class="demo-section-title">Statt Web Awesome</h2>
+  <div class="ncss-table-scroll" tabindex="0" role="region" aria-label="Statt Web Awesome">
+    <table>
+      <thead><tr><th scope="col">Web Awesome</th><th scope="col">NativeCSS</th><th scope="col">Unterschied</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;wa-tab-group&gt;</code></td><td><code>&lt;ncss-tabs&gt;</code></td><td>ohne JS lesbare Abschnitte statt leerer Fläche</td></tr>
+        <tr><td><code>&lt;wa-tooltip&gt;</code></td><td><code>popover="hint" + interestfor</code></td><td>nativ in Chromium, kleines Fallback-Script</td></tr>
+        <tr><td><code>&lt;wa-callout&gt;</code></td><td><code>.ncss-alert</code></td><td>reines CSS, schließbar per dismiss.js</td></tr>
+        <tr><td><code>(keins)</code></td><td><code>.ncss-pagination</code></td><td>reines CSS, Container-Query-kompakt</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -92,8 +92,23 @@
     return dialog.querySelector("[data-modal-router-target]") || dialog;
   }
 
-  function registerTriggers() {
-    var triggers = document.querySelectorAll("[data-modal-router-trigger]");
+  /* Trigger/Dialoge im übergebenen Teilbaum registrieren - beim Laden für das ganze
+     Dokument, danach für jedes per "ncss-content-change" gemeldete, neu eingefügte
+     Markup (htmx, fetch+innerHTML, REDAXO-Frontend-Editing, siehe js/content-observer.js).
+     Der Klick selbst läuft per Delegation am document (siehe onTriggerClick) - auch ein
+     NICHT gemeldeter, später eingefügter Trigger öffnet dadurch das Modal; die
+     Registrierung hier braucht es nur für die Pfad-Zuordnung (Zurück-Taste/Reload).
+     Dialoge merkt sich ein WeakSet (kein data-Attribut, siehe dynamic-content-Doku),
+     damit der close-Listener nie doppelt hängt. */
+  var seenDialogs = new WeakSet();
+  function registerTriggers(root) {
+    if (!root || !root.querySelectorAll) {
+      return;
+    }
+    var triggers = Array.prototype.slice.call(root.querySelectorAll("[data-modal-router-trigger]"));
+    if (root.matches && root.matches("[data-modal-router-trigger]")) {
+      triggers.unshift(root);
+    }
     triggers.forEach(function (trigger) {
       var href = trigger.getAttribute("href");
       if (href) {
@@ -102,7 +117,19 @@
           triggersByPath[url.pathname] = trigger;
         }
       }
-      trigger.addEventListener("click", onTriggerClick);
+    });
+    var dialogs = Array.prototype.slice.call(root.querySelectorAll("[data-modal-router]"));
+    if (root.matches && root.matches("[data-modal-router]")) {
+      dialogs.unshift(root);
+    }
+    dialogs.forEach(function (dialog) {
+      if (seenDialogs.has(dialog)) {
+        return;
+      }
+      seenDialogs.add(dialog);
+      dialog.addEventListener("close", function () {
+        closeModal(dialog);
+      });
     });
   }
 
@@ -112,7 +139,10 @@
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
     }
-    var trigger = event.currentTarget;
+    var trigger = event.target.closest && event.target.closest("[data-modal-router-trigger]");
+    if (!trigger) {
+      return;
+    }
     var href = trigger.getAttribute("href");
     var dialog = getDialog(trigger);
     if (!dialog || !href || !sameOrigin(resolve(href))) {
@@ -139,6 +169,7 @@
     if (cache[cacheKey]) {
       target.innerHTML = cache[cacheKey];
       target.removeAttribute("aria-busy");
+      announce(target);
     } else {
       target.setAttribute("aria-busy", "true");
       target.innerHTML = '<p class="ncss-text-muted">' + (dialog.getAttribute("data-modal-router-loading") || "Lädt …") + "</p>";
@@ -174,6 +205,7 @@
         if (dialog.dataset.modalRouterUrl === href) {
           target.removeAttribute("aria-busy");
           target.innerHTML = markup;
+          announce(target);
         }
       })
       .catch(function () {
@@ -185,6 +217,12 @@
             '</p><p><a href="' + href + '">' + href + "</a></p>";
         }
       });
+  }
+
+  /* Nachgeladener Modal-Inhalt ist selbst "dynamischer Inhalt" - ncss-Scripts darin
+     (Lightbox-Gruppen, Count-up, Sparklines, ...) per Event initialisieren lassen. */
+  function announce(target) {
+    document.dispatchEvent(new CustomEvent("ncss-content-change", { detail: { root: target } }));
   }
 
   function closeModal(dialog) {
@@ -244,12 +282,10 @@
       return;
     }
 
-    registerTriggers();
-
-    document.querySelectorAll("[data-modal-router]").forEach(function (dialog) {
-      dialog.addEventListener("close", function () {
-        closeModal(dialog);
-      });
+    registerTriggers(document);
+    document.addEventListener("click", onTriggerClick);
+    document.addEventListener("ncss-content-change", function (event) {
+      registerTriggers((event.detail && event.detail.root) || document);
     });
 
     /* Reload/Direktaufruf einer per pushState gesetzten URL innerhalb dieser

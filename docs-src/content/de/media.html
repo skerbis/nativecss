@@ -1,4 +1,5 @@
 <!--DESC: Bilder, Video, Audio und Hero-Sektionen - Aspect-Ratio, object-fit, Art Direction und Parallax ohne JS.-->
+<!--FOOT: <script src="~/dist/js/slideshow.js"></script>-->
 <section class="ncss-stack">
   <h1>Medien</h1>
   <p class="ncss-text-lg ncss-text-muted">Bild, Video, Audio und Hero-Sektionen - <code>helpers/media.css</code>, <code>components/video.css</code>, <code>components/audio.css</code>, <code>components/hero.css</code>, <code>components/cover.css</code>, <code>components/overlay.css</code>.</p>
@@ -50,6 +51,7 @@
       </tbody>
     </table>
   </div>
+  <p class="ncss-text-muted ncss-text-sm">Eigene Video-/Audioplayer, Scroll-Video, Hintergrund-Video mit Pause-Schalter, Mini-Player und Vorschaukarten: <a href="video-audio.html">Video &amp; Audio</a>.</p>
 </section>
 
 <section class="ncss-stack" id="overlay">
@@ -104,4 +106,60 @@
 &lt;/div&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm"><code>autoplay</code> BRAUCHT <code>muted</code> (sonst blockieren praktisch alle Browser den Autostart), <code>playsinline</code> verhindert Vollbild-Übernahme auf iOS Safari, <code>poster</code> zeigt ein Standbild vor dem Laden. Für <code>prefers-reduced-motion</code>: reines CSS kann eine <code>&lt;video&gt;</code>-Wiedergabe nicht steuern (anders als <code>animation-timeline</code> bei <code>--parallax</code> oben) - <code>js/hero-video-motion.js</code> (opt-in, nur bei tatsächlichem Hintergrund-Video einbinden) entfernt <code>autoplay</code> und pausiert das Video, wenn die Einstellung aktiv ist, das Video bleibt sichtbar (Poster/letztes Bild), nur ohne automatische Bewegung:</p>
   <pre><code class="language-html">&lt;script src="js/hero-video-motion.js" defer&gt;&lt;/script&gt;</code></pre>
+</section>
+
+
+<!--MERGE: media-->
+
+<!--MERGE: all-components#slideshow-->
+
+<section class="ncss-stack" id="slideshow-steuerung" data-subnav-label="Pfeile und Punkte für die Slideshow">
+  <h2 class="demo-section-title">Pfeile und Punkte für die Slideshow <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>.ncss-slideshow--controls</code> ergänzt die Scroll-Snap-Slideshow um Pfeil-Buttons und Punkte. Wo der Browser <code>::scroll-button()</code> und <code>::scroll-marker</code> kennt (Chromium ab 135), erzeugt er beide selbst - ganz ohne JavaScript. Safari und Firefox bekommen dieselben Bedienelemente aus <code>js/slideshow.js</code> als echte <code>&lt;button&gt;</code>s. Das Script prüft dieselben Bedingungen wie das CSS und baut nur, was nativ fehlt: Es gibt nie zwei Sätze Pfeile oder Punkte. Die Pfeile springen um ein Element weiter und sind am Anfang bzw. Ende deaktiviert. Der aktuelle Punkt ist markiert (<code>aria-current</code> beim Script, nativ als gewählter Tab). <code>.ncss-slideshow--shadow</code> legt an den Rändern einen Schatten über die Fotos, solange es in diese Richtung weitergeht.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Pfeile und Punkte für die Slideshow">
+    <ncss-slideshow class="ncss-slideshow ncss-slideshow--controls ncss-slideshow--shadow">
+      <ul class="ncss-slideshow-track ncss-slideshow-track--no-scrollbar" tabindex="0" aria-label="Hotel Seeblick, vier Fotos">
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/see-panorama.webp" width="1600" height="1068" loading="lazy" alt="Panorama des Sees mit Bergen"></li>
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/spa-pool.webp" width="1125" height="1500" loading="lazy" alt="Hallenbad mit großen Sprossenfenstern"></li>
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/zimmer-classic.webp" width="1600" height="1067" loading="lazy" alt="Doppelzimmer mit Holzwand"></li>
+        <li class="ncss-slideshow-item"><img class="ncss-ratio-video ncss-img-cover" src="../../demo/assets/examples/hotel/steg-morgennebel.webp" width="1600" height="1066" loading="lazy" alt="Steg im Morgennebel"></li>
+      </ul>
+    </ncss-slideshow>
+    <p class="ncss-text-sm ncss-text-muted">Mehrere Bilder nebeneinander (<code>--peek</code>) mit optionalem Autoplay - der Knopf hält es an, Maus oder Fokus in der Slideshow pausieren es ebenfalls:</p>
+    <ncss-slideshow class="ncss-slideshow ncss-slideshow--controls" autoplay="6000">
+      <ul class="ncss-slideshow-track ncss-slideshow-track--no-scrollbar" tabindex="0" aria-label="Gemeinde Seeburg, fünf Fotos" style="--ncss-slideshow-item-width: min(14rem, 75%)">
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/rathaus-thumb.webp" width="480" height="720" loading="lazy" alt="Historisches Fachwerk-Rathaus im Sommer"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/badesteg-thumb.webp" width="480" height="720" loading="lazy" alt="Holzsteg führt in einen ruhigen See"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/wanderweg-thumb.webp" width="640" height="427" loading="lazy" alt="Wanderweg durch eine blühende Bergwiese"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/kirche-am-see-thumb.webp" width="640" height="427" loading="lazy" alt="Kirche am Seeufer"></li>
+        <li class="ncss-slideshow-item ncss-slideshow-item--peek"><img class="ncss-ratio-portrait ncss-img-cover ncss-img-rounded" src="../../demo/assets/examples/gemeinde/adventsmarkt-thumb.webp" width="640" height="427" loading="lazy" alt="Beleuchtetes Karussell auf dem Adventsmarkt"></li>
+      </ul>
+    </ncss-slideshow>
+  </div>
+  <pre><code class="language-html">&lt;ncss-slideshow class="ncss-slideshow ncss-slideshow--controls ncss-slideshow--shadow"&gt;
+  &lt;ul class="ncss-slideshow-track" tabindex="0" aria-label="Hotel Seeblick, vier Fotos"&gt;
+    &lt;li class="ncss-slideshow-item"&gt;&lt;img src="see-panorama.webp" alt="Panorama des Sees mit Bergen"&gt;&lt;/li&gt;
+    &lt;li class="ncss-slideshow-item"&gt;&lt;img src="spa-pool.webp" alt="Hallenbad mit großen Sprossenfenstern"&gt;&lt;/li&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/ncss-slideshow&gt;
+
+&lt;!-- Optional: Autoplay alle 6 Sekunden, standardmäßig aus --&gt;
+&lt;ncss-slideshow class="ncss-slideshow ncss-slideshow--controls" autoplay="6000"&gt;...&lt;/ncss-slideshow&gt;
+
+&lt;script src="js/slideshow.js" defer&gt;&lt;/script&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse / Attribut</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-slideshow--controls</code></td><td>Pfeile + Punkte: nativ per <code>::scroll-button()</code>/<code>::scroll-marker</code>, sonst aus <code>js/slideshow.js</code></td></tr>
+        <tr><td><code>.ncss-slideshow--shadow</code></td><td>Randschatten über den Fotos, solange es in diese Richtung weitergeht (scroll-getriebene Animation; in Safari und bei reduzierter Bewegung über das Script)</td></tr>
+        <tr><td><code>&lt;ncss-slideshow&gt;</code></td><td>Wrapper als Custom Element - nötig für den Script-Fallback und das Autoplay; ein <code>&lt;div&gt;</code> funktioniert weiterhin, dann nur nativ</td></tr>
+        <tr><td><code>autoplay="6000"</code></td><td>Automatischer Wechsel (Millisekunden, Standard aus) mit Pause-Knopf; hält bei Hover und Fokus an, startet bei reduzierter Bewegung nicht</td></tr>
+        <tr><td><code>data-label-prev</code>, <code>-next</code>, <code>-dots</code>, <code>-dot</code>, <code>-play</code>, <code>-pause</code></td><td>Beschriftungen überschreiben (am Track); Standard Deutsch/Englisch nach <code>&lt;html lang&gt;</code>, <code>-dot</code> mit <code>{n}</code> und <code>{total}</code></td></tr>
+        <tr><td><code>ncss-slideshow-change</code>, <code>-play</code>, <code>-pause</code></td><td>Events (bubbeln); <code>detail.index</code> beim Wechsel. Methoden: <code>next()</code>, <code>prev()</code>, <code>goTo(i)</code>, <code>play()</code>, <code>pause()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Barrierefreiheit:</strong> Der Track bleibt per Tab erreichbar und mit den Pfeiltasten scrollbar (<code>tabindex="0"</code> und <code>aria-label</code> ins Markup). Pfeile und Punkte sind echte Buttons mit Namen wie „Nächstes Element“ bzw. „2 von 4“; die Pfeile bleiben am Ende fokussierbar (<code>aria-disabled</code>), damit der Fokus nicht verloren geht. Das Autoplay ist aus, bis man es einschaltet; sein Pause-Knopf steht im DOM vor den Bildern (WCAG 2.2.2). Bei reduzierter Bewegung springt die Slideshow statt zu gleiten, im Hochkontrastmodus bekommen die Punkte Systemfarben. Ohne JavaScript (und ohne native Unterstützung) bleibt das Wischen und Scrollen wie bisher.</p>
 </section>

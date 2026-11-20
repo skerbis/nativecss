@@ -476,8 +476,26 @@
   // deepQueryAll() statt document.querySelectorAll(): ein .ncss-events-Widget
   // INNERHALB eines <ncss-container> (siehe ncss-container.js) liegt in dessen Shadow
   // Root - querySelectorAll() durchquert Shadow-Grenzen nicht.
-  var widgets = deepQueryAll(".ncss-events");
-  for (var i = 0; i < widgets.length; i++) {
-    init(widgets[i]);
+  //
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = ".ncss-events";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = deepQueryAll(SELECTOR, root);
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
   }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
 })();

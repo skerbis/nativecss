@@ -46,9 +46,18 @@
  */
 (function () {
   "use strict";
+  // Bewegung reduzieren? Systemeinstellung ODER ausdrückliche Wahl am <html>
+  // (data-motion="reduce"/"full", gesetzt von js/preferences.js) - "full" hebt ein
+  // System-"reduce" nur als bewusste Nutzerwahl auf, nie von selbst.
+  function ncssReducedMotion() {
+    var choice = document.documentElement.getAttribute("data-motion");
+    if (choice === "reduce") return true;
+    if (choice === "full") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
 
   if (!document.startViewTransition) return;
-  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (ncssReducedMotion()) return;
 
   function enhanceExclusiveDetailsGroup(container, itemSelector, mediaItemSelector, namePrefix, transitionClass) {
     var mediaItems = container.querySelectorAll(mediaItemSelector);
@@ -69,7 +78,11 @@
     });
   }
 
-  document.querySelectorAll(".ncss-accordion-split-container").forEach(function (container, containerIndex) {
+  // Fortlaufender Instanz-Zähler statt forEach-Index - auch später eingefügte Container
+  // (siehe scan() unten) bekommen so einen seitenweit eindeutigen view-transition-name.
+  var containerCount = 0;
+  function init(container) {
+    var containerIndex = containerCount++;
     var preset = container.dataset.transition || "";
     var transitionClass = preset === "slide" ? "ncss-vt-slide" : preset === "3d" ? "ncss-vt-3d" : "";
     enhanceExclusiveDetailsGroup(
@@ -79,5 +92,27 @@
       "ncss-accordion-split-media-" + containerIndex,
       transitionClass
     );
+  }
+
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Elemente merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung
+  // mit). Läuft beim Laden und bei jedem "ncss-content-change"-Event (detail.root = neu
+  // eingefügtes Element, ohne Angabe das ganze Dokument), siehe js/content-observer.js.
+  var SELECTOR = ".ncss-accordion-split-container";
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = Array.prototype.slice.call(root.querySelectorAll(SELECTOR));
+    if (root.matches && root.matches(SELECTOR)) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
   });
 })();

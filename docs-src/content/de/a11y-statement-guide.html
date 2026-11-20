@@ -1,0 +1,88 @@
+<!--DESC: Was in eine Barrierefreiheitserklärung gehört, wann sie verlangt wird und eine Vorlage zum Anpassen - ncss nimmt dir diese Aufgabe nicht ab.-->
+<section class="ncss-stack">
+  <h1>Barrierefreiheitserklärung</h1>
+  <p class="ncss-text-lg ncss-text-muted">Eine Barrierefreiheitserklärung beschreibt ehrlich, wie zugänglich eine Website ist, was noch nicht funktioniert und wie man Probleme melden kann. Sie gehört zu deiner Website, nicht zum Framework - ncss kann sie dir nicht abnehmen.</p>
+</section>
+
+<section class="ncss-stack" id="hinweis">
+  <h2 class="demo-section-title">Wichtiger Hinweis</h2>
+  <p>Diese Seite ist <strong>keine Rechtsberatung</strong>. Welche Pflichten für deine Website gelten, hängt davon ab, wer sie betreibt (öffentliche Stelle oder Unternehmen), in welchem Land, und welche Dienstleistungen sie anbietet. Gesetze, Verordnungen und Normen ändern sich. Prüfe die aktuelle Rechtslage für deinen Fall, im Zweifel mit fachkundiger Beratung.</p>
+</section>
+
+<section class="ncss-stack" id="wann">
+  <h2 class="demo-section-title">Wann eine Erklärung verlangt wird</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Wer</th><th scope="col">Rechtlicher Rahmen (Auswahl)</th><th scope="col">Was typischerweise verlangt wird</th></tr></thead>
+      <tbody>
+        <tr><td>Öffentliche Stellen in der EU (Behörden, Kommunen, viele öffentlich finanzierte Einrichtungen)</td><td>EU-Richtlinie 2016/2102; in Deutschland umgesetzt u. a. durch das Behindertengleichstellungsgesetz (BGG) und die BITV 2.0 auf Bundesebene sowie Landesgesetze</td><td>Eine Erklärung zur Barrierefreiheit nach dem Mustertext der EU (Durchführungsbeschluss 2018/1523), regelmäßig aktualisiert, von jeder Seite aus erreichbar. Nach BITV 2.0 zusätzlich Informationen in Leichter Sprache und Deutscher Gebärdensprache</td></tr>
+        <tr><td>Unternehmen, die bestimmte Produkte oder Dienstleistungen für Verbraucher anbieten (z. B. Online-Shops, Bank- und Telekommunikationsdienste)</td><td>European Accessibility Act (Richtlinie 2019/882); in Deutschland das Barrierefreiheitsstärkungsgesetz (BFSG), anzuwenden seit 28. Juni 2025. Kleinstunternehmen, die Dienstleistungen anbieten, sind weitgehend ausgenommen</td><td>Informationen darüber, wie die Dienstleistung die Anforderungen an die Barrierefreiheit erfüllt - in barrierefreier Form, oft als eigene Seite "Barrierefreiheit". Kein EU-Mustertext, aber ähnliche Inhalte</td></tr>
+        <tr><td>Alle anderen (private Websites, Vereine, viele kleine Unternehmen)</td><td>Häufig keine gesetzliche Pflicht</td><td>Freiwillig - aber eine ehrliche Erklärung und ein Feedback-Weg helfen Besucherinnen und Besuchern trotzdem</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Als technischer Maßstab gilt in der EU die harmonisierte Norm EN 301 549, die für Websites die WCAG auf Stufe AA einbezieht (in der aktuellen Fassung WCAG 2.1). Wer WCAG 2.2 AA erfüllt, erfüllt auch die Kriterien von WCAG 2.1 AA.</p>
+</section>
+
+<section class="ncss-stack" id="inhalte">
+  <h2 class="demo-section-title">Was hineingehört</h2>
+  <p>Die folgenden Bestandteile orientieren sich am EU-Mustertext für öffentliche Stellen. Auch wenn du nicht dazu verpflichtet bist, ist das eine gute Gliederung.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Geltungsbereich</strong> - für welche Website oder App die Erklärung gilt (Adresse).</li>
+    <li><strong>Stand der Vereinbarkeit</strong> - mit welchem Standard (z. B. WCAG 2.2 Stufe AA, EN 301 549) und ob die Website <em>vollständig</em>, <em>teilweise</em> oder <em>nicht</em> vereinbar ist. "Vollständig" nur, wenn das wirklich geprüft ist.</li>
+    <li><strong>Nicht barrierefreie Inhalte</strong> - konkret benennen: welcher Inhalt, welches Problem, warum (z. B. unverhältnismäßige Belastung, nicht im Geltungsbereich), und welche Alternative es gibt.</li>
+    <li><strong>Erstellung der Erklärung</strong> - Datum der Erstellung und der letzten Überprüfung, und wie bewertet wurde (Selbstbewertung, Prüfung durch Dritte, verwendete Werkzeuge).</li>
+    <li><strong>Feedback und Kontakt</strong> - ein einfacher Weg, Barrieren zu melden oder Inhalte in zugänglicher Form anzufordern (E-Mail, Telefon, Formular), mit einer Angabe, wann man eine Antwort erwarten kann.</li>
+    <li><strong>Durchsetzungsverfahren</strong> - bei öffentlichen Stellen der Hinweis auf die zuständige Schlichtungs- oder Durchsetzungsstelle samt Kontakt; im Anwendungsbereich des BFSG ggf. die zuständige Marktüberwachungsbehörde.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="formulierung">
+  <h2 class="demo-section-title">Sorgfältig formulieren</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>Nur behaupten, was geprüft ist. "Diese Website nutzt NativeCSS" sagt nichts über die Barrierefreiheit deiner Inhalte.</li>
+    <li>Bekannte Mängel offen nennen - das ist kein Eingeständnis von Schwäche, sondern genau der Zweck der Erklärung. Mit Zeitplan, wenn es einen gibt.</li>
+    <li>Verständlich schreiben: kurze Sätze, keine unerklärten Fachbegriffe. Die Erklärung selbst muss barrierefrei sein.</li>
+    <li>Datum pflegen. Nach größeren Änderungen an der Website neu prüfen und aktualisieren.</li>
+    <li>Die Erklärung von jeder Seite erreichbar machen - üblich ist ein Link im Fußbereich neben Impressum und Datenschutz.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="vorlage">
+  <h2 class="demo-section-title">Vorlage</h2>
+  <p>Ein Gerüst zum Anpassen. Alles in eckigen Klammern ersetzen, nicht zutreffende Abschnitte streichen. Ein Beispiel einer ausgefüllten Erklärung ist die <a href="accessibility-statement.html">Erklärung zur Barrierefreiheit dieser Website</a>.</p>
+  <pre><code class="language-html">&lt;main id="main" class="ncss-container ncss-stack"&gt;
+  &lt;h1&gt;Erklärung zur Barrierefreiheit&lt;/h1&gt;
+  &lt;p&gt;[Name der Organisation] ist bemüht, die Website [https://example.org]
+     barrierefrei zugänglich zu machen.&lt;/p&gt;
+
+  &lt;h2&gt;Stand der Vereinbarkeit&lt;/h2&gt;
+  &lt;p&gt;Diese Website ist mit den Web Content Accessibility Guidelines (WCAG) 2.2,
+     Stufe AA, [vollständig / teilweise / nicht] vereinbar.&lt;/p&gt;
+
+  &lt;h2&gt;Nicht barrierefreie Inhalte&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;[Inhalt]: [Problem]. [Grund]. [Alternative, z. B. "Auf Anfrage senden wir
+        Ihnen die Unterlagen als barrierefreies PDF."]&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Erstellung dieser Erklärung&lt;/h2&gt;
+  &lt;p&gt;Diese Erklärung wurde am [Datum] erstellt und zuletzt am [Datum] überprüft.
+     Grundlage ist eine [Selbstbewertung / Prüfung durch Dritte] mit
+     [Methode, Werkzeuge].&lt;/p&gt;
+
+  &lt;h2&gt;Feedback und Kontakt&lt;/h2&gt;
+  &lt;p&gt;Sind Ihnen Mängel aufgefallen oder benötigen Sie Inhalte in einer anderen Form?
+     Schreiben Sie uns an &lt;a href="mailto:[adresse]"&gt;[adresse]&lt;/a&gt; oder rufen Sie
+     uns an: [Telefon]. Wir antworten in der Regel innerhalb von [Zeitraum].&lt;/p&gt;
+
+  &lt;h2&gt;Durchsetzungsverfahren&lt;/h2&gt;
+  &lt;p&gt;[Nur wenn zutreffend: zuständige Schlichtungs- oder Durchsetzungsstelle mit
+     Adresse und Link.]&lt;/p&gt;
+&lt;/main&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="grundlage">
+  <h2 class="demo-section-title">Die Grundlage schaffen</h2>
+  <p>Eine glaubwürdige Erklärung braucht eine Prüfung. Die <a href="a11y-checklist.html">Checkliste WCAG 2.2 AA</a> zeigt, welche Kriterien von ncss unterstützt werden und welche du selbst erfüllen musst; <a href="a11y-testing.html">Testen</a> beschreibt, wie du die fertige Seite prüfst. Halte fest, was du geprüft hast und womit - das ist später der Abschnitt "Erstellung dieser Erklärung".</p>
+</section>

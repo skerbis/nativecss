@@ -6,9 +6,23 @@
 <title>__TITLE__</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <meta name="description" content="__DESCRIPTION__">
-<script src="../../dist/js/theme-toggle-early.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NativeCSS">
+<meta property="og:title" content="__TITLE__">
+<meta property="og:description" content="__DESCRIPTION__">
+<meta property="og:image" content="https://skerbis.github.io/nativecss/demo/assets/brand/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="NativeCSS – CSS, das der Browser schon kann.">
+<meta name="twitter:card" content="summary_large_image">
+<script src="../../dist/js/preferences-early.js"></script>
 <link rel="stylesheet" href="../../dist/ncss.css">
 <link rel="stylesheet" href="../../dist/page-transitions.css">
+<link rel="stylesheet" href="../../dist/components/preferences-fonts.css">
+<link rel="stylesheet" href="../../demo/assets/inspector.css">
+<link rel="stylesheet" href="../../demo/assets/site-shell.css">
+<link rel="stylesheet" href="../../demo/assets/site-cards.css">
+<script src="../../dist/js/page-transitions-quiet.js" defer></script>
 <script src="../../demo/assets/js/prism-manual.js" defer></script>
 <script src="../../vendor/prismjs/prism-core.min.js" defer></script>
 <script src="../../vendor/prismjs/prism-markup.min.js" defer></script>
@@ -18,7 +32,35 @@
 <script src="../../dist/js/code-block.js" defer></script>
 <script src="../../dist/js/command-fallback.js" defer></script>
 <script src="../../dist/js/nav.js" defer></script>
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/preferences.js" defer></script>
+<script src="../../dist/js/subnav.js" defer></script>
+<script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/dialog-light-dismiss.js" defer></script>
+<script src="../../demo/assets/js/inspector.js" defer></script>
+<script src="../../demo/assets/js/bleed-slider.js" defer></script>
 <style>
+  /* Bleed-Demo (Layout): iframe mit eigenem Viewport, Breite per Regler */
+  .demo-bleed-frame-wrap {
+    overflow: hidden;
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    background: var(--ncss-color-bg);
+  }
+  .demo-bleed-frame-wrap iframe {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: 44rem;
+    border: 0;
+  }
+  .demo-bleed-live input[type="range"] {
+    inline-size: min(100%, 30rem);
+  }
+  .demo-address {
+    font-style: normal;
+    line-height: 1.6;
+  }
   .docs-layout {
     display: grid;
     grid-template-columns: 15rem 1fr;
@@ -30,66 +72,28 @@
   .docs-layout > * {
     min-width: 0;
   }
+  /* Klebt unter Kopfleiste UND (falls vorhanden) "Auf dieser Seite"-Leiste. */
   .docs-sidebar {
     position: sticky;
-    top: calc(var(--ncss-topbar-height) + var(--ncss-space-md));
-    max-height: calc(100svh - var(--ncss-topbar-height) - 2 * var(--ncss-space-md));
+    top: calc(var(--ncss-scroll-offset, var(--ncss-topbar-height)) + var(--ncss-space-md));
+    max-height: calc(100svh - var(--ncss-scroll-offset, var(--ncss-topbar-height)) - 2 * var(--ncss-space-md));
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
-  .docs-sidebar-group + .docs-sidebar-group {
-    margin-block-start: var(--ncss-space-md);
-  }
-  .docs-sidebar-group-title {
-    font-size: var(--ncss-font-size-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--ncss-color-text-muted);
-    padding-inline: var(--ncss-space-xs);
-    margin-block-end: var(--ncss-space-3xs);
-  }
-  @media (max-width: 59.99rem) {
+  @media (max-width: 63.99rem) {
     .docs-layout {
       grid-template-columns: 1fr;
     }
     .docs-sidebar {
-      position: static;
-      max-height: none;
+      display: none;
     }
   }
-  /* Sidebar auf Mobile hinter einem <details>/<summary>-Umschalter statt IMMER voll
-     aufgeklappt vor dem eigentlichen Seiteninhalt zu stehen (User-Report: "Handbuch navi
-     ist mobil immer voll aufgeklappt", per Screenshot bestätigt - alle Nav-Gruppen
-     nahmen den kompletten ersten Bildschirm ein, bevor überhaupt Seiteninhalt kam).
-     .ncss-nav-dropdown liefert Chevron/Hover/Fokus-Optik bereits fertig (siehe
-     components/nav.css) - hier nur die responsive Sichtbarkeit des Umschalters selbst.
-     Erster Versuch: <details> OHNE open-Attribut im Markup lassen, stattdessen
-     .docs-sidebar { display:block !important } ab 60rem erzwingen, um den Inhalt trotz
-     geschlossenem <details> sichtbar zu machen - per echtem Test verworfen: moderne
-     Browser rendern den Inhalt eines GESCHLOSSENEN <details> über einen internen Slot-
-     Mechanismus (nicht nur simples display:none), ein via Kind-Selektor erzwungenes
-     display:block gewinnt zwar in getComputedStyle/getBoundingClientRect (Layout läuft
-     normal), das Element wird aber trotzdem nicht GEMALT (Screenshot blieb leer, obwohl
-     alle Werte "sichtbar" meldeten) - dieselbe Kind-Display-Override-Masche, die früher
-     zuverlässig funktionierte, greift hier nicht mehr. Fix: das ECHTE open-Attribut
-     verwenden statt es per CSS vorzutäuschen - im Markup PER DEFAULT gesetzt (JS-lose
-     Besucher/Bots sehen die Sidebar dadurch immer offen, wie vor diesem Fix - sicherer
-     Fallback statt sie ihnen komplett zu verstecken), ein winziges synchrones Inline-
-     Script (im <details> selbst, läuft vor dem ersten Paint) entfernt es wieder, wenn
-     der Viewport beim Laden schmaler als 60rem ist. */
-  .docs-sidebar-summary {
-    display: none;
+  .docs-breadcrumb {
+    margin-block-end: calc(-1 * var(--ncss-space-sm));
   }
-  @media (max-width: 59.99rem) {
-    .docs-sidebar-summary {
-      display: flex;
-      justify-content: space-between;
-      border: var(--ncss-border-width) solid var(--ncss-color-border);
-      border-radius: var(--ncss-radius-md);
-      padding: var(--ncss-space-sm) var(--ncss-space-md);
-      margin-block-end: var(--ncss-space-md);
-      font-weight: 700;
-    }
+  .docs-lang-note {
+    border-inline-start: 3px solid var(--ncss-color-warning);
+    padding-inline-start: var(--ncss-space-sm);
   }
   .docs-prevnext {
     display: grid;
@@ -107,100 +111,177 @@
     font-size: var(--ncss-font-size-sm);
     color: var(--ncss-color-text-muted);
   }
-  /* Aktive-Seite-Optik für die Sidebar UND die Topbar kommt jetzt aus components/nav.css
-     selbst ([aria-current="page"], allgemein für jede .ncss-nav-Variante) - kein
-     Seiten-lokales CSS mehr nötig. Nur die Sprachumschalter-Markierung (eigener
-     Attributwert "true", kein Seiten-Konzept von ncss selbst) bleibt hier lokal. */
-  .ncss-nav-item a[aria-current="true"] {
+  /* Live-Beispiele stecken im Handbuch in einer Spalte NEBEN der Seitenleiste - nicht auf
+     den Viewport zentriert. .ncss-full-bleed / -bleed-* (100vw-Ausbruch) würden dort
+     asymmetrisch über den rechten Rand laufen (horizontaler Scroll). In der Inhaltsspalte
+     deshalb auf Spaltenbreite begrenzt; echten Randlos-Effekt zeigen die Beispiel-Websites. */
+  .docs-content :is(.ncss-full-bleed, [class*="ncss-bleed-"]) {
+    width: auto;
+    margin-inline: 0;
+  }
+  /* Live-Rahmen: das eingewebte Live-Beispiel eines Abschnitts (build.mjs, MERGE) -
+     neutrale Fläche mit kleiner Beschriftung, klar getrennt von Erklärung und Code. */
+  .docs-live {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-lg) var(--ncss-space-md) var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .docs-live::before {
+    content: "Live";
+    position: absolute;
+    inset-block-start: var(--ncss-space-2xs);
+    inset-inline-start: var(--ncss-space-sm);
+    font-size: 0.6875rem;
     font-weight: 700;
-    text-decoration: underline;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ncss-color-text-muted);
   }
-  section[id] {
-    scroll-margin-top: calc(var(--ncss-topbar-height) + var(--ncss-space-sm));
+  /* Barrierefreiheits-Symbol (Kern-Icon, dekorativ) vor der Beschriftung - überall gleich
+     groß und mittig zur Textzeile. */
+  .demo-a11y-icon {
+    --ncss-icon-size: 1.1em;
+    margin-inline-end: 0.35em;
+    vertical-align: -0.2em;
   }
-  .docs-footer-brand {
-    color: var(--ncss-color-text);
+  /* Einheitlicher Barrierefreiheits-Block: am Seitenende (build.mjs, a11y.json) und je
+     Komponente innerhalb eines Abschnitts (.docs-a11y-notes mit h3/h4/Tabelle) - beide
+     im selben umrandeten Kasten. */
+  .docs-a11y-notes {
+    display: grid;
+    gap: var(--ncss-space-xs);
+    padding: var(--ncss-space-md);
+    position: relative;
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  /* Akzent als eingerückter Balken mit runden Enden (statt dicker Randkante, die der
+     Eckrundung folgt) */
+  .docs-a11y-notes::before {
+    content: "";
+    position: absolute;
+    inset-block: 1rem;
+    inset-inline-start: -1px;
+    inline-size: 4px;
+    border-start-end-radius: 999px;
+    border-end-end-radius: 999px;
+    background-color: var(--ncss-color-brand);
+  }
+  @media (forced-colors: active) {
+    .docs-a11y-notes::before { display: none; }
+    .docs-a11y-notes { border-inline-start-width: 4px; }
+  }
+  .docs-a11y-notes > :is(h3, h4) {
+    margin: 0;
+  }
+  .docs-a11y-notes > h3 {
+    font-size: var(--ncss-font-size-md);
+  }
+  .docs-a11y-notes > h4 {
+    margin-block-start: var(--ncss-space-2xs);
+    font-size: var(--ncss-font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ncss-color-text-muted);
+  }
+  .docs-a11y-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--ncss-space-sm);
+    margin: 0;
+  }
+  .docs-a11y-list > div {
+    padding: var(--ncss-space-2xs) 0;
+  }
+  .docs-a11y-list dt {
+    font-weight: 700;
+  }
+  .docs-a11y-list dd {
+    margin: var(--ncss-space-3xs) 0 0;
+    font-size: var(--ncss-font-size-sm);
+  }
+  /* Abschnitts-Titel der Live-Beispiele (früher je Demo-Seite einzeln definiert). */
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
   }
 </style>
+__HEAD_EXTRA__
 </head>
 <body class="ncss-page-shell">
 
 <a href="#main" class="ncss-skip-link">__SKIP_LINK__</a>
 
-<header class="ncss-topbar">
+<!-- Kopfleiste + "Auf dieser Seite" bilden EINE klebende Einheit: beide Zeilen stecken in
+     einem gemeinsamen Sticky-Container und können dadurch nie gegeneinander verrutschen,
+     egal wie hoch die Kopfleiste (Schriftzug, Schriftgröße, Zoom) gerade ist. -->
+<div class="site-sticky" data-ncss-sticky-header>
+<header class="ncss-topbar site-topbar">
   <div class="ncss-topbar-inner">
-    <a class="ncss-topbar-brand" href="../../demo/product.html">NativeCSS</a>
-    <nav class="ncss-nav">
-      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="__MENU_LABEL__"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
-      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start">
-        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="__CLOSE_LABEL__"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
-        <ul class="ncss-nav-list">
-          <li class="ncss-nav-item"><a href="index.html" aria-current="page">__NAV_DOCS__</a></li>
-          <li class="ncss-nav-item"><a href="../../demo/index.html">__NAV_DEMOS__</a></li>
-          <li class="ncss-nav-item" aria-hidden="true"><hr class="ncss-divider--vertical" aria-orientation="vertical"></li>
-          <li class="ncss-nav-item">
-            <details class="ncss-nav-dropdown">
-              <summary>__NAV_MORE__</summary>
-              <ul class="ncss-nav-submenu">
-                <li><a href="../../demo/navigation.html">__NAV_NAVIGATION__</a></li>
-                <li><a href="../../demo/forms.html">__NAV_FORMS__</a></li>
-                <li><a href="../../demo/media.html">__NAV_MEDIA__</a></li>
-                <li><a href="../../demo/webawesome.html">Web Awesome</a></li>
-                <li><a href="../../demo/magazine.html">__NAV_MAGAZINE__</a></li>
-                <li><a href="../../demo/scroll-sections.html">__NAV_SCROLL_SECTIONS__</a></li>
-                <li><a href="../../demo/stacked-cards.html">__NAV_STACKED_CARDS__</a></li>
-                <li><a href="../../demo/roadmap.html">__NAV_ROADMAP__</a></li>
-                <li><a href="../../demo/colors.html">__NAV_COLORS__</a></li>
-                <li><a href="../../demo/landing.html">__NAV_LANDING__</a></li>
-                <li><a href="../../demo/effects.html">__NAV_EFFECTS__</a></li>
-                <li><a href="../../demo/theming.html">__NAV_THEMING__</a></li>
-                <li><a href="../../demo/widgets.html">__NAV_WIDGETS__</a></li>
-                <li><a href="../../demo/uikit-integration.html">__NAV_UIKIT_INTEGRATION__</a></li>
-                <li><a href="../../demo/guides.html">__NAV_GUIDES__</a></li>
-              </ul>
-            </details>
-          </li>
-__LANG_SWITCH__
-        </ul>
-      </dialog>
-    </nav>
+    <a class="ncss-topbar-brand site-brand" href="__BRAND_HREF__"__BRAND_CURRENT__ aria-label="__BRAND_LABEL__">__WORDMARK__</a>
+__SITE_NAV__
+    <div class="ncss-topbar-actions">
+      <div class="site-tools ncss-pill-group" role="group" aria-label="__TOOLS_LABEL__">
+      <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">__SEARCH_LABEL__</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
+__SITE_ACTIONS__
+      </div>
+    </div>
   </div>
 </header>
+__SUBNAV__
+</div>
 
-<main id="main" class="ncss-stretch ncss-container ncss-py-xl">
-  <div class="docs-layout">
-
-    <details class="ncss-nav-dropdown docs-sidebar-details" open>
-      <summary class="docs-sidebar-summary">__SIDEBAR_LABEL__</summary>
-      <nav class="ncss-nav--tree docs-sidebar" aria-label="__SIDEBAR_LABEL__">
-__SIDEBAR__
-      </nav>
-      <script src="../../demo/assets/js/docs-sidebar.js"></script>
-    </details>
-
-    <div class="ncss-stack ncss-stack--loose">
-__CONTENT__
-__PREVNEXT__
+<ncss-command-palette shortcut="k" slash src="../search.__LANG__.json" limit="7">
+  <dialog id="siteSearch" class="ncss-command" aria-label="__SEARCH_LABEL__" closedby="any">
+    <div class="ncss-command-search">
+      <input class="ncss-command-input" type="search" aria-label="__SEARCH_PLACEHOLDER__" placeholder="__SEARCH_PLACEHOLDER__">
     </div>
+    <div class="ncss-command-list" aria-label="__SEARCH_LABEL__">
+      <div class="ncss-command-group">
+        <p class="ncss-command-group-label">__SEARCH_SUGGEST__</p>
+        <a class="ncss-command-item" href="__START_HREF__">__NAV_START__</a>
+        <a class="ncss-command-item" href="index.html">__NAV_DOCS__</a>
+        <a class="ncss-command-item" href="__EXAMPLES_HREF__">__NAV_EXAMPLES__</a>
+      </div>
+    </div>
+    <p class="ncss-command-empty" hidden>__SEARCH_EMPTY__</p>
+    <div class="ncss-command-footer"><span><kbd>↑</kbd><kbd>↓</kbd> __SEARCH_HINT_SELECT__</span><span><kbd>Enter</kbd> __SEARCH_HINT_OPEN__</span><span><kbd>Esc</kbd> __SEARCH_HINT_CLOSE__</span></div>
+  </dialog>
+</ncss-command-palette>
 
-  </div>
-</main>
+__MAIN__
 
 <footer class="ncss-footer">
   <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
     <div class="ncss-stack ncss-stack--tight">
-      <strong class="docs-footer-brand">NativeCSS __FOOTER_DOCS_LABEL__</strong>
+      <a class="site-footer-brand" href="__START_HREF__">__WORDMARK__</a>
       <p class="ncss-text-sm">__FOOTER_TAGLINE__</p>
+      <p class="ncss-text-sm">__VERSION_LABEL__ __VERSION__ · <a href="https://github.com/skerbis/nativecss/blob/main/CHANGELOG.md" target="_blank" rel="noopener">__CHANGELOG_LABEL__</a></p>
     </div>
-    <nav class="ncss-nav ncss-nav--tree">
+    <nav class="ncss-nav ncss-nav--tree" aria-label="Footer">
       <ul class="ncss-nav-list">
-        <li class="ncss-nav-item"><a href="../../demo/product.html">__NAV_HOME__</a></li>
-        <li class="ncss-nav-item"><a href="../../demo/index.html">__NAV_DEMOS__</a></li>
+        <li class="ncss-nav-item"><a href="__START_HREF__">__NAV_START__</a></li>
+        <li class="ncss-nav-item"><a href="index.html">__NAV_DOCS__</a></li>
+        <li class="ncss-nav-item"><a href="__EXAMPLES_HREF__">__NAV_EXAMPLES__</a></li>
         <li class="ncss-nav-item"><a href="https://github.com/skerbis/nativecss" target="_blank" rel="noopener">GitHub</a></li>
+        <li class="ncss-nav-item"><a href="accessibility-statement.html"><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>__STATEMENT_LABEL__</a></li>
+        <li class="ncss-nav-item"><a href="../../LICENSE">Lizenz / License</a></li>
+        <li class="ncss-nav-item"><a href="impressum.html">__IMPRINT_LABEL__</a></li>
+        <li class="ncss-nav-item"><a href="datenschutz.html">__PRIVACY_LABEL__</a></li>
+        <li class="ncss-nav-item"><a href="https://github.com/sponsors/skerbis" target="_blank" rel="noopener">__SPONSOR_LABEL__ <span class="ncss-visually-hidden">__SPONSOR_NOTE__</span></a></li>
       </ul>
     </nav>
   </div>
 </footer>
 
+<button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="__INSPECT_TITLE__"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> __INSPECT_LABEL__ <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>
+
+__FOOT_EXTRA__
 </body>
 </html>

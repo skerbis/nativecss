@@ -1,0 +1,220 @@
+/**
+ * ncss - Preistabelle (Layer "components"): Tarifkarten mit Name, Preis + Zeitraum,
+ * Leistungsliste (enthalten/nicht enthalten), hervorgehobenem "Empfohlen"-Tarif und
+ * Handlungsaufruf. Optional ein Monatlich/Jährlich-Umschalter - reines CSS (Radio-Buttons +
+ * :has()), kein JS.
+ *
+ * Braucht colors.css + tokens.css (+ reset/base) und helpers/a11y.css für den
+ * versteckten Text "Nicht enthalten:" bzw. "Enthalten:". Optionale Begleiter:
+ *   helpers/forms.css         .ncss-btn für den Handlungsaufruf
+ *   components/segmented.css  Optik für den Umschalter (.ncss-segmented) - ohne ihn
+ *                             erscheinen native Radio-Buttons, voll bedienbar
+ *
+ * Gleich hohe, zeilenweise ausgerichtete Karten mit Subgrid - dasselbe Prinzip wie
+ * .ncss-card-grid in components/card.css, hier aber eigenständig, damit die Preistabelle
+ * ohne card.css auskommt. Jede Karte hat GENAU vier direkte Kinder (Kopf, Preis,
+ * Leistungen, Aktion); bei anderer Zahl --ncss-pricing-rows anpassen.
+ *
+ * Markup:
+ *   <div class="ncss-pricing">
+ *     <fieldset class="ncss-pricing-toggle ncss-segmented">             (optional)
+ *       <legend class="ncss-visually-hidden">Abrechnungszeitraum</legend>
+ *       <input type="radio" name="billing" id="b-m" data-period="monthly" checked><label for="b-m">Monatlich</label>
+ *       <input type="radio" name="billing" id="b-y" data-period="yearly"><label for="b-y">Jährlich</label>
+ *     </fieldset>
+ *     <ul class="ncss-pricing-plans" role="list">
+ *       <li class="ncss-pricing-plan ncss-pricing-plan--featured">
+ *         <div class="ncss-pricing-header">
+ *           <p class="ncss-pricing-badge">Empfohlen</p>
+ *           <h3 class="ncss-pricing-name">Team</h3>
+ *           <p class="ncss-pricing-desc">Für kleine Teams</p>
+ *         </div>
+ *         <p class="ncss-pricing-price">
+ *           <span class="ncss-pricing-amount" data-period="monthly"><span class="ncss-pricing-value">29 €</span> <span class="ncss-pricing-period">pro Monat</span></span>
+ *           <span class="ncss-pricing-amount" data-period="yearly"><span class="ncss-pricing-value">23 €</span> <span class="ncss-pricing-period">pro Monat, jährlich abgerechnet</span></span>
+ *         </p>
+ *         <ul class="ncss-pricing-features" role="list">
+ *           <li><span class="ncss-visually-hidden">Enthalten:</span> 10 Projekte</li>
+ *           <li class="ncss-pricing-excluded"><span class="ncss-visually-hidden">Nicht enthalten:</span> SSO</li>
+ *         </ul>
+ *         <div class="ncss-pricing-action"><a class="ncss-btn ncss-btn--primary" href="...">Team wählen</a></div>
+ *       </li>
+ *     </ul>
+ *   </div>
+ * Ohne Umschalter einfach nur EINEN Preis (ohne data-period) in .ncss-pricing-price.
+ *
+ * Enthalten/nicht enthalten unterscheidet sich in FORM (Haken vs. Kreuz) + Text, nicht nur
+ * in der Farbe; die Symbole selbst sind Deko (Alternativtext ""), die Aussage trägt der
+ * versteckte Text. "Empfohlen" ist echter Text, nicht nur der farbige Rahmen.
+ */
+
+.ncss-pricing {
+  display: grid;
+  gap: var(--ncss-space-md);
+  margin-block-end: var(--ncss-space-md);
+}
+
+/* Umschalter mittig über den Karten. Die Optik kommt von .ncss-segmented, falls geladen. */
+.ncss-pricing-toggle {
+  justify-self: center;
+  margin: 0;
+}
+
+/* Ohne :has() kann der Umschalter nichts bewirken - dann ausblenden und nur den
+   Monatspreis zeigen (statt eines wirkungslosen Bedienelements). */
+.ncss-pricing-amount[data-period="yearly"] {
+  display: none;
+}
+@supports selector(:has(*)) {
+  .ncss-pricing:has(.ncss-pricing-toggle input[data-period="yearly"]:checked) .ncss-pricing-amount[data-period="monthly"] {
+    display: none;
+  }
+  .ncss-pricing:has(.ncss-pricing-toggle input[data-period="yearly"]:checked) .ncss-pricing-amount[data-period="yearly"] {
+    display: inline;
+  }
+}
+@supports not selector(:has(*)) {
+  .ncss-pricing-toggle {
+    display: none;
+  }
+}
+
+/* --- Raster + Karte ---------------------------------------------------------------------- */
+.ncss-pricing-plans {
+  --ncss-pricing-rows: 4;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--ncss-pricing-min, 15rem), 100%), 1fr));
+  gap: var(--ncss-pricing-gap, var(--ncss-space-md));
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ncss-pricing-plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-sm);
+  padding: var(--ncss-pricing-padding, var(--ncss-space-md));
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+}
+@supports (grid-template-rows: subgrid) {
+  .ncss-pricing-plan {
+    display: grid;
+    grid-row: span var(--ncss-pricing-rows);
+    grid-template-rows: subgrid;
+    row-gap: var(--ncss-space-sm);
+  }
+}
+
+.ncss-pricing-plan--featured {
+  border: calc(var(--ncss-border-width) * 2) solid var(--ncss-color-brand);
+  box-shadow: var(--ncss-shadow-md);
+}
+
+.ncss-pricing-header > * {
+  margin-block-end: 0;
+}
+.ncss-pricing-header > * + * {
+  margin-block-start: var(--ncss-space-3xs);
+}
+.ncss-pricing-badge {
+  display: inline-block;
+  padding: 0.15em 0.65em;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1.4;
+}
+.ncss-pricing-badge + .ncss-pricing-name {
+  margin-block-start: var(--ncss-space-2xs);
+}
+.ncss-pricing-name {
+  font-size: var(--ncss-font-size-lg);
+  line-height: var(--ncss-line-height-tight);
+}
+.ncss-pricing-desc {
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+}
+
+.ncss-pricing-price {
+  margin: 0;
+  align-self: end;
+}
+.ncss-pricing-value {
+  font-size: var(--ncss-font-size-2xl);
+  font-weight: var(--ncss-font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  letter-spacing: var(--ncss-tracking-tight);
+}
+.ncss-pricing-period {
+  /* Bricht als Einheit um ("pro Monat" nie getrennt hinter dem Betrag). */
+  display: inline-block;
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+}
+.ncss-pricing-note {
+  display: block;
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+}
+
+.ncss-pricing-features {
+  display: grid;
+  align-content: start;
+  gap: var(--ncss-space-2xs);
+  margin: 0;
+  padding: var(--ncss-space-sm) 0 0;
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  list-style: none;
+}
+.ncss-pricing-features > li {
+  position: relative;
+  padding-inline-start: 1.6em;
+}
+.ncss-pricing-features > li::before {
+  content: "\2713" / "";
+  position: absolute;
+  inset-inline-start: 0;
+  inline-size: 1.2em;
+  text-align: center;
+  color: var(--ncss-color-success);
+  font-weight: var(--ncss-font-weight-bold);
+}
+.ncss-pricing-features > .ncss-pricing-excluded {
+  color: var(--ncss-color-text-muted);
+}
+.ncss-pricing-features > .ncss-pricing-excluded::before {
+  content: "\2715" / "";
+  color: var(--ncss-color-text-muted);
+  font-weight: var(--ncss-font-weight-normal);
+}
+
+.ncss-pricing-action {
+  align-self: end;
+  display: grid;
+}
+.ncss-pricing-action > * {
+  justify-content: center;
+  text-align: center;
+}
+
+@media (forced-colors: active) {
+  .ncss-pricing-plan--featured {
+    border-width: 3px;
+    border-color: Highlight;
+  }
+  .ncss-pricing-badge {
+    border: 1px solid CanvasText;
+  }
+  .ncss-pricing-features > li::before {
+    color: CanvasText;
+  }
+}

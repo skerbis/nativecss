@@ -1,0 +1,92 @@
+<!--DESC: Using NativeCSS in REDAXO 5 and 6 (fluid), KLXM Studio, WordPress, TYPO3, Contao and Kirby - files, theme values, cherry-picking and front-end editing.-->
+<section class="ncss-stack">
+  <h1>CMS integration</h1>
+  <p class="ncss-text-lg ncss-text-muted">NativeCSS is plain CSS plus individual, optional scripts - any CMS that can print a <code>&lt;link&gt;</code> line can use it. This page shows the usual way for each system, how to set your own brand values via <code>theme.css</code>, and how to load only what a page needs.</p>
+</section>
+
+<section class="ncss-stack" id="grundmuster">
+  <h2 class="demo-section-title">The basic pattern (applies everywhere)</h2>
+  <ol class="ncss-stack ncss-stack--tight">
+    <li><strong>Get the files</strong>: release ZIP from <a href="https://github.com/skerbis/nativecss/releases/latest">GitHub</a> (only <code>dist/</code>), CDN or <code>npm i @skerbis/nativecss</code> - see <a href="index.html">Quick start</a>.</li>
+    <li><strong>Include</strong>: <code>ncss.css</code> (everything) or a trimmed copy with only the <code>@import</code> lines you need, then <code>theme.css</code> for your own values.</li>
+    <li><strong>Scripts only where needed</strong>: every component with behaviour has exactly one file in <code>dist/js/</code> - include it only where the component is used. The code inspector (bottom right) shows which file each element needs.</li>
+    <li><strong>Content loaded later</strong> (front-end editing, AJAX, htmx): fire <code>ncss-content-change</code> after inserting - see <a href="dynamic-content.html">Dynamic content</a>.</li>
+  </ol>
+  <pre><code class="language-html">&lt;link rel="stylesheet" href="/assets/ncss/ncss.css"&gt;
+&lt;link rel="stylesheet" href="/assets/ncss/theme.css"&gt;
+&lt;!-- only on pages with dialogs, tabs, players … --&gt;
+&lt;script src="/assets/ncss/js/dialog-light-dismiss.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><strong>CMS design settings</strong> (colour, font, radius from a back-end form) map perfectly onto the seed values in <code>theme.css</code>: the CMS only writes a small unlayered file or a <code>&lt;style&gt;</code> block with <code>--ncss-…</code> values on <code>:root</code>; NativeCSS derives all other steps itself - see <a href="theming.html">Theming</a>.</p>
+</section>
+
+<section class="ncss-stack" id="redaxo-6-fluid">
+  <h2 class="demo-section-title">REDAXO 6 + fluid</h2>
+  <p>The AddOn <a href="https://github.com/KLXM/fluid">fluid</a> ships a ready <strong>NativeCSS kit</strong>: switch under <em>Website → Kit → NativeCSS</em>, content stays. Editors work directly on the page (blocks, design templates, colours, fonts); the kit loads only the CSS/JS files of the blocks a page uses.</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Blocks using NativeCSS components</strong>: "Video &amp; Audio" (<code>&lt;ncss-video-player&gt;</code> with chapters and captions, <code>&lt;ncss-audio-player&gt;</code> with playlist), "Before/After" (<code>&lt;ncss-compare&gt;</code>), key figures with count-up, logos as a marquee, scrollytelling, background video in the hero.</li>
+    <li><strong>Reveal effect</strong> as a section setting (None · Fade · From below · Circle · Curtain) - default "None", automatically off with reduced motion.</li>
+    <li><strong>Update</strong> to a new NativeCSS version: <code>php bin/console fluid:kit:ncss-update --tag=v1.1.0</code> (or <code>--from=/path/to/nativecss</code>); shows new/changed files and records the version.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="redaxo-5">
+  <h2 class="demo-section-title">REDAXO 5 (classic)</h2>
+  <p>Copy <code>dist/</code> e.g. to <code>assets/ncss/</code> (or the assets folder of a project/theme AddOn) and include it in the template:</p>
+  <pre><code class="language-php">&lt;link rel="stylesheet" href="&lt;?= rex_url::base('assets/ncss/ncss.css') ?&gt;"&gt;
+&lt;link rel="stylesheet" href="&lt;?= rex_url::base('assets/ncss/theme.css') ?&gt;"&gt;</code></pre>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Modules</strong> output plain NativeCSS markup (card, accordion with <code>&lt;details&gt;</code>, dialog …) - no wrapper classes needed.</li>
+    <li><strong>Existing UIkit modules</strong> can be converted with the <a href="../../demo/uikit-converter.html">UIkit→NativeCSS converter</a>; PHP in the module code stays untouched (command line: <code>node tools/uikit-to-ncss/convert.mjs modules/ --write</code>).</li>
+    <li><strong>Theme values from the database</strong> (e.g. design settings of a theme AddOn): print a small <code>&lt;style&gt;:root{--ncss-color-brand: …}&lt;/style&gt;</code> block AFTER the two files.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="klxm-studio">
+  <h2 class="demo-section-title">KLXM Studio</h2>
+  <p><strong>Coming soon:</strong> a NativeCSS kit for KLXM Studio - design, blocks and design settings based on NativeCSS, following the same principle as the fluid kit.</p>
+</section>
+
+<section class="ncss-stack" id="wordpress">
+  <h2 class="demo-section-title">WordPress</h2>
+  <p>Put the files into <code>ncss/</code> in your (child) theme and enqueue them in <code>functions.php</code> - for the front end and the block editor:</p>
+  <pre><code class="language-php">add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_style('nativecss', get_theme_file_uri('ncss/ncss.css'), [], '1.1.0');
+    wp_enqueue_style('nativecss-theme', get_theme_file_uri('ncss/theme.css'), ['nativecss'], '1.1.0');
+});
+
+// same look in the block editor
+add_action('after_setup_theme', function () {
+    add_theme_support('editor-styles');
+    add_editor_style(['ncss/ncss.css', 'ncss/theme.css']);
+});</code></pre>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>theme.json</strong>: point the colour palette to NativeCSS tokens (<code>"color": "var(--ncss-color-brand)"</code>) so the editor colour picker and the NativeCSS theme share one source.</li>
+    <li><strong>Block styles/patterns</strong>: custom block styles can simply set NativeCSS classes (e.g. <code>ncss-card</code>); patterns deliver ready NativeCSS markup.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="typo3">
+  <h2 class="demo-section-title">TYPO3</h2>
+  <p>Put the files into your site package under <code>Resources/Public/ncss/</code> and load them in the Fluid page template:</p>
+  <pre><code class="language-html">&lt;f:asset.css identifier="nativecss" href="EXT:sitepackage/Resources/Public/ncss/ncss.css" /&gt;
+&lt;f:asset.css identifier="nativecss-theme" href="EXT:sitepackage/Resources/Public/ncss/theme.css" /&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Content element templates (Fluid) output NativeCSS markup; load component scripts with <code>&lt;f:asset.script&gt;</code> only in the templates that need them.</p>
+</section>
+
+<section class="ncss-stack" id="contao-kirby">
+  <h2 class="demo-section-title">Contao, Kirby and others</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Contao</strong>: put <code>dist/</code> into the theme folder under <code>files/</code>, add it as external stylesheets in the page layout or print it in your own page template; content element templates deliver NativeCSS markup.</li>
+    <li><strong>Kirby</strong>: <code>&lt;?= css(['assets/ncss/ncss.css', 'assets/ncss/theme.css']) ?&gt;</code> in the header snippet; blocks/snippets output NativeCSS markup.</li>
+    <li><strong>Statamic, Craft, Joomla, Drupal …</strong>: the same pattern - two <code>&lt;link&gt;</code> lines in the layout, markup in the component templates, scripts only where needed.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="werkzeuge">
+  <h2 class="demo-section-title">Helpful tools</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Code inspector</strong> (button bottom right): click an element → HTML, explanation and the matching <code>@import</code> lines.</li>
+    <li><strong>UIkit→NativeCSS converter</strong> for existing templates (browser and command line).</li>
+    <li><strong>VS Code support and LLM package</strong> - see <a href="tools.html">Tools</a>.</li>
+  </ul>
+</section>

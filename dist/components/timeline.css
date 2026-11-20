@@ -1,0 +1,211 @@
+/**
+ * ncss - Zeitleiste (Layer "components"): statische, vertikale Abfolge von Ereignissen mit
+ * Datum, Markierung (Punkt oder Icon) und hervorgehobenem aktuellem Eintrag. Auf breiten
+ * Containern optional abwechselnd links/rechts (.ncss-timeline--alternate, Container
+ * Query - keine Viewport-Breakpoints). Reines CSS, kein JS.
+ *
+ * Abgrenzung: components/roadmap.css (.ncss-roadmap-*) ist die SCROLL-animierte Variante
+ * (Linie zeichnet sich beim Scrollen nach, Karten blenden ein). Diese Zeitleiste hier ist
+ * bewusst ruhig - für Firmengeschichte, Changelog, Lebenslauf, Projektverlauf - und bringt
+ * Datum, Icons, Wechsel-Layout und den "Aktuell"-Zustand mit, die der Roadmap fehlen.
+ *
+ * Braucht nur colors.css + tokens.css (+ reset/base). Cherry-pick-fähig. Optional
+ * helpers/icons.css für .ncss-icon-* in den Markern (ohne: leerer, gefüllter Kreis).
+ *
+ * Markup:
+ *   <ol class="ncss-timeline" role="list">
+ *     <li class="ncss-timeline-item">
+ *       <span class="ncss-timeline-marker" aria-hidden="true"></span>        (leer = Punkt)
+ *       <div class="ncss-timeline-content">
+ *         <time class="ncss-timeline-date" datetime="2024-03">März 2024</time>
+ *         <h3 class="ncss-timeline-title">Gründung</h3>
+ *         <p>Text ...</p>
+ *       </div>
+ *     </li>
+ *     <li class="ncss-timeline-item" aria-current="true">                    (aktueller Eintrag)
+ *       <span class="ncss-timeline-marker" aria-hidden="true"><span class="ncss-icon ncss-icon-star"></span></span>
+ *       ...
+ *     </li>
+ *   </ol>
+ * role="list" wie bei allen Listen-Varianten (list-style:none entfernt in älterem
+ * VoiceOver sonst die Listen-Semantik). aria-current sagt Screenreadern "aktuell" an -
+ * zusätzlich sichtbar: größerer, gefüllter Marker MIT Ring (Form, nicht nur Farbe).
+ * Wer es noch deutlicher will, schreibt "Aktuell"/"Heute" als Text ins Datum.
+ *
+ * Varianten:
+ *   .ncss-timeline--alternate   ab ~40rem Container-Breite abwechselnd links/rechts
+ *   .ncss-timeline--compact     engere Abstände (z.B. in Seitenleisten)
+ *   .ncss-timeline-item--muted  vergangener/zweitrangiger Eintrag, gedämpft
+ * Properties: --ncss-timeline-gap, --ncss-timeline-line-color, --ncss-timeline-marker-color
+ */
+
+.ncss-timeline {
+  --ncss-timeline-rail: 2rem;
+  --ncss-timeline-dot: 0.875rem;
+  --ncss-timeline-line-width: 2px;
+  --ncss-timeline-col-gap: var(--ncss-space-sm);
+  container-type: inline-size;
+  container-name: ncss-timeline;
+  list-style: none;
+  margin: 0 0 var(--ncss-space-md);
+  padding: 0;
+}
+
+.ncss-timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--ncss-timeline-rail) minmax(0, 1fr);
+  column-gap: var(--ncss-timeline-col-gap);
+  /* Abstand als padding statt gap der Liste: so reicht die Linie (::before, inset-block
+     0) lückenlos bis zum nächsten Eintrag. */
+  padding-block-end: var(--ncss-timeline-gap, var(--ncss-space-lg));
+}
+
+/* Verbindungslinie, je Eintrag ein Segment vom eigenen Marker bis zum nächsten. Beim
+   letzten Eintrag entfällt sie. Rahmen statt Hintergrund: bleibt in Forced Colors
+   sichtbar. */
+.ncss-timeline-item::before {
+  content: "";
+  position: absolute;
+  inset-block: calc(var(--ncss-timeline-rail) / 2) 0;
+  inset-inline-start: calc(var(--ncss-timeline-rail) / 2 - var(--ncss-timeline-line-width) / 2);
+  border-inline-start: var(--ncss-timeline-line-width) solid var(--ncss-timeline-line-color, var(--ncss-color-border));
+}
+.ncss-timeline-item:last-child::before {
+  content: none;
+}
+
+.ncss-timeline-marker {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  inline-size: var(--ncss-timeline-rail);
+  block-size: var(--ncss-timeline-rail);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-bold);
+  line-height: 1;
+  /* Ring in Seitenfarbe trennt den Marker von der durchlaufenden Linie. Auf farbiger
+     Fläche --ncss-timeline-ring auf deren Hintergrund setzen. */
+  box-shadow: 0 0 0 3px var(--ncss-timeline-ring, var(--ncss-color-bg));
+}
+/* Leerer Marker = schlichter Punkt, mittig auf der Linie. */
+.ncss-timeline-marker:empty {
+  inline-size: var(--ncss-timeline-dot);
+  block-size: var(--ncss-timeline-dot);
+  margin-block-start: calc((var(--ncss-timeline-rail) - var(--ncss-timeline-dot)) / 2);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-timeline-line-width) solid var(--ncss-timeline-marker-color, var(--ncss-color-brand));
+}
+
+.ncss-timeline-content {
+  grid-column: 2;
+  min-inline-size: 0;
+  /* Erste Textzeile optisch mittig zum Marker. */
+  padding-block-start: calc((var(--ncss-timeline-rail) - 1lh) / 2);
+}
+.ncss-timeline-content > :last-child {
+  margin-block-end: 0;
+}
+
+.ncss-timeline-date {
+  display: block;
+  margin-block-end: var(--ncss-space-3xs);
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.ncss-timeline-title {
+  margin-block-end: var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-md);
+  line-height: var(--ncss-line-height-tight);
+}
+
+/* --- Aktueller Eintrag ----------------------------------------------------------------
+   aria-current (true/date/step/...) - die Hervorhebung hängt an der Semantik, kein
+   doppeltes Klassen-Pflegen. Gefüllter Marker + zusätzlicher Markenring = andere FORM. */
+.ncss-timeline-item[aria-current]:not([aria-current="false"]) > .ncss-timeline-marker {
+  background-color: var(--ncss-timeline-marker-color, var(--ncss-color-brand));
+  color: var(--ncss-color-brand-contrast);
+  box-shadow:
+    0 0 0 3px var(--ncss-timeline-ring, var(--ncss-color-bg)),
+    0 0 0 5px var(--ncss-timeline-marker-color, var(--ncss-color-brand));
+}
+.ncss-timeline-item[aria-current]:not([aria-current="false"]) > .ncss-timeline-marker:empty {
+  border-color: var(--ncss-timeline-marker-color, var(--ncss-color-brand));
+}
+.ncss-timeline-item[aria-current]:not([aria-current="false"]) .ncss-timeline-date {
+  color: var(--ncss-color-brand-on-soft);
+}
+
+/* Gedämpfter Eintrag (z.B. "geplant" oder Nebenereignis): Text bleibt AA-lesbar
+   (text-muted statt Deckkraft), Punkt gestrichelt statt durchgezogen. */
+.ncss-timeline-item--muted > .ncss-timeline-content {
+  color: var(--ncss-color-text-muted);
+}
+.ncss-timeline-item--muted > .ncss-timeline-marker {
+  background-color: var(--ncss-color-bg-subtle);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-timeline-item--muted > .ncss-timeline-marker:empty {
+  border-style: dashed;
+  border-color: var(--ncss-color-text-muted);
+}
+
+.ncss-timeline--compact {
+  --ncss-timeline-rail: 1.5rem;
+  --ncss-timeline-dot: 0.75rem;
+  --ncss-timeline-gap: var(--ncss-space-sm);
+  --ncss-timeline-col-gap: var(--ncss-space-xs);
+}
+
+/* --- Abwechselnd links/rechts ---------------------------------------------------------
+   Erst ab 40rem CONTAINER-Breite (nicht Viewport) - in einer schmalen Spalte bleibt es
+   die einspaltige Variante. Drei Spalten: Inhalt | Linie | Inhalt. Grid-Spalten und
+   inset-inline kippen in RTL automatisch mit. */
+@container ncss-timeline (min-width: 40rem) {
+  .ncss-timeline--alternate > .ncss-timeline-item {
+    grid-template-columns: minmax(0, 1fr) var(--ncss-timeline-rail) minmax(0, 1fr);
+  }
+  .ncss-timeline--alternate > .ncss-timeline-item::before {
+    inset-inline-start: calc(50% - var(--ncss-timeline-line-width) / 2);
+  }
+  .ncss-timeline--alternate > .ncss-timeline-item > .ncss-timeline-marker {
+    grid-column: 2;
+  }
+  .ncss-timeline--alternate > .ncss-timeline-item:nth-child(odd) > .ncss-timeline-content {
+    grid-column: 1;
+    text-align: end;
+  }
+  .ncss-timeline--alternate > .ncss-timeline-item:nth-child(even) > .ncss-timeline-content {
+    grid-column: 3;
+  }
+}
+
+/* --- Erzwungene Farben ----------------------------------------------------------------
+   Flächen verschwinden: Marker brauchen einen echten Rahmen, der aktuelle Eintrag eine
+   Systemfarbe statt des (entfallenden) box-shadow-Rings. */
+@media (forced-colors: active) {
+  .ncss-timeline-marker {
+    border: var(--ncss-timeline-line-width) solid CanvasText;
+  }
+  .ncss-timeline-item[aria-current]:not([aria-current="false"]) > .ncss-timeline-marker {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+  .ncss-timeline-item::before {
+    border-inline-start-color: GrayText;
+  }
+}

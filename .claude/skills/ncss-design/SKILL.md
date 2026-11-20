@@ -159,3 +159,21 @@ technischen Details.
 - `placeholder` ersetzt kein `<label>`. Bei automatisch abspielenden Hintergrund-Videos
   (`.ncss-hero-media > video[autoplay]`) `js/hero-video-motion.js` einbinden, damit
   `prefers-reduced-motion` respektiert wird.
+
+## Werkzeuge
+
+- **Klassen nie raten:** `llms/classes.json` (jede `ncss-`Klasse -> Datei),
+  `llms/components.json` (`<ncss-*>`-Elemente, `data-ncss-*`, Events), `llms/reference.md`
+  (Header-Doku mit Markup-Beispielen), Agenten-Anleitung `llms/GUIDE.md`. Alles aus `dist/`
+  generiert: `node tools/index.mjs` nach jeder Änderung an `dist/` (`--check` im CI).
+- **Markup prüfen:** `node llms/hooks/check-classes.mjs <dateien|ordner>` - unbekannte
+  Klassen/Attribute/Elemente (mit Vorschlag), `uk-`Reste, Modal/Off-Canvas nicht auf
+  `<dialog>`, fehlende `alt`/Namen/Labels. Als Claude-Code-PostToolUse-Hook (Exit 2 bei
+  Fehlern): `llms/hooks/README.md` + `settings.example.json`. Jeden Fehler beheben, bevor
+  eine Seite als fertig gilt.
+- **UIkit-Projekt umstellen:** `node tools/uikit-to-ncss/convert.mjs templates/` (Probelauf
+  mit Zeilennummern), dann `--write`/`--out`; lässt PHP/Twig/REDAXO-Code unangetastet, folgt
+  `docs/de/uikit-migration.html`. Gemeldete Stellen (Tabs, Slider, Dropdowns ...) von Hand
+  nachziehen, danach den Prüfer laufen lassen. Im Browser: `demo/uikit-converter.html`.
+- **VS Code:** Autovervollständigung für Elemente/Attribute/Tokens + Snippets
+  (`tools/vscode/README.md`).

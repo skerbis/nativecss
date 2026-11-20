@@ -1,0 +1,116 @@
+<!--DESC: Automated checks with axe and Lighthouse, keyboard and screen reader checks, zoom, forced colors and reduced motion - checklists for testing an ncss page.-->
+<section class="ncss-stack">
+  <h1>Testing</h1>
+  <p class="ncss-text-lg ncss-text-muted">ncss takes a lot off your plate, but only testing your finished page shows whether content, order and labels are right. Automated tools only find some of the problems - the rest needs a keyboard, a screen reader and a few minutes of attention.</p>
+</section>
+
+<section class="ncss-stack" id="automatisch">
+  <h2 class="demo-section-title">Automated checks</h2>
+  <p>Automated tests are fast and reliably catch typical technical errors: missing <code>alt</code> attributes, fields without labels, insufficient colour contrast, duplicate IDs, invalid ARIA attributes. They cannot judge whether an alt text makes sense or an error message is understandable.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>axe DevTools</strong> (browser extension for Chrome, Edge, Firefox) - checks the current page including dynamically opened states. Open menus, dialogs and off-canvas panels before scanning, otherwise they are not checked.</li>
+    <li><strong>Lighthouse</strong> (in Chrome DevTools under "Lighthouse", category "Accessibility") - built on axe and gives you a score. 100 points only means: no automatically detectable errors.</li>
+    <li><strong>Lighthouse on the command line</strong> - for several pages or regular checks:</li>
+  </ul>
+  <pre><code class="language-none">npx lighthouse https://example.org/ --only-categories=accessibility --view
+
+# Save the result as JSON, e.g. to compare runs
+npx lighthouse https://example.org/contact/ --only-categories=accessibility --output=json --output-path=./a11y-contact.json</code></pre>
+  <ul class="ncss-list--dot" role="list">
+    <li>For local pages, start a local server first (e.g. <code>npx serve</code>) and test its address.</li>
+    <li>Check every page type once (home page, content page, form, listing), not just the home page.</li>
+    <li>Check in light <strong>and</strong> dark mode - contrast can pass in one mode and fail in the other, especially with your own colours.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="tastatur">
+  <h2 class="demo-section-title">Keyboard check</h2>
+  <p>Put the mouse aside and use the page with <kbd class="ncss-kbd">Tab</kbd>, <kbd class="ncss-kbd">Shift</kbd>+<kbd class="ncss-kbd">Tab</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Space</kbd>, arrow keys and <kbd class="ncss-kbd">Esc</kbd> only. In Safari, first turn on the option under Settings → Advanced that lets the Tab key highlight every item on a webpage - otherwise <kbd class="ncss-kbd">Tab</kbd> skips links.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>The first <kbd class="ncss-kbd">Tab</kbd> reveals the skip link ("Skip to content"), <kbd class="ncss-kbd">Enter</kbd> jumps to the main content.</li>
+    <li>Every interactive element can be reached - links, buttons, fields, menus, players, cards with a link.</li>
+    <li>Focus is always visible (ncss: outline via <code>:focus-visible</code>) and never hidden behind a sticky header, a cookie banner or a toast.</li>
+    <li>The order follows the reading flow - no jumping back and forth across the layout.</li>
+    <li>Dialogs, off-canvas panels and menus close with <kbd class="ncss-kbd">Esc</kbd>; focus then returns to the button that opened them.</li>
+    <li>Focus never gets stuck (keyboard trap) - not in embedded maps, videos or iframes either.</li>
+    <li>Nothing happens unexpectedly on focus or selection: no automatic submit when a selection changes, no page change on focus.</li>
+  </ul>
+  <p>Which keys the ncss components support: <a href="a11y-keyboard.html">Keyboard</a>.</p>
+</section>
+
+<section class="ncss-stack" id="screenreader">
+  <h2 class="demo-section-title">Screen reader quick check</h2>
+  <p>A short pass with a screen reader shows whether structure and labels come across. You do not need to be an expert - navigating by headings and landmarks and filling in the forms once is enough.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Screen reader</th><th scope="col">Start</th><th scope="col">Useful commands</th></tr></thead>
+      <tbody>
+        <tr><td>VoiceOver (macOS, with Safari)</td><td><kbd class="ncss-kbd">⌘</kbd>+<kbd class="ncss-kbd">F5</kbd></td><td><kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">⌥</kbd>+<kbd class="ncss-kbd">U</kbd> opens the rotor (headings, links, landmarks, form controls), <kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">⌥</kbd>+<kbd class="ncss-kbd">→</kbd> reads on</td></tr>
+        <tr><td>VoiceOver (iOS, iPadOS)</td><td>Settings → Accessibility → VoiceOver, or - if set up as the accessibility shortcut - triple-click the side button</td><td>Swipe right/left: next/previous item, double-tap: activate, two-finger rotate: rotor</td></tr>
+        <tr><td>NVDA (Windows, free, with Firefox or Chrome)</td><td><kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">Alt</kbd>+<kbd class="ncss-kbd">N</kbd> after installing</td><td><kbd class="ncss-kbd">H</kbd> headings, <kbd class="ncss-kbd">D</kbd> landmarks, <kbd class="ncss-kbd">K</kbd> links, <kbd class="ncss-kbd">F</kbd> form fields, <kbd class="ncss-kbd">NVDA</kbd>+<kbd class="ncss-kbd">F7</kbd> elements list</td></tr>
+        <tr><td>TalkBack (Android, with Chrome)</td><td>Settings → Accessibility → TalkBack, or - if set up as the shortcut - hold both volume keys</td><td>Swipe right/left: next/previous item, double-tap: activate</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="ncss-list--dot" role="list">
+    <li>The page title is announced on load and describes the page.</li>
+    <li>The list of headings reads like a sensible table of contents - exactly one <code>h1</code>, no skipped levels.</li>
+    <li>Landmarks are present: header (<code>header</code>), navigation (<code>nav</code>, named if there is more than one), main content (<code>main</code>), footer (<code>footer</code>).</li>
+    <li>Buttons and links have understandable names - icon buttons too. No "button", "link" or "more" without context.</li>
+    <li>Form fields announce label, required state, hint and error.</li>
+    <li>Status messages (live search results, toasts, player state) are announced without focus moving.</li>
+    <li>Lists styled as lists (<code>.ncss-list--dot</code>) are announced as a list with a count - that needs <code>role="list"</code> in the markup.</li>
+  </ul>
+  <p>More on roles, names and live regions: <a href="a11y-screenreader.html">Screen Readers &amp; ARIA</a>.</p>
+</section>
+
+<section class="ncss-stack" id="zoom-check">
+  <h2 class="demo-section-title">Checking zoom and reflow</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>Browser window 1280&nbsp;px wide, zoom to 200%: everything readable and usable, nothing overlaps or is clipped.</li>
+    <li>Zoom to 400% (equivalent to 320 CSS pixels): one column, no sideways scrolling of the page - tables and code may scroll inside their own frame.</li>
+    <li>Alternatively: set the DevTools device mode to 320&nbsp;px width.</li>
+    <li>Text-only zoom in Firefox (View → Zoom → Zoom Text Only) to 200%: text grows, boxes grow with it.</li>
+    <li>Increase text spacing with a CSS snippet or bookmarklet: no text disappears.</li>
+    <li>Sticky headers and cookie banners do not take up half the screen at 200%.</li>
+  </ul>
+  <p>The values and the CSS snippet for checking text spacing: <a href="a11y-zoom.html">Zoom, Reflow &amp; Text Spacing</a>.</p>
+</section>
+
+<section class="ncss-stack" id="forced-colors">
+  <h2 class="demo-section-title">Contrast themes (forced colors)</h2>
+  <p>Windows contrast themes replace every colour on the page with a handful of system colours. Background images, shadows and background colours disappear. Anything that was only recognisable by colour or shadow becomes invisible.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Windows</strong>: Settings → Accessibility → Contrast themes, pick a theme (shortcut: left <kbd class="ncss-kbd">Alt</kbd>+left <kbd class="ncss-kbd">Shift</kbd>+<kbd class="ncss-kbd">Print Screen</kbd>).</li>
+    <li><strong>Chrome/Edge DevTools</strong>: Command menu (<kbd class="ncss-kbd">Ctrl</kbd>/<kbd class="ncss-kbd">⌘</kbd>+<kbd class="ncss-kbd">Shift</kbd>+<kbd class="ncss-kbd">P</kbd>) → "Show Rendering" → set "Emulate CSS media feature forced-colors" to <code>active</code>.</li>
+    <li>Check: buttons and fields have visible outlines, the focus outline is visible, icons are recognisable (SVG with <code>currentColor</code>), states like "selected" or "active" are not marked by colour alone.</li>
+    <li>Background videos (<code>js/video-bg.js</code>) deliberately do not load in this mode; the poster remains.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="bewegung">
+  <h2 class="demo-section-title">Reduced motion and colour scheme</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Emulation</strong>: Chrome/Edge DevTools, command menu → "Show Rendering" → set "Emulate CSS media feature prefers-reduced-motion" to <code>reduce</code>; <code>prefers-color-scheme</code> for light/dark is in the same panel.</li>
+    <li><strong>System</strong>: macOS System Settings → Accessibility → Display → "Reduce motion"; iOS Settings → Accessibility → Motion; Windows Settings → Accessibility → Visual effects → turn off "Animation effects".</li>
+    <li>Check: no parallax or scroll animations, marquees stand still, background videos only show the poster, smooth scrolling is off. Content still has to be fully visible - nothing may depend on an animation to appear.</li>
+    <li>Check your own JavaScript animations: the CSS rules in <code>reset.css</code> do not reach them.</li>
+  </ul>
+  <p>Which settings ncss responds to: <a href="a11y-preferences.html">User Preferences</a>.</p>
+</section>
+
+<section class="ncss-stack" id="inspektor">
+  <h2 class="demo-section-title">Checking code with this website's inspector</h2>
+  <p>Every page of this website has an <strong>Inspect</strong> toggle at the bottom right (<kbd class="ncss-kbd">Alt</kbd>+<kbd class="ncss-kbd">I</kbd>, Mac <kbd class="ncss-kbd">⌥</kbd>+<kbd class="ncss-kbd">I</kbd>). Turn it on, click an element and you see the cleaned-up HTML, an explanation of every ncss class and the file it comes from. Handy for checking how an example sets ARIA attributes, labels and <code>role="list"</code> before you copy it.</p>
+  <p>For your own page, the accessibility tree in the browser DevTools does this job (Chrome/Edge: Elements → "Accessibility", Firefox: "Accessibility" tab). It shows the role, name and state of each element exactly as screen readers receive them. More about the inspector: <a href="inspector.html">Code Inspector</a>.</p>
+</section>
+
+<section class="ncss-stack" id="ablauf">
+  <h2 class="demo-section-title">A sensible routine</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>For every new component or template: a keyboard check and an axe scan - it takes a few minutes.</li>
+    <li>Before a release: Lighthouse across all page types, a zoom and contrast theme check, a screen reader pass through the key journeys (navigation, search, forms).</li>
+    <li>Record the problems you find and, while they remain open, list them in the <a href="a11y-statement-guide.html">accessibility statement</a>.</li>
+    <li>Where possible, test with people who use assistive technology themselves. No tool replaces their experience.</li>
+  </ul>
+</section>

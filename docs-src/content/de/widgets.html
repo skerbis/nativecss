@@ -1,4 +1,5 @@
 <!--DESC: Termine & Downloads - datengetriebene Widgets (JSON/ICS) als native HTML-Alternative zu iframes.-->
+<!--FOOT: <script src="~/dist/js/filter.js"></script>-->
 <section class="ncss-stack">
   <h1>Termine &amp; Downloads</h1>
   <p class="ncss-text-lg ncss-text-muted">Datengetriebene Widgets als native HTML-Alternative zu iframe-Einbettung (z.B. eines externen Kalender- oder Datei-Browser-Widgets) - durchsuchbar, per CSS themebar, kein Cross-Origin-/Höhenproblem. Optisch/token-kompatibel mit Web Awesome, aber kein <code>&lt;wa-*&gt;</code>-Custom-Element - reines Vanilla-JS + native ncss-Klassen, funktioniert auch ohne Web Awesome auf der Seite. Alle drei Dateien sind opt-in.</p>
@@ -48,5 +49,133 @@
   <p class="ncss-text-muted ncss-text-sm">Datei-Download-Liste aus JSON.</p>
   <pre><code class="language-html">&lt;div class="ncss-downloads" data-src="downloads.json"&gt;&lt;/div&gt;</code></pre>
   <p class="ncss-text-muted ncss-text-sm">JSON-Array, jedes Element <code>{title, url, size?, type?, description?}</code> - <code>type</code> (Dateiendung ohne Punkt, z.B. <code>"pdf"</code>) wird ohne Angabe aus der <code>url</code>-Endung abgeleitet, <code>size</code> (Bytes) wird ohne Angabe einfach nicht angezeigt.</p>
-  <p class="ncss-text-muted ncss-text-sm">Live-Demo mit allen vier Ansichten + Downloads + Beispieldaten (JSON und <code>.ics</code>): <a href="../../demo/widgets.html">demo/widgets.html</a>.</p>
+</section>
+
+
+<!--MERGE: widgets-->
+
+<section class="ncss-stack" id="filter" data-subnav-label="Filter-Raster nach Kategorie">
+  <h2 class="demo-section-title">Filter-Raster nach Kategorie <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/filter.css</code> filtert ein Raster nach Kategorie - wie der Filter aus UIkit, aber ohne JavaScript. Die Filterleiste besteht aus echten Radio-Buttons (eine Kategorie) oder Checkboxen (mehrere, ODER-verknüpft), gestaltet als Pillen; <code>:has()</code> blendet nicht passende Einträge aus. Reines CSS kann einen Attributwert nicht mit einem anderen vergleichen, deshalb tragen Leiste und Einträge Kategorie-Nummern 1 bis 12 (<code>value="2"</code> / <code>data-category="2 4"</code>). Mit <code>js/filter.js</code> (Wrapper <code>&lt;ncss-filter&gt;</code>) gehen zusätzlich beliebige Namen, die Trefferzahl wird angesagt („5 Einträge“) und die Karten gleiten per View Transition an ihren neuen Platz - nicht bei reduzierter Bewegung. Ohne <code>:has()</code> bleibt einfach alles sichtbar.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Filter-Raster nach Kategorie">
+    <ncss-filter class="ncss-filter">
+    <fieldset class="ncss-filter-bar">
+      <legend>Angebote nach Bereich</legend>
+      <input type="radio" name="angebot-de" id="angebot-de-0" value="" checked><label for="angebot-de-0">Alle</label>
+      <input type="radio" name="angebot-de" id="angebot-de-1" value="1"><label for="angebot-de-1">Zimmer</label>
+      <input type="radio" name="angebot-de" id="angebot-de-2" value="2"><label for="angebot-de-2">Spa</label>
+      <input type="radio" name="angebot-de" id="angebot-de-3" value="3"><label for="angebot-de-3">Kulinarik</label>
+      <input type="radio" name="angebot-de" id="angebot-de-4" value="4"><label for="angebot-de-4">Natur</label>
+    </fieldset>
+    <div class="ncss-card-grid" style="--ncss-card-grid-min: 12rem;">
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-filter-item" data-category="1 4">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/zimmer-seeblick-thumb.webp" alt="Zimmer mit Holzwänden und großem Bett" width="480" height="720" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Zimmer mit Seeblick</h3>
+          <p class="ncss-text-sm ncss-text-muted">Zimmer · Natur</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-filter-item" data-category="1">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/suite-dach-thumb.webp" alt="Helles Dachzimmer mit Dachschräge" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Suite unterm Dach</h3>
+          <p class="ncss-text-sm ncss-text-muted">Zimmer</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-filter-item" data-category="2">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/spa-pool-thumb.webp" alt="Hallenbad mit großen Sprossenfenstern" width="480" height="640" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Hallenbad</h3>
+          <p class="ncss-text-sm ncss-text-muted">Spa</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-filter-item" data-category="3">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/fruehstueck-thumb.webp" alt="Frühstückstisch mit Croissants und Kaffee" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Frühstück am Wasser</h3>
+          <p class="ncss-text-sm ncss-text-muted">Kulinarik</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-filter-item" data-category="3">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/restaurant-thumb.webp" alt="Restaurant in warmen Holztönen mit gedeckten Tischen" width="480" height="720" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Restaurant Seestube</h3>
+          <p class="ncss-text-sm ncss-text-muted">Kulinarik</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-filter-item" data-category="4">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/ruderboot-abend-thumb.webp" alt="Ruderboot auf dem stillen See im Abendlicht" width="480" height="717" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Ruderboot ausleihen</h3>
+          <p class="ncss-text-sm ncss-text-muted">Natur</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg ncss-filter-item" data-category="2 4">
+        <div class="ncss-card-media"><img src="../../demo/assets/examples/hotel/steg-morgennebel-thumb.webp" alt="Steg im Morgennebel" width="640" height="427" loading="lazy"></div>
+        <div class="ncss-card-body">
+          <h3 class="ncss-card-title">Morgenschwimmen am Steg</h3>
+          <p class="ncss-text-sm ncss-text-muted">Spa · Natur</p>
+        </div>
+      </article>
+    </div>
+    </ncss-filter>
+    <p class="ncss-text-sm ncss-text-muted">Mehrfachauswahl mit Checkboxen - reines CSS, ohne Script (keine Auswahl = alles):</p>
+    <div class="ncss-filter">
+    <fieldset class="ncss-filter-bar">
+      <legend>Termine nach Thema</legend>
+      <input type="checkbox" id="thema-de-1" value="1"><label for="thema-de-1">Markt</label>
+      <input type="checkbox" id="thema-de-2" value="2"><label for="thema-de-2">Feste</label>
+      <input type="checkbox" id="thema-de-3" value="3"><label for="thema-de-3">Kultur</label>
+    </fieldset>
+    <ul class="ncss-stack ncss-stack--tight" role="list">
+      <li class="ncss-filter-item" data-category="1">Wochenmarkt am Rathaus</li>
+      <li class="ncss-filter-item" data-category="2">Seefest mit Feuerwerk</li>
+      <li class="ncss-filter-item" data-category="2 3">Konzert in der Kirche am See</li>
+      <li class="ncss-filter-item" data-category="3">Führung durch die Altstadt</li>
+      <li class="ncss-filter-item" data-category="1 2">Adventsmarkt</li>
+    </ul>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;ncss-filter class="ncss-filter"&gt;
+  &lt;fieldset class="ncss-filter-bar"&gt;
+    &lt;legend&gt;Angebote nach Bereich&lt;/legend&gt;
+    &lt;input type="radio" name="angebot" id="angebot-0" value="" checked&gt;&lt;label for="angebot-0"&gt;Alle&lt;/label&gt;
+    &lt;input type="radio" name="angebot" id="angebot-1" value="1"&gt;&lt;label for="angebot-1"&gt;Zimmer&lt;/label&gt;
+    &lt;input type="radio" name="angebot" id="angebot-2" value="2"&gt;&lt;label for="angebot-2"&gt;Spa&lt;/label&gt;
+    ...
+  &lt;/fieldset&gt;
+  &lt;div class="ncss-card-grid"&gt;
+    &lt;article class="ncss-card ncss-filter-item" data-category="1 4"&gt;
+      &lt;div class="ncss-card-media"&gt;&lt;img src="zimmer-seeblick-thumb.webp" alt="Zimmer mit Holzwänden und großem Bett"&gt;&lt;/div&gt;
+      &lt;div class="ncss-card-body"&gt;&lt;h3 class="ncss-card-title"&gt;Zimmer mit Seeblick&lt;/h3&gt;&lt;p&gt;Zimmer · Natur&lt;/p&gt;&lt;/div&gt;
+    &lt;/article&gt;
+    ...
+  &lt;/div&gt;
+&lt;/ncss-filter&gt;
+&lt;script src="js/filter.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- Mehrfachauswahl ohne Script: Checkboxen, beliebiger Wrapper --&gt;
+&lt;div class="ncss-filter"&gt;
+  &lt;fieldset class="ncss-filter-bar"&gt;
+    &lt;legend&gt;Termine nach Thema&lt;/legend&gt;
+    &lt;input type="checkbox" id="thema-1" value="1"&gt;&lt;label for="thema-1"&gt;Markt&lt;/label&gt;
+    ...
+  &lt;/fieldset&gt;
+  &lt;ul role="list"&gt;&lt;li class="ncss-filter-item" data-category="1"&gt;Wochenmarkt am Rathaus&lt;/li&gt;...&lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse / Attribut</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-filter</code></td><td>Wrapper (oder <code>&lt;ncss-filter class="ncss-filter"&gt;</code> mit Script)</td></tr>
+        <tr><td><code>.ncss-filter-bar</code></td><td><code>&lt;fieldset&gt;</code> mit <code>&lt;legend&gt;</code>; darin je <code>&lt;input&gt;</code> direkt vor seinem <code>&lt;label&gt;</code> - als Pille gestaltet</td></tr>
+        <tr><td><code>value="1"</code> … <code>"12"</code></td><td>Kategorie-Nummer am Radio/Checkbox; <code>value=""</code> oder <code>"all"</code> zeigt alles. Mit Script auch Namen</td></tr>
+        <tr><td><code>.ncss-filter-item</code> + <code>data-category</code></td><td>Eintrag, der gefiltert wird; mehrere Kategorien durch Leerzeichen getrennt</td></tr>
+        <tr><td><code>.ncss-filter-status</code></td><td>Trefferzahl (vom Script erzeugt oder eigenes Element mit <code>data-ncss-filter-status</code>), <code>role="status"</code></td></tr>
+        <tr><td><code>data-label-status</code>, <code>-status-one</code>, <code>-status-none</code></td><td>Texte der Trefferzahl mit <code>{n}</code>; Standard Deutsch/Englisch nach <code>&lt;html lang&gt;</code></td></tr>
+        <tr><td><code>ncss-filter-change</code></td><td>Event (bubbelt) mit <code>detail.values</code> und <code>detail.count</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Barrierefreiheit:</strong> Die Leiste ist eine echte Formulargruppe: Tab erreicht sie, Pfeiltasten wechseln die Kategorie, die Leertaste schaltet Checkboxen; Screenreader hören Gruppenname und Position. Der Fokusring liegt sichtbar auf der Pille, Checkbox-Pillen zeigen zusätzlich ein Häkchen (nicht nur Farbe), im Hochkontrastmodus bekommt die gewählte Pille einen dicken Systemrahmen. Ausgeblendete Einträge verschwinden auch für Screenreader (<code>display: none</code>); die Trefferzahl wird höflich angesagt. View Transitions laufen nur bei erlaubter Bewegung.</p>
 </section>

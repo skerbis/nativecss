@@ -1,0 +1,75 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Gemeinde Seeburg//Veranstaltungskalender//DE
+BEGIN:VEVENT
+UID:wochenmarkt@seeburg.example
+SUMMARY:Wochenmarkt am Seeplatz
+DTSTART:20260103T073000
+DTEND:20260103T123000
+RRULE:FREQ=WEEKLY;BYDAY=SA
+LOCATION:Seeplatz
+DESCRIPTION:Regionale Erzeuger mit Obst\, Gemüse\, Käse\, Fisch aus dem See und Backwaren.
+END:VEVENT
+BEGIN:VEVENT
+UID:gemeinderat@seeburg.example
+SUMMARY:Öffentliche Sitzung des Gemeinderats
+DTSTART:20260115T190000
+DTEND:20260115T213000
+RRULE:FREQ=MONTHLY
+LOCATION:Rathaus\, Großer Sitzungssaal
+DESCRIPTION:Tagesordnung und Sitzungsunterlagen im Ratsinformationssystem.
+END:VEVENT
+BEGIN:VEVENT
+UID:sprechstunde@seeburg.example
+SUMMARY:Bürgersprechstunde der Bürgermeisterin
+DTSTART:20260106T170000
+DTEND:20260106T183000
+RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=TU
+LOCATION:Rathaus\, Zimmer 12
+DESCRIPTION:Ohne Anmeldung – oder Termin unter 08821 4470-10.
+END:VEVENT
+BEGIN:VEVENT
+UID:advent@seeburg.example
+SUMMARY:Seeburger Adventsmarkt mit Seebeleuchtung
+DTSTART:20261128T140000
+DTEND:20261129T200000
+RRULE:FREQ=YEARLY
+LOCATION:Seeplatz und Uferpromenade
+DESCRIPTION:Kunsthandwerk\, Chöre\, Glühwein der Vereine – Erlös für die Jugendarbeit.
+END:VEVENT
+BEGIN:VEVENT
+UID:christbaum@seeburg.example
+SUMMARY:Christbaum-Abholung durch die Feuerwehr
+DTSTART;VALUE=DATE:20270109
+RRULE:FREQ=YEARLY
+LOCATION:Gesamtes Gemeindegebiet
+DESCRIPTION:Bäume ohne Schmuck bis 8 Uhr an den Straßenrand legen.
+END:VEVENT
+BEGIN:VEVENT
+UID:neujahr@seeburg.example
+SUMMARY:Neujahrsempfang der Gemeinde
+DTSTART:20270110T110000
+DTEND:20270110T133000
+RRULE:FREQ=YEARLY
+LOCATION:Bürgerhaus am See
+DESCRIPTION:Mit Ehrung verdienter Ehrenamtlicher.
+END:VEVENT
+BEGIN:VEVENT
+UID:seefest@seeburg.example
+SUMMARY:Seeburger Seefest mit Feuerwerk
+DTSTART:20260718T160000
+DTEND:20260718T235900
+RRULE:FREQ=YEARLY
+LOCATION:Strandbad Seeburg
+DESCRIPTION:Musik\, Fischerstechen und Feuerwerk über dem See.
+END:VEVENT
+BEGIN:VEVENT
+UID:repair@seeburg.example
+SUMMARY:Repair-Café im Bürgerhaus
+DTSTART:20260124T140000
+DTEND:20260124T170000
+RRULE:FREQ=MONTHLY
+LOCATION:Bürgerhaus am See
+DESCRIPTION:Ehrenamtliche reparieren Kleingeräte\, Fahrräder und Kleidung.
+END:VEVENT
+END:VCALENDAR

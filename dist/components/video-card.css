@@ -1,0 +1,145 @@
+/**
+ * ncss - Video-Vorschaukarte (Layer "components"): das Bild einer Karte spielt eine
+ * kurze, stumme Vorschau ab, solange die Karte mit der Maus berührt oder per Tastatur
+ * fokussiert ist (js/video-card.js). Wiederkehrendes Muster für Mediatheken,
+ * Kurs-/Projektlisten.
+ *
+ *   <a class="ncss-video-card" href="film.html">
+ *     <div class="ncss-video-card-media">
+ *       <video muted loop playsinline preload="none" poster="poster.jpg"
+ *              src="vorschau.mp4" aria-hidden="true"></video>
+ *       <span class="ncss-video-card-badge">Vorschau</span>
+ *     </div>
+ *     <div class="ncss-video-card-body"><h3>Titel</h3><p>Text</p></div>
+ *   </a>
+ *
+ * preload="none" + poster: vor der ersten Berührung wird kein Byte Video geladen.
+ * Touch-Geräte (kein verlässliches :hover) und reduzierte Bewegung: es läuft nichts, die
+ * Karte zeigt ihr Poster - das "Vorschau"-Badge wird dann ausgeblendet (es gäbe nichts
+ * zu sehen). Tastaturfokus startet die Vorschau unabhängig vom Zeigegerät.
+ *
+ * Anpassbar: --ncss-video-card-ratio (16 / 9), --ncss-video-card-radius.
+ * Benötigt: tokens.css + colors.css.
+ */
+
+.ncss-video-card {
+  --ncss-video-card-ratio: 16 / 9;
+  --ncss-video-card-radius: var(--ncss-radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+  color: var(--ncss-color-text);
+  text-decoration: none;
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-video-card-radius);
+  box-shadow: var(--ncss-shadow-sm);
+  transition: box-shadow var(--ncss-motion-duration) var(--ncss-motion-easing),
+    translate var(--ncss-motion-duration) var(--ncss-motion-easing);
+
+  &:focus-visible,
+  &:has(:focus-visible) {
+    outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+    outline-offset: 2px;
+  }
+  &:active {
+    translate: 0 1px;
+    box-shadow: var(--ncss-shadow-sm);
+  }
+}
+
+.ncss-video-card-media {
+  position: relative;
+  aspect-ratio: var(--ncss-video-card-ratio);
+  overflow: clip;
+  background-color: var(--ncss-color-bg-subtle);
+
+  & > :is(video, img) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+}
+
+.ncss-video-card-badge {
+  position: absolute;
+  bottom: var(--ncss-space-2xs);
+  inset-inline-start: var(--ncss-space-2xs);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.75em;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1.2;
+  color: #fff;
+  background-color: rgb(0 0 0 / 65%);
+  border-radius: var(--ncss-radius-full);
+  transition: opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
+
+  &::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-block: 0.35em solid transparent;
+    border-inline-start: 0.6em solid currentColor;
+  }
+}
+
+.ncss-video-card-body {
+  display: grid;
+  gap: var(--ncss-space-3xs);
+  padding: var(--ncss-space-xs) var(--ncss-space-sm) var(--ncss-space-sm);
+
+  & > * {
+    margin: 0;
+  }
+  & > :is(h2, h3, h4) {
+    font-size: var(--ncss-font-size-md);
+  }
+  & > p {
+    color: var(--ncss-color-text-muted);
+  }
+}
+
+/* Aktiv (Script setzt .is-previewing während die Vorschau läuft) */
+.ncss-video-card.is-previewing {
+  & .ncss-video-card-badge {
+    opacity: 0;
+  }
+  & .ncss-video-card-media > :is(video, img) {
+    scale: 1.04;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-video-card:hover:not(:active) {
+    box-shadow: var(--ncss-shadow-lg);
+    translate: 0 -2px;
+  }
+}
+
+/* Keine Vorschau möglich -> kein Badge, das eine verspricht */
+@media (prefers-reduced-motion: reduce) {
+  .ncss-video-card-badge {
+    display: none;
+  }
+}
+@media not ((hover: hover) and (pointer: fine)) {
+  .ncss-video-card-badge {
+    display: none;
+  }
+}
+@media (forced-colors: active) {
+  .ncss-video-card {
+    border: 2px solid CanvasText;
+  }
+  .ncss-video-card-badge {
+    color: CanvasText;
+    background: Canvas;
+    border: 1px solid CanvasText;
+  }
+}

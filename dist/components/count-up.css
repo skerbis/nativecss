@@ -1,0 +1,140 @@
+/**
+ * ncss - Count-up-Zahlen (Layer "components"): Kennzahlen zählen von 0 hoch, sobald sie
+ * ins Bild scrollen. Die ECHTE, formatierte Zahl bleibt als normaler DOM-Text stehen
+ * (Screenreader, ohne JS, ohne CSS-Unterstützung, Kopieren) - die zählenden Ziffern sind
+ * ein generiertes ::after (per content-Alternativtext "" für Hilfstechnik stumm), das am
+ * Ende wieder zum echten Text überblendet.
+ *
+ * Markup (--ncss-count-to = Zielwert als ganze Zahl, Pflicht):
+ *   <span class="ncss-count-up" style="--ncss-count-to: 12500">12.500</span>
+ *   <span class="ncss-count-up" style="--ncss-count-to: 98; --ncss-count-suffix: '%'">98 %</span>
+ *
+ * Parameter: --ncss-count-from (0), --ncss-count-prefix/-suffix (Strings um die
+ * Ziffern), --ncss-count-duration (2s). Im reinen CSS-Pfad fehlen während des Zählens
+ * Tausender-Trenner (counter() kennt keine) - mit js/count-up.js zählt stattdessen das
+ * Script, per Intl.NumberFormat sprachrichtig formatiert ("12.500" bzw. "12,500").
+ *
+ * Wann es zählt:
+ *   Chromium (CSS scroll-triggered animations, timeline-trigger): zeitbasiert, einmal,
+ *     sobald die Zahl zu 20% im Bild ist - reines CSS.
+ *   view-timeline ohne Trigger (Safari 26): reines CSS, die Zahl folgt der Scroll-
+ *     Position (scroll-gescrubbt). Mit js/count-up.js (data-ncss-count-up) stattdessen
+ *     ebenfalls zeitbasiert per IntersectionObserver.
+ *   Sonst: mit js/count-up.js zeitbasiert, ohne JS einfach die fertige Zahl.
+ * prefers-reduced-motion / Forced Colors / Druck: die fertige Zahl, keine Animation.
+ *
+ * Benötigt: tokens.css (--ncss-motion-easing-emphasized). Optional js/count-up.js.
+ */
+
+/* Fortschritt 0..1 wird animiert, die ganze Zahl daraus abgeleitet (ein registriertes
+   <integer> rundet calc() automatisch) - so brauchen die Keyframes kein var(). */
+@property --_ncss-count-t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --_ncss-count-n {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --_ncss-count-fade {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.ncss-count-up {
+  position: relative;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  --_ncss-count-n: calc(var(--ncss-count-from, 0) + (var(--ncss-count-to, 0) - var(--ncss-count-from, 0)) * var(--_ncss-count-t));
+  /* Echter Text nur unsichtbar, solange die Zähl-Ziffern laufen. */
+  -webkit-text-fill-color: color-mix(in oklch, currentColor calc(100% - var(--_ncss-count-fade) * 100%), transparent);
+
+  &::after {
+    content: var(--ncss-count-prefix, "") counter(ncss-count) var(--ncss-count-suffix, "") / "";
+    counter-reset: ncss-count var(--_ncss-count-n);
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    opacity: var(--_ncss-count-fade);
+    -webkit-text-fill-color: currentColor;
+    pointer-events: none;
+  }
+}
+
+@keyframes ncss-count-up {
+  from {
+    --_ncss-count-t: 0;
+    --_ncss-count-fade: 1;
+    animation-timing-function: var(--ncss-motion-easing-emphasized);
+  }
+  96% {
+    --_ncss-count-fade: 1;
+    animation-timing-function: linear;
+  }
+  to {
+    --_ncss-count-t: 1;
+    --_ncss-count-fade: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Chromium: Scroll-Trigger startet die zeitbasierte Animation einmal. */
+  @supports (timeline-trigger: --a view()) {
+    .ncss-count-up:not(.ncss-count-up--js) {
+      animation: ncss-count-up var(--ncss-count-duration, 2s) linear backwards;
+      timeline-trigger: --ncss-count-up view() entry 20% exit 100%;
+      animation-trigger: --ncss-count-up play-forwards;
+    }
+  }
+
+  /* view-timeline ohne Trigger: scroll-gescrubbt. */
+  @supports (animation-timeline: view()) and (not (timeline-trigger: --a view())) {
+    .ncss-count-up:not(.ncss-count-up--js) {
+      animation: ncss-count-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+  }
+
+  /* JS-Pfad (js/count-up.js): das Script zählt selbst und schreibt jeden Zwischenwert
+     bereits per Intl.NumberFormat formatiert (MIT Tausender-Trennern, die counter() nicht
+     kann) nach data-ncss-count-text - keine CSS-Animation, ::after zeigt nur den Text.
+     Bis .is-counted bleiben die Zähl-Ziffern sichtbar, danach blendet es zum echten Text
+     über (registrierte <number>-Property, deshalb per transition animierbar). */
+  .ncss-count-up--js {
+    animation: none;
+    --_ncss-count-fade: 1;
+    transition: --_ncss-count-fade var(--ncss-motion-duration) linear;
+
+    &::after {
+      content: var(--ncss-count-prefix, "") attr(data-ncss-count-text) var(--ncss-count-suffix, "") / "";
+    }
+  }
+  .ncss-count-up--js.is-counted {
+    --_ncss-count-fade: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .ncss-count-up,
+  .ncss-count-up.ncss-count-up--js {
+    animation: none;
+    --_ncss-count-fade: 0;
+    -webkit-text-fill-color: currentColor;
+  }
+  .ncss-count-up::after {
+    content: none;
+  }
+}
+
+@media print {
+  .ncss-count-up,
+  .ncss-count-up.ncss-count-up--js {
+    animation: none;
+    --_ncss-count-fade: 0;
+  }
+}

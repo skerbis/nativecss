@@ -1,0 +1,1946 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inhalt &amp; Typografie – NativeCSS-Rundgang</title>
+<meta name="description" content="Schrift, Farben, Flächen, Schatten, Buttons, Badges, Hinweise, Akkordeons, Code, Karten, Listen, Tabellen, Termine und Downloads – live mit echten Inhalten.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="alternate" hreflang="en" href="content-en.html">
+<!-- site-head:start -->
+<script src="../../dist/js/preferences-early.js"></script>
+<link rel="stylesheet" href="../../dist/components/preferences-fonts.css">
+<link rel="stylesheet" href="../assets/site-shell.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/nav.js" defer></script>
+<script src="../../dist/js/preferences.js" defer></script>
+<script src="../../dist/js/subnav.js" defer></script>
+<script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/dialog-light-dismiss.js" defer></script>
+<script src="../../dist/js/dropdown.js" defer></script>
+<script src="../assets/js/showcase-tour.js" defer></script>
+<!-- site-head:end -->
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<link rel="stylesheet" href="../assets/examples/showcase/showcase.css">
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/dismiss.js" defer></script>
+<script src="../assets/js/prism-manual.js" defer></script>
+<script src="../../vendor/prismjs/prism-core.min.js" defer></script>
+<script src="../../vendor/prismjs/prism-markup.min.js" defer></script>
+<script src="../../vendor/prismjs/prism-css.min.js" defer></script>
+<script src="../../vendor/prismjs/prism-clike.min.js" defer></script>
+<script src="../../vendor/prismjs/prism-javascript.min.js" defer></script>
+<script src="../../dist/js/code-block.js" defer></script>
+<script src="../../dist/js/ics.js" defer></script>
+<script src="../../dist/js/events.js" defer></script>
+<script src="../../dist/js/downloads.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+<style>
+  /* Nur Kapitel-eigene demo-Klassen (nie ncss-Namen). Gemeinsames: showcase.css */
+
+  /* Schriftskala: Token-Name links, Muster in der jeweiligen Stufe rechts */
+  .demo-scale {
+    display: grid;
+    gap: var(--ncss-space-xs);
+    margin: 0;
+  }
+  .demo-scale > div {
+    display: grid;
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+    gap: var(--ncss-space-sm);
+    align-items: baseline;
+    padding-block-end: var(--ncss-space-xs);
+    border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+  }
+  .demo-scale dt { font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
+  .demo-scale dt small { display: block; font-size: 0.75rem; }
+  .demo-scale dd {
+    margin: 0;
+    font-size: var(--demo-size);
+    font-weight: 700;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  /* Muster-Artikel für die Grundelemente */
+  .demo-article {
+    max-inline-size: 68ch;
+  }
+  .demo-article > * + * { margin-block-start: var(--ncss-space-sm); }
+
+  /* Schmale Spalte für Silbentrennung/Abschneiden */
+  .demo-narrow {
+    max-inline-size: 16rem;
+  }
+  .demo-justify { text-align: justify; }
+
+  /* Farbfelder */
+  .demo-swatch {
+    display: grid;
+    gap: var(--ncss-space-3xs);
+    font-size: 0.75rem;
+    color: var(--ncss-color-text-muted);
+    min-inline-size: 0;
+  }
+  .demo-swatch::before {
+    content: "";
+    block-size: 3rem;
+    border-radius: var(--ncss-radius-md);
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    background-color: var(--demo-swatch);
+  }
+  .demo-swatch code { font-size: 0.75rem; overflow-wrap: anywhere; background: none; padding: 0; }
+  .demo-scale-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--ncss-space-2xs);
+  }
+  .demo-scale-family {
+    margin-block: var(--ncss-space-sm) var(--ncss-space-3xs);
+    font-size: var(--ncss-font-size-sm);
+    font-weight: 700;
+  }
+
+  /* Farbige Flächen, Verläufe */
+  .demo-panel {
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-panel > * + * { margin-block-start: var(--ncss-space-xs); }
+  .demo-gradient-headline {
+    font-size: var(--ncss-font-size-2xl);
+    font-weight: 800;
+    line-height: 1.05;
+    margin: var(--ncss-space-lg) 0 0;
+  }
+
+  /* Text auf Foto */
+  .demo-photo-panel {
+    position: relative;
+    display: grid;
+    min-block-size: 24rem;
+    border-radius: var(--ncss-radius-lg);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .demo-photo-panel > img {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+  .demo-photo-panel-content {
+    padding: var(--ncss-space-md);
+    display: grid;
+    gap: var(--ncss-space-2xs);
+    align-content: start;
+  }
+  .demo-photo-panel--bottom .demo-photo-panel-content {
+    align-content: end;
+    background-image: linear-gradient(to top, var(--ncss-color-overlay), transparent 70%);
+  }
+  .demo-photo-panel h3 { margin: 0; font-size: var(--ncss-font-size-lg); }
+  .demo-photo-panel p { margin: 0; }
+
+  /* Schatten- und Radius-Muster */
+  .demo-elev {
+    display: grid;
+    place-items: center;
+    min-block-size: 6rem;
+    padding: var(--ncss-space-sm);
+    background-color: var(--ncss-color-surface);
+    font-size: var(--ncss-font-size-sm);
+    text-align: center;
+  }
+  .demo-elev code { font-size: 0.8rem; }
+  .demo-radius {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    background-color: var(--ncss-color-brand-100);
+    color: var(--ncss-color-brand-on-soft);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  /* Blend-Modi: Farbfläche über einem Foto */
+  .demo-blend {
+    margin: 0;
+  }
+  .demo-blend-box {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--ncss-radius-md);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .demo-blend-box img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .demo-blend-layer {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(135deg, var(--ncss-color-brand), var(--ncss-color-brand-2));
+  }
+  .demo-blend figcaption { margin-block-start: var(--ncss-space-3xs); font-size: var(--ncss-font-size-sm); }
+
+  /* iframe für den adaptiven Radius */
+  .demo-iframe {
+    display: block;
+    inline-size: 100%;
+    block-size: 13rem;
+    border: 0;
+  }
+
+  /* Karten-Bilder */
+  .demo-card-img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .demo-price {
+    font-weight: 700;
+    font-size: var(--ncss-font-size-md);
+  }
+  .demo-price small { font-weight: 400; font-size: var(--ncss-font-size-sm); color: var(--ncss-color-text-muted); }
+  .demo-square { aspect-ratio: 1; block-size: auto; }
+  .demo-wide { aspect-ratio: 16 / 10; block-size: auto; }
+  .demo-resizable-cards { inline-size: 42rem; }
+  .demo-events .ncss-card {
+    border: var(--ncss-border-width) solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-resizable-iframe { inline-size: 30rem; }
+  .demo-card-footer-end { margin-inline-start: auto; }
+  .demo-subhead {
+    margin-block: var(--ncss-space-lg) var(--ncss-space-xs);
+    font-size: var(--ncss-font-size-md);
+  }
+  .demo-subhead:first-child { margin-block-start: 0; }
+  .demo-flush-list { margin: 0; padding-inline: var(--ncss-space-sm); }
+  .demo-flush-list li { display: flex; justify-content: space-between; gap: var(--ncss-space-xs); }
+
+  /* Badge-Icon braucht eine Zeile mit Text daneben */
+  .demo-fieldset { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
+  .demo-fieldset legend { padding: 0; margin-block-end: var(--ncss-space-2xs); font-weight: 600; }
+  .demo-maxw { max-inline-size: 32rem; }
+  .demo-maxw-sm { max-inline-size: 20rem; }
+  .demo-badge-row {
+    display: flex;
+    align-items: center;
+    gap: var(--ncss-space-xs);
+  }
+  .demo-badge-row p { margin: 0; }
+  .demo-badge-row strong { display: block; }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+
+<!-- site-topbar:start -->
+<div class="site-sticky" data-ncss-sticky-header>
+<header class="ncss-topbar site-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand site-brand" href="../../docs/de/start.html" aria-label="NativeCSS – Startseite"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
+    <nav class="ncss-nav site-nav" aria-label="Hauptnavigation">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Hauptmenü">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="../../docs/de/index.html">Handbuch</a></li>
+          <li class="ncss-nav-item"><a href="index.html" aria-current="true">Tour <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+          <li class="ncss-nav-item"><a href="../../docs/de/examples.html">Beispiele <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(enthält Neues)</span></span></a></li>
+          <li class="ncss-nav-item"><a href="../../docs/de/start.html#neu">Neu <span class="ncss-badge-dot" aria-hidden="true"></span></a></li>
+          <li class="ncss-nav-item site-panel-only"><a href="../../docs/de/start.html#unterstuetzen"><span class="ncss-icon ncss-icon-heart site-sponsor-heart" aria-hidden="true"></span> Unterstützen</a></li>
+        </ul>
+        <div class="ncss-nav--tree site-panel-tree">
+          <details class="docs-sidebar-group" open>
+            <summary class="docs-sidebar-group-title">Erste Schritte</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/index.html">Überblick</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/architecture.html">Architektur</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/guides.html">Anleitungen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/theming.html">Theme anpassen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/custom-theme.html">Eigenes Theme erstellen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/custom-components.html">Eigene Komponenten erstellen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/inspector.html">Code-Inspektor <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title"><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/accessibility.html">Grundsätze</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-keyboard.html">Tastatur</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-screenreader.html">Screenreader &amp; ARIA</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-preferences.html">Nutzer-Einstellungen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-zoom.html">Zoom, Reflow &amp; Textabstände</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-forms.html">Formulare &amp; Fehlermeldungen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-media.html">Medien</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-testing.html">Testen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-checklist.html">Checkliste WCAG 2.2 AA</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/a11y-statement-guide.html">Barrierefreiheitserklärung</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Grundlagen</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/tokens.html">Design Tokens</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/colors.html">Farben &amp; Flächen</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/typography.html">Typografie</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/icons.html">Icons <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/touch-mobile.html">Touch &amp; mobile Viewports</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Layout</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/layout.html">Layout &amp; Grid</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/layouts.html">Landingpage-Bausteine</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/float.html">Textumfluss</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Inhalt</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/base-components.html">Basis-Komponenten <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/app-ui.html">App-Bausteine <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/cards.html">Karten <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/lists.html">Listen <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/timeline.html">Zeitleiste &amp; Schritte <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/tables.html">Tabellen <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/forms.html">Formulare</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/widgets.html">Termine &amp; Downloads <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Navigation</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/navigation.html">Navigation</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/subnav.html">Abschnitts-Navigation <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Overlays</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/overlays.html">Modal, Off-Canvas &amp; Lightbox <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Medien</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/media.html">Medien <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/maps.html">Karten <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Scroll-Effekte <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(enthält Neues)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/scroll.html">Scroll &amp; Sichtbarkeit <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/animations.html">Animationen &amp; Effekte</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/scroll-effects.html">Scroll-Effekte <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Moderne UI <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(enthält Neues)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/modern-ui.html">Moderne UI <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Video & Audio <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(enthält Neues)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/video-audio.html">Video &amp; Audio <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Integration <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(enthält Neues)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/integration-cms.html">CMS <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/integration-frameworks.html">Frameworks <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/dynamic-content.html">Dynamische Inhalte <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/webawesome-bridge.html">Web Awesome</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/uikit-migration.html">Von UIkit3 nach ncss</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/ncss-container.html">&lt;ncss-container&gt;</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Werkzeuge</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/tools.html">Werkzeuge <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Referenz</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/de/components.html">Komponenten-Referenz</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/all-components.html">Alle Bausteine live</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/de/known-limitations.html">Bekannte Grenzen</a></li>
+            </ul>
+          </details>
+        </div>
+        <details class="site-panel-prefs">
+          <summary><span class="ncss-icon ncss-icon-accessibility" aria-hidden="true"></span>Darstellung</summary>
+          <ncss-preferences inline></ncss-preferences>
+        </details>
+      </dialog>
+    </nav>
+    <div class="ncss-topbar-actions">
+      <div class="site-tools ncss-pill-group" role="group" aria-label="Werkzeuge">
+      <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">Suchen</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
+      <a class="site-sponsor" href="../../docs/de/start.html#unterstuetzen"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span><span class="site-sponsor-label">Unterstützen</span></a>
+      <a class="demo-topbar-lang" href="content-en.html" hreflang="en" lang="en"><span class="demo-topbar-lang-long">English</span><span class="demo-topbar-lang-short" aria-hidden="true">EN</span></a>
+      <ncss-preferences class="site-prefs"></ncss-preferences>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="demo-chapterbar demo-chapterbar--collapsible" aria-label="Kapitel">
+  <div class="demo-chapterbar-inner">
+    <span class="demo-chapterbar-label" aria-hidden="true">Kapitel</span>
+    <ul class="demo-chapterbar-list" role="list">
+      <li><a href="index.html">Übersicht</a></li>
+      <li><a href="layout.html">Layout</a></li>
+      <li><a aria-current="page" href="content.html">Inhalt</a></li>
+      <li><a href="navigation.html">Navigation</a></li>
+      <li><a href="forms.html">Formulare</a></li>
+      <li><a href="overlays.html">Overlays</a></li>
+      <li><a href="media.html">Medien</a></li>
+      <li><a href="scroll.html">Scroll-Effekte</a></li>
+      <li><a href="modern.html">Moderne UI</a></li>
+      <li><a href="app-ui.html">App-UI</a></li>
+      <li><a href="icons.html">Icons</a></li>
+      <li><a href="a11y.html">Barrierefreiheit</a></li>
+    </ul>
+  </div>
+</nav>
+<nav class="ncss-subnav demo-onpage" aria-label="Auf dieser Seite" data-ncss-subnav>
+  <div class="ncss-subnav-inner">
+    <div class="demo-chapter-pick">
+      <button type="button" class="ncss-btn ncss-dropdown-toggle demo-chapter-pick-btn" popovertarget="chapterPick">Kapitel: Inhalt</button>
+      <div class="ncss-dropdown-menu" id="chapterPick" popover>
+        <ul role="list">
+          <li><a class="ncss-dropdown-item" href="index.html">Übersicht</a></li>
+          <li><a class="ncss-dropdown-item" href="layout.html">Layout</a></li>
+          <li><a class="ncss-dropdown-item" aria-current="page" href="content.html">Inhalt</a></li>
+          <li><a class="ncss-dropdown-item" href="navigation.html">Navigation</a></li>
+          <li><a class="ncss-dropdown-item" href="forms.html">Formulare</a></li>
+          <li><a class="ncss-dropdown-item" href="overlays.html">Overlays</a></li>
+          <li><a class="ncss-dropdown-item" href="media.html">Medien</a></li>
+          <li><a class="ncss-dropdown-item" href="scroll.html">Scroll-Effekte</a></li>
+          <li><a class="ncss-dropdown-item" href="modern.html">Moderne UI</a></li>
+          <li><a class="ncss-dropdown-item" href="app-ui.html">App-UI</a></li>
+          <li><a class="ncss-dropdown-item" href="icons.html">Icons</a></li>
+          <li><a class="ncss-dropdown-item" href="a11y.html">Barrierefreiheit</a></li>
+        </ul>
+      </div>
+    </div>
+    <span class="ncss-subnav-label" aria-hidden="true">Auf dieser Seite</span>
+    <ul class="ncss-subnav-list" role="list">
+      <li><a href="#schriftskala">Schriftskala</a></li>
+      <li><a href="#auszeichnung">Einstieg</a></li>
+      <li><a href="#textfarben">Textfarben</a></li>
+      <li><a href="#umbruch">Umbruch</a></li>
+      <li><a href="#magazin">Magazin-Satz</a></li>
+      <li><a href="#text-auf-foto">Text auf Foto</a></li>
+      <li><a href="#farben">Farben</a></li>
+      <li><a href="#flaechen">Flächen</a></li>
+      <li><a href="#elevation">Schatten &amp; Ecken</a></li>
+      <li><a href="#buttons">Buttons</a></li>
+      <li><a href="#badges">Badges</a></li>
+      <li><a href="#hinweise">Hinweise</a></li>
+      <li><a href="#akkordeon">Akkordeon</a></li>
+      <li><a href="#code">Code</a></li>
+      <li><a href="#karten">Karten</a></li>
+      <li><a href="#kartenvarianten">Kartenvarianten</a></li>
+      <li><a href="#kartenraster">Kartenraster</a></li>
+      <li><a href="#listen">Listen</a></li>
+      <li><a href="#tabellen">Tabellen</a></li>
+      <li><a href="#termine">Termine</a></li>
+      <li><a href="#downloads">Downloads</a></li>
+    </ul>
+  </div>
+</nav>
+</div>
+
+<ncss-command-palette shortcut="k" slash src="../../docs/search.de.json" limit="7">
+  <dialog id="siteSearch" class="ncss-command" aria-label="Suchen" closedby="any">
+    <div class="ncss-command-search">
+      <input class="ncss-command-input" type="search" aria-label="Seite, Abschnitt oder Klasse suchen …" placeholder="Seite, Abschnitt oder Klasse suchen …">
+    </div>
+    <div class="ncss-command-list" aria-label="Suchen">
+      <div class="ncss-command-group">
+        <p class="ncss-command-group-label">Schnellzugriff</p>
+        <a class="ncss-command-item" href="../../docs/de/start.html">Start</a>
+        <a class="ncss-command-item" href="../../docs/de/index.html">Handbuch</a>
+        <a class="ncss-command-item" href="../../docs/de/examples.html">Beispiele</a>
+      </div>
+    </div>
+    <p class="ncss-command-empty" hidden>Keine Treffer - anderen Begriff versuchen, z.B. „Karte“ oder „ncss-grid“.</p>
+    <div class="ncss-command-footer"><span><kbd>↑</kbd><kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> öffnen</span><span><kbd>Esc</kbd> schließen</span></div>
+  </dialog>
+</ncss-command-palette>
+<!-- site-topbar:end -->
+
+<main id="main" class="ncss-stretch">
+
+  <header class="demo-chapter ncss-container ncss-stack">
+    <p class="ncss-eyebrow">Kapitel 2 von 11</p>
+    <h1>Inhalt &amp; Typografie</h1>
+    <p class="demo-chapter-lead">Alles, was auf einer Seite gelesen wird: Schrift, Farben, Flächen, Karten, Listen, Tabellen und die kleinen Bausteine dazwischen – mit Inhalten aus Hotel Seeblick, Gemeinde Seeburg und ImmoDesk. Mit dem Inspect-Knopf unten rechts (oder <kbd>Alt</kbd>+<kbd>I</kbd>) einen Block anklicken und sehen, welche Klassen ihn bauen.</p>
+    <!-- tour-toc:start -->
+    <nav class="demo-contents" aria-label="Inhalt dieses Kapitels">
+      <p class="demo-contents-title" aria-hidden="true">Inhalt</p>
+      <ol class="demo-contents-list">
+        <li><a href="#schriftskala">Fließende Schriftskala &amp; Grundelemente</a></li>
+        <li><a href="#auszeichnung">Eyebrow, Lead &amp; ausgewogene Überschrift</a></li>
+        <li><a href="#textfarben">Textfarben &amp; Ausrichtung</a></li>
+        <li><a href="#umbruch">Abschneiden &amp; Silbentrennung</a></li>
+        <li><a href="#magazin">Initiale, Spalten, Pull-Quote &amp; Ziffern</a></li>
+        <li><a href="#text-auf-foto">Text auf Fotos: hell, dunkel, geboxt</a></li>
+        <li><a href="#farben">Farb-Tokens &amp; abgestufte Skalen</a></li>
+        <li><a href="#flaechen">Farbige Flächen, lokales Farbschema &amp; Verläufe</a></li>
+        <li><a href="#elevation">Rahmen, Ecken, Schatten &amp; Blend-Modi</a></li>
+        <li><a href="#buttons">Buttons</a></li>
+        <li><a href="#badges">Badges</a></li>
+        <li><a href="#hinweise">Hinweis-Boxen</a></li>
+        <li><a href="#akkordeon">Aufklapper &amp; Akkordeon</a></li>
+        <li><a href="#code">Code-Block mit Kopieren-Knopf</a></li>
+        <li><a href="#karten">Karten: Aufbau, Bild &amp; Ausrichtung</a></li>
+        <li><a href="#kartenvarianten">Kartenvarianten &amp; Platzhalter</a></li>
+        <li><a href="#kartenraster">Kartenraster, Bildformate &amp; Kartenbausteine</a></li>
+        <li><a href="#listen">Listen &amp; Definitionslisten</a></li>
+        <li><a href="#tabellen">Tabellen auf schmalen Bildschirmen</a></li>
+        <li><a href="#termine">Termine aus einer Kalenderdatei</a></li>
+        <li><a href="#downloads">Download-Liste</a></li>
+      </ol>
+    </nav>
+    <!-- tour-toc:end -->
+  </header>
+
+  <!-- ================================================================ Schriftskala -->
+  <section class="demo-feature" id="schriftskala" aria-labelledby="schriftskala-h" data-subnav-label="Schriftskala">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="schriftskala-h">Fließende Schriftskala &amp; Grundelemente</h2>
+          <p>Sechs Größenstufen, jede ein <code>clamp()</code> zwischen Mindest- und Höchstwert – die Schrift wächst stufenlos mit dem Fenster, ganz ohne Breakpoint. Überschriften, Absätze, Zitate und Inline-Elemente sind schon ohne Klasse fertig gestylt.</p>
+          <p class="demo-gotcha"><strong>Tipp:</strong> Fenster breiter und schmaler ziehen – die Muster rechts verändern ihre Größe fließend.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>--ncss-font-size-sm … 2xl</code></li>
+            <li><code>.ncss-text-sm/base/md/lg/xl</code></li>
+            <li><code>h1–h6, p, blockquote</code></li>
+            <li><code>mark, abbr, code, hr</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/typography.html#groesse-farbe">Im Handbuch<span class="ncss-visually-hidden">: Schriftskala</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 20rem;">
+        <dl class="demo-scale demo-frame">
+          <div style="--demo-size: var(--ncss-font-size-2xl);"><dt><code>2xl</code><small>h1 · 2,3–3,6 rem</small></dt><dd>Seeblick</dd></div>
+          <div style="--demo-size: var(--ncss-font-size-xl);"><dt><code>xl</code><small>h2 · 1,8–2,6 rem</small></dt><dd>Seeblick</dd></div>
+          <div style="--demo-size: var(--ncss-font-size-lg);"><dt><code>lg</code><small>h3 · 1,35–1,8 rem</small></dt><dd>Seeblick</dd></div>
+          <div style="--demo-size: var(--ncss-font-size-md);"><dt><code>md</code><small>h4 · 1,13–1,35 rem</small></dt><dd>Seeblick</dd></div>
+          <div style="--demo-size: var(--ncss-font-size-base);"><dt><code>base</code><small>Fließtext · 1–1,13 rem</small></dt><dd>Seeblick</dd></div>
+          <div style="--demo-size: var(--ncss-font-size-sm);"><dt><code>sm</code><small>Kleintext · 0,8–0,89 rem</small></dt><dd>Seeblick</dd></div>
+        </dl>
+        <article class="demo-article demo-frame">
+          <h3>Ankommen in Seeburg</h3>
+          <h4>Ihr erster Abend im Hotel Seeblick</h4>
+          <p>Check-in ist ab <strong>15 Uhr</strong> möglich, Ihr Zimmer mit <em>Blick auf den See</em> ist dann bezugsfertig. Den Schlüssel erhalten Sie an der Rezeption, das <abbr title="Wireless Local Area Network">WLAN</abbr>-Passwort steht auf der Karte im Zimmer: <code>seeblick-gast</code>. <mark>Abendessen gibt es bis 21:30 Uhr</mark> – ein Tisch auf der Terrasse lässt sich über die <a href="../example-hotel.html">Hotelseite</a> reservieren.</p>
+          <blockquote>
+            <p>Morgens der Nebel über dem Wasser, abends das Licht auf den Bergen – wir kommen jedes Jahr wieder.</p>
+            <footer><cite>Gästebuch, Sommer 2026</cite></footer>
+          </blockquote>
+          <hr>
+          <p class="ncss-text-sm ncss-text-muted">Kleintext mit <code>.ncss-text-sm .ncss-text-muted</code> – für Hinweise unter einem Absatz.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Eyebrow, Lead, Lead-Quote, Balance -->
+  <section class="demo-feature" id="auszeichnung" aria-labelledby="auszeichnung-h" data-subnav-label="Einstieg">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="auszeichnung-h">Eyebrow, Lead &amp; ausgewogene Überschrift</h2>
+          <p>Der typische Artikel-Einstieg: eine kleine Dachzeile über der Überschrift, eine Headline ohne einzelnes Wort in der letzten Zeile und ein größerer, gedämpfter Einleitungsabsatz – optional mit Akzentlinie, ohne ein falsches <code>&lt;blockquote&gt;</code>.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>.ncss-lead-quote</code> ist kein Zitat. Für echte Zitate bleibt <code>&lt;blockquote&gt;</code> richtig.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-eyebrow</code></li>
+            <li><code>.ncss-text-lead</code></li>
+            <li><code>.ncss-lead-quote</code></li>
+            <li><code>.ncss-text-balance</code></li>
+            <li><code>.ncss-text-pretty</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/typography.html#sonstiges">Im Handbuch<span class="ncss-visually-hidden">: Eyebrow, Lead und Balance</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 18rem;">
+        <article class="demo-frame ncss-stack ncss-stack--tight">
+          <p class="demo-live-label">Mit <code>.ncss-text-balance</code></p>
+          <p class="ncss-eyebrow">Gemeinde Seeburg · Bekanntmachung</p>
+          <h3 class="ncss-text-balance">Neuer Bebauungsplan für die Seewiese liegt öffentlich aus</h3>
+          <p class="ncss-text-lead ncss-lead-quote ncss-text-pretty">Bis zum 15. Januar können alle Bürgerinnen und Bürger die Unterlagen im Rathaus einsehen und Stellungnahmen abgeben.</p>
+        </article>
+        <article class="demo-frame ncss-stack ncss-stack--tight">
+          <p class="demo-live-label">Ohne – zum Vergleich</p>
+          <p class="ncss-eyebrow">Gemeinde Seeburg · Bekanntmachung</p>
+          <h3>Neuer Bebauungsplan für die Seewiese liegt öffentlich aus</h3>
+          <p class="ncss-text-lead">Bis zum 15. Januar können alle Bürgerinnen und Bürger die Unterlagen im Rathaus einsehen und Stellungnahmen abgeben.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Textfarben & Ausrichtung -->
+  <section class="demo-feature" id="textfarben" aria-labelledby="textfarben-h" data-subnav-label="Textfarben">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="textfarben-h">Textfarben &amp; Ausrichtung</h2>
+          <p>Status- und Markenfarben für einzelne Wörter, abgestimmt auf ausreichenden Kontrast in Hell und Dunkel (sie nutzen die <code>-on-soft</code>-Stufe, nicht die rohe Farbe). Dazu die vier Ausrichtungen.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Farbe allein trägt keine Bedeutung – das Wort selbst („belegt“, „frei“) muss die Information enthalten.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-text-muted</code></li>
+            <li><code>.ncss-text-brand/-brand-2</code></li>
+            <li><code>.ncss-text-neutral</code></li>
+            <li><code>.ncss-text-success/-warning/-danger</code></li>
+            <li><code>.ncss-text-start/center/end/justify</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/typography.html#groesse-farbe">Im Handbuch<span class="ncss-visually-hidden">: Textfarben</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 16rem;">
+        <div class="demo-frame">
+          <p class="demo-live-label">Zimmerbelegung heute</p>
+          <ul class="ncss-list--divided" role="list">
+            <li>Doppelzimmer Classic – <strong class="ncss-text-success">frei</strong></li>
+            <li>Zimmer mit Seeblick – <strong class="ncss-text-warning">nur noch 1 frei</strong></li>
+            <li>Dachsuite – <strong class="ncss-text-danger">ausgebucht</strong></li>
+            <li>Junior-Suite – <strong class="ncss-text-neutral">in Renovierung</strong></li>
+            <li><span class="ncss-text-brand">Hotel Seeblick</span> · <span class="ncss-text-brand-2">Spa am See</span> · <span class="ncss-text-muted">Stand 8 Uhr</span></li>
+          </ul>
+        </div>
+        <div class="demo-frame ncss-stack ncss-stack--tight">
+          <p class="ncss-text-start"><code>.ncss-text-start</code> – Fließtext beginnt links (in RTL rechts).</p>
+          <p class="ncss-text-center"><code>.ncss-text-center</code> – für kurze Aufrufe.</p>
+          <p class="ncss-text-end"><code>.ncss-text-end</code> – z. B. Beträge.</p>
+          <p class="ncss-text-justify ncss-hyphenate"><code>.ncss-text-justify</code> – Blocksatz, am besten mit Silbentrennung, sonst entstehen große Wortlücken in schmalen Spalten.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Umbruch -->
+  <section class="demo-feature" id="umbruch" aria-labelledby="umbruch-h" data-subnav-label="Umbruch">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="umbruch-h">Abschneiden &amp; Silbentrennung</h2>
+          <p>Eine Zeile mit „…“ abschneiden, mehrere Zeilen auf eine feste Anzahl begrenzen (ohne JavaScript) und lange deutsche Wörter in schmalen Spalten sauber trennen.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Silbentrennung braucht das richtige <code>lang</code>-Attribut – der Browser wählt danach das Wörterbuch.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-truncate</code></li>
+            <li><code>.ncss-clamp-lines</code></li>
+            <li><code>--ncss-clamp-lines</code></li>
+            <li><code>.ncss-hyphenate</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/typography.html#ausrichtung">Im Handbuch<span class="ncss-visually-hidden">: Abschneiden und Silbentrennung</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 15rem;">
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-truncate</code></p>
+          <p class="ncss-truncate">Betreff: Ihre Buchungsbestätigung für den Aufenthalt vom 12. bis 19. Juli im Zimmer mit Seeblick</p>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-clamp-lines</code> mit <code>--ncss-clamp-lines: 2</code></p>
+          <p class="ncss-clamp-lines" style="--ncss-clamp-lines: 2;">Die Wohnung in der Lindenallee liegt im zweiten Obergeschoss eines efeubewachsenen Altbaus, hat zwei Balkone zum Innenhof, Dielenboden in allen Räumen und eine frisch sanierte Küche mit Fenster.</p>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label">Schmale Spalte, Blocksatz</p>
+          <div class="ncss-grid" style="--ncss-grid-min: 6.5rem;">
+            <p class="demo-justify">Ohne: Grundstücksverkehrsgenehmigung und Abfallentsorgungsgebühren.</p>
+            <p class="demo-justify ncss-hyphenate">Mit: Grundstücksverkehrsgenehmigung und Abfallentsorgungsgebühren.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Magazin-Satz -->
+  <section class="demo-feature" id="magazin" aria-labelledby="magazin-h" data-subnav-label="Magazin-Satz">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="magazin-h">Initiale, Spalten, Pull-Quote &amp; Ziffern</h2>
+          <p>Magazin-Typografie mit reinem CSS: eine Initiale über drei bis fünf Zeilen (<code>initial-letter</code>), Fließtext, der sich selbst in so viele Spalten teilt, wie Platz ist, ein großes Zwischenzitat über alle Spalten, Laufweiten und Ziffernformen.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Firefox kennt <code>initial-letter</code> noch nicht – dort bleibt der erste Buchstabe normal groß, nichts geht kaputt.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-drop-cap</code></li>
+            <li><code>--sm/--lg/--light/--brand</code></li>
+            <li><code>.ncss-columns</code></li>
+            <li><code>--ncss-columns-width</code></li>
+            <li><code>.ncss-pull-quote</code></li>
+            <li><code>.ncss-tracking-tight … widest</code></li>
+            <li><code>.ncss-nums-tabular/-oldstyle</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/typography.html#drop-cap">Im Handbuch<span class="ncss-visually-hidden">: Initiale und Spalten</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live demo-frame">
+        <div class="ncss-columns" style="--ncss-columns-width: 18rem;">
+          <p class="ncss-drop-cap ncss-drop-cap--brand">Wenn um sechs Uhr früh der erste Kahn vom Steg ablegt, liegt der Nebel noch dicht über dem Wasser. Seit drei Generationen fährt die Familie Brandl hinaus, um die Netze einzuholen – Renken, Saiblinge, im Herbst auch Hechte. Was nicht ins Hotelrestaurant geht, landet am Samstag auf dem Wochenmarkt am Seeplatz.</p>
+          <p>Gegen acht kommen die ersten Gäste zum Frühstück auf die Terrasse. Das Brot stammt aus der Bäckerei am Rathaus, der Honig von den Bienenstöcken hinter der Liegewiese. Wer früh genug wach ist, sieht vom Zimmer aus, wie die Sonne über den Kamm steigt und den See Stück für Stück aufhellt.</p>
+          <p class="ncss-pull-quote">„Der See ist jeden Morgen ein anderer – das ist der Grund, warum wir nie umgezogen sind.“</p>
+          <p>Am Nachmittag wird es ruhiger. Die Ruderboote liegen am Steg, im Spa sind die Liegen am großen Fenster belegt, und in der Küche beginnt die Vorbereitung für den Abend. Der Fisch vom Morgen wird geräuchert, die Kräuter kommen aus dem eigenen Garten.</p>
+          <p>Abends, wenn die Lichter am anderen Ufer angehen, sitzen Gäste und Einheimische nebeneinander am Wasser. Viele kennen sich seit Jahren – manche haben sich hier kennengelernt.</p>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 15rem;">
+        <div class="demo-frame">
+          <p class="demo-live-label">Initiale: Größen &amp; Schnitt</p>
+          <p class="ncss-drop-cap ncss-drop-cap--sm">Klein (<code>--sm</code>): zwei bis drei Zeilen hoch, ruhig genug für eine Seitenleiste oder einen Newsletter-Teaser mit wenig Text.</p>
+          <p class="ncss-drop-cap ncss-drop-cap--lg ncss-drop-cap--light">Groß und leicht (<code>--lg --light</code>): vier bis fünf Zeilen, normaler Schnitt statt fett – elegant für Reportagen und lange Einstiege.</p>
+        </div>
+        <div class="demo-frame ncss-stack ncss-stack--tight">
+          <p class="demo-live-label">Laufweite</p>
+          <p class="ncss-text-lg ncss-tracking-tight"><strong>Seeblick</strong> <code>tight</code></p>
+          <p class="ncss-tracking-normal">SEEBLICK <code>normal</code></p>
+          <p class="ncss-tracking-wide">SEEBLICK <code>wide</code></p>
+          <p class="ncss-tracking-wider">SEEBLICK <code>wider</code></p>
+          <p class="ncss-tracking-widest">SEEBLICK <code>widest</code></p>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label">Ziffern</p>
+          <table class="ncss-table--compact">
+            <caption class="ncss-visually-hidden">Zimmerpreise mit unterschiedlichen Ziffernformen</caption>
+            <thead><tr><th scope="col">Standard</th><th scope="col"><code>tabular</code></th></tr></thead>
+            <tbody>
+              <tr><td>111,10 €</td><td class="ncss-nums-tabular">111,10 €</td></tr>
+              <tr><td>189,00 €</td><td class="ncss-nums-tabular">189,00 €</td></tr>
+              <tr><td>248,80 €</td><td class="ncss-nums-tabular">248,80 €</td></tr>
+            </tbody>
+          </table>
+          <p class="ncss-text-sm ncss-text-muted">Mediävalziffern im Fließtext: <span class="ncss-nums-oldstyle">seit 1987, 42 Zimmer</span> – wirken nur, wenn die Schrift sie mitbringt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Text auf Foto -->
+  <section class="demo-feature" id="text-auf-foto" aria-labelledby="text-auf-foto-h" data-subnav-label="Text auf Foto">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="text-auf-foto-h">Text auf Fotos: hell, dunkel, geboxt</h2>
+          <p>Auf einem Foto hilft das Theme nicht – ein Bild bleibt hell oder dunkel, egal ob die Seite gerade im Dunkelmodus ist. Diese Klassen setzen die Schrift fest auf Weiß oder Schwarz, in vier Deckkraft-Stufen. <code>.ncss-text-boxed</code> legt eine Textmarker-Fläche hinter jede einzelne Zeile.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>.ncss-text-boxed</code> braucht <code>display: inline</code> – nicht direkt als Kind eines Stacks oder Grids einsetzen, sondern in ein eigenes Element packen.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-text-light</code></li>
+            <li><code>.ncss-text-light-100/-300/-700/-900</code></li>
+            <li><code>.ncss-text-dark</code></li>
+            <li><code>.ncss-text-dark-100/-300/-700/-900</code></li>
+            <li><code>.ncss-text-boxed</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/colors.html#erzwungener-text">Im Handbuch<span class="ncss-visually-hidden">: Text auf Fotos</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 18rem;">
+        <div class="demo-photo-panel demo-photo-panel--bottom">
+          <img src="../assets/examples/hotel/haus-nacht.webp" alt="Das beleuchtete Hotel am See bei Nacht" width="1600" height="1000" loading="lazy">
+          <div class="demo-photo-panel-content ncss-text-light">
+            <p class="ncss-text-sm ncss-tracking-wider ncss-text-light-700">ABENDPROGRAMM</p>
+            <h3>Lichter über dem See</h3>
+            <p class="ncss-text-light-700">Jeden Freitag Laternenfahrt mit dem Ruderboot, Start 20 Uhr am Steg.</p>
+          </div>
+        </div>
+        <div class="demo-photo-panel">
+          <img src="../assets/examples/hotel/steg-morgennebel.webp" alt="Ein Steg führt im Morgennebel auf den See, die Sonne geht auf" width="1600" height="1066" loading="lazy">
+          <div class="demo-photo-panel-content ncss-text-dark">
+            <p class="ncss-text-sm ncss-tracking-wider ncss-text-dark-700">FRÜHAUFSTEHER</p>
+            <h3>Morgens am Steg</h3>
+            <p class="ncss-text-dark-700">Sonnenaufgang 5:24 Uhr, Kaffee ab 5 Uhr.</p>
+          </div>
+        </div>
+        <div class="demo-photo-panel">
+          <img src="../assets/examples/gemeinde/adventsmarkt.webp" alt="Beleuchtetes Karussell auf dem Marktplatz am Abend" width="1600" height="1067" loading="lazy">
+          <div class="demo-photo-panel-content">
+            <div><h3 class="ncss-text-boxed">Adventsmarkt<br>am Seeplatz</h3></div>
+            <div><p class="ncss-text-boxed">28. und 29. November, ab 14 Uhr – mit Seebeleuchtung und Chören der Vereine.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Farben -->
+  <section class="demo-feature" id="farben" aria-labelledby="farben-h" data-subnav-label="Farben">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="farben-h">Farb-Tokens &amp; abgestufte Skalen</h2>
+          <p>Jeder Token trägt per <code>light-dark()</code> seinen hellen und dunklen Wert in sich – kein zweites Stylesheet. Aus genau einer Basisfarbe pro Familie rechnet <code>color-mix()</code> die Stufen 100 bis 900 und eine passende Textfarbe <code>-on-soft</code> aus.</p>
+          <p class="demo-gotcha"><strong>Tipp:</strong> Oben rechts das Design umschalten – alle Felder wechseln mit, 100 und 300 bleiben auch im Dunkeln dezent.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Tokens">
+            <li><code>--ncss-color-brand/-brand-2</code></li>
+            <li><code>--ncss-color-neutral</code></li>
+            <li><code>--ncss-color-success</code></li>
+            <li><code>--ncss-color-warning/-danger</code></li>
+            <li><code>--ncss-color-*-100 … -900</code></li>
+            <li><code>--ncss-color-*-on-soft</code></li>
+            <li><code>--ncss-color-bg/-surface</code></li>
+            <li><code>--ncss-color-text/-border</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/colors.html#skalen">Im Handbuch<span class="ncss-visually-hidden">: Farb-Tokens und Skalen</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-subhead">Semantische Tokens</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 6.5rem;">
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand);"><code>brand</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-2);"><code>brand-2</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-bg);"><code>bg</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-bg-subtle);"><code>bg-subtle</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-surface);"><code>surface</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-text);"><code>text</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-text-muted);"><code>text-muted</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-border);"><code>border</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-focus-ring);"><code>focus-ring</code></div>
+          <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-overlay);"><code>overlay</code></div>
+        </div>
+        <h3 class="demo-subhead">Skalen 100 – 900</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 17rem;">
+          <div>
+            <p class="demo-scale-family">brand</p>
+            <div class="demo-scale-row">
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-100);"><code>100</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-300);"><code>300</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-500);"><code>500</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-700);"><code>700</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-900);"><code>900</code></div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-scale-family">brand-2</p>
+            <div class="demo-scale-row">
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-2-100);"><code>100</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-2-300);"><code>300</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-2-500);"><code>500</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-2-700);"><code>700</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-brand-2-900);"><code>900</code></div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-scale-family">neutral</p>
+            <div class="demo-scale-row">
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-neutral-100);"><code>100</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-neutral-300);"><code>300</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-neutral-500);"><code>500</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-neutral-700);"><code>700</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-neutral-900);"><code>900</code></div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-scale-family">success</p>
+            <div class="demo-scale-row">
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-success-100);"><code>100</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-success-300);"><code>300</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-success);"><code>500</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-success-700);"><code>700</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-success-900);"><code>900</code></div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-scale-family">warning</p>
+            <div class="demo-scale-row">
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-warning-100);"><code>100</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-warning-300);"><code>300</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-warning);"><code>500</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-warning-700);"><code>700</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-warning-900);"><code>900</code></div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-scale-family">danger</p>
+            <div class="demo-scale-row">
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-danger-100);"><code>100</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-danger-300);"><code>300</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-danger);"><code>500</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-danger-700);"><code>700</code></div>
+              <div class="demo-swatch" style="--demo-swatch: var(--ncss-color-danger-900);"><code>900</code></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Flächen, Scheme, Verläufe -->
+  <section class="demo-feature" id="flaechen" aria-labelledby="flaechen-h" data-subnav-label="Flächen">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="flaechen-h">Farbige Flächen, lokales Farbschema &amp; Verläufe</h2>
+          <p>Eine Klasse setzt Hintergrund und garantiert lesbare Schrift zusammen – kein Kontrast von Hand. <code>.ncss-scheme-dark</code>/<code>-light</code> schalten einen ganzen Teilbaum ins andere Farbschema, inklusive aller Karten und Badges darin. Zwei kuratierte Verläufe, Winkel per Custom Property.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Verlaufstext nur für große Überschriften – im Fließtext schwankt der Kontrast von Buchstabe zu Buchstabe.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-surface--brand/-brand-2</code></li>
+            <li><code>.ncss-surface--neutral</code></li>
+            <li><code>.ncss-text-inherit</code></li>
+            <li><code>.ncss-scheme-dark/-light</code></li>
+            <li><code>.ncss-gradient-brand/-subtle</code></li>
+            <li><code>--ncss-gradient-angle</code></li>
+            <li><code>.ncss-text-gradient-brand</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/colors.html#farbige-flaechen">Im Handbuch<span class="ncss-visually-hidden">: Farbige Flächen</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-subhead">Flächen mit Kontrastgarantie</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 15rem;">
+          <div class="ncss-surface--brand demo-panel">
+            <p class="ncss-text-sm ncss-tracking-wider">Hotel Seeblick</p>
+            <p class="ncss-text-lg"><strong>Frühbucher-Rabatt: 15 % bis 31. März</strong></p>
+            <a class="ncss-text-inherit" href="../example-hotel.html">Angebot ansehen</a>
+          </div>
+          <div class="ncss-surface--brand-2 demo-panel">
+            <p class="ncss-text-sm ncss-tracking-wider">Gemeinde Seeburg</p>
+            <p class="ncss-text-lg"><strong>Bürgerbüro am Samstag geöffnet</strong></p>
+            <p class="ncss-text-sm">9 bis 12 Uhr, Rathaus, Erdgeschoss</p>
+          </div>
+          <div class="ncss-surface--neutral demo-panel">
+            <p class="ncss-text-sm ncss-tracking-wider">ImmoDesk</p>
+            <p class="ncss-text-lg"><strong>3 neue Mieteranfragen</strong></p>
+            <p class="ncss-text-sm">Lindenallee 14 · Mühlbach 3</p>
+          </div>
+        </div>
+        <h3 class="demo-subhead">Lokales Farbschema</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 17rem;">
+          <div class="ncss-scheme-dark demo-frame ncss-stack ncss-stack--tight">
+            <p class="demo-live-label"><code>.ncss-scheme-dark</code> – immer dunkel</p>
+            <article class="ncss-card ncss-border ncss-radius-lg">
+              <div class="ncss-card-body">
+                <h4>Spa &amp; Sauna</h4>
+                <p class="ncss-text-sm ncss-text-muted">Täglich 7 – 21 Uhr <span class="ncss-badge ncss-badge--success">geöffnet</span></p>
+              </div>
+            </article>
+          </div>
+          <div class="ncss-scheme-light demo-frame ncss-stack ncss-stack--tight">
+            <p class="demo-live-label"><code>.ncss-scheme-light</code> – immer hell</p>
+            <article class="ncss-card ncss-border ncss-radius-lg">
+              <div class="ncss-card-body">
+                <h4>Frühstück</h4>
+                <p class="ncss-text-sm ncss-text-muted">7 – 10:30 Uhr <span class="ncss-badge ncss-badge--warning">Terrasse</span></p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <h3 class="demo-subhead">Verläufe</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 14rem;">
+          <div class="ncss-gradient-brand demo-panel"><p><strong>Sommer am See</strong></p><p class="ncss-text-sm"><code class="ncss-text-inherit">.ncss-gradient-brand</code></p></div>
+          <div class="ncss-gradient-brand demo-panel" style="--ncss-gradient-angle: 90deg;"><p><strong>Waagerecht</strong></p><p class="ncss-text-sm"><code class="ncss-text-inherit">--ncss-gradient-angle: 90deg</code></p></div>
+          <div class="ncss-gradient-subtle ncss-border demo-panel"><p><strong>Dezent abgesetzt</strong></p><p class="ncss-text-sm"><code>.ncss-gradient-subtle</code></p></div>
+        </div>
+        <p class="ncss-text-gradient-brand demo-gradient-headline">Willkommen am Seeburger See</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Elevation -->
+  <section class="demo-feature" id="elevation" aria-labelledby="elevation-h" data-subnav-label="Schatten &amp; Ecken">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="elevation-h">Rahmen, Ecken, Schatten &amp; Blend-Modi</h2>
+          <p>Rahmen, Rundung und Schatten sind eigene Utilities statt fest in Komponenten eingebaut – sie wirken auf jedem Element, auf Karten genauso wie auf Fotos. Der adaptive Radius rundet nur, solange Platz zum Bildschirmrand bleibt.</p>
+          <p class="demo-gotcha"><strong>Tipp:</strong> Den gestrichelten Rahmen unten am rechten Rand schmaler ziehen – sobald die Karte die Kante berührt, werden ihre Ecken eckig.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-border/-none</code></li>
+            <li><code>.ncss-radius-sm/-md/-lg</code></li>
+            <li><code>.ncss-radius-full/-none</code></li>
+            <li><code>.ncss-radius-adaptive-sm/-md/-lg</code></li>
+            <li><code>.ncss-shadow-sm/-md/-lg/-none</code></li>
+            <li><code>.ncss-shadow-hover-sm/-md/-lg</code></li>
+            <li><code>.ncss-blend-*</code> (15)</li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/components.html#elevation">Im Handbuch<span class="ncss-visually-hidden">: Rahmen, Ecken, Schatten</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-subhead">Schatten</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 9rem;">
+          <div class="demo-elev ncss-radius-md ncss-border"><code>.ncss-border</code></div>
+          <div class="demo-elev ncss-radius-md ncss-shadow-sm"><code>.ncss-shadow-sm</code></div>
+          <div class="demo-elev ncss-radius-md ncss-shadow-md"><code>.ncss-shadow-md</code></div>
+          <div class="demo-elev ncss-radius-md ncss-shadow-lg"><code>.ncss-shadow-lg</code></div>
+          <div class="demo-elev ncss-radius-md ncss-border ncss-shadow-none ncss-shadow-hover-lg"><span><code>.ncss-shadow-hover-lg</code><br><span class="ncss-text-muted">Maus darüber</span></span></div>
+        </div>
+        <h3 class="demo-subhead">Ecken</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 6rem;">
+          <div class="demo-radius ncss-radius-none"><code>none</code></div>
+          <div class="demo-radius ncss-radius-sm"><code>sm</code></div>
+          <div class="demo-radius ncss-radius-md"><code>md</code></div>
+          <div class="demo-radius ncss-radius-lg"><code>lg</code></div>
+          <div class="demo-radius ncss-radius-full"><code>full</code></div>
+          <img class="demo-card-img demo-square ncss-radius-full ncss-shadow-md" src="../assets/examples/hotel/fruehstueck-thumb.webp" alt="Frühstückstisch mit Croissants und Kaffee" width="640" height="427" loading="lazy">
+        </div>
+        <h3 class="demo-subhead">Adaptiver Radius</h3>
+        <div class="demo-resizable demo-resizable-iframe">
+          <iframe class="demo-iframe" src="../embed-adaptive-radius.html" title="Karte mit adaptivem Radius in eigenem Viewport" loading="lazy"></iframe>
+        </div>
+        <h3 class="demo-subhead">Blend-Modi</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 9rem;">
+          <figure class="demo-blend">
+            <div class="demo-blend-box"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="" width="640" height="427" loading="lazy"><div class="demo-blend-layer ncss-blend-multiply"></div></div>
+            <figcaption><code>multiply</code></figcaption>
+          </figure>
+          <figure class="demo-blend">
+            <div class="demo-blend-box"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="" width="640" height="427" loading="lazy"><div class="demo-blend-layer ncss-blend-screen"></div></div>
+            <figcaption><code>screen</code></figcaption>
+          </figure>
+          <figure class="demo-blend">
+            <div class="demo-blend-box"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="" width="640" height="427" loading="lazy"><div class="demo-blend-layer ncss-blend-overlay"></div></div>
+            <figcaption><code>overlay</code></figcaption>
+          </figure>
+          <figure class="demo-blend">
+            <div class="demo-blend-box"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="" width="640" height="427" loading="lazy"><div class="demo-blend-layer ncss-blend-soft-light"></div></div>
+            <figcaption><code>soft-light</code></figcaption>
+          </figure>
+          <figure class="demo-blend">
+            <div class="demo-blend-box"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="" width="640" height="427" loading="lazy"><div class="demo-blend-layer ncss-blend-color"></div></div>
+            <figcaption><code>color</code></figcaption>
+          </figure>
+          <figure class="demo-blend">
+            <div class="demo-blend-box"><img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="" width="640" height="427" loading="lazy"><div class="demo-blend-layer ncss-blend-difference"></div></div>
+            <figcaption><code>difference</code></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Buttons -->
+  <section class="demo-feature" id="buttons" aria-labelledby="buttons-h" data-subnav-label="Buttons">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="buttons-h">Buttons</h2>
+          <p>Drei Farbvarianten, drei Größen und ein quadratischer Icon-Button – auf <code>&lt;button&gt;</code> genauso wie auf einem Link. Jede Variante gibt beim Antippen echtes <code>:active</code>-Feedback, nicht nur beim Überfahren mit der Maus.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Ein Icon-Button ohne Text braucht ein <code>aria-label</code> – sonst hat er keinen Namen.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-btn</code></li>
+            <li><code>--primary/--secondary/--danger</code></li>
+            <li><code>--sm/--lg</code></li>
+            <li><code>--icon</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/forms.html#buttons">Im Handbuch<span class="ncss-visually-hidden">: Buttons</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live demo-frame ncss-stack">
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--primary">Zimmer buchen</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary">Verfügbarkeit prüfen</button>
+          <button type="button" class="ncss-btn ncss-btn--danger">Buchung stornieren</button>
+          <button type="button" class="ncss-btn ncss-btn--primary" disabled>Ausgebucht</button>
+        </div>
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--lg">Jetzt anfragen</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary">Normal</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm">Klein</button>
+          <a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="../example-gemeinde.html">Link als Button</a>
+        </div>
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Zur Merkliste"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span></button>
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Teilen"><span class="ncss-icon ncss-icon-share" aria-hidden="true"></span></button>
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--icon" aria-label="Anrufen"><span class="ncss-icon ncss-icon-phone" aria-hidden="true"></span></button>
+          <button type="button" class="ncss-btn ncss-btn--danger ncss-btn--icon ncss-btn--sm" aria-label="Löschen"><span class="ncss-icon ncss-icon-trash" aria-hidden="true"></span></button>
+          <button type="button" class="ncss-btn ncss-btn--secondary"><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span> Prospekt (PDF)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Badges -->
+  <section class="demo-feature" id="badges" aria-labelledby="badges-h" data-subnav-label="Badges">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="badges-h">Badges</h2>
+          <p>Kleine Pillen für Status und Kategorien, gebaut aus der 100er-Fläche und der passenden <code>-on-soft</code>-Schrift – kontrastreich in beiden Modi. Dazu ein Punkt für „neu“ und ein Icon-Badge für Kategorie-Symbole.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Der Punkt ist nur Deko – „neu“ gehört als versteckter Text dazu.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-badge</code></li>
+            <li><code>--brand-2/--neutral</code></li>
+            <li><code>--success/--warning/--danger</code></li>
+            <li><code>.ncss-badge-dot</code></li>
+            <li><code>.ncss-badge-icon</code></li>
+            <li><code>.ncss-badge-icon--lg</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/components.html#karten">Im Handbuch<span class="ncss-visually-hidden">: Badges</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 17rem;">
+        <div class="demo-frame ncss-stack ncss-stack--tight">
+          <div class="ncss-cluster">
+            <span class="ncss-badge">Seeblick</span>
+            <span class="ncss-badge ncss-badge--brand-2">Spa inklusive</span>
+            <span class="ncss-badge ncss-badge--neutral">Nichtraucher</span>
+          </div>
+          <div class="ncss-cluster">
+            <span class="ncss-badge ncss-badge--success">Vermietet</span>
+            <span class="ncss-badge ncss-badge--warning">Besichtigung</span>
+            <span class="ncss-badge ncss-badge--danger">Mahnung</span>
+          </div>
+          <p>Bürgerservice online <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></p>
+          <p>Abfallkalender 2027 <span class="ncss-badge-dot" style="--ncss-badge-dot-color: var(--ncss-color-warning);"><span class="ncss-visually-hidden">(aktualisiert)</span></span></p>
+        </div>
+        <div class="demo-frame ncss-stack ncss-stack--tight">
+          <div class="demo-badge-row">
+            <span class="ncss-badge-icon"><span class="ncss-icon ncss-icon-calendar" aria-hidden="true"></span></span>
+            <p><strong>Termine</strong><span class="ncss-text-sm ncss-text-muted">Sitzungen, Märkte, Feste</span></p>
+          </div>
+          <div class="demo-badge-row">
+            <span class="ncss-badge-icon"><span class="ncss-icon ncss-icon-file" aria-hidden="true"></span></span>
+            <p><strong>Formulare</strong><span class="ncss-text-sm ncss-text-muted">Anträge zum Herunterladen</span></p>
+          </div>
+          <div class="demo-badge-row">
+            <span class="ncss-badge-icon ncss-badge-icon--lg"><span class="ncss-icon ncss-icon-map-pin" aria-hidden="true"></span></span>
+            <p><strong>Anfahrt</strong><span class="ncss-text-sm ncss-text-muted">Uferweg 7, 82499 Seeburg</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Alerts -->
+  <section class="demo-feature" id="hinweise" aria-labelledby="hinweise-h" data-subnav-label="Hinweise">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="hinweise-h">Hinweis-Boxen</h2>
+          <p>Meldungen im Inhaltsfluss mit Symbol, Titel und Text – in fünf Farben, als <code>--plain</code> ohne Symbol und auf Wunsch schließbar. Der Schließen-Knopf bleibt ohne JavaScript per <code>hidden</code> unsichtbar statt tot.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Beim Laden vorhandene Hinweise bekommen keine Rolle; nur später eingefügte erhalten <code>role="alert"</code> oder <code>role="status"</code>.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-alert</code></li>
+            <li><code>--success/--warning</code></li>
+            <li><code>--danger/--neutral</code></li>
+            <li><code>--plain</code></li>
+            <li><code>.ncss-alert-title</code></li>
+            <li><code>.ncss-alert-actions</code></li>
+            <li><code>.ncss-alert-close</code></li>
+            <li><code>data-ncss-dismissible</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/base-components.html#alert">Im Handbuch<span class="ncss-visually-hidden">: Hinweis-Boxen</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 20rem;">
+        <div class="ncss-alert">
+          <p class="ncss-alert-title">Hinweis:</p>
+          <p>Die Anmeldung zum Seefest-Flohmarkt ist bis 30. Juni geöffnet.</p>
+        </div>
+        <div class="ncss-alert ncss-alert--success">
+          <p class="ncss-alert-title">Gebucht:</p>
+          <p>Ihr Zimmer mit Seeblick ist vom 12. bis 19. Juli reserviert.</p>
+        </div>
+        <div class="ncss-alert ncss-alert--warning">
+          <p class="ncss-alert-title">Achtung:</p>
+          <p>Die Uferpromenade ist am Samstag wegen des Marktes ab 6 Uhr gesperrt.</p>
+        </div>
+        <div class="ncss-alert ncss-alert--danger">
+          <p class="ncss-alert-title">Fehler:</p>
+          <p>Die Miete für Lindenallee 14, Whg. 3 ist überfällig. <a href="../example-immo/index.html">Zum Mieterkonto</a></p>
+        </div>
+        <div class="ncss-alert ncss-alert--neutral ncss-alert--plain">
+          <p class="ncss-alert-title">Öffnungszeiten über Weihnachten</p>
+          <p>Das Bürgerbüro bleibt vom 24. Dezember bis 1. Januar geschlossen.</p>
+        </div>
+        <div class="ncss-alert ncss-alert--neutral" data-ncss-dismissible>
+          <p class="ncss-alert-title">Neu: Dunkelmodus</p>
+          <p>Oben rechts lässt sich das Farbschema umschalten.</p>
+          <div class="ncss-alert-actions">
+            <a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#flaechen">Mehr erfahren</a>
+          </div>
+          <button type="button" class="ncss-alert-close" data-ncss-dismiss aria-label="Hinweis schließen" hidden></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Disclosure / Akkordeon -->
+  <section class="demo-feature" id="akkordeon" aria-labelledby="akkordeon-h" data-subnav-label="Akkordeon">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="akkordeon-h">Aufklapper &amp; Akkordeon</h2>
+          <p>Natives <code>&lt;details&gt;</code> in der Box-Optik für FAQs – mit weichem Auf- und Zuklappen in Chromium. Gleiches <code>name</code>-Attribut an mehreren Boxen macht daraus ein Akkordeon: Es ist immer nur eine offen, ganz ohne Skript.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Der <code>name</code> muss pro Gruppe eindeutig sein, sonst schließen sich Boxen aus verschiedenen Bereichen gegenseitig.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-disclosure</code></li>
+            <li><code>&lt;details name="…"&gt;</code></li>
+            <li><code>::details-content</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/components.html#navigation">Im Handbuch<span class="ncss-visually-hidden">: Aufklapper</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 20rem;">
+        <div class="ncss-stack ncss-stack--tight">
+          <p class="demo-live-label">Akkordeon – nur eine offen</p>
+          <details class="ncss-disclosure" name="demo-faq-hotel" open>
+            <summary>Ab wann kann ich einchecken?</summary>
+            <p>Ab 15 Uhr. Kommen Sie früher, lagern wir Ihr Gepäck gern ein – Spa und Liegewiese dürfen Sie schon nutzen.</p>
+          </details>
+          <details class="ncss-disclosure" name="demo-faq-hotel">
+            <summary>Sind Hunde erlaubt?</summary>
+            <p>Ja, in den Zimmern Classic gegen 15 € pro Nacht. Im Restaurant und im Spa leider nicht.</p>
+          </details>
+          <details class="ncss-disclosure" name="demo-faq-hotel">
+            <summary>Gibt es Parkplätze?</summary>
+            <p>20 kostenfreie Stellplätze am Haus, zwei davon mit Ladesäule für Elektroautos.</p>
+          </details>
+        </div>
+        <div class="ncss-stack ncss-stack--tight">
+          <p class="demo-live-label">Einzeln – unabhängig voneinander</p>
+          <details class="ncss-disclosure">
+            <summary>Welche Unterlagen brauche ich für die Hundesteuer?</summary>
+            <ul class="ncss-list--dot" role="list">
+              <li>ausgefülltes Anmeldeformular</li>
+              <li>Nachweis der Haftpflichtversicherung</li>
+              <li>Chipnummer des Hundes</li>
+            </ul>
+          </details>
+          <details class="ncss-disclosure">
+            <summary>Wann wird der Sperrmüll abgeholt?</summary>
+            <p>Auf Anmeldung, jeweils am ersten Donnerstag im Monat. Anmeldeschluss ist eine Woche vorher.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Code-Block -->
+  <section class="demo-feature" id="code" aria-labelledby="code-h" data-subnav-label="Code">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="code-h">Code-Block mit Kopieren-Knopf</h2>
+          <p>Ein ganz normales <code>&lt;pre&gt;&lt;code class="language-html"&gt;</code> – <code>code-block.js</code> färbt es mit dem selbst gehosteten Prism.js ein und ergänzt einen Kopieren-Knopf. Die Farben kommen aus denselben Tokens wie Buttons und Badges.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> <code>window.Prism = { manual: true }</code> muss vor <code>prism-core</code> geladen werden (hier als eigene Datei, wegen CSP) – sonst färbt Prism zu früh und der Knopf fehlt.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>components/code-block.css</code></li>
+            <li><code>js/code-block.js</code></li>
+            <li><code>.ncss-code-copy</code></li>
+            <li><code>language-html/-css/-javascript</code></li>
+          </ul>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 20rem;">
+        <pre><code class="language-html">&lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;
+  &lt;div class="ncss-card-body"&gt;
+    &lt;h3&gt;Zimmer mit Seeblick&lt;/h3&gt;
+    &lt;p&gt;Ab 189 € pro Nacht&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+        <pre><code class="language-css">:root {
+  /* eine Basisfarbe – die ganze Skala zieht mit */
+  --ncss-color-brand: #1f6f8b;
+}
+.angebot {
+  background: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Karten -->
+  <section class="demo-feature" id="karten" aria-labelledby="karten-h" data-subnav-label="Karten">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="karten-h">Karten: Aufbau, Bild &amp; Ausrichtung</h2>
+          <p><code>.ncss-card</code> ist nur Struktur – eine Spalte mit Bild, Kopf, Inhalt und Fuß. Rahmen, Ecken und Schatten kommen aus den Utilities oben. Das Bild steht oben oder unten je nach Reihenfolge im Markup; neben dem Text steht es, sobald die Karte selbst mindestens 24 rem breit ist.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Für die horizontale Karte braucht es den Wrapper <code>.ncss-card-container</code> – ein Element kann seine eigene Breite nicht per Container Query abfragen.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-card</code></li>
+            <li><code>.ncss-card-media</code></li>
+            <li><code>.ncss-card-header/-body/-footer</code></li>
+            <li><code>.ncss-card-container</code></li>
+            <li><code>.ncss-card--horizontal</code></li>
+            <li><code>.ncss-card--horizontal-end</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/cards.html#grundstruktur">Im Handbuch<span class="ncss-visually-hidden">: Karten</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-subhead">Bild oben, Bild unten, Kopf &amp; Fuß</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 16rem;">
+          <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md">
+            <div class="ncss-card-media"><img src="../assets/examples/hotel/zimmer-classic-thumb.webp" alt="Doppelzimmer mit Holzwand und hellem Bett" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4>Doppelzimmer Classic</h4>
+              <p class="ncss-text-sm ncss-text-muted">22 m², Blick in den Garten, Dusche, Schreibtisch.</p>
+            </div>
+            <div class="ncss-card-footer">
+              <p class="demo-price">ab 139 € <small>/ Nacht</small></p>
+              <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--sm demo-card-footer-end">Buchen</button>
+            </div>
+          </article>
+          <article class="ncss-card ncss-border ncss-radius-lg ncss-shadow-sm ncss-shadow-hover-md">
+            <div class="ncss-card-body">
+              <h4>Frühstück am See</h4>
+              <p class="ncss-text-sm ncss-text-muted">Bild als letztes Kind im Markup – die Karte rundet automatisch die unteren Ecken.</p>
+            </div>
+            <div class="ncss-card-media"><img src="../assets/examples/hotel/fruehstueck-buffet-thumb.webp" alt="Frühstücksbuffet mit Croissants und Brot" width="640" height="428" loading="lazy"></div>
+          </article>
+          <article class="ncss-card ncss-radius-lg ncss-shadow-lg">
+            <div class="ncss-card-header">Spa am See</div>
+            <div class="ncss-card-body">
+              <p>Hallenbad, finnische Sauna und Ruheraum mit Blick aufs Wasser – für Hausgäste inklusive.</p>
+              <ul class="ncss-list--icon ncss-text-sm" role="list">
+                <li><span class="ncss-icon ncss-icon-clock" aria-hidden="true"></span> täglich 7 – 21 Uhr</li>
+                <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> Bademantel im Zimmer</li>
+              </ul>
+            </div>
+            <div class="ncss-card-footer">
+              <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--sm">Behandlung buchen</button>
+              <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm">Preisliste</button>
+            </div>
+          </article>
+        </div>
+        <h3 class="demo-subhead">Bild neben dem Text</h3>
+        <p class="demo-hint"><span class="ncss-icon ncss-icon-arrow-left" aria-hidden="true"></span> Rahmen am rechten Rand schmaler ziehen</p>
+        <div class="demo-resizable demo-resizable-cards ncss-stack">
+          <div class="ncss-card-container">
+            <article class="ncss-card ncss-card--horizontal ncss-border ncss-radius-lg ncss-shadow-sm">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/lindenallee-thumb.webp" alt="Efeubewachsenes Wohnhaus" width="480" height="720" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <p class="ncss-eyebrow">Lindenallee 14</p>
+                <h4>3-Zimmer-Altbau mit zwei Balkonen</h4>
+                <p class="ncss-text-sm ncss-text-muted">84 m² · 2. OG · Dielenboden · frei ab 1. Februar</p>
+                <p><span class="ncss-badge ncss-badge--warning">Besichtigung Sa., 11 Uhr</span></p>
+              </div>
+            </article>
+          </div>
+          <div class="ncss-card-container">
+            <article class="ncss-card ncss-card--horizontal-end ncss-border ncss-radius-lg ncss-shadow-sm">
+              <div class="ncss-card-media"><img src="../assets/examples/immo/muehlbach-thumb.webp" alt="Eckhaus mit grünen Fensterläden" width="480" height="720" loading="lazy"></div>
+              <div class="ncss-card-body">
+                <p class="ncss-eyebrow">Mühlbach 3</p>
+                <h4>2-Zimmer-Wohnung am Bach</h4>
+                <p class="ncss-text-sm ncss-text-muted">Bild rechts mit <code>--horizontal-end</code> – im Markup steht es trotzdem zuerst.</p>
+                <p><span class="ncss-badge ncss-badge--success">Vermietet</span></p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Kartenvarianten -->
+  <section class="demo-feature" id="kartenvarianten" aria-labelledby="kartenvarianten-h" data-subnav-label="Kartenvarianten">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="kartenvarianten-h">Kartenvarianten &amp; Platzhalter</h2>
+          <p>Ganze Karte klickbar (mit Anheben und Bild-Zoom, wenn Bewegung erlaubt ist), ohne sie in ein <code>&lt;a&gt;</code> zu packen; ohne Innenabstand; kompakt für dichte Listen; unsichtbar als reiner Wrapper; oder als Statuskarte mit Tonfläche und Akzentrand. Fehlt ein Bild noch, hält <code>.ncss-placeholder</code> den Platz frei.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> In der verlinkten Karte bleibt der Titel der einzige Link; Buttons daneben (hier „Merken“) liegen darüber und bleiben eigene Ziele – nie verschachteln.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-card--linked</code></li>
+            <li><code>.ncss-card-link</code></li>
+            <li><code>--interactive/--zoom</code></li>
+            <li><code>.ncss-card-footer--between</code></li>
+            <li><code>.ncss-card--flush</code></li>
+            <li><code>.ncss-card--compact</code></li>
+            <li><code>.ncss-card--transparent</code></li>
+            <li><code>.ncss-card--brand/-brand-2</code></li>
+            <li><code>.ncss-card--neutral/-success</code></li>
+            <li><code>.ncss-card--warning/-danger</code></li>
+            <li><code>.ncss-placeholder/--surface</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/cards.html#varianten">Im Handbuch<span class="ncss-visually-hidden">: Kartenvarianten</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-subhead">Ganze Karte klickbar</h3>
+        <div class="ncss-card-grid" style="--ncss-card-grid-min: 15rem;">
+          <article class="ncss-card ncss-card--linked ncss-card--interactive ncss-card--zoom ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img src="../assets/examples/gemeinde/wochenmarkt-thumb.webp" alt="Marktstand mit Gemüse" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <p class="ncss-eyebrow">Jeden Samstag</p>
+              <h4><a class="ncss-card-link" href="../example-gemeinde.html">Wochenmarkt am Seeplatz</a></h4>
+              <p class="ncss-text-sm ncss-text-muted">7:30 – 12:30 Uhr, regionale Erzeuger und Fisch aus dem See.</p>
+            </div>
+            <div class="ncss-card-footer ncss-card-footer--between">
+              <span class="ncss-text-sm">Seeplatz</span>
+              <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm">Merken</button>
+            </div>
+          </article>
+          <article class="ncss-card ncss-card--linked ncss-card--interactive ncss-card--zoom ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img src="../assets/examples/gemeinde/rathaus-thumb.webp" alt="Historisches Rathaus mit Treppengiebel" width="480" height="720" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <p class="ncss-eyebrow">Bürgerservice</p>
+              <h4><a class="ncss-card-link" href="../example-gemeinde-service.html">Anliegen online erledigen</a></h4>
+              <p class="ncss-text-sm ncss-text-muted">Meldebescheinigung, Hundesteuer, Sperrmüll – ohne Wartezeit.</p>
+            </div>
+            <div class="ncss-card-footer ncss-card-footer--between">
+              <span class="ncss-text-sm">Rathaus</span>
+              <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm">Merken</button>
+            </div>
+          </article>
+          <article class="ncss-card ncss-card--linked ncss-card--interactive ncss-card--zoom ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img src="../assets/examples/hotel/spa-pool-thumb.webp" alt="Hallenbad mit großen Sprossenfenstern" width="480" height="640" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <p class="ncss-eyebrow">Hotel Seeblick</p>
+              <h4><a class="ncss-card-link" href="../example-hotel.html">Wellness-Wochenende</a></h4>
+              <p class="ncss-text-sm ncss-text-muted">Zwei Nächte, Halbpension und eine Massage.</p>
+            </div>
+            <div class="ncss-card-footer ncss-card-footer--between">
+              <span class="ncss-text-sm">ab 398 €</span>
+              <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm">Merken</button>
+            </div>
+          </article>
+        </div>
+
+        <h3 class="demo-subhead">Ohne Innenabstand, kompakt, transparent</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 15rem;">
+          <article class="ncss-card ncss-card--flush ncss-border ncss-radius-lg">
+            <div class="ncss-card-body">
+              <img class="demo-card-img demo-wide" src="../assets/examples/hotel/restaurant-thumb.webp" alt="Restaurant in warmen Holztönen" width="480" height="720" loading="lazy">
+              <ul class="ncss-list--divided demo-flush-list ncss-text-sm" role="list">
+                <li><span>Frühstück</span> <span class="ncss-nums-tabular">7:00 – 10:30</span></li>
+                <li><span>Mittag</span> <span class="ncss-nums-tabular">12:00 – 14:00</span></li>
+                <li><span>Abendessen</span> <span class="ncss-nums-tabular">18:00 – 21:30</span></li>
+              </ul>
+            </div>
+          </article>
+          <div class="ncss-stack ncss-stack--tight">
+            <article class="ncss-card ncss-card--compact ncss-border ncss-radius-md">
+              <div class="ncss-card-body"><h4 class="ncss-text-base">Ticket #2041 · Heizung</h4><p class="ncss-text-sm ncss-text-muted">Kastanienweg 8, Whg. 5 – Techniker Do. 9 Uhr</p></div>
+            </article>
+            <article class="ncss-card ncss-card--compact ncss-border ncss-radius-md">
+              <div class="ncss-card-body"><h4 class="ncss-text-base">Ticket #2042 · Klingel</h4><p class="ncss-text-sm ncss-text-muted">Gartenstraße 2 – Ersatzteil bestellt</p></div>
+            </article>
+            <article class="ncss-card ncss-card--compact ncss-border ncss-radius-md">
+              <div class="ncss-card-body"><h4 class="ncss-text-base">Ticket #2043 · Treppenlicht</h4><p class="ncss-text-sm ncss-text-muted">Rosenhöhe 11 – erledigt</p></div>
+            </article>
+          </div>
+          <article class="ncss-card ncss-card--transparent ncss-card--flush">
+            <div class="ncss-card-body ncss-stack ncss-stack--tight">
+              <p class="ncss-eyebrow">Transparent + flush</p>
+              <h4>Unsichtbarer Wrapper</h4>
+              <p class="ncss-text-sm ncss-text-muted">Kein Hintergrund, kein Abstand – aber Body und Fuß behalten die Kartenstruktur, der Fuß bleibt unten.</p>
+            </div>
+            <div class="ncss-card-footer"><a href="../example-hotel.html">Zum Hotel</a></div>
+          </article>
+        </div>
+
+        <h3 class="demo-subhead">Statuskarten</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 10.5rem;">
+          <article class="ncss-card ncss-card--brand ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Neu im Haus</h4><p class="ncss-text-sm">Ab Mai mit eigenem Bootsverleih.</p></div></article>
+          <article class="ncss-card ncss-card--brand-2 ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Kampagne</h4><p class="ncss-text-sm">„Seeburg radelt“ – jetzt anmelden.</p></div></article>
+          <article class="ncss-card ncss-card--neutral ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Info</h4><p class="ncss-text-sm">Nebenkostenabrechnung folgt im März.</p></div></article>
+          <article class="ncss-card ncss-card--success ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Erledigt</h4><p class="ncss-text-sm">Übergabeprotokoll unterschrieben.</p></div></article>
+          <article class="ncss-card ncss-card--warning ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Offen</h4><p class="ncss-text-sm">Kaution noch nicht eingegangen.</p></div></article>
+          <article class="ncss-card ncss-card--danger ncss-card--compact ncss-radius-lg"><div class="ncss-card-body"><h4 class="ncss-text-base">Dringend</h4><p class="ncss-text-sm">Wasserschaden im Keller melden.</p></div></article>
+        </div>
+
+        <h3 class="demo-subhead">Platzhalter</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 15rem;">
+          <article class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media ncss-placeholder">Foto folgt</div>
+            <div class="ncss-card-body"><h4>Rosenhöhe 11</h4><p class="ncss-text-sm ncss-text-muted">Neubau, Fertigstellung Herbst – Bilder kommen nach der Abnahme.</p></div>
+          </article>
+          <div class="demo-frame ncss-stack ncss-stack--tight">
+            <div class="ncss-placeholder ncss-ratio-video">Grundriss in Arbeit</div>
+            <p class="ncss-text-sm ncss-text-muted"><code>.ncss-placeholder .ncss-ratio-video</code></p>
+          </div>
+          <div class="ncss-surface--neutral demo-panel ncss-stack ncss-stack--tight">
+            <div class="ncss-placeholder ncss-placeholder--surface ncss-ratio-video">Lageplan folgt</div>
+            <p class="ncss-text-sm"><code class="ncss-text-inherit">--surface</code> hebt sich auf Flächen ab</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Kartenraster & Bausteine -->
+  <section class="demo-feature" id="kartenraster" aria-labelledby="kartenraster-h" data-subnav-label="Kartenraster">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="kartenraster-h">Kartenraster, Bildformate &amp; Kartenbausteine</h2>
+          <p><code>.ncss-card-grid</code> legt Karten per Subgrid so nebeneinander, dass Bild, Text und Fuß einer Reihe auf gleicher Höhe stehen – auch bei zweizeiligen Titeln. Dazu Bildformate, Text auf dem Bild, Akzentstreifen, Empfehlung, deaktivierte und auswählbare Karten, Kopf mit Aktionen und ein Ladezustand.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Im Raster braucht jede Karte genau so viele direkte Kinder wie <code>--ncss-card-grid-rows</code> (Standard 3: Bild, Inhalt, Fuß).</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-card-grid</code></li>
+            <li><code>--ncss-card-grid-min/-rows</code></li>
+            <li><code>.ncss-card-media--square/-portrait</code></li>
+            <li><code>.ncss-card-media--wide/-auto</code></li>
+            <li><code>.ncss-card--overlay</code></li>
+            <li><code>.ncss-card--accent/-accent-start</code></li>
+            <li><code>.ncss-card--featured</code></li>
+            <li><code>.ncss-card-badge</code></li>
+            <li><code>.ncss-card--disabled</code></li>
+            <li><code>.ncss-card--selectable</code></li>
+            <li><code>.ncss-card-check</code></li>
+            <li><code>.ncss-card-title/-actions/-meta</code></li>
+            <li><code>.ncss-card-divider/-list</code></li>
+            <li><code>.ncss-card-skeleton</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/cards.html#raster">Im Handbuch<span class="ncss-visually-hidden">: Kartenraster</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <h3 class="demo-subhead">Raster mit ausgerichteten Zeilen</h3>
+        <ul class="ncss-card-grid" style="--ncss-card-grid-min: 14rem;">
+          <li class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img src="../assets/examples/immo/rosenhoehe-thumb.webp" alt="Farbige Neubau-Fassaden" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body"><h4>Rosenhöhe 11</h4><p class="ncss-text-sm ncss-text-muted">Neubau, 12 Einheiten.</p></div>
+            <div class="ncss-card-footer"><span class="ncss-badge ncss-badge--success">voll vermietet</span></div>
+          </li>
+          <li class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img src="../assets/examples/immo/gartenstrasse-thumb.webp" alt="Efeu auf gelber Altbaufassade" width="640" height="428" loading="lazy"></div>
+            <div class="ncss-card-body"><h4>Gartenstraße 2 – Altbau mit Hinterhaus</h4><p class="ncss-text-sm ncss-text-muted">Längerer Titel, mehr Text – die Fußzeilen der Reihe bleiben trotzdem auf einer Linie.</p></div>
+            <div class="ncss-card-footer"><span class="ncss-badge ncss-badge--warning">1 Wohnung frei</span></div>
+          </li>
+          <li class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media"><img src="../assets/examples/immo/kastanienweg-thumb.webp" alt="Balkone eines Mehrfamilienhauses" width="480" height="720" loading="lazy"></div>
+            <div class="ncss-card-body"><h4>Kastanienweg 8</h4><p class="ncss-text-sm ncss-text-muted">8 Einheiten.</p></div>
+            <div class="ncss-card-footer"><span class="ncss-badge ncss-badge--danger">Heizung defekt</span></div>
+          </li>
+        </ul>
+
+        <h3 class="demo-subhead">Bildformate &amp; Text auf dem Bild</h3>
+        <div class="ncss-grid ncss-grid--align-start" style="--ncss-grid-min: 13rem;">
+          <article class="ncss-card ncss-card--overlay ncss-radius-lg">
+            <div class="ncss-card-media ncss-card-media--portrait"><img src="../assets/examples/gemeinde/badesteg-thumb.webp" alt="Holzsteg am See im Sommer" width="480" height="720" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4>Badesteg Nordufer</h4>
+              <p class="ncss-text-sm">Hochformat mit <code class="ncss-text-inherit">--overlay</code></p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-card--overlay ncss-card--linked ncss-card--zoom ncss-radius-lg">
+            <div class="ncss-card-media ncss-card-media--square"><img src="../assets/examples/gemeinde/seeburg-ufer-thumb.webp" alt="Dorf am spiegelnden See" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4><a class="ncss-card-link" href="../example-gemeinde.html">Seeburg entdecken</a></h4>
+              <p class="ncss-text-sm">Quadratisch, ganze Karte verlinkt</p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media ncss-card-media--wide"><img src="../assets/examples/gemeinde/bootshafen-thumb.webp" alt="Boote im kleinen Hafen" width="640" height="429" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4>Bootshafen</h4>
+              <p class="ncss-text-sm ncss-text-muted">Breitformat 21:9 mit <code>--wide</code></p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-border ncss-radius-lg">
+            <div class="ncss-card-media" style="--ncss-card-media-ratio: 4 / 3;"><img src="../assets/examples/gemeinde/wanderweg-thumb.webp" alt="Wanderweg durch eine Bergwiese" width="640" height="427" loading="lazy"></div>
+            <div class="ncss-card-body">
+              <h4>Höhenweg</h4>
+              <p class="ncss-text-sm ncss-text-muted">Frei per <code>--ncss-card-media-ratio: 4 / 3</code></p>
+            </div>
+          </article>
+        </div>
+
+        <h3 class="demo-subhead">Akzent, Empfehlung, deaktiviert</h3>
+        <div class="ncss-card-grid" style="--ncss-card-grid-min: 12rem;">
+          <article class="ncss-card ncss-card--accent ncss-border ncss-radius-lg">
+            <div class="ncss-card-header">Einzelzimmer</div>
+            <div class="ncss-card-body"><p class="ncss-text-sm">Farbstreifen oben in Markenfarbe.</p></div>
+            <div class="ncss-card-footer ncss-card-footer--plain">89 € / Nacht</div>
+          </article>
+          <article class="ncss-card ncss-card--featured ncss-radius-lg ncss-shadow-md">
+            <span class="ncss-card-badge">Empfohlen</span>
+            <div class="ncss-card-header">Zimmer mit Seeblick</div>
+            <div class="ncss-card-body"><p class="ncss-text-sm">Kräftiger Rahmen plus Beschriftung – nicht nur Farbe.</p></div>
+            <div class="ncss-card-footer ncss-card-footer--plain">189 € / Nacht</div>
+          </article>
+          <article class="ncss-card ncss-card--accent-start ncss-border ncss-radius-lg" style="--ncss-card-accent: var(--ncss-color-success);">
+            <div class="ncss-card-header">Familienzimmer</div>
+            <div class="ncss-card-body"><p class="ncss-text-sm">Streifen an der Startseite, Farbe per <code>--ncss-card-accent</code>.</p></div>
+            <div class="ncss-card-footer ncss-card-footer--plain">219 € / Nacht</div>
+          </article>
+          <article class="ncss-card ncss-card--disabled ncss-border ncss-radius-lg" aria-disabled="true">
+            <div class="ncss-card-header">Dachsuite</div>
+            <div class="ncss-card-body"><p class="ncss-text-sm">Ausgebucht – gedämpft, Text bleibt lesbar.</p></div>
+            <div class="ncss-card-footer ncss-card-footer--plain">289 € / Nacht</div>
+          </article>
+        </div>
+
+        <h3 class="demo-subhead">Auswahlkarten</h3>
+        <div class="ncss-grid ncss-grid--align-start" style="--ncss-grid-min: 18rem;">
+          <fieldset class="demo-fieldset">
+            <legend>Zimmerkategorie</legend>
+            <div class="ncss-card-grid" style="--ncss-card-grid-min: 9rem; --ncss-card-grid-rows: 2;">
+              <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+                <input class="ncss-card-check" type="radio" name="demo-zimmer-wahl" value="classic" checked>
+                <span class="ncss-card-header">Classic</span>
+                <span class="ncss-card-body ncss-text-sm ncss-text-muted">Gartenblick, 22 m²</span>
+              </label>
+              <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+                <input class="ncss-card-check" type="radio" name="demo-zimmer-wahl" value="seeblick">
+                <span class="ncss-card-header">Seeblick</span>
+                <span class="ncss-card-body ncss-text-sm ncss-text-muted">Balkon zum See, 26 m²</span>
+              </label>
+              <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+                <input class="ncss-card-check" type="radio" name="demo-zimmer-wahl" value="suite" disabled>
+                <span class="ncss-card-header">Dachsuite</span>
+                <span class="ncss-card-body ncss-text-sm ncss-text-muted">Ausgebucht</span>
+              </label>
+            </div>
+          </fieldset>
+          <fieldset class="demo-fieldset">
+            <legend>Extras</legend>
+            <div class="ncss-stack ncss-stack--tight">
+              <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+                <input class="ncss-card-check" type="checkbox" name="demo-extra-fruehstueck" value="fruehstueck" checked>
+                <span class="ncss-card-header">Frühstück</span>
+                <span class="ncss-card-body ncss-text-sm ncss-text-muted">18 € pro Person und Tag</span>
+              </label>
+              <label class="ncss-card ncss-card--selectable ncss-radius-lg">
+                <input class="ncss-card-check" type="checkbox" name="demo-extra-boot" value="boot">
+                <span class="ncss-card-header">Ruderboot</span>
+                <span class="ncss-card-body ncss-text-sm ncss-text-muted">2 Stunden, 25 €</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <h3 class="demo-subhead">Kopf mit Aktionen, Meta-Zeile, Liste &amp; Ladezustand</h3>
+        <div class="ncss-grid ncss-grid--align-start" style="--ncss-grid-min: 18rem;">
+          <article class="ncss-card ncss-border ncss-radius-lg demo-maxw">
+            <div class="ncss-card-header">
+              <h4 class="ncss-card-title">Termine im Advent</h4>
+              <div class="ncss-card-actions">
+                <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm">Abonnieren</button>
+              </div>
+            </div>
+            <div class="ncss-card-body">
+              <p class="ncss-card-meta">
+                <img src="../assets/examples/gemeinde/kirche-am-see-thumb.webp" alt="" width="640" height="427" loading="lazy">
+                <span>Gemeinde Seeburg</span>
+                <time datetime="2026-11-20">20. November 2026</time>
+                <span>Kultur</span>
+              </p>
+              <p>Alle Veranstaltungen rund um den Adventsmarkt auf einen Blick.</p>
+            </div>
+            <hr class="ncss-card-divider">
+            <ul class="ncss-card-list">
+              <li>Sa, 28.11. – Eröffnung am Seeplatz</li>
+              <li>So, 6.12. – Nikolaus am Bootshafen</li>
+              <li>Sa, 19.12. – Konzert in der Kirche am See</li>
+            </ul>
+            <div class="ncss-card-footer ncss-card-footer--end">
+              <a href="#termine">Alle Termine</a>
+            </div>
+          </article>
+          <article class="ncss-card ncss-border ncss-radius-lg demo-maxw-sm" aria-busy="true">
+            <div class="ncss-card-media ncss-card-skeleton" aria-hidden="true"></div>
+            <div class="ncss-card-body">
+              <span class="ncss-visually-hidden">Lädt …</span>
+              <span class="ncss-card-skeleton ncss-card-skeleton--title" aria-hidden="true"></span>
+              <span class="ncss-card-skeleton" aria-hidden="true"></span>
+              <span class="ncss-card-skeleton" style="--ncss-card-skeleton-width: 70%;" aria-hidden="true"></span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Listen -->
+  <section class="demo-feature" id="listen" aria-labelledby="listen-h" data-subnav-label="Listen">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="listen-h">Listen &amp; Definitionslisten</h2>
+          <p>Fertige Varianten für <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code> und <code>&lt;dl&gt;</code>: farbiger Punkt, Gedankenstrich, Icon aus dem Markup, Trennlinien, nummerierte Schritte – und Definitionslisten gestapelt, als Label-Wert-Zeilen oder als Kennzahlen-Kacheln.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Alle <code>ul</code>/<code>ol</code>-Varianten brauchen <code>role="list"</code> – ohne Listenpunkt verliert VoiceOver sonst die Listen-Ansage.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-list--dot/-dash/-icon</code></li>
+            <li><code>.ncss-list--divided/-plain</code></li>
+            <li><code>.ncss-list--steps</code></li>
+            <li><code>.ncss-dl</code></li>
+            <li><code>.ncss-dl--inline</code></li>
+            <li><code>.ncss-dl--stats</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/lists.html#ul">Im Handbuch<span class="ncss-visually-hidden">: Listen</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 15rem;">
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-list--dot</code></p>
+          <ul class="ncss-list--dot" role="list">
+            <li>Balkon mit Seeblick</li>
+            <li>Regendusche und Badewanne</li>
+            <li>Kaffeemaschine und Wasserkocher</li>
+          </ul>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-list--dash</code></p>
+          <ul class="ncss-list--dash" role="list">
+            <li>Mitzubringen: Personalausweis</li>
+            <li>Bei Umzug: Wohnungsgeberbestätigung</li>
+            <li>Gebühr: keine</li>
+          </ul>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-list--icon</code></p>
+          <ul class="ncss-list--icon" role="list">
+            <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> Frühstücksbuffet</li>
+            <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> Spa-Nutzung</li>
+            <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> Ruderboot für 2 Stunden</li>
+          </ul>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-list--steps</code></p>
+          <ol class="ncss-list--steps" role="list">
+            <li>Zeitraum und Zimmer wählen</li>
+            <li>Kontaktdaten eintragen</li>
+            <li>Bestätigung per E-Mail erhalten</li>
+          </ol>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-list--divided</code></p>
+          <ul class="ncss-list--divided" role="list">
+            <li><a href="../example-gemeinde-service.html">Bürgerbüro</a></li>
+            <li><a href="../example-gemeinde-service.html">Standesamt</a></li>
+            <li><a href="../example-gemeinde-service.html">Bauhof</a></li>
+          </ul>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-list--plain</code></p>
+          <ul class="ncss-list--plain ncss-cluster" role="list">
+            <li><span class="ncss-badge">Familie</span></li>
+            <li><span class="ncss-badge">Wandern</span></li>
+            <li><span class="ncss-badge">Wellness</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid" style="--ncss-grid-min: 18rem;">
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-dl</code></p>
+          <dl class="ncss-dl">
+            <dt>Halbpension</dt><dd>Frühstück und Drei-Gang-Abendmenü</dd>
+            <dt>Kurtaxe</dt><dd>2,50 € pro Person und Nacht, vor Ort zu zahlen</dd>
+          </dl>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>.ncss-dl--inline</code></p>
+          <dl class="ncss-dl--inline">
+            <dt>Wohnfläche</dt><dd>84 m²</dd>
+            <dt>Zimmer</dt><dd>3</dd>
+            <dt>Baujahr</dt><dd>1908, saniert 2021</dd>
+            <dt>Kaltmiete</dt><dd>1.090 €</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="demo-live demo-frame">
+        <p class="demo-live-label"><code>.ncss-dl--stats</code></p>
+        <dl class="ncss-dl--stats">
+          <div><dt>Zimmer</dt><dd>42</dd></div>
+          <div><dt>Meter zum Ufer</dt><dd>30</dd></div>
+          <div><dt>Gästebewertung</dt><dd>4,8</dd></div>
+          <div><dt>Familienbetrieb seit</dt><dd>1987</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Tabellen -->
+  <section class="demo-feature" id="tabellen" aria-labelledby="tabellen-h" data-subnav-label="Tabellen">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="tabellen-h">Tabellen auf schmalen Bildschirmen</h2>
+          <p>Zwei Strategien: seitlich scrollen (behält die volle Tabellen-Semantik – die Standardempfehlung) oder unter 36 rem Containerbreite zu Datensatz-Karten stapeln. Dazu eine kompakte Variante für dichte Daten.</p>
+          <p class="demo-gotcha"><strong>Achtung:</strong> Der Stapel braucht <code>data-label</code> an jeder Zelle und opfert die Zeilen-/Spalten-Ansage im Screenreader – nur für echte „Datensätze“ nehmen.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen">
+            <li><code>.ncss-table-scroll</code></li>
+            <li><code>.ncss-table-stacked</code></li>
+            <li><code>data-label</code></li>
+            <li><code>.ncss-table--compact</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/tables.html#scroll">Im Handbuch<span class="ncss-visually-hidden">: Tabellen</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-live-label">Scrollen: <code>.ncss-table-scroll</code></p>
+        <div class="ncss-table-scroll" tabindex="0" role="region" aria-labelledby="demo-preise-cap">
+          <table>
+            <caption id="demo-preise-cap">Zimmerpreise Hotel Seeblick 2027, pro Nacht inkl. Frühstück</caption>
+            <thead><tr><th scope="col">Kategorie</th><th scope="col">Größe</th><th scope="col">Belegung</th><th scope="col">Nebensaison</th><th scope="col">Hauptsaison</th><th scope="col">Ausstattung</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Doppelzimmer Classic</th><td>22 m²</td><td>1–2</td><td class="ncss-nums-tabular">139 €</td><td class="ncss-nums-tabular">169 €</td><td>Gartenblick, Dusche</td></tr>
+              <tr><th scope="row">Zimmer mit Seeblick</th><td>26 m²</td><td>1–2</td><td class="ncss-nums-tabular">169 €</td><td class="ncss-nums-tabular">209 €</td><td>Balkon, Badewanne</td></tr>
+              <tr><th scope="row">Junior-Suite</th><td>34 m²</td><td>2–3</td><td class="ncss-nums-tabular">219 €</td><td class="ncss-nums-tabular">259 €</td><td>Sitzecke, Holzpaneele</td></tr>
+              <tr><th scope="row">Dachsuite</th><td>48 m²</td><td>2–4</td><td class="ncss-nums-tabular">289 €</td><td class="ncss-nums-tabular">349 €</td><td>Zwei Räume, Panoramafenster</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-hint"><span class="ncss-icon ncss-icon-arrow-left" aria-hidden="true"></span> Rahmen schmaler ziehen – die Zeilen werden zu Karten</p>
+        <div class="demo-resizable">
+          <div class="ncss-table-stacked">
+            <table>
+              <caption>Ihre Buchungen</caption>
+              <thead><tr><th scope="col">Buchung</th><th scope="col">Zimmer</th><th scope="col">Anreise</th><th scope="col">Nächte</th><th scope="col">Status</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Buchung">SB-27-0412</td><td data-label="Zimmer">Seeblick</td><td data-label="Anreise">12.07.2027</td><td data-label="Nächte">7</td><td data-label="Status"><span class="ncss-badge ncss-badge--success">bestätigt</span></td></tr>
+                <tr><td data-label="Buchung">SB-27-0588</td><td data-label="Zimmer">Dachsuite</td><td data-label="Anreise">26.12.2027</td><td data-label="Nächte">4</td><td data-label="Status"><span class="ncss-badge ncss-badge--warning">Anzahlung offen</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-live-label">Kompakt: <code>.ncss-table--compact</code></p>
+        <div class="ncss-table-scroll" tabindex="0" role="region" aria-labelledby="demo-zeiten-cap">
+          <table class="ncss-table--compact">
+            <caption id="demo-zeiten-cap">Öffnungszeiten Rathaus Seeburg</caption>
+            <thead><tr><th scope="col">Stelle</th><th scope="col">Mo – Fr</th><th scope="col">Do</th><th scope="col">Sa</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Bürgerbüro</th><td>8 – 12 Uhr</td><td>14 – 18 Uhr</td><td>9 – 12 Uhr</td></tr>
+              <tr><th scope="row">Standesamt</th><td>8 – 12 Uhr</td><td>14 – 17 Uhr</td><td>geschlossen</td></tr>
+              <tr><th scope="row">Kasse</th><td>8 – 11:30 Uhr</td><td>–</td><td>geschlossen</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Termine -->
+  <section class="demo-feature" id="termine" aria-labelledby="termine-h" data-subnav-label="Termine">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="termine-h">Termine aus einer Kalenderdatei</h2>
+          <p>Ein Motor, vier Ansichten: Monatsraster, Agenda, Kartenliste und Einzeltermin – hier alle aus derselben <code>.ics</code>-Datei der Gemeinde, inklusive wiederkehrender Termine (<code>RRULE</code>). Echtes HTML statt eines Kalender-iframes: durchsuchbar und im Seiten-Design.</p>
+          <p class="demo-gotcha"><strong>Tipp:</strong> Im Monatsraster einen Tag mit Punkt anklicken – die Termine öffnen sich als Dialog.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen und Attribute">
+            <li><code>.ncss-events</code></li>
+            <li><code>data-view="month|agenda"</code></li>
+            <li><code>data-view="list|single"</code></li>
+            <li><code>data-ics / data-src</code></li>
+            <li><code>data-limit</code></li>
+            <li><code>js/events.js + ics.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/widgets.html#events">Im Handbuch<span class="ncss-visually-hidden">: Termine</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-grid ncss-grid--align-start" style="--ncss-grid-min: 20rem;">
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>data-view="month"</code></p>
+          <div class="ncss-events" data-view="month" data-ics="../assets/examples/gemeinde/termine.ics" data-window-months="6"></div>
+        </div>
+        <div class="demo-frame">
+          <p class="demo-live-label"><code>data-view="agenda"</code></p>
+          <div class="ncss-events" data-view="agenda" data-ics="../assets/examples/gemeinde/termine.ics" data-limit="4" data-window-months="6"><p class="ncss-text-muted">Termine werden geladen …</p></div>
+        </div>
+      </div>
+      <div class="demo-live demo-events">
+        <p class="demo-live-label"><code>data-view="single"</code> – der nächste anstehende Termin</p>
+        <div class="ncss-events" data-view="single" data-ics="../assets/examples/gemeinde/termine.ics" data-window-months="6"><p class="ncss-text-muted">Termin wird geladen …</p></div>
+      </div>
+      <div class="demo-live demo-events">
+        <p class="demo-live-label"><code>data-view="list"</code></p>
+        <div class="ncss-events" data-view="list" data-ics="../assets/examples/gemeinde/termine.ics" data-limit="3" data-window-months="6"><p class="ncss-text-muted">Termine werden geladen …</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ Downloads -->
+  <section class="demo-feature" id="downloads" aria-labelledby="downloads-h" data-subnav-label="Downloads">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="downloads-h">Download-Liste</h2>
+          <p>Eine Dateiliste aus JSON: Dateityp und Größe erscheinen automatisch, jeder Herunterladen-Link trägt einen eindeutigen Namen mit Typ, Titel und Größe – im Screenreader unterscheidbar, sichtbar trotzdem kurz.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Klassen und Attribute">
+            <li><code>.ncss-downloads</code></li>
+            <li><code>data-src</code></li>
+            <li><code>js/downloads.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/de/widgets.html#downloads">Im Handbuch<span class="ncss-visually-hidden">: Download-Liste</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-downloads" data-src="../data/downloads.json"><p class="ncss-text-muted">Dateiliste wird geladen …</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ncss-container">
+    <nav class="demo-pager" aria-label="Kapitel blättern">
+      <a class="demo-pager-prev" href="layout.html" rel="prev"><small>← Vorheriges Kapitel</small> Layout</a>
+      <a class="demo-pager-next" href="navigation.html" rel="next"><small>Nächstes Kapitel →</small> Navigation</a>
+    </nav>
+  </div>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-bottom ncss-stack ncss-stack--tight ncss-text-sm">
+    <p>NativeCSS-Rundgang · <a href="index.html">Alle Kapitel</a> · <a href="../../docs/de/index.html">Handbuch</a></p>
+    <p class="demo-credits"><strong>Bildnachweis:</strong> Fotos von Pexels (Pexels-Lizenz) – <a href="https://pexels.com/photo/holiday-resort-by-lake-at-night-16777746/">Marek Piwnicki</a> (Hotel bei Nacht), <a href="https://pexels.com/photo/metal-dock-2440257/">Lukáš Dlutko</a> (Steg im Morgennebel), <a href="https://www.pexels.com/photo/illuminated-carousel-in-the-city-square-19480506/">Alina Chernii</a> (Karussell), <a href="https://www.pexels.com/photo/morning-breakfast-table-25781659/">Jakub Zerdzicki</a> (Frühstückstisch), <a href="https://pexels.com/photo/a-church-by-a-lake-12842511/">Wolfgang Wendefeuer</a> (Kirche am See, Badesteg), <a href="https://pexels.com/photo/hotel-bedroom-interior-design-19045885/">Luca Luperto</a> (Doppelzimmer), <a href="https://pexels.com/photo/luxurious-breakfast-buffet-with-fresh-croissants-and-bread-34307858/">Novkov Visuals</a> (Frühstücksbuffet), <a href="https://www.pexels.com/photo/indoor-marble-pool-with-large-windows-32797306/">Sarah O’Shea</a> (Hallenbad), <a href="https://www.pexels.com/photo/elegant-hotel-dining-area-in-warm-tones-29649733/">Clément Proust</a> (Restaurant), <a href="https://pexels.com/photo/vibrant-farmer-s-market-fresh-vegetables-display-31930012/">Magda Ehlers</a> (Wochenmarkt), <a href="https://pexels.com/photo/historic-brakel-town-hall-in-summer-29511107/">Wolfgang Weiser</a> (Rathaus), <a href="https://www.pexels.com/photo/charming-german-village-by-reflective-lake-34577724/">Phalgunn Maharishi</a> (Seeburg-Ufer), <a href="https://pexels.com/photo/scenic-view-of-tranquil-lake-in-bavaria-31913082/">Branka Krnjaja</a> (Bootshafen), <a href="https://pexels.com/photo/scenic-pathway-through-alpine-meadow-in-summer-32713270/">Susanne Jutzeler</a> (Wanderweg), <a href="https://www.pexels.com/photo/ivy-covered-apartments-in-berlin-germany-33708190/">Vinay Reddy Sama</a> (Wohnhaus), <a href="https://www.pexels.com/photo/corner-of-block-of-flats-18762756/">Gül Işık</a> (Eckhaus), <a href="https://www.pexels.com/photo/concrete-balconies-of-a-low-rise-apartment-building-19820298/">Nuray</a> (Balkone), <a href="https://www.pexels.com/photo/green-ivy-on-yellow-facade-in-freiburg-germany-34075377/">Arndt-Peter Bergfeld</a> (Efeufassade), <a href="https://www.pexels.com/photo/colorful-modern-apartment-buildings-5505766/">Mike van Schoonderwalt</a> (Neubau-Fassaden).</p>
+  </div>
+</footer>
+
+<button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="Code-Inspektor: Element anklicken, um HTML, Erklärung und Quelldateien zu sehen (Alt+I)"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> Inspect <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>
+
+</body>
+</html>

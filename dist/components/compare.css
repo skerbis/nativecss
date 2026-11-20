@@ -1,0 +1,218 @@
+/**
+ * ncss - <ncss-compare>: Vorher/Nachher-Vergleich (Layer "components"). Zwei
+ * übereinanderliegende Bilder, ein Schieberegler verschiebt die Trennlinie. Der Regler ist
+ * ein ECHTER <input type="range"> über der ganzen Fläche (Daumen = Griff) - Maus, Touch,
+ * Tastatur (Pfeile, Pos1/Ende, Bild auf/ab) und Screenreader kommen damit vom Browser
+ * selbst, kein nachgebauter Slider. Light-DOM-Custom-Element (js/compare.js, kein Shadow
+ * Root): kopiert nur den Wert nach --ncss-compare-position und setzt eine sprechende
+ * aria-valuetext.
+ *
+ * Markup:
+ * <ncss-compare style="--ncss-compare-ratio: 16 / 9">
+ *   <img class="ncss-compare-before" src="vorher.jpg" alt="Küche vor der Renovierung">
+ *   <img class="ncss-compare-after" src="nachher.jpg" alt="Küche nach der Renovierung">
+ *   <span class="ncss-compare-label" aria-hidden="true">Vorher</span>
+ *   <span class="ncss-compare-label ncss-compare-label--end" aria-hidden="true">Nachher</span>
+ *   <input class="ncss-compare-range" type="range" min="0" max="100" value="50"
+ *          aria-label="Trennlinie verschieben: links vorher, rechts nachher">
+ * </ncss-compare>
+ * <script src="js/compare.js" defer></script>
+ *
+ * Ohne JS (Element nicht :defined): statischer 50/50-Vergleich, der Regler bleibt
+ * ausgeblendet - ein Regler, der zwar wandert, die Bilder aber nicht mitnimmt, wäre
+ * irreführender als gar keiner. Erst ncss-compare:defined blendet ihn ein.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base). Optional
+ * js/compare.js - sonst keine andere ncss-Datei.
+ *
+ * Tokens: --ncss-compare-position (0%-100%, Default 50%), --ncss-compare-ratio (Default
+ * 16 / 9), --ncss-compare-handle (Griffgröße, Default 2.75rem), --ncss-compare-line
+ * (Linienstärke, Default 3px).
+ *
+ * "Vorher" liegt immer links (direction:ltr auf dem Rahmen) - auch in RTL-Sprachen ist der
+ * Regler dadurch nicht gespiegelt, Bildreihenfolge und Wert passen immer zusammen.
+ */
+ncss-compare {
+  --ncss-compare-position: 50%;
+  --ncss-compare-handle: 2.75rem;
+  --ncss-compare-line: 3px;
+  position: relative;
+  display: grid;
+  aspect-ratio: var(--ncss-compare-ratio, 16 / 9);
+  /* container-type:size, damit der WebKit-Daumen sich per cqb vertikal zentrieren kann
+     (Firefox zentriert selbst). Die Höhe kommt aus aspect-ratio, nicht aus dem Inhalt -
+     deshalb ist size-Containment hier unproblematisch. */
+  container-type: size;
+  overflow: hidden;
+  direction: ltr;
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-bg-subtle);
+  user-select: none;
+  -webkit-user-select: none;
+
+  & > .ncss-compare-before,
+  & > .ncss-compare-after {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  & > .ncss-compare-after {
+    clip-path: inset(0 0 0 var(--ncss-compare-position));
+  }
+
+  /* Trennlinie */
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: var(--ncss-compare-position);
+    width: var(--ncss-compare-line);
+    translate: -50% 0;
+    background-color: var(--ncss-color-surface);
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--ncss-color-text) 25%, transparent), var(--ncss-shadow-md);
+    pointer-events: none;
+  }
+
+  /* Pfeile auf dem Griff (der Range-Daumen selbst kann keinen Inhalt tragen) - nur mit
+     JS, wie der Griff selbst. */
+  &:defined::before {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: var(--ncss-compare-position);
+    width: calc(var(--ncss-compare-handle) * 0.55);
+    height: calc(var(--ncss-compare-handle) * 0.55);
+    translate: -50% -50%;
+    background-color: var(--ncss-color-text);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7l-5 5 5 5M15 7l5 5-5 5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7l-5 5 5 5M15 7l5 5-5 5'/%3E%3C/svg%3E") center / contain no-repeat;
+    pointer-events: none;
+  }
+
+  /* Fokus-Ring am ganzen Rahmen statt am unsichtbaren Regler */
+  &:has(.ncss-compare-range:focus-visible) {
+    outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.ncss-compare-label {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--ncss-space-xs);
+  left: var(--ncss-space-xs);
+  padding: 0.2em 0.7em;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-medium);
+  color: var(--ncss-color-text);
+  background-color: color-mix(in oklch, var(--ncss-color-surface) 85%, transparent);
+  border-radius: var(--ncss-radius-full);
+  pointer-events: none;
+}
+.ncss-compare-label--end {
+  left: auto;
+  right: var(--ncss-space-xs);
+}
+
+/* Der Regler deckt den Rahmen ab und ist um EINE Griffbreite breiter - so läuft die
+   Daumenmitte exakt von 0 % bis 100 % der Bildbreite (sonst endet sie eine halbe
+   Griffbreite vor dem Rand und Linie/Griff liefen auseinander). */
+.ncss-compare-range {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  inset-block: 0;
+  left: calc(var(--ncss-compare-handle) / -2);
+  right: calc(var(--ncss-compare-handle) / -2);
+  width: auto;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: ew-resize;
+  /* Waagerechtes Ziehen bewegt den Regler, senkrechtes scrollt auf Touch weiter die Seite */
+  touch-action: pan-y;
+  outline: none;
+
+  &::-webkit-slider-runnable-track {
+    height: 100%;
+    background: transparent;
+    border: 0;
+  }
+  &::-moz-range-track {
+    height: 100%;
+    background: transparent;
+    border: 0;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--ncss-compare-handle);
+    height: var(--ncss-compare-handle);
+    margin-block-start: calc(50cqb - var(--ncss-compare-handle) / 2);
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-lg), 0 0 0 1px color-mix(in oklch, var(--ncss-color-text) 20%, transparent);
+    transition: scale var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+  }
+  &::-moz-range-thumb {
+    width: var(--ncss-compare-handle);
+    height: var(--ncss-compare-handle);
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-lg), 0 0 0 1px color-mix(in oklch, var(--ncss-color-text) 20%, transparent);
+    transition: scale var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+  }
+
+  /* Touch-/Klick-Rückmeldung beim Greifen */
+  &:active::-webkit-slider-thumb {
+    scale: 1.12;
+  }
+  &:active::-moz-range-thumb {
+    scale: 1.12;
+  }
+}
+ncss-compare:defined > .ncss-compare-range {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ncss-compare-range:hover:not(:active)::-webkit-slider-thumb {
+    scale: 1.06;
+  }
+  .ncss-compare-range:hover:not(:active)::-moz-range-thumb {
+    scale: 1.06;
+  }
+}
+
+/* Forced Colors: Systemfarben statt Fläche/Schatten - Linie und Griff bleiben sichtbar. */
+@media (forced-colors: active) {
+  ncss-compare::after {
+    background-color: CanvasText;
+    box-shadow: none;
+  }
+  ncss-compare:defined::before {
+    background-color: Canvas;
+    forced-color-adjust: none;
+  }
+  .ncss-compare-range::-webkit-slider-thumb {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+  .ncss-compare-range::-moz-range-thumb {
+    background-color: CanvasText;
+  }
+  .ncss-compare-label {
+    color: CanvasText;
+    background-color: Canvas;
+    border: 1px solid CanvasText;
+  }
+}

@@ -1,0 +1,89 @@
+/**
+ * ncss - Tooltip: kurzer, reiner TEXT-Hinweis zu einem Bedienelement (Layer "components"),
+ * WAI-ARIA-APG-Muster "Tooltip". Für reichhaltigen Inhalt (Links, Bilder, Profil) stattdessen
+ * <ncss-hovercard> (components/hovercard.css) - ein Tooltip enthält NIE etwas Fokussierbares.
+ *
+ * Markup - Tooltip direkt hinter dem Auslöser:
+ * <button class="ncss-btn" interestfor="tip-save" aria-describedby="tip-save">Speichern</button>
+ * <span class="ncss-tooltip" id="tip-save" popover="hint" role="tooltip">Strg + S</span>
+ * <script src="js/tooltip.js" defer></script>
+ *
+ * Für einen reinen Icon-Button ist der Tooltip die SICHTBARE Beschriftung - der Name kommt
+ * trotzdem aus aria-label (der Tooltip ergänzt nur, er ersetzt den Namen nicht, und ohne JS/
+ * interestfor bleibt er unsichtbar):
+ * <button class="ncss-btn ncss-btn--icon" aria-label="Löschen" interestfor="tip-del"> ...
+ *
+ * Drei Pfade (gleiche Logik wie hovercard.css, aber ohne Abhängigkeit davon):
+ * 1. Nativ (Chromium mit interestfor): Browser übernimmt Hover, Fokus, Verzögerung
+ *    (interest-delay unten), Esc - der Auslöser wird automatisch zum Anker.
+ * 2. js/tooltip.js, wo interestfor fehlt: Zeiger/Tastatur-Fokus mit kurzer Verzögerung,
+ *    bleibt offen, solange der Zeiger auf Auslöser ODER Tooltip ist (WCAG 1.4.13), Esc
+ *    schließt. Anker-Namen setzt das Script; ohne Anchor Positioning rechnet es selbst.
+ * 3. Ohne beides: Tooltip bleibt verborgen - aria-describedby liefert den Text trotzdem als
+ *    Beschreibung an Screenreader (funktioniert auch auf verborgene Elemente).
+ *
+ * Tokens: --ncss-tooltip-max-width (Default 18rem), --ncss-tooltip-offset.
+ * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base). Optional
+ * js/tooltip.js.
+ */
+/* Nur Auslöser, deren direkt folgendes Geschwister ein Tooltip ist - andere interestfor-
+   Nutzer (z.B. <ncss-hovercard>) behalten ihre eigene Verzögerung. */
+[interestfor]:has(+ .ncss-tooltip) {
+  interest-delay: 300ms 150ms;
+}
+
+.ncss-tooltip {
+  --ncss-tooltip-max-width: 18rem;
+  --ncss-tooltip-offset: var(--ncss-space-2xs);
+  /* UA-Popover-Defaults (inset:0, margin:auto, Rahmen) neutralisieren. */
+  inset: auto;
+  margin: 0;
+  max-inline-size: min(var(--ncss-tooltip-max-width), calc(100vw - 2 * var(--ncss-space-xs)));
+  padding: var(--ncss-space-3xs) var(--ncss-space-xs);
+  border: 0;
+  border-radius: var(--ncss-radius-sm);
+  /* Invertierte Fläche: Text-Farbe als Hintergrund, Seitenfläche als Schrift - kontrastiert
+     in Hell und Dunkel automatisch (beide Tokens wechseln per light-dark()). */
+  background-color: var(--ncss-color-text);
+  color: var(--ncss-color-bg);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-medium);
+  line-height: var(--ncss-line-height-tight, 1.3);
+  text-align: center;
+  box-shadow: var(--ncss-shadow-md);
+  overflow-wrap: break-word;
+  /* Anchor Positioning: über dem Auslöser, bei Platzmangel darunter/seitlich. Der native
+     interestfor-Pfad liefert den impliziten Anker, js/tooltip.js setzt position-anchor. */
+  position-area: top;
+  position-try-fallbacks: flip-block, flip-inline;
+  margin-block: var(--ncss-tooltip-offset);
+  opacity: 0;
+  transition: opacity var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+              display var(--ncss-motion-duration-fast) allow-discrete,
+              overlay var(--ncss-motion-duration-fast) allow-discrete;
+}
+.ncss-tooltip:popover-open {
+  opacity: 1;
+}
+@starting-style {
+  .ncss-tooltip:popover-open {
+    opacity: 0;
+  }
+}
+/* Nicht auf ein [popover] gesetzt (falsches Markup) oder Browser ohne Popover-API: nie als
+   loser Text im Fluss stehen lassen. */
+.ncss-tooltip:not([popover]) {
+  display: none;
+}
+
+/* Ohne Anchor Positioning setzt js/tooltip.js top/left selbst (position:fixed). */
+.ncss-tooltip[data-ncss-tooltip-fallback] {
+  position: fixed;
+  margin: 0;
+}
+
+@media (forced-colors: active) {
+  .ncss-tooltip {
+    border: var(--ncss-border-width) solid CanvasText;
+  }
+}

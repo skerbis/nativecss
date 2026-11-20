@@ -1,0 +1,82 @@
+/**
+ * ncss - Kennzahl/KPI (Layer "components"): Wert + Beschriftung + optionaler Trend.
+ * Reines CSS, kein JS - kombinierbar mit js/count-up.js (data-ncss-count-up am Wert) und
+ * .ncss-sparkline. Rahmen/Ecken/Schatten bewusst NICHT eingebaut (siehe card.css-
+ * Begründung) - dafür .ncss-border/.ncss-radius-.../.ncss-shadow-... aus
+ * helpers/elevation.css. Braucht colors.css + tokens.css (+ reset/base), für den
+ * Screenreader-Text des Trends zusätzlich helpers/a11y.css (.ncss-visually-hidden).
+ *
+ * Markup:
+ *   <div class="ncss-stat">
+ *     <p class="ncss-stat-label">Mieteingang November</p>
+ *     <p class="ncss-stat-value">48.230 €</p>
+ *     <p class="ncss-stat-trend ncss-stat-trend--up">
+ *       <span class="ncss-visually-hidden">Gestiegen um</span> 4,2 %
+ *       <span class="ncss-stat-meta">ggü. Vormonat</span>
+ *     </p>
+ *   </div>
+ * Der Pfeil kommt per CSS und ist für Screenreader stumm (content-Alternativtext "") - die
+ * Richtung MUSS deshalb als Text im Markup stehen ("Gestiegen um"/"Gesunken um"), Farbe
+ * und Pfeil allein sind keine zugängliche Information (WCAG 1.3.1/1.4.1).
+ *
+ * --up = Pfeil hoch + Erfolgsfarbe, --down = Pfeil runter + Gefahrfarbe, --flat = neutral.
+ * Für Kennzahlen, bei denen "weniger" GUT ist (Kosten, Leerstand, offene Tickets):
+ * .ncss-stat--inverse auf .ncss-stat tauscht nur die Farben, der Pfeil bleibt ehrlich.
+ */
+
+.ncss-stat {
+  /* Eigener Container: der Wert skaliert mit der Kartenbreite (cqi), nicht mit dem
+     Viewport - dieselbe Kennzahl passt in eine schmale Sidebar und ein breites Raster. */
+  container-type: inline-size;
+  /* Bezugsrahmen für den absolut positionierten .ncss-visually-hidden-Trendtext - sonst
+     hängt er sich an einen fernen Vorfahren und kann horizontalen Überlauf erzeugen
+     (per WebKit-Test gefunden). */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-space-3xs);
+  padding: var(--ncss-space-sm);
+  min-inline-size: 0;
+}
+.ncss-stat > * {
+  margin: 0;
+}
+.ncss-stat-label {
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-stat-value {
+  font-size: clamp(var(--ncss-font-size-lg), 9cqi, var(--ncss-font-size-2xl));
+  font-weight: var(--ncss-font-weight-bold);
+  line-height: var(--ncss-line-height-tight);
+  letter-spacing: var(--ncss-tracking-tight);
+  font-variant-numeric: tabular-nums;
+  color: var(--ncss-color-text);
+  overflow-wrap: anywhere;
+}
+.ncss-stat-trend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--ncss-space-3xs);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.ncss-stat-trend::before {
+  font-weight: var(--ncss-font-weight-bold);
+}
+.ncss-stat-trend--up { color: var(--ncss-color-success-on-soft); }
+.ncss-stat-trend--up::before { content: "\2191" / ""; }
+.ncss-stat-trend--down { color: var(--ncss-color-danger-on-soft); }
+.ncss-stat-trend--down::before { content: "\2193" / ""; }
+.ncss-stat-trend--flat { color: var(--ncss-color-text-muted); }
+.ncss-stat-trend--flat::before { content: "\2192" / ""; }
+.ncss-stat--inverse .ncss-stat-trend--up { color: var(--ncss-color-danger-on-soft); }
+.ncss-stat--inverse .ncss-stat-trend--down { color: var(--ncss-color-success-on-soft); }
+
+.ncss-stat-meta {
+  font-weight: var(--ncss-font-weight-normal);
+  color: var(--ncss-color-text-muted);
+}

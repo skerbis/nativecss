@@ -1,64 +1,73 @@
-// NativeCSS - erzeugt beim GitHub-Pages-Build eine index.html an der Site-Wurzel, die
-// demo/product.html 1:1 entspricht (nur die relativen Pfade angepasst - product.html liegt
-// im echten Repo eine Ebene tiefer als die Site-Wurzel). Kein Redirect: der Besuch von
-// https://skerbis.github.io/nativecss/ zeigt direkt den echten Inhalt. Das Repo selbst
-// behält seine saubere Struktur (Produktseite in demo/, Bibliothek in dist/) - diese Datei
-// existiert NUR im Deploy-Artefakt (_site/), nie im Git-Tree.
+// NativeCSS - erzeugt beim GitHub-Pages-Build eine index.html an der Site-Wurzel, die der
+// generierten deutschen Startseite docs/de/start.html 1:1 entspricht (nur die relativen
+// Pfade angepasst - die Startseite liegt zwei Ebenen tiefer als die Site-Wurzel). Kein
+// Redirect: der Besuch von https://skerbis.github.io/nativecss/ zeigt direkt den echten
+// Inhalt. Diese Datei existiert NUR im Deploy-Artefakt (_site/), nie im Git-Tree.
+// Voraussetzung: docs/ wurde vorher gebaut (node docs-src/build.mjs).
 //
-// Ersetzungsregeln sind bewusst als exakte, vollständige String-Paare geschrieben (keine
-// generische Regex über beliebiges href=/src=) - deckt genau die Pfade ab, die
-// demo/product.html tatsächlich verwendet (per `grep -oE '(href|src)="[^"]*"'` geprüft).
-// Ändert sich product.html strukturell (neuer Pfad-Typ), schlägt die Prüfung unten hörbar
-// fehl statt still falsche/unveränderte Pfade durchzulassen.
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+// Ersetzungsregeln sind exakte String-Paare (keine generische Regex über beliebiges
+// href=/src=). Die Paare für Seiten-Links werden aus der echten Dateiliste von docs/de/
+// erzeugt (je Seite href="seite.html" und href="seite.html#") - weiterhin exakte Paare,
+// nur nicht von Hand getippt. Ändert sich die Startseite strukturell (neuer Pfad-Typ),
+// schlagen die Prüfungen unten hörbar fehl statt still falsche Pfade durchzulassen.
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 
 const SITE_DIR = process.argv[2] || "_site";
-const SRC = `${SITE_DIR}/demo/product.html`;
+const SRC = `${SITE_DIR}/docs/de/start.html`;
 const DEST = `${SITE_DIR}/index.html`;
 
 if (!existsSync(SRC)) {
-  console.error(`Erwartete Quelldatei fehlt: ${SRC}`);
+  console.error(`Erwartete Quelldatei fehlt: ${SRC} - vorher node docs-src/build.mjs ausführen.`);
   process.exit(1);
 }
 
 const replacements = [
-  ['href="../dist/', 'href="dist/'],
-  ['src="../dist/', 'src="dist/'],
-  ['href="../vendor/', 'href="vendor/'],
-  ['src="../vendor/', 'src="vendor/'],
-  ['href="../LICENSE"', 'href="LICENSE"'],
-  ['href="../docs/', 'href="docs/'],
-  ['href="../favicon.svg"', 'href="favicon.svg"'],
-  ['src="assets/', 'src="demo/assets/'],
-  ['href="assets/', 'href="demo/assets/'],
-  ['href="index.html"', 'href="demo/index.html"'],
-  ['href="docs.html"', 'href="demo/docs.html"'],
-  ['href="product.html"', 'href="index.html"'],
+  // Repo-Wurzel-Pfade (dist/, vendor/, demo/, favicon, LICENSE ...): "../../" entfällt.
+  ['href="../../', 'href="'],
+  ['src="../../', 'src="'],
+  ['url(../../', 'url('],
+  ['url("../../', 'url("'],
+  // Andere Sprache: liegt an der Wurzel unter docs/en/.
+  ['href="../en/', 'href="docs/en/'],
+  // Suchindex der Kopfleisten-Suche (<ncss-command-palette src>): liegt in docs/.
+  ['src="../search.de.json"', 'src="docs/search.de.json"'],
 ];
+// Seiten im selben Ordner (docs/de/): an der Wurzel mit Präfix docs/de/. Die Startseite
+// selbst wird zur Wurzel-index.html.
+for (const file of readdirSync(`${SITE_DIR}/docs/de`).filter((f) => f.endsWith(".html")).sort()) {
+  const to = file === "start.html" ? "index.html" : `docs/de/${file}`;
+  replacements.push([`href="${file}"`, `href="${to}"`]);
+  replacements.push([`href="${file}#`, `href="${to}#`]);
+}
 
 let html = readFileSync(SRC, "utf8");
 for (const [from, to] of replacements) {
   html = html.replaceAll(from, to);
 }
 
-// Sanity-Check: nach den Ersetzungen darf kein "../" mehr auf ein echtes Asset zeigen (die
-// Datei sitzt jetzt an der Site-Wurzel, "../" würde über die Domain hinausgehen). Reine
-// Code-Beispiel-Texte im <pre><code> (z.B. das escapte "href=\"ncss.css\"" ohne Präfix)
-// sind davon nicht betroffen, die matchen keine der obigen "../"-Muster.
-if (html.includes('="../')) {
-  console.error("Nicht aufgelöste \"../\"-Referenz nach dem Rewrite gefunden - Skript prüfen.");
+// Code-Beispiele (<pre>) enthalten absichtlich Beispielpfade wie href="ncss/ncss.css" -
+// die Prüfungen laufen deshalb nur über das Markup außerhalb von <pre>.
+const markup = html.replace(/<pre[\s\S]*?<\/pre>/g, "");
+
+// Sanity-Check 1: kein "../" mehr (würde an der Wurzel über die Domain hinauszeigen).
+// Code-Beispiele im <pre> sind escaped und matchen das Muster nicht.
+if (markup.includes('="../') || markup.includes("url(../")) {
+  console.error('Nicht aufgelöste "../"-Referenz nach dem Rewrite gefunden - Skript prüfen.');
   process.exit(1);
 }
 
-// Zweiter Sanity-Check: derselbe Gedanke, aber für Pfade OHNE "../"-Präfix, die trotzdem
-// nur relativ zu demo/ (product.htmls echtem Ort im Repo) funktionieren, nicht relativ zur
-// Site-Wurzel - der erste Check oben hätte genau diese Klasse nicht erfasst (kein "../"
-// vorhanden, per echtem 404 in Produktion gefunden: src="assets/js/prism-manual.js" ohne
-// "../"-Präfix, weil es innerhalb von demo/ schon vorher korrekt relativ war). Deckt aktuell
-// "assets/" ab (bislang einzige bekannte Instanz dieser Fallklasse) - bei einem neuen
-// bare-relative Pfad-Typ hier ergänzen, sobald einer auftaucht.
-if (/(?:href|src)="assets\//.test(html)) {
-  console.error("Nicht aufgelöste \"assets/\"-Referenz (ohne \"../\"-Präfix) nach dem Rewrite gefunden - Skript prüfen.");
+// Sanity-Check 2: jeder relative Link auf eine .html-Datei braucht ein bekanntes Präfix
+// (docs/, demo/) oder ist die Wurzel-index.html selbst - sonst zeigt er ins Leere.
+const bareHtml = markup.match(/href="(?!https?:|mailto:|#|demo\/|docs\/|index\.html)[^"]*\.html[^"]*"/);
+if (bareHtml) {
+  console.error(`Nicht aufgelöster relativer Seiten-Link nach dem Rewrite: ${bareHtml[0]} - Skript prüfen.`);
+  process.exit(1);
+}
+
+// Sanity-Check 3: bare relative Asset-Pfade, die nur relativ zu docs/de/ stimmten.
+const bareAsset = markup.match(/(?:href|src)="(?!https?:|data:|#|\/|dist\/|vendor\/|demo\/|docs\/|favicon\.svg|LICENSE|index\.html)[^"]+"/);
+if (bareAsset) {
+  console.error(`Unbekannter relativer Pfad nach dem Rewrite: ${bareAsset[0]} - Skript prüfen.`);
   process.exit(1);
 }
 

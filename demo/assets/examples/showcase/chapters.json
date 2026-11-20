@@ -1,0 +1,17 @@
+{
+  "label": { "de": "Kapitel", "en": "Chapters" },
+  "chapters": [
+    { "slug": "index", "de": "Übersicht", "en": "Overview" },
+    { "slug": "layout", "de": "Layout", "en": "Layout" },
+    { "slug": "content", "de": "Inhalt", "en": "Content" },
+    { "slug": "navigation", "de": "Navigation", "en": "Navigation" },
+    { "slug": "forms", "de": "Formulare", "en": "Forms" },
+    { "slug": "overlays", "de": "Overlays", "en": "Overlays" },
+    { "slug": "media", "de": "Medien", "en": "Media" },
+    { "slug": "scroll", "de": "Scroll-Effekte", "en": "Scroll effects" },
+    { "slug": "modern", "de": "Moderne UI", "en": "Modern UI" },
+    { "slug": "app-ui", "de": "App-UI", "en": "App UI" },
+    { "slug": "icons", "de": "Icons", "en": "Icons" },
+    { "slug": "a11y", "de": "Barrierefreiheit", "en": "Accessibility" }
+  ]
+}

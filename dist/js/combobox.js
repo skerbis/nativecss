@@ -359,6 +359,24 @@
     });
   }
 
-  deepQueryAll("input[list]").forEach(enhanceInput);
-  deepQueryAll("select.ncss-select").forEach(enhanceSelect);
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): beim Laden und
+  // bei jedem "ncss-content-change"-Event (detail.root = neu eingefügtes Element, ohne
+  // Angabe das ganze Dokument), siehe js/content-observer.js. enhanceInput()/
+  // enhanceSelect() sind über ihren eigenen data-ncss-combobox-Wächter idempotent - der
+  // bleibt hier bewusst ein Attribut (statt WeakSet), weil das erzeugte Ersatz-Markup
+  // (Trigger/Listbox) direkt daneben im DOM steht und mitkopiert würde; ein zweites
+  // Enhancement der Kopie ergäbe doppelte Trigger.
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var inputs = deepQueryAll("input[list]", root);
+    var selects = deepQueryAll("select.ncss-select", root);
+    if (root.matches && root.matches("input[list]")) inputs.unshift(root);
+    if (root.matches && root.matches("select.ncss-select")) selects.unshift(root);
+    inputs.forEach(enhanceInput);
+    selects.forEach(enhanceSelect);
+  }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
 })();

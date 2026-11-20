@@ -1,0 +1,102 @@
+/**
+ * ncss - Avatar (Layer "components"): rundes Personen-/Konto-Kürzel, wahlweise als Bild
+ * oder als Initialen. Reines CSS, kein JS. Braucht nur colors.css + tokens.css (+ reset/
+ * base) - cherry-pick-fähig.
+ *
+ * Markup:
+ *   <span class="ncss-avatar" role="img" aria-label="Julia Brenner">JB</span>
+ *   <img class="ncss-avatar" src="julia.jpg" alt="Julia Brenner" width="40" height="40">
+ *   <span class="ncss-avatar ncss-avatar--lg"><img src="julia.jpg" alt="Julia Brenner"></span>
+ * Rein dekorativ neben dem ausgeschriebenen Namen: aria-hidden="true" statt role/aria-label
+ * (sonst liest der Screenreader den Namen doppelt vor).
+ *
+ * Größen: --sm / (Default) / --lg / --xl. Farben wie .ncss-badge (100-Fläche +
+ * -on-soft-Text, bleibt in beiden Themes kontrastreich): --brand-2/--neutral/--success/
+ * --warning/--danger. Bewusst KEINE frei berechnete Farbe pro Name (z.B. Hue aus einem
+ * Hash) - das bräuchte rohe Farbwerte außerhalb des Token-Systems.
+ *
+ * Gruppe (überlappend, z.B. "wer arbeitet daran"):
+ *   <ul class="ncss-avatar-group" role="list">
+ *     <li><span class="ncss-avatar" role="img" aria-label="Julia Brenner">JB</span></li>
+ *     ...
+ *     <li><span class="ncss-avatar ncss-avatar--neutral" role="img" aria-label="3 weitere">+3</span></li>
+ *   </ul>
+ */
+
+.ncss-avatar {
+  --ncss-avatar-size: 2.5rem;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--ncss-avatar-size);
+  block-size: var(--ncss-avatar-size);
+  border-radius: var(--ncss-radius-full);
+  overflow: hidden;
+  /* Initialen skalieren mit der Avatar-Größe statt mit der umgebenden Schrift - sonst
+     sprengen zwei Buchstaben einen --sm-Avatar in großer Überschrift. */
+  font-size: calc(var(--ncss-avatar-size) * 0.4);
+  font-weight: var(--ncss-font-weight-bold);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: none;
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+}
+/* Bild direkt als Avatar ODER als einziges Kind eines Avatars - füllt den Kreis immer. */
+img.ncss-avatar,
+.ncss-avatar > img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: var(--ncss-focus-point, 50% 50%);
+}
+img.ncss-avatar {
+  inline-size: var(--ncss-avatar-size);
+  block-size: var(--ncss-avatar-size);
+}
+
+.ncss-avatar--sm { --ncss-avatar-size: 1.75rem; }
+.ncss-avatar--lg { --ncss-avatar-size: 3.5rem; }
+.ncss-avatar--xl { --ncss-avatar-size: 5rem; }
+
+.ncss-avatar--brand-2 { background-color: var(--ncss-color-brand-2-100); color: var(--ncss-color-brand-2-on-soft); }
+.ncss-avatar--neutral { background-color: var(--ncss-color-neutral-100); color: var(--ncss-color-neutral-on-soft); }
+.ncss-avatar--success { background-color: var(--ncss-color-success-100); color: var(--ncss-color-success-on-soft); }
+.ncss-avatar--warning { background-color: var(--ncss-color-warning-100); color: var(--ncss-color-warning-on-soft); }
+.ncss-avatar--danger { background-color: var(--ncss-color-danger-100); color: var(--ncss-color-danger-on-soft); }
+
+/* --- Gruppe ------------------------------------------------------------------------------
+   Überlappung per negativem margin-inline-start (logisch, kippt in RTL automatisch mit).
+   Der Ring in Seitenfarbe trennt die Kreise optisch - box-shadow statt border, damit die
+   Avatar-Größe selbst unverändert bleibt. Auf farbiger Fläche --ncss-avatar-ring auf
+   deren Hintergrundfarbe setzen. */
+.ncss-avatar-group {
+  --ncss-avatar-ring: var(--ncss-color-bg);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.ncss-avatar-group > :not(.ncss-avatar) {
+  display: flex;
+}
+.ncss-avatar-group > * + * {
+  /* Feste, kleine Überlappung statt eines fluiden Space-Tokens - die Initialen des
+     vorderen Kreises müssen lesbar bleiben. */
+  margin-inline-start: -0.5rem;
+}
+.ncss-avatar-group .ncss-avatar {
+  box-shadow: 0 0 0 2px var(--ncss-avatar-ring);
+}
+
+/* Hochkontrastmodus: Hintergrundflächen verschwinden, der Kreis wäre unsichtbar - ein
+   echter Rahmen macht die Form wieder erkennbar. */
+@media (forced-colors: active) {
+  .ncss-avatar {
+    border: var(--ncss-border-width) solid CanvasText;
+  }
+}

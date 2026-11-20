@@ -1,0 +1,178 @@
+<!--HEAD:
+<style>
+  .demo-section-title {
+    border-block-end: 1px solid var(--ncss-color-border);
+    padding-block-end: var(--ncss-space-2xs);
+  }
+  .demo-footer-brand {
+    color: var(--ncss-color-text);
+  }
+  .guides-layout {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: var(--ncss-space-xl);
+    align-items: start;
+  }
+  /* Grid-Items haben denselben min-width:auto-Default wie Flex-Items (siehe
+     components/nav.css/topbar.css für dieselbe Falle) - ohne das hier schrumpfen sie
+     nicht unter ihre Inhaltsbreite, sprengen die eigene Spalte/den Viewport. */
+  .guides-layout > * {
+    min-width: 0;
+  }
+  .guides-sidebar {
+    position: sticky;
+    top: calc(var(--ncss-topbar-height) + var(--ncss-space-md));
+  }
+  @media (max-width: 47.99rem) {
+    .guides-layout {
+      grid-template-columns: 1fr;
+    }
+    .guides-sidebar {
+      position: static;
+    }
+  }
+  .guide-result {
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    padding: var(--ncss-space-sm);
+  }
+  .guide-resize {
+    resize: horizontal;
+    overflow: auto;
+    min-width: 14rem;
+    max-width: 100%;
+  }
+  .guide-demo-box {
+    background-color: var(--ncss-color-bg-subtle);
+    border-radius: var(--ncss-radius-sm);
+    padding: var(--ncss-space-xs);
+    text-align: center;
+    font-size: var(--ncss-font-size-sm);
+  }
+  .guide-breakpoint-demo {
+    background-color: var(--ncss-color-danger-100);
+    color: var(--ncss-color-danger-on-soft);
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    text-align: center;
+  }
+  /* -- ncss breakpoint: md (768px) -- */
+  @media (min-width: 48rem) {
+    .guide-breakpoint-demo {
+      background-color: var(--ncss-color-success-100);
+      color: var(--ncss-color-success-on-soft);
+    }
+  }
+</style>
+-->
+  <div class="ncss-stack ncss-stack--loose">
+
+    
+
+    <div class="ncss-stack ncss-stack--loose">
+
+      <section class="ncss-stack">
+        <h1>Guides</h1>
+        <p class="ncss-text-lg ncss-text-muted">Task-based, step-by-step examples, all reproducible live on this page. For the pure token/class reference, see <a href="all-components.html">the docs</a>.</p>
+      </section>
+
+      <section id="abschnitt" class="ncss-stack">
+        <h2 class="demo-section-title">1. Build your own section</h2>
+        <p>For your own pages, three building blocks are usually enough: a <code>.ncss-container</code> for the column width, <code>.ncss-stack</code> for vertical rhythm between the children, and if needed a <code>.ncss-py-*</code> class for extra inner padding at the top/bottom.</p>
+        <pre><code class="language-html">&lt;section class="ncss-container ncss-stack ncss-py-lg"&gt;
+  &lt;h2&gt;Title&lt;/h2&gt;
+  &lt;p&gt;Text ...&lt;/p&gt;
+  &lt;button class="ncss-btn ncss-btn--primary"&gt;Action&lt;/button&gt;
+&lt;/section&gt;</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+        <section class="ncss-container ncss-stack ncss-py-lg guide-result">
+          <h3>Title</h3>
+          <p>Text ...</p>
+          <button type="button" class="ncss-btn ncss-btn--primary">Action</button>
+        </section>
+        <p class="ncss-text-sm ncss-text-muted"><code>.ncss-stack</code> sets <code>gap: var(--ncss-space-md)</code> between ALL direct children - no manual margin per element needed. For tighter/wider spacing use <code>.ncss-stack--tight</code>/<code>--loose</code> instead of inventing a new number.</p>
+      </section>
+
+      <section id="abstaende" class="ncss-stack">
+        <h2 class="demo-section-title">2. Spacing: three levels, as needed</h2>
+        <p>Before reaching for a new utility class, let alone a magic number, check in this order:</p>
+        <ol>
+          <li><strong>Do nothing.</strong> base.css already gives paragraphs/headings/lists etc. a sensible <code>margin-block-end</code> - the normal case needs no class at all.</li>
+          <li><strong>Utility class.</strong> <code>.ncss-py-*</code>/<code>.ncss-px-*</code>/<code>.ncss-mb-*</code>/<code>.ncss-gap-*</code> (helpers/layout.css, four steps each: sm/md/lg/xl) cover most cases.</li>
+          <li><strong>Token directly, as a last resort.</strong> For a combination that doesn't exist as a class: <code>style="padding-inline-start: var(--ncss-space-2xl)"</code> is fine - it's a TOKEN, not a magic number. What is NOT fine: <code>style="padding: 17px"</code>.</li>
+        </ol>
+        <p>All three levels use the same <code>--ncss-space-*</code> tokens - these are already fluid (<code>clamp()</code>), so automatically "responsive" without breakpoints: the same spacing scales smoothly between a minimum and a maximum viewport width. Resize the window to see it:</p>
+        <div class="guide-demo-box guide-resize ncss-py-lg ncss-px-lg">.ncss-py-lg .ncss-px-lg - make the box narrower</div>
+      </section>
+
+      <section id="grid" class="ncss-stack">
+        <h2 class="demo-section-title">3. Responsive grid without breakpoints</h2>
+        <p><code>.ncss-grid</code> is an intrinsic grid (<code>repeat(auto-fit, minmax(var(--ncss-grid-min), 1fr))</code>) - it counts columns based on the available width, not on fixed breakpoints. It automatically responds to the CONTAINER (not just the viewport), so it also works correctly in a narrow sidebar.</p>
+        <pre><code class="language-html">&lt;div class="ncss-grid" style="--ncss-grid-min: 10rem;"&gt;
+  &lt;div&gt;Card 1&lt;/div&gt;
+  &lt;div&gt;Card 2&lt;/div&gt;
+  &lt;div&gt;Card 3&lt;/div&gt;
+  &lt;div&gt;Card 4&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Live - drag the bottom-right corner of the box to resize it, no media query involved:</p>
+        <div class="guide-resize guide-result">
+          <div class="ncss-grid" style="--ncss-grid-min: 10rem;">
+            <div class="guide-demo-box">Card 1</div>
+            <div class="guide-demo-box">Card 2</div>
+            <div class="guide-demo-box">Card 3</div>
+            <div class="guide-demo-box">Card 4</div>
+          </div>
+        </div>
+        <p class="ncss-text-sm ncss-text-muted"><code>--ncss-grid-min</code> is a custom-property parameter, not a decorative inline style (see conventions in the docs) - the higher the value, the sooner a column drops.</p>
+      </section>
+
+      <section id="breakpoint" class="ncss-stack">
+        <h2 class="demo-section-title">4. When you really need a breakpoint jump</h2>
+        <p>Not every case is fluid - sometimes something should change fundamentally at a FIXED width (e.g. navigation switching from hamburger to full menu). For that, use the documented breakpoint convention from tokens.css, in its own <code>@media</code> rule:</p>
+        <pre><code class="language-css">.mein-element {
+  background-color: var(--ncss-color-danger-100);
+}
+/* -- ncss breakpoint: md (768px) -- */
+@media (min-width: 48rem) {
+  .mein-element {
+    background-color: var(--ncss-color-success-100);
+  }
+}</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Live - make the BROWSER WINDOW narrower/wider than 768px (a real media query, not a container query, so an inner box won't respond here):</p>
+        <div class="guide-breakpoint-demo">Red below 768px, green from 768px</div>
+        <p class="ncss-text-sm ncss-text-muted">Important: <code>var()</code> currently works in NO browser inside the <code>@media</code> condition itself (<code>@media (min-width: var(--x))</code> is invalid) - the number (<code>48rem</code>) has to be written there directly. The comment <code>-- ncss breakpoint: md --</code> in front of it records that it follows the documented convention instead of inventing a new number.</p>
+      </section>
+
+      <section id="fokuspunkt" class="ncss-stack">
+        <h2 class="demo-section-title">5. Set the focal point for cropped images</h2>
+        <p>Wherever NativeCSS uses <code>object-fit: cover</code> (ratio helpers, card media, video), <code>--ncss-focus-point</code> (default <code>center</code>) controls the crop:</p>
+        <pre><code class="language-html">&lt;div class="ncss-ratio-square" style="--ncss-focus-point: 20% 80%;"&gt;
+  &lt;img src="photo.jpg" alt="..."&gt;
+&lt;/div&gt;</code></pre>
+        <p class="ncss-text-sm ncss-text-muted">Detailed example you can compare live: <a href="~/demo/media.html#bilder">media.html#bilder</a>.</p>
+      </section>
+
+      <section id="komponente" class="ncss-stack">
+        <h2 class="demo-section-title">6. Create your own component</h2>
+        <ol>
+          <li>New file under <code>components/</code>, e.g. <code>components/my-component.css</code>.</li>
+          <li>Use only <code>var(--ncss-*)</code> - no hard-coded values. If a token is missing, add it to <code>tokens.css</code>/<code>colors.css</code> first.</li>
+          <li>Import it in <code>ncss.css</code>, in the <code>components</code> layer: <code>@import url("components/my-component.css") layer(components);</code></li>
+          <li>Verify with Playwright in a real browser - especially dark mode (contrast!).</li>
+        </ol>
+        <p class="ncss-text-sm ncss-text-muted">A real example to study: <code>components/sparkline.css</code> (small, self-contained, a good template for the scope a single component should have).</p>
+      </section>
+
+      <section id="wa-erweitern" class="ncss-stack">
+        <h2 class="demo-section-title">7. Theme a new Web Awesome component</h2>
+        <ol>
+          <li>Read the local reference docs FIRST: <code>vendor/webawesome/dist-cdn/skills/webawesome/references/components/&lt;name&gt;.md</code> - more reliable than the public docs site (see docs, pitfall 0).</li>
+          <li>Check which <code>--wa-color-*</code>/<code>--wa-*</code> variables the component actually uses.</li>
+          <li>Add them to <code>webawesome-bridge.css</code>, referencing only ncss tokens - no values of your own.</li>
+          <li>Put the component tag into the markup once; the autoloader loads the rest automatically - no manual import needed.</li>
+          <li>Verify in BOTH themes with Playwright (see docs, pitfall 2 - the most common bridge error source is dark-mode contrast).</li>
+        </ol>
+      </section>
+
+    </div>
+  </div>

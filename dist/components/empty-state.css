@@ -1,0 +1,74 @@
+/**
+ * ncss - Leerzustand (Layer "components"): "Noch keine Einträge", "Keine Treffer",
+ * "Alles erledigt" - zentrierter Hinweis mit optionalem Icon und Aktion statt einer
+ * stummen, leeren Fläche. Reines CSS. Braucht colors.css + tokens.css (+ reset/base);
+ * Buttons darin kommen aus helpers/forms.css (.ncss-btn).
+ *
+ * Markup:
+ *   <div class="ncss-empty">
+ *     <span class="ncss-empty-icon" aria-hidden="true"><svg>...</svg></span>
+ *     <h3 class="ncss-empty-title">Keine offenen Tickets</h3>
+ *     <p>Neue Meldungen von Mietern erscheinen hier automatisch.</p>
+ *     <div class="ncss-empty-actions">
+ *       <a class="ncss-btn ncss-btn--primary" href="#neu">Ticket anlegen</a>
+ *     </div>
+ *   </div>
+ * Wird der Leerzustand erst NACH einer Aktion sichtbar (Filter ergibt nichts, Liste per
+ * fetch geleert), role="status" auf .ncss-empty setzen, damit Screenreader den Wechsel
+ * ansagen. Überschriften-Ebene passend zur Umgebung wählen - die Klasse bestimmt nur die
+ * Optik. Rahmen (z.B. gestrichelt) bewusst nicht eingebaut, siehe helpers/elevation.css.
+ */
+
+.ncss-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ncss-space-2xs);
+  padding: var(--ncss-space-lg) var(--ncss-space-sm);
+  text-align: center;
+  color: var(--ncss-color-text-muted);
+}
+.ncss-empty > * {
+  margin: 0;
+  max-inline-size: 40ch;
+}
+.ncss-empty-icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  margin-block-end: var(--ncss-space-2xs);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-neutral-100);
+  color: var(--ncss-color-neutral-on-soft);
+  font-size: 1.5rem;
+}
+.ncss-empty-icon > svg,
+.ncss-empty-icon > img {
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+}
+.ncss-empty-title {
+  font-size: var(--ncss-font-size-lg);
+  color: var(--ncss-color-text);
+}
+.ncss-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--ncss-space-xs);
+  margin-block-start: var(--ncss-space-xs);
+  max-inline-size: none;
+}
+/* Kompakt, z.B. innerhalb einer Tabelle/Karte statt als ganze Seitenfläche. */
+.ncss-empty--compact {
+  padding: var(--ncss-space-sm);
+}
+.ncss-empty--compact .ncss-empty-icon {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  font-size: 1.1rem;
+}
+.ncss-empty--compact .ncss-empty-title {
+  font-size: var(--ncss-font-size-md);
+}

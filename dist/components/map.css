@@ -1,0 +1,245 @@
+/**
+ * ncss - <ncss-map> (Layer "components"): interaktive Karte mit MapLibre GL, Script
+ * js/map.js. Datenschutz per Proxy-Attribut und Zwei-Klick-Modus, siehe dort.
+ *
+ *   <ncss-map lat="53.48" lng="13.26" zoom="12" label="Tollensesee" consent>
+ *     <p><strong>Tollensesee</strong>, Mecklenburg-Vorpommern</p>
+ *     <p><a href="https://www.openstreetmap.org/…">In OpenStreetMap öffnen</a></p>
+ *   </ncss-map>
+ *
+ * Zustände (data-state, vom Script gesetzt): idle (wartet auf Sichtweite), consent
+ * (Zwei-Klick-Hinweis), loading, ready, error. Ohne JS bzw. vor der Definition ist der
+ * Inhalt des Elements ein normaler Kasten - nie leer. Mit JS ist die Fläche schon vor dem
+ * Laden reserviert (Raster-Platzhalter), nichts springt. Fertig gezeichnet liegt die Karte
+ * über dem Ersatzinhalt; der bleibt für Screenreader im Baum und erscheint bei
+ * Tastatur-Fokus unten über der Karte. fallback="below" lässt ihn sichtbar darunter.
+ *
+ * Anpassbar: --ncss-map-height (Default clamp(16rem, 55vh, 28rem)), --ncss-map-radius,
+ * --ncss-map-accent (Markierung, Button), --ncss-map-bg, --ncss-map-line (Raster).
+ *
+ * Benötigt: tokens.css + colors.css. Die MapLibre-Styles (vendor/maplibre/maplibre-gl.css)
+ * lädt das Script selbst - in den Unter-Layer components.maplibre, damit die Regeln hier
+ * ohne Spezifitäts-Kampf gewinnen.
+ */
+
+ncss-map {
+  --ncss-map-height: clamp(16rem, 55vh, 28rem);
+  --ncss-map-radius: var(--ncss-radius-lg, 0.75rem);
+  --ncss-map-accent: var(--ncss-color-brand, #2563eb);
+  --ncss-map-bg: var(--ncss-color-bg-subtle, #f1f1f3);
+  --ncss-map-line: color-mix(in oklab, var(--ncss-color-border, #d4d4d8) 70%, transparent);
+  position: relative;
+  display: block;
+  border: 1px solid var(--ncss-color-border, #d4d4d8);
+  border-radius: var(--ncss-map-radius);
+  background-color: var(--ncss-map-bg);
+  background-image:
+    linear-gradient(var(--ncss-map-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ncss-map-line) 1px, transparent 1px);
+  background-size: 2.75rem 2.75rem;
+  color: var(--ncss-color-text, inherit);
+  overflow: clip;
+}
+
+/* Ohne JS / vor der Definition: der Inhalt ist der Kasten */
+ncss-map:not(:defined) {
+  padding: var(--ncss-space-md, 1rem);
+}
+ncss-map:not(:defined) > :first-child { margin-block-start: 0; }
+ncss-map:not(:defined) > :last-child { margin-block-end: 0; }
+
+/* Mit JS: Fläche reservieren. Eine Rasterzelle, Bühne + Ersatzinhalt + Hinweis liegen
+   übereinander; wächst mit, wenn der Ersatzinhalt länger ist als die Karte hoch. */
+ncss-map:defined {
+  display: grid;
+  grid-template-areas: "map";
+  grid-template-rows: minmax(var(--ncss-map-height), auto);
+  grid-template-columns: minmax(0, 1fr);
+}
+ncss-map:defined > * {
+  grid-area: map;
+  min-width: 0;
+}
+
+.ncss-map-fallback {
+  z-index: 1;
+  align-self: start;
+  padding: var(--ncss-space-md, 1rem);
+
+  & > :first-child { margin-block-start: 0; }
+  & > :last-child { margin-block-end: 0; }
+}
+
+/* Bühne = MapLibre-Container; sichtbar erst, wenn fertig gezeichnet */
+.ncss-map-stage {
+  position: relative;
+  z-index: 0;
+  min-block-size: var(--ncss-map-height);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+ncss-map[data-state="ready"] .ncss-map-stage {
+  z-index: 2;
+  opacity: 1;
+}
+
+/* Fertig: Ersatzinhalt visuell versteckt, bleibt im Accessibility Tree. Bekommt ein Link
+   darin den Tastatur-Fokus, erscheint er unten über der Karte. */
+ncss-map[data-state="ready"]:not([fallback="below"]) > .ncss-map-fallback:not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+ncss-map[data-state="ready"]:not([fallback="below"]) > .ncss-map-fallback:focus-within {
+  z-index: 3;
+  align-self: end;
+  margin: var(--ncss-space-sm, 0.5rem);
+  padding: var(--ncss-space-sm, 0.5rem) var(--ncss-space-md, 1rem);
+  border-radius: var(--ncss-radius-md, 0.5rem);
+  background: var(--ncss-color-surface, #fff);
+  box-shadow: var(--ncss-shadow-md, 0 4px 12px rgb(0 0 0 / 0.15));
+}
+
+/* fallback="below": Karte oben, Ersatzinhalt dauerhaft sichtbar darunter */
+ncss-map:defined[fallback="below"] {
+  grid-template-areas: "map" "info";
+  grid-template-rows: var(--ncss-map-height) auto;
+}
+ncss-map[fallback="below"] > .ncss-map-fallback {
+  grid-area: info;
+  background: var(--ncss-color-surface, #fff);
+  border-block-start: 1px solid var(--ncss-color-border, #d4d4d8);
+}
+
+/* Zwei-Klick-Hinweis */
+.ncss-map-consent {
+  z-index: 2;
+  align-self: end;
+  justify-self: center;
+  display: grid;
+  justify-items: center;
+  gap: var(--ncss-space-xs, 0.5rem);
+  inline-size: min(100% - 2 * var(--ncss-space-sm, 0.5rem), 30rem);
+  margin: var(--ncss-space-sm, 0.5rem);
+  padding: var(--ncss-space-sm, 0.75rem) var(--ncss-space-md, 1rem);
+  border-radius: var(--ncss-radius-md, 0.5rem);
+  background: var(--ncss-color-surface, #fff);
+  box-shadow: var(--ncss-shadow-md, 0 4px 12px rgb(0 0 0 / 0.15));
+  text-align: center;
+}
+.ncss-map-note {
+  margin: 0;
+  font-size: var(--ncss-font-size-sm, 0.875rem);
+  line-height: 1.45;
+  color: var(--ncss-color-text-muted, inherit);
+
+  & a { color: var(--ncss-color-text, inherit); }
+}
+.ncss-map-show {
+  min-block-size: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--ncss-radius-full, 999px);
+  background: var(--ncss-map-accent);
+  color: var(--ncss-color-brand-contrast, #fff);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { background: color-mix(in oklab, var(--ncss-map-accent) 85%, black); }
+}
+ncss-map[data-state="loading"] .ncss-map-show {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.ncss-map-error {
+  margin-block-end: var(--ncss-space-sm, 0.5rem);
+  font-weight: 600;
+}
+
+/* Markierung (Tropfenform im Kind - das Element selbst verschiebt MapLibre per transform) */
+.ncss-map-marker {
+  inline-size: 1.875rem;
+  block-size: 2.3rem; /* Spitze der gedrehten Form (15px + 30px·√2÷2) = Anker unten */
+}
+.ncss-map-pin {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 1.875rem;
+  block-size: 1.875rem;
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: var(--ncss-map-accent);
+  box-shadow: 0 3px 8px rgb(0 0 0 / 0.3);
+  rotate: -45deg;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0.4375rem;
+    border-radius: 50%;
+    background: #fff;
+  }
+}
+
+/* Fokus: Karte selbst (Canvas) und MapLibre-Bedienelemente */
+ncss-map .maplibregl-canvas:focus-visible,
+ncss-map .maplibregl-ctrl button:focus-visible,
+ncss-map .maplibregl-ctrl-attrib-button:focus-visible,
+ncss-map .maplibregl-ctrl-attrib a:focus-visible,
+.ncss-map-show:focus-visible,
+.ncss-map-fallback a:focus-visible {
+  outline: var(--ncss-focus-ring-width, 3px) solid var(--ncss-color-focus-ring, var(--ncss-map-accent));
+  outline-offset: 2px;
+  box-shadow: none;
+}
+ncss-map .maplibregl-canvas:focus-visible {
+  outline-offset: calc(-1 * var(--ncss-focus-ring-width, 3px));
+}
+
+ncss-map .maplibregl-ctrl-attrib {
+  font-size: 0.6875rem;
+}
+ncss-map .maplibregl-cooperative-gesture-screen {
+  font-size: var(--ncss-font-size-base, 1rem);
+}
+
+/* Dunkelmodus (data-dark setzt das Script, sobald der dunkle Stil aktiv ist):
+   Bedienelemente passend zur dunklen Karte */
+ncss-map[data-dark] .maplibregl-ctrl-group,
+ncss-map[data-dark] .maplibregl-ctrl-attrib {
+  background: color-mix(in oklab, var(--ncss-color-surface, #1f1f23) 92%, transparent);
+  color: var(--ncss-color-text, #eee);
+}
+ncss-map[data-dark] .maplibregl-ctrl-attrib a {
+  color: inherit;
+}
+ncss-map[data-dark] .maplibregl-ctrl-group button .maplibregl-ctrl-icon,
+ncss-map[data-dark] .maplibregl-ctrl-attrib-button {
+  filter: invert(1);
+}
+ncss-map[data-dark] .maplibregl-ctrl-group button + button {
+  border-color: var(--ncss-color-border, #444);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) .ncss-map-stage { transition: none; }
+}
+:root[data-motion="reduce"] .ncss-map-stage { transition: none; }
+
+/* Forced Colors: Systemfarben, Markierung bleibt erkennbar */
+@media (forced-colors: active) {
+  ncss-map { border-color: CanvasText; background-image: none; }
+  .ncss-map-consent,
+  ncss-map[data-state="ready"] > .ncss-map-fallback:focus-within { border: 1px solid CanvasText; }
+  .ncss-map-show { border-color: ButtonText; background: ButtonFace; color: ButtonText; }
+  .ncss-map-pin { forced-color-adjust: none; background: Highlight; border-color: Canvas; }
+  .ncss-map-pin::after { background: Canvas; }
+}

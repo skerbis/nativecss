@@ -1,0 +1,148 @@
+<!--DESC: 200 % Zoom, Reflow auf 320 CSS-Pixel, fließende Schrift, Textabstände und Zielgrößen - was ncss mitbringt und worauf du achten musst.-->
+<section class="ncss-stack">
+  <h1>Zoom, Reflow &amp; Textabstände</h1>
+  <p class="ncss-text-lg ncss-text-muted">Viele Menschen vergrößern Seiten, stellen größere Schrift ein oder überschreiben Zeilen- und Buchstabenabstände. Eine Seite muss das aushalten, ohne dass Inhalte abgeschnitten werden, überlappen oder nur noch per Querscrollen erreichbar sind.</p>
+</section>
+
+<section class="ncss-stack" id="zoom">
+  <h2 class="demo-section-title">200 % Zoom und Textgröße (WCAG 1.4.4)</h2>
+  <p>Text muss sich ohne Hilfstechnik auf 200&nbsp;% vergrößern lassen, ohne dass Inhalt oder Funktion verloren gehen. Dafür gibt es zwei Wege, und beide müssen funktionieren:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Seitenzoom</strong> (<kbd class="ncss-kbd">Strg</kbd>/<kbd class="ncss-kbd">⌘</kbd> + <kbd class="ncss-kbd">+</kbd>) vergrößert alles - Schrift, Abstände, Bilder. Der Viewport wird dabei rechnerisch schmaler, die Seite wechselt in ihr schmaleres Layout.</li>
+    <li><strong>Nur-Text-Vergrößerung</strong> (Firefox "Nur Text zoomen", Schriftgröße in den Browser- oder Systemeinstellungen) ändert nur die Basisschriftgröße. Das funktioniert nur, wenn Schriftgrößen relativ (<code>rem</code>/<code>em</code>) angegeben sind.</li>
+  </ul>
+  <p>ncss setzt <code>text-size-adjust: 100%</code> in <code>reset.css</code>: das verhindert die automatische Textvergrößerung von iOS beim Drehen, blockiert aber nicht den Pinch-Zoom. Blockiere Zoom nie im Viewport-Meta-Tag - <code>user-scalable=no</code> oder <code>maximum-scale=1</code> sind ein Barrierefreiheitsfehler.</p>
+  <pre><code class="language-html">&lt;!-- Richtig --&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+
+&lt;!-- Falsch: sperrt den Zoom --&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="fluide-schrift">
+  <h2 class="demo-section-title">Fließende Schrift mit clamp() und rem</h2>
+  <p>Alle Schriftgrößen-Tokens in <code>tokens.css</code> sind fließend: <code>clamp(min, bevorzugt, max)</code>. Der bevorzugte Wert mischt bewusst einen festen <code>rem</code>-Anteil mit einem kleinen <code>vw</code>-Anteil. Reines <code>vw</code> würde den Nutzer-Zoom ignorieren (die Schrift hängt dann nur an der Fensterbreite) - der <code>rem</code>-Anteil sorgt dafür, dass eine größere Browser-Schriftgröße weiter wirkt.</p>
+  <pre><code class="language-css">/* aus tokens.css */
+--ncss-font-size-base: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+--ncss-font-size-xl:   clamp(1.8rem, 1.5rem + 1.5vw, 2.6rem);</code></pre>
+  <p>Für eigene Größen gilt dasselbe: Schrift in <code>rem</code> (oder über die Tokens), nie in <code>px</code> und nie nur in <code>vw</code>. Zeilenhöhen setzt ncss ohne Einheit (<code>--ncss-line-height-base: 1.6</code>) - sie wachsen so mit jeder Schriftgröße mit.</p>
+  <p>Eine Grenze von <code>clamp()</code>: Der Maximalwert ist eine feste <code>rem</code>-Größe. Beim Seitenzoom wächst <code>rem</code> mit, die Obergrenze also auch - die Kombination bleibt zoom-tauglich. Prüfe eigene <code>clamp()</code>-Werte trotzdem bei 200&nbsp;%: ein zu kleiner Maximalwert kann verhindern, dass Text tatsächlich doppelt so groß wird.</p>
+</section>
+
+<section class="ncss-stack" id="reflow">
+  <h2 class="demo-section-title">Reflow auf 320 CSS-Pixel (WCAG 1.4.10)</h2>
+  <p>Bei einer Breite von 320 CSS-Pixeln (das entspricht 400&nbsp;% Zoom bei einem 1280&nbsp;px breiten Fenster) muss der Inhalt in einer Spalte lesbar sein, ohne horizontal zu scrollen. Ausgenommen sind Inhalte, die eine zweidimensionale Anordnung brauchen - Datentabellen, Karten, Diagramme, Code.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><code>.ncss-grid</code> nutzt <code>repeat(auto-fit, minmax(min(var(--ncss-grid-min), 100%), 1fr))</code>. Das <code>min(…, 100%)</code> verhindert, dass eine Spalte breiter als ihr Container wird - bei 320&nbsp;px bleibt eine Spalte übrig, ganz ohne Media Query.</li>
+    <li><code>reset.css</code> setzt <code>max-width: 100%</code> auf <code>img</code>, <code>video</code>, <code>svg</code> und <code>canvas</code>, und <code>overflow-wrap: break-word</code> auf Absätze und Überschriften - lange Wörter und URLs brechen um, statt das Layout zu sprengen.</li>
+    <li>Tabellen stehen in <code>.ncss-table-scroll</code>: die Tabelle scrollt horizontal in ihrem eigenen Rahmen, die Seite nicht. Das ist durch die Ausnahme für zweidimensionale Inhalte gedeckt. Damit Tastaturnutzer den Rahmen auch in älteren Browsern scrollen können, gib ihm <code>tabindex="0"</code>, <code>role="region"</code> und einen Namen (<code>aria-label</code>).</li>
+    <li>Die Kopfleiste dieser Website wird zwischen 320 und 1920&nbsp;px auf Umbruch geprüft. Für eigene Navigationen: <code>&lt;ncss-nav-priority&gt;</code> verschiebt überzählige Einträge in ein "Mehr"-Menü, statt sie abzuschneiden.</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-table-scroll" tabindex="0" role="region" aria-label="Preistabelle"&gt;
+  &lt;table&gt;...&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="container-queries">
+  <h2 class="demo-section-title">Container Queries statt Viewport-Breakpoints</h2>
+  <p>Beim Zoomen ändert sich nicht nur der Viewport, sondern auch der Platz, den jede Komponente in ihrer Spalte hat. Container Queries reagieren genau darauf: <code>.ncss-container</code> und <code>.ncss-card-container</code> setzen <code>container-type: inline-size</code>, Varianten wie <code>.ncss-grid--cols-3</code> oder <code>.ncss-card--horizontal</code> schalten über <code>@container</code> erst um, wenn ihr eigener Container breit genug ist. Eine Karte in einer schmalen Seitenleiste bleibt dadurch auch bei 200&nbsp;% einspaltig, selbst wenn das Fenster noch breit ist.</p>
+  <p>Container-Query-Grenzen in <code>rem</code> angeben (ncss: <code>24rem</code>, <code>36rem</code>, <code>48rem</code>, <code>56rem</code>) - dann wandern sie bei größerer Schrift mit.</p>
+</section>
+
+<section class="ncss-stack" id="textabstaende">
+  <h2 class="demo-section-title">Textabstände (WCAG 1.4.12)</h2>
+  <p>Wer per Browser-Erweiterung oder eigenem Stylesheet folgende Werte setzt, darf keinen Inhalt verlieren:</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Eigenschaft</th><th scope="col">Mindestwert (bezogen auf die Schriftgröße)</th></tr></thead>
+      <tbody>
+        <tr><td>Zeilenhöhe</td><td>1,5</td></tr>
+        <tr><td>Abstand nach Absätzen</td><td>2-fach</td></tr>
+        <tr><td>Buchstabenabstand</td><td>0,12-fach</td></tr>
+        <tr><td>Wortabstand</td><td>0,16-fach</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>ncss erfüllt die Zeilenhöhe im Fließtext bereits von Haus aus (1,6). Entscheidend ist, dass Boxen mitwachsen: Buttons, Badges und Karten in ncss haben keine feste Höhe, sondern ergeben sich aus Padding und Inhalt. Icon-Buttons (<code>.ncss-btn--icon</code>) rechnen ihre Kantenlänge aus <code>1lh</code> - sie wachsen mit der Zeilenhöhe.</p>
+  <p><strong>Aufpassen</strong>: <code>.ncss-clamp-lines</code> kürzt Text per <code>line-clamp</code> auf wenige Zeilen. Mit größeren Abständen verschwindet dann mehr Text. Für wichtigen Inhalt nur zusammen mit einem Weg zum vollständigen Text einsetzen (Link zur Detailseite, <code>&lt;details&gt;</code>).</p>
+  <p>Zum Testen dieses CSS in den Entwicklerwerkzeugen einfügen (oder ein "Text Spacing"-Bookmarklet nutzen):</p>
+  <pre><code class="language-css">* {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+p {
+  margin-block-end: 2em !important;
+}</code></pre>
+</section>
+
+<section class="ncss-stack" id="hoehen">
+  <h2 class="demo-section-title">Keine festen Höhen für Text</h2>
+  <p>Die häufigste Ursache für abgeschnittenen Text bei Zoom ist eine feste <code>height</code> auf einem Element, das Text enthält - zusammen mit <code>overflow: hidden</code> verschwindet der Rest, ohne <code>overflow: hidden</code> überlappt er das Nächste.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Statt <code>height</code> lieber <code>min-height</code>/<code>min-block-size</code> oder gar nichts - Padding und Inhalt bestimmen die Höhe.</li>
+    <li>Für Bildflächen <code>aspect-ratio</code> (<code>.ncss-ratio-video</code> &amp; Co.) statt fester Höhen. Text gehört nicht in eine Box mit festem Seitenverhältnis, außer sie darf wachsen.</li>
+    <li>Hero- und Vollbild-Sektionen mit <code>min-height</code> statt <code>height</code> anlegen: <code>.ncss-hero</code> nutzt <code>min-height</code>, wächst also mit dem Inhalt.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="viewport-einheiten">
+  <h2 class="demo-section-title">svh, dvh und Zoom</h2>
+  <p>Viewport-Einheiten bleiben beim Zoomen gleich groß, während die Schrift wächst. Eine Box mit <code>height: 100svh</code> und viel Text darin läuft bei 200&nbsp;% fast sicher über. Volle Bildschirmhöhe deshalb als <strong>Mindesthöhe</strong> verwenden (<code>min-height: 100svh</code>), nie als feste Höhe für Text.</p>
+  <p>Welche Einheit ncss wofür nutzt (<code>svh</code> für Modal und Off-Canvas, <code>lvh</code> für scroll-gekoppelte Effekte, warum <code>dvh</code> dort ruckelt): <a href="touch-mobile.html#viewport-einheiten">Touch &amp; mobile Viewports</a>.</p>
+  <pre><code class="language-css">/* Gut: wächst mit dem Inhalt */
+.demo-intro { min-height: 100svh; }
+
+/* Schlecht: Text läuft bei Zoom über */
+.demo-intro { height: 100svh; overflow: hidden; }</code></pre>
+</section>
+
+<section class="ncss-stack" id="zielgroesse">
+  <h2 class="demo-section-title">Zielgröße (WCAG 2.5.8)</h2>
+  <p>Klick- und Tippziele müssen mindestens 24 × 24 CSS-Pixel groß sein - oder so viel Abstand haben, dass ein Kreis mit 24&nbsp;px Durchmesser um ihre Mitte kein anderes Ziel berührt. Ausgenommen sind Links im Fließtext.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><code>.ncss-btn</code> ergibt sich aus Zeilenhöhe plus Padding und liegt bei Standard-Schriftgröße bei etwa 42&nbsp;px Höhe, <code>.ncss-btn--sm</code> bei etwa 30&nbsp;px - beide über 24&nbsp;px.</li>
+    <li>Checkboxen und Radios in <code>.ncss-choice</code> sind selbst nur etwa 18&nbsp;px groß (<code>--ncss-choice-size: 1.1em</code>). Das ist in Ordnung, solange das <code>&lt;label&gt;</code> mit dem Text das Feld umschließt oder per <code>for</code> verknüpft ist - dann zählt die ganze Zeile als Ziel.</li>
+    <li>Eigene kleine Icon-Links (Social-Media-Leisten, Schließen-Kreuze) brauchen genug Padding oder Abstand. 44 × 44&nbsp;px ist die komfortablere Empfehlung (WCAG 2.5.5, AAA).</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Selbst ausprobieren</h2>
+  <p>Die drei Karten unten stehen in einem <code>.ncss-grid</code>. Vergrößere die Seite mit <kbd class="ncss-kbd">Strg</kbd>/<kbd class="ncss-kbd">⌘</kbd> + <kbd class="ncss-kbd">+</kbd> schrittweise auf 200&nbsp;% und weiter auf 400&nbsp;%: die Karten rücken erst zu zwei, dann zu einer Spalte zusammen, Text und Buttons wachsen mit, nichts wird abgeschnitten und die Seite scrollt nicht seitlich.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel">
+    <div class="ncss-grid" style="--ncss-grid-min: 13rem">
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <h3>Fließende Schrift</h3>
+          <p>Schriftgrößen aus <code>clamp()</code> mit <code>rem</code>-Anteil wachsen mit dem Zoom.</p>
+          <p><a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#fluide-schrift">Mehr dazu</a></p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <h3>Reflow</h3>
+          <p>Das Raster bricht ohne Media Query in weniger Spalten um.</p>
+          <p><a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#reflow">Mehr dazu</a></p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-border ncss-radius-lg">
+        <div class="ncss-card-body">
+          <h3>Keine feste Höhe</h3>
+          <p>Karten und Buttons ergeben sich aus Inhalt und Padding.</p>
+          <p><a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="#hoehen">Mehr dazu</a></p>
+        </div>
+      </article>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-grid" style="--ncss-grid-min: 13rem"&gt;
+  &lt;article class="ncss-card ncss-border ncss-radius-lg"&gt;
+    &lt;div class="ncss-card-body"&gt;
+      &lt;h3&gt;Fließende Schrift&lt;/h3&gt;
+      &lt;p&gt;Schriftgrößen aus clamp() mit rem-Anteil wachsen mit dem Zoom.&lt;/p&gt;
+      &lt;p&gt;&lt;a class="ncss-btn ncss-btn--secondary ncss-btn--sm" href="..."&gt;Mehr dazu&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+  ...
+&lt;/div&gt;</code></pre>
+</section>

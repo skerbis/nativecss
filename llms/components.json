@@ -1,0 +1,2172 @@
+{
+ "$comment": "Generiert von tools/index.mjs aus dist/ - nicht von Hand bearbeiten.",
+ "elements": {
+  "ncss-audio-player": {
+   "script": "js/audio-player.js",
+   "css": [
+    "components/audio-player.css"
+   ],
+   "description": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)",
+   "attributes": [
+    {
+     "name": "layout",
+     "default": "card",
+     "boolean": false,
+     "description": "Kartenlayout (sonst kompakt)"
+    },
+    {
+     "name": "waveform",
+     "default": null,
+     "boolean": true,
+     "description": "Wellenform zeichnen (nur gleiche Herkunft, Datei wird einmal per Web Audio dekodiert, bis 8 MB)"
+    },
+    {
+     "name": "skip-back",
+     "default": "15",
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "skip-forward",
+     "default": "30",
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "speeds",
+     "default": "0.75 1 1.25 1.5 1.75 2",
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "exclusive",
+     "default": "false",
+     "boolean": false,
+     "description": "darf parallel zu anderen Playern laufen"
+    }
+   ],
+   "events": [
+    "ncss-audio-trackchange",
+    "ncss-media-ended",
+    "ncss-media-pause",
+    "ncss-media-play"
+   ],
+   "api": [
+    {
+     "name": "play",
+     "kind": "method",
+     "signature": "play()"
+    },
+    {
+     "name": "pause",
+     "kind": "method",
+     "signature": "pause()"
+    },
+    {
+     "name": "toggle",
+     "kind": "method",
+     "signature": "toggle()"
+    },
+    {
+     "name": "seek",
+     "kind": "method",
+     "signature": "seek(s)"
+    },
+    {
+     "name": "skip",
+     "kind": "method",
+     "signature": "skip(+/-s)"
+    },
+    {
+     "name": "next",
+     "kind": "method",
+     "signature": "next()"
+    },
+    {
+     "name": "previous",
+     "kind": "method",
+     "signature": "previous()"
+    },
+    {
+     "name": "load",
+     "kind": "method",
+     "signature": "load(index)"
+    },
+    {
+     "name": "media",
+     "kind": "property",
+     "signature": "media"
+    }
+   ]
+  },
+  "ncss-command-palette": {
+   "script": "js/command-palette.js",
+   "css": [
+    "components/command-palette.css"
+   ],
+   "description": "<ncss-command-palette>: Befehlspalette (siehe components/command-palette.css für Markup)",
+   "attributes": [
+    {
+     "name": "shortcut",
+     "default": "k",
+     "boolean": false,
+     "description": "opt-in Tastenkürzel: ⌘K auf Apple-Geräten, sonst Strg+K (öffnet/schließt)"
+    },
+    {
+     "name": "slash",
+     "default": null,
+     "boolean": true,
+     "description": "zusätzlich \"/\" als Kürzel (nur wenn gerade kein Eingabefeld Fokus hat)"
+    },
+    {
+     "name": "status-text",
+     "default": "{n} Treffer",
+     "boolean": false,
+     "description": "Ansage der Trefferzahl, Default nach <html lang>"
+    },
+    {
+     "name": "src",
+     "default": "suche.json",
+     "boolean": false,
+     "description": "opt-in SUCHMODUS für große Listen: die Einträge kommen aus einer JSON-Datei (beim ersten Öffnen geladen, kein Server nötig) und werden erst beim Tippen gerendert - gerankt, je Gruppe begrenzt, Treffer mit <mark> hervorgehoben. Format: { \"groups\": [{ \"id\": \"pages\", \"label\": \"Seiten\" }, ...], \"items\":  [{ \"g\": \"pages\", \"t\": \"Titel\", \"u\": \"de/seite.html#anker\", \"h\": \"Hinweis rechts\", \"s\": \"Textauszug\", \"k\": \"Stichwörter\" }] } \"u\" gilt relativ zur JSON-Datei (dieselbe Liste funktioniert von jeder Seite aus). Einträge im Markup bleiben erhalten (z.B. als Vorschläge bei leerem Feld und als Inhalt ohne JS)."
+    },
+    {
+     "name": "limit",
+     "default": "8",
+     "boolean": false,
+     "description": "Suchmodus: höchstens so viele Treffer je Gruppe (Default 8)"
+    }
+   ],
+   "events": [
+    "ncss-command-hide",
+    "ncss-command-select",
+    "ncss-command-show"
+   ],
+   "api": [
+    {
+     "name": "show",
+     "kind": "method",
+     "signature": "show()"
+    },
+    {
+     "name": "hide",
+     "kind": "method",
+     "signature": "hide()"
+    },
+    {
+     "name": "toggle",
+     "kind": "method",
+     "signature": "toggle()"
+    },
+    {
+     "name": "filter",
+     "kind": "method",
+     "signature": "filter(text)"
+    }
+   ]
+  },
+  "ncss-compare": {
+   "script": "js/compare.js",
+   "css": [
+    "components/compare.css"
+   ],
+   "description": "<ncss-compare>: Vorher/Nachher-Vergleich (siehe components/compare.css für Markup)",
+   "attributes": [
+    {
+     "name": "value-text",
+     "default": "{n} % vorher",
+     "boolean": false,
+     "description": "gesprochener Wert ({n} = Prozent), Default nach <html lang>"
+    }
+   ],
+   "events": [
+    "ncss-compare-change"
+   ],
+   "api": [
+    {
+     "name": "value",
+     "kind": "property",
+     "signature": "value"
+    }
+   ]
+  },
+  "ncss-container": {
+   "script": "js/ncss-container.js",
+   "css": [],
+   "description": "<ncss-container>: kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, damit sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen können, ohne dass Styles in beide Richtungen ...",
+   "attributes": [
+    {
+     "name": "src",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "theme",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [],
+   "api": []
+  },
+  "ncss-countdown": {
+   "script": "js/countdown.js",
+   "css": [
+    "components/countdown.css"
+   ],
+   "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)",
+   "attributes": [
+    {
+     "name": "datetime",
+     "default": "2026-12-24T18:00:00+01:00",
+     "boolean": false,
+     "description": "Zielzeitpunkt (Pflicht, ISO 8601; ohne Zone = lokale Zeit des Besuchers)"
+    }
+   ],
+   "events": [
+    "ncss-countdown-end"
+   ],
+   "api": []
+  },
+  "ncss-dropdown": {
+   "script": "js/dropdown.js",
+   "css": [
+    "components/dropdown.css"
+   ],
+   "description": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)",
+   "attributes": [],
+   "events": [
+    "ncss-dropdown-hide",
+    "ncss-dropdown-select",
+    "ncss-dropdown-show"
+   ],
+   "api": [
+    {
+     "name": "show",
+     "kind": "method",
+     "signature": "show()"
+    },
+    {
+     "name": "hide",
+     "kind": "method",
+     "signature": "hide()"
+    },
+    {
+     "name": "open",
+     "kind": "property",
+     "signature": "open"
+    }
+   ]
+  },
+  "ncss-dropzone": {
+   "script": "js/dropzone.js",
+   "css": [
+    "components/dropzone.css"
+   ],
+   "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)",
+   "attributes": [],
+   "events": [
+    "ncss-dropzone-change"
+   ],
+   "api": []
+  },
+  "ncss-filter": {
+   "script": "js/filter.js",
+   "css": [
+    "components/filter.css"
+   ],
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1",
+   "attributes": [],
+   "events": [
+    "ncss-content-change",
+    "ncss-filter-change"
+   ],
+   "api": []
+  },
+  "ncss-hovercard": {
+   "script": "js/hovercard.js",
+   "css": [
+    "components/hovercard.css"
+   ],
+   "description": "<ncss-hovercard>: Vorschaukarte beim Überfahren/Fokussieren eines Links (siehe components/hovercard.css für Markup)",
+   "attributes": [
+    {
+     "name": "delay",
+     "default": "400",
+     "boolean": false,
+     "description": "(ms bis zum Öffnen)"
+    },
+    {
+     "name": "hide-delay",
+     "default": "250",
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-hovercard-hide",
+    "ncss-hovercard-show"
+   ],
+   "api": [
+    {
+     "name": "show",
+     "kind": "method",
+     "signature": "show()"
+    },
+    {
+     "name": "hide",
+     "kind": "method",
+     "signature": "hide()"
+    },
+    {
+     "name": "open",
+     "kind": "property",
+     "signature": "open"
+    }
+   ]
+  },
+  "ncss-icon": {
+   "script": "js/icon.js",
+   "css": [
+    "helpers/icons.css"
+   ],
+   "description": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein",
+   "attributes": [
+    {
+     "name": "name",
+     "default": "house",
+     "boolean": false,
+     "description": "Phosphor-Name (Kleinbuchstaben/Ziffern/Bindestrich)"
+    },
+    {
+     "name": "weight",
+     "default": "regular",
+     "boolean": false,
+     "description": "regular | thin | light | bold | fill | duotone"
+    },
+    {
+     "name": "label",
+     "default": "…",
+     "boolean": false,
+     "description": "macht das Icon bedeutungstragend: role=\"img\" + aria-label. Ohne label ist es dekorativ (aria-hidden=\"true\")."
+    },
+    {
+     "name": "src",
+     "default": "pfad/eigen.svg",
+     "boolean": false,
+     "description": "statt name/weight eine beliebige eigene SVG-Datei laden data-ncss-icon-path=\"…\" Icon-Ordner, auf dem Element ODER einem Vorfahren (z.B. <html>); relativ zur SEITE aufgelöst. Default: der Ordner vendor/phosphor/ relativ zu DIESER Datei (dist/js/icon.js -> ../../vendor/phosphor/), per document.currentScript ermittelt - als ES-Modul geladen gibt es kein currentScript, dann data-ncss-icon-path setzen."
+    }
+   ],
+   "events": [
+    "ncss-icon-error",
+    "ncss-icon-load"
+   ],
+   "api": []
+  },
+  "ncss-map": {
+   "script": "js/map.js",
+   "css": [
+    "components/map.css"
+   ],
+   "description": "<ncss-map>: interaktive Karte mit MapLibre GL (vendor/maplibre/, BSD-3-Clause)",
+   "attributes": [
+    {
+     "name": "zoom",
+     "default": "14",
+     "boolean": false,
+     "description": "Zoomstufe 0-22"
+    },
+    {
+     "name": "label",
+     "default": "…",
+     "boolean": false,
+     "description": "Name des Orts: Beschriftung der Markierung und der Karte"
+    },
+    {
+     "name": "marker",
+     "default": "off",
+     "boolean": false,
+     "description": "keine Markierung (Default: an)"
+    },
+    {
+     "name": "style-url",
+     "default": "…",
+     "boolean": false,
+     "description": "MapLibre-Stil (JSON-URL). Default: OpenFreeMap \"liberty\" (https://tiles.openfreemap.org/styles/liberty)"
+    },
+    {
+     "name": "style-url-dark",
+     "default": "…",
+     "boolean": false,
+     "description": "Stil im Dunkelmodus. Default: OpenFreeMap \"dark\", aber nur wenn auch style-url fehlt - ein eigener style-url gilt sonst für beide Modi"
+    },
+    {
+     "name": "proxy",
+     "default": "…",
+     "boolean": false,
+     "description": "schreibt jede Anfrage von MapLibre um (transformRequest), zwei Formen: Präfix:   proxy=\"/proxy/ofm/\" https://tiles.openfreemap.org/planet/1/0/0.pbf -> /proxy/ofm/planet/1/0/0.pbf (Origin wird ersetzt) Vorlage:  proxy=\"/proxy?url={url}\" -> /proxy?url=https%3A%2F%2Ftiles.openfreemap.org%2F… Platzhalter: {url} (komplette URL, URL-kodiert), {host} (z.B. tiles.openfreemap.org), {path} (Pfad + Query ohne führenden Schrägstrich) Relative Angaben gelten relativ zur SEITE."
+    },
+    {
+     "name": "proxy-origins",
+     "default": "…",
+     "boolean": false,
+     "description": "nur diese Origins umschreiben (Leerzeichen/Komma getrennt, z.B. \"tiles.openfreemap.org\" oder \"https://tiles.openfreemap.org\"). Default: jede fremde Origin (alles außer der Seite und dem Proxy selbst)"
+    },
+    {
+     "name": "vendor",
+     "default": "…",
+     "boolean": false,
+     "description": "Ordner mit maplibre-gl.mjs/.css (relativ zur Seite). Default: ../../vendor/maplibre/ relativ zu DIESER Datei (document.currentScript, wie bei <ncss-icon>) - als ES-Modul geladen das Attribut setzen"
+    },
+    {
+     "name": "consent",
+     "default": null,
+     "boolean": false,
+     "description": "Zwei-Klick-Modus: Hinweis + Button \"Karte anzeigen\", geladen wird erst nach dem Klick. Automatisch an, wenn das Gerät \"Datensparen\" (Save-Data) meldet. consent=\"off\" schaltet auch das ab"
+    },
+    {
+     "name": "privacy-url",
+     "default": "…",
+     "boolean": false,
+     "description": "Link \"Datenschutz\" im Zwei-Klick-Hinweis"
+    },
+    {
+     "name": "view3d",
+     "default": null,
+     "boolean": false,
+     "description": "Gebäude in 3D und geneigte Kamera (Stile mit OpenMapTiles-Schema)"
+    },
+    {
+     "name": "fallback",
+     "default": "below",
+     "boolean": false,
+     "description": "Ersatzinhalt nach dem Laden sichtbar UNTER der Karte lassen (Default: visuell versteckt, für Screenreader und Tastatur weiter da) data-label-<key>    jeden Text überschreiben, Schlüssel siehe TEXTS unten (show, note, noteproxy, privacy, error, map, canvas, marker, zoomin, zoomout, compass, attribution, winhelp, machelp, mobilehelp). In note steht {host} für den Kartenserver. Sprache nach <html lang> (Deutsch/Englisch)"
+    },
+    {
+     "name": "lat",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "lng",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-map-",
+    "ncss-map-consent",
+    "ncss-map-error",
+    "ncss-map-load",
+    "ncss-map-theme"
+   ],
+   "api": [
+    {
+     "name": "map",
+     "kind": "property",
+     "signature": "map"
+    },
+    {
+     "name": "show",
+     "kind": "method",
+     "signature": "show()"
+    }
+   ]
+  },
+  "ncss-nav-drilldown": {
+   "script": "js/nav-drilldown.js",
+   "css": [
+    "components/nav-drilldown.css"
+   ],
+   "description": "<ncss-nav-drilldown>: verschachtelte mobile Menüs als Slide-Screens statt Inline-Aufklappen (siehe components/nav-drilldown.css für Markup/Einbindung/Optik)",
+   "attributes": [
+    {
+     "name": "back-text",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [],
+   "api": []
+  },
+  "ncss-nav-priority": {
+   "script": "js/nav-priority.js",
+   "css": [
+    "components/nav-priority.css"
+   ],
+   "description": "<ncss-nav-priority>: verschiebt Navigationspunkte, die nicht mehr in eine Zeile passen, automatisch in ein \"Mehr\"-Dropdown (siehe components/nav-priority.css für Markup/Einbindung)",
+   "attributes": [
+    {
+     "name": "more-label",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "more-text",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [],
+   "api": []
+  },
+  "ncss-preferences": {
+   "script": "js/preferences.js",
+   "css": [
+    "components/preferences.css"
+   ],
+   "description": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)",
+   "attributes": [
+    {
+     "name": "inline",
+     "default": null,
+     "boolean": true,
+     "description": "Bedienfeld direkt anzeigen statt Button + Popover"
+    },
+    {
+     "name": "settings",
+     "default": "theme contrast motion text font spacing links focus",
+     "boolean": false,
+     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten)"
+    }
+   ],
+   "events": [
+    "ncss-preferences-change"
+   ],
+   "api": []
+  },
+  "ncss-scroll-frames": {
+   "script": "js/scroll-frames.js",
+   "css": [
+    "components/scroll-frames.css"
+   ],
+   "description": "<ncss-scroll-frames>: Bildsequenz statt Video - zeichnet passend zur Scroll-Position ein Einzelbild auf ein <canvas>",
+   "attributes": [
+    {
+     "name": "src",
+     "default": null,
+     "boolean": false,
+     "description": "(Muster, %d bzw. %03d = Bildnummer mit Nullen)"
+    },
+    {
+     "name": "count",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "first",
+     "default": "1",
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "length",
+     "default": "300",
+     "boolean": false,
+     "description": "(Scroll-Strecke in % der Viewport-Höhe)"
+    },
+    {
+     "name": "smoothing",
+     "default": "0.6",
+     "boolean": false,
+     "description": ""
+    },
+    {
+     "name": "fit",
+     "default": "cover",
+     "boolean": false,
+     "description": "(oder contain)"
+    },
+    {
+     "name": "inline",
+     "default": null,
+     "boolean": true,
+     "description": "(nicht anpinnen, spult beim Durchqueren des Viewports)."
+    }
+   ],
+   "events": [],
+   "api": [
+    {
+     "name": "frame",
+     "kind": "property",
+     "signature": "frame"
+    },
+    {
+     "name": "loaded",
+     "kind": "property",
+     "signature": "loaded"
+    },
+    {
+     "name": "progress",
+     "kind": "property",
+     "signature": "progress"
+    }
+   ]
+  },
+  "ncss-scroll-video": {
+   "script": "js/scroll-video.js",
+   "css": [
+    "components/scroll-video.css"
+   ],
+   "description": "<ncss-scroll-video>: Scrollen spult ein Video vor UND zurück (Scroll-Position -> video.currentTime)",
+   "attributes": [
+    {
+     "name": "start",
+     "default": null,
+     "boolean": false,
+     "description": "/ end (Sekunden-Bereich, auf den die Scroll-Strecke abgebildet wird, end = Default Dauer)"
+    },
+    {
+     "name": "length",
+     "default": "300",
+     "boolean": false,
+     "description": "(Scroll-Strecke in % der Viewport-Höhe)"
+    },
+    {
+     "name": "smoothing",
+     "default": "0.85",
+     "boolean": false,
+     "description": "(0 = direkt, bis 0.98 = träge nachlaufend)"
+    },
+    {
+     "name": "inline",
+     "default": null,
+     "boolean": true,
+     "description": ""
+    },
+    {
+     "name": "line",
+     "default": "50",
+     "boolean": false,
+     "description": "(Auslöse-Linie für Schritte, % von oben)."
+    },
+    {
+     "name": "end",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-scroll-video-change",
+    "ncss-scrolly-step"
+   ],
+   "api": [
+    {
+     "name": "progress",
+     "kind": "property",
+     "signature": "progress"
+    },
+    {
+     "name": "time",
+     "kind": "property",
+     "signature": "time"
+    },
+    {
+     "name": "active",
+     "kind": "property",
+     "signature": "active"
+    },
+    {
+     "name": "refresh",
+     "kind": "method",
+     "signature": "refresh()"
+    }
+   ]
+  },
+  "ncss-scrolly": {
+   "script": "js/scrolly.js",
+   "css": [
+    "components/scrolly.css"
+   ],
+   "description": "<ncss-scrolly>: Scrollytelling-Element (Markup/Optik: components/scrolly.css)",
+   "attributes": [
+    {
+     "name": "line",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-scrolly-step"
+   ],
+   "api": [
+    {
+     "name": "step",
+     "kind": "property",
+     "signature": "step"
+    }
+   ]
+  },
+  "ncss-slideshow": {
+   "script": "js/slideshow.js",
+   "css": [
+    "components/slideshow.css"
+   ],
+   "description": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...",
+   "attributes": [
+    {
+     "name": "autoplay",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-slideshow-change",
+    "ncss-slideshow-pause",
+    "ncss-slideshow-play"
+   ],
+   "api": [
+    {
+     "name": "next",
+     "kind": "method",
+     "signature": "next()"
+    },
+    {
+     "name": "prev",
+     "kind": "method",
+     "signature": "prev()"
+    },
+    {
+     "name": "goTo",
+     "kind": "method",
+     "signature": "goTo(index)"
+    },
+    {
+     "name": "play",
+     "kind": "method",
+     "signature": "play()"
+    },
+    {
+     "name": "pause",
+     "kind": "method",
+     "signature": "pause()"
+    },
+    {
+     "name": "index",
+     "kind": "property",
+     "signature": "index"
+    }
+   ]
+  },
+  "ncss-sortable": {
+   "script": "js/sortable.js",
+   "css": [
+    "components/sortable.css"
+   ],
+   "description": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)",
+   "attributes": [
+    {
+     "name": "no-buttons",
+     "default": null,
+     "boolean": true,
+     "description": "Hoch/Runter-Schaltflächen weglassen - NUR, wenn die Seite selbst eine gleichwertige Alternative ohne Ziehen anbietet data-label-<schlüssel>=\"…\"  Texte überschreiben ({label}, {pos}, {total} werden ersetzt), Schlüssel: handle, up, down, instructions, grabbed, moved, dropped, cancelled"
+    }
+   ],
+   "events": [
+    "ncss-sortable-change"
+   ],
+   "api": [
+    {
+     "name": "items",
+     "kind": "property",
+     "signature": "items"
+    },
+    {
+     "name": "order",
+     "kind": "property",
+     "signature": "order"
+    },
+    {
+     "name": "move",
+     "kind": "method",
+     "signature": "move(eintragOderIndex, zielIndex)"
+    }
+   ]
+  },
+  "ncss-table-sort": {
+   "script": "js/table-sort.js",
+   "css": [
+    "components/table-sort.css"
+   ],
+   "description": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)",
+   "attributes": [],
+   "events": [
+    "ncss-table-sort-change"
+   ],
+   "api": []
+  },
+  "ncss-tabs": {
+   "script": "js/tabs.js",
+   "css": [
+    "components/tabs.css"
+   ],
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)",
+   "attributes": [
+    {
+     "name": "hash",
+     "default": null,
+     "boolean": true,
+     "description": ""
+    },
+    {
+     "name": "activation",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-tabs-change"
+   ],
+   "api": [
+    {
+     "name": "select",
+     "kind": "method",
+     "signature": "select(indexOderId)"
+    }
+   ]
+  },
+  "ncss-toast-region": {
+   "script": "js/notification.js",
+   "css": [
+    "components/notification.css"
+   ],
+   "description": "Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)",
+   "attributes": [
+    {
+     "name": "stack",
+     "default": null,
+     "boolean": true,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-notification-close"
+   ],
+   "api": []
+  },
+  "ncss-toolbar": {
+   "script": "js/toolbar.js",
+   "css": [
+    "components/toolbar.css"
+   ],
+   "description": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)",
+   "attributes": [],
+   "events": [],
+   "api": []
+  },
+  "ncss-video-float": {
+   "script": "js/video-float.js",
+   "css": [
+    "components/video-float.css"
+   ],
+   "description": "<ncss-video-float>: Mini-Player, der beim Wegscrollen eines LAUFENDEN Videos an eine Fensterecke andockt (components/video-float.css)",
+   "attributes": [],
+   "events": [
+    "ncss-video-float-dock",
+    "ncss-video-float-undock"
+   ],
+   "api": [
+    {
+     "name": "dock",
+     "kind": "method",
+     "signature": "dock()"
+    },
+    {
+     "name": "undock",
+     "kind": "method",
+     "signature": "undock()"
+    },
+    {
+     "name": "docked",
+     "kind": "property",
+     "signature": "docked"
+    }
+   ]
+  },
+  "ncss-video-player": {
+   "script": "js/video-player.js",
+   "css": [
+    "components/video-float.css",
+    "components/video-player.css"
+   ],
+   "description": "<ncss-video-player>: eigener Videoplayer als Light-DOM-Custom-Element (kein Shadow Root - Seiten-CSS/theme.css greifen ganz normal)",
+   "attributes": [
+    {
+     "name": "speeds",
+     "default": "0.5 0.75 1 1.25 1.5 2",
+     "boolean": false,
+     "description": "Einträge des Geschwindigkeitsmenüs"
+    },
+    {
+     "name": "autohide",
+     "default": "2500",
+     "boolean": false,
+     "description": "ms ohne Zeigerbewegung, bis die Leiste ausblendet (\"0\" = nie ausblenden)"
+    },
+    {
+     "name": "captions",
+     "default": "en",
+     "boolean": false,
+     "description": "Untertitel-Sprache beim Start (sonst <track default>)"
+    },
+    {
+     "name": "exclusive",
+     "default": "false",
+     "boolean": false,
+     "description": "darf parallel zu anderen Playern laufen"
+    },
+    {
+     "name": "layout",
+     "default": null,
+     "boolean": false,
+     "description": ""
+    }
+   ],
+   "events": [
+    "ncss-media-ended",
+    "ncss-media-pause",
+    "ncss-media-play",
+    "ncss-video-trackchange"
+   ],
+   "api": [
+    {
+     "name": "play",
+     "kind": "method",
+     "signature": "play()"
+    },
+    {
+     "name": "pause",
+     "kind": "method",
+     "signature": "pause()"
+    },
+    {
+     "name": "toggle",
+     "kind": "method",
+     "signature": "toggle()"
+    },
+    {
+     "name": "seek",
+     "kind": "method",
+     "signature": "seek(s)"
+    },
+    {
+     "name": "skip",
+     "kind": "method",
+     "signature": "skip(+/-s)"
+    },
+    {
+     "name": "fullscreen",
+     "kind": "method",
+     "signature": "fullscreen()"
+    },
+    {
+     "name": "next",
+     "kind": "method",
+     "signature": "next()"
+    },
+    {
+     "name": "previous",
+     "kind": "method",
+     "signature": "previous()"
+    },
+    {
+     "name": "load",
+     "kind": "method",
+     "signature": "load(index)"
+    },
+    {
+     "name": "media",
+     "kind": "property",
+     "signature": "media"
+    }
+   ]
+  }
+ },
+ "dataAttributes": {
+  "data-ncss-announce": {
+   "files": [
+    "js/countdown.js"
+   ],
+   "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)"
+  },
+  "data-ncss-backdrop": {
+   "files": [
+    "js/backdrop.js"
+   ],
+   "description": "Backdrop: wechselt die Bilder von [data-ncss-backdrop] im Intervall (data-interval in ms, Default 6000)"
+  },
+  "data-ncss-code-tabindex": {
+   "files": [
+    "js/code-block.js"
+   ],
+   "description": "Code-Block: ruft das self-hosted Prism.js (vendor/prismjs/) einmal kontrolliert auf (statt Prisms eigenem, unkontrolliertem DOMContentLoaded-Autostart - siehe code-block.css für die dafür nötige \"window.Prism = { manual: true }\"-Zeile ...",
+   "internal": true
+  },
+  "data-ncss-combobox": {
+   "files": [
+    "js/combobox.js"
+   ],
+   "description": "Combobox: opt-in JS-Enhancement für zwei native Muster mit unstylebarem Popup (siehe combobox.css für die Begründung, warum reines CSS hier nicht reicht):",
+   "internal": true
+  },
+  "data-ncss-command-key": {
+   "files": [
+    "js/command-palette.js"
+   ],
+   "description": "<ncss-command-palette>: Befehlspalette (siehe components/command-palette.css für Markup)",
+   "example": "Elemente mit [data-ncss-command-key] (z.B. das <kbd> im Öffnen-Button) bekommen den"
+  },
+  "data-ncss-count-decimals": {
+   "files": [
+    "js/count-up.js"
+   ],
+   "description": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ..."
+  },
+  "data-ncss-count-text": {
+   "files": [
+    "js/count-up.js"
+   ],
+   "description": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ..."
+  },
+  "data-ncss-count-up": {
+   "files": [
+    "js/count-up.js"
+   ],
+   "description": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ...",
+   "example": "(<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>,"
+  },
+  "data-ncss-direction": {
+   "files": [
+    "components/tabs.css",
+    "js/tabs.js"
+   ],
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)",
+   "internal": true
+  },
+  "data-ncss-dismiss": {
+   "files": [
+    "js/dismiss.js"
+   ],
+   "description": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)",
+   "example": "<div class=\"ncss-alert\" data-ncss-dismissible> ..."
+  },
+  "data-ncss-dismiss-focus": {
+   "files": [
+    "js/dismiss.js"
+   ],
+   "description": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)"
+  },
+  "data-ncss-dismissible": {
+   "files": [
+    "components/alert.css",
+    "js/dismiss.js"
+   ],
+   "description": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)",
+   "example": "<div class=\"ncss-alert\" data-ncss-dismissible> ..."
+  },
+  "data-ncss-done-text": {
+   "files": [
+    "js/countdown.js"
+   ],
+   "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)"
+  },
+  "data-ncss-dragover": {
+   "files": [
+    "components/dropzone.css",
+    "js/dropzone.js"
+   ],
+   "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)",
+   "internal": true
+  },
+  "data-ncss-dropdown-fallback": {
+   "files": [
+    "components/dropdown.css",
+    "js/dropdown.js"
+   ],
+   "description": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)",
+   "internal": true
+  },
+  "data-ncss-ended": {
+   "files": [
+    "js/countdown.js"
+   ],
+   "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)"
+  },
+  "data-ncss-filter-out": {
+   "files": [
+    "components/filter.css",
+    "js/filter.js"
+   ],
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1"
+  },
+  "data-ncss-filter-status": {
+   "files": [
+    "js/filter.js"
+   ],
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1",
+   "example": "<p class=\"ncss-filter-status\" data-ncss-filter-status></p> irgendwo im Filter,"
+  },
+  "data-ncss-font": {
+   "files": [
+    "components/preferences-fonts.css",
+    "js/preferences-early.js",
+    "js/preferences.js"
+   ],
+   "description": "Darstellungs-Einstellungen, früher Teil: setzt gespeicherte Besucher-Einstellungen (<ncss-preferences>, js/preferences.js) als Attribute am <html>, BEVOR die Seite gezeichnet wird - kein Aufblitzen in falscher Schriftgröße/Farbe beim Laden",
+   "example": "Gewählt wird über <html data-ncss-font=\"hyperlegible|lexend|opendyslexic\"> (gesetzt von"
+  },
+  "data-ncss-hovercard-manual": {
+   "files": [
+    "components/hovercard.css",
+    "js/hovercard.js"
+   ],
+   "description": "<ncss-hovercard>: Vorschaukarte beim Überfahren/Fokussieren eines Links (siehe components/hovercard.css für Markup)",
+   "internal": true
+  },
+  "data-ncss-icon-path": {
+   "files": [
+    "js/icon.js"
+   ],
+   "description": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein"
+  },
+  "data-ncss-index": {
+   "files": [
+    "js/dropzone.js"
+   ],
+   "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)",
+   "internal": true
+  },
+  "data-ncss-indicator": {
+   "files": [
+    "components/tabs.css",
+    "js/tabs.js"
+   ],
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)",
+   "internal": true
+  },
+  "data-ncss-lightbox": {
+   "files": [
+    "components/lightbox.css",
+    "js/lightbox.js"
+   ],
+   "description": "Lightbox-Galerie: blättert durch alle Links mit demselben data-ncss-lightbox-Wert (siehe components/lightbox.css)",
+   "example": "<a href=\"gross-1.jpg\" data-ncss-lightbox=\"ausstellung\" data-caption=\"Titel, 2024\">"
+  },
+  "data-ncss-livesearch": {
+   "files": [
+    "js/livesearch.js"
+   ],
+   "description": "Live-Suche: Vorschläge während der Eingabe für [data-ncss-livesearch]-Formulare (siehe components/livesearch.css)"
+  },
+  "data-ncss-marquee": {
+   "files": [
+    "js/marquee.js"
+   ],
+   "description": "opt-in Begleiter für components/marquee.css.",
+   "example": "1. <div class=\"ncss-marquee\" data-ncss-marquee> mit nur EINER .ncss-marquee-group:"
+  },
+  "data-ncss-marquee-tabindex": {
+   "files": [
+    "js/marquee.js"
+   ],
+   "description": "opt-in Begleiter für components/marquee.css.",
+   "internal": true
+  },
+  "data-ncss-marquee-toggle": {
+   "files": [
+    "js/marquee.js"
+   ],
+   "description": "opt-in Begleiter für components/marquee.css.",
+   "example": "2. <button type=\"button\" data-ncss-marquee-toggle aria-controls=\"marquee-id\">: schaltet"
+  },
+  "data-ncss-max-size": {
+   "files": [
+    "js/dropzone.js"
+   ],
+   "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)"
+  },
+  "data-ncss-notify": {
+   "files": [
+    "js/notification.js"
+   ],
+   "description": "Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)",
+   "example": "Deklarativ: <button type=\"button\" data-ncss-notify=\"Gespeichert\" data-status=\"success\""
+  },
+  "data-ncss-observe": {
+   "files": [
+    "js/content-observer.js"
+   ],
+   "description": "Content-Observer (opt-in): meldet neu eingefügtes Markup automatisch per \"ncss-content-change\"-Event, damit die Attribut-Scripts aus js/ (count-up, reveal, marquee, sparkline, downloads, events, code-block, combobox, livesearch, ...) es ..."
+  },
+  "data-ncss-overflow": {
+   "files": [
+    "components/slideshow.css",
+    "js/slideshow.js"
+   ],
+   "description": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ..."
+  },
+  "data-ncss-own-label": {
+   "files": [
+    "js/sortable.js"
+   ],
+   "description": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)",
+   "internal": true
+  },
+  "data-ncss-player-media": {
+   "files": [
+    "js/audio-player.js",
+    "js/video-player.js"
+   ],
+   "description": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)"
+  },
+  "data-ncss-preferences-fallback": {
+   "files": [
+    "components/preferences.css",
+    "js/preferences.js"
+   ],
+   "description": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)",
+   "internal": true
+  },
+  "data-ncss-reveal": {
+   "files": [
+    "js/reveal.js"
+   ],
+   "description": "opt-in Begleiter für helpers/reveal.css (Elemente mit data-ncss-reveal)"
+  },
+  "data-ncss-scroll-horizontal": {
+   "files": [
+    "js/scroll-horizontal.js"
+   ],
+   "description": "Begleit-Script für components/scroll-horizontal.css (.ncss-scroll-horizontal mit data-ncss-scroll-horizontal)"
+  },
+  "data-ncss-selected": {
+   "files": [
+    "js/tabs.js"
+   ],
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)"
+  },
+  "data-ncss-sort": {
+   "files": [
+    "js/table-sort.js"
+   ],
+   "description": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)",
+   "example": "ncss - Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt"
+  },
+  "data-ncss-sparkline-table": {
+   "files": [
+    "js/sparkline.js"
+   ],
+   "description": "Sparkline-Datenbindung (opt-in, ergänzt components/sparkline.css): berechnet polyline/-area/-dot aus echten Werten statt sie von Hand als SVG-Koordinaten ausrechnen zu müssen, UND liefert die Werte gleichzeitig als barrierefreie Tabelle ...",
+   "internal": true
+  },
+  "data-ncss-spotlight": {
+   "files": [
+    "js/spotlight.js"
+   ],
+   "description": "Spotlight: schreibt die Zeigerposition als --ncss-spotlight-x/-y (px, relativ zur jeweiligen Fläche) in jedes .ncss-spotlight innerhalb von [data-ncss-spotlight] (oder das Element selbst, wenn es die Klasse trägt)"
+  },
+  "data-ncss-spotlight-active": {
+   "files": [
+    "components/spotlight.css",
+    "js/spotlight.js"
+   ],
+   "description": "Spotlight: schreibt die Zeigerposition als --ncss-spotlight-x/-y (px, relativ zur jeweiligen Fläche) in jedes .ncss-spotlight innerhalb von [data-ncss-spotlight] (oder das Element selbst, wenn es die Klasse trägt)"
+  },
+  "data-ncss-src": {
+   "files": [
+    "js/ncss-container.js"
+   ],
+   "description": "<ncss-container>: kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, damit sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen können, ohne dass Styles in beide Richtungen ...",
+   "example": "- src (Pflicht, ODER data-ncss-src auf dem Loader-<script> als Seiten-Default - siehe"
+  },
+  "data-ncss-sticky-header": {
+   "files": [
+    "components/subnav.css",
+    "js/subnav.js"
+   ],
+   "description": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar",
+   "example": "<div class=\"mein-header\" data-ncss-sticky-header>   (selbst position: sticky; top: 0)"
+  },
+  "data-ncss-subnav": {
+   "files": [
+    "js/subnav.js"
+   ],
+   "description": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar",
+   "example": "Markup: <nav class=\"ncss-subnav\" data-ncss-subnav> ... <a href=\"#abschnitt\"> ... </nav>"
+  },
+  "data-ncss-subnav-ready": {
+   "files": [
+    "components/subnav.css",
+    "js/subnav.js"
+   ],
+   "description": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar",
+   "internal": true
+  },
+  "data-ncss-tab": {
+   "files": [
+    "js/tabs.js"
+   ],
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)"
+  },
+  "data-ncss-text-reveal": {
+   "files": [
+    "js/text-reveal.js"
+   ],
+   "description": "Wort-Variante für components/text-reveal.css (<p class=\"ncss-text-reveal\" data-ncss-text-reveal>)",
+   "example": "(<p class=\"ncss-text-reveal\" data-ncss-text-reveal>). Die Zeilen-/Fluss-Varianten"
+  },
+  "data-ncss-theme-label": {
+   "files": [
+    "js/theme-toggle.js"
+   ],
+   "description": "Hell/Dunkel-Umschalter für Buttons mit [data-ncss-theme-toggle]"
+  },
+  "data-ncss-theme-toggle": {
+   "files": [
+    "js/theme-toggle.js"
+   ],
+   "description": "Hell/Dunkel-Umschalter für Buttons mit [data-ncss-theme-toggle]",
+   "example": "1. data-ncss-theme-toggle (leer) - Hell <-> Dunkel. Entspricht die neue Wahl wieder"
+  },
+  "data-ncss-time": {
+   "files": [
+    "js/scroll-video.js",
+    "js/scrolly.js"
+   ],
+   "description": "<ncss-scroll-video>: Scrollen spult ein Video vor UND zurück (Scroll-Position -> video.currentTime)",
+   "example": "<p class=\"ncss-scroll-video-caption\" data-ncss-time=\"1-3\">Text ...</p>"
+  },
+  "data-ncss-toast-expanded": {
+   "files": [
+    "components/notification.css"
+   ],
+   "description": "Benachrichtigungen / Toasts (Layer \"components\"): <ncss-toast-region> ist der feste Bereich am Bildschirmrand, .ncss-notification eine einzelne Meldung"
+  },
+  "data-ncss-toast-front": {
+   "files": [
+    "components/notification.css",
+    "js/notification.js"
+   ],
+   "description": "Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)",
+   "internal": true
+  },
+  "data-ncss-toolbar-item": {
+   "files": [
+    "components/toolbar.css",
+    "js/toolbar.js"
+   ],
+   "description": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)",
+   "internal": true
+  },
+  "data-ncss-tooltip-fallback": {
+   "files": [
+    "components/tooltip.css",
+    "js/tooltip.js"
+   ],
+   "description": "Tooltip-Fallback + Absicherung (siehe components/tooltip.css für Markup)",
+   "internal": true
+  },
+  "data-ncss-units": {
+   "files": [
+    "js/countdown.js"
+   ],
+   "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)"
+  },
+  "data-ncss-video-bg": {
+   "files": [
+    "js/video-bg.js"
+   ],
+   "description": "Hintergrund-Video für beliebige Flächen (Sektion, Hero, Karte, Banner), siehe components/video-bg.css. Bewusst KEIN Custom Element: die Fläche ist normales Seiten- Markup (oft ein <section> oder .ncss-hero), das Script ergänzt nur Verhalten",
+   "example": "<section class=\"ncss-video-bg ncss-video-bg--dark\" data-ncss-video-bg>"
+  },
+  "data-ncss-video-bg-ready": {
+   "files": [
+    "js/video-bg.js"
+   ],
+   "description": "Hintergrund-Video für beliebige Flächen (Sektion, Hero, Karte, Banner), siehe components/video-bg.css. Bewusst KEIN Custom Element: die Fläche ist normales Seiten- Markup (oft ein <section> oder .ncss-hero), das Script ergänzt nur Verhalten",
+   "internal": true
+  }
+ },
+ "globalAttributes": {
+  "data-theme": {
+   "on": "<html>",
+   "values": [
+    "light",
+    "dark"
+   ],
+   "description": "Erzwingt Hell/Dunkel (sonst System). Gesetzt von js/theme-toggle.js."
+  },
+  "data-palette": {
+   "on": "<html> oder beliebiger Vorfahre",
+   "values": [
+    "sunset",
+    "football"
+   ],
+   "description": "Beispiel-Paletten aus colors.css - eigene nach demselben Muster."
+  }
+ },
+ "events": [
+  "ncss-audio-trackchange",
+  "ncss-command-hide",
+  "ncss-command-select",
+  "ncss-command-show",
+  "ncss-compare-change",
+  "ncss-content-change",
+  "ncss-countdown-end",
+  "ncss-dismiss-remove",
+  "ncss-dropdown-hide",
+  "ncss-dropdown-select",
+  "ncss-dropdown-show",
+  "ncss-dropzone-change",
+  "ncss-filter-change",
+  "ncss-hovercard-hide",
+  "ncss-hovercard-show",
+  "ncss-icon-error",
+  "ncss-icon-load",
+  "ncss-map-",
+  "ncss-map-consent",
+  "ncss-map-error",
+  "ncss-map-load",
+  "ncss-map-theme",
+  "ncss-media-ended",
+  "ncss-media-pause",
+  "ncss-media-play",
+  "ncss-notification-close",
+  "ncss-preferences-change",
+  "ncss-reveal",
+  "ncss-scroll-video-change",
+  "ncss-scrolly-step",
+  "ncss-slideshow-change",
+  "ncss-slideshow-pause",
+  "ncss-slideshow-play",
+  "ncss-sortable-change",
+  "ncss-table-sort-change",
+  "ncss-tabs-change",
+  "ncss-tooltip-hide",
+  "ncss-tooltip-show",
+  "ncss-video-bg-change",
+  "ncss-video-float-dock",
+  "ncss-video-float-undock",
+  "ncss-video-trackchange"
+ ],
+ "scripts": {
+  "js/audio-player.js": {
+   "description": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)",
+   "elements": [
+    "ncss-audio-player"
+   ],
+   "dataAttributes": [
+    "data-ncss-player-media"
+   ],
+   "events": [
+    "ncss-audio-trackchange",
+    "ncss-media-ended",
+    "ncss-media-pause",
+    "ncss-media-play"
+   ],
+   "api": [
+    "play()",
+    "pause()",
+    "toggle()",
+    "seek(s)",
+    "skip(+/-s)",
+    "next()",
+    "previous()",
+    "load(index)",
+    "media"
+   ]
+  },
+  "js/backdrop.js": {
+   "description": "Backdrop: wechselt die Bilder von [data-ncss-backdrop] im Intervall (data-interval in ms, Default 6000)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-backdrop"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/code-block.js": {
+   "description": "Code-Block: ruft das self-hosted Prism.js (vendor/prismjs/) einmal kontrolliert auf (statt Prisms eigenem, unkontrolliertem DOMContentLoaded-Autostart - siehe code-block.css für die dafür nötige \"window.Prism = { manual: true }\"-Zeile ...",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-code-tabindex"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/combobox.js": {
+   "description": "Combobox: opt-in JS-Enhancement für zwei native Muster mit unstylebarem Popup (siehe combobox.css für die Begründung, warum reines CSS hier nicht reicht):",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-combobox"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/command-fallback.js": {
+   "description": "command/commandfor-Fallback: generisch, NICHT an eine Komponente gebunden - greift für jeden <button command=\"show-modal|close\" commandfor=\"...\"> auf der Seite (Modal, Off-Canvas, Nav-Mobile-Panel, ...)",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/command-palette.js": {
+   "description": "<ncss-command-palette>: Befehlspalette (siehe components/command-palette.css für Markup)",
+   "elements": [
+    "ncss-command-palette"
+   ],
+   "dataAttributes": [
+    "data-ncss-command-key"
+   ],
+   "events": [
+    "ncss-command-hide",
+    "ncss-command-select",
+    "ncss-command-show"
+   ],
+   "api": [
+    "show()",
+    "hide()",
+    "toggle()",
+    "filter(text)"
+   ]
+  },
+  "js/compare.js": {
+   "description": "<ncss-compare>: Vorher/Nachher-Vergleich (siehe components/compare.css für Markup)",
+   "elements": [
+    "ncss-compare"
+   ],
+   "dataAttributes": [],
+   "events": [
+    "ncss-compare-change"
+   ],
+   "api": [
+    "value"
+   ]
+  },
+  "js/content-observer.js": {
+   "description": "Content-Observer (opt-in): meldet neu eingefügtes Markup automatisch per \"ncss-content-change\"-Event, damit die Attribut-Scripts aus js/ (count-up, reveal, marquee, sparkline, downloads, events, code-block, combobox, livesearch, ...) es ...",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-observe"
+   ],
+   "events": [
+    "ncss-content-change"
+   ],
+   "api": []
+  },
+  "js/count-up.js": {
+   "description": "opt-in Begleiter für components/count-up.css (<span class=\"ncss-count-up\" data-ncss-count-up style=\"--ncss-count-to: 40\">40</span>, oder data-ncss-count-up auf einem Vorfahren, z.B. <dl class=\"ncss-dl--stats\" data-ncss-count-up> - dann ...",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-count-decimals",
+    "data-ncss-count-text",
+    "data-ncss-count-up"
+   ],
+   "events": [
+    "ncss-content-change"
+   ],
+   "api": []
+  },
+  "js/countdown.js": {
+   "description": "<ncss-countdown>: Restzeit bis zu einem Zeitpunkt (Markup/Optik siehe components/countdown.css)",
+   "elements": [
+    "ncss-countdown"
+   ],
+   "dataAttributes": [
+    "data-ncss-announce",
+    "data-ncss-done-text",
+    "data-ncss-ended",
+    "data-ncss-units"
+   ],
+   "events": [
+    "ncss-countdown-end"
+   ],
+   "api": []
+  },
+  "js/dialog-light-dismiss.js": {
+   "description": "\"Klick daneben schließt\" (Light Dismiss) für ncss-Dialoge: .ncss-modal, .ncss-offcanvas (inkl. Nav-Panel), .ncss-command (Befehlspalette), Lightbox",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/dismiss.js": {
+   "description": "Generisches \"Schließen/Entfernen\" für Alerts, Tags/Chips und alles andere mit [data-ncss-dismissible] (siehe components/alert.css, components/tag.css)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-dismiss",
+    "data-ncss-dismiss-focus",
+    "data-ncss-dismissible"
+   ],
+   "events": [
+    "ncss-dismiss-remove"
+   ],
+   "api": []
+  },
+  "js/downloads.js": {
+   "description": "Downloads-Widget: rendert eine Datei-Download-Liste aus einer JSON-Quelle - native HTML-Alternative zu einem eingebetteten Datei-Browser-iframe",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [
+    "ncss-content-change"
+   ],
+   "api": []
+  },
+  "js/dropdown.js": {
+   "description": "<ncss-dropdown>: Dropdown / Aktionsmenü (siehe components/dropdown.css für Markup)",
+   "elements": [
+    "ncss-dropdown"
+   ],
+   "dataAttributes": [
+    "data-ncss-dropdown-fallback"
+   ],
+   "events": [
+    "ncss-dropdown-hide",
+    "ncss-dropdown-select",
+    "ncss-dropdown-show"
+   ],
+   "api": [
+    "show()",
+    "hide()",
+    "open"
+   ]
+  },
+  "js/dropzone.js": {
+   "description": "<ncss-dropzone>: Drag & Drop + Dateiliste für ein ECHTES <input type=\"file\"> (Markup/Optik siehe components/dropzone.css)",
+   "elements": [
+    "ncss-dropzone"
+   ],
+   "dataAttributes": [
+    "data-ncss-dragover",
+    "data-ncss-index",
+    "data-ncss-max-size"
+   ],
+   "events": [
+    "ncss-dropzone-change"
+   ],
+   "api": []
+  },
+  "js/events.js": {
+   "description": "Events-Widget: EIN Lade-/Render-Motor für vier Ansichten (Kalender-Monatsraster, Kalender-Liste/Agenda, Termin-Liste, Einzeltermin) statt vier getrennter Komponenten - dieselbe Datenquelle (JSON ODER ICS, siehe ics.js), derselbe ...",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/filter.js": {
+   "description": "<ncss-filter>: optionale Erweiterung für components/filter.css. Light-DOM- Custom-Element ohne Shadow Root - das Filtern selbst erledigt weiterhin CSS (:has()), das Script ergänzt nur: 1",
+   "elements": [
+    "ncss-filter"
+   ],
+   "dataAttributes": [
+    "data-ncss-filter-out",
+    "data-ncss-filter-status"
+   ],
+   "events": [
+    "ncss-content-change",
+    "ncss-filter-change"
+   ],
+   "api": []
+  },
+  "js/hero-video-motion.js": {
+   "description": "",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/hide-on-scroll-fallback.js": {
+   "description": "JS-Fallback für .ncss-hide-on-scroll (helpers/scroll.css) in Browsern ohne container-type: scroll-state (Stand August 2026: Firefox und Safari, per WebSearch bestätigt - siehe SKILL.md Landmine 26 für den bereits verworfenen ...",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/hovercard.js": {
+   "description": "<ncss-hovercard>: Vorschaukarte beim Überfahren/Fokussieren eines Links (siehe components/hovercard.css für Markup)",
+   "elements": [
+    "ncss-hovercard"
+   ],
+   "dataAttributes": [
+    "data-ncss-hovercard-manual"
+   ],
+   "events": [
+    "ncss-hovercard-hide",
+    "ncss-hovercard-show"
+   ],
+   "api": [
+    "show()",
+    "hide()",
+    "open"
+   ]
+  },
+  "js/icon.js": {
+   "description": "<ncss-icon>: setzt ein Phosphor-Icon (vendor/phosphor/, MIT) als Inline-SVG ein",
+   "elements": [
+    "ncss-icon"
+   ],
+   "dataAttributes": [
+    "data-ncss-icon-path"
+   ],
+   "events": [
+    "ncss-icon-error",
+    "ncss-icon-load"
+   ],
+   "api": []
+  },
+  "js/ics.js": {
+   "description": "ICS-Parser (iCalendar, RFC 5545)",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/lightbox.js": {
+   "description": "Lightbox-Galerie: blättert durch alle Links mit demselben data-ncss-lightbox-Wert (siehe components/lightbox.css)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-lightbox"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/livesearch.js": {
+   "description": "Live-Suche: Vorschläge während der Eingabe für [data-ncss-livesearch]-Formulare (siehe components/livesearch.css)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-livesearch"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/map.js": {
+   "description": "<ncss-map>: interaktive Karte mit MapLibre GL (vendor/maplibre/, BSD-3-Clause)",
+   "elements": [
+    "ncss-map"
+   ],
+   "dataAttributes": [],
+   "events": [
+    "ncss-map-",
+    "ncss-map-consent",
+    "ncss-map-error",
+    "ncss-map-load",
+    "ncss-map-theme"
+   ],
+   "api": [
+    "map",
+    "show()"
+   ]
+  },
+  "js/marquee.js": {
+   "description": "opt-in Begleiter für components/marquee.css.",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-marquee",
+    "data-ncss-marquee-tabindex",
+    "data-ncss-marquee-toggle"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/modal-router.js": {
+   "description": "AJAX-Modal-Router (opt-in, reines JS, kein eigenes CSS-File - nutzt ein normales .ncss-modal, siehe components/modal.css, plus ggf. eine der dortigen Einblendvarianten --slide-up/--slide-down/--slide-left/--slide-right/--zoom)",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [
+    "ncss-content-change"
+   ],
+   "api": []
+  },
+  "js/nav-drilldown.js": {
+   "description": "<ncss-nav-drilldown>: verschachtelte mobile Menüs als Slide-Screens statt Inline-Aufklappen (siehe components/nav-drilldown.css für Markup/Einbindung/Optik)",
+   "elements": [
+    "ncss-nav-drilldown"
+   ],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/nav-priority.js": {
+   "description": "<ncss-nav-priority>: verschiebt Navigationspunkte, die nicht mehr in eine Zeile passen, automatisch in ein \"Mehr\"-Dropdown (siehe components/nav-priority.css für Markup/Einbindung)",
+   "elements": [
+    "ncss-nav-priority"
+   ],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/nav.js": {
+   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>)",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/ncss-container.js": {
+   "description": "<ncss-container>: kapselt ncss-Inhalte in einem echten Shadow-DOM-Baum, damit sie innerhalb eines FREMDEN Frameworks/CSS-Systems (Bootstrap, UIkit, Tailwind, ein CMS-Theme, ...) laufen können, ohne dass Styles in beide Richtungen ...",
+   "elements": [
+    "ncss-container"
+   ],
+   "dataAttributes": [
+    "data-ncss-src"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/notification.js": {
+   "description": "Benachrichtigungen / Toasts: <ncss-toast-region> (Light-DOM-Custom-Element ohne Shadow Root) + kleine Script-API (siehe components/notification.css für Markup/Optik)",
+   "elements": [
+    "ncss-toast-region"
+   ],
+   "dataAttributes": [
+    "data-ncss-notify",
+    "data-ncss-toast-front"
+   ],
+   "events": [
+    "ncss-notification-close"
+   ],
+   "api": []
+  },
+  "js/page-transitions-quiet.js": {
+   "description": "Optionaler Begleiter zu page-transitions.css: unterdrückt eine bekannte, laut Spec/Implementierung ERWARTETE (aber ungefangene) Promise-Ablehnung, die bei jeder rein deklarativen Cross-Document View Transition auftreten KANN, sobald der ...",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/preferences-early.js": {
+   "description": "Darstellungs-Einstellungen, früher Teil: setzt gespeicherte Besucher-Einstellungen (<ncss-preferences>, js/preferences.js) als Attribute am <html>, BEVOR die Seite gezeichnet wird - kein Aufblitzen in falscher Schriftgröße/Farbe beim Laden",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-font"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/preferences.js": {
+   "description": "<ncss-preferences>: Darstellungs-Einstellungen für Besucher (siehe components/preferences.css für Markup)",
+   "elements": [
+    "ncss-preferences"
+   ],
+   "dataAttributes": [
+    "data-ncss-font",
+    "data-ncss-preferences-fallback"
+   ],
+   "events": [
+    "ncss-preferences-change"
+   ],
+   "api": []
+  },
+  "js/reveal.js": {
+   "description": "opt-in Begleiter für helpers/reveal.css (Elemente mit data-ncss-reveal)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-reveal"
+   ],
+   "events": [
+    "ncss-reveal"
+   ],
+   "api": []
+  },
+  "js/scroll-frames.js": {
+   "description": "<ncss-scroll-frames>: Bildsequenz statt Video - zeichnet passend zur Scroll-Position ein Einzelbild auf ein <canvas>",
+   "elements": [
+    "ncss-scroll-frames"
+   ],
+   "dataAttributes": [],
+   "events": [],
+   "api": [
+    "frame",
+    "loaded",
+    "progress"
+   ]
+  },
+  "js/scroll-horizontal.js": {
+   "description": "Begleit-Script für components/scroll-horizontal.css (.ncss-scroll-horizontal mit data-ncss-scroll-horizontal)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-scroll-horizontal"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/scroll-stack-fallback.js": {
+   "description": "JS-Fallback für components/scroll-stack.css (.ncss-stack-section) in Browsern ohne animation-timeline (Stand August 2026: Firefox, ältere Safari-Versionen vor 26 - per WebSearch bestätigt)",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/scroll-video.js": {
+   "description": "<ncss-scroll-video>: Scrollen spult ein Video vor UND zurück (Scroll-Position -> video.currentTime)",
+   "elements": [
+    "ncss-scroll-video"
+   ],
+   "dataAttributes": [
+    "data-ncss-time"
+   ],
+   "events": [
+    "ncss-scroll-video-change",
+    "ncss-scrolly-step"
+   ],
+   "api": [
+    "progress",
+    "time",
+    "active",
+    "refresh()"
+   ]
+  },
+  "js/scrolly.js": {
+   "description": "<ncss-scrolly>: Scrollytelling-Element (Markup/Optik: components/scrolly.css)",
+   "elements": [
+    "ncss-scrolly"
+   ],
+   "dataAttributes": [
+    "data-ncss-time"
+   ],
+   "events": [
+    "ncss-scrolly-step"
+   ],
+   "api": [
+    "step"
+   ]
+  },
+  "js/slideshow.js": {
+   "description": "<ncss-slideshow>: Pfeile, Punkte und optionales Autoplay für components/slideshow.css. Light-DOM-Custom-Element ohne Shadow Root - der Track bleibt ein ganz normaler Scroll-Snap-Container (Wischen, Trackpad, Tastatur wie bisher), das ...",
+   "elements": [
+    "ncss-slideshow"
+   ],
+   "dataAttributes": [
+    "data-ncss-overflow"
+   ],
+   "events": [
+    "ncss-slideshow-change",
+    "ncss-slideshow-pause",
+    "ncss-slideshow-play"
+   ],
+   "api": [
+    "next()",
+    "prev()",
+    "goTo(index)",
+    "play()",
+    "pause()",
+    "index"
+   ]
+  },
+  "js/sortable.js": {
+   "description": "<ncss-sortable>: sortierbare Liste per Ziehen, Tastatur und Hoch/Runter- Schaltflächen (siehe components/sortable.css für Markup)",
+   "elements": [
+    "ncss-sortable"
+   ],
+   "dataAttributes": [
+    "data-ncss-own-label"
+   ],
+   "events": [
+    "ncss-sortable-change"
+   ],
+   "api": [
+    "items",
+    "order",
+    "move(eintragOderIndex, zielIndex)"
+   ]
+  },
+  "js/sparkline.js": {
+   "description": "Sparkline-Datenbindung (opt-in, ergänzt components/sparkline.css): berechnet polyline/-area/-dot aus echten Werten statt sie von Hand als SVG-Koordinaten ausrechnen zu müssen, UND liefert die Werte gleichzeitig als barrierefreie Tabelle ...",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-sparkline-table"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/spotlight.js": {
+   "description": "Spotlight: schreibt die Zeigerposition als --ncss-spotlight-x/-y (px, relativ zur jeweiligen Fläche) in jedes .ncss-spotlight innerhalb von [data-ncss-spotlight] (oder das Element selbst, wenn es die Klasse trägt)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-spotlight",
+    "data-ncss-spotlight-active"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/subnav.js": {
+   "description": "Abschnitts-Navigation (components/subnav.css): markiert den Abschnitt, der gerade im Blick ist, mit aria-current=\"location\" am passenden Link und hält diesen Link in der seitlich wischbaren Leiste sichtbar",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-sticky-header",
+    "data-ncss-subnav",
+    "data-ncss-subnav-ready"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/table-sort.js": {
+   "description": "Sortierbare Tabelle: <ncss-table-sort> um eine <table> ODER data-ncss-sort direkt an der <table> (siehe components/table-sort.css für Markup)",
+   "elements": [
+    "ncss-table-sort"
+   ],
+   "dataAttributes": [
+    "data-ncss-sort"
+   ],
+   "events": [
+    "ncss-table-sort-change"
+   ],
+   "api": []
+  },
+  "js/tabs.js": {
+   "description": "<ncss-tabs>: macht aus einer Sprungmarken-Liste + Abschnitten echte Registerkarten nach WAI-ARIA-APG \"Tabs\" (siehe components/tabs.css für Markup)",
+   "elements": [
+    "ncss-tabs"
+   ],
+   "dataAttributes": [
+    "data-ncss-direction",
+    "data-ncss-indicator",
+    "data-ncss-selected",
+    "data-ncss-tab"
+   ],
+   "events": [
+    "ncss-tabs-change"
+   ],
+   "api": [
+    "select(indexOderId)"
+   ]
+  },
+  "js/text-reveal.js": {
+   "description": "Wort-Variante für components/text-reveal.css (<p class=\"ncss-text-reveal\" data-ncss-text-reveal>)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-text-reveal"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/theme-toggle-early.js": {
+   "description": "Theme-Umschalter, früher Teil: setzt die gespeicherte Hell/Dunkel-Wahl, BEVOR die Seite gezeichnet wird - sonst blitzt bei gespeichertem \"dunkel\" auf einem hellen System kurz die helle Seite auf (\"Flash of wrong theme\")",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/theme-toggle.js": {
+   "description": "Hell/Dunkel-Umschalter für Buttons mit [data-ncss-theme-toggle]",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-theme-label",
+    "data-ncss-theme-toggle"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/toolbar.js": {
+   "description": "<ncss-toolbar>: Werkzeugleiste nach WAI-ARIA-APG-Muster \"Toolbar\" (Light DOM)",
+   "elements": [
+    "ncss-toolbar"
+   ],
+   "dataAttributes": [
+    "data-ncss-toolbar-item"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/tooltip.js": {
+   "description": "Tooltip-Fallback + Absicherung (siehe components/tooltip.css für Markup)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-tooltip-fallback"
+   ],
+   "events": [
+    "ncss-tooltip-hide",
+    "ncss-tooltip-show"
+   ],
+   "api": []
+  },
+  "js/video-bg.js": {
+   "description": "Hintergrund-Video für beliebige Flächen (Sektion, Hero, Karte, Banner), siehe components/video-bg.css. Bewusst KEIN Custom Element: die Fläche ist normales Seiten- Markup (oft ein <section> oder .ncss-hero), das Script ergänzt nur Verhalten",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-video-bg",
+    "data-ncss-video-bg-ready"
+   ],
+   "events": [
+    "ncss-video-bg-change"
+   ],
+   "api": []
+  },
+  "js/video-card.js": {
+   "description": "Video-Vorschaukarten (components/video-card.css): spielt das <video> in .ncss-video-card-media ab, solange die Karte mit der Maus berührt (nur bei echtem Hover-Zeiger) oder per Tastatur fokussiert ist; beim Verlassen pausiert es und ...",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/video-float.js": {
+   "description": "<ncss-video-float>: Mini-Player, der beim Wegscrollen eines LAUFENDEN Videos an eine Fensterecke andockt (components/video-float.css)",
+   "elements": [
+    "ncss-video-float"
+   ],
+   "dataAttributes": [],
+   "events": [
+    "ncss-video-float-dock",
+    "ncss-video-float-undock"
+   ],
+   "api": [
+    "dock()",
+    "undock()",
+    "docked"
+   ]
+  },
+  "js/video-player.js": {
+   "description": "<ncss-video-player>: eigener Videoplayer als Light-DOM-Custom-Element (kein Shadow Root - Seiten-CSS/theme.css greifen ganz normal)",
+   "elements": [
+    "ncss-video-player"
+   ],
+   "dataAttributes": [
+    "data-ncss-player-media"
+   ],
+   "events": [
+    "ncss-media-ended",
+    "ncss-media-pause",
+    "ncss-media-play",
+    "ncss-video-trackchange"
+   ],
+   "api": [
+    "play()",
+    "pause()",
+    "toggle()",
+    "seek(s)",
+    "skip(+/-s)",
+    "fullscreen()",
+    "next()",
+    "previous()",
+    "load(index)",
+    "media"
+   ]
+  },
+  "js/view-transitions.js": {
+   "description": "View-Transitions-Enhancement für .ncss-accordion-split (kein CSS-Layer, reines opt-in JS)",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  },
+  "js/wa-close-on-scroll.js": {
+   "description": "schließt offene <wa-dropdown>/<wa-popover>-Panels, sobald die Seite gescrollt wird",
+   "elements": [],
+   "dataAttributes": [],
+   "events": [],
+   "api": []
+  }
+ }
+}

@@ -1,0 +1,799 @@
+<!--DESC: Building blocks for admin interfaces - app shell, dense variants, avatar, tags, stats, empty state, form additions, upload, spinner, countdown.-->
+<!--FOOT: <script src="~/dist/js/dismiss.js"></script><script src="~/dist/js/dropzone.js"></script><script src="~/dist/js/countdown.js"></script>-->
+<section class="ncss-stack">
+  <h1>App building blocks</h1>
+  <p class="ncss-text-lg ncss-text-muted">Building blocks for dashboards and admin interfaces - all native, no Web Awesome, every file usable on its own (needs only <code>colors.css</code>, <code>tokens.css</code>, <code>reset.css</code>, <code>base.css</code>). Each section shows the code and below it the result rendered from exactly that markup.</p>
+</section>
+
+<section class="ncss-stack" id="einbindung">
+  <h2 class="demo-section-title">Setup</h2>
+  <p>Included in <code>ncss.css</code>. Individually (cherry-picking), for example:</p>
+  <pre><code class="language-html">&lt;link rel="stylesheet" href="ncss/components/avatar.css"&gt;      &lt;!-- in the components layer --&gt;
+&lt;script src="ncss/js/dropzone.js" defer&gt;&lt;/script&gt;      &lt;!-- only for &lt;ncss-dropzone&gt; --&gt;
+&lt;script src="ncss/js/countdown.js" defer&gt;&lt;/script&gt;     &lt;!-- only for &lt;ncss-countdown&gt; --&gt;
+&lt;script src="ncss/js/dismiss.js" defer&gt;&lt;/script&gt;       &lt;!-- only for removable tags --&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Everything else is pure CSS. Files: <code>components/</code> <code>app-shell</code>, <code>avatar</code>, <code>tag</code>, <code>stat</code>, <code>empty-state</code>, <code>floating-label</code>, <code>segmented</code>, <code>rating</code>, <code>dropzone</code>, <code>spinner</code>, <code>kbd</code>, <code>countdown</code>, <code>back-to-top</code>; the size/density variants live in <code>helpers/forms.css</code> (buttons), <code>helpers/tables.css</code> and <code>components/card.css</code>.</p>
+</section>
+
+
+<section class="ncss-stack" id="app-shell">
+  <h2 class="demo-section-title">App shell</h2>
+  <p><code>.ncss-app-shell</code>: sidebar, top bar, content. The sidebar is a native <code>popover</code> - from 48rem <strong>container</strong> width it is a fixed column, below that the very same element becomes an off-canvas panel opened by the menu button via <code>popovertarget</code> (ESC, light dismiss and focus return come from the browser). No JS, no duplicated navigation in the DOM. The preview below stays narrower than 48rem in narrow windows - widen the window to see the column layout.</p>
+  <pre><code class="language-html">&lt;div class="ncss-app-shell" style="--ncss-app-shell-height: 26rem"&gt;
+  &lt;nav class="ncss-app-shell-sidebar" id="demo-appnav" popover aria-label="Main navigation"&gt;
+    &lt;button type="button" class="ncss-app-shell-close" popovertarget="demo-appnav"
+            popovertargetaction="hide" aria-label="Close navigation"&gt;&amp;times;&lt;/button&gt;
+    &lt;a class="ncss-app-shell-brand" href="#app-shell"&gt;ImmoDesk&lt;/a&gt;
+    &lt;h2 class="ncss-app-shell-heading" id="demo-nav-g1"&gt;Portfolio&lt;/h2&gt;
+    &lt;ul class="ncss-app-shell-nav" role="list" aria-labelledby="demo-nav-g1"&gt;
+      &lt;li&gt;&lt;a href="#app-shell" aria-current="page"&gt;Dashboard&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#app-shell"&gt;Properties&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#app-shell"&gt;Tenants &lt;span class="ncss-badge ncss-badge--danger"&gt;5&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+  &lt;div class="ncss-app-shell-main"&gt;
+    &lt;header class="ncss-app-shell-topbar"&gt;
+      &lt;button type="button" class="ncss-app-shell-toggle" popovertarget="demo-appnav"
+              aria-label="Open navigation"&gt;&lt;span class="ncss-icon ncss-icon-menu" aria-hidden="true"&gt;&lt;/span&gt;&lt;/button&gt;
+      &lt;strong&gt;Dashboard&lt;/strong&gt;
+    &lt;/header&gt;
+    &lt;div class="ncss-app-shell-content"&gt;
+      &lt;p&gt;Page content (an actual &amp;lt;main&amp;gt; in a real app).&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-card ncss-border ncss-radius-lg">
+    <div class="ncss-app-shell" style="--ncss-app-shell-height: 26rem">
+      <nav class="ncss-app-shell-sidebar" id="demo-appnav" popover aria-label="Main navigation">
+        <button type="button" class="ncss-app-shell-close" popovertarget="demo-appnav"
+                popovertargetaction="hide" aria-label="Close navigation">&times;</button>
+        <a class="ncss-app-shell-brand" href="#app-shell">ImmoDesk</a>
+        <h2 class="ncss-app-shell-heading" id="demo-nav-g1">Portfolio</h2>
+        <ul class="ncss-app-shell-nav" role="list" aria-labelledby="demo-nav-g1">
+          <li><a href="#app-shell" aria-current="page">Dashboard</a></li>
+          <li><a href="#app-shell">Properties</a></li>
+          <li><a href="#app-shell">Tenants <span class="ncss-badge ncss-badge--danger">5</span></a></li>
+        </ul>
+      </nav>
+      <div class="ncss-app-shell-main">
+        <header class="ncss-app-shell-topbar">
+          <button type="button" class="ncss-app-shell-toggle" popovertarget="demo-appnav"
+                  aria-label="Open navigation"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+          <strong>Dashboard</strong>
+        </header>
+        <div class="ncss-app-shell-content">
+          <p>Page content (an actual &lt;main&gt; in a real app).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Customisable: <code>--ncss-app-shell-sidebar-width</code> (default 16rem) and <code>--ncss-app-shell-height</code> (height of the sticky sidebar, default <code>100svh</code> - only change it for an embedded shell like this one). Without the Popover API the sidebar simply sits above the content in narrow containers. Limitation: an open off-canvas panel does not close itself when the container widens (ESC/light dismiss).</p>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Reaches the menu button (visible only in narrow containers), then top bar and content.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd></td><td>Menu button opens the off-canvas panel; the next Tab step moves into the navigation.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd></td><td>Closes the panel, focus returns to the menu button.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>The sidebar is a <code>&lt;nav&gt;</code> landmark with its own <code>aria-label</code>. Via <code>popovertarget</code> the menu button reports expanded/collapsed automatically. Current page via <code>aria-current="page"</code>.</p>
+    <h4>Settings</h4>
+    <p>The panel only slides in without reduced motion. The current item gets a system-colour outline in forced colours. At 400% zoom the container gets narrow - the sidebar collapses to the off-canvas panel automatically (no horizontal scrolling).</p>
+    <h4>Without JS</h4>
+    <p>No JS needed. Without the Popover API the navigation sits above the content in narrow containers.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="dicht">
+  <h2 class="demo-section-title">Dense variants</h2>
+  <p>For data-heavy admin interfaces: button sizes, a square icon button (<strong>always</strong> needs an <code>aria-label</code>), compact table and compact card.</p>
+  <pre><code class="language-html">&lt;button type="button" class="ncss-btn ncss-btn--primary ncss-btn--sm"&gt;Small&lt;/button&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--primary"&gt;Default&lt;/button&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--primary ncss-btn--lg"&gt;Large&lt;/button&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Search"&gt;
+  &lt;span class="ncss-icon ncss-icon-search" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon ncss-btn--sm" aria-label="Copy"&gt;
+  &lt;span class="ncss-icon ncss-icon-copy" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-cluster">
+    <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--sm">Small</button>
+    <button type="button" class="ncss-btn ncss-btn--primary">Default</button>
+    <button type="button" class="ncss-btn ncss-btn--primary ncss-btn--lg">Large</button>
+    <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Search">
+      <span class="ncss-icon ncss-icon-search" aria-hidden="true"></span>
+    </button>
+    <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon ncss-btn--sm" aria-label="Copy">
+      <span class="ncss-icon ncss-icon-copy" aria-hidden="true"></span>
+    </button>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-table-scroll" role="region" aria-label="Open items" tabindex="0"&gt;
+  &lt;table class="ncss-table--compact"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;Tenant&lt;/th&gt;&lt;th scope="col"&gt;Unit&lt;/th&gt;&lt;th scope="col"&gt;Due&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;&lt;td&gt;Weber&lt;/td&gt;&lt;td&gt;A-12&lt;/td&gt;&lt;td&gt;€820.00&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Yilmaz&lt;/td&gt;&lt;td&gt;B-03&lt;/td&gt;&lt;td&gt;€1,140.00&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-table-scroll" role="region" aria-label="Open items" tabindex="0">
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Tenant</th><th scope="col">Unit</th><th scope="col">Due</th></tr></thead>
+      <tbody>
+        <tr><td>Weber</td><td>A-12</td><td>€820.00</td></tr>
+        <tr><td>Yilmaz</td><td>B-03</td><td>€1,140.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code class="language-html">&lt;article class="ncss-card ncss-card--compact ncss-border ncss-radius-md"&gt;
+  &lt;div class="ncss-card-header"&gt;Compact card&lt;/div&gt;
+  &lt;div class="ncss-card-body"&gt;&lt;p&gt;Fixed, small padding instead of the growing default.&lt;/p&gt;&lt;/div&gt;
+&lt;/article&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-grid">
+    <article class="ncss-card ncss-card--compact ncss-border ncss-radius-md">
+      <div class="ncss-card-header">Compact card</div>
+      <div class="ncss-card-body"><p>Fixed, small padding instead of the growing default.</p></div>
+    </article>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Reaches every button; the table scroll area is focusable via <code>tabindex="0"</code>.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd></td><td>Activates the button.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Icon buttons have <strong>no</strong> visible word - their name comes from <code>aria-label</code> (required). The icon itself is <code>aria-hidden</code>. The table stays a real table with <code>&lt;th scope&gt;</code>.</p>
+    <h4>Settings</h4>
+    <p>Small buttons keep at least a 24×24 px target (WCAG 2.5.8). Icons stay visible in forced colours (system colour). The compact table scrolls inside its own region when zoomed instead of widening the page.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="avatar">
+  <h2 class="demo-section-title">Avatar</h2>
+  <p>Initials or an image in a circle, sizes <code>--sm</code>/<code>--lg</code>/<code>--xl</code>, colours like <code>.ncss-badge</code>. If the name is printed next to it anyway: <code>aria-hidden="true"</code> instead of <code>role="img"</code>.</p>
+  <pre><code class="language-html">&lt;span class="ncss-avatar ncss-avatar--sm" role="img" aria-label="Julia Brenner"&gt;JB&lt;/span&gt;
+&lt;span class="ncss-avatar" role="img" aria-label="Marco Weber"&gt;MW&lt;/span&gt;
+&lt;span class="ncss-avatar ncss-avatar--lg ncss-avatar--success" role="img" aria-label="Aylin Yilmaz"&gt;AY&lt;/span&gt;
+&lt;span class="ncss-avatar ncss-avatar--xl ncss-avatar--brand-2" role="img" aria-label="Hans Ott"&gt;HO&lt;/span&gt;
+&lt;ul class="ncss-avatar-group" role="list" aria-label="Assignees"&gt;
+  &lt;li&gt;&lt;span class="ncss-avatar" role="img" aria-label="Julia Brenner"&gt;JB&lt;/span&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="ncss-avatar ncss-avatar--warning" role="img" aria-label="Marco Weber"&gt;MW&lt;/span&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="ncss-avatar ncss-avatar--danger" role="img" aria-label="Aylin Yilmaz"&gt;AY&lt;/span&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="ncss-avatar ncss-avatar--neutral" role="img" aria-label="3 more"&gt;+3&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-cluster">
+    <span class="ncss-avatar ncss-avatar--sm" role="img" aria-label="Julia Brenner">JB</span>
+    <span class="ncss-avatar" role="img" aria-label="Marco Weber">MW</span>
+    <span class="ncss-avatar ncss-avatar--lg ncss-avatar--success" role="img" aria-label="Aylin Yilmaz">AY</span>
+    <span class="ncss-avatar ncss-avatar--xl ncss-avatar--brand-2" role="img" aria-label="Hans Ott">HO</span>
+    <ul class="ncss-avatar-group" role="list" aria-label="Assignees">
+      <li><span class="ncss-avatar" role="img" aria-label="Julia Brenner">JB</span></li>
+      <li><span class="ncss-avatar ncss-avatar--warning" role="img" aria-label="Marco Weber">MW</span></li>
+      <li><span class="ncss-avatar ncss-avatar--danger" role="img" aria-label="Aylin Yilmaz">AY</span></li>
+      <li><span class="ncss-avatar ncss-avatar--neutral" role="img" aria-label="3 more">+3</span></li>
+    </ul>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Image: <code>&lt;img class="ncss-avatar" src="…" alt="Name"&gt;</code> or an <code>&lt;img&gt;</code> as the only child. On a coloured surface, adjust the group's separating ring via <code>--ncss-avatar-ring</code>.</p>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Not interactive, no tab stop.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p><code>role="img"</code> + <code>aria-label</code> with the full name - initials alone carry no information. If the name is printed next to it: <code>aria-hidden="true"</code>. Groups are lists with an <code>aria-label</code>.</p>
+    <h4>Settings</h4>
+    <p>Colours from the -100/-on-soft steps (contrast in both themes). In forced colours a system-colour border keeps the circle recognisable.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="tags">
+  <h2 class="demo-section-title">Tags &amp; chips</h2>
+  <p>Difference to <code>.ncss-badge</code>: a badge is a <em>status</em> (filled, not interactive), a tag is <em>content</em> - a keyword, a filter chip (<code>aria-pressed</code> is the only state carrier) or a removable value. Removal is handled by <code>js/dismiss.js</code> (<code>data-ncss-dismiss</code> removes the closest <code>[data-ncss-dismissible]</code>).</p>
+  <pre><code class="language-html">&lt;span class="ncss-tag"&gt;Accessibility&lt;/span&gt;
+&lt;a class="ncss-tag ncss-tag--brand" href="#tags"&gt;CSS&lt;/a&gt;
+&lt;span class="ncss-tag ncss-tag--success ncss-tag--sm"&gt;done&lt;/span&gt;
+&lt;button type="button" class="ncss-tag" aria-pressed="true"&gt;Open only&lt;/button&gt;
+&lt;button type="button" class="ncss-tag" aria-pressed="false"&gt;With attachment&lt;/button&gt;
+&lt;span class="ncss-tag" data-ncss-dismissible&gt;
+  Berlin
+  &lt;button type="button" class="ncss-tag-remove" data-ncss-dismiss
+          aria-label="Remove Berlin"&gt;&amp;times;&lt;/button&gt;
+&lt;/span&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-cluster">
+    <span class="ncss-tag">Accessibility</span>
+    <a class="ncss-tag ncss-tag--brand" href="#tags">CSS</a>
+    <span class="ncss-tag ncss-tag--success ncss-tag--sm">done</span>
+    <button type="button" class="ncss-tag" aria-pressed="true">Open only</button>
+    <button type="button" class="ncss-tag" aria-pressed="false">With attachment</button>
+    <span class="ncss-tag" data-ncss-dismissible>
+      Berlin
+      <button type="button" class="ncss-tag-remove" data-ncss-dismiss
+              aria-label="Remove Berlin">&times;</button>
+    </span>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Toggling <code>aria-pressed</code> is up to your own filter logic - the styling follows the attribute automatically.</p>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Reaches link tags, filter chips and every remove button; plain text tags are not tab stops.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd></td><td>Toggle a filter chip or remove a tag.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Filter chips are buttons with <code>aria-pressed</code> ("pressed"). Remove buttons need an <code>aria-label</code> containing the tag name ("Remove Berlin").</p>
+    <h4>Settings</h4>
+    <p>The selected state also shows a check mark, not colour alone. In forced colours system-colour borders, the selected chip with a <code>Highlight</code> border.</p>
+    <h4>Without JS</h4>
+    <p>Tags and filter chips are pure CSS (toggling is your own filter logic); removing needs <code>js/dismiss.js</code>, without JS the tag simply stays.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="kennzahlen">
+  <h2 class="demo-section-title">Stats (KPI)</h2>
+  <p><code>.ncss-stat</code>: label, value, trend. The arrow comes from CSS and is silent - the direction is therefore text in the markup (<code>.ncss-visually-hidden</code>). <code>.ncss-stat--inverse</code> for figures where less is better (costs, vacancy). Borders come from the elevation utilities.</p>
+  <pre><code class="language-html">&lt;div class="ncss-stat ncss-border ncss-radius-lg"&gt;
+  &lt;p class="ncss-stat-label"&gt;Rent received November&lt;/p&gt;
+  &lt;p class="ncss-stat-value"&gt;€48,230&lt;/p&gt;
+  &lt;p class="ncss-stat-trend ncss-stat-trend--up"&gt;
+    &lt;span class="ncss-visually-hidden"&gt;Up by&lt;/span&gt; 4.2%
+    &lt;span class="ncss-stat-meta"&gt;vs. last month&lt;/span&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="ncss-stat ncss-stat--inverse ncss-border ncss-radius-lg"&gt;
+  &lt;p class="ncss-stat-label"&gt;Vacancy&lt;/p&gt;
+  &lt;p class="ncss-stat-value"&gt;3 units&lt;/p&gt;
+  &lt;p class="ncss-stat-trend ncss-stat-trend--down"&gt;
+    &lt;span class="ncss-visually-hidden"&gt;Down by&lt;/span&gt; 2
+    &lt;span class="ncss-stat-meta"&gt;since October&lt;/span&gt;
+  &lt;/p&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-grid">
+    <div class="ncss-stat ncss-border ncss-radius-lg">
+      <p class="ncss-stat-label">Rent received November</p>
+      <p class="ncss-stat-value">€48,230</p>
+      <p class="ncss-stat-trend ncss-stat-trend--up">
+        <span class="ncss-visually-hidden">Up by</span> 4.2%
+        <span class="ncss-stat-meta">vs. last month</span>
+      </p>
+    </div>
+    <div class="ncss-stat ncss-stat--inverse ncss-border ncss-radius-lg">
+      <p class="ncss-stat-label">Vacancy</p>
+      <p class="ncss-stat-value">3 units</p>
+      <p class="ncss-stat-trend ncss-stat-trend--down">
+        <span class="ncss-visually-hidden">Down by</span> 2
+        <span class="ncss-stat-meta">since October</span>
+      </p>
+    </div>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Combines with <code>data-ncss-count-up</code> on the value and an <code>.ncss-sparkline</code> below it.</p>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Not interactive, no tab stop.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Read in markup order: label, value, trend. The arrow is silent - the direction is text in the markup ("Up by").</p>
+    <h4>Settings</h4>
+    <p>Trend via arrow shape AND text, not colour alone (WCAG 1.4.1). The value scales with the card width and wraps when zoomed instead of clipping.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="leerzustand">
+  <h2 class="demo-section-title">Empty state</h2>
+  <p>Instead of a silent blank area: a short hint plus the next sensible action. If the state appears only after an action (filter without results), add <code>role="status"</code>.</p>
+  <pre><code class="language-html">&lt;div class="ncss-empty"&gt;
+  &lt;span class="ncss-empty-icon" aria-hidden="true"&gt;&lt;span class="ncss-icon ncss-icon-check"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;h3 class="ncss-empty-title"&gt;No open tickets&lt;/h3&gt;
+  &lt;p&gt;New reports from tenants show up here automatically.&lt;/p&gt;
+  &lt;div class="ncss-empty-actions"&gt;
+    &lt;a class="ncss-btn ncss-btn--primary" href="#leerzustand"&gt;Create ticket&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-card ncss-border ncss-radius-lg">
+    <div class="ncss-empty">
+      <span class="ncss-empty-icon" aria-hidden="true"><span class="ncss-icon ncss-icon-check"></span></span>
+      <h3 class="ncss-empty-title">No open tickets</h3>
+      <p>New reports from tenants show up here automatically.</p>
+      <div class="ncss-empty-actions">
+        <a class="ncss-btn ncss-btn--primary" href="#leerzustand">Create ticket</a>
+      </div>
+    </div>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><code>.ncss-empty--compact</code> for use inside a card or table cell.</p>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Reaches only the action(s).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Heading and text are read normally, the icon is <code>aria-hidden</code>. If the state appears after an action: <code>role="status"</code> so it is announced.</p>
+    <h4>Settings</h4>
+    <p>No motion. Text stays centred and wraps when zoomed.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="schwebende-labels">
+  <h2 class="demo-section-title">Floating labels</h2>
+  <p>The label sits in the empty field like a placeholder and moves up on focus/input - while remaining a <strong>real</strong> <code>&lt;label&gt;</code>. <code>placeholder=" "</code> (a space) is required, otherwise CSS cannot detect the empty state. Without <code>:has()</code> the label simply stays at the top.</p>
+  <pre><code class="language-html">&lt;div class="ncss-field ncss-field--floating"&gt;
+  &lt;label class="ncss-label" for="fl-ort"&gt;City&lt;/label&gt;
+  &lt;input class="ncss-input" id="fl-ort" name="city" placeholder=" "&gt;
+&lt;/div&gt;
+&lt;div class="ncss-field ncss-field--floating"&gt;
+  &lt;label class="ncss-label" for="fl-mail"&gt;Email&lt;/label&gt;
+  &lt;input class="ncss-input" id="fl-mail" type="email" placeholder="name@example.org" required&gt;
+&lt;/div&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-grid">
+    <div class="ncss-field ncss-field--floating">
+      <label class="ncss-label" for="fl-ort">City</label>
+      <input class="ncss-input" id="fl-ort" name="city" placeholder=" ">
+    </div>
+    <div class="ncss-field ncss-field--floating">
+      <label class="ncss-label" for="fl-mail">Email</label>
+      <input class="ncss-input" id="fl-mail" type="email" placeholder="name@example.org" required>
+    </div>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Plain field - the label moves up on focus.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>A real <code>&lt;label for&gt;</code> - the field's name is always the label, never the placeholder.</p>
+    <h4>Settings</h4>
+    <p>Transition only without reduced motion. The placeholder is hidden in forced colours too (no overlap).</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS; without <code>:has()</code> the label simply stays at the top.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="segmentiert">
+  <h2 class="demo-section-title">Segmented control</h2>
+  <p>Technically a plain radio group: arrow keys, form submission and screen reader announcements come from the browser. Each input goes <strong>directly before</strong> its label.</p>
+  <pre><code class="language-html">&lt;fieldset class="ncss-segmented"&gt;
+  &lt;legend class="ncss-visually-hidden"&gt;View&lt;/legend&gt;
+  &lt;input type="radio" name="seg-ansicht" id="seg-liste" value="list" checked&gt;
+  &lt;label for="seg-liste"&gt;List&lt;/label&gt;
+  &lt;input type="radio" name="seg-ansicht" id="seg-karte" value="map"&gt;
+  &lt;label for="seg-karte"&gt;Map&lt;/label&gt;
+  &lt;input type="radio" name="seg-ansicht" id="seg-kal" value="calendar"&gt;
+  &lt;label for="seg-kal"&gt;Calendar&lt;/label&gt;
+&lt;/fieldset&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <fieldset class="ncss-segmented">
+    <legend class="ncss-visually-hidden">View</legend>
+    <input type="radio" name="seg-ansicht" id="seg-liste" value="list" checked>
+    <label for="seg-liste">List</label>
+    <input type="radio" name="seg-ansicht" id="seg-karte" value="map">
+    <label for="seg-karte">Map</label>
+    <input type="radio" name="seg-ansicht" id="seg-kal" value="calendar">
+    <label for="seg-kal">Calendar</label>
+  </fieldset>
+  <p class="ncss-text-sm ncss-text-muted"><code>--sm</code> for toolbars, <code>--block</code> for full width.</p>
+  <p><strong>Sliding selection</strong> <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span> with <code>.ncss-segmented--slide</code>: the selection surface glides to the new segment - pure CSS (anchor positioning); without support or with reduced motion it jumps as above.</p>
+  <fieldset class="ncss-segmented ncss-segmented--slide">
+    <legend class="ncss-visually-hidden">Period</legend>
+    <input type="radio" name="seg-period" id="seg-day" value="day" checked>
+    <label for="seg-day">Day</label>
+    <input type="radio" name="seg-period" id="seg-week" value="week">
+    <label for="seg-week">Week</label>
+    <input type="radio" name="seg-period" id="seg-month" value="month">
+    <label for="seg-month">Month</label>
+    <input type="radio" name="seg-period" id="seg-year" value="year">
+    <label for="seg-year">Whole year</label>
+  </fieldset>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Enters the group on the selected option (one group = one tab stop).</td></tr>
+        <tr><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd> / <kbd class="ncss-kbd">↑</kbd> <kbd class="ncss-kbd">↓</kbd></td><td>Selects the previous/next option (APG radio group).</td></tr>
+        <tr><td><kbd class="ncss-kbd">Space</kbd></td><td>Selects the focused option.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Native radio group: <code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code> name the group, announced e.g. as "Map, radio button, selected, 2 of 3".</p>
+    <h4>Settings</h4>
+    <p>The selected option gets a <code>Highlight</code> border in forced colours. Wraps onto several lines when zoomed. Safari only tabs to radios with the system setting "Keyboard navigation" enabled.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS - an ordinary radio group, submitted with the form.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="bewertung">
+  <h2 class="demo-section-title">Rating</h2>
+  <p>Stars made from native radio buttons in natural order (arrow right = more). Filled/empty also differ in <em>shape</em> (★/☆), not only colour - stays recognisable in forced-colours mode.</p>
+  <pre><code class="language-html">&lt;fieldset class="ncss-rating"&gt;
+  &lt;legend&gt;How satisfied were you?&lt;/legend&gt;
+  &lt;input type="radio" name="rt" id="rt1" value="1"&gt;&lt;label for="rt1"&gt;&lt;span class="ncss-visually-hidden"&gt;1 star&lt;/span&gt;&lt;/label&gt;
+  &lt;input type="radio" name="rt" id="rt2" value="2"&gt;&lt;label for="rt2"&gt;&lt;span class="ncss-visually-hidden"&gt;2 stars&lt;/span&gt;&lt;/label&gt;
+  &lt;input type="radio" name="rt" id="rt3" value="3"&gt;&lt;label for="rt3"&gt;&lt;span class="ncss-visually-hidden"&gt;3 stars&lt;/span&gt;&lt;/label&gt;
+  &lt;input type="radio" name="rt" id="rt4" value="4" checked&gt;&lt;label for="rt4"&gt;&lt;span class="ncss-visually-hidden"&gt;4 stars&lt;/span&gt;&lt;/label&gt;
+  &lt;input type="radio" name="rt" id="rt5" value="5"&gt;&lt;label for="rt5"&gt;&lt;span class="ncss-visually-hidden"&gt;5 stars&lt;/span&gt;&lt;/label&gt;
+&lt;/fieldset&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <fieldset class="ncss-rating">
+    <legend>How satisfied were you?</legend>
+    <input type="radio" name="rt" id="rt1" value="1"><label for="rt1"><span class="ncss-visually-hidden">1 star</span></label>
+    <input type="radio" name="rt" id="rt2" value="2"><label for="rt2"><span class="ncss-visually-hidden">2 stars</span></label>
+    <input type="radio" name="rt" id="rt3" value="3"><label for="rt3"><span class="ncss-visually-hidden">3 stars</span></label>
+    <input type="radio" name="rt" id="rt4" value="4" checked><label for="rt4"><span class="ncss-visually-hidden">4 stars</span></label>
+    <input type="radio" name="rt" id="rt5" value="5"><label for="rt5"><span class="ncss-visually-hidden">5 stars</span></label>
+  </fieldset>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Moves to the selected star (none selected: the first).</td></tr>
+        <tr><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd></td><td>Fewer/more stars - order matches what you see.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Native radio group with the question as <code>&lt;legend&gt;</code>; every label carries text ("3 stars"), the star glyph is silent.</p>
+    <h4>Settings</h4>
+    <p>Filled/empty differ in shape (★/☆), recognisable in forced colours and without colour perception. No motion except a brief press feedback.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS; without <code>:has()</code> only the selected star is filled.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="upload">
+  <h2 class="demo-section-title">Upload dropzone</h2>
+  <p><code>&lt;ncss-dropzone&gt;</code> around a <strong>real</strong> <code>&lt;input type="file"&gt;</code>: drag &amp; drop, file list with preview and remove - uploading still happens through the native field. Without JS the native field stays visible and works normally. <code>accept</code> also applies to dropped files, <code>data-ncss-max-size</code> limits the file size. Event: <code>ncss-dropzone-change</code>.</p>
+  <pre><code class="language-html">&lt;ncss-dropzone class="ncss-dropzone" data-ncss-max-size="10MB"&gt;
+  &lt;label class="ncss-dropzone-area"&gt;
+    &lt;span class="ncss-dropzone-hint"&gt;&lt;strong&gt;Drop files here&lt;/strong&gt; or click to choose&lt;/span&gt;
+    &lt;span class="ncss-dropzone-hint"&gt;PDF or image, max. 10 MB&lt;/span&gt;
+    &lt;input type="file" name="receipts" multiple accept="image/*,.pdf"&gt;
+  &lt;/label&gt;
+&lt;/ncss-dropzone&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <ncss-dropzone data-ncss-max-size="10MB">
+    <label class="ncss-dropzone-area">
+      <span class="ncss-dropzone-hint"><strong>Drop files here</strong> or click to choose</span>
+      <span class="ncss-dropzone-hint">PDF or image, max. 10 MB</span>
+      <input type="file" name="receipts" multiple accept="image/*,.pdf">
+    </label>
+  </ncss-dropzone>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Reaches the (visually hidden) file field - the focus ring is drawn on the whole area; then every remove button.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd></td><td>Opens the file dialog or removes the file; focus stays in the list.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>It stays a real file field, named by the area's text. The list is called "Selected files", remove buttons "Remove <em>name</em>". ONE <code>role="status"</code> region announces rejected files and the new state ("2 file(s) selected").</p>
+    <h4>Settings</h4>
+    <p>Drag state gets a solid <code>Highlight</code> border in forced colours. File names are truncated with an ellipsis, the full name is in the tooltip and the button name.</p>
+    <h4>Without JS</h4>
+    <p>The native file field is visible and fully functional (including dropping onto it and form submission).</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="spinner">
+  <h2 class="demo-section-title">Spinner</h2>
+  <p>A ring in <code>currentColor</code> - fits any button and any surface. Standalone with <code>role="status"</code> and announcement text; inside a button the button carries the state (<code>aria-busy</code>) and the spinner is decoration only. With reduced motion the ring stops spinning but stays visible.</p>
+  <pre><code class="language-html">&lt;span class="ncss-spinner" role="status"&gt;&lt;span class="ncss-visually-hidden"&gt;Loading…&lt;/span&gt;&lt;/span&gt;
+&lt;span class="ncss-spinner ncss-spinner--lg ncss-text-brand" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--primary" aria-busy="true" disabled&gt;
+  &lt;span class="ncss-spinner ncss-spinner--sm" aria-hidden="true"&gt;&lt;/span&gt; Saving…
+&lt;/button&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-cluster">
+    <span class="ncss-spinner" role="status"><span class="ncss-visually-hidden">Loading…</span></span>
+    <span class="ncss-spinner ncss-spinner--lg ncss-text-brand" aria-hidden="true"></span>
+    <button type="button" class="ncss-btn ncss-btn--primary" aria-busy="true" disabled>
+      <span class="ncss-spinner ncss-spinner--sm" aria-hidden="true"></span> Saving…
+    </button>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Not interactive, no tab stop.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Standalone: <code>role="status"</code> with hidden text ("Loading…") - insert it only when loading actually starts. Inside a button: spinner <code>aria-hidden</code>, the button carries <code>aria-busy</code> and visible text.</p>
+    <h4>Settings</h4>
+    <p>Reduced motion: the ring stops but stays visible. Forced colours: ring in a system colour with a visible gap.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="tasten">
+  <h2 class="demo-section-title">Keyboard keys</h2>
+  <p><code>.ncss-kbd</code> is opt-in - a bare <code>&lt;kbd&gt;</code> stays as plain as <code>&lt;code&gt;</code>. Combinations wrap in an outer <code>&lt;kbd&gt;</code> as per the HTML spec.</p>
+  <pre><code class="language-html">&lt;p&gt;Close with &lt;kbd class="ncss-kbd"&gt;Esc&lt;/kbd&gt;, search with
+&lt;kbd class="ncss-kbd-combo"&gt;&lt;kbd class="ncss-kbd"&gt;Ctrl&lt;/kbd&gt;+&lt;kbd class="ncss-kbd"&gt;K&lt;/kbd&gt;&lt;/kbd&gt;.&lt;/p&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <p>Close with <kbd class="ncss-kbd">Esc</kbd>, search with
+  <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Ctrl</kbd>+<kbd class="ncss-kbd">K</kbd></kbd>.</p>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Not interactive, no tab stop.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p><code>&lt;kbd&gt;</code> is read as normal text. Add symbol keys (⌘, ⇧) via <code>&lt;abbr title&gt;</code> or spelled-out text.</p>
+    <h4>Settings</h4>
+    <p>The key cap is drawn with borders instead of shadows - stays visible in forced colours.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="countdown">
+  <h2 class="demo-section-title">Countdown</h2>
+  <p><code>&lt;ncss-countdown&gt;</code>: digits and unit labels come from <code>Intl.NumberFormat</code> according to <code>lang</code>. Without JS the date is simply shown. The end is announced and fires <code>ncss-countdown-end</code> - screen reader details below.</p>
+  <pre><code class="language-html">&lt;ncss-countdown class="ncss-countdown" datetime="2026-12-24T18:00:00+01:00"&gt;
+  &lt;time datetime="2026-12-24T18:00:00+01:00"&gt;24 December 2026, 6 pm&lt;/time&gt;
+&lt;/ncss-countdown&gt;
+&lt;ncss-countdown class="ncss-countdown--compact" datetime="2027-01-01T00:00:00+01:00"
+                data-ncss-units="days hours minutes" data-ncss-done-text="Happy New Year!"&gt;
+  &lt;time datetime="2027-01-01T00:00:00+01:00"&gt;1 January 2027&lt;/time&gt;
+&lt;/ncss-countdown&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <div class="ncss-stack">
+    <ncss-countdown datetime="2026-12-24T18:00:00+01:00">
+      <time datetime="2026-12-24T18:00:00+01:00">24 December 2026, 6 pm</time>
+    </ncss-countdown>
+    <ncss-countdown class="ncss-countdown--compact" datetime="2027-01-01T00:00:00+01:00"
+                    data-ncss-units="days hours minutes" data-ncss-done-text="Happy New Year!">
+      <time datetime="2027-01-01T00:00:00+01:00">1 January 2027</time>
+    </ncss-countdown>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Not interactive, no tab stop.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Digit tiles are <code>aria-hidden</code> (they tick every second). Instead a <code>role="timer"</code> line (implicitly not live) carries the state in words, updated per minute ("34 days, 5 hours and 22 minutes left"), plus the absolute date. A separate <code>role="status"</code> region announces the end - and every minute with <code>data-ncss-announce="minute"</code>.</p>
+    <h4>Settings</h4>
+    <p>No animation, only changing numbers. Tiles wrap when zoomed.</p>
+    <h4>Without JS</h4>
+    <p>The <code>&lt;time&gt;</code> with the written-out date stays visible.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="nach-oben">
+  <h2 class="demo-section-title">Back to top</h2>
+  <p>A plain link to <code>#top</code> (per the HTML spec that is the top of the document even without a matching <code>id</code>). With scroll-driven animations it floats in the corner and fades in after ~40vh of scrolling - while invisible it is not reachable by Tab either. Without that capability it stays an ordinary link where it sits in the markup - so place it at the end of the page. This page's floating link is <strong>bottom right</strong> once you have scrolled a bit - lifted by <code>--ncss-back-to-top-offset</code> because the corner already holds the inspector button (two overlapping targets would fail WCAG 2.5.8).</p>
+  <pre><code class="language-html">&lt;a class="ncss-back-to-top" href="#top" style="--ncss-back-to-top-offset: 3.5rem"&gt;
+  &lt;span aria-hidden="true"&gt;&amp;uarr;&lt;/span&gt;&lt;span class="ncss-back-to-top-label"&gt;Back to top&lt;/span&gt;
+&lt;/a&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Result (live, same classes):</p>
+  <a class="ncss-back-to-top" href="#top" style="--ncss-back-to-top-offset: 3.5rem">
+    <span aria-hidden="true">&uarr;</span><span class="ncss-back-to-top-label">Back to top</span>
+  </a>
+  <p class="ncss-text-sm ncss-text-muted">Limitation: reacts to scrolling of the <em>page</em> (<code>scroll(root)</code>) - if only an inner element scrolls (e.g. an app shell with its own scroll box), use a plain link there.</p>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Reachable once visible (invisible at the top of the page, hence no tab stop there).</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd></td><td>Jumps to the top; with a target <code>id="top" tabindex="-1"</code> focus moves along.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>A plain link with text ("Back to top", visually hidden in floating mode), arrow <code>aria-hidden</code>.</p>
+    <h4>Settings</h4>
+    <p>Reduced motion: hard switch instead of fade-in, no smooth scrolling. Forced colours: the border stays visible.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS; without scroll-driven animations an ordinary link where it sits in the markup.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="kommentare" data-subnav-label="Comments">
+  <h2 class="demo-section-title">Comments &amp; threads <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>components/comments.css</code> - comments and discussion threads: avatar, name, time, text, actions (reply, like) and nested replies with indent lines. A text badge marks the author. In narrow containers (below 30rem) only the first reply level indents, wider up to three - deeper levels stay flush, the line keeps showing where they belong. Needs colors/tokens/reset/base, optionally <a href="#avatar">avatar.css</a>.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Comment thread">
+    <section class="ncss-comments" aria-labelledby="cm-en-title">
+      <h3 id="cm-en-title">5 comments</h3>
+      <ol class="ncss-comment-list" role="list">
+        <li>
+          <article class="ncss-comment" aria-labelledby="cm-en-1">
+            <span class="ncss-avatar ncss-avatar--sm ncss-avatar--success" aria-hidden="true">AY</span>
+            <header class="ncss-comment-header">
+              <span class="ncss-comment-author" id="cm-en-1">Aylin Yilmaz</span>
+              <time class="ncss-comment-time" datetime="2026-11-18T14:12">2 days ago</time>
+            </header>
+            <div class="ncss-comment-body"><p>Very helpful article. How do the indent lines behave with deeply nested replies on a phone?</p></div>
+            <footer class="ncss-comment-actions">
+              <button type="button" class="ncss-comment-action">Reply</button>
+              <button type="button" class="ncss-comment-action" aria-pressed="false">Like (12)</button>
+            </footer>
+          </article>
+          <ol class="ncss-comment-list" role="list">
+            <li>
+              <article class="ncss-comment" aria-labelledby="cm-en-2">
+                <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+                <header class="ncss-comment-header">
+                  <span class="ncss-comment-author" id="cm-en-2">Julia Brenner</span>
+                  <span class="ncss-comment-badge">Author</span>
+                  <time class="ncss-comment-time" datetime="2026-11-19T09:30">1 day ago</time>
+                </header>
+                <div class="ncss-comment-body"><p>Thanks! From the second reply level on, the thread stops indenting in narrow containers so there's enough room for the text.</p></div>
+                <footer class="ncss-comment-actions">
+                  <button type="button" class="ncss-comment-action">Reply</button>
+                  <button type="button" class="ncss-comment-action" aria-pressed="true">Like (5)</button>
+                </footer>
+              </article>
+              <ol class="ncss-comment-list" role="list">
+                <li>
+                  <article class="ncss-comment" aria-labelledby="cm-en-3">
+                    <span class="ncss-avatar ncss-avatar--sm ncss-avatar--neutral" aria-hidden="true">TK</span>
+                    <header class="ncss-comment-header">
+                      <span class="ncss-comment-author" id="cm-en-3">Tobias Kern</span>
+                      <time class="ncss-comment-time" datetime="2026-11-19T17:05">yesterday</time>
+                    </header>
+                    <div class="ncss-comment-body"><p>And in a 300-pixel sidebar?</p></div>
+                    <footer class="ncss-comment-actions">
+                      <button type="button" class="ncss-comment-action">Reply</button>
+                      <button type="button" class="ncss-comment-action" aria-pressed="false">Like (0)</button>
+                    </footer>
+                  </article>
+                  <ol class="ncss-comment-list" role="list">
+                    <li>
+                      <article class="ncss-comment" aria-labelledby="cm-en-4">
+                        <span class="ncss-avatar ncss-avatar--sm" aria-hidden="true">JB</span>
+                        <header class="ncss-comment-header">
+                          <span class="ncss-comment-author" id="cm-en-4">Julia Brenner</span>
+                          <span class="ncss-comment-badge">Author</span>
+                          <time class="ncss-comment-time" datetime="2026-11-19T18:40">yesterday</time>
+                        </header>
+                        <div class="ncss-comment-body"><p>That's exactly what the container query is for - the component knows nothing about the viewport.</p></div>
+                        <footer class="ncss-comment-actions">
+                          <button type="button" class="ncss-comment-action">Reply</button>
+                          <button type="button" class="ncss-comment-action" aria-pressed="false">Like (2)</button>
+                        </footer>
+                      </article>
+                    </li>
+                  </ol>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <article class="ncss-comment" aria-labelledby="cm-en-5">
+            <span class="ncss-avatar ncss-avatar--sm ncss-avatar--brand-2" aria-hidden="true">SM</span>
+            <header class="ncss-comment-header">
+              <span class="ncss-comment-author" id="cm-en-5">Sofia Marin</span>
+              <time class="ncss-comment-time" datetime="2026-11-20T08:02">3 hours ago</time>
+            </header>
+            <div class="ncss-comment-body"><p>Works perfectly with RTL content on our side, too.</p></div>
+            <footer class="ncss-comment-actions">
+              <button type="button" class="ncss-comment-action">Reply</button>
+              <button type="button" class="ncss-comment-action" aria-pressed="false">Like (1)</button>
+            </footer>
+          </article>
+        </li>
+      </ol>
+    </section>
+  </div>
+  <pre><code class="language-html">&lt;section class="ncss-comments" aria-labelledby="c-title"&gt;
+  &lt;h2 id="c-title"&gt;5 comments&lt;/h2&gt;
+  &lt;ol class="ncss-comment-list" role="list"&gt;
+    &lt;li&gt;
+      &lt;article class="ncss-comment" aria-labelledby="c1"&gt;
+        &lt;span class="ncss-avatar ncss-avatar--sm" aria-hidden="true"&gt;AY&lt;/span&gt;
+        &lt;header class="ncss-comment-header"&gt;
+          &lt;span class="ncss-comment-author" id="c1"&gt;Aylin Yilmaz&lt;/span&gt;
+          &lt;time class="ncss-comment-time" datetime="2026-11-18T14:12"&gt;2 days ago&lt;/time&gt;
+        &lt;/header&gt;
+        &lt;div class="ncss-comment-body"&gt;&lt;p&gt;…&lt;/p&gt;&lt;/div&gt;
+        &lt;footer class="ncss-comment-actions"&gt;
+          &lt;button type="button" class="ncss-comment-action"&gt;Reply&lt;/button&gt;
+          &lt;button type="button" class="ncss-comment-action" aria-pressed="false"&gt;Like (12)&lt;/button&gt;
+        &lt;/footer&gt;
+      &lt;/article&gt;
+      &lt;ol class="ncss-comment-list" role="list"&gt;
+        &lt;li&gt;&lt;article class="ncss-comment" aria-labelledby="c2"&gt;
+          …
+          &lt;span class="ncss-comment-badge"&gt;Author&lt;/span&gt;
+          …
+        &lt;/article&gt;&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/section&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-comments</code></td><td>Wrapper (usually a <code>&lt;section&gt;</code> with a heading), container for the indent depth</td></tr>
+        <tr><td><code>.ncss-comment-list</code></td><td>List of comments; nested = replies with an indent line</td></tr>
+        <tr><td><code>.ncss-comment</code></td><td>One comment (<code>&lt;article&gt;</code>): avatar at the start, content beside it</td></tr>
+        <tr><td><code>.ncss-comment-header / -author / -time</code></td><td>Header row with name and <code>&lt;time datetime&gt;</code></td></tr>
+        <tr><td><code>.ncss-comment-badge</code></td><td>Text badge, e.g. "Author", "Team", "Moderator"</td></tr>
+        <tr><td><code>.ncss-comment-body</code></td><td>Comment text, breaks long words/URLs</td></tr>
+        <tr><td><code>.ncss-comment-actions / -action</code></td><td>Action bar and quiet text buttons; <code>aria-pressed</code> shows a heart (empty/filled)</td></tr>
+        <tr><td><code>.ncss-comment--highlight / :target</code></td><td>Highlighted (pinned or jumped to via link)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Through every comment's action buttons in reading order.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Space</kbd></td><td>Triggers the action (behaviour provided by the application).</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>Nested lists mirror the thread ("list, 1 item, level 2"); each comment is an <code>&lt;article&gt;</code> named by its author. Avatars are <code>aria-hidden</code>, the name is next to them. "Like" is a toggle with <code>aria-pressed</code> - the heart is CSS content with empty alt text. Point identical buttons ("Reply") to the author name via <code>aria-describedby</code> if needed.</p>
+    <h4>Preferences</h4>
+    <p>The badge is text, an active "Like" shows a filled instead of an empty heart (shape, not only colour). Reduced motion / <code>data-motion="reduce"</code>: no colour transitions. Forced colours: indent lines in <code>GrayText</code>, highlighted comment with a <code>Highlight</code> outline.</p>
+    <h4>Without JS</h4>
+    <p>Presentation is pure CSS; replying and liking need application logic (form, server, your own script).</p>
+  </div>
+</section>

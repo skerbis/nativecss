@@ -1,4 +1,5 @@
 <!--DESC: Two strategies for tables on narrow screens - horizontal scrolling or a card stack.-->
+<!--FOOT: <script src="~/dist/js/table-sort.js"></script>-->
 <section class="ncss-stack">
   <h1>Tables</h1>
   <p class="ncss-text-lg ncss-text-muted"><code>helpers/tables.css</code> - two strategies for narrow screens.</p>
@@ -17,3 +18,110 @@
   <p>Card-stack look below 36rem (needs a <code>data-label</code> attribute on each <code>&lt;td&gt;</code>) - deliberately breaks programmatic table semantics in favor of readability. Only use it when the content should really read like "record cards".</p>
   <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;td data-label="Name"&gt;Ada Lovelace&lt;/td&gt;</code></pre>
 </section>
+
+
+<section class="ncss-stack" id="table-sort" data-subnav-label="Sortable table">
+  <h2 class="demo-section-title">Sortable table <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>&lt;ncss-table-sort&gt;</code> around a table - or <code>data-ncss-sort</code> directly on the <code>&lt;table&gt;</code> - turns the column headers into buttons (WAI-ARIA APG “Sortable Table” pattern). One click sorts ascending, the next descending. Numbers (“€1,250”, “4.8”), dates (<code>2026-11-20</code>, <code>20.11.2026</code>, <code>&lt;time datetime&gt;</code>) and text are detected per column, <code>data-sort-value</code> on a cell sets the value explicitly. Sorting is stable: equal values keep their previous order. <code>components/table-sort.css</code> + <code>js/table-sort.js</code>, works with <code>.ncss-table-scroll</code> and <code>.ncss-table--compact</code>. Without JavaScript it stays a normal table.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Sortable table">
+    <ncss-table-sort>
+      <div class="ncss-table-scroll" role="region" aria-labelledby="ts-caption" tabindex="0">
+        <table>
+          <caption id="ts-caption">Rooms at Hotel Lakeview</caption>
+          <thead>
+            <tr>
+              <th scope="col">Room</th>
+              <th scope="col">Price per night</th>
+              <th scope="col">Size</th>
+              <th scope="col">Available from</th>
+              <th scope="col" data-sort="false">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Room 12</td><td data-sort-value="189">from €189</td><td>28 m²</td><td><time datetime="2026-12-03">Dec 3</time></td><td><a href="#table-sort">Book</a></td></tr>
+            <tr><td>Room 2</td><td data-sort-value="119">from €119</td><td>22 m²</td><td><time datetime="2026-11-28">Nov 28</time></td><td><a href="#table-sort">Book</a></td></tr>
+            <tr><td>Alpine Glow Suite</td><td data-sort-value="1250">from €1,250</td><td>64 m²</td><td><time datetime="2027-01-15">Jan 15</time></td><td><a href="#table-sort">Book</a></td></tr>
+            <tr><td>Room 10</td><td data-sort-value="119">from €119</td><td>22 m²</td><td><time datetime="2026-12-20">Dec 20</time></td><td><a href="#table-sort">Book</a></td></tr>
+            <tr><td>Attic room</td><td data-sort-value="95">from €95</td><td>18 m²</td><td></td><td><a href="#table-sort">Book</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </ncss-table-sort>
+
+    <div class="ncss-table-scroll" role="region" aria-label="Downloads" tabindex="0">
+      <table class="ncss-table--compact" data-ncss-sort>
+        <caption>Downloads (via <code>data-ncss-sort</code>)</caption>
+        <thead><tr><th scope="col">File</th><th scope="col">Size (MB)</th><th scope="col">Updated</th></tr></thead>
+        <tbody>
+          <tr><td>Brochure.pdf</td><td>4.8</td><td>2026-11-20</td></tr>
+          <tr><td>Directions.pdf</td><td>0.9</td><td>2026-03-02</td></tr>
+          <tr><td>Menu.pdf</td><td>12.25</td><td>2026-10-14</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;ncss-table-sort&gt;
+  &lt;div class="ncss-table-scroll" role="region" aria-labelledby="ts-caption" tabindex="0"&gt;
+    &lt;table&gt;
+      &lt;caption id="ts-caption"&gt;Rooms at Hotel Lakeview&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Room&lt;/th&gt;
+          &lt;th scope="col"&gt;Price per night&lt;/th&gt;
+          &lt;th scope="col"&gt;Size&lt;/th&gt;
+          &lt;th scope="col"&gt;Available from&lt;/th&gt;
+          &lt;th scope="col" data-sort="false"&gt;Action&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt;Room 12&lt;/td&gt;&lt;td data-sort-value="189"&gt;from €189&lt;/td&gt;&lt;td&gt;28 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2026-12-03"&gt;Dec 3&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#table-sort"&gt;Book&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Room 2&lt;/td&gt;&lt;td data-sort-value="119"&gt;from €119&lt;/td&gt;&lt;td&gt;22 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2026-11-28"&gt;Nov 28&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#table-sort"&gt;Book&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Alpine Glow Suite&lt;/td&gt;&lt;td data-sort-value="1250"&gt;from €1,250&lt;/td&gt;&lt;td&gt;64 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2027-01-15"&gt;Jan 15&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#table-sort"&gt;Book&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Room 10&lt;/td&gt;&lt;td data-sort-value="119"&gt;from €119&lt;/td&gt;&lt;td&gt;22 m²&lt;/td&gt;&lt;td&gt;&lt;time datetime="2026-12-20"&gt;Dec 20&lt;/time&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#table-sort"&gt;Book&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Attic room&lt;/td&gt;&lt;td data-sort-value="95"&gt;from €95&lt;/td&gt;&lt;td&gt;18 m²&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="#table-sort"&gt;Book&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/ncss-table-sort&gt;
+
+&lt;div class="ncss-table-scroll" role="region" aria-label="Downloads" tabindex="0"&gt;
+  &lt;table class="ncss-table--compact" data-ncss-sort&gt;
+    &lt;caption&gt;Downloads (via &lt;code&gt;data-ncss-sort&lt;/code&gt;)&lt;/caption&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;File&lt;/th&gt;&lt;th scope="col"&gt;Size (MB)&lt;/th&gt;&lt;th scope="col"&gt;Updated&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;&lt;td&gt;Brochure.pdf&lt;/td&gt;&lt;td&gt;4.8&lt;/td&gt;&lt;td&gt;2026-11-20&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Directions.pdf&lt;/td&gt;&lt;td&gt;0.9&lt;/td&gt;&lt;td&gt;2026-03-02&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Menu.pdf&lt;/td&gt;&lt;td&gt;12.25&lt;/td&gt;&lt;td&gt;2026-10-14&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+&lt;script src="dist/js/table-sort.js" defer&gt;&lt;/script&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Attribute / class</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;ncss-table-sort&gt;</code> / <code>table[data-ncss-sort]</code></td><td>Makes every header of the last <code>&lt;thead&gt;</code> row sortable. Newly inserted <code>data-ncss-sort</code> tables via <code>ncss-content-change</code>.</td></tr>
+        <tr><td><code>th[data-sort="false"]</code></td><td>Column not sortable (e.g. actions).</td></tr>
+        <tr><td><code>th[data-sort-type]</code></td><td>Force <code>number</code>, <code>date</code> or <code>text</code> instead of detecting it.</td></tr>
+        <tr><td><code>th[data-sort-default="descending"]</code></td><td>First click sorts descending (e.g. “newest first”).</td></tr>
+        <tr><td><code>th[aria-sort]</code> in the markup</td><td>The table is already sorted that way - only the state is taken over.</td></tr>
+        <tr><td><code>td[data-sort-value]</code></td><td>Sort value of the cell (e.g. “from €189” → <code>189</code>).</td></tr>
+        <tr><td><code>data-label-sorted</code>, <code>-ascending</code>, <code>-descending</code>, <code>-hint</code></td><td>Texts of the announcement (“Sorted by {column}, {direction}”) and of the hint in the <code>&lt;caption&gt;</code> (empty = no hint).</td></tr>
+        <tr><td>Event / method</td><td><code>ncss-table-sort-change</code> <code>{ column, index, direction, type }</code>; <code>el.sort(index, "descending")</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <p>Every sortable header is a real <code>&lt;button&gt;</code>: <kbd class="ncss-kbd">Tab</kbd> reaches it, <kbd class="ncss-kbd">Enter</kbd>/<kbd class="ncss-kbd">Space</kbd> sorts. Focus stays on the header.</p>
+    <h4>Screen readers</h4>
+    <p><code>aria-sort="ascending"</code>/<code>"descending"</code> is set only on the currently sorted <code>&lt;th&gt;</code> (the ARIA specification recommends at most one header; a missing attribute means “none”). After sorting a polite live region announces “Sorted by Price per night, ascending”. The <code>&lt;caption&gt;</code> gets a hint, read only by screen readers, that headers with buttons are sortable. The arrow in the header is <code>aria-hidden</code>.</p>
+    <h4>Preferences</h4>
+    <p>Arrow and hover from tokens (light/dark); in forced colors mode arrows in system colours, the sorted column in <code>Highlight</code>. The state never relies on colour alone: the arrow changes its shape.</p>
+    <h4>Without JS</h4>
+    <p>A normal table in markup order. With <code>.ncss-table-stacked</code> the header is hidden on narrow screens - there are no sort buttons there.</p>
+  </div>
+</section>
+
+<!--MERGE: all-components#tabellen-->

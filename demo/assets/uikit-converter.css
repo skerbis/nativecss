@@ -1,0 +1,16 @@
+/* NativeCSS - Seiten-CSS für demo/uikit-converter.html (nur Seitenlayout, eigenes Präfix). */
+@layer components {
+  .uc-code {
+    font-family: var(--ncss-font-family-mono);
+    font-size: var(--ncss-font-size-sm, 0.875rem);
+    white-space: pre;
+    overflow: auto;
+    min-block-size: 24rem;
+  }
+  .uc-lang {
+    inline-size: auto;
+  }
+  .uc-report li {
+    overflow-wrap: anywhere;
+  }
+}

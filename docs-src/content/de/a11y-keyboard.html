@@ -1,0 +1,108 @@
+<!--DESC: Sichtbarer Fokus, logische Reihenfolge, Skip-Link und alle Tastenbelegungen der ncss-Komponenten in einer Tabelle.-->
+<section class="ncss-stack">
+  <h1>Tastatur</h1>
+  <p class="ncss-text-lg ncss-text-muted">Alles, was mit der Maus geht, muss auch mit der Tastatur gehen (WCAG 2.1.1) - und man muss jederzeit sehen, wo der Fokus gerade steht (WCAG 2.4.7).</p>
+</section>
+
+<section class="ncss-stack" id="grundsaetze">
+  <h2 class="demo-section-title">Grundsätze</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li><strong>Fokus überall sichtbar</strong> - <code>reset.css</code> entfernt nur den Fokus-Ring für Maus/Touch (<code>:focus</code>) und setzt für <code>:focus-visible</code> einen einheitlichen Ring aus <code>--ncss-color-focus-ring</code> mit 2&nbsp;px Abstand. Komponenten gaten <code>:focus-visible</code> nie hinter <code>(hover: hover)</code>. Eigene Komponenten: Ring nie ersatzlos entfernen.</li>
+    <li><strong>Logische Reihenfolge</strong> - die Tab-Reihenfolge folgt dem DOM. Layout-Umstellungen per <code>order</code>, <code>flex-direction: row-reverse</code> oder Grid-Platzierung ändern nur die Optik, nicht die Reihenfolge - die Quellreihenfolge muss selbst schon sinnvoll sein. Kein positives <code>tabindex</code>.</li>
+    <li><strong>Keine Fokus-Fallen</strong> (WCAG 2.1.2) - einzige gewollte Ausnahme sind modale Dialoge (<code>.ncss-modal</code>, <code>.ncss-offcanvas</code>, mobiles Nav-Panel, Lightbox, Befehlspalette): per <code>showModal()</code> geöffnet, ist der Rest der Seite inert, <kbd class="ncss-kbd">Esc</kbd> schließt, der Fokus kehrt zum Auslöser zurück.</li>
+    <li><strong>Skip-Link</strong> - <code>.ncss-skip-link</code> als erstes Element nach <code>&lt;body&gt;</code>, Ziel ist <code>&lt;main&gt;</code> mit <code>id="main"</code> (siehe <a href="accessibility.html#klassen">Grundsätze</a>). Diese Website nutzt ihn auf jeder Seite - einmal <kbd class="ncss-kbd">Tab</kbd> nach dem Laden.</li>
+    <li><strong>Native Bedienelemente</strong> - <code>&lt;button&gt;</code> statt klickbarem <code>&lt;div&gt;</code>, <code>&lt;a href&gt;</code> für Navigation, <code>&lt;details&gt;</code> für Aufklapper. Dann stimmen <kbd class="ncss-kbd">Enter</kbd>/<kbd class="ncss-kbd">Leertaste</kbd> automatisch.</li>
+    <li><strong>Scroll-Container erreichbar machen</strong> - eine breite Tabelle in <code>.ncss-table-scroll</code> bekommt im Markup <code>role="region"</code>, <code>aria-label</code> und <code>tabindex="0"</code>, damit sie per Tastatur fokussier- und scrollbar ist (WCAG 1.4.10). Dasselbe empfiehlt sich für eine <code>.ncss-slideshow-track</code>.</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-table-scroll" role="region" aria-label="Preisvergleich" tabindex="0"&gt;
+  &lt;table&gt;...&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="ausprobieren">
+  <h2 class="demo-section-title">Selbst ausprobieren</h2>
+  <p>Klicken Sie neben das Beispiel und gehen Sie dann mit <kbd class="ncss-kbd">Tab</kbd> und <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Shift</kbd>+<kbd class="ncss-kbd">Tab</kbd></kbd> vor und zurück. <kbd class="ncss-kbd">Enter</kbd> oder <kbd class="ncss-kbd">Leertaste</kbd> klappt das Detail auf und öffnet den Dialog. Im Dialog bleibt der Fokus gefangen, <kbd class="ncss-kbd">Esc</kbd> oder der Schließen-Button beendet ihn - danach steht der Fokus wieder auf dem Button, der ihn geöffnet hat.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel">
+    <details class="ncss-disclosure">
+      <summary>Was passiert beim Aufklappen?</summary>
+      <p>Das native <code>&lt;details&gt;</code> reagiert auf Enter und Leertaste, Screenreader sagen "erweitert"/"reduziert" an - ganz ohne Script und ohne ARIA.</p>
+    </details>
+    <p class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary" command="show-modal" commandfor="demo-key-dialog">Dialog öffnen</button>
+      <a href="#tabelle">Zur Tastentabelle</a>
+    </p>
+    <dialog id="demo-key-dialog" class="ncss-modal" aria-labelledby="demo-key-dialog-title">
+      <button type="button" class="ncss-dialog-close" command="close" commandfor="demo-key-dialog" aria-label="Schließen">&times;</button>
+      <div class="ncss-modal-header"><h3 id="demo-key-dialog-title">Modaler Dialog</h3></div>
+      <div class="ncss-modal-body">
+        <p>Tab und Shift+Tab bleiben innerhalb des Dialogs, der Rest der Seite ist inert. Esc schließt.</p>
+      </div>
+      <div class="ncss-modal-footer">
+        <button type="button" class="ncss-btn ncss-btn--secondary" command="close" commandfor="demo-key-dialog">Schließen</button>
+      </div>
+    </dialog>
+  </div>
+  <pre><code class="language-html">&lt;details class="ncss-disclosure"&gt;
+  &lt;summary&gt;Was passiert beim Aufklappen?&lt;/summary&gt;
+  &lt;p&gt;...&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;button type="button" class="ncss-btn ncss-btn--primary"
+        command="show-modal" commandfor="dialog1"&gt;Dialog öffnen&lt;/button&gt;
+
+&lt;dialog id="dialog1" class="ncss-modal" aria-labelledby="dialog1-title"&gt;
+  &lt;button type="button" class="ncss-dialog-close" command="close"
+          commandfor="dialog1" aria-label="Schließen"&gt;&amp;times;&lt;/button&gt;
+  &lt;div class="ncss-modal-header"&gt;&lt;h3 id="dialog1-title"&gt;Modaler Dialog&lt;/h3&gt;&lt;/div&gt;
+  &lt;div class="ncss-modal-body"&gt;...&lt;/div&gt;
+&lt;/dialog&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm"><code>command</code>/<code>commandfor</code> funktioniert in aktuellen Browsern ohne Script - für ältere Browser ergänzt <code>js/command-fallback.js</code> genau <code>show-modal</code> und <code>close</code>.</p>
+</section>
+
+<section class="ncss-stack" id="tabelle">
+  <h2 class="demo-section-title">Tastenbelegungen aller Komponenten</h2>
+  <p class="ncss-text-muted ncss-text-sm">Aus dem Code der Komponenten (<code>dist/js/</code>) bzw. dem Verhalten der verwendeten nativen Elemente zusammengestellt. "Nativ" heißt: das Verhalten kommt vom Browser, ncss fügt nichts hinzu und nimmt nichts weg.</p>
+  <div class="ncss-table-scroll" role="region" aria-label="Tastenbelegungen" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Komponente</th><th scope="col">Tasten</th><th scope="col">Verhalten</th></tr></thead>
+      <tbody>
+        <tr><td>Alle Bedienelemente</td><td><kbd class="ncss-kbd">Tab</kbd> / <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Shift</kbd>+<kbd class="ncss-kbd">Tab</kbd></kbd></td><td>Nächstes/voriges Element, sichtbarer <code>:focus-visible</code>-Ring</td></tr>
+        <tr><td>Skip-Link <code>.ncss-skip-link</code></td><td><kbd class="ncss-kbd">Tab</kbd>, <kbd class="ncss-kbd">Enter</kbd></td><td>Erscheint beim ersten Tab, springt zum Hauptinhalt</td></tr>
+        <tr><td>Link / Button</td><td><kbd class="ncss-kbd">Enter</kbd>; Button zusätzlich <kbd class="ncss-kbd">Leertaste</kbd></td><td>Nativ</td></tr>
+        <tr><td>Disclosure, Akkordeon, <code>.ncss-accordion-split</code> (<code>&lt;details&gt;</code>)</td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd> auf <code>&lt;summary&gt;</code></td><td>Auf/zu; bei <code>name="..."</code> schließt sich der zuvor offene Punkt der Gruppe (nativ)</td></tr>
+        <tr><td>Nav-Dropdown <code>.ncss-nav-dropdown</code>, "Mehr"-Menü von <code>&lt;ncss-nav-priority&gt;</code></td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd>, dann <kbd class="ncss-kbd">Tab</kbd></td><td>Untermenü auf/zu (natives <code>&lt;details&gt;</code>); Auswahl eines Untermenü-Links schließt das Dropdown (<code>js/nav.js</code>)</td></tr>
+        <tr><td>Modal, Off-Canvas, mobiles Nav-Panel (<code>&lt;dialog&gt;</code>)</td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd> auf dem Auslöser, <kbd class="ncss-kbd">Esc</kbd></td><td>Öffnet per <code>command="show-modal"</code>; Rest der Seite inert, Esc schließt, Fokus zurück zum Auslöser (nativ). Ein Nav-Link im Panel schließt es (<code>js/nav.js</code>)</td></tr>
+        <tr><td><code>&lt;ncss-nav-drilldown&gt;</code></td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd> auf Elternpunkt bzw. Zurück-Button</td><td>Schiebt das Untermenü herein, Fokus auf den Zurück-Button, Wurzelliste wird inert; Zurück setzt den Fokus wieder auf den Elternpunkt</td></tr>
+        <tr><td>Befehlspalette <code>&lt;ncss-command-palette&gt;</code></td><td><kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">⌘</kbd>/<kbd class="ncss-kbd">Strg</kbd>+<kbd class="ncss-kbd">K</kbd></kbd> (mit <code>shortcut="k"</code>), <kbd class="ncss-kbd">/</kbd> (mit <code>slash</code>), <kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd-combo"><kbd class="ncss-kbd">Strg</kbd>+<kbd class="ncss-kbd">Pos1</kbd></kbd>/<kbd class="ncss-kbd">Ende</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Kürzel öffnet/schließt (<kbd class="ncss-kbd">/</kbd> nur, wenn kein Eingabefeld Fokus hat); Pfeile wählen (springen am Ende um), Strg+Pos1/Ende zum ersten/letzten Eintrag, Enter führt aus, Esc schließt. Fokus bleibt im Suchfeld (<code>aria-activedescendant</code>)</td></tr>
+        <tr><td>Live-Suche <code>[data-ncss-livesearch]</code></td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Vorschlag wählen; Enter öffnet ihn (ohne Auswahl: normales Absenden zur Ergebnisseite); Esc schließt die Liste</td></tr>
+        <tr><td>Combobox (<code>js/combobox.js</code>) mit <code>&lt;input list&gt;</code></td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Enter</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Liste öffnet bei Fokus/Eingabe; Pfeile wählen, Enter übernimmt den Wert, Esc schließt</td></tr>
+        <tr><td>Combobox mit <code>&lt;select&gt;</code> (wo kein <code>base-select</code> greift)</td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Pfeile öffnen und wählen, Enter/Leertaste öffnet bzw. übernimmt, Esc schließt. Mit <code>appearance: base-select</code>: natives Picker-Verhalten des Browsers</td></tr>
+        <tr><td>Segmentierte Auswahl <code>.ncss-segmented</code>, Bewertung <code>.ncss-rating</code></td><td><kbd class="ncss-kbd">Tab</kbd> in die Gruppe, <kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd> (<kbd class="ncss-kbd">↑</kbd> <kbd class="ncss-kbd">↓</kbd>)</td><td>Echte Radio-Gruppe: ein Tab-Stopp, Pfeile wechseln die Auswahl (nativ)</td></tr>
+        <tr><td>Vorher/Nachher <code>&lt;ncss-compare&gt;</code></td><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd> <kbd class="ncss-kbd">↑</kbd> <kbd class="ncss-kbd">↓</kbd>, <kbd class="ncss-kbd">Pos1</kbd>/<kbd class="ncss-kbd">Ende</kbd>, <kbd class="ncss-kbd">Bild↑</kbd>/<kbd class="ncss-kbd">Bild↓</kbd></td><td>Natives <code>&lt;input type="range"&gt;</code>; das Script setzt nur Position und <code>aria-valuetext</code></td></tr>
+        <tr><td>Slideshow <code>.ncss-slideshow</code></td><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd> bei fokussiertem Track</td><td>Natives Scroll-Snapping, kein eigenes Script</td></tr>
+        <tr><td>Lightbox (<code>js/lightbox.js</code>)</td><td><kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd>, <kbd class="ncss-kbd">Esc</kbd></td><td>Voriges/nächstes Bild; Esc schließt (natives <code>&lt;dialog&gt;</code>), Fokus kehrt zum auslösenden Link zurück</td></tr>
+        <tr><td>Vorschaukarte <code>&lt;ncss-hovercard&gt;</code></td><td><kbd class="ncss-kbd">Tab</kbd> auf den Link, <kbd class="ncss-kbd">Esc</kbd></td><td>Öffnet nach kurzer Verzögerung auch bei Tastaturfokus, bleibt offen, solange Fokus im Link oder in der Karte ist; Esc schließt und holt den Fokus aus der Karte zurück auf den Link</td></tr>
+        <tr><td>Videoplayer <code>&lt;ncss-video-player&gt;</code> (Fokus im Player)</td><td><kbd class="ncss-kbd">Leertaste</kbd>/<kbd class="ncss-kbd">K</kbd>, <kbd class="ncss-kbd">J</kbd>/<kbd class="ncss-kbd">L</kbd>, <kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd>, <kbd class="ncss-kbd">↑</kbd> <kbd class="ncss-kbd">↓</kbd>, <kbd class="ncss-kbd">M</kbd>, <kbd class="ncss-kbd">F</kbd>, <kbd class="ncss-kbd">C</kbd>, <kbd class="ncss-kbd">0</kbd>-<kbd class="ncss-kbd">9</kbd>, <kbd class="ncss-kbd">Pos1</kbd>/<kbd class="ncss-kbd">Ende</kbd>, <kbd class="ncss-kbd">&lt;</kbd> <kbd class="ncss-kbd">&gt;</kbd>, <kbd class="ncss-kbd">N</kbd>/<kbd class="ncss-kbd">P</kbd></td><td>Play/Pause · -/+10&nbsp;s · -/+5&nbsp;s · Lautstärke · Ton aus · Vollbild · Untertitel · Sprung auf 0-90&nbsp;% · Anfang/Ende · Geschwindigkeit · nächstes/voriges Video. Wirkt nicht, solange ein Button (Leertaste/Enter) oder ein Regler (Pfeile) selbst den Fokus hat</td></tr>
+        <tr><td>Audioplayer <code>&lt;ncss-audio-player&gt;</code> (Fokus im Player)</td><td><kbd class="ncss-kbd">Leertaste</kbd>/<kbd class="ncss-kbd">K</kbd>, <kbd class="ncss-kbd">J</kbd>/<kbd class="ncss-kbd">L</kbd>, <kbd class="ncss-kbd">←</kbd> <kbd class="ncss-kbd">→</kbd>, <kbd class="ncss-kbd">M</kbd>, <kbd class="ncss-kbd">0</kbd>-<kbd class="ncss-kbd">9</kbd>, <kbd class="ncss-kbd">Pos1</kbd>/<kbd class="ncss-kbd">Ende</kbd></td><td>Play/Pause · zurück/vor um <code>skip-back</code>/<code>skip-forward</code> (Standard 15/30&nbsp;s) · -/+5&nbsp;s · Ton aus · Sprung auf 0-90&nbsp;% · Anfang/Ende</td></tr>
+        <tr><td>Menüs im Video-/Audioplayer (Einstellungen, Geschwindigkeit)</td><td><kbd class="ncss-kbd">↓</kbd> <kbd class="ncss-kbd">↑</kbd>, <kbd class="ncss-kbd">Pos1</kbd>/<kbd class="ncss-kbd">Ende</kbd>, <kbd class="ncss-kbd">Esc</kbd>, <kbd class="ncss-kbd">Tab</kbd></td><td>Einträge wechseln (springen um), erster/letzter Eintrag; Esc schließt und setzt den Fokus zurück auf den Menü-Button, Tab schließt das Menü</td></tr>
+        <tr><td>Schwebendes Video <code>&lt;ncss-video-float&gt;</code></td><td><kbd class="ncss-kbd">Esc</kbd> im angedockten Player</td><td>Pausiert und dockt ab - wie der Schließen-Button</td></tr>
+        <tr><td>Laufband <code>.ncss-marquee</code> (<code>js/marquee.js</code>)</td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd> auf <code>[data-ncss-marquee-toggle]</code></td><td>Hält an/läuft weiter, <code>aria-pressed</code> zeigt den Zustand. Die Kopie der Laufband-Gruppe ist <code>inert</code> - kein doppelter Tab-Stopp</td></tr>
+        <tr><td>Toast <code>&lt;ncss-toast-region&gt;</code></td><td><kbd class="ncss-kbd">Tab</kbd> zum Schließen-Button</td><td>Timer pausieren, solange Fokus (oder Zeiger) in der Region ist</td></tr>
+        <tr><td>Hell/Dunkel <code>[data-ncss-theme-toggle]</code></td><td><kbd class="ncss-kbd">Enter</kbd> / <kbd class="ncss-kbd">Leertaste</kbd></td><td>Normaler Button, wechselt Modus und <code>aria-label</code></td></tr>
+        <tr><td>Aufklapp-Panels <code>.ncss-expand-panels</code></td><td><kbd class="ncss-kbd">Tab</kbd></td><td>Fokussiertes Panel klappt auf (<code>:focus-visible</code>/<code>:focus-within</code>)</td></tr>
+        <tr><td>Nach oben <code>.ncss-back-to-top</code></td><td><kbd class="ncss-kbd">Enter</kbd></td><td>Springt nach oben; liegt dort ein Ziel mit <code>id="top"</code> und <code>tabindex="-1"</code>, folgt auch der Fokus</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="eigene-komponenten">
+  <h2 class="demo-section-title">Eigene Komponenten</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li>Erst prüfen, ob ein natives Element passt (<code>&lt;details&gt;</code>, <code>&lt;dialog&gt;</code>, Radio-Gruppe, <code>popover</code>) - dann ist die Tastatur schon gelöst.</li>
+    <li>Wer ein Widget selbst baut, folgt dem passenden Muster des <a href="https://www.w3.org/WAI/ARIA/apg/patterns/">WAI-ARIA Authoring Practices Guide</a> - Tastenbelegung und Rollen gehören zusammen.</li>
+    <li>Einbuchstaben-Kürzel (wie <kbd class="ncss-kbd">K</kbd> im Player) nur, wenn das Element den Fokus hat, oder abschaltbar machen (WCAG 2.1.4). Die Befehlspalette aktiviert ihre globalen Kürzel deshalb nur per Opt-in-Attribut.</li>
+    <li>Nach dem Schließen von Overlays den Fokus an eine sinnvolle Stelle zurückgeben - meist den Auslöser.</li>
+    <li>Fokussierte Elemente dürfen nicht unter klebenden Kopfleisten verschwinden (WCAG 2.4.11) - <code>scroll-padding-top</code> passend zur Höhe der Leiste setzen.</li>
+  </ul>
+</section>

@@ -47,3 +47,8 @@
   <h2 class="demo-section-title">GPU Compositing Hint</h2>
   <p class="ncss-text-muted ncss-text-sm">Opt-in, <code>translateZ(0)</code>: <code>.ncss-gpu-boost</code> promotes an element onto its own compositor layer - against jank on frequently animated/scrolled elements with expensive repaints. Uses the standalone <code>transform</code> property, combinable with <code>.ncss-hover-lift</code>/<code>-grow</code>/<code>-press</code> (which use <code>translate</code>/<code>scale</code>, not <code>transform</code>) without conflict. Deliberately NOT applied automatically - every additional compositor layer costs graphics memory, use it targeted only where jank is actually visible. For an element that already uses <code>transform</code> itself (e.g. <code>.ncss-hero--parallax</code>), set the <code>--ncss-gpu-hint</code> token directly inside its own <code>transform</code> declaration instead - two <code>transform</code> declarations on the same element would otherwise overwrite rather than combine.</p>
 </section>
+
+
+<!--MERGE: effects-->
+
+<!--MERGE: all-components#animationen-->

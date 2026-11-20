@@ -63,7 +63,7 @@ dist/
   integrations/              Opt-in Brücken zu externen Bibliotheken (webawesome-
                               bridge.css, fontawesome-font-display-fix.css) - NICHT
                               Teil von ncss.css' Import-Manifest
-demo/                      Demo-/Marketingseiten (product.html = Startseite/Site-Root)
+demo/                      Beispiel-Websites + Weiterleitungen alter Demo-URLs + assets/
 docs-src/                  Quelle der zweisprachigen Doku-Website (→ generiert docs/,
                             nicht committed, siehe Workflow unten)
 vendor/                    Selbst gehostetes Web Awesome + Font Awesome (optional,
@@ -75,8 +75,8 @@ vendor/                    Selbst gehostetes Web Awesome + Font Awesome (optiona
                             nach jeder Änderung identisch halten (`diff` prüfen).
 ```
 
-`https://skerbis.github.io/nativecss/` (Site-Wurzel) zeigt `demo/product.html` - ein
-GitHub-Actions-Workflow (`.github/workflows/pages.yml` +
+`https://skerbis.github.io/nativecss/` (Site-Wurzel) zeigt die generierte Startseite
+`docs/de/start.html` - ein GitHub-Actions-Workflow (`.github/workflows/pages.yml` +
 `.github/scripts/build-root-index.mjs`) erzeugt beim Deploy eine pfad-angepasste Kopie
 als `index.html` an der Site-Wurzel, kein Root-Stub im Git-Tree selbst.
 
@@ -135,7 +135,7 @@ ein `theme.css`-Override auf `:root` selbst berechnet die ganze Skala frisch.
 ## Verifizieren - konkrete Fallstricke
 
 - Web Awesome ist ES-Module-basiert - funktioniert NICHT über `file://`. Immer über
-  einen lokalen Server testen (`php -S 127.0.0.1:PORT -t .`), nie die Datei direkt
+  einen lokalen Server testen (`php -S 127.0.0.1:PORT -t . docs-src/dev-router.php`), nie die Datei direkt
   öffnen - kein Bug im Code, eine Browser-Sicherheitsgrenze.
 - Eigene Kontrast-/Style-Prüfskripte sind nicht automatisch verlässlicher als das
   Problem, das sie prüfen sollen - `getComputedStyle(...).backgroundColor`/`.color`
@@ -187,6 +187,16 @@ ein `theme.css`-Override auf `:root` selbst berechnet die ganze Skala frisch.
   lokal/per Playwright nicht reproduzierbarer Timing-Bug ist kein Grund, eine per
   Spec/MDN/Bug-Tracker klar begründete Mitigation zurückzuhalten - nur transparent
   als "nicht empirisch nachgestellt" kommunizieren.
+
+- Video/Audio lokal NUR über `docs-src/dev-router.php` testen: der eingebaute `php -S`
+  ignoriert HTTP-Range-Anfragen (immer 200 + ganze Datei) - Safari spielt Medien dann gar
+  nicht ab, und auch Chromium kann nicht springen (`currentTime` bleibt bei 0). Ein
+  `<ncss-scroll-video>`/Player, der lokal "nicht reagiert", ist fast immer dieser
+  Server-Effekt, kein Code-Fehler (per Gegenprobe bestätigt: identischer Test mit Router
+  spult exakt mit). GitHub Pages unterstützt Ranges, live tritt das nicht auf.
+- Eigene Events heißen `ncss-<komponente>-<aktion>` (z. B. `ncss-scrolly-step`,
+  `ncss-compare-change`) - kein Doppelpunkt-Schema, damit `addEventListener` und Doku
+  einheitlich bleiben.
 
 ## Kommentar-Landmine (kritisch, eigener Abschnitt)
 
@@ -529,7 +539,7 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   `docs-src/strings.json`-Eintrag, Nutzung in `docs-src/template.html`,
   `.replaceAll(...)`-Zeile in `build.mjs`. Nach jedem Rebuild:
   `grep -rl "__PLATZHALTER_PRAEFIX_"` über `docs/` muss leer sein.
-- `.github/scripts/build-root-index.mjs` schreibt `demo/product.html`-Pfade für die
+- `.github/scripts/build-root-index.mjs` schreibt `docs/de/start.html`-Pfade für die
   Site-Wurzel um - Ersetzungsregeln sind exakte String-Paare (kein generisches Regex),
   ein neuer Pfad-Typ in `product.html` braucht eine neue Regel UND ggf. eine
   Erweiterung des Sanity-Checks. Immer per rsync-Simulation lokal prüfen (siehe
@@ -540,6 +550,41 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
   Migration gezielt auf seiten-untypische Muster grep-prüfen UND den vollen
   Regressionslauf mit Konsolenfehler-Listener fahren, ein reiner Diff-/Screenshot-
   Vergleich deckt einen JS-Fehler auf jedem Seitenaufruf nicht auf.
+
+## Website-Aufbau (Start, Handbuch, Beispiele)
+
+- EINE Hülle: `docs-src/build.mjs` + `docs-src/template.html` + `docs-src/nav.json`
+  erzeugen Startseite (`docs/{de,en}/start.html`), Handbuch und Beispiel-Übersicht.
+  Kopfleiste (Handbuch · Beispiele · Neu + Suche/Sprache/Theme), Seitenleisten-Baum (auf
+  Mobil im Off-Canvas), Brotkrumen, "Auf dieser Seite"-Leiste (`.ncss-subnav`, ab 3
+  Abschnitten) und Suchindex entstehen nur dort - nie Kopfleisten von Hand kopieren.
+- Neue Seite: Eintrag in `nav.json` (`"new": true` = grüner Punkt, auch an Gruppen) +
+  `content/{de,en}/<slug>.html`. Content-Direktiven: `<!--DESC-->`, `<!--HEAD:-->`,
+  `<!--FOOT:-->`, `<!--INCLUDE: fragment-->` bzw. `fragment#section-id` (Live-Beispiele aus
+  `docs-src/demos/`, EN-Variante unter `demos/en/`, sonst Hinweis "noch deutsch" außer
+  `<!--NEUTRAL-->`), `<!--HUB-->`, `<!--EXAMPLES-->`. Pfade in Fragmenten mit `~/` = Repo-Wurzel.
+  Kein `-->` in Kommentaren INNERHALB einer HEAD-Direktive (beendet die Direktive).
+- `demo/` enthält nur noch Beispiel-Websites (eigenes Design + einheitliche
+  `.demo-example-bar` zwischen `<!-- example-bar:start/end -->`) und Weiterleitungen alter
+  Demo-URLs - beides erzeugt `node docs-src/sync-demo.mjs` aus `nav.json`.
+- Build erzeugt `docs/class-index.{de,en}.json` (Inspektor-Erklärungen aus Klassen-
+  Tabellen + Fließtext + dist-Dateikommentaren) und `docs/search.{de,en}.json` (Suche).
+  Neue Klassen erscheinen automatisch, sobald sie im Handbuch stehen.
+- `.ncss-full-bleed`/`-bleed-*` in der Handbuch-Spalte (neben der Sidebar) laufen über -
+  dort per Template-CSS auf Spaltenbreite begrenzt. `<fieldset>` hat UA-`min-inline-size:
+  min-content` - in Grid-Spalten mit langen Code-Zeilen auf 0 setzen.
+- Kopfleiste darf nie umbrechen: nach jeder Änderung 320-1920px in 10px-Schritten prüfen.
+- Live-Beispiele aus `docs-src/demos/` per `<!--MERGE: fragment-->` (bzw. `#section`) in die
+  passenden Handbuch-Abschnitte einweben (gleiche ID mit Präfix `live-` oder gleiche h2),
+  nicht als zweiten Block anhängen - sonst steht jedes Thema doppelt da. EN-Fassungen der
+  Fragmente unter `demos/en/` (vollständig übersetzt).
+- Barrierefreiheits-Block je Komponenten-Seite kommt aus `docs-src/a11y.json` (Tastatur ·
+  Screenreader · Einstellungen · Ohne JS), Rechtliches/Website-Seiten aus `nav.json` "legal".
+- Kopfleiste + `.ncss-subnav` sind EIN Sticky-Container (`[data-ncss-sticky-header]`) - nie
+  die Leiste einzeln mit fester Topbar-Höhe kleben (verrutscht, sobald die Kopfleiste
+  wächst: Schriftzug, Zoom). `js/subnav.js` misst den Container -> `--ncss-scroll-offset`.
+- Website-eigene Klassen nie mit `ncss-`-Präfix (z.B. `demo-wordmark`); Markup-Prüfung:
+  `node tools/index.mjs && node llms/hooks/check-classes.mjs docs/*/*.html demo/*.html`.
 
 ## Bash-/Rollout-Fallstricke
 

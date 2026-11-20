@@ -1,0 +1,283 @@
+/**
+ * ncss - <ncss-preferences>: Darstellungs-Einstellungen für Besucher (Layer "components").
+ * KEIN Barrierefreiheits-Overlay - es macht keine Seite barrierefrei, sondern lässt Besucher
+ * eine bereits barrierefreie Seite an ihre Bedürfnisse anpassen. Systemeinstellungen bleiben
+ * Default ("System") und werden nie stillschweigend überschrieben.
+ *
+ * Markup (den Rest baut js/preferences.js):
+ *   <script src="js/preferences-early.js"></script>      im <head>, vor den Stylesheets
+ *   <ncss-preferences></ncss-preferences>                 Button "Darstellung" + Popover
+ *   <ncss-preferences inline></ncss-preferences>          Bedienfeld direkt (z.B. eigene Seite)
+ *   <ncss-preferences settings="theme text links"></ncss-preferences>   nur eine Auswahl
+ *   <script src="js/preferences.js" defer></script>
+ * Wirkung der Einstellungen: colors.css (Farbschema, Kontrast) und reset.css (Bewegung,
+ * Schriftgröße, Textabstände, Links, Fokus) - diese Datei stylt nur das Bedienfeld.
+ *
+ * Ohne JS bleibt das Element verborgen, es gelten die Systemeinstellungen.
+ * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css/reset.css (+ base). Keine andere
+ * Komponente nötig (eigenes Icon, eigene Segment-/Schalter-Optik).
+ */
+ncss-preferences:not(:defined) {
+  display: none;
+}
+ncss-preferences {
+  display: inline-block;
+}
+ncss-preferences[inline] {
+  display: block;
+}
+
+/* --- Button ----------------------------------------------------------------------------- */
+.ncss-preferences-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ncss-space-3xs, 0.25rem);
+  min-block-size: 2.75rem;
+  padding-inline: var(--ncss-space-xs);
+  border: var(--ncss-border-width) solid color-mix(in oklch, currentColor 25%, transparent);
+  border-radius: var(--ncss-radius-sm);
+  color: inherit;
+  font-weight: var(--ncss-font-weight-semibold);
+  white-space: nowrap;
+}
+.ncss-preferences-toggle:active {
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-preferences-toggle:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 6%, transparent);
+  }
+}
+.ncss-preferences-icon {
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Ccircle cx='12' cy='6.8' r='1.3' fill='black' stroke='none'/%3E%3Cpath d='M6.8 9.6c3.5 0.9 6.9 0.9 10.4 0M12 10.3v4.2M12 14.5l-2.4 3.9M12 14.5l2.4 3.9'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Ccircle cx='12' cy='6.8' r='1.3' fill='black' stroke='none'/%3E%3Cpath d='M6.8 9.6c3.5 0.9 6.9 0.9 10.4 0M12 10.3v4.2M12 14.5l-2.4 3.9M12 14.5l2.4 3.9'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* --- Bedienfeld ------------------------------------------------------------------------- */
+.ncss-preferences-panel {
+  display: grid;
+  gap: var(--ncss-space-xs);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  text-align: start;
+}
+/* Als Popover: unter dem Button (Anchor Positioning), sonst rechnet das Script. */
+.ncss-preferences-panel[popover] {
+  inset: auto;
+  margin: 0;
+  margin-block-start: var(--ncss-space-2xs);
+  position-area: bottom span-left;
+  position-try-fallbacks: flip-block, flip-inline;
+  inline-size: min(24rem, calc(100vw - 2 * var(--ncss-space-xs)));
+  max-block-size: calc(100svh - 2 * var(--ncss-space-xs));
+  overflow-y: auto;
+  padding: var(--ncss-space-sm);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  box-shadow: var(--ncss-shadow-lg);
+}
+/* Mit Anchor Positioning ist der Bezugsrahmen die position-area (vom Button bis zum
+   Viewport-Rand) - 100 % hält das Panel darin, längerer Inhalt scrollt im Panel statt
+   unter den Viewport-Rand zu ragen (bei 130 % Schrift wird es sonst höher als der Platz). */
+@supports (position-area: bottom) {
+  .ncss-preferences-panel[popover]:not([data-ncss-preferences-fallback]) {
+    max-block-size: calc(100% - var(--ncss-space-2xs));
+    /* Mindesthöhe, damit bei wenig Platz unter dem Button die Fallback-Position (darüber)
+       greift, statt das Panel auf ein paar Zeilen zusammenzudrücken. */
+    min-block-size: min(20rem, calc(100svh - 2 * var(--ncss-space-xs)));
+  }
+}
+.ncss-preferences-panel[popover]:not(:popover-open) {
+  display: none;
+}
+.ncss-preferences-panel[data-ncss-preferences-fallback] {
+  position: fixed;
+  margin: 0;
+}
+ncss-preferences[inline] .ncss-preferences-panel {
+  padding: var(--ncss-space-sm);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+}
+.ncss-preferences-panel > * {
+  margin: 0;
+}
+.ncss-preferences-title {
+  font-size: var(--ncss-font-size-md);
+}
+.ncss-preferences-intro,
+.ncss-preferences-hint {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-preferences-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.ncss-preferences-group legend {
+  padding: 0;
+  margin-block-end: var(--ncss-space-3xs, 0.25rem);
+  font-weight: var(--ncss-font-weight-semibold);
+  font-size: var(--ncss-font-size-sm);
+}
+
+/* Segmente: echte Radios, optisch als Schaltfläche (Radio selbst nur visuell versteckt -
+   bleibt fokussierbar, Pfeiltasten wechseln wie bei jeder Radiogruppe). */
+.ncss-preferences-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 2px;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-sm);
+}
+.ncss-preferences-options label {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+}
+.ncss-preferences-options input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.ncss-preferences-options span {
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  min-block-size: 2.5rem;
+  padding-inline: var(--ncss-space-2xs);
+  border-radius: calc(var(--ncss-radius-sm) - 2px);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-medium);
+  white-space: nowrap;
+}
+.ncss-preferences-options input:checked + span {
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+}
+.ncss-preferences-options input:focus-visible + span {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-preferences-options input:not(:checked):hover + span {
+    background-color: color-mix(in oklch, currentColor 8%, transparent);
+  }
+}
+
+/* Schalter: echte Checkbox mit role="switch". */
+.ncss-preferences-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ncss-space-xs);
+  min-block-size: 2.75rem;
+  cursor: pointer;
+}
+.ncss-preferences-switch input {
+  appearance: none;
+  flex: 0 0 auto;
+  order: 2;
+  position: relative;
+  inline-size: 2.75rem;
+  block-size: 1.5rem;
+  margin: 0;
+  border: var(--ncss-border-width) solid var(--ncss-color-text-muted);
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-bg-subtle);
+  cursor: pointer;
+  transition: background-color var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+.ncss-preferences-switch input::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 3px;
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  translate: 0 -50%;
+  border-radius: 50%;
+  background-color: var(--ncss-color-text-muted);
+  transition: inset-inline-start var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+.ncss-preferences-switch input:checked {
+  border-color: var(--ncss-color-brand);
+  background-color: var(--ncss-color-brand);
+}
+.ncss-preferences-switch input:checked::before {
+  inset-inline-start: calc(100% - 1.05rem - 3px);
+  background-color: var(--ncss-color-brand-contrast);
+}
+.ncss-preferences-switch input:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.ncss-preferences-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-preferences-actions button {
+  min-block-size: 2.75rem;
+  padding-inline: var(--ncss-space-sm);
+  border: var(--ncss-border-width) solid color-mix(in oklch, currentColor 25%, transparent);
+  border-radius: var(--ncss-radius-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+}
+.ncss-preferences-actions button:active {
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-preferences-actions button:hover:not(:active) {
+    background-color: color-mix(in oklch, currentColor 6%, transparent);
+  }
+}
+/* Ansage-Region: optisch versteckt (eigene Regel, Datei läuft allein). */
+.ncss-preferences-status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .ncss-preferences-icon {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+  .ncss-preferences-options input:checked + span {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ncss-preferences-switch input {
+    forced-color-adjust: none;
+    border-color: ButtonText;
+    background-color: Canvas;
+  }
+  .ncss-preferences-switch input::before {
+    background-color: ButtonText;
+  }
+  .ncss-preferences-switch input:checked {
+    background-color: Highlight;
+    border-color: Highlight;
+  }
+  .ncss-preferences-switch input:checked::before {
+    background-color: HighlightText;
+  }
+}

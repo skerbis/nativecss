@@ -1,7 +1,8 @@
 <!--DESC: Ready-made variants for ul/ol/dl - dot, dash, icon, divided, steps, definition lists.-->
+<!--FOOT: <script src="~/dist/js/sortable.js"></script>-->
 <section class="ncss-stack">
   <h1>Lists</h1>
-  <p class="ncss-text-lg ncss-text-muted">Ready-made, decorative variants for native <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code> - <code>components/lists.css</code>. Live: <a href="../../demo/index.html#listen">Demo</a>.</p>
+  <p class="ncss-text-lg ncss-text-muted">Ready-made, decorative variants for native <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code> - <code>components/lists.css</code>. Live: <a href="all-components.html#listen">Demo</a>.</p>
 </section>
 
 <section class="ncss-stack" id="a11y">
@@ -67,3 +68,152 @@
 &lt;/dl&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">For the same tile pattern with ANY custom content (not just label+number) instead of <code>&lt;dl&gt;</code>: <a href="custom-components.html">Build Your Own Components</a>.</p>
 </section>
+
+
+<section class="ncss-stack" id="leaders" data-subnav-label="Leader lines">
+  <h2 class="demo-section-title">Leader lines (price lists, menus) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>components/leaders.css</code> - leader lines for price lists, menus and tables of contents: "Coffee ........ €3.50". Robust with wrapping names (dots and price sit on the last line), works in RTL and is invisible to screen readers. Needs only colors/tokens/reset/base.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Price list with leader lines">
+    <h3 class="ncss-text-md">Hot drinks</h3>
+    <dl class="ncss-leaders">
+      <div class="ncss-leaders-item"><dt>Coffee</dt><dd>€3.50</dd></div>
+      <div class="ncss-leaders-item">
+        <dt>Cappuccino with oat milk</dt><dd>€4.20</dd>
+        <dd class="ncss-leaders-desc">Double espresso, Ethiopian beans</dd>
+      </div>
+      <div class="ncss-leaders-item"><dt>House-style hot chocolate with whipped cream and cinnamon</dt><dd>€4.80</dd></div>
+      <div class="ncss-leaders-item"><dt>Tea, pot</dt><dd>€5.00</dd></div>
+    </dl>
+    <h3 class="ncss-text-md">Contents (list, dashed)</h3>
+    <ul class="ncss-leaders ncss-leaders--dashed ncss-leaders--compact" role="list">
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Introduction</a></span><span class="ncss-leaders-value">4</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Container queries in practice</a></span><span class="ncss-leaders-value">17</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Appendix</a></span><span class="ncss-leaders-value">112</span></li>
+    </ul>
+    <h3 class="ncss-text-md">Right to left (Arabic)</h3>
+    <dl class="ncss-leaders" dir="rtl" lang="ar">
+      <div class="ncss-leaders-item"><dt>قهوة</dt><dd>٣٫٥٠ €</dd></div>
+      <div class="ncss-leaders-item"><dt>شاي بالنعناع</dt><dd>٢٫٨٠ €</dd></div>
+    </dl>
+  </div>
+  <pre><code class="language-html">&lt;dl class="ncss-leaders"&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Coffee&lt;/dt&gt;
+    &lt;dd&gt;€3.50&lt;/dd&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Cappuccino with oat milk&lt;/dt&gt;
+    &lt;dd&gt;€4.20&lt;/dd&gt;
+    &lt;dd class="ncss-leaders-desc"&gt;Double espresso, Ethiopian beans&lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;
+
+&lt;ul class="ncss-leaders ncss-leaders--dashed" role="list"&gt;
+  &lt;li class="ncss-leaders-item"&gt;
+    &lt;span class="ncss-leaders-name"&gt;&lt;a href="#k1"&gt;Introduction&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="ncss-leaders-value"&gt;4&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Mixed content in the name (text plus <code>&lt;small&gt;</code> or an icon) belongs in one shared <code>&lt;span&gt;</code> - the name is a flex row internally.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-leaders</code></td><td>On a <code>&lt;dl&gt;</code> (name/value) or <code>&lt;ul role="list"&gt;</code></td></tr>
+        <tr><td><code>.ncss-leaders-item</code></td><td>One row: a <code>&lt;div&gt;</code> around <code>dt</code>/<code>dd</code>, or the <code>&lt;li&gt;</code></td></tr>
+        <tr><td><code>dt / .ncss-leaders-name</code></td><td>Name, may wrap; the dots follow its last line</td></tr>
+        <tr><td><code>dd / .ncss-leaders-value</code></td><td>Value (price, page number), never wraps, tabular figures</td></tr>
+        <tr><td><code>.ncss-leaders-desc</code></td><td>Description on its own row below (<code>&lt;dd&gt;</code> or any element)</td></tr>
+        <tr><td><code>.ncss-leaders--dashed / --line / --compact</code></td><td>Dashes or a line instead of dots; tighter rows</td></tr>
+        <tr><td><code>--ncss-leaders-style / -color / -gap</code></td><td>Border style (dotted), dot colour, row gap</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Not interactive; links (e.g. in a table of contents) follow the normal tab order.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen reader</h4>
+    <p>The dots are an empty pseudo-element with a dotted border - no text, so screen readers only read "Coffee, €3.50". <code>&lt;dl&gt;</code> links name and price as term/description; on a list, set <code>role="list"</code>.</p>
+    <h4>Preferences</h4>
+    <p>Logical properties: in RTL dots and price mirror automatically (example above). Forced colours: dots in <code>CanvasText</code>. With enlarged text or a narrow column the name wraps; dots and price stay on its last line.</p>
+    <h4>Without JS</h4>
+    <p>Pure CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="sortable" data-subnav-label="Sortable list">
+  <h2 class="demo-section-title">Sortable list <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>&lt;ncss-sortable&gt;</code> around a <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code> makes its entries reorderable - in three equivalent ways: drag the handle (mouse, pen, finger), use the keyboard (focus the handle, <kbd class="ncss-kbd">Space</kbd> to pick up, arrow keys, <kbd class="ncss-kbd">Space</kbd> to drop) or the up/down buttons. Every change is announced (“Events, position 2 of 5”), then <code>ncss-sortable-change</code> fires with the new order. Handle and buttons are created by the script - without JavaScript a normal list remains, with no controls that do nothing. <code>components/sortable.css</code> + <code>js/sortable.js</code>, needs only colors/tokens/reset/base.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Sortable list">
+    <h3 class="ncss-text-md" id="so-title">Order of the home page tiles</h3>
+    <ncss-sortable>
+      <ol class="ncss-sortable-list" aria-labelledby="so-title">
+        <li data-id="news">News</li>
+        <li data-id="events">Events</li>
+        <li data-id="weather" data-label="Weather">Weather <small class="ncss-text-muted">with pollen count</small></li>
+        <li data-id="map">Town map</li>
+        <li data-id="contact">Contact</li>
+      </ol>
+    </ncss-sortable>
+  </div>
+  <pre><code class="language-html">&lt;h3 class="ncss-text-md" id="so-title"&gt;Order of the home page tiles&lt;/h3&gt;
+&lt;ncss-sortable&gt;
+  &lt;ol class="ncss-sortable-list" aria-labelledby="so-title"&gt;
+    &lt;li data-id="news"&gt;News&lt;/li&gt;
+    &lt;li data-id="events"&gt;Events&lt;/li&gt;
+    &lt;li data-id="weather" data-label="Weather"&gt;Weather &lt;small class="ncss-text-muted"&gt;with pollen count&lt;/small&gt;&lt;/li&gt;
+    &lt;li data-id="map"&gt;Town map&lt;/li&gt;
+    &lt;li data-id="contact"&gt;Contact&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/ncss-sortable&gt;
+&lt;script src="dist/js/sortable.js" defer&gt;&lt;/script&gt;</code></pre>
+  <pre><code class="language-javascript">// separate file, e.g. js/home.js
+document.addEventListener("ncss-sortable-change", (event) =&gt; {
+  console.log(event.detail.order); // ["events", "news", "weather", …]
+});</code></pre>
+  <div class="ncss-table-scroll">
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Attribute / class</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;ncss-sortable&gt;</code></td><td>Wrapper around exactly one list; every direct child is an entry. Entries appended later are set up automatically.</td></tr>
+        <tr><td><code>li[data-id]</code></td><td>Identifier of the entry in <code>detail.order</code> (otherwise its name).</td></tr>
+        <tr><td><code>li[data-label]</code></td><td>Short name for announcements and buttons when the entry contains more text.</td></tr>
+        <tr><td><code>no-buttons</code></td><td>Omit the up/down buttons - only if the page itself offers an equivalent alternative without dragging (WCAG 2.5.7).</td></tr>
+        <tr><td><code>data-label-*</code></td><td>Override texts: <code>handle</code>, <code>up</code>, <code>down</code>, <code>instructions</code>, <code>grabbed</code>, <code>moved</code>, <code>dropped</code>, <code>cancelled</code> - placeholders <code>{label}</code>, <code>{pos}</code>, <code>{total}</code>.</td></tr>
+        <tr><td><code>.ncss-sortable-handle</code></td><td>Your own handle in the markup is used instead of a generated one.</td></tr>
+        <tr><td><code>[data-grabbed]</code>, <code>[data-dragging]</code></td><td>State on the entry (keyboard or pointer) - for your own styling.</td></tr>
+        <tr><td>Event / API</td><td><code>ncss-sortable-change</code> <code>{ item, from, to, order }</code> (0-based); <code>el.items</code>, <code>el.order</code>, <code>el.move(itemOrIndex, target)</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</h3>
+    <h4>Keyboard (focus on the handle)</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Space</kbd> / <kbd class="ncss-kbd">Enter</kbd></td><td>Pick up or drop the entry.</td></tr>
+        <tr><td><kbd class="ncss-kbd">↑</kbd> / <kbd class="ncss-kbd">↓</kbd> (also <kbd class="ncss-kbd">←</kbd> / <kbd class="ncss-kbd">→</kbd>)</td><td>Move the picked-up entry by one position.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Home</kbd> / <kbd class="ncss-kbd">End</kbd></td><td>To the start or the end.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd></td><td>Cancel - the entry jumps back to where it started (also while dragging with the mouse).</td></tr>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Drops at the current position and moves on.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screen readers</h4>
+    <p>The handle is named “Move Weather” and describes the controls via <code>aria-describedby</code>; while picked up it reports <code>aria-pressed="true"</code>. A live region announces every step: “Weather picked up, position 3 of 5”, “Weather, position 2 of 5”, “Weather dropped …” or “Move cancelled …”. The buttons are named “Move Weather up/down”; at the edges they are <code>aria-disabled</code> but stay focusable, so focus is never lost.</p>
+    <h4>Pointer &amp; WCAG 2.5.7</h4>
+    <p>Dragging is never the only way: the up/down buttons do the same with single clicks or taps (36 px targets). On touch devices the page does not scroll while dragging the handle, everywhere else it does.</p>
+    <h4>Preferences</h4>
+    <p>Neighbours only glide into place when motion is allowed (both <code>prefers-reduced-motion</code> and <code>data-motion</code> on <code>&lt;html&gt;</code> are checked). Colours from tokens; in forced colors mode borders in <code>CanvasText</code> and the picked-up entry with a <code>Highlight</code> outline.</p>
+    <h4>Without JS</h4>
+    <p>A normal ordered list without handles - nothing looks operable that is not.</p>
+  </div>
+</section>
+
+<!--MERGE: all-components#listen-->

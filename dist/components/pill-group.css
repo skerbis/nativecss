@@ -1,0 +1,143 @@
+/**
+ * ncss - Pillen-Gruppe (Layer "components"): mehrere Buttons/Links als EINE Pille mit
+ * feinen Trennstrichen - z.B. Werkzeuge in einer Kopfleiste (Suche · Sprache ·
+ * Darstellung), Ansichts-Aktionen (Teilen · Drucken · Merken) oder eine kompakte Toolbar.
+ *
+ * Abgrenzung: .ncss-segmented ist eine AUSWAHL (Radio-Gruppe, genau eins aktiv) - die
+ * Pillen-Gruppe bündelt dagegen unabhängige Aktionen/Links, jedes Teil bleibt ein ganz
+ * normaler Button bzw. Link mit eigenem Tab-Stopp. Kein JS.
+ *
+ * Markup:
+ *   <div class="ncss-pill-group" role="group" aria-label="Werkzeuge">
+ *     <button type="button">Suchen</button>
+ *     <a href="/en/">English</a>
+ *     <button type="button" aria-label="Teilen"><span class="ncss-icon ncss-icon-share" aria-hidden="true"></span></button>
+ *   </div>
+ * role="group" + aria-label, sobald die Gruppe eine gemeinsame Bedeutung hat.
+ * Reine Icon-Teile brauchen einen Namen (aria-label oder visuell versteckter Text).
+ * Beliebige Elemente (auch Custom Elements wie <ncss-preferences>) sind als Teil
+ * möglich - ihr innerer Button wird wie die direkten Kinder gestylt (.ncss-pill-group-item
+ * an den inneren Button setzen, wenn das Element nicht selbst der Button ist).
+ *
+ * Varianten:
+ *   --sm        kompakter (dichte Toolbars)
+ *   --solid     kräftigere Fläche statt der dezenten Hintergrundtönung
+ *   --plain     ohne Rahmen und Fläche, nur die Trennstriche
+ *   --no-dividers  ohne Trennstriche
+ *
+ * Parameter: --ncss-pill-group-height, --ncss-pill-group-gap (Innenabstand der Pille).
+ *
+ * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base).
+ */
+
+.ncss-pill-group {
+  --_ncss-pg-h: var(--ncss-pill-group-height, 2.25rem);
+  display: inline-flex;
+  align-items: center;
+  max-inline-size: 100%;
+  padding: var(--ncss-pill-group-gap, 2px);
+  border: var(--ncss-border-width, 1px) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-full, 999px);
+  background-color: var(--ncss-color-bg-subtle);
+  vertical-align: middle;
+}
+
+.ncss-pill-group > * {
+  position: relative;
+  flex: none;
+}
+
+/* Trennstrich VOR jedem Teil ausser dem ersten - als Pseudo-Element, damit die Teile
+   selbst runde Hover-Flächen behalten können. */
+.ncss-pill-group > * + *::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 25%;
+  border-inline-start: var(--ncss-border-width, 1px) solid var(--ncss-color-border);
+  pointer-events: none;
+}
+
+/* Teile: Buttons/Links direkt in der Gruppe oder markierte innere Buttons */
+.ncss-pill-group > :is(a, button),
+.ncss-pill-group .ncss-pill-group-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-block-size: var(--_ncss-pg-h);
+  min-inline-size: var(--_ncss-pg-h);
+  margin: 0;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: var(--ncss-radius-full, 999px);
+  background: transparent;
+  box-shadow: none;
+  color: var(--ncss-color-text);
+  font: inherit;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-medium, 500);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--ncss-motion-duration, 0.15s) var(--ncss-motion-easing, ease);
+}
+.ncss-pill-group > :is(a, button):active,
+.ncss-pill-group .ncss-pill-group-item:active {
+  background-color: color-mix(in oklch, var(--ncss-color-text) 14%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-pill-group > :is(a, button):hover:not(:active),
+  .ncss-pill-group .ncss-pill-group-item:hover:not(:active) {
+    background-color: color-mix(in oklch, var(--ncss-color-text) 8%, transparent);
+  }
+}
+/* Fokus-Ring nach innen - die Pille schneidet sonst nichts ab, Nachbarn bleiben sichtbar */
+.ncss-pill-group > :is(a, button):focus-visible,
+.ncss-pill-group .ncss-pill-group-item:focus-visible {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring, var(--ncss-color-brand));
+  outline-offset: calc(var(--ncss-focus-ring-width, 2px) * -1);
+}
+/* Aktueller Zustand (z.B. aktive Sprache, eingeschaltete Option) */
+.ncss-pill-group > :is([aria-current]:not([aria-current="false"]), [aria-pressed="true"]),
+.ncss-pill-group .ncss-pill-group-item:is([aria-current]:not([aria-current="false"]), [aria-pressed="true"]) {
+  background-color: var(--ncss-color-surface, var(--ncss-color-bg));
+  box-shadow: var(--ncss-shadow-sm);
+}
+.ncss-pill-group > :is(button:disabled, [aria-disabled="true"]) {
+  color: var(--ncss-color-text-muted);
+  cursor: not-allowed;
+}
+
+/* --- Varianten ----------------------------------------------------------------------- */
+.ncss-pill-group--sm {
+  --_ncss-pg-h: var(--ncss-pill-group-height, 1.85rem);
+}
+.ncss-pill-group--sm > :is(a, button),
+.ncss-pill-group--sm .ncss-pill-group-item {
+  padding-inline: 0.55rem;
+  font-size: var(--ncss-font-size-xs, 0.8rem);
+}
+.ncss-pill-group--solid {
+  background-color: color-mix(in oklch, var(--ncss-color-text) 8%, var(--ncss-color-bg));
+}
+.ncss-pill-group--plain {
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+}
+.ncss-pill-group--no-dividers > * + *::before {
+  display: none;
+}
+
+/* Hochkontrast: Trennstriche und Fokus in Systemfarben */
+@media (forced-colors: active) {
+  .ncss-pill-group > * + *::before {
+    border-color: CanvasText;
+  }
+  .ncss-pill-group > :is([aria-current]:not([aria-current="false"]), [aria-pressed="true"]) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modern UI – NativeCSS Tour</title>
+<meta name="description" content="Bento templates, spotlight, before/after comparison, expanding panels, notifications, aurora backgrounds and effects like glass and glow – live, using the Hotel Seeblick example.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="alternate" hreflang="de" href="modern.html">
+<!-- site-head:start -->
+<script src="../../dist/js/preferences-early.js"></script>
+<link rel="stylesheet" href="../../dist/components/preferences-fonts.css">
+<link rel="stylesheet" href="../assets/site-shell.css">
+<script src="../../dist/js/command-fallback.js" defer></script>
+<script src="../../dist/js/nav.js" defer></script>
+<script src="../../dist/js/preferences.js" defer></script>
+<script src="../../dist/js/subnav.js" defer></script>
+<script src="../../dist/js/command-palette.js" defer></script>
+<script src="../../dist/js/dialog-light-dismiss.js" defer></script>
+<script src="../../dist/js/dropdown.js" defer></script>
+<script src="../assets/js/showcase-tour.js" defer></script>
+<!-- site-head:end -->
+<link rel="stylesheet" href="../../dist/ncss.css">
+<link rel="stylesheet" href="../assets/inspector.css">
+<link rel="stylesheet" href="../assets/examples/showcase/showcase.css">
+<script src="../../dist/js/theme-toggle.js" defer></script>
+<script src="../../dist/js/spotlight.js" defer></script>
+<script src="../../dist/js/compare.js" defer></script>
+<script src="../../dist/js/notification.js" defer></script>
+<script src="../assets/js/showcase-modern.js" defer></script>
+<script src="../assets/js/inspector.js" defer></script>
+<style>
+  /* Nur Kapitel-eigene demo-Klassen (nie ncss-Namen). Gemeinsames: showcase.css */
+
+  /* Bento-Kacheln: Text-Kachel (Kicker oben, Text unten) und Foto-Kachel (Bild füllt) */
+  .demo-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ncss-space-2xs);
+    padding: var(--ncss-space-sm);
+  }
+  .demo-tile > p:last-child { margin-block-start: auto; }
+  .demo-tile h4,
+  .demo-tile-photo h4 {
+    margin: 0;
+    font-size: var(--ncss-font-size-md);
+    line-height: var(--ncss-line-height-tight);
+  }
+  .demo-kicker {
+    font-size: var(--ncss-font-size-sm);
+    font-weight: var(--ncss-font-weight-semibold);
+    color: var(--ncss-color-brand-on-soft);
+  }
+  .demo-tile-photo {
+    margin: 0;
+    min-block-size: 100%;
+  }
+  .demo-tile-photo > img {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .demo-tile-photo p { margin: 0; }
+  .demo-tile-photo figcaption { text-shadow: 0 1px 3px rgb(0 0 0 / 70%); }
+  .demo-mosaic { max-inline-size: 62rem; }
+  .demo-tile-big h4 {
+    font-size: var(--ncss-font-size-lg);
+    line-height: var(--ncss-line-height-tight);
+  }
+
+  /* Spotlight-Zimmerkarten: einheitlicher Bildausschnitt */
+  .demo-room .ncss-card-media img {
+    inline-size: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .demo-room h3 { font-size: var(--ncss-font-size-md); margin-block-end: var(--ncss-space-3xs); }
+  .demo-room p { margin: 0; }
+
+  .demo-compare { max-inline-size: 56rem; }
+
+  .demo-aurora {
+    display: grid;
+    place-content: center;
+    gap: var(--ncss-space-xs);
+    min-block-size: 18rem;
+    padding: var(--ncss-space-lg) var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    text-align: center;
+  }
+  .demo-aurora h3 {
+    margin: 0;
+    font-size: var(--ncss-font-size-lg);
+    text-wrap: balance;
+  }
+  .demo-aurora p {
+    max-inline-size: 34ch;
+    margin: 0 auto;
+  }
+
+  /* Effekte */
+  .demo-effects-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ncss-space-sm);
+  }
+  .demo-glow-pill {
+    padding: var(--ncss-space-xs) var(--ncss-space-lg);
+    border: none;
+    border-radius: var(--ncss-radius-full);
+    background-color: var(--ncss-color-surface);
+    color: var(--ncss-color-text);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .demo-glow-card {
+    padding: var(--ncss-space-md);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-glow-card h4 { margin-block: 0 var(--ncss-space-2xs); }
+  .demo-glow-card p { margin: 0; }
+  .demo-glass-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-block-size: 22rem;
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+    overflow: hidden;
+  }
+  .demo-glass-stage > img {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .demo-glass-card {
+    position: relative;
+    max-inline-size: 24rem;
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-glass-card h4 { margin-block: 0 var(--ncss-space-2xs); }
+  .demo-glass-card p { margin-block: 0 var(--ncss-space-xs); }
+  .demo-stamped-btn {
+    padding: var(--ncss-space-xs) var(--ncss-space-lg);
+    border: none;
+    background: none;
+    color: var(--ncss-color-text);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .demo-voucher {
+    padding: var(--ncss-space-md);
+    border-radius: var(--ncss-radius-lg);
+  }
+  .demo-voucher--sand {
+    background-color: light-dark(oklch(0.9 0.04 80), oklch(0.36 0.04 70));
+    color: var(--ncss-color-text);
+  }
+  .demo-voucher p { margin: 0; }
+  .demo-voucher strong {
+    display: block;
+    font-size: var(--ncss-font-size-xl);
+    line-height: var(--ncss-line-height-tight);
+  }
+</style>
+</head>
+<body class="ncss-page-shell">
+
+<a href="#main" class="ncss-skip-link">Skip to content</a>
+
+<!-- site-topbar:start -->
+<div class="site-sticky" data-ncss-sticky-header>
+<header class="ncss-topbar site-topbar">
+  <div class="ncss-topbar-inner">
+    <a class="ncss-topbar-brand site-brand" href="../../docs/en/start.html" aria-label="NativeCSS – home"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
+    <nav class="ncss-nav site-nav" aria-label="Main navigation">
+      <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Open menu"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
+      <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Main menu">
+        <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Close menu"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+        <ul class="ncss-nav-list">
+          <li class="ncss-nav-item"><a href="../../docs/en/index.html">Docs</a></li>
+          <li class="ncss-nav-item"><a href="index-en.html" aria-current="true">Tour <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+          <li class="ncss-nav-item"><a href="../../docs/en/examples.html">Examples <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(contains new pages)</span></span></a></li>
+          <li class="ncss-nav-item"><a href="../../docs/en/start.html#neu">New <span class="ncss-badge-dot" aria-hidden="true"></span></a></li>
+          <li class="ncss-nav-item site-panel-only"><a href="../../docs/en/start.html#support"><span class="ncss-icon ncss-icon-heart site-sponsor-heart" aria-hidden="true"></span> Support</a></li>
+        </ul>
+        <div class="ncss-nav--tree site-panel-tree">
+          <details class="docs-sidebar-group" open>
+            <summary class="docs-sidebar-group-title">Getting Started</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/index.html">Overview</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/architecture.html">Architecture</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/guides.html">Guides</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/theming.html">Theming</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/custom-theme.html">Build Your Own Theme</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/custom-components.html">Build Your Own Components</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/inspector.html">Code Inspector <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title"><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Accessibility</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/accessibility.html">Principles</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-keyboard.html">Keyboard</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-screenreader.html">Screen Readers &amp; ARIA</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-preferences.html">User Preferences</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-zoom.html">Zoom, Reflow &amp; Text Spacing</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-forms.html">Forms &amp; Error Messages</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-media.html">Media</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-testing.html">Testing</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-checklist.html">WCAG 2.2 AA Checklist</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/a11y-statement-guide.html">Accessibility Statement</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Foundations</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/tokens.html">Design Tokens</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/colors.html">Colors &amp; Surfaces</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/typography.html">Typography</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/icons.html">Icons <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/touch-mobile.html">Touch &amp; Mobile Viewports</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Layout</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/layout.html">Layout &amp; Grid</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/layouts.html">Landing Page Blocks</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/float.html">Float &amp; Text Wrap</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Content</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/base-components.html">Base Components <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/app-ui.html">App Building Blocks <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/cards.html">Cards <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/lists.html">Lists <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/timeline.html">Timeline &amp; Steps <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/tables.html">Tables <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/forms.html">Forms</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/widgets.html">Events &amp; Downloads <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Navigation</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/navigation.html">Navigation</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/subnav.html">Section Navigation <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Overlays</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/overlays.html">Modal, Off-Canvas &amp; Lightbox <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Media</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/media.html">Media <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/maps.html">Maps <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Scroll Effects <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(contains new pages)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/scroll.html">Scroll &amp; Visibility <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/animations.html">Animations &amp; Effects</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/scroll-effects.html">Scroll Effects <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Modern UI <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(contains new pages)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/modern-ui.html">Modern UI <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Video & Audio <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(contains new pages)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/video-audio.html">Video &amp; Audio <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Integration <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(contains new pages)</span></span></summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/integration-cms.html">CMS <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/integration-frameworks.html">Frameworks <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/dynamic-content.html">Dynamic Content <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/webawesome-bridge.html">Web Awesome</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/uikit-migration.html">From UIkit3 to ncss</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/ncss-container.html">&lt;ncss-container&gt;</a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Tools</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/tools.html">Tools <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></a></li>
+            </ul>
+          </details>
+          <details class="docs-sidebar-group">
+            <summary class="docs-sidebar-group-title">Reference</summary>
+            <ul class="ncss-nav-list">
+              <li class="ncss-nav-item"><a href="../../docs/en/components.html">Component Reference</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/all-components.html">All Building Blocks Live</a></li>
+              <li class="ncss-nav-item"><a href="../../docs/en/known-limitations.html">Known Limitations</a></li>
+            </ul>
+          </details>
+        </div>
+        <details class="site-panel-prefs">
+          <summary><span class="ncss-icon ncss-icon-accessibility" aria-hidden="true"></span>Display</summary>
+          <ncss-preferences inline></ncss-preferences>
+        </details>
+      </dialog>
+    </nav>
+    <div class="ncss-topbar-actions">
+      <div class="site-tools ncss-pill-group" role="group" aria-label="Tools">
+      <button type="button" class="site-search-btn" command="show-modal" commandfor="siteSearch" aria-keyshortcuts="Control+K Meta+K /"><span class="ncss-icon ncss-icon-search" aria-hidden="true"></span><span class="site-search-label">Search</span><kbd class="site-search-key" data-ncss-command-key aria-hidden="true">Ctrl K</kbd></button>
+      <a class="site-sponsor" href="../../docs/en/start.html#support"><span class="ncss-icon ncss-icon-heart" aria-hidden="true"></span><span class="site-sponsor-label">Support</span></a>
+      <a class="demo-topbar-lang" href="modern.html" hreflang="de" lang="de"><span class="demo-topbar-lang-long">Deutsch</span><span class="demo-topbar-lang-short" aria-hidden="true">DE</span></a>
+      <ncss-preferences class="site-prefs"></ncss-preferences>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="demo-chapterbar demo-chapterbar--collapsible" aria-label="Chapters">
+  <div class="demo-chapterbar-inner">
+    <span class="demo-chapterbar-label" aria-hidden="true">Chapters</span>
+    <ul class="demo-chapterbar-list" role="list">
+      <li><a href="index-en.html">Overview</a></li>
+      <li><a href="layout-en.html">Layout</a></li>
+      <li><a href="content-en.html">Content</a></li>
+      <li><a href="navigation-en.html">Navigation</a></li>
+      <li><a href="forms-en.html">Forms</a></li>
+      <li><a href="overlays-en.html">Overlays</a></li>
+      <li><a href="media-en.html">Media</a></li>
+      <li><a href="scroll-en.html">Scroll effects</a></li>
+      <li><a aria-current="page" href="modern-en.html">Modern UI</a></li>
+      <li><a href="app-ui-en.html">App UI</a></li>
+      <li><a href="icons-en.html">Icons</a></li>
+      <li><a href="a11y-en.html">Accessibility</a></li>
+    </ul>
+  </div>
+</nav>
+<nav class="ncss-subnav demo-onpage" aria-label="On this page" data-ncss-subnav>
+  <div class="ncss-subnav-inner">
+    <div class="demo-chapter-pick">
+      <button type="button" class="ncss-btn ncss-dropdown-toggle demo-chapter-pick-btn" popovertarget="chapterPick">Chapter: Modern UI</button>
+      <div class="ncss-dropdown-menu" id="chapterPick" popover>
+        <ul role="list">
+          <li><a class="ncss-dropdown-item" href="index-en.html">Overview</a></li>
+          <li><a class="ncss-dropdown-item" href="layout-en.html">Layout</a></li>
+          <li><a class="ncss-dropdown-item" href="content-en.html">Content</a></li>
+          <li><a class="ncss-dropdown-item" href="navigation-en.html">Navigation</a></li>
+          <li><a class="ncss-dropdown-item" href="forms-en.html">Forms</a></li>
+          <li><a class="ncss-dropdown-item" href="overlays-en.html">Overlays</a></li>
+          <li><a class="ncss-dropdown-item" href="media-en.html">Media</a></li>
+          <li><a class="ncss-dropdown-item" href="scroll-en.html">Scroll effects</a></li>
+          <li><a class="ncss-dropdown-item" aria-current="page" href="modern-en.html">Modern UI</a></li>
+          <li><a class="ncss-dropdown-item" href="app-ui-en.html">App UI</a></li>
+          <li><a class="ncss-dropdown-item" href="icons-en.html">Icons</a></li>
+          <li><a class="ncss-dropdown-item" href="a11y-en.html">Accessibility</a></li>
+        </ul>
+      </div>
+    </div>
+    <span class="ncss-subnav-label" aria-hidden="true">On this page</span>
+    <ul class="ncss-subnav-list" role="list">
+      <li><a href="#bento">Bento</a></li>
+      <li><a href="#spotlight">Spotlight</a></li>
+      <li><a href="#compare">Compare</a></li>
+      <li><a href="#panels">Panels</a></li>
+      <li><a href="#notifications">Toasts</a></li>
+      <li><a href="#aurora">Aurora</a></li>
+      <li><a href="#effects">Effects</a></li>
+    </ul>
+  </div>
+</nav>
+</div>
+
+<ncss-command-palette shortcut="k" slash src="../../docs/search.en.json" limit="7">
+  <dialog id="siteSearch" class="ncss-command" aria-label="Search" closedby="any">
+    <div class="ncss-command-search">
+      <input class="ncss-command-input" type="search" aria-label="Search pages, sections or classes …" placeholder="Search pages, sections or classes …">
+    </div>
+    <div class="ncss-command-list" aria-label="Search">
+      <div class="ncss-command-group">
+        <p class="ncss-command-group-label">Quick access</p>
+        <a class="ncss-command-item" href="../../docs/en/start.html">Home</a>
+        <a class="ncss-command-item" href="../../docs/en/index.html">Docs</a>
+        <a class="ncss-command-item" href="../../docs/en/examples.html">Examples</a>
+      </div>
+    </div>
+    <p class="ncss-command-empty" hidden>No results - try another term, e.g. “card” or “ncss-grid”.</p>
+    <div class="ncss-command-footer"><span><kbd>↑</kbd><kbd>↓</kbd> select</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></div>
+  </dialog>
+</ncss-command-palette>
+<!-- site-topbar:end -->
+
+<main id="main" class="ncss-stretch">
+
+  <header class="demo-chapter ncss-container ncss-stack">
+    <p class="ncss-eyebrow">Chapter 8 of 11</p>
+    <h1>Modern UI</h1>
+    <p class="demo-chapter-lead">The building blocks that make a page feel “modern” today – bento grids, spotlights, before/after sliders, toasts, soft gradients, glass and glow. Each is its own file, and without JavaScript there is always a sensible base state. Use the Inspect button at the bottom right (or <kbd>Alt</kbd>+<kbd>I</kbd>) and click a block to see its classes and markup.</p>
+    <!-- tour-toc:start -->
+    <nav class="demo-contents" aria-label="Contents of this chapter">
+      <p class="demo-contents-title" aria-hidden="true">Contents</p>
+      <ol class="demo-contents-list">
+        <li><a href="#bento">Bento templates</a></li>
+        <li><a href="#spotlight">Spotlight</a></li>
+        <li><a href="#compare">Before/after comparison</a></li>
+        <li><a href="#panels">Expanding panels</a></li>
+        <li><a href="#notifications">Notifications</a></li>
+        <li><a href="#aurora">Aurora &amp; Mesh</a></li>
+        <li><a href="#effects">Effects: glow, glass, stamp, grain</a></li>
+      </ol>
+    </nav>
+    <!-- tour-toc:end -->
+  </header>
+
+  <!-- Bento-Vorlagen -->
+  <section class="demo-feature" id="bento" aria-labelledby="bento-h" data-subnav-label="Bento">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="bento-h">Bento templates</h2>
+          <p>You know the base grid <code>.ncss-bento</code> from the <a href="layout-en.html#bento">Layout chapter</a>. The templates assign spans by position – not a single class on the tiles, ideal for feature overviews and photo galleries.</p>
+          <p class="demo-gotcha"><strong>Note:</strong> <code>grid-auto-flow: dense</code> only reorders visually – tab order still follows the source.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-bento--hero</code></li>
+            <li><code>.ncss-bento--mosaic</code></li>
+            <li><code>--ncss-bento-row-height</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/modern-ui.html#bento">In the handbook<span class="ncss-visually-hidden">: Bento templates</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <div class="demo-live">
+        <h3 class="demo-live-label">Hero template: <code>.ncss-bento--hero</code> – 1st tile 2×2, 4th tall, 5th wide</h3>
+        <p class="demo-hint">Drag the bottom-right corner to narrow the frame</p>
+        <div class="demo-resizable">
+          <div class="ncss-bento ncss-bento--hero">
+            <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo demo-tile-big">
+              <img src="../assets/examples/hotel/see-panorama.webp" width="1600" height="1068" loading="lazy" alt="Clear mountain lake with a pebble shore, wooded mountains behind">
+              <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+                <h4>Right on the lake</h4>
+                <p>Private jetty, 200 metres of lawn, sunset included.</p>
+              </figcaption>
+            </figure>
+            <article class="ncss-card ncss-border ncss-radius-lg demo-tile">
+              <span class="demo-kicker">View</span>
+              <h4>32 of 40 rooms face the lake</h4>
+              <p class="ncss-text-sm ncss-text-muted">Balcony or floor-to-ceiling window.</p>
+            </article>
+            <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+              <img src="../assets/examples/hotel/fruehstueck-thumb.webp" width="640" height="427" loading="lazy" alt="Breakfast table with croissants and coffee">
+              <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+                <h4>Breakfast until 11 am</h4>
+              </figcaption>
+            </figure>
+            <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+              <img src="../assets/examples/hotel/spa-pool-thumb.webp" width="480" height="640" loading="lazy" alt="Indoor pool with tall paned windows">
+              <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+                <h4>Pool &amp; sauna</h4>
+                <p class="ncss-text-sm">Daily 7 am–10 pm</p>
+              </figcaption>
+            </figure>
+            <article class="ncss-card ncss-card--brand ncss-radius-lg demo-tile">
+              <span class="demo-kicker">Included</span>
+              <h4>Rowing boats and e-bikes at no extra cost</h4>
+              <p class="ncss-text-sm">Just ask at reception – life jackets and helmets are ready.</p>
+            </article>
+            <article class="ncss-card ncss-border ncss-radius-lg demo-tile">
+              <span class="demo-kicker">Arrival</span>
+              <h4>Station 5 minutes away</h4>
+              <p class="ncss-text-sm ncss-text-muted">We pick you up for free.</p>
+            </article>
+            <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+              <img src="../assets/examples/hotel/restaurant-thumb.webp" width="480" height="720" loading="lazy" alt="Restaurant in warm wood tones with laid tables">
+              <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+                <h4>Seestube restaurant</h4>
+              </figcaption>
+            </figure>
+            <article class="ncss-card ncss-border ncss-radius-lg demo-tile">
+              <span class="demo-kicker">With your dog</span>
+              <h4>Four-legged guests welcome</h4>
+              <p class="ncss-text-sm ncss-text-muted">Bowl and blanket are in the room.</p>
+            </article>
+            <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+              <img src="../assets/examples/hotel/ruderboot-abend-thumb.webp" width="480" height="717" loading="lazy" alt="Rowing boat on the calm lake in evening light">
+              <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light">
+                <h4>Evening row</h4>
+              </figcaption>
+            </figure>
+            <article class="ncss-card ncss-border ncss-radius-lg demo-tile">
+              <span class="demo-kicker">Departure</span>
+              <h4>Late check-out until 2 pm</h4>
+              <p class="ncss-text-sm ncss-text-muted">On Sundays at no extra cost.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-live">
+        <h3 class="demo-live-label">Mosaic template: <code>.ncss-bento--mosaic</code> – tall, wide, normal, wide, normal</h3>
+        <div class="ncss-bento ncss-bento--mosaic demo-mosaic">
+          <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+            <img src="../assets/examples/gemeinde/badesteg-thumb.webp" width="480" height="720" loading="lazy" alt="Wooden jetty leading into a calm lake">
+            <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light"><h4>Bathing jetty</h4></figcaption>
+          </figure>
+          <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+            <img src="../assets/examples/gemeinde/seeburg-ufer-thumb.webp" width="640" height="427" loading="lazy" alt="Village with a church tower reflected in the lake">
+            <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light"><h4>Seeburg from the shore</h4></figcaption>
+          </figure>
+          <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+            <img src="../assets/examples/gemeinde/wochenmarkt-thumb.webp" width="640" height="427" loading="lazy" alt="Fresh vegetables at a market stall">
+            <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light"><h4>Weekly market</h4></figcaption>
+          </figure>
+          <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+            <img src="../assets/examples/gemeinde/bootshafen-thumb.webp" width="640" height="429" loading="lazy" alt="Boats on a still lake in front of mountains">
+            <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light"><h4>Boat harbour</h4></figcaption>
+          </figure>
+          <figure class="ncss-overlay-container ncss-radius-lg demo-tile-photo">
+            <img src="../assets/examples/gemeinde/rathaus-thumb.webp" width="480" height="720" loading="lazy" alt="Historic town hall with stepped gable in summer">
+            <figcaption class="ncss-overlay ncss-overlay--bottom ncss-overlay--scrim ncss-text-light"><h4>Town hall</h4></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Spotlight -->
+  <section class="demo-feature" id="spotlight" aria-labelledby="spotlight-h" data-subnav-label="Spotlight">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="spotlight-h">Spotlight</h2>
+          <p>A soft cone of light follows the mouse pointer, and the edge nearest the pointer lights up. <code>data-ncss-spotlight</code> on the group is enough: a single listener, and neighbouring cards catch the edge of the light too.</p>
+          <p class="demo-gotcha"><strong>Good to know:</strong> touch is ignored; without JavaScript and on keyboard focus the light sits in the centre.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-spotlight</code></li>
+            <li><code>.ncss-spotlight--strong</code></li>
+            <li><code>data-ncss-spotlight</code></li>
+            <li><code>--ncss-spotlight-color</code></li>
+            <li><code>js/spotlight.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/modern-ui.html#spotlight">In the handbook<span class="ncss-visually-hidden">: Spotlight</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 15rem" data-ncss-spotlight>
+          <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-spotlight demo-room">
+            <div class="ncss-card-media"><img src="../assets/examples/hotel/zimmer-classic-thumb.webp" width="640" height="427" loading="lazy" alt="Double room with wood panelling"></div>
+            <div class="ncss-card-body">
+              <h3><a class="ncss-card-link" href="../example-hotel.html#zimmer">Classic double room</a></h3>
+              <p class="ncss-text-sm ncss-text-muted">22 m² · from €129 per night</p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-spotlight ncss-spotlight--strong demo-room">
+            <div class="ncss-card-media"><img src="../assets/examples/hotel/zimmer-seeblick-thumb.webp" width="480" height="720" loading="lazy" alt="Room with wooden walls and a large bed"></div>
+            <div class="ncss-card-body">
+              <h3><a class="ncss-card-link" href="../example-hotel.html#zimmer">Lake view room</a></h3>
+              <p class="ncss-text-sm ncss-text-muted">26 m² · balcony · from €159 – stronger light (<code>--strong</code>)</p>
+            </div>
+          </article>
+          <article class="ncss-card ncss-card--linked ncss-border ncss-radius-lg ncss-spotlight demo-room" style="--ncss-spotlight-color: color-mix(in oklch, var(--ncss-color-success) 28%, transparent); --ncss-spotlight-border: var(--ncss-color-success)">
+            <div class="ncss-card-media"><img src="../assets/examples/hotel/suite-dach-thumb.webp" width="640" height="427" loading="lazy" alt="Bright attic room with sloping ceiling"></div>
+            <div class="ncss-card-body">
+              <h3><a class="ncss-card-link" href="../example-hotel.html#zimmer">Attic suite</a></h3>
+              <p class="ncss-text-sm ncss-text-muted">38 m² · from €219 – custom light colour via token</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vorher/Nachher -->
+  <section class="demo-feature" id="compare" aria-labelledby="compare-h" data-subnav-label="Compare">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="compare-h">Before/after comparison</h2>
+          <p><code>&lt;ncss-compare&gt;</code> lays a real range slider over two images – mouse, finger, arrow keys and screen readers all work because the browser provides them. Great for renovations, photo edits or day/night.</p>
+          <p class="demo-gotcha"><strong>Note:</strong> without JavaScript you get a static 50/50 split, and the slider is deliberately hidden.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>&lt;ncss-compare&gt;</code></li>
+            <li><code>.ncss-compare-before</code></li>
+            <li><code>.ncss-compare-after</code></li>
+            <li><code>.ncss-compare-range</code></li>
+            <li><code>--ncss-compare-ratio</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/modern-ui.html#vergleich">In the handbook<span class="ncss-visually-hidden">: Before/after comparison</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <ncss-compare class="demo-compare" style="--ncss-compare-ratio: 3 / 2">
+          <img class="ncss-compare-before" src="../assets/examples/hotel/zimmer-classic.webp" width="1600" height="1067" loading="lazy" alt="Room 12 before: rustic wood panelling, olive green wall">
+          <img class="ncss-compare-after" src="../assets/examples/hotel/zimmer-junior.webp" width="1600" height="1068" loading="lazy" alt="Room 12 after: wood panels with indirect lighting">
+          <span class="ncss-compare-label" aria-hidden="true">Before</span>
+          <span class="ncss-compare-label ncss-compare-label--end" aria-hidden="true">After renovation</span>
+          <input class="ncss-compare-range" type="range" min="0" max="100" value="50" aria-label="Move divider: left before, right after renovation">
+        </ncss-compare>
+        <p class="demo-caption">Room 12 at Hotel Seeblick – drag the handle or use the arrow keys.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Aufklapp-Panels -->
+  <section class="demo-feature" id="panels" aria-labelledby="panels-h" data-subnav-label="Panels">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="panels-h">Expanding panels</h2>
+          <p>Pure CSS: the panel under the pointer or focus grows and reveals its text, otherwise the active one does. In narrow containers the panels stack and grow in height.</p>
+          <p class="demo-gotcha"><strong>Tip:</strong> panels are links or buttons – with no target URL use buttons, so a tap on a phone expands them.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-expand-panels</code></li>
+            <li><code>.ncss-expand-panel</code></li>
+            <li><code>.ncss-expand-panel--active</code></li>
+            <li><code>--ncss-expand-height</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/modern-ui.html#panels">In the handbook<span class="ncss-visually-hidden">: Expanding panels</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <p class="demo-hint">Narrow the frame: below 36rem the panels stack</p>
+        <div class="demo-resizable">
+          <div class="ncss-expand-panels">
+            <button type="button" class="ncss-expand-panel ncss-expand-panel--active">
+              <span class="ncss-expand-panel-media"><img src="../assets/examples/hotel/spa-pool.webp" width="1125" height="1500" loading="lazy" alt=""></span>
+              <span class="ncss-expand-panel-title">Indoor pool</span>
+              <span class="ncss-expand-panel-body">Water at 29 °C, with a view of the garden through paned windows.</span>
+            </button>
+            <button type="button" class="ncss-expand-panel">
+              <span class="ncss-expand-panel-media"><img src="../assets/examples/hotel/sauna.webp" width="1000" height="1500" loading="lazy" alt=""></span>
+              <span class="ncss-expand-panel-title">Sauna</span>
+              <span class="ncss-expand-panel-body">Finnish sauna and steam bath, infusion daily at 5 pm.</span>
+            </button>
+            <button type="button" class="ncss-expand-panel">
+              <span class="ncss-expand-panel-media"><img src="../assets/examples/hotel/ruheraum.webp" width="1326" height="1500" loading="lazy" alt=""></span>
+              <span class="ncss-expand-panel-title">Quiet room</span>
+              <span class="ncss-expand-panel-body">Loungers with blankets, tea and silence – phones stay outside.</span>
+            </button>
+            <button type="button" class="ncss-expand-panel">
+              <span class="ncss-expand-panel-media"><img src="../assets/examples/hotel/steg-morgennebel.webp" width="1600" height="1066" loading="lazy" alt=""></span>
+              <span class="ncss-expand-panel-title">Morning swim</span>
+              <span class="ncss-expand-panel-body">From 7 am off the jetty into the lake, bathrobes provided.</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benachrichtigungen -->
+  <section class="demo-feature" id="notifications" aria-labelledby="notifications-h" data-subnav-label="Toasts">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="notifications-h">Notifications</h2>
+          <p>Toasts via <code>ncss.notify()</code>, or with no script of your own via <code>data-ncss-notify</code> on a button. Timers pause on pointer, focus or a background tab; errors stay until dismissed.</p>
+          <p class="demo-gotcha"><strong>Good to know:</strong> the region lives in the top layer – toasts appear above an open modal too, without any <code>z-index</code>.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>ncss.notify()</code></li>
+            <li><code>data-ncss-notify</code></li>
+            <li><code>&lt;ncss-toast-region&gt;</code></li>
+            <li><code>.ncss-notification</code></li>
+            <li><code>js/notification.js</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/modern-ui.html#benachrichtigungen">In the handbook<span class="ncss-visually-hidden">: Notifications</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <h3 class="demo-live-label">Status and position</h3>
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="The concierge has replied to your request." data-status="brand" data-position="top-end">Info</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Lake view room, 14 to 17 July, 2 adults." data-title="Room reserved" data-status="success" data-position="top-end">Success</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="Only 2 rooms left for your dates." data-status="warning" data-position="top-center">Warning (centre)</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="The card was declined. Please choose another payment method." data-title="Payment failed" data-status="danger" data-position="top-start">Error (left, stays)</button>
+        </div>
+      </div>
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <h3 class="demo-live-label">Stacked (Sonner style)</h3>
+        <p class="ncss-text-sm ncss-text-muted">Click several times: older toasts sit behind the newest and fan out on hover or keyboard focus.</p>
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--primary" data-demo-stack>Stacked toast (bottom right)</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary" data-demo-close-all>Dismiss all</button>
+        </div>
+      </div>
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <h3 class="demo-live-label">Above a modal</h3>
+        <div class="ncss-cluster">
+          <button type="button" class="ncss-btn ncss-btn--secondary" command="show-modal" commandfor="demoBookingDialog">Review booking</button>
+        </div>
+        <dialog id="demoBookingDialog" class="ncss-modal" aria-labelledby="demoBookingDialog-h">
+          <button type="button" class="ncss-dialog-close" command="close" commandfor="demoBookingDialog" aria-label="Close"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
+          <div class="ncss-modal-header"><h4 id="demoBookingDialog-h">Your booking</h4></div>
+          <div class="ncss-modal-body">
+            <p>Lake view room · 14 to 17 July · 2 adults · €477</p>
+            <p class="ncss-text-sm ncss-text-muted">“Copy link” shows the toast above this dialog – which stays open.</p>
+          </div>
+          <div class="ncss-modal-footer">
+            <button type="button" class="ncss-btn ncss-btn--secondary" data-ncss-notify="The booking link is on your clipboard." data-title="Link copied" data-status="success" data-position="top-center">Copy link</button>
+            <button type="button" class="ncss-btn ncss-btn--primary" command="close" commandfor="demoBookingDialog">Done</button>
+          </div>
+        </dialog>
+      </div>
+    </div>
+  </section>
+
+  <!-- Aurora & Mesh -->
+  <section class="demo-feature" id="aurora" aria-labelledby="aurora-h" data-subnav-label="Aurora">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="aurora-h">Aurora &amp; Mesh</h2>
+          <p>Soft, slowly drifting fields of brand colour behind a section – just radial gradients and <code>transform</code>, no expensive blur filter. Text stays readable in light and dark.</p>
+          <p class="demo-gotcha"><strong>Note:</strong> use <code>--vivid</code> only behind large headings and short texts.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-aurora</code></li>
+            <li><code>.ncss-aurora--vivid</code></li>
+            <li><code>.ncss-mesh</code></li>
+            <li><code>.ncss-mesh--static</code></li>
+            <li><code>--ncss-aurora-speed</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/modern-ui.html#aurora">In the handbook<span class="ncss-visually-hidden">: Aurora &amp; Mesh</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="demo-live">
+        <div class="ncss-grid" style="--ncss-grid-min: 15rem">
+          <div class="ncss-aurora demo-aurora">
+            <h3>Summer party on the jetty</h3>
+            <p>Saturday 12 July from 6 pm – live music, barbecue and boat parade.</p>
+            <p><a class="ncss-btn ncss-btn--primary" href="../example-hotel.html#angebote">Join us</a></p>
+          </div>
+          <div class="ncss-aurora ncss-aurora--vivid demo-aurora">
+            <h3>Lake view. Nothing else.</h3>
+            <p><code>.ncss-aurora--vivid</code></p>
+          </div>
+          <div class="ncss-mesh demo-aurora">
+            <h3>Letters from the lake</h3>
+            <p>Once a month: offers, events and the weekend weather.</p>
+          </div>
+          <div class="ncss-mesh ncss-mesh--static demo-aurora">
+            <h3>Held still</h3>
+            <p><code>.ncss-mesh--static</code> – the same colours without motion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Effekte -->
+  <section class="demo-feature" id="effects" aria-labelledby="effects-h" data-subnav-label="Effects">
+    <div class="ncss-container">
+      <div class="demo-feature-head">
+        <div class="demo-feature-text">
+          <h2 id="effects-h">Effects: glow, glass, stamp, grain</h2>
+          <p>Five purely decorative classes to combine – on buttons, cards or any surface, with no extra markup. Tunable per element via custom properties.</p>
+          <p class="demo-gotcha"><strong>Note:</strong> <code>.ncss-glass</code> creates a new containing block – don’t put it directly on an element that contains dropdowns or popovers.</p>
+        </div>
+        <div class="demo-feature-meta">
+          <ul class="demo-classes" role="list" aria-label="Classes">
+            <li><code>.ncss-glow-border</code></li>
+            <li><code>.ncss-glow-pulse</code></li>
+            <li><code>.ncss-glass</code></li>
+            <li><code>.ncss-stamped</code></li>
+            <li><code>.ncss-stamped--press</code></li>
+            <li><code>.ncss-grain</code></li>
+          </ul>
+          <a class="demo-handbook" href="../../docs/en/animations.html#glow-border">In the handbook<span class="ncss-visually-hidden">: Effects</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <h3 class="demo-live-label">Glow border and glow pulse</h3>
+        <div class="demo-effects-row">
+          <button type="button" class="demo-glow-pill ncss-glow-border">Ask the concierge</button>
+          <button type="button" class="demo-glow-pill ncss-glow-border" style="--ncss-glow-speed: 1.5s; --ncss-glow-colors: var(--ncss-color-success), var(--ncss-color-warning), var(--ncss-color-danger), var(--ncss-color-success)">Custom colours, faster</button>
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-glow-pulse">Book now</button>
+          <span class="ncss-badge ncss-badge--success ncss-glow-pulse">3 rooms left tonight</span>
+        </div>
+        <div class="ncss-grid" style="--ncss-grid-min: 16rem">
+          <div class="ncss-glow-border demo-glow-card ncss-radius-lg">
+            <h4>Offer of the week</h4>
+            <p class="ncss-text-sm ncss-text-muted">Stay three nights, pay for two – until the end of July. The ring is a <code>::before</code> with its centre cut out.</p>
+          </div>
+          <div class="ncss-glow-border ncss-glow-pulse demo-glow-card ncss-radius-lg">
+            <h4>Border + pulse combined</h4>
+            <p class="ncss-text-sm ncss-text-muted">Both classes animate different properties, so they work together.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <h3 class="demo-live-label">Glass</h3>
+        <div class="demo-glass-stage">
+          <img src="../assets/examples/hotel/see-daemmerung.webp" width="1600" height="1200" loading="lazy" alt="">
+          <div class="ncss-glass demo-glass-card" style="--ncss-glass-bg: light-dark(rgb(255 255 255 / 62%), rgb(15 18 28 / 62%))">
+            <h4>Weekend by the lake</h4>
+            <p class="ncss-text-sm">2 nights with half board and spa – from €289 per person.</p>
+            <a class="ncss-btn ncss-btn--primary ncss-btn--sm" href="../example-hotel.html#angebote">View offer</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <h3 class="demo-live-label">Stamped – engraved border</h3>
+        <div class="demo-effects-row">
+          <button type="button" class="ncss-stamped demo-stamped-btn">Lifts on hover</button>
+          <button type="button" class="ncss-stamped ncss-stamped--press demo-stamped-btn">Sinks on hover</button>
+          <button type="button" class="ncss-btn ncss-btn--primary ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm)">Primary + Stamped</button>
+          <button type="button" class="ncss-btn ncss-btn--secondary ncss-stamped" style="--ncss-stamped-radius: var(--ncss-radius-sm)">Secondary + Stamped</button>
+        </div>
+      </div>
+
+      <div class="demo-live ncss-stack ncss-stack--tight">
+        <h3 class="demo-live-label">Grain – texture without an image file</h3>
+        <div class="ncss-grid" style="--ncss-grid-min: 16rem">
+          <div class="ncss-grain demo-voucher demo-voucher--sand" style="--ncss-grain-opacity: 0.35">
+            <p class="ncss-text-sm">Gift voucher</p>
+            <strong>One night by the lake</strong>
+            <p class="ncss-text-sm">Hotel Seeblick · valid for 3 years</p>
+          </div>
+          <div class="ncss-grain ncss-surface--brand-2 demo-voucher" style="--ncss-grain-opacity: 0.4; --ncss-grain-blend: soft-light">
+            <p class="ncss-text-sm">Gift voucher</p>
+            <strong>Spa day for two</strong>
+            <p class="ncss-text-sm">Dark surface: <code>--ncss-grain-blend: soft-light</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ncss-container">
+    <nav class="demo-pager" aria-label="Browse chapters">
+      <a class="demo-pager-prev" href="scroll-en.html" rel="prev"><small>← Previous chapter</small> Scroll effects</a>
+      <a class="demo-pager-next" href="app-ui-en.html" rel="next"><small>Next chapter →</small> App UI</a>
+    </nav>
+  </div>
+
+</main>
+
+<footer class="ncss-footer">
+  <div class="ncss-footer-bottom ncss-stack ncss-stack--tight ncss-text-sm">
+    <p>NativeCSS Tour · <a href="index-en.html">All chapters</a> · <a href="../../docs/en/index.html">Handbook</a></p>
+    <p class="demo-credits"><strong>Photo credits:</strong> photos from Pexels (Pexels licence) –
+      <a href="https://www.pexels.com/photo/scenic-view-of-walchensee-lake-in-germany-39845534/">Marek Prášil</a>,
+      <a href="https://www.pexels.com/photo/morning-breakfast-table-25781659/">Jakub Zerdzicki</a>,
+      <a href="https://www.pexels.com/photo/indoor-marble-pool-with-large-windows-32797306/">Sarah O’Shea</a>,
+      <a href="https://www.pexels.com/photo/elegant-hotel-dining-area-in-warm-tones-29649733/">Clément Proust</a>,
+      <a href="https://pexels.com/photo/hotel-bedroom-interior-design-19045885/">Luca Luperto</a>,
+      <a href="https://pexels.com/photo/a-bed-or-beds-in-a-room-at-hotel-de-la-ville-27638174/">Alexander Mass</a>,
+      Max Vakhtbovych (<a href="https://www.pexels.com/photo/hotel-room-with-tv-7746572/">attic suite</a>, <a href="https://www.pexels.com/photo/view-of-a-brown-room-7598363/">quiet room</a>),
+      <a href="https://www.pexels.com/photo/modern-hotel-room-interior-with-stylish-wood-paneling-39338455/">Mateusz Pielech</a>,
+      <a href="https://www.pexels.com/photo/modern-wooden-sauna-interior-design-39237331/">HUUM sauna heaters</a>,
+      <a href="https://pexels.com/photo/metal-dock-2440257/">Lukáš Dlutko</a>,
+      <a href="https://pexels.com/photo/boat-on-the-lake-13280980/">Sebastian Odriozola</a>,
+      <a href="https://pexels.com/photo/beautiful-lake-view-in-bavarian-alps-32168381/">Daciana Cristina Visan</a>,
+      <a href="https://pexels.com/photo/wooden-pier-on-a-lake-in-summer-12842519/">Wolfgang Wendefeuer</a>,
+      <a href="https://www.pexels.com/photo/charming-german-village-by-reflective-lake-34577724/">Phalgunn Maharishi</a>,
+      <a href="https://pexels.com/photo/vibrant-farmer-s-market-fresh-vegetables-display-31930012/">Magda Ehlers</a>,
+      <a href="https://pexels.com/photo/scenic-view-of-tranquil-lake-in-bavaria-31913082/">Branka Krnjaja</a>,
+      <a href="https://pexels.com/photo/historic-brakel-town-hall-in-summer-29511107/">Wolfgang Weiser</a>.</p>
+  </div>
+</footer>
+
+<button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="Code inspector: click any element to see its HTML, an explanation and its source files (Alt+I)"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> Inspect <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>
+
+</body>
+</html>

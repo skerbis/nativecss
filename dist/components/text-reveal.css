@@ -1,0 +1,141 @@
+/**
+ * ncss - Text-Reveal (Layer "components"): Text startet blass und wird beim
+ * Hindurchscrollen hell - Zeile für Zeile, im Lesefluss oder Wort für Wort. Getrieben von
+ * der view-timeline des Blocks selbst, für die Zeilen-/Fluss-Variante ohne JS und ohne
+ * den Text in Spans zu zerlegen.
+ *
+ * Drei Varianten:
+ *   Zeilen (Default) - Verlauf von oben nach unten, auf die Glyphen geschnitten
+ *   (background-clip:text), weiche Kante ca. eine Zeile hoch:
+ *     <p class="ncss-text-reveal">...</p>
+ *   Fluss - Wort für Wort in Leserichtung, über Zeilenumbrüche hinweg (ein Inline-
+ *   Element malt seinen Hintergrund über alle Zeilen-Fragmente, als wäre es EINE lange
+ *   Zeile - ein waagerechter Verlauf folgt dadurch der Leserichtung). Text in EIN Span:
+ *     <p class="ncss-text-reveal ncss-text-reveal--flow"><span>...</span></p>
+ *   Wörter (JS, js/text-reveal.js) - jedes Wort blendet einzeln ein und hebt sich leicht:
+ *     <p class="ncss-text-reveal" data-ncss-text-reveal>...</p>
+ *
+ * Parameter (Custom Properties pro Instanz):
+ *   --ncss-text-reveal-color  Endfarbe (Default: var(--ncss-color-text))
+ *   --ncss-text-reveal-from   blasse Startfarbe (Default: Endfarbe zu 20%)
+ *   --ncss-text-reveal-start  Bereichsanfang (Default: cover 15%)
+ *   --ncss-text-reveal-end    Bereichsende (Default: cover 50% - Text ist voll lesbar,
+ *                             sobald er die Viewport-Mitte erreicht)
+ *
+ * Ohne animation-timeline, bei prefers-reduced-motion, Forced Colors und im Druck: ganz
+ * normaler, voll lesbarer Text. Screenreader lesen immer den unveränderten Text (auch in
+ * der Wort-Variante bleibt der Text identisch, nur in Spans verpackt).
+ *
+ * Benötigt: tokens.css/colors.css (--ncss-color-text, Bewegungs-Tokens). Optional
+ * js/text-reveal.js (Wort-Variante).
+ */
+
+@property --_ncss-text-reveal-p {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+.ncss-text-reveal {
+  --_ncss-text-reveal-color: var(--ncss-text-reveal-color, var(--ncss-color-text));
+  --_ncss-text-reveal-from: var(--ncss-text-reveal-from, color-mix(in oklch, var(--_ncss-text-reveal-color) 20%, transparent));
+  color: var(--_ncss-text-reveal-color);
+  view-timeline: --ncss-text-reveal block;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Zeilen: der helle Teil wächst nach unten, die Kante ist ~1lh weich. */
+    .ncss-text-reveal:not(.ncss-text-reveal--flow, .ncss-text-reveal--words),
+    .ncss-text-reveal--flow > * {
+      background-image: linear-gradient(var(--_ncss-text-reveal-dir, to bottom),
+        var(--_ncss-text-reveal-color) var(--_ncss-text-reveal-p),
+        var(--_ncss-text-reveal-from) calc(var(--_ncss-text-reveal-p) + var(--_ncss-text-reveal-edge, 1lh)));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: ncss-text-reveal linear both;
+      animation-timeline: --ncss-text-reveal;
+      animation-range: var(--ncss-text-reveal-start, cover 15%) var(--ncss-text-reveal-end, cover 50%);
+    }
+
+    /* Fluss: waagerechter Verlauf über die Zeilen-Fragmente des Inline-Kinds. slice (nicht
+       clone) - nur so läuft EIN Verlauf durchgehend über alle Zeilen. Kante breiter (8em),
+       damit mehrere Wörter gleichzeitig im Übergang stehen statt ein harter Strich. */
+    .ncss-text-reveal--flow > * {
+      --_ncss-text-reveal-dir: to right;
+      --_ncss-text-reveal-edge: 8em;
+      -webkit-box-decoration-break: slice;
+      box-decoration-break: slice;
+    }
+    .ncss-text-reveal--flow > :dir(rtl) {
+      --_ncss-text-reveal-dir: to left;
+    }
+
+    /* Wörter: jedes Wort bekommt einen eigenen Abschnitt des Bereichs (--i/--n setzt das
+       Script) - leicht überlappend (+4%), damit es fließt statt zu stottern. */
+    .ncss-text-reveal--words .ncss-text-reveal-word {
+      display: inline-block;
+      animation: ncss-text-reveal-word linear both;
+      animation-timeline: --ncss-text-reveal;
+      animation-range:
+        cover calc(15% + 35% * var(--i) / var(--n))
+        cover calc(15% + 35% * (var(--i) + 1) / var(--n) + 4%);
+    }
+  }
+}
+
+@keyframes ncss-text-reveal {
+  from { --_ncss-text-reveal-p: -1lh; }
+  to { --_ncss-text-reveal-p: 100%; }
+}
+
+@keyframes ncss-text-reveal-word {
+  from { opacity: 0.15; translate: 0 0.3em; filter: blur(3px); }
+  to { opacity: 1; translate: none; filter: none; }
+}
+
+/* --- JS-Fallback ohne view-timeline: Wörter blenden nacheinander ein, sobald der Block im
+   Bild ist (zeitbasiert, IntersectionObserver setzt .is-revealed). --------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .ncss-text-reveal--words.ncss-text-reveal--timed .ncss-text-reveal-word {
+    display: inline-block;
+    opacity: 0.15;
+    translate: 0 0.3em;
+    transition:
+      opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+      translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized);
+    transition-delay: calc(var(--i) * 40ms);
+  }
+  .ncss-text-reveal--words.ncss-text-reveal--timed.is-revealed .ncss-text-reveal-word {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .ncss-text-reveal,
+  .ncss-text-reveal--flow > *,
+  .ncss-text-reveal .ncss-text-reveal-word {
+    animation: none;
+    background: none;
+    color: CanvasText;
+    opacity: 1;
+    translate: none;
+    filter: none;
+    transition: none;
+  }
+}
+
+@media print {
+  .ncss-text-reveal,
+  .ncss-text-reveal--flow > *,
+  .ncss-text-reveal .ncss-text-reveal-word {
+    animation: none;
+    background: none;
+    color: inherit;
+    opacity: 1;
+    translate: none;
+    filter: none;
+  }
+}

@@ -1,0 +1,91 @@
+/**
+ * ncss - Video in Schrift (Layer "components"): eine große Überschrift, deren Buchstaben
+ * ein laufendes Video zeigen. Die Überschrift bleibt echter, markierbarer Text; das
+ * Video ist reine Dekoration (aria-hidden).
+ *
+ *   <div class="ncss-video-text" data-ncss-video-bg>
+ *     <video class="ncss-video-text-media" muted loop playsinline preload="none"
+ *            poster="poster.jpg" aria-hidden="true">
+ *       <source data-src="loop.mp4" type="video/mp4">
+ *     </video>
+ *     <h2 class="ncss-video-text-title">Bewegung</h2>
+ *   </div>
+ *
+ * Technik: EIN Mischmodus für Light UND Dark. Die Überschrift ist eine Ebene mit
+ * mix-blend-mode: hard-light über dem Video - hard-light mit 50 % Grau lässt das Video
+ * unverändert durch (die Buchstaben), mit der Seitenfarbe (--ncss-color-bg: Weiß bzw.
+ * fast Schwarz) ergibt es genau diese Seitenfarbe (die Fläche um die Buchstaben).
+ * Dadurch wechselt die Fläche automatisch mit light-dark(), ohne JS/Media Query. Das
+ * 50-%-Grau ist eine Misch-KONSTANTE, keine Theme-Farbe - deshalb kein Token.
+ * Geeignet sind eher mittelhelle bis dunkle, ruhige Motive; sehr helles Material verliert
+ * im Light Mode Kontrast zur weißen Fläche.
+ *
+ * Bewegung/Pause: data-ncss-video-bg + js/video-bg.js (optional, empfohlen) liefert
+ * Lazy-Load, sichtbaren Pause-Schalter (WCAG 2.2.2), Pause außerhalb des Viewports und
+ * reduzierte Bewegung (dann füllt das Poster die Schrift). Den Schalter positioniert
+ * components/video-bg.css - ohne diese Datei bleibt er ungestylt, deshalb beide
+ * zusammen einbinden, wenn das Script genutzt wird. Ganz ohne Script: src + autoplay.
+ *
+ * Anpassbar: --ncss-video-text-size (Default --ncss-font-size-2xl × 2, gedeckelt auf
+ * 18cqi, damit ein ~6-Buchstaben-Wort nie breiter als die Fläche wird),
+ * --ncss-video-text-weight (900).
+ *
+ * forced-colors / Druck: normaler Text in Systemfarben, kein Video.
+ * Benötigt: tokens.css + colors.css.
+ */
+
+.ncss-video-text {
+  --ncss-video-text-size: calc(var(--ncss-font-size-2xl) * 2);
+  --ncss-video-text-weight: 900;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  container-type: inline-size;
+  background-color: var(--ncss-color-bg);
+  border-radius: var(--ncss-radius-lg);
+}
+
+.ncss-video-text-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.ncss-video-text-title {
+  position: relative;
+  margin: 0;
+  padding: var(--ncss-space-sm) var(--ncss-space-md);
+  font-size: min(var(--ncss-video-text-size), 18cqi);
+  font-weight: var(--ncss-video-text-weight);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  color: rgb(128 128 128);
+  background-color: var(--ncss-color-bg);
+  mix-blend-mode: hard-light;
+}
+
+@media (forced-colors: active) {
+  .ncss-video-text-media {
+    display: none;
+  }
+  .ncss-video-text-title {
+    mix-blend-mode: normal;
+    color: CanvasText;
+    background: Canvas;
+  }
+}
+@media print {
+  .ncss-video-text-media {
+    display: none;
+  }
+  .ncss-video-text-title {
+    mix-blend-mode: normal;
+    color: currentColor;
+  }
+}

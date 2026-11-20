@@ -1,0 +1,265 @@
+<!--DESC: Sichtbare Labels, Pflichtfelder, verknüpfte Hinweise und Fehler, :user-invalid, fieldset/legend, autocomplete und eine Fehlerübersicht - barrierefreie Formulare mit ncss.-->
+<!--HEAD:
+<style>
+  /* Serverseitig gemeldeter Fehler: ncss färbt nur :user-invalid, aria-invalid ergänzt die Seite selbst */
+  .ncss-input[aria-invalid="true"],
+  .ncss-select[aria-invalid="true"],
+  .ncss-textarea[aria-invalid="true"] {
+    border-color: var(--ncss-color-danger);
+  }
+  /* Fehlerübersicht oberhalb des Formulars */
+  .demo-error-summary {
+    padding: var(--ncss-space-sm);
+    border: 2px solid var(--ncss-color-danger);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-error-summary:focus-visible {
+    outline-offset: 4px;
+  }
+  .demo-error-summary a {
+    color: var(--ncss-color-danger);
+    font-weight: 600;
+  }
+  /* Formular im Live-Beispiel nicht beliebig breit */
+  .demo-form {
+    max-width: 32rem;
+  }
+</style>
+-->
+<section class="ncss-stack">
+  <h1>Formulare &amp; Fehlermeldungen</h1>
+  <p class="ncss-text-lg ncss-text-muted">Formulare sind der Ort, an dem Barrieren am meisten kosten: wer ein Feld nicht versteht oder einen Fehler nicht findet, kommt nicht weiter. ncss liefert die Optik (<code>helpers/forms.css</code>) - Beschriftung, Verknüpfung und Fehlertexte kommen aus deinem Markup.</p>
+</section>
+
+<section class="ncss-stack" id="labels">
+  <h2 class="demo-section-title">Jedes Feld braucht ein Label</h2>
+  <p>Jedes Eingabefeld braucht einen sichtbaren, dauerhaften Namen in einem <code>&lt;label&gt;</code>, das per <code>for</code>/<code>id</code> mit dem Feld verknüpft ist (oder das Feld umschließt). Ein Klick auf das Label setzt dann den Fokus ins Feld, Screenreader lesen den Namen vor, Sprachsteuerung findet das Feld über den sichtbaren Text (WCAG 2.5.3 "Label im Namen").</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong><code>placeholder</code> ist kein Label.</strong> Er verschwindet bei der ersten Eingabe, hat oft zu wenig Kontrast und wird nicht von jeder Software als Feldname angesagt. Er taugt höchstens für ein Beispielformat ("z. B. 12345").</li>
+    <li>Wenn ein sichtbares Label gestalterisch wirklich nicht passt (Suchfeld mit Lupen-Button), das Label mit <code>.ncss-visually-hidden</code> verstecken - nicht weglassen.</li>
+    <li>Buttons beschriften, was sie tun: "Anmeldung absenden" statt "OK". Ein Icon-Button braucht <code>aria-label</code> oder versteckten Text.</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label" for="ort"&gt;Wohnort&lt;/label&gt;
+  &lt;input class="ncss-input" id="ort" name="ort" autocomplete="address-level2"&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="pflichtfelder">
+  <h2 class="demo-section-title">Pflichtfelder kennzeichnen</h2>
+  <p><code>.ncss-label--required</code> hängt per <code>::after</code> ein rotes <code>*</code> an das Label. Das ist nur die Optik - zwei Dinge musst du selbst ergänzen:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Das Attribut <code>required</code> am Feld. Erst damit sagen Screenreader "erforderlich" an und der Browser prüft das Feld beim Absenden.</li>
+    <li>Eine Erklärung des Sternchens vor dem Formular ("Felder mit * sind Pflichtfelder"). Das Zeichen allein ist nicht für jeden selbsterklärend, und manche Screenreader lesen es als "Stern" vor.</li>
+  </ul>
+  <pre><code class="language-html">&lt;p&gt;Felder mit * sind Pflichtfelder.&lt;/p&gt;
+&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="email"&gt;E-Mail&lt;/label&gt;
+  &lt;input class="ncss-input" id="email" name="email" type="email" required autocomplete="email"&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="hinweise">
+  <h2 class="demo-section-title">Hinweise und Fehler mit aria-describedby verknüpfen</h2>
+  <p>Hilfetexte (<code>.ncss-field-hint</code>) und Fehlertexte (<code>.ncss-field-error</code>) stehen sichtbar unter dem Feld. Damit sie auch beim Fokussieren vorgelesen werden, verknüpfst du sie mit <code>aria-describedby</code> - mehrere IDs durch Leerzeichen getrennt. Die Reihenfolge der IDs ist die Vorlese-Reihenfolge.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Hinweise, die vor der Eingabe wichtig sind (Format, Länge), gehören <strong>über</strong> oder direkt unter das Feld - nicht erst in die Fehlermeldung (WCAG 3.3.2).</li>
+    <li>Fehlertexte nennen das Problem und, wenn möglich, die Lösung: "Bitte eine E-Mail-Adresse mit @ eingeben" statt "Ungültige Eingabe" (WCAG 3.3.1, 3.3.3).</li>
+    <li>Fehler nicht nur über Farbe zeigen: der rote Rahmen von <code>:user-invalid</code> ist eine Ergänzung, die Bedeutung trägt der Text (WCAG 1.4.1).</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="plz"&gt;Postleitzahl&lt;/label&gt;
+  &lt;input class="ncss-input" id="plz" name="plz" required
+         inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code"
+         aria-describedby="plz-hint"&gt;
+  &lt;p class="ncss-field-hint" id="plz-hint"&gt;5 Ziffern, z. B. 10115&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="validierung">
+  <h2 class="demo-section-title">Fehlerzustand: :user-invalid und aria-invalid</h2>
+  <p><code>.ncss-input</code>, <code>.ncss-select</code> und <code>.ncss-textarea</code> bekommen bei <code>:user-invalid</code> einen roten Rahmen. <code>:user-invalid</code> greift erst, nachdem jemand mit dem Feld interagiert oder das Formular abgeschickt hat - ein leeres Pflichtfeld ist beim Laden der Seite also nicht schon "falsch". Das funktioniert ohne JavaScript, gesteuert durch die nativen Attribute (<code>required</code>, <code>type="email"</code>, <code>pattern</code>, <code>min</code>/<code>max</code>, <code>minlength</code>).</p>
+  <p>Der Browser zeigt beim Absenden seine eigene Fehlerblase am ersten ungültigen Feld und setzt den Fokus dorthin. Für viele Formulare reicht das. Prüft dein Server zusätzlich (und das sollte er immer), rendert er die Seite mit Fehlern neu. Dann:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><code>aria-invalid="true"</code> am fehlerhaften Feld - Screenreader sagen "ungültig" an.</li>
+    <li>Den Fehlertext als <code>.ncss-field-error</code> mit eigener ID unter das Feld und in <code>aria-describedby</code> aufnehmen.</li>
+    <li>Die bisherigen Eingaben im Feld stehen lassen - niemand soll alles neu tippen müssen (WCAG 3.3.7 "Redundante Eingabe").</li>
+  </ul>
+  <p><strong>Wichtig</strong>: ncss färbt nur <code>:user-invalid</code>, nicht <code>[aria-invalid="true"]</code>. Für serverseitige Fehler ergänzt du die Regel selbst (diese Seite macht das für das Beispiel unten):</p>
+  <pre><code class="language-css">.ncss-input[aria-invalid="true"],
+.ncss-select[aria-invalid="true"],
+.ncss-textarea[aria-invalid="true"] {
+  border-color: var(--ncss-color-danger);
+}</code></pre>
+  <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="email"&gt;E-Mail&lt;/label&gt;
+  &lt;input class="ncss-input" id="email" name="email" type="email" required
+         autocomplete="email" value="anna.beispiel.de"
+         aria-invalid="true" aria-describedby="email-error"&gt;
+  &lt;p class="ncss-field-error" id="email-error"&gt;Bitte eine E-Mail-Adresse mit @ eingeben, z. B. anna@beispiel.de&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="gruppen">
+  <h2 class="demo-section-title">Gruppen: fieldset und legend</h2>
+  <p>Zusammengehörige Felder - vor allem Radio-Buttons und Checkbox-Gruppen - stehen in einem <code>&lt;fieldset&gt;</code> mit <code>&lt;legend&gt;</code>. Die Legende ist die Frage, die Labels sind die Antworten. Screenreader sagen die Legende beim Betreten der Gruppe an. ncss stylt <code>fieldset</code>/<code>legend</code> ohne eigene Klasse.</p>
+  <pre><code class="language-html">&lt;fieldset&gt;
+  &lt;legend&gt;Wie möchtest du kontaktiert werden?&lt;/legend&gt;
+  &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="kontakt" value="email" checked&gt; E-Mail&lt;/label&gt;
+  &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="kontakt" value="telefon"&gt; Telefon&lt;/label&gt;
+&lt;/fieldset&gt;</code></pre>
+  <p>Für einen Schalter (<code>.ncss-switch</code>) <code>role="switch"</code> ergänzen - dann wird er als Schalter statt als Checkbox angesagt.</p>
+</section>
+
+<section class="ncss-stack" id="input-group">
+  <h2 class="demo-section-title">Input-Group: Label davor, nicht darin</h2>
+  <p>Bei <code>.ncss-input-group</code> (Feld und Button verschmolzen) steht das Label als Geschwister-Element <strong>vor</strong> der Gruppe, nie als Kind darin - sonst würde es als <code>:first-child</code> die Eckenrundung bekommen. Bei mehreren verschmolzenen Feldern ohne Platz für ein eigenes Label (Vorname/Nachname) bekommt jedes Feld <code>aria-label</code>. Details: <a href="forms.html#input-group">Formulare - Input-Group</a>.</p>
+  <pre><code class="language-html">&lt;label class="ncss-label" for="suche"&gt;Suchbegriff&lt;/label&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" id="suche" name="q"&gt;
+  &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Suchen&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="autocomplete">
+  <h2 class="demo-section-title">autocomplete: Zweck des Feldes angeben</h2>
+  <p>Felder, die Angaben über die ausfüllende Person abfragen, brauchen den passenden <code>autocomplete</code>-Wert (WCAG 1.3.5). Der Browser kann sie dann vorausfüllen - eine große Hilfe für Menschen mit motorischen oder kognitiven Einschränkungen, und gleichzeitig weniger Tippfehler.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Feld</th><th scope="col"><code>autocomplete</code></th></tr></thead>
+      <tbody>
+        <tr><td>Vollständiger Name / Vorname / Nachname</td><td><code>name</code> / <code>given-name</code> / <code>family-name</code></td></tr>
+        <tr><td>E-Mail</td><td><code>email</code></td></tr>
+        <tr><td>Telefon</td><td><code>tel</code></td></tr>
+        <tr><td>Straße und Hausnummer</td><td><code>street-address</code></td></tr>
+        <tr><td>Postleitzahl / Ort / Land</td><td><code>postal-code</code> / <code>address-level2</code> / <code>country-name</code></td></tr>
+        <tr><td>Firma</td><td><code>organization</code></td></tr>
+        <tr><td>Benutzername / aktuelles Passwort / neues Passwort</td><td><code>username</code> / <code>current-password</code> / <code>new-password</code></td></tr>
+        <tr><td>Einmal-Code (SMS)</td><td><code>one-time-code</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Passwortfelder nie für das Einfügen sperren und Passwort-Manager zulassen - sonst entsteht bei der Anmeldung ein unnötiger Gedächtnistest (WCAG 3.3.8 "Barrierefreie Authentifizierung").</p>
+</section>
+
+<section class="ncss-stack" id="fehleruebersicht">
+  <h2 class="demo-section-title">Fehlerübersicht nach dem Absenden</h2>
+  <p>Bei längeren Formularen hilft eine Übersicht aller Fehler oberhalb des Formulars. Muster:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Eine Überschrift, die das Problem benennt ("2 Angaben fehlen oder sind falsch"), darunter eine Liste mit einem Link pro Fehler. Jeder Link zeigt per <code>href="#feld-id"</code> auf das Feld.</li>
+    <li>Nach dem Neuladen den Fokus auf die Übersicht setzen (<code>tabindex="-1"</code> plus <code>autofocus</code> oder ein kleines Script) - so landen Tastatur- und Screenreader-Nutzer direkt dort.</li>
+    <li>Den Seitentitel ergänzen: <code>&lt;title&gt;Fehler: Anmeldung - Beispiel&lt;/title&gt;</code>. Der Titel wird beim Laden als Erstes angesagt.</li>
+    <li>Ein Link auf <code>#feld-id</code> scrollt zum Feld und setzt dort den Startpunkt der Tab-Reihenfolge, fokussiert das Feld aber nicht in jedem Browser. Wer das möchte, setzt den Fokus per Script.</li>
+  </ul>
+  <p>Die Fehlermeldung im Beispiel ist bereits "nach dem Absenden" dargestellt; der Fokus wird hier bewusst nicht automatisch gesetzt, damit die Handbuchseite nicht beim Laden springt.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel">
+    <div class="demo-error-summary ncss-stack ncss-stack--tight" tabindex="-1" aria-labelledby="demo-fs-title">
+      <h3 id="demo-fs-title">2 Angaben fehlen oder sind falsch</h3>
+      <ul role="list" class="ncss-stack ncss-stack--tight">
+        <li><a href="#demo-fs-name">Bitte deinen Namen eingeben</a></li>
+        <li><a href="#demo-fs-email">Bitte eine E-Mail-Adresse mit @ eingeben</a></li>
+      </ul>
+    </div>
+    <div class="demo-form ncss-stack">
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-fs-name">Name</label>
+        <input class="ncss-input" id="demo-fs-name" name="name" required autocomplete="name" aria-invalid="true" aria-describedby="demo-fs-name-error">
+        <p class="ncss-field-error" id="demo-fs-name-error">Bitte deinen Namen eingeben</p>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-fs-email">E-Mail</label>
+        <input class="ncss-input" id="demo-fs-email" name="email" type="email" required autocomplete="email" value="anna.beispiel.de" aria-invalid="true" aria-describedby="demo-fs-email-error">
+        <p class="ncss-field-error" id="demo-fs-email-error">Bitte eine E-Mail-Adresse mit @ eingeben, z. B. anna@beispiel.de</p>
+      </div>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="demo-error-summary" tabindex="-1" autofocus aria-labelledby="fehler-titel"&gt;
+  &lt;h2 id="fehler-titel"&gt;2 Angaben fehlen oder sind falsch&lt;/h2&gt;
+  &lt;ul role="list"&gt;
+    &lt;li&gt;&lt;a href="#name"&gt;Bitte deinen Namen eingeben&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#email"&gt;Bitte eine E-Mail-Adresse mit @ eingeben&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;form ...&gt;
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label ncss-label--required" for="name"&gt;Name&lt;/label&gt;
+    &lt;input class="ncss-input" id="name" name="name" required autocomplete="name"
+           aria-invalid="true" aria-describedby="name-error"&gt;
+    &lt;p class="ncss-field-error" id="name-error"&gt;Bitte deinen Namen eingeben&lt;/p&gt;
+  &lt;/div&gt;
+  ...
+&lt;/form&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Vollständiges Beispielformular</h2>
+  <p>Alles zusammen, ohne JavaScript: sichtbare Labels, erklärtes Sternchen, <code>required</code>, verknüpfte Hinweise, <code>autocomplete</code>, eine Radio-Gruppe in <code>fieldset</code>. Klick ohne Eingabe auf "Anfrage senden": der Browser meldet das erste fehlende Feld, die Felder bekommen per <code>:user-invalid</code> ihren roten Rahmen. Das Beispiel nutzt <code>method="dialog"</code>, damit beim Absenden nichts verschickt und die Seite nicht neu geladen wird - in deinem Projekt steht dort <code>method="post"</code> und eine <code>action</code>.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel">
+    <form class="demo-form ncss-stack" method="dialog" aria-labelledby="demo-f-title">
+      <h3 id="demo-f-title">Rückruf anfragen</h3>
+      <p class="ncss-text-sm ncss-text-muted" id="demo-f-required">Felder mit * sind Pflichtfelder.</p>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-f-name">Name</label>
+        <input class="ncss-input" id="demo-f-name" name="name" required autocomplete="name">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-f-tel">Telefon</label>
+        <input class="ncss-input" id="demo-f-tel" name="tel" type="tel" required autocomplete="tel" aria-describedby="demo-f-tel-hint">
+        <p class="ncss-field-hint" id="demo-f-tel-hint">Mit Vorwahl, z. B. 030 1234567</p>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demo-f-email">E-Mail (optional)</label>
+        <input class="ncss-input" id="demo-f-email" name="email" type="email" autocomplete="email">
+      </div>
+      <fieldset>
+        <legend>Wann passt es dir?</legend>
+        <label class="ncss-choice"><input type="radio" name="zeit" value="vormittag" checked> Vormittags</label>
+        <label class="ncss-choice"><input type="radio" name="zeit" value="nachmittag"> Nachmittags</label>
+      </fieldset>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demo-f-msg">Worum geht es?</label>
+        <textarea class="ncss-textarea" id="demo-f-msg" name="nachricht" maxlength="500" aria-describedby="demo-f-msg-hint"></textarea>
+        <p class="ncss-field-hint" id="demo-f-msg-hint">Höchstens 500 Zeichen</p>
+      </div>
+      <p><button type="submit" class="ncss-btn ncss-btn--primary">Anfrage senden</button></p>
+    </form>
+  </div>
+  <pre><code class="language-html">&lt;form class="ncss-stack" method="post" action="/rueckruf" aria-labelledby="f-title"&gt;
+  &lt;h2 id="f-title"&gt;Rückruf anfragen&lt;/h2&gt;
+  &lt;p&gt;Felder mit * sind Pflichtfelder.&lt;/p&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label ncss-label--required" for="name"&gt;Name&lt;/label&gt;
+    &lt;input class="ncss-input" id="name" name="name" required autocomplete="name"&gt;
+  &lt;/div&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label ncss-label--required" for="tel"&gt;Telefon&lt;/label&gt;
+    &lt;input class="ncss-input" id="tel" name="tel" type="tel" required
+           autocomplete="tel" aria-describedby="tel-hint"&gt;
+    &lt;p class="ncss-field-hint" id="tel-hint"&gt;Mit Vorwahl, z. B. 030 1234567&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label" for="email"&gt;E-Mail (optional)&lt;/label&gt;
+    &lt;input class="ncss-input" id="email" name="email" type="email" autocomplete="email"&gt;
+  &lt;/div&gt;
+
+  &lt;fieldset&gt;
+    &lt;legend&gt;Wann passt es dir?&lt;/legend&gt;
+    &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="zeit" value="vormittag" checked&gt; Vormittags&lt;/label&gt;
+    &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="zeit" value="nachmittag"&gt; Nachmittags&lt;/label&gt;
+  &lt;/fieldset&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label" for="msg"&gt;Worum geht es?&lt;/label&gt;
+    &lt;textarea class="ncss-textarea" id="msg" name="nachricht" maxlength="500"
+              aria-describedby="msg-hint"&gt;&lt;/textarea&gt;
+    &lt;p class="ncss-field-hint" id="msg-hint"&gt;Höchstens 500 Zeichen&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;p&gt;&lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Anfrage senden&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;</code></pre>
+</section>

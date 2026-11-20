@@ -1,16 +1,312 @@
-<!--DESC: A custom icon system via CSS mask-image, swappable for Font Awesome or another icon set.-->
+<!--DESC: Icons with and without JavaScript: about 50 built-in core icons via CSS mask-image, ~1500 Phosphor icons via &lt;ncss-icon&gt; or as an SVG sprite, Font Awesome as an alternative.-->
+<!--HEAD: <link rel="stylesheet" href="~/demo/assets/icons-page.css">-->
+<!--FOOT: <script src="~/dist/js/icon.js"></script><script type="module" src="~/demo/assets/js/icons-page.mjs"></script>-->
 <section class="ncss-stack">
   <h1>Icons</h1>
-  <p class="ncss-text-lg ncss-text-muted"><code>helpers/icons.css</code>: custom SVGs as CSS <code>mask-image</code> (<code>currentColor</code>-capable, scales with <code>font-size</code>, no markup content needed).</p>
+  <p class="ncss-text-lg ncss-text-muted">Three ways, one model: icons are <code>1em</code> tall and take the text colour (<code>currentColor</code>). Size via <code>font-size</code> or <code>--ncss-icon-size</code>, colour via <code>color</code>.</p>
 </section>
 
-<section class="ncss-stack" id="klassen">
-  <h2 class="demo-section-title">Classes</h2>
-  <p><code>.ncss-icon</code> + <code>.ncss-icon-close</code>/<code>-chevron-down</code>/<code>-menu</code>/<code>-play</code>/<code>-search</code>.</p>
-  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;span class="ncss-icon ncss-icon-close" aria-hidden="true"&gt;&lt;/span&gt;</code></pre>
+<section class="ncss-stack" id="wege">
+  <h2 class="demo-section-title">Which way?</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Way</th><th scope="col">JavaScript</th><th scope="col">Scope</th><th scope="col">Good for</th></tr></thead>
+      <tbody>
+        <tr><td><a href="#kern-icons">Core icons</a> <code>.ncss-icon-*</code></td><td>no</td><td>51 everyday icons in <code>helpers/icons.css</code> (18 KB, part of <code>ncss.css</code>)</td><td>controls, status, anything essential</td></tr>
+        <tr><td><a href="#ncss-icon"><code>&lt;ncss-icon&gt;</code></a></td><td>yes (<code>js/icon.js</code>)</td><td>~1500 Phosphor icons × 6 weights, loaded one by one</td><td>large needs, quick prototyping, decoration</td></tr>
+        <tr><td><a href="#sprite">SVG sprite</a></td><td>no</td><td>only the icons you pick - one file</td><td>production: a fixed Phosphor selection</td></tr>
+        <tr><td><a href="#font-awesome">Font Awesome</a></td><td>no (web font)</td><td>Font Awesome Free, self-hosted</td><td>projects already using FA</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
-<section class="ncss-stack" id="austauschbar">
-  <h2 class="demo-section-title">Swappable</h2>
-  <p>Swappable for e.g. Font Awesome (<code>&lt;i class="fa-solid fa-xmark"&gt;</code>) without touching the consuming component - components like <code>.ncss-dialog-close</code> only style the surface, never the icon source.</p>
+<section class="ncss-stack" id="kern-icons">
+  <h2 class="demo-section-title">Core icons</h2>
+  <p>Custom SVGs as CSS <code>mask-image</code>: no markup content, no request, no JavaScript. 24-unit grid with round caps - line glyphs (arrows, chevrons, plus/minus) slightly bolder than pictograms. Click a tile to copy its markup.</p>
+  <pre><code class="language-html">&lt;span class="ncss-icon ncss-icon-search" aria-hidden="true"&gt;&lt;/span&gt;</code></pre>
+  <h3>Controls</h3>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-grid" role="list">
+      <li data-icons-copy="close"><span class="ncss-icon ncss-icon-close demo-icons-big" aria-hidden="true"></span><code>ncss-icon-close</code></li>
+      <li data-icons-copy="menu"><span class="ncss-icon ncss-icon-menu demo-icons-big" aria-hidden="true"></span><code>ncss-icon-menu</code></li>
+      <li data-icons-copy="search"><span class="ncss-icon ncss-icon-search demo-icons-big" aria-hidden="true"></span><code>ncss-icon-search</code></li>
+      <li data-icons-copy="check"><span class="ncss-icon ncss-icon-check demo-icons-big" aria-hidden="true"></span><code>ncss-icon-check</code></li>
+      <li data-icons-copy="plus"><span class="ncss-icon ncss-icon-plus demo-icons-big" aria-hidden="true"></span><code>ncss-icon-plus</code></li>
+      <li data-icons-copy="minus"><span class="ncss-icon ncss-icon-minus demo-icons-big" aria-hidden="true"></span><code>ncss-icon-minus</code></li>
+      <li data-icons-copy="copy"><span class="ncss-icon ncss-icon-copy demo-icons-big" aria-hidden="true"></span><code>ncss-icon-copy</code></li>
+      <li data-icons-copy="edit"><span class="ncss-icon ncss-icon-edit demo-icons-big" aria-hidden="true"></span><code>ncss-icon-edit</code><small class="ncss-text-muted">also -pencil</small></li>
+      <li data-icons-copy="trash"><span class="ncss-icon ncss-icon-trash demo-icons-big" aria-hidden="true"></span><code>ncss-icon-trash</code></li>
+      <li data-icons-copy="filter"><span class="ncss-icon ncss-icon-filter demo-icons-big" aria-hidden="true"></span><code>ncss-icon-filter</code></li>
+      <li data-icons-copy="sort"><span class="ncss-icon ncss-icon-sort demo-icons-big" aria-hidden="true"></span><code>ncss-icon-sort</code></li>
+      <li data-icons-copy="settings"><span class="ncss-icon ncss-icon-settings demo-icons-big" aria-hidden="true"></span><code>ncss-icon-settings</code></li>
+      <li data-icons-copy="share"><span class="ncss-icon ncss-icon-share demo-icons-big" aria-hidden="true"></span><code>ncss-icon-share</code></li>
+      <li data-icons-copy="download"><span class="ncss-icon ncss-icon-download demo-icons-big" aria-hidden="true"></span><code>ncss-icon-download</code></li>
+      <li data-icons-copy="upload"><span class="ncss-icon ncss-icon-upload demo-icons-big" aria-hidden="true"></span><code>ncss-icon-upload</code></li>
+      <li data-icons-copy="external-link"><span class="ncss-icon ncss-icon-external-link demo-icons-big" aria-hidden="true"></span><code>ncss-icon-external-link</code></li>
+      <li data-icons-copy="link"><span class="ncss-icon ncss-icon-link demo-icons-big" aria-hidden="true"></span><code>ncss-icon-link</code></li>
+      <li data-icons-copy="fullscreen"><span class="ncss-icon ncss-icon-fullscreen demo-icons-big" aria-hidden="true"></span><code>ncss-icon-fullscreen</code></li>
+      <li data-icons-copy="logout"><span class="ncss-icon ncss-icon-logout demo-icons-big" aria-hidden="true"></span><code>ncss-icon-logout</code></li>
+    </ul>
+  </div>
+  <h3>Direction</h3>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-grid" role="list">
+      <li data-icons-copy="arrow-left"><span class="ncss-icon ncss-icon-arrow-left demo-icons-big" aria-hidden="true"></span><code>ncss-icon-arrow-left</code></li>
+      <li data-icons-copy="arrow-right"><span class="ncss-icon ncss-icon-arrow-right demo-icons-big" aria-hidden="true"></span><code>ncss-icon-arrow-right</code></li>
+      <li data-icons-copy="arrow-up"><span class="ncss-icon ncss-icon-arrow-up demo-icons-big" aria-hidden="true"></span><code>ncss-icon-arrow-up</code></li>
+      <li data-icons-copy="arrow-down"><span class="ncss-icon ncss-icon-arrow-down demo-icons-big" aria-hidden="true"></span><code>ncss-icon-arrow-down</code></li>
+      <li data-icons-copy="chevron-left"><span class="ncss-icon ncss-icon-chevron-left demo-icons-big" aria-hidden="true"></span><code>ncss-icon-chevron-left</code></li>
+      <li data-icons-copy="chevron-right"><span class="ncss-icon ncss-icon-chevron-right demo-icons-big" aria-hidden="true"></span><code>ncss-icon-chevron-right</code></li>
+      <li data-icons-copy="chevron-up"><span class="ncss-icon ncss-icon-chevron-up demo-icons-big" aria-hidden="true"></span><code>ncss-icon-chevron-up</code></li>
+      <li data-icons-copy="chevron-down"><span class="ncss-icon ncss-icon-chevron-down demo-icons-big" aria-hidden="true"></span><code>ncss-icon-chevron-down</code></li>
+    </ul>
+  </div>
+  <h3>Status & marking</h3>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-grid" role="list">
+      <li data-icons-copy="info"><span class="ncss-icon ncss-icon-info demo-icons-big" aria-hidden="true"></span><code>ncss-icon-info</code></li>
+      <li data-icons-copy="success"><span class="ncss-icon ncss-icon-success demo-icons-big" aria-hidden="true"></span><code>ncss-icon-success</code><small class="ncss-text-muted">also -check-circle</small></li>
+      <li data-icons-copy="warning"><span class="ncss-icon ncss-icon-warning demo-icons-big" aria-hidden="true"></span><code>ncss-icon-warning</code></li>
+      <li data-icons-copy="error"><span class="ncss-icon ncss-icon-error demo-icons-big" aria-hidden="true"></span><code>ncss-icon-error</code><small class="ncss-text-muted">also -x-circle</small></li>
+      <li data-icons-copy="heart"><span class="ncss-icon ncss-icon-heart demo-icons-big" aria-hidden="true"></span><code>ncss-icon-heart</code></li>
+      <li data-icons-copy="star"><span class="ncss-icon ncss-icon-star demo-icons-big" aria-hidden="true"></span><code>ncss-icon-star</code></li>
+      <li data-icons-copy="lock"><span class="ncss-icon ncss-icon-lock demo-icons-big" aria-hidden="true"></span><code>ncss-icon-lock</code></li>
+      <li data-icons-copy="eye"><span class="ncss-icon ncss-icon-eye demo-icons-big" aria-hidden="true"></span><code>ncss-icon-eye</code></li>
+    </ul>
+  </div>
+  <h3>Content & contact</h3>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-grid" role="list">
+      <li data-icons-copy="home"><span class="ncss-icon ncss-icon-home demo-icons-big" aria-hidden="true"></span><code>ncss-icon-home</code></li>
+      <li data-icons-copy="user"><span class="ncss-icon ncss-icon-user demo-icons-big" aria-hidden="true"></span><code>ncss-icon-user</code></li>
+      <li data-icons-copy="users"><span class="ncss-icon ncss-icon-users demo-icons-big" aria-hidden="true"></span><code>ncss-icon-users</code></li>
+      <li data-icons-copy="accessibility"><span class="ncss-icon ncss-icon-accessibility demo-icons-big" aria-hidden="true"></span><code>ncss-icon-accessibility</code></li>
+      <li data-icons-copy="mail"><span class="ncss-icon ncss-icon-mail demo-icons-big" aria-hidden="true"></span><code>ncss-icon-mail</code></li>
+      <li data-icons-copy="phone"><span class="ncss-icon ncss-icon-phone demo-icons-big" aria-hidden="true"></span><code>ncss-icon-phone</code></li>
+      <li data-icons-copy="map-pin"><span class="ncss-icon ncss-icon-map-pin demo-icons-big" aria-hidden="true"></span><code>ncss-icon-map-pin</code></li>
+      <li data-icons-copy="globe"><span class="ncss-icon ncss-icon-globe demo-icons-big" aria-hidden="true"></span><code>ncss-icon-globe</code></li>
+      <li data-icons-copy="calendar"><span class="ncss-icon ncss-icon-calendar demo-icons-big" aria-hidden="true"></span><code>ncss-icon-calendar</code></li>
+      <li data-icons-copy="clock"><span class="ncss-icon ncss-icon-clock demo-icons-big" aria-hidden="true"></span><code>ncss-icon-clock</code></li>
+      <li data-icons-copy="file"><span class="ncss-icon ncss-icon-file demo-icons-big" aria-hidden="true"></span><code>ncss-icon-file</code></li>
+      <li data-icons-copy="image"><span class="ncss-icon ncss-icon-image demo-icons-big" aria-hidden="true"></span><code>ncss-icon-image</code></li>
+    </ul>
+  </div>
+  <h3>Media & display</h3>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-grid" role="list">
+      <li data-icons-copy="play"><span class="ncss-icon ncss-icon-play demo-icons-big" aria-hidden="true"></span><code>ncss-icon-play</code></li>
+      <li data-icons-copy="pause"><span class="ncss-icon ncss-icon-pause demo-icons-big" aria-hidden="true"></span><code>ncss-icon-pause</code></li>
+      <li data-icons-copy="volume"><span class="ncss-icon ncss-icon-volume demo-icons-big" aria-hidden="true"></span><code>ncss-icon-volume</code></li>
+      <li data-icons-copy="sun"><span class="ncss-icon ncss-icon-sun demo-icons-big" aria-hidden="true"></span><code>ncss-icon-sun</code></li>
+      <li data-icons-copy="moon"><span class="ncss-icon ncss-icon-moon demo-icons-big" aria-hidden="true"></span><code>ncss-icon-moon</code></li>
+    </ul>
+  </div>
+  <p class="ncss-visually-hidden" role="status" id="icons-copy-status"></p>
+</section>
+
+<section class="ncss-stack" id="groesse-farbe">
+  <h2 class="demo-section-title">Size, colour, in buttons</h2>
+  <p>Size follows the font - or set it with <code>--ncss-icon-size</code> (plain value parameterisation, allowed as <code>style</code>). Colour comes from any text colour class.</p>
+  <div class="demo-icons-frame ncss-stack">
+    <ul class="demo-icons-row" role="list" aria-label="Sizes">
+      <li><span class="ncss-icon ncss-icon-star" aria-hidden="true"></span><small>1em</small></li>
+      <li><span class="ncss-icon ncss-icon-star ncss-text-xl" aria-hidden="true"></span><small>.ncss-text-xl</small></li>
+      <li><span class="ncss-icon ncss-icon-star" style="--ncss-icon-size: 2.5rem" aria-hidden="true"></span><small>2.5rem</small></li>
+      <li><span class="ncss-icon ncss-icon-star" style="--ncss-icon-size: 4rem" aria-hidden="true"></span><small>4rem</small></li>
+    </ul>
+    <ul class="demo-icons-row demo-icons-big" role="list" aria-label="Colours">
+      <li><span class="ncss-icon ncss-icon-info ncss-text-brand" aria-hidden="true"></span><small>brand</small></li>
+      <li><span class="ncss-icon ncss-icon-success ncss-text-success" aria-hidden="true"></span><small>success</small></li>
+      <li><span class="ncss-icon ncss-icon-warning ncss-text-warning" aria-hidden="true"></span><small>warning</small></li>
+      <li><span class="ncss-icon ncss-icon-error ncss-text-danger" aria-hidden="true"></span><small>danger</small></li>
+      <li><span class="ncss-icon ncss-icon-heart ncss-text-muted" aria-hidden="true"></span><small>muted</small></li>
+    </ul>
+    <div class="ncss-cluster" role="group" aria-label="In buttons">
+      <button type="button" class="ncss-btn ncss-btn--primary"><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span> Download</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary">Next <span class="ncss-icon ncss-icon-arrow-right" aria-hidden="true"></span></button>
+      <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Delete"><span class="ncss-icon ncss-icon-trash" aria-hidden="true"></span></button>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;span class="ncss-icon ncss-icon-star" style="--ncss-icon-size: 2.5rem" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;span class="ncss-icon ncss-icon-warning ncss-text-warning" aria-hidden="true"&gt;&lt;/span&gt;
+
+&lt;button class="ncss-btn ncss-btn--primary"&gt;
+  &lt;span class="ncss-icon ncss-icon-download" aria-hidden="true"&gt;&lt;/span&gt; Download
+&lt;/button&gt;
+&lt;button class="ncss-btn ncss-btn--icon" aria-label="Delete"&gt;
+  &lt;span class="ncss-icon ncss-icon-trash" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="ncss-icon">
+  <h2 class="demo-section-title"><code>&lt;ncss-icon&gt;</code>: every Phosphor icon</h2>
+  <p>Loads an icon from <code>vendor/phosphor/</code> (Phosphor Icons, MIT) and inserts it sanitised as inline SVG with <code>fill="currentColor"</code>. Each file is fetched only once per page. <code>helpers/icons.css</code> reserves the space beforehand - nothing jumps.</p>
+  <pre><code class="language-html">&lt;link rel="stylesheet" href="dist/ncss.css"&gt;   &lt;!-- or just dist/helpers/icons.css --&gt;
+&lt;script src="dist/js/icon.js" defer&gt;&lt;/script&gt;
+
+&lt;ncss-icon name="house"&gt;&lt;/ncss-icon&gt;
+&lt;ncss-icon name="heart" weight="fill" label="Favourite"&gt;&lt;/ncss-icon&gt;</code></pre>
+  <h3>Six weights</h3>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-row" role="list">
+      <li><ncss-icon name="house" weight="regular" class="demo-icons-big"></ncss-icon><small>regular</small></li>
+      <li><ncss-icon name="house" weight="thin" class="demo-icons-big"></ncss-icon><small>thin</small></li>
+      <li><ncss-icon name="house" weight="light" class="demo-icons-big"></ncss-icon><small>light</small></li>
+      <li><ncss-icon name="house" weight="bold" class="demo-icons-big"></ncss-icon><small>bold</small></li>
+      <li><ncss-icon name="house" weight="fill" class="demo-icons-big"></ncss-icon><small>fill</small></li>
+      <li><ncss-icon name="house" weight="duotone" class="demo-icons-big"></ncss-icon><small>duotone</small></li>
+    </ul>
+  </div>
+  <h3>Sizes & colours</h3>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-row" role="list">
+      <li><ncss-icon name="rocket-launch" weight="duotone"></ncss-icon><small>1em</small></li>
+      <li><ncss-icon name="rocket-launch" weight="duotone" class="ncss-text-xl"></ncss-icon><small>.ncss-text-xl</small></li>
+      <li><ncss-icon name="rocket-launch" weight="duotone" style="--ncss-icon-size: 3rem"></ncss-icon><small>3rem</small></li>
+      <li><ncss-icon name="rocket-launch" weight="duotone" class="ncss-text-brand" style="--ncss-icon-size: 3rem"></ncss-icon><small>brand</small></li>
+      <li><ncss-icon name="heart" weight="fill" label="Favourite" class="ncss-text-danger" style="--ncss-icon-size: 3rem"></ncss-icon><small>label="Favourite"</small></li>
+      <li><ncss-icon name="check-circle" weight="bold" label="Done" class="ncss-text-success" style="--ncss-icon-size: 3rem"></ncss-icon><small>label="Done"</small></li>
+    </ul>
+  </div>
+  <pre><code class="language-html">&lt;ncss-icon name="rocket-launch" weight="duotone" class="ncss-text-brand" style="--ncss-icon-size: 3rem"&gt;&lt;/ncss-icon&gt;
+&lt;ncss-icon name="check-circle" weight="bold" label="Done"&gt;&lt;/ncss-icon&gt;
+&lt;!-- becomes: &lt;ncss-icon … role="img" aria-label="Done"&gt;&lt;svg aria-hidden="true" …&gt;…&lt;/svg&gt;&lt;/ncss-icon&gt; --&gt;</code></pre>
+  <h3>Attributes</h3>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribute</th><th scope="col">Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>name</code></td><td>Phosphor name, e.g. <code>house</code>, <code>arrow-right</code>, <code>gear-six</code> (search in the <a href="#baukasten">builder</a>)</td></tr>
+        <tr><td><code>weight</code></td><td><code>regular</code> (default), <code>thin</code>, <code>light</code>, <code>bold</code>, <code>fill</code>, <code>duotone</code></td></tr>
+        <tr><td><code>label</code></td><td>makes the icon meaningful: <code>role="img"</code> + <code>aria-label</code>. Without <code>label</code> it is decorative (<code>aria-hidden="true"</code>).</td></tr>
+        <tr><td><code>src</code></td><td>load any SVG file of your own instead of <code>name</code> (sanitised as well)</td></tr>
+        <tr><td><code>data-ncss-icon-path</code></td><td>icon folder, on the element or an ancestor (e.g. <code>&lt;html&gt;</code>), relative to the page. Default: <code>vendor/phosphor/</code> relative to <code>dist/js/icon.js</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Events: <code>ncss-icon-load</code> and <code>ncss-icon-error</code> (bubbling, <code>detail.url</code>).</p>
+  <div class="ncss-alert ncss-alert--warning">
+    <p class="ncss-alert-title">Without JavaScript <code>&lt;ncss-icon&gt;</code> stays empty</p>
+    <p>Before the script loads (or without JS) the element is invisible, but its space is reserved. Put an icon that carries meaning (e.g. a button without text) in as a <a href="#kern-icons">core icon</a> or via a <a href="#sprite">sprite</a> - or keep visible text next to it.</p>
+  </div>
+  <h3>Custom icon path</h3>
+  <pre><code class="language-html">&lt;html lang="en" data-ncss-icon-path="/assets/phosphor/"&gt;
+&lt;!-- expects /assets/phosphor/regular/house.svg, /assets/phosphor/bold/house-bold.svg … --&gt;
+&lt;ncss-icon src="/assets/logo-mark.svg" label="Logo"&gt;&lt;/ncss-icon&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="sprite">
+  <h2 class="demo-section-title">SVG sprite: Phosphor without JavaScript</h2>
+  <p>A sprite is one SVG file with a <code>&lt;symbol&gt;</code> per icon. Referenced via <code>&lt;use&gt;</code> it needs no script, inherits <code>currentColor</code> and is loaded and cached once. <code>.ncss-icon-sprite</code> (in <code>helpers/icons.css</code>) sets size and fill.</p>
+  <h3>From the command line</h3>
+  <p>Plain Node script, no npm. Symbol IDs are the Phosphor file names (<code>house</code>, <code>heart-fill</code>, <code>star-duotone</code>) - weight for all via <code>--weight</code>, per icon via <code>name:weight</code>. An unknown name prints suggestions (<code>home</code> → <code>house</code>).</p>
+  <pre><code class="language-bash">node tools/icons/sprite.mjs house bell heart:fill star:duotone arrow-right gear-six --out=icons.svg</code></pre>
+  <h3>Live: sprite with six icons</h3>
+  <p>These icons come from <code>demo/assets/icons-demo-sprite.svg</code>, built with the command above - no JavaScript.</p>
+  <div class="demo-icons-frame">
+    <ul class="demo-icons-row demo-icons-big" role="list">
+      <li><svg class="ncss-icon-sprite" aria-hidden="true"><use href="~/demo/assets/icons-demo-sprite.svg#house"></use></svg><small>house</small></li>
+      <li><svg class="ncss-icon-sprite" aria-hidden="true"><use href="~/demo/assets/icons-demo-sprite.svg#bell"></use></svg><small>bell</small></li>
+      <li><svg class="ncss-icon-sprite ncss-text-danger" aria-hidden="true"><use href="~/demo/assets/icons-demo-sprite.svg#heart-fill"></use></svg><small>heart-fill</small></li>
+      <li><svg class="ncss-icon-sprite ncss-text-warning" aria-hidden="true"><use href="~/demo/assets/icons-demo-sprite.svg#star-duotone"></use></svg><small>star-duotone</small></li>
+      <li><svg class="ncss-icon-sprite" aria-hidden="true"><use href="~/demo/assets/icons-demo-sprite.svg#arrow-right"></use></svg><small>arrow-right</small></li>
+      <li><svg class="ncss-icon-sprite ncss-text-muted" aria-hidden="true"><use href="~/demo/assets/icons-demo-sprite.svg#gear-six"></use></svg><small>gear-six</small></li>
+    </ul>
+  </div>
+  <pre><code class="language-html">&lt;svg class="ncss-icon-sprite" aria-hidden="true"&gt;&lt;use href="icons.svg#house"&gt;&lt;/use&gt;&lt;/svg&gt;
+&lt;svg class="ncss-icon-sprite ncss-text-danger" role="img" aria-label="Favourite"&gt;&lt;use href="icons.svg#heart-fill"&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted"><code>&lt;use href="file.svg#id"&gt;</code> with an external file only works from the same origin - ship the sprite with the site, not from a foreign CDN.</p>
+</section>
+
+<section class="ncss-stack" id="baukasten">
+  <h2 class="demo-section-title">Builder</h2>
+  <p>Search every Phosphor icon (by name or keyword such as <code>trash</code>, <code>calendar</code>), click to pick, choose a weight, download the sprite. The index (116 KB) only loads once you get here.</p>
+  <p class="ncss-alert ncss-alert--neutral" data-icons-picker-fallback>The builder needs JavaScript. Without JS: look up icon names on <a href="https://phosphoricons.com">phosphoricons.com</a> and build the sprite with the command above.</p>
+  <div class="demo-icons-frame ncss-stack" data-icons-picker data-icons-base="~/vendor/phosphor/" hidden>
+    <div class="demo-picker-bar">
+      <div class="demo-picker-search">
+        <label for="picker-search">Search icons</label>
+        <input type="search" id="picker-search" class="ncss-input" placeholder="e.g. arrow, mail, chart" autocomplete="off" spellcheck="false" aria-controls="picker-results" data-picker-search>
+      </div>
+      <fieldset class="ncss-segmented ncss-segmented--sm">
+        <legend class="ncss-visually-hidden">Weight</legend>
+        <input type="radio" name="picker-weight" id="picker-w-regular" value="regular" data-picker-weight checked>
+        <label for="picker-w-regular">Regular</label>
+        <input type="radio" name="picker-weight" id="picker-w-thin" value="thin" data-picker-weight>
+        <label for="picker-w-thin">Thin</label>
+        <input type="radio" name="picker-weight" id="picker-w-light" value="light" data-picker-weight>
+        <label for="picker-w-light">Light</label>
+        <input type="radio" name="picker-weight" id="picker-w-bold" value="bold" data-picker-weight>
+        <label for="picker-w-bold">Bold</label>
+        <input type="radio" name="picker-weight" id="picker-w-fill" value="fill" data-picker-weight>
+        <label for="picker-w-fill">Fill</label>
+        <input type="radio" name="picker-weight" id="picker-w-duotone" value="duotone" data-picker-weight>
+        <label for="picker-w-duotone">Duotone</label>
+      </fieldset>
+    </div>
+    <p class="ncss-text-sm ncss-text-muted" role="status" data-picker-count></p>
+    <ul class="demo-picker-results" role="list" id="picker-results" aria-label="Search results" data-picker-results></ul>
+    <div><button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-picker-more hidden></button></div>
+    <h3 data-picker-selection-title></h3>
+    <p class="ncss-text-sm ncss-text-muted" data-picker-empty></p>
+    <ul class="demo-picker-selection" role="list" data-picker-selection></ul>
+    <div class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--primary" data-picker-download disabled><span class="ncss-icon ncss-icon-download" aria-hidden="true"></span> Download sprite</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-picker-copy disabled><span class="ncss-icon ncss-icon-copy" aria-hidden="true"></span> Copy markup</button>
+      <button type="button" class="ncss-btn ncss-btn--secondary" data-picker-clear disabled>Clear selection</button>
+    </div>
+    <p class="ncss-text-sm" role="status" data-picker-status></p>
+    <h4>Markup</h4>
+    <pre><code class="language-html" data-picker-markup></code></pre>
+    <h4>The same sprite from the command line</h4>
+    <pre><code class="language-bash" data-picker-cli></code></pre>
+  </div>
+</section>
+
+<section class="ncss-stack" id="font-awesome">
+  <h2 class="demo-section-title">Font Awesome as an alternative</h2>
+  <p>Font Awesome Free is self-hosted under <code>vendor/fontawesome/</code> (web font + SVGs, also the basis of <code>&lt;wa-icon&gt;</code> in the <a href="webawesome-bridge.html">Web Awesome bridge</a>). Not part of <code>ncss.css</code> - only include it when the project uses FA anyway. Components like <code>.ncss-dialog-close</code> only style the surface, so every icon is swappable:</p>
+  <pre><code class="language-html">&lt;link rel="stylesheet" href="vendor/fontawesome/css/fontawesome.min.css"&gt;
+&lt;link rel="stylesheet" href="vendor/fontawesome/css/solid.min.css"&gt;
+&lt;link rel="stylesheet" href="dist/integrations/fontawesome-font-display-fix.css"&gt;
+
+&lt;button class="ncss-dialog-close" aria-label="Close"&gt;
+  &lt;span class="ncss-icon ncss-icon-close" aria-hidden="true"&gt;&lt;/span&gt;   &lt;!-- core icon --&gt;
+  &lt;i class="fa-solid fa-xmark" aria-hidden="true"&gt;&lt;/i&gt;              &lt;!-- or Font Awesome --&gt;
+  &lt;ncss-icon name="x"&gt;&lt;/ncss-icon&gt;                               &lt;!-- or Phosphor --&gt;
+&lt;/button&gt;</code></pre>
+  <p><code>integrations/fontawesome-font-display-fix.css</code> sets <code>font-display: swap</code> for the FA fonts (otherwise icons stay invisible until loaded).</p>
+</section>
+
+<section class="ncss-stack" id="icons-a11y">
+  <h2 class="demo-section-title">Using icons accessibly</h2>
+  <ul>
+    <li><strong>Decorative or meaningful?</strong> If text is next to it, the icon is decoration: <code>aria-hidden="true"</code> (automatic for <code>&lt;ncss-icon&gt;</code>). If it carries meaning on its own (status icon without text), it needs a name: <code>label="…"</code> or <code>role="img" aria-label="…"</code>.</li>
+    <li><strong>Icon-only buttons need <code>aria-label</code></strong> on the button (not the icon) - and an icon that is visible without JS (core icon or sprite). A tooltip does not replace the name.</li>
+    <li><strong>Never convey status by colour or icon alone</strong>: say warning/error in words too.</li>
+    <li><strong>High contrast mode</strong> (Windows <code>forced-colors</code>): core icons switch to the system colour <code>CanvasText</code>, <code>&lt;ncss-icon&gt;</code> and sprites follow the forced text colour via <code>currentColor</code> - all stay visible.</li>
+    <li><strong>Size</strong>: icons scale with the font, so with browser zoom and text size too. Keep hit areas at least 24×24 px (better 44×44) - the button defines the area, not the icon.</li>
+  </ul>
+  <pre><code class="language-html">&lt;!-- decoration: the text carries the meaning --&gt;
+&lt;a href="/"&gt;&lt;span class="ncss-icon ncss-icon-home" aria-hidden="true"&gt;&lt;/span&gt; Home&lt;/a&gt;
+
+&lt;!-- icon only: name on the button --&gt;
+&lt;button class="ncss-btn ncss-btn--icon" aria-label="Delete"&gt;
+  &lt;span class="ncss-icon ncss-icon-trash" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- icon carries meaning on its own --&gt;
+&lt;span class="ncss-icon ncss-icon-success" role="img" aria-label="Done"&gt;&lt;/span&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="lizenzen">
+  <h2 class="demo-section-title">Licences</h2>
+  <ul>
+    <li><strong>Core icons</strong> (<code>helpers/icons.css</code>): original drawings, part of NativeCSS (MIT).</li>
+    <li><strong>Phosphor Icons</strong> (<code>vendor/phosphor/</code>, version 2.1.1): MIT licence, © Phosphor Icons - <code>vendor/phosphor/LICENSE</code>. Also applies to generated sprites; keep the licence file with the project.</li>
+    <li><strong>Font Awesome Free</strong> (<code>vendor/fontawesome/</code>): icons CC BY 4.0, fonts SIL OFL 1.1, code MIT - <code>vendor/fontawesome/LICENSE.txt</code>.</li>
+  </ul>
+  <h3>Files</h3>
+  <p><code>helpers/icons.css</code> (core icons, <code>&lt;ncss-icon&gt;</code> space, <code>.ncss-icon-sprite</code>) · <code>js/icon.js</code> · <code>vendor/phosphor/</code> (SVGs, <code>index.json</code>, <code>LICENSE</code>) · <code>tools/icons/sprite.mjs</code> · <code>tools/icons/build-index.mjs</code> (rebuild the search index).</p>
 </section>

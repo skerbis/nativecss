@@ -1,0 +1,209 @@
+/**
+ * ncss - Segmentierte Auswahl (Layer "components"): "Liste | Karte | Kalender" als
+ * zusammenhängende Schaltflächen-Leiste - technisch eine ganz normale Radio-Gruppe.
+ * Pfeiltasten, Formular-Versand, Pflichtfeld und Screenreader-Ansage ("Optionsfeld,
+ * 2 von 3") kommen dadurch vom Browser, kein JS. Braucht colors.css + tokens.css
+ * (+ reset/base).
+ *
+ * Markup - Input DIREKT vor seinem Label (Geschwister-Selektor input:checked + label
+ * funktioniert ohne :has(), also auch in älteren Browsern):
+ *   <fieldset class="ncss-segmented">
+ *     <legend class="ncss-visually-hidden">Ansicht</legend>
+ *     <input type="radio" name="ansicht" id="a-liste" value="liste" checked>
+ *     <label for="a-liste">Liste</label>
+ *     <input type="radio" name="ansicht" id="a-karte" value="karte">
+ *     <label for="a-karte">Karte</label>
+ *   </fieldset>
+ * --sm für dichte Toolbars, --block für volle Breite (Segmente teilen sich den Platz).
+ * --pill: vollrunde Leiste mit runder Auswahl-Pille (Modus-Umschalter wie
+ * "Ansehen | Bearbeiten", gern mit Icon im Label) - kombinierbar mit --slide.
+ * --slide: die Auswahl-Fläche GLEITET zum neuen Segment (reines CSS per Anchor
+ * Positioning + anchor-scope; ohne Unterstützung bzw. bei reduzierter Bewegung springt
+ * sie wie gewohnt). Nur für einzeilige Leisten gedacht.
+ */
+
+.ncss-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  /* Auch als Kind eines streckenden Flex-/Grid-Layouts (.ncss-stack) nur so breit wie
+     der Inhalt - volle Breite ist die eigene Variante --block. */
+  align-self: start;
+  justify-self: start;
+  gap: var(--ncss-space-3xs);
+  margin: 0;
+  padding: var(--ncss-space-3xs);
+  min-inline-size: 0;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-bg-subtle);
+}
+/* Der Radio-Kreis selbst wird unsichtbar, bleibt aber im Fokus-/Tab-Ablauf (kein
+   display:none - sonst wäre die Gruppe per Tastatur unerreichbar). */
+.ncss-segmented > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.ncss-segmented > label {
+  flex: 0 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ncss-space-3xs);
+  padding: var(--ncss-space-3xs) var(--ncss-space-sm);
+  border-radius: calc(var(--ncss-radius-md) - var(--ncss-space-3xs));
+  color: var(--ncss-color-text-muted);
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--ncss-motion-duration) var(--ncss-motion-easing),
+              color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-segmented > input:checked + label {
+  background-color: var(--ncss-color-surface);
+  color: var(--ncss-color-text);
+  box-shadow: var(--ncss-shadow-sm);
+}
+.ncss-segmented > input:focus-visible + label {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 1px;
+}
+.ncss-segmented > input:disabled + label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ncss-segmented > input:not(:checked, :disabled) + label:active {
+  background-color: color-mix(in oklch, currentColor 10%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-segmented > input:not(:checked, :disabled) + label:hover:not(:active) {
+    color: var(--ncss-color-text);
+    background-color: color-mix(in oklch, currentColor 6%, transparent);
+  }
+}
+
+.ncss-segmented--sm > label {
+  padding: 0.1em var(--ncss-space-xs);
+  font-size: var(--ncss-font-size-sm);
+}
+.ncss-segmented--block {
+  display: flex;
+  align-self: stretch;
+  justify-self: stretch;
+}
+.ncss-segmented--block > label {
+  flex: 1 1 0;
+}
+
+/* --- Pillen-Form (--pill) --------------------------------------------------------------- */
+.ncss-segmented--pill {
+  border-radius: var(--ncss-radius-full, 999px);
+  border-color: color-mix(in oklch, currentColor 18%, transparent);
+  background-color: color-mix(in oklch, currentColor 8%, transparent);
+}
+.ncss-segmented--pill > label {
+  border-radius: var(--ncss-radius-full, 999px);
+  padding-inline: var(--ncss-space-md);
+  color: inherit;
+}
+/* Auswahl als helle Pille mit dunkler Schrift - auf heller wie dunkler Fläche klar */
+.ncss-segmented--pill > input:checked + label {
+  background-color: #fff;
+  color: #0f172a;
+}
+.ncss-segmented--pill.ncss-segmented--slide > input:checked + label {
+  background-color: transparent;
+}
+.ncss-segmented--pill.ncss-segmented--slide::before {
+  border-radius: var(--ncss-radius-full, 999px);
+  background-color: #fff;
+}
+.ncss-segmented > label > .ncss-icon {
+  inline-size: 1.15em;
+  block-size: 1.15em;
+}
+
+/* --- Gleitende Auswahl (--slide) ------------------------------------------------------
+   Das gewählte Label wird zum Anker, ein ::before der Leiste liegt per anchor() genau
+   darunter - wechselt die Wahl, ändern sich die Anker-Koordinaten und die transition
+   lässt die Fläche hinübergleiten. anchor-scope begrenzt den Ankernamen auf DIESE Leiste
+   (sonst würden mehrere Leisten auf einer Seite sich gegenseitig den Anker wegnehmen) -
+   ohne anchor-scope-Unterstützung deshalb gar nicht aktiv. */
+@supports (anchor-name: --a) and (anchor-scope: all) {
+  .ncss-segmented--slide {
+    position: relative;
+    isolation: isolate;
+    anchor-scope: --ncss-seg;
+  }
+  .ncss-segmented--slide > input:checked + label {
+    anchor-name: --ncss-seg;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .ncss-segmented--slide::before {
+    content: "";
+    position: absolute;
+    position-anchor: --ncss-seg;
+    inset-block-start: anchor(top);
+    inset-block-end: anchor(bottom);
+    inset-inline-start: anchor(start);
+    inset-inline-end: anchor(end);
+    z-index: -1;
+    border-radius: calc(var(--ncss-radius-md) - var(--ncss-space-3xs));
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-sm);
+    pointer-events: none;
+  }
+  /* Ohne gewähltes Segment keine Fläche */
+  .ncss-segmented--slide:not(:has(> input:checked))::before {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="reduce"]) .ncss-segmented--slide::before {
+      transition:
+        inset var(--ncss-motion-duration-slow, 0.3s) var(--ncss-motion-easing, ease);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root[data-motion="full"] .ncss-segmented--slide::before {
+      transition: inset var(--ncss-motion-duration-slow, 0.3s) ease;
+    }
+  }
+  @media (forced-colors: active) {
+    .ncss-segmented--slide::before {
+      display: none;
+    }
+    .ncss-segmented--slide > input:checked + label {
+      border-color: Highlight;
+    }
+  }
+}
+
+/* Hochkontrast: Fläche/Schatten verschwinden - der gewählte Eintrag braucht einen
+   eigenen, systemfarbigen Rahmen, sonst ist die Auswahl unsichtbar. */
+@media (forced-colors: active) {
+  .ncss-segmented > label {
+    border: var(--ncss-border-width) solid transparent;
+  }
+  .ncss-segmented > input:checked + label {
+    border-color: Highlight;
+    border-width: calc(var(--ncss-border-width) * 2);
+  }
+}
+
+/* WebKit/Safari: nach einem Pfeiltasten-Wechsel innerhalb der Radio-Gruppe matcht der
+   neu fokussierte Input NICHT :focus-visible (per Playwright-WebKit-Test gefunden - der
+   Ring verschwand nach dem ersten Pfeil). Dort deshalb :focus - Safari fokussiert Radios
+   per Mausklick ohnehin nicht, es entsteht also kein Ring nach einem Klick. Gleiche
+   WebKit-Erkennung wie components/select.css. */
+@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+  .ncss-segmented > input:focus + label {
+    outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+    outline-offset: 1px;
+  }
+}

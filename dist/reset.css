@@ -19,7 +19,9 @@ html {
      blockieren (anders als "-webkit-text-size-adjust: none", was a11y-schädlich wäre). */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  hanging-punctuation: first last;
+  /* Nur "first": hängende Satzzeichen am ZEILENENDE ("last") ragen über den rechten Rand und
+     erzeugten in WebKit bei 360px messbaren Seitenüberlauf (example-gemeinde-service.html, 6px). */
+  hanging-punctuation: first;
   /* Sanftes Scrollen SEITENWEIT (Anker-Klicks, .scrollIntoView() etc.), nicht nur in den
      einzelnen Komponenten, die es schon länger selbst setzen (slideshow.css,
      .ncss-scroll-snap-x/-y, .ncss-snap-sections - deren eigener overflow:auto-Container
@@ -91,6 +93,20 @@ p, h1, h2, h3, h4, h5, h6 {
   list-style: none;
 }
 
+/* Das hidden-Attribut versteckt IMMER - auch ein Element, das eine Komponente/ein Helper
+   mit eigenem display (z.B. .ncss-btn: inline-flex, .ncss-card: flex) sichtbar machen
+   würde. Die UA-Regel [hidden]{display:none} ist die schwächste der ganzen Kaskade, JEDE
+   Autoren-Regel mit display schlägt sie (per Demo-Test gefunden: <button class="ncss-btn"
+   hidden> blieb sichtbar). !important ist hier bewusst die Layer-konforme Lösung, kein
+   Spezifitäts-Kampf: wichtige Deklarationen kehren die Layer-Reihenfolge um - ein
+   !important im NIEDRIGSTEN Layer (reset) gewinnt gegen jede normale UND jede wichtige
+   Regel aller späteren Layer, ohne dass eine Komponente davon wissen muss. Ausnahme
+   hidden="until-found": das soll per Spec gerade NICHT display:none sein (UA nutzt
+   content-visibility, Find-in-Page/Anker öffnen es). */
+[hidden]:not([hidden="until-found"]) {
+  display: none !important;
+}
+
 /* Root-Stacking-Context für z-index-basierte Komponenten (Modals, Dropdowns) - ohne das
    können manche CSS-Isolationstricks von Drittkomponenten den Kontext durchbrechen. */
 #__redaxo, body {
@@ -104,12 +120,33 @@ p, h1, h2, h3, h4, h5, h6 {
    braucht es einen eigenen Eintrag in der Liste, sonst bliebe dessen transition-duration
    von dieser Regel unberührt. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after, *::details-content {
+  :root:not([data-motion="full"]) *,
+  :root:not([data-motion="full"]) *::before,
+  :root:not([data-motion="full"]) *::after,
+  :root:not([data-motion="full"]) *::details-content {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+/* Dieselbe Dämpfung als ausdrückliche Nutzerwahl (js/preferences.js, <html
+   data-motion="reduce">) - unabhängig von der Systemeinstellung. data-motion="full" hebt
+   umgekehrt die globale Dämpfung oben auf, aber NUR als bewusste Wahl (das Attribut setzt
+   nie etwas von selbst). Zusätzlich animation-timeline:auto: scroll-getriebene Effekte
+   (Parallax, Reveal) sind in den Komponenten per @media (prefers-reduced-motion:
+   no-preference) gegatet - das greift bei einer reinen Nutzerwahl nicht, eine
+   0.01ms-Zeitanimation statt einer Scroll-Timeline springt dagegen sofort ans Ende.
+   Komponenten brauchen dafür KEINE eigene zweite Regel. */
+:root[data-motion="reduce"] *,
+:root[data-motion="reduce"] *::before,
+:root[data-motion="reduce"] *::after,
+:root[data-motion="reduce"] *::details-content {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  animation-timeline: auto !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 /* Fokus-Ring NIE ersatzlos entfernen (a11y) - stattdessen einheitlich gestalten und nur
@@ -121,4 +158,39 @@ p, h1, h2, h3, h4, h5, h6 {
 :focus-visible {
   outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring, #0057d8);
   outline-offset: 2px;
+}
+
+/* --- Darstellungs-Einstellungen der Besucher (js/preferences.js, <ncss-preferences>) -----
+   Attribute am <html>, gesetzt aus localStorage BEVOR die Seite gezeichnet wird
+   (js/preferences-early.js). Bewusst im Reset-Layer mit !important: wichtige Deklarationen
+   kehren die Layer-Reihenfolge um, der NIEDRIGSTE Layer gewinnt - eine Nutzerwahl schlägt
+   so jede Komponente, ohne dass eine Komponente davon wissen muss (wie ein
+   Nutzer-Stylesheet). Kontrast: siehe colors.css, Bewegung: oben. */
+
+/* Schriftgröße: skaliert rem, alle Tokens (Abstände, clamp()-Schriftgrößen) ziehen mit. */
+:root[data-text-scale="115"] { font-size: 115% !important; }
+:root[data-text-scale="130"] { font-size: 130% !important; }
+
+/* Textabstände nach WCAG 1.4.12 (die vier Werte des Erfolgskriteriums). */
+:root[data-text-spacing] * {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+:root[data-text-spacing] :is(p, li, dd, blockquote) {
+  margin-block-end: 2em !important;
+}
+
+/* Links immer unterstreichen - Text-Links, nicht wie Buttons gestaltete Links. */
+:root[data-links="underline"] a[href]:not([class*="ncss-btn"], [role="tab"], [role="button"]) {
+  text-decoration-line: underline !important;
+  text-decoration-thickness: max(1px, 0.08em) !important;
+  text-underline-offset: 0.18em !important;
+}
+
+/* Fokus verstärkt: dicker, mit Abstand und Gegenkontur (sichtbar auf jeder Fläche). */
+:root[data-focus="strong"] :focus-visible {
+  outline: 4px solid var(--ncss-color-focus-ring, #0057d8) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 7px var(--ncss-color-bg, Canvas) !important;
 }

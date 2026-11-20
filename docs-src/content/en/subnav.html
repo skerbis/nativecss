@@ -1,0 +1,82 @@
+<!--DESC: Slim, sticky "On this page" bar below the top bar - jump links to the sections, current section highlighted automatically.-->
+<section class="ncss-stack">
+  <h1>Section Navigation</h1>
+  <p class="ncss-text-lg ncss-text-muted">For long pages with several sections - one-pagers, product pages, docs pages: a second, slim bar right below the main navigation. It sticks while scrolling, shows the sections in a single row (swipeable on narrow screens) and highlights the section currently in view. This page uses it itself - right below the top bar.</p>
+</section>
+
+<section class="ncss-stack" id="markup">
+  <h2 class="demo-section-title">Markup</h2>
+  <p>Place it right after the top bar as a sibling inside <code>&lt;body&gt;</code> (not inside <code>&lt;main&gt;</code>) - only then does it stick across the whole page. Targets are plain IDs.</p>
+  <pre><code class="language-html">&lt;header class="ncss-topbar"&gt;...&lt;/header&gt;
+&lt;nav class="ncss-subnav" aria-label="On this page" data-ncss-subnav&gt;
+  &lt;div class="ncss-subnav-inner"&gt;
+    &lt;span class="ncss-subnav-label" aria-hidden="true"&gt;On this page&lt;/span&gt;
+    &lt;ul class="ncss-subnav-list" role="list"&gt;
+      &lt;li&gt;&lt;a href="#rooms"&gt;Rooms&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#offers"&gt;Offers&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#request"&gt;Request&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+&lt;main&gt;
+  &lt;section id="rooms"&gt;&lt;h2&gt;Rooms&lt;/h2&gt;...&lt;/section&gt;
+  ...
+&lt;/main&gt;
+&lt;script src="ncss/js/subnav.js" defer&gt;&lt;/script&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="klassen">
+  <h2 class="demo-section-title">Classes &amp; attributes</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-subnav</code></td><td>Sticky "On this page" bar below the top bar, one row of jump links to the sections.</td></tr>
+        <tr><td><code>.ncss-subnav-inner</code></td><td>Inner frame at container width (same alignment as the page content).</td></tr>
+        <tr><td><code>.ncss-subnav-label</code></td><td>Visible caption before the links, hidden from screen readers (the nav carries aria-label).</td></tr>
+        <tr><td><code>.ncss-subnav-list</code></td><td>The link list: swipeable with soft edges, current link highlighted as a pill.</td></tr>
+        <tr><td><code>[data-ncss-sticky-header]</code></td><td>Shared sticky container for top bar + bar; the bar no longer sticks on its own inside it, <code>js/subnav.js</code> measures its height.</td></tr>
+        <tr><td><code>[data-ncss-subnav]</code></td><td>Enables <code>js/subnav.js</code>: sets <code>aria-current="location"</code> on the link of the section in view and keeps it scrolled into the bar.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="sticky-header">
+  <h2 class="demo-section-title">With your own header: one sticky unit</h2>
+  <p>If the bar sticks on its own below a top bar, its top offset must match the top bar's height exactly - when the header grows (logo, font size, 200 % zoom, mobile menu), the bar slides under it while scrolling. Robust: put the top bar AND the bar into ONE sticky container and mark it with <code>data-ncss-sticky-header</code>. Only the container sticks, both rows always move together, and <code>js/subnav.js</code> measures its height for the jump offset (<code>--ncss-scroll-offset</code>). This website uses exactly this pattern.</p>
+  <pre><code class="language-html">&lt;div class="site-head" data-ncss-sticky-header&gt;
+  &lt;header class="ncss-topbar"&gt;...&lt;/header&gt;
+  &lt;nav class="ncss-subnav" aria-label="On this page" data-ncss-subnav&gt;...&lt;/nav&gt;
+&lt;/div&gt;</code></pre>
+  <pre><code class="language-css">.site-head { position: sticky; inset-block-start: 0; z-index: var(--ncss-topbar-z); }
+.site-head &gt; .ncss-topbar { position: relative; } /* only the container sticks */</code></pre>
+</section>
+
+<section class="ncss-stack" id="verhalten">
+  <h2 class="demo-section-title">Behavior</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Offset:</strong> <code>:root</code> automatically gets <code>scroll-padding-block-start</code> = top bar + this bar - jumped-to headings land visibly below both bars, also for keyboard navigation and links from other pages.</li>
+    <li><strong>Current section:</strong> natively via <code>scroll-target-group</code> + <code>:target-current</code> (Chromium 140+, pure CSS); <code>js/subnav.js</code> adds <code>aria-current="location"</code> everywhere (IntersectionObserver) so screen readers know the state too. Without JS: plain jump links.</li>
+    <li><strong>Motion:</strong> smooth scrolling comes from <code>reset.css</code> and is off with <code>prefers-reduced-motion</code>.</li>
+    <li><strong>Mobile:</strong> the main bar collapses into the menu button, the section bar stays a single swipeable row.</li>
+    <li><strong>Forced colors / print:</strong> current link gets a system-colour outline; hidden in print.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="tokens">
+  <h2 class="demo-section-title">Parameters</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Token</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>--ncss-subnav-height</code></td><td>Height of the bar (default <code>2.75rem</code>), part of the jump offset.</td></tr>
+        <tr><td><code>--ncss-subnav-top</code></td><td>Distance from the top (default <code>--ncss-topbar-height</code>); <code>0</code> on pages without a sticky top bar.</td></tr>
+        <tr><td><code>--ncss-scroll-offset</code></td><td>Height of the sticky header area measured by <code>js/subnav.js</code> - basis for <code>scroll-padding</code> and your own sticky offsets.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted">Cherry-picking: <code>@import url("components/subnav.css") layer(components);</code> + optionally <code>js/subnav.js</code>; needs only <code>tokens.css</code>/<code>colors.css</code>.</p>
+</section>
+
+<!--INCLUDE: samples#subnav-live-->

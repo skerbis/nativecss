@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/assets/uikit.min.css">
+  <script src="/assets/uikit.min.js"></script>
+</head>
+<body>
+<nav class="uk-navbar-container" uk-navbar>
+  <div class="uk-navbar-left">
+    <a class="uk-navbar-item uk-logo" href="/">Firma</a>
+    <ul class="uk-navbar-nav">
+      <li class="uk-active"><a href="/">Start</a></li>
+      <li>
+        <a href="/leistungen">Leistungen</a>
+        <div class="uk-navbar-dropdown">
+          <ul class="uk-nav uk-navbar-dropdown-nav">
+            <li class="uk-active"><a href="/leistungen/web">Web</a></li>
+            <li><a href="/leistungen/print">Print</a></li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="uk-navbar-right">
+    <a class="uk-navbar-toggle uk-hidden@m" href="#mobile-nav" uk-toggle><span uk-navbar-toggle-icon></span></a>
+  </div>
+</nav>
+
+<div id="mobile-nav" uk-offcanvas="flip: true; overlay: true">
+  <div class="uk-offcanvas-bar">
+    <button class="uk-offcanvas-close" type="button" uk-close></button>
+    <ul class="uk-nav uk-nav-default">
+      <li class="uk-active"><a href="/">Start</a></li>
+      <li class="uk-nav-header">Bereich</li>
+      <li><a href="/kontakt"><span uk-icon="icon: mail"></span> Kontakt</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="uk-section uk-section-muted uk-section-small">
+  <div class="uk-container uk-container-small">
+    <h1 class="uk-heading-medium uk-text-center@m">Willkommen</h1>
+    <p class="uk-text-lead uk-margin-small-bottom">Einleitung</p>
+    <div class="uk-child-width-1-2@s uk-child-width-1-3@m uk-grid-small uk-grid-match" uk-grid>
+      <div>
+        <div class="uk-card uk-card-default uk-card-hover uk-card-body">
+          <span class="uk-card-badge uk-label uk-label-success">Neu</span>
+          <h3 class="uk-card-title">Karte</h3>
+          <p>Text</p>
+          <a class="uk-button uk-button-primary" href="#modal-info" uk-toggle>Mehr</a>
+        </div>
+      </div>
+    </div>
+    <div class="uk-grid-medium" uk-grid>
+      <div class="uk-width-2-3@m">Hauptspalte</div>
+      <div class="uk-width-1-3@m"><span uk-icon="home"></span></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-info" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header"><h2 class="uk-modal-title">Info</h2></div>
+    <div class="uk-modal-body"><p>Inhalt</p></div>
+    <div class="uk-modal-footer uk-text-right">
+      <button class="uk-button uk-button-default uk-modal-close" type="button">Abbrechen</button>
+      <button class="uk-button uk-button-primary" type="button">OK</button>
+    </div>
+  </div>
+</div>
+
+<ul uk-accordion>
+  <li class="uk-open"><a class="uk-accordion-title" href>Frage 1</a><div class="uk-accordion-content"><p>Antwort 1</p></div></li>
+  <li><a class="uk-accordion-title" href>Frage 2</a><div class="uk-accordion-content"><p>Antwort 2</p></div></li>
+</ul>
+
+<div class="uk-child-width-1-3 uk-grid-small" uk-grid uk-lightbox="animation: slide">
+  <div><a href="gross-1.jpg" data-caption="Bild 1"><img src="klein-1.jpg" alt="Bild 1" uk-img></a></div>
+  <div><a href="gross-2.jpg" data-caption="Bild 2"><img data-src="klein-2.jpg" alt="Bild 2" uk-img></a></div>
+</div>
+
+<ul class="uk-subnav uk-subnav-pill" uk-switcher>
+  <li class="uk-active"><a href="#">Tab A</a></li>
+  <li><a href="#">Tab B</a></li>
+</ul>
+<ul class="uk-switcher"><li>A</li><li>B</li></ul>
+
+<form class="uk-form-stacked">
+  <div class="uk-margin">
+    <label class="uk-form-label" for="email">E-Mail</label>
+    <div class="uk-form-controls"><input class="uk-input uk-form-danger" id="email" type="email"></div>
+  </div>
+</form>
+
+<ul class="uk-breadcrumb">
+  <li><a href="/">Start</a></li>
+  <li><span>Seite</span></li>
+</ul>
+
+<div class="uk-alert-warning" uk-alert><a class="uk-alert-close" uk-close></a><p>Achtung</p></div>
+<div uk-scrollspy="cls: uk-animation-slide-bottom; repeat: false">Reveal</div>
+<div uk-slider><ul class="uk-slider-items"><li>1</li></ul></div>
+<script>
+  UIkit.notification('Gespeichert', { status: 'success' });
+  UIkit.modal('#modal-info').show();
+</script>
+</body>
+</html>

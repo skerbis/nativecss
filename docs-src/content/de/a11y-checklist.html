@@ -1,0 +1,99 @@
+<!--DESC: Die wichtigsten Kriterien der WCAG 2.2 auf Stufe A und AA - was NativeCSS jeweils mitbringt und was du für deine Seite selbst tun musst.-->
+<section class="ncss-stack">
+  <h1>Checkliste WCAG 2.2 AA</h1>
+  <p class="ncss-text-lg ncss-text-muted">Ein CSS-Framework kann keine Seite "barrierefrei machen". Es kann gute Voraussetzungen schaffen - der größere Teil der Kriterien hängt an Inhalt, Texten und Markup, also an dir. Diese Liste zeigt ehrlich, wo die Grenze verläuft.</p>
+</section>
+
+<section class="ncss-stack" id="hinweise">
+  <h2 class="demo-section-title">So liest du die Tabellen</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li>Die Auswahl umfasst die Kriterien, die bei typischen Websites am häufigsten eine Rolle spielen - nicht alle 55 Kriterien der Stufen A und AA. Die vollständige Liste steht in den <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a> (englisch), eine verständliche Erklärung in <a href="https://www.w3.org/WAI/WCAG22/quickref/">How to Meet WCAG</a>.</li>
+    <li>"Was NativeCSS mitbringt" gilt nur, wenn du die Komponenten so einsetzt wie im Handbuch beschrieben. Eigene Farben, eigenes CSS und eigene Scripts musst du selbst prüfen.</li>
+    <li>Ob deine Seite ein Kriterium erfüllt, zeigt nur ein Test der fertigen Seite - siehe <a href="a11y-testing.html">Testen</a>.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="wahrnehmbar">
+  <h2 class="demo-section-title">1 Wahrnehmbar</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Kriterium</th><th scope="col">Was NativeCSS mitbringt</th><th scope="col">Was du selbst tun musst</th></tr></thead>
+      <tbody>
+        <tr><td>1.1.1 Nicht-Text-Inhalt (A)</td><td><code>.ncss-visually-hidden</code> für Text, der nur für Screenreader gedacht ist; Player-Buttons haben Namen; die Lightbox übernimmt <code>alt</code>/<code>data-caption</code></td><td>Sinnvolle <code>alt</code>-Texte schreiben, dekorative Bilder mit <code>alt=""</code>, Icon-Buttons beschriften, Diagrammdaten als Text anbieten (<a href="a11y-media.html#alternativtext">Medien</a>)</td></tr>
+        <tr><td>1.2.1-1.2.5 Zeitbasierte Medien (A/AA)</td><td><code>&lt;ncss-video-player&gt;</code> liest <code>&lt;track kind="captions|subtitles"&gt;</code>, CC-Schalter, Sprachwahl; Kapitel-Spuren; Playlist für eine Fassung mit Audiodeskription</td><td>Untertitel, Transkripte und ggf. Audiodeskription erstellen - das ist Inhalt, den kein Framework liefert</td></tr>
+        <tr><td>1.3.1 Info und Beziehungen (A)</td><td>Native Elemente zuerst (<code>dialog</code>, <code>details</code>, <code>fieldset</code>, Tabellen mit <code>th</code>); Listen-Stile setzen auf <code>role="list"</code>, damit die Semantik erhalten bleibt</td><td>Überschriften-Hierarchie, Landmarken, Labels, <code>th scope</code>, Listen als Listen auszeichnen. Ausnahme kennen: <code>.ncss-table-stacked</code> bricht Tabellensemantik auf (<a href="known-limitations.html">Bekannte Grenzen</a>)</td></tr>
+        <tr><td>1.3.5 Eingabezweck bestimmen (AA)</td><td>-</td><td>Passende <code>autocomplete</code>-Werte an Feldern mit persönlichen Daten (<a href="a11y-forms.html#autocomplete">Formulare</a>)</td></tr>
+        <tr><td>1.4.1 Benutzung von Farbe (A)</td><td>Links im Fließtext bleiben unterstrichen; Fehlerzustand zeigt einen Rahmen, Toast-Status hat neben der Farbe einen Text</td><td>Bedeutung nie nur über Farbe: Fehlertexte schreiben, Pflichtfelder erklären, Diagramme zusätzlich beschriften</td></tr>
+        <tr><td>1.4.2 Audio-Steuerelement (A)</td><td>Player starten nie von selbst; es spielt immer nur ein Player gleichzeitig</td><td>Kein Autoplay mit Ton, Videos mit <code>autoplay</code> immer <code>muted</code></td></tr>
+        <tr><td>1.4.3 Kontrast Minimum (AA)</td><td>Token-Palette mit geprüften <code>-on-soft</code>-Textfarben gegen ihre eigene Fläche, Hell- und Dunkelmodus</td><td>Eigene Farben, Theme-Anpassungen, Text auf Bildern und Videos prüfen (4,5:1, große Schrift 3:1) - in beiden Modi</td></tr>
+        <tr><td>1.4.4 Textgröße ändern (AA)</td><td>Fließende Schrift-Tokens mit <code>rem</code>-Anteil, einheitenlose Zeilenhöhen, kein Zoom-Verbot</td><td>Eigene Größen in <code>rem</code>, keine festen Höhen für Text, Viewport-Meta-Tag ohne <code>maximum-scale</code></td></tr>
+        <tr><td>1.4.10 Umfließen / Reflow (AA)</td><td><code>.ncss-grid</code> bricht ohne Media Query um, Container Queries, <code>max-width: 100%</code> für Medien, Wortumbruch, <code>.ncss-table-scroll</code></td><td>Bei 320 CSS-Pixeln prüfen, besonders eigene Layouts, Navigationen und eingebettete Inhalte (<a href="a11y-zoom.html#reflow">Zoom</a>)</td></tr>
+        <tr><td>1.4.11 Nicht-Text-Kontrast (AA)</td><td>Fokusrahmen (2&nbsp;px, eigene Fokusfarbe); native Checkboxen und Radios</td><td>Rahmen von Feldern und Buttons, Icons und Diagrammlinien gegen ihren Hintergrund prüfen (3:1) - vor allem bei eigenen Theme-Farben</td></tr>
+        <tr><td>1.4.12 Textabstand (AA)</td><td>Boxen ohne feste Höhen, Icon-Buttons über <code>1lh</code>, Zeilenhöhe 1,6</td><td>Mit erhöhten Abständen testen; <code>.ncss-clamp-lines</code> nur mit Weg zum vollständigen Text einsetzen</td></tr>
+        <tr><td>1.4.13 Eingeblendeter Inhalt (AA)</td><td><code>js/hovercard.js</code> schließt mit <kbd class="ncss-kbd">Esc</kbd>; Menüs und Popover schließen mit <kbd class="ncss-kbd">Esc</kbd></td><td>Eigene Tooltips: per <kbd class="ncss-kbd">Esc</kbd> schließbar, mit dem Zeiger erreichbar, bleiben sichtbar, solange sie gebraucht werden</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="bedienbar">
+  <h2 class="demo-section-title">2 Bedienbar</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Kriterium</th><th scope="col">Was NativeCSS mitbringt</th><th scope="col">Was du selbst tun musst</th></tr></thead>
+      <tbody>
+        <tr><td>2.1.1 Tastatur (A)</td><td>Native Elemente; die Script-Komponenten (Player, Menüs, Live-Suche, Combobox, Lightbox) sind per Tastatur bedienbar (<a href="a11y-keyboard.html">Tastatur</a>)</td><td>Keine <code>div</code>-Buttons; eigene Scripts mit Tastatur testen; eingebettete Fremdinhalte prüfen</td></tr>
+        <tr><td>2.1.2 Keine Tastaturfalle (A)</td><td>Native <code>&lt;dialog&gt;</code> und <code>popover</code> mit <kbd class="ncss-kbd">Esc</kbd>; die Kopie im Laufband ist <code>inert</code></td><td>Eigene Overlays und Embeds (Karten, Chat-Widgets) prüfen</td></tr>
+        <tr><td>2.2.1 Zeiteinteilung anpassbar (A)</td><td>Toasts pausieren ihren Timer bei Zeiger oder Fokus in der Region und im Hintergrund-Tab; <code>timeout: 0</code> für dauerhafte Meldungen</td><td>Wichtige Meldungen nicht automatisch verschwinden lassen; Sitzungs-Timeouts ankündigen und verlängerbar machen</td></tr>
+        <tr><td>2.2.2 Pausieren, Beenden, Ausblenden (A)</td><td>Laufband: Pause-Schalter per <code>js/marquee.js</code>, Halt bei Fokus; Hintergrundvideo: Pause-Schalter per <code>js/video-bg.js</code></td><td>Den Pause-Button beim Laufband selbst ins Markup setzen; für Hero-Videos mit nur <code>hero-video-motion.js</code> einen Pause-Schalter ergänzen; eigene Karussells anhaltbar machen</td></tr>
+        <tr><td>2.3.3 Animation durch Interaktionen (AAA - nicht Teil von AA)</td><td><code>prefers-reduced-motion: reduce</code> setzt Animationen und Übergänge global auf nahezu null; Hintergrundvideos laden dann nicht</td><td>Gehört nicht zu AA, ist aber für Menschen mit vestibulären Störungen wichtig: eigene JS-Animationen ebenfalls abschaltbar machen</td></tr>
+        <tr><td>2.4.1 Blöcke umgehen (A)</td><td><code>.ncss-skip-link</code>, versteckt per <code>translate</code> (bleibt auch bei Textzoom außer Sicht)</td><td>Skip-Link als erstes Element setzen, <code>&lt;main&gt;</code> mit der ID <code>main</code> als Ziel, Landmarken verwenden</td></tr>
+        <tr><td>2.4.2 Seite mit Titel (A)</td><td>-</td><td>Jede Seite mit eindeutigem <code>&lt;title&gt;</code>; nach Formularfehlern "Fehler:" voranstellen</td></tr>
+        <tr><td>2.4.3 Fokus-Reihenfolge (A)</td><td>Native Dialoge setzen den Fokus hinein und zurück; Player-Menüs geben den Fokus beim Schließen mit <kbd class="ncss-kbd">Esc</kbd> an ihren Button zurück</td><td>DOM-Reihenfolge = Lesereihenfolge; kein positives <code>tabindex</code>; mit CSS umsortierte Layouts (<code>order</code>, Grid-Platzierung) prüfen</td></tr>
+        <tr><td>2.4.4 Linkzweck im Kontext (A)</td><td>-</td><td>Linktexte, die das Ziel nennen - kein "hier" oder "mehr" ohne Zusammenhang</td></tr>
+        <tr><td>2.4.6 Überschriften und Beschriftungen (AA)</td><td>-</td><td>Aussagekräftige Überschriften und Labels formulieren</td></tr>
+        <tr><td>2.4.7 Fokus sichtbar (AA)</td><td>Globaler <code>:focus-visible</code>-Rahmen in <code>reset.css</code>, nie an Hover gekoppelt</td><td>Den Rahmen nicht per <code>outline: none</code> entfernen; bei eigenen Farben auf Sichtbarkeit achten</td></tr>
+        <tr><td>2.4.11 Fokus nicht verdeckt (AA)</td><td>Fokus im Video-Player holt die ausgeblendete Leiste zurück</td><td>Bei festsitzenden Kopf- und Fußleisten <code>scroll-padding-block</code> setzen; Cookie-Banner dürfen den Fokus nicht verdecken</td></tr>
+        <tr><td>2.5.3 Beschriftung im Namen (A)</td><td>-</td><td>Der zugängliche Name enthält den sichtbaren Text (kein abweichendes <code>aria-label</code> auf Buttons mit Text)</td></tr>
+        <tr><td>2.5.7 Ziehbewegungen (AA)</td><td><code>&lt;ncss-compare&gt;</code> steuert über ein <code>&lt;input type="range"&gt;</code> (auch per Klick und Tastatur); <code>&lt;ncss-dropzone&gt;</code> basiert auf einem echten <code>&lt;input type="file"&gt;</code></td><td>Eigene Drag-and-Drop-Funktionen (Sortieren, Schieberegler) mit einer Alternative ohne Ziehen anbieten</td></tr>
+        <tr><td>2.5.8 Zielgröße Minimum (AA)</td><td><code>.ncss-btn</code> und <code>.ncss-btn--sm</code> deutlich über 24&nbsp;px; Labels vergrößern die Klickfläche von Checkboxen</td><td>Eigene kleine Icon-Links mit genug Größe oder Abstand (<a href="a11y-zoom.html#zielgroesse">Zielgröße</a>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="verstaendlich">
+  <h2 class="demo-section-title">3 Verständlich</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Kriterium</th><th scope="col">Was NativeCSS mitbringt</th><th scope="col">Was du selbst tun musst</th></tr></thead>
+      <tbody>
+        <tr><td>3.1.1 Sprache der Seite (A)</td><td>Texte der Script-Komponenten (Player, Live-Suche, Lightbox) folgen <code>&lt;html lang&gt;</code> (Deutsch/Englisch)</td><td><code>&lt;html lang="de"&gt;</code> setzen</td></tr>
+        <tr><td>3.1.2 Sprache von Teilen (AA)</td><td>-</td><td>Fremdsprachige Abschnitte mit <code>lang</code> auszeichnen</td></tr>
+        <tr><td>3.2.1 / 3.2.2 Bei Fokus / Bei Eingabe (A)</td><td>Keine ncss-Komponente wechselt beim Fokussieren oder Auswählen die Seite; die Live-Suche zeigt nur eine Trefferliste</td><td>Keine automatische Weiterleitung beim Ändern eines <code>&lt;select&gt;</code>; Absenden immer per Button</td></tr>
+        <tr><td>3.2.3 / 3.2.4 Konsistente Navigation / Erkennung (AA)</td><td>-</td><td>Navigation und wiederkehrende Elemente überall gleich anordnen und benennen</td></tr>
+        <tr><td>3.2.6 Konsistente Hilfe (A)</td><td>-</td><td>Kontakt- und Hilfe-Links auf allen Seiten an derselben Stelle</td></tr>
+        <tr><td>3.3.1 Fehlererkennung (A)</td><td><code>:user-invalid</code>-Rahmen; <code>.ncss-field-error</code> für den Fehlertext</td><td>Fehlertext schreiben und per <code>aria-describedby</code> verknüpfen; <code>aria-invalid</code> setzen (<a href="a11y-forms.html#validierung">Formulare</a>)</td></tr>
+        <tr><td>3.3.2 Beschriftungen oder Anweisungen (A)</td><td><code>.ncss-label</code>, <code>.ncss-label--required</code>, <code>.ncss-field-hint</code></td><td>Sichtbare Labels, <code>required</code>, Formathinweise vor der Eingabe, das Sternchen erklären</td></tr>
+        <tr><td>3.3.3 Fehlerempfehlung (AA)</td><td>-</td><td>Fehlermeldungen mit Lösungsvorschlag formulieren</td></tr>
+        <tr><td>3.3.4 Fehlervermeidung (AA)</td><td>-</td><td>Bei rechtlich oder finanziell verbindlichen Eingaben: prüfen, bestätigen oder rückgängig machen lassen</td></tr>
+        <tr><td>3.3.7 Redundante Eingabe (A)</td><td>-</td><td>Bereits gemachte Angaben im Ablauf vorausfüllen oder zur Auswahl anbieten; Eingaben nach Fehlern stehen lassen</td></tr>
+        <tr><td>3.3.8 Barrierefreie Authentifizierung (AA)</td><td>Native Felder - Passwort-Manager und Einfügen funktionieren, solange du sie nicht blockierst</td><td>Keine kognitiven Tests (Rätsel-CAPTCHA, Abtippen) ohne Alternative; <code>autocomplete="current-password"</code>, <code>one-time-code</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="robust">
+  <h2 class="demo-section-title">4 Robust</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Kriterium</th><th scope="col">Was NativeCSS mitbringt</th><th scope="col">Was du selbst tun musst</th></tr></thead>
+      <tbody>
+        <tr><td>4.1.2 Name, Rolle, Wert (A)</td><td>Native Elemente; Script-Komponenten setzen <code>aria-expanded</code>, <code>aria-pressed</code>, <code>aria-checked</code>, <code>aria-controls</code>, <code>aria-activedescendant</code>; <code>role="switch"</code> für <code>.ncss-switch</code> dokumentiert</td><td>Eigene Widgets nach den <a href="https://www.w3.org/WAI/ARIA/apg/">ARIA Authoring Practices</a> bauen; <code>role="switch"</code> und Labels im Markup setzen</td></tr>
+        <tr><td>4.1.3 Statusmeldungen (AA)</td><td>Toast-Region mit <code>aria-live="polite"</code>; Trefferzahl der Live-Suche per <code>role="status"</code>; Player sagen Zustandswechsel an</td><td>Eigene Statusmeldungen ("Gespeichert", "3 Ergebnisse") in eine Live-Region schreiben, ohne den Fokus zu verschieben</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>4.1.1 (Syntaxanalyse) ist in WCAG 2.2 entfallen. Valides HTML ohne doppelte IDs bleibt trotzdem die Grundlage dafür, dass Labels, <code>aria-describedby</code> und Sprungmarken funktionieren.</p>
+</section>

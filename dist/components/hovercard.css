@@ -1,0 +1,146 @@
+/**
+ * ncss - <ncss-hovercard>: Vorschaukarte (Profil, Link-Vorschau), die beim Überfahren oder
+ * Fokussieren eines Links erscheint (Layer "components"). Die Karte ist ein [popover]
+ * (Top Layer, kein z-index-Kampf), positioniert per CSS Anchor Positioning unter dem Link
+ * (klappt bei Platzmangel automatisch nach oben/zur anderen Seite).
+ *
+ * Markup - Karte DIREKT nach dem Link, damit Tab ihre Links als nächstes erreicht. In
+ * Fließtext (<p>) ein <span> als Karte nehmen (kein <div> in <p>), und KEINEN Zeilenumbruch
+ * zwischen </a>, Karte und </ncss-hovercard> - der Leerraum bliebe sonst als sichtbares
+ * Leerzeichen vor dem folgenden Satzzeichen stehen (die Karte selbst liegt im Top Layer):
+ * <ncss-hovercard>
+ *   <a href="/team/ada" interestfor="hc-ada">Ada Lovelace</a><span id="hc-ada" class="ncss-hovercard" popover="hint">
+ *     <span class="ncss-hovercard-header">
+ *       <span class="ncss-hovercard-avatar" aria-hidden="true">AL</span>
+ *       <span><strong class="ncss-hovercard-title">Ada Lovelace</strong>
+ *             <span class="ncss-hovercard-meta">Mathematikerin</span></span>
+ *     </span>
+ *     <span class="ncss-hovercard-text">Schrieb den ersten Algorithmus ...</span>
+ *   </span></ncss-hovercard>
+ * <script src="js/hovercard.js" defer></script>
+ *
+ * Drei Pfade:
+ * 1. Nativ, ganz ohne JS (Chromium mit interestfor): Browser übernimmt Hover, Fokus,
+ *    Verzögerung (interest-delay unten), Esc und Long-Press auf Touch. Der Link wird dabei
+ *    automatisch zum Anker der Karte (implizites Anchoring), kein anchor-name nötig.
+ * 2. js/hovercard.js, wo interestfor fehlt: Hover/Tastatur-Fokus mit Verzögerung, Karte
+ *    bleibt offen, solange Zeiger oder Fokus darin sind (WCAG 1.4.13), Esc schließt.
+ *    Positionierung per Anchor Positioning (Anker-Namen setzt das Script) - ohne Anchor
+ *    Positioning rechnet das Script die Position selbst aus.
+ * 3. Weder JS noch interestfor: Karte bleibt verborgen, der Link funktioniert normal.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base). Optional
+ * js/hovercard.js - eigenständig, nutzt keine andere ncss-Datei.
+ *
+ * Tokens: --ncss-hovercard-width (Default 20rem), --ncss-hovercard-offset (Abstand zum
+ * Link, Default --ncss-space-2xs).
+ */
+ncss-hovercard {
+  display: inline;
+}
+
+/* Verzögerung für den nativen interestfor-Pfad: kurz warten, bevor die Karte aufgeht
+   (kein Flackern beim bloßen Überstreichen), etwas weniger beim Verlassen. */
+ncss-hovercard > [interestfor] {
+  interest-delay: 400ms 250ms;
+}
+
+.ncss-hovercard {
+  --ncss-hovercard-width: 20rem;
+  --ncss-hovercard-offset: var(--ncss-space-2xs);
+  width: min(var(--ncss-hovercard-width), calc(100vw - 2 * var(--ncss-space-xs)));
+  padding: var(--ncss-space-sm);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  box-shadow: var(--ncss-shadow-lg);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-normal);
+  line-height: 1.5;
+  text-align: start;
+}
+.ncss-hovercard:not([popover]) {
+  display: none;
+}
+.ncss-hovercard[popover] {
+  position: fixed;
+  inset: auto;
+  margin: var(--ncss-hovercard-offset) 0;
+  position-area: bottom span-right;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  overflow: visible;
+  opacity: 0;
+  translate: 0 -0.35rem;
+  scale: 0.97;
+  transition:
+    opacity var(--ncss-motion-duration) var(--ncss-motion-easing),
+    translate var(--ncss-motion-duration) var(--ncss-motion-easing),
+    scale var(--ncss-motion-duration) var(--ncss-motion-easing),
+    display var(--ncss-motion-duration) allow-discrete,
+    overlay var(--ncss-motion-duration) allow-discrete;
+}
+.ncss-hovercard[popover]:popover-open {
+  display: block;
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+}
+@starting-style {
+  .ncss-hovercard[popover]:popover-open {
+    opacity: 0;
+    translate: 0 -0.35rem;
+    scale: 0.97;
+  }
+}
+/* Ohne Anchor Positioning setzt js/hovercard.js top/left selbst - dafür den Abstand aus
+   margin herausnehmen (das Script rechnet ihn ein). */
+.ncss-hovercard[data-ncss-hovercard-manual] {
+  margin: 0;
+}
+
+.ncss-hovercard-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+}
+.ncss-hovercard-header + *,
+.ncss-hovercard-text {
+  display: block;
+  margin-block-start: var(--ncss-space-xs);
+}
+.ncss-hovercard-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: var(--ncss-color-brand-100);
+  color: var(--ncss-color-brand-on-soft);
+  font-size: var(--ncss-font-size-md);
+  font-weight: var(--ncss-font-weight-bold);
+  object-fit: cover;
+}
+.ncss-hovercard-title {
+  display: block;
+  font-size: var(--ncss-font-size-base);
+  font-weight: var(--ncss-font-weight-bold);
+  line-height: var(--ncss-line-height-tight);
+}
+.ncss-hovercard-meta {
+  display: block;
+  color: var(--ncss-color-text-muted);
+}
+
+/* Auslöser, solange seine Karte offen ist */
+ncss-hovercard:has(> .ncss-hovercard:popover-open) > :first-child {
+  text-decoration-thickness: 2px;
+}
+
+@media (forced-colors: active) {
+  .ncss-hovercard {
+    border-color: CanvasText;
+  }
+}

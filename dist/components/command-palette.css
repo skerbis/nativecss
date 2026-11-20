@@ -1,0 +1,351 @@
+/**
+ * ncss - <ncss-command-palette>: Befehlspalette (Layer "components") - ein modaler
+ * <dialog> mit Suchfeld und gefilterter Befehlsliste, optional per ⌘K / Strg+K. Muster:
+ * WAI-ARIA Combobox + Listbox wie js/livesearch.js (Fokus bleibt im Eingabefeld,
+ * aria-activedescendant zeigt auf die gewählte Option, gleiche Auswahl-Optik) - nur dass
+ * hier die VORHANDENEN Einträge im Markup gefiltert werden, kein Server.
+ *
+ * Markup:
+ * <button type="button" command="show-modal" commandfor="cmd">Befehle <kbd>Strg K</kbd></button>
+ * <ncss-command-palette shortcut="k">
+ *   <dialog id="cmd" class="ncss-command" aria-label="Befehlspalette" closedby="any">
+ *     <div class="ncss-command-search">
+ *       <input class="ncss-command-input" type="text" aria-label="Befehl suchen"
+ *              placeholder="Befehl oder Seite suchen …">
+ *     </div>
+ *     <div class="ncss-command-list" aria-label="Befehle">
+ *       <div class="ncss-command-group">
+ *         <p class="ncss-command-group-label">Seiten</p>
+ *         <a class="ncss-command-item" href="/" data-keywords="start home">Startseite</a>
+ *         <button class="ncss-command-item" type="button">Dunkles Design</button>
+ *       </div>
+ *     </div>
+ *     <p class="ncss-command-empty" hidden>Keine Treffer</p>
+ *     <div class="ncss-command-footer"><span><kbd>↑</kbd><kbd>↓</kbd> wählen</span> ...</div>
+ *   </dialog>
+ * </ncss-command-palette>
+ * <script src="js/command-palette.js" defer></script>
+ *
+ * Ohne JS (Element nicht :defined): der Dialog öffnet trotzdem über command/commandfor
+ * (nativ, bzw. js/command-fallback.js), zeigt alle Einträge als normale, per Tab
+ * erreichbare Links/Buttons - Suchfeld und Tasten-Hinweise bleiben ausgeblendet, weil sie
+ * ohne Script nichts tun würden.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base). js/command-
+ * palette.js öffnet den Dialog bei fehlendem command/commandfor selbst - js/command-
+ * fallback.js ist NICHT nötig (schadet aber auch nicht).
+ *
+ * Suchmodus (js/command-palette.js, Attribut src="index.json"): Treffer werden zur
+ * Laufzeit gerendert - .ncss-command-results (Container vor den Markup-Gruppen),
+ * .ncss-command-item-body mit -title und -snippet (zweizeiliger Eintrag), Suchbegriffe
+ * als <mark>.
+ *
+ * Tokens: --ncss-command-width (Default 40rem), --ncss-command-height (Listenhöhe,
+ * Default min(26rem, 60svh)), --ncss-command-offset (Abstand von oben, Default 12svh).
+ */
+ncss-command-palette {
+  display: contents;
+}
+
+.ncss-command {
+  --ncss-command-width: 40rem;
+  --ncss-command-height: min(26rem, 60vh);
+  --ncss-command-offset: 12vh;
+  /* Position UNBEDINGT deklariert, nicht an :modal gekoppelt - :modal endet sofort bei
+     close(), die Ausblend-Transition liefe sonst ohne Positionierung (siehe modal.css). */
+  position: fixed;
+  inset: var(--ncss-command-offset) 0 auto;
+  flex-direction: column;
+  width: min(var(--ncss-command-width), calc(100% - 2 * var(--ncss-space-sm)));
+  max-width: none;
+  max-height: calc(100vh - var(--ncss-command-offset) - var(--ncss-space-sm));
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  box-shadow: var(--ncss-shadow-lg);
+  opacity: 0;
+  scale: 0.97;
+  translate: 0 -0.5rem;
+  transition:
+    opacity var(--ncss-motion-duration) var(--ncss-motion-easing),
+    scale var(--ncss-motion-duration) var(--ncss-motion-easing),
+    translate var(--ncss-motion-duration) var(--ncss-motion-easing),
+    display var(--ncss-motion-duration) allow-discrete,
+    overlay var(--ncss-motion-duration) allow-discrete;
+
+  /* display:flex NUR im offenen Zustand - eine unbedingte display-Deklaration würde das
+     UA-"display:none" des geschlossenen <dialog> überschreiben (siehe modal.css). */
+  &[open] {
+    display: flex;
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+
+  &::backdrop {
+    background-color: var(--ncss-color-overlay);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    transition:
+      opacity var(--ncss-motion-duration) var(--ncss-motion-easing),
+      display var(--ncss-motion-duration) allow-discrete,
+      overlay var(--ncss-motion-duration) allow-discrete;
+  }
+  &[open]::backdrop {
+    opacity: 1;
+  }
+}
+@supports (height: 1svh) {
+  .ncss-command {
+    --ncss-command-height: min(26rem, 60svh);
+    --ncss-command-offset: 12svh;
+    max-height: calc(100svh - var(--ncss-command-offset) - var(--ncss-space-sm));
+  }
+}
+@starting-style {
+  .ncss-command[open] {
+    opacity: 0;
+    scale: 0.97;
+    translate: 0 -0.5rem;
+  }
+  .ncss-command[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Suchzeile: Lupe als eigene Maske (keine Abhängigkeit von helpers/icons.css) */
+.ncss-command-search {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  padding-inline: var(--ncss-space-sm);
+  border-block-end: var(--ncss-border-width) solid var(--ncss-color-border);
+
+  &::before {
+    content: "";
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    background-color: var(--ncss-color-text-muted);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M20 20l-5.2-5.2'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M20 20l-5.2-5.2'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  /* Das Feld hat keinen eigenen Ring - die ganze Zeile zeigt den Fokus (Unterstrich in
+     Fokusfarbe), sonst klebte der Ring eng um ein rahmenloses Feld. */
+  &:has(.ncss-command-input:focus-visible) {
+    box-shadow: inset 0 calc(-1 * var(--ncss-focus-ring-width)) 0 var(--ncss-color-focus-ring);
+  }
+}
+ncss-command-palette:not(:defined) .ncss-command-search,
+ncss-command-palette:not(:defined) .ncss-command-footer {
+  display: none;
+}
+
+.ncss-command-input {
+  flex: 1;
+  min-width: 0;
+  height: 3.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ncss-color-text);
+  font: inherit;
+  font-size: var(--ncss-font-size-md);
+  appearance: none;
+
+  &:focus-visible {
+    outline: none;
+  }
+  &::placeholder {
+    color: var(--ncss-color-text-muted);
+  }
+}
+
+.ncss-command-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: var(--ncss-command-height);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--ncss-space-2xs);
+  scroll-padding-block: var(--ncss-space-2xs);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.ncss-command-group {
+  & + & {
+    margin-block-start: var(--ncss-space-2xs);
+  }
+  &[hidden] {
+    display: none;
+  }
+}
+
+.ncss-command-group-label {
+  margin: 0;
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs) var(--ncss-space-3xs);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  letter-spacing: var(--ncss-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ncss-color-text-muted);
+}
+
+.ncss-command-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: var(--ncss-space-3xs) var(--ncss-space-xs);
+  border: 0;
+  border-radius: var(--ncss-radius-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  scroll-margin-block: var(--ncss-space-2xs);
+
+  &[hidden] {
+    display: none;
+  }
+  /* Per Tastatur gewählt (aria-selected, Fokus bleibt im Feld) - gleiche Optik wie
+     .ncss-livesearch-option */
+  &[aria-selected="true"] {
+    background-color: var(--ncss-color-bg-subtle);
+    box-shadow: inset 3px 0 0 var(--ncss-color-brand);
+  }
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+  &:active {
+    background-color: var(--ncss-color-brand-100);
+  }
+}
+
+.ncss-command-item-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-bg-subtle);
+  color: var(--ncss-color-text-muted);
+
+  [aria-selected="true"] > & {
+    background-color: var(--ncss-color-brand);
+    color: var(--ncss-color-brand-contrast);
+  }
+}
+
+/* Suchmodus: Titel + kurzer Textauszug untereinander, Hinweis (z.B. Seite) rechts. */
+.ncss-command-results[hidden] {
+  display: none;
+}
+.ncss-command-item-body {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+  padding-block: var(--ncss-space-3xs);
+}
+.ncss-command-item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ncss-command-item-snippet {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-command-item mark {
+  padding: 0 0.05em;
+  border-radius: 0.15em;
+  background-color: var(--ncss-color-warning-100);
+  color: inherit;
+}
+
+.ncss-command-item-hint {
+  flex: none;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-inline-start: auto;
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+
+.ncss-command-empty {
+  margin: 0;
+  padding: var(--ncss-space-lg) var(--ncss-space-sm);
+  text-align: center;
+  color: var(--ncss-color-text-muted);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.ncss-command-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs) var(--ncss-space-sm);
+  padding: var(--ncss-space-2xs) var(--ncss-space-sm);
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+
+/* Live-Region für die Trefferzahl - eigene Klasse statt .ncss-visually-hidden (helpers/
+   a11y.css), damit die Komponente allein lauffähig bleibt. */
+.ncss-command-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ncss-command-item:hover:not(:active) {
+    background-color: var(--ncss-color-bg-subtle);
+  }
+}
+
+@media (forced-colors: active) {
+  .ncss-command {
+    border-color: CanvasText;
+  }
+  .ncss-command-search::before {
+    background-color: CanvasText;
+  }
+  .ncss-command-item mark {
+    forced-color-adjust: none;
+    background-color: Mark;
+    color: MarkText;
+  }
+  .ncss-command-item[aria-selected="true"] {
+    forced-color-adjust: none;
+    color: HighlightText;
+    background-color: Highlight;
+    box-shadow: none;
+  }
+}

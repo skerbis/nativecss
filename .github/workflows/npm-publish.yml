@@ -1,0 +1,67 @@
+name: Release (npm + GitHub-Release mit ZIP)
+
+# Veröffentlicht NativeCSS bei npm, sobald ein Versions-Tag gepusht wird:
+#   git tag v1.1.0 && git push origin v1.1.0
+# Anmeldung bei npm per "Trusted Publishing" (OIDC) - KEIN Token, kein Secret.
+# Voraussetzung (einmalig): auf npmjs.com unter Paket "@skerbis/nativecss" → Settings → Trusted Publisher
+#   GitHub Actions · Owner: skerbis · Repository: nativecss · Workflow: npm-publish.yml
+# (npm schränkt Tokens, die 2FA umgehen, ab Jan 2027 für direktes Veröffentlichen ein.)
+# Das Paket enthält nur dist/, LICENSE, README.md, CHANGELOG.md (siehe "files" in package.json) -
+# kein Build-Schritt, keine Abhängigkeiten.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write   # GitHub-Release anlegen
+  id-token: write   # OIDC-Anmeldung bei npm (Trusted Publishing) + Provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: npm aktualisieren (Trusted Publishing braucht npm >= 11.5.1)
+        run: npm install -g npm@latest
+
+      - name: Tag passt zur Version in package.json
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PKG" ]; then
+            echo "Tag v$TAG passt nicht zu package.json ($PKG)." >&2
+            exit 1
+          fi
+
+      - name: Paketinhalt prüfen
+        run: npm pack --dry-run
+
+      - name: Bei npm veröffentlichen
+        # Provenance (Herkunftsnachweis) erzeugt npm bei Trusted Publishing automatisch
+        run: npm publish --access public
+
+      - name: GitHub-Release mit Changelog-Abschnitt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[?" v "\\]?" { on = 1; next }
+            on && /^## / { exit }
+            on { print }
+          ' CHANGELOG.md > release-notes.md
+          # Schlankes Download-Paket: nur das, was ein Projekt braucht (kein Doku-/Demo-Ballast)
+          mkdir -p "nativecss-$VERSION"
+          cp -R dist LICENSE README.md CHANGELOG.md "nativecss-$VERSION/"
+          zip -qr "nativecss-$VERSION.zip" "nativecss-$VERSION"
+          gh release create "$GITHUB_REF_NAME" "nativecss-$VERSION.zip" \
+            --title "NativeCSS $VERSION" --notes-file release-notes.md

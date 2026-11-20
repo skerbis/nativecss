@@ -1,0 +1,32 @@
+<!--DESC: Click an element and see at once: cleaned-up HTML, an explanation of every ncss class, its defining file, its script and the cherry-pick imports.-->
+<section class="ncss-stack">
+  <h1>Code Inspector</h1>
+  <p class="ncss-text-lg ncss-text-muted">Every page of this website has a floating <strong>Inspect</strong> switch at the bottom right (keyboard: <kbd>Alt</kbd>+<kbd>I</kbd>, Mac <kbd>⌥</kbd><kbd>I</kbd>). Turn it on and click any element - the inspector shows how it is built.</p>
+  <p><button type="button" class="ncss-btn ncss-btn--primary" data-demo-inspect aria-pressed="false">Turn on the inspector</button></p>
+</section>
+
+<section class="ncss-stack" id="anzeige">
+  <h2 class="demo-section-title">What it shows</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>HTML</strong> of the element, cleaned up and indented - with a copy button.</li>
+    <li>An <strong>explanation</strong> of every <code>ncss-</code> class, <code>data-ncss-</code> attribute and <code>&lt;ncss-…&gt;</code> element, linking to the matching docs section.</li>
+    <li>The <strong>defining file</strong> in <code>dist/</code> plus a short description of that file.</li>
+    <li><strong>JavaScript</strong>: which script from <code>dist/js/</code> belongs to the <code>data-ncss-</code> attributes.</li>
+    <li><strong>Cherry-picking</strong>: the <code>@import</code> lines for your own slimmed-down <code>ncss.css</code> with exactly this building block.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="bedienung">
+  <h2 class="demo-section-title">Usage</h2>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong>Ancestor bar</strong> and <strong>Parent ↑</strong>: jump from the clicked button to the whole card.</li>
+    <li><kbd>Esc</kbd> leaves the mode, so does a second click on <strong>Inspect</strong>.</li>
+    <li>Works on docs pages and on every <a href="examples.html">example website</a>.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="woher">
+  <h2 class="demo-section-title">Where the explanations come from</h2>
+  <p>When the website is built (<code>node docs-src/build.mjs</code>), the "Class | Purpose" tables of all docs pages and the first sentence of every file comment in <code>dist/</code> are collected into <code>docs/class-index.en.json</code> (and <code>.de.json</code>). The inspector loads that file the first time it is switched on - without it, it shows everything except the explanations. A new class therefore gets its explanation automatically as soon as it appears in a class table in the docs. File descriptions are currently German only.</p>
+  <p class="ncss-text-sm ncss-text-muted">The inspector is a tool of this website (<code>demo/assets/js/inspector.js</code>), not part of <code>dist/</code>.</p>
+</section>

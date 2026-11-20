@@ -10,6 +10,12 @@
    Markup: <div class="ncss-table-scroll"><table>...</table></div> */
 .ncss-table-scroll {
   overflow-x: auto;
+  /* Eigener Bezugsrahmen für absolut positionierte Nachfahren - v.a. eine
+     .ncss-visually-hidden-<caption> (position:absolute): ohne positionierten Vorfahren
+     bezieht sie sich auf einen beliebig weit entfernten Vorfahren/den Viewport, entkommt
+     damit dem eigenen Scroll-Container und erzeugt Überlauf an ganz anderer Stelle der
+     Seite (per Demo-Test gefunden). So bleibt sie im Scroll-Container eingeschlossen. */
+  position: relative;
   /* role="region" + aria-label/tabindex="0" gehören ins Markup (nicht per CSS lösbar) -
      macht den Scroll-Container selbst per Tastatur fokussierbar/scrollbar, WCAG 1.4.10. */
 }
@@ -67,4 +73,13 @@
     content: attr(data-label);
     font-weight: 600;
   }
+}
+
+/* --- Kompakte Tabelle -------------------------------------------------------------------
+   Dichtere Zeilen für Daten-/Verwaltungsansichten mit vielen Einträgen. Markup:
+   <table class="ncss-table--compact"> - auch auf einem Wrapper (z.B. .ncss-table-scroll)
+   nutzbar, gilt dann für alle Tabellen darin. */
+.ncss-table--compact :is(th, td) {
+  padding: var(--ncss-space-3xs) var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
 }

@@ -1,7 +1,8 @@
 <!--DESC: Fertige Varianten für ul/ol/dl - Punkt, Gedankenstrich, Icon, geteilt, Schritte, Definitionslisten.-->
+<!--FOOT: <script src="~/dist/js/sortable.js"></script>-->
 <section class="ncss-stack">
   <h1>Listen</h1>
-  <p class="ncss-text-lg ncss-text-muted">Fertige, dekorative Varianten für native <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code> - <code>components/lists.css</code>. Live: <a href="../../demo/index.html#listen">Demo</a>.</p>
+  <p class="ncss-text-lg ncss-text-muted">Fertige, dekorative Varianten für native <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code> - <code>components/lists.css</code>. Live: <a href="all-components.html#listen">Demo</a>.</p>
 </section>
 
 <section class="ncss-stack" id="a11y">
@@ -67,3 +68,152 @@
 &lt;/dl&gt;</code></pre>
   <p class="ncss-text-sm ncss-text-muted">Für dasselbe Kacheln-Muster mit BELIEBIGEM eigenem Inhalt (nicht nur Label+Zahl) statt <code>&lt;dl&gt;</code>: <a href="custom-components.html">Eigene Komponenten erstellen</a>.</p>
 </section>
+
+
+<section class="ncss-stack" id="leaders" data-subnav-label="Führungspunkte">
+  <h2 class="demo-section-title">Führungspunkte (Preislisten, Speisekarten) <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>components/leaders.css</code> - Führungspunkte für Preislisten, Speisekarten und Inhaltsverzeichnisse: "Kaffee ........ 3,50 €". Robust bei umbrechenden Namen (Punkte und Preis stehen an der letzten Zeile), funktioniert in RTL und ist für Screenreader unsichtbar. Braucht nur colors/tokens/reset/base.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Preisliste mit Führungspunkten">
+    <h3 class="ncss-text-md">Heißgetränke</h3>
+    <dl class="ncss-leaders">
+      <div class="ncss-leaders-item"><dt>Kaffee</dt><dd>3,50 €</dd></div>
+      <div class="ncss-leaders-item">
+        <dt>Cappuccino mit Hafermilch</dt><dd>4,20 €</dd>
+        <dd class="ncss-leaders-desc">Doppelter Espresso, Bohnen aus Äthiopien</dd>
+      </div>
+      <div class="ncss-leaders-item"><dt>Heiße Schokolade nach Art des Hauses mit Sahne und Zimt</dt><dd>4,80 €</dd></div>
+      <div class="ncss-leaders-item"><dt>Tee, Kanne</dt><dd>5,00 €</dd></div>
+    </dl>
+    <h3 class="ncss-text-md">Inhalt (Liste, gestrichelt)</h3>
+    <ul class="ncss-leaders ncss-leaders--dashed ncss-leaders--compact" role="list">
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Einleitung</a></span><span class="ncss-leaders-value">4</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Container Queries in der Praxis</a></span><span class="ncss-leaders-value">17</span></li>
+      <li class="ncss-leaders-item"><span class="ncss-leaders-name"><a href="#leaders">Anhang</a></span><span class="ncss-leaders-value">112</span></li>
+    </ul>
+    <h3 class="ncss-text-md">Rechts nach links (Arabisch)</h3>
+    <dl class="ncss-leaders" dir="rtl" lang="ar">
+      <div class="ncss-leaders-item"><dt>قهوة</dt><dd>٣٫٥٠ €</dd></div>
+      <div class="ncss-leaders-item"><dt>شاي بالنعناع</dt><dd>٢٫٨٠ €</dd></div>
+    </dl>
+  </div>
+  <pre><code class="language-html">&lt;dl class="ncss-leaders"&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Kaffee&lt;/dt&gt;
+    &lt;dd&gt;3,50 €&lt;/dd&gt;
+  &lt;/div&gt;
+  &lt;div class="ncss-leaders-item"&gt;
+    &lt;dt&gt;Cappuccino mit Hafermilch&lt;/dt&gt;
+    &lt;dd&gt;4,20 €&lt;/dd&gt;
+    &lt;dd class="ncss-leaders-desc"&gt;Doppelter Espresso, Bohnen aus Äthiopien&lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;
+
+&lt;ul class="ncss-leaders ncss-leaders--dashed" role="list"&gt;
+  &lt;li class="ncss-leaders-item"&gt;
+    &lt;span class="ncss-leaders-name"&gt;&lt;a href="#k1"&gt;Einleitung&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="ncss-leaders-value"&gt;4&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Gemischter Inhalt im Namen (Text plus <code>&lt;small&gt;</code> oder Icon) gehört in ein gemeinsames <code>&lt;span&gt;</code> - der Name ist intern eine Flex-Zeile.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Klasse</th><th scope="col">Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-leaders</code></td><td>Auf <code>&lt;dl&gt;</code> (Name/Wert) oder <code>&lt;ul role="list"&gt;</code></td></tr>
+        <tr><td><code>.ncss-leaders-item</code></td><td>Eine Zeile: <code>&lt;div&gt;</code> um <code>dt</code>/<code>dd</code> bzw. das <code>&lt;li&gt;</code></td></tr>
+        <tr><td><code>dt / .ncss-leaders-name</code></td><td>Name, darf umbrechen; die Punkte folgen seiner letzten Zeile</td></tr>
+        <tr><td><code>dd / .ncss-leaders-value</code></td><td>Wert (Preis, Seitenzahl), bricht nie um, Ziffern tabellarisch</td></tr>
+        <tr><td><code>.ncss-leaders-desc</code></td><td>Beschreibung als eigene Zeile darunter (<code>&lt;dd&gt;</code> oder beliebiges Element)</td></tr>
+        <tr><td><code>.ncss-leaders--dashed / --line / --compact</code></td><td>Striche bzw. Linie statt Punkte; engere Zeilen</td></tr>
+        <tr><td><code>--ncss-leaders-style / -color / -gap</code></td><td>Randstil (dotted), Farbe der Punkte, Zeilenabstand</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td>-</td><td>Nicht interaktiv; Links (z.B. im Inhaltsverzeichnis) folgen der normalen Tab-Reihenfolge.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Die Punkte sind ein leeres Pseudo-Element mit gepunktetem Rand - kein Text, also liest der Screenreader nur "Kaffee, 3,50 €". <code>&lt;dl&gt;</code> verknüpft Name und Preis als Begriff/Beschreibung; für eine Liste <code>role="list"</code> setzen.</p>
+    <h4>Einstellungen</h4>
+    <p>Logische Eigenschaften: in RTL laufen Punkte und Preis automatisch gespiegelt (Beispiel oben). Hochkontrast: Punkte in <code>CanvasText</code>. Bei vergrößertem Text oder schmaler Spalte bricht der Name um, Punkte und Preis bleiben an seiner letzten Zeile.</p>
+    <h4>Ohne JS</h4>
+    <p>Reines CSS.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="sortierbar" data-subnav-label="Sortierbare Liste">
+  <h2 class="demo-section-title">Sortierbare Liste <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p><code>&lt;ncss-sortable&gt;</code> um eine <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code> macht die Einträge umsortierbar - auf drei gleichwertigen Wegen: am Griff ziehen (Maus, Stift, Finger), per Tastatur (Griff fokussieren, <kbd class="ncss-kbd">Leertaste</kbd> aufnehmen, Pfeiltasten, <kbd class="ncss-kbd">Leertaste</kbd> ablegen) oder mit den Hoch/Runter-Schaltflächen. Jede Änderung wird angesagt („Termine, Position 2 von 5“), danach feuert <code>ncss-sortable-change</code> mit der neuen Reihenfolge. Griff und Schaltflächen erzeugt das Script - ohne JavaScript bleibt eine normale Liste ohne funktionslose Bedienelemente. <code>components/sortable.css</code> + <code>js/sortable.js</code>, braucht nur colors/tokens/reset/base.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel: Sortierbare Liste">
+    <h3 class="ncss-text-md" id="so-titel">Reihenfolge der Startseiten-Kacheln</h3>
+    <ncss-sortable>
+      <ol class="ncss-sortable-list" aria-labelledby="so-titel">
+        <li data-id="news">Neuigkeiten</li>
+        <li data-id="termine">Termine</li>
+        <li data-id="wetter" data-label="Wetter">Wetter <small class="ncss-text-muted">mit Pollenflug</small></li>
+        <li data-id="karte">Ortsplan</li>
+        <li data-id="kontakt">Kontakt</li>
+      </ol>
+    </ncss-sortable>
+  </div>
+  <pre><code class="language-html">&lt;h3 class="ncss-text-md" id="so-titel"&gt;Reihenfolge der Startseiten-Kacheln&lt;/h3&gt;
+&lt;ncss-sortable&gt;
+  &lt;ol class="ncss-sortable-list" aria-labelledby="so-titel"&gt;
+    &lt;li data-id="news"&gt;Neuigkeiten&lt;/li&gt;
+    &lt;li data-id="termine"&gt;Termine&lt;/li&gt;
+    &lt;li data-id="wetter" data-label="Wetter"&gt;Wetter &lt;small class="ncss-text-muted"&gt;mit Pollenflug&lt;/small&gt;&lt;/li&gt;
+    &lt;li data-id="karte"&gt;Ortsplan&lt;/li&gt;
+    &lt;li data-id="kontakt"&gt;Kontakt&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/ncss-sortable&gt;
+&lt;script src="dist/js/sortable.js" defer&gt;&lt;/script&gt;</code></pre>
+  <pre><code class="language-javascript">// eigene Datei, z. B. js/startseite.js
+document.addEventListener("ncss-sortable-change", (event) =&gt; {
+  console.log(event.detail.order); // ["termine", "news", "wetter", …]
+});</code></pre>
+  <div class="ncss-table-scroll">
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Attribut / Klasse</th><th scope="col">Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;ncss-sortable&gt;</code></td><td>Hülle um genau eine Liste; jedes direkte Kind ist ein Eintrag. Später angehängte Einträge werden automatisch nachgerüstet.</td></tr>
+        <tr><td><code>li[data-id]</code></td><td>Kennung des Eintrags in <code>detail.order</code> (sonst der Name).</td></tr>
+        <tr><td><code>li[data-label]</code></td><td>Kurzer Name für Ansagen und Schaltflächen, wenn der Eintrag mehr Text enthält.</td></tr>
+        <tr><td><code>no-buttons</code></td><td>Hoch/Runter-Schaltflächen weglassen - nur, wenn die Seite selbst eine gleichwertige Alternative ohne Ziehen bietet (WCAG 2.5.7).</td></tr>
+        <tr><td><code>data-label-*</code></td><td>Texte überschreiben: <code>handle</code>, <code>up</code>, <code>down</code>, <code>instructions</code>, <code>grabbed</code>, <code>moved</code>, <code>dropped</code>, <code>cancelled</code> - Platzhalter <code>{label}</code>, <code>{pos}</code>, <code>{total}</code>.</td></tr>
+        <tr><td><code>.ncss-sortable-handle</code></td><td>Eigener Griff im Markup wird übernommen statt neu erzeugt.</td></tr>
+        <tr><td><code>[data-grabbed]</code>, <code>[data-dragging]</code></td><td>Zustand am Eintrag (Tastatur bzw. Zeiger) - zum eigenen Stylen.</td></tr>
+        <tr><td>Event / API</td><td><code>ncss-sortable-change</code> <code>{ item, from, to, order }</code> (0-basiert); <code>el.items</code>, <code>el.order</code>, <code>el.move(eintragOderIndex, ziel)</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Barrierefreiheit</h3>
+    <h4>Tastatur (Fokus auf dem Griff)</h4>
+    <table class="ncss-table--compact">
+      <thead><tr><th scope="col">Taste</th><th scope="col">Aktion</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Leertaste</kbd> / <kbd class="ncss-kbd">Enter</kbd></td><td>Eintrag aufnehmen bzw. ablegen.</td></tr>
+        <tr><td><kbd class="ncss-kbd">↑</kbd> / <kbd class="ncss-kbd">↓</kbd> (auch <kbd class="ncss-kbd">←</kbd> / <kbd class="ncss-kbd">→</kbd>)</td><td>Aufgenommenen Eintrag eine Position verschieben.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Pos1</kbd> / <kbd class="ncss-kbd">Ende</kbd></td><td>An den Anfang bzw. ans Ende.</td></tr>
+        <tr><td><kbd class="ncss-kbd">Esc</kbd></td><td>Abbrechen - der Eintrag springt an seine Ausgangsposition (auch beim Ziehen mit der Maus).</td></tr>
+        <tr><td><kbd class="ncss-kbd">Tab</kbd></td><td>Legt an der aktuellen Position ab und geht weiter.</td></tr>
+      </tbody>
+    </table>
+    <h4>Screenreader</h4>
+    <p>Der Griff heißt „Wetter verschieben“ und beschreibt die Bedienung per <code>aria-describedby</code>; aufgenommen meldet er <code>aria-pressed="true"</code>. Eine Live-Region sagt jeden Schritt an: „Wetter aufgenommen, Position 3 von 5“, „Wetter, Position 2 von 5“, „Wetter abgelegt …“ bzw. „Verschieben abgebrochen …“. Die Schaltflächen heißen „Wetter nach oben/unten“; am Rand sind sie <code>aria-disabled</code> und bleiben fokussierbar, der Fokus geht nicht verloren.</p>
+    <h4>Zeiger &amp; WCAG 2.5.7</h4>
+    <p>Ziehen ist nie der einzige Weg: die Hoch/Runter-Schaltflächen erledigen dasselbe mit einzelnen Klicks bzw. Taps (Zielgröße 36 px). Auf Touch-Geräten scrollt die Seite beim Ziehen am Griff nicht mit, überall sonst schon.</p>
+    <h4>Einstellungen</h4>
+    <p>Die Nachbarn gleiten nur bei erlaubter Bewegung an ihren Platz (<code>prefers-reduced-motion</code> und <code>data-motion</code> an <code>&lt;html&gt;</code> werden beide geprüft). Farben aus Tokens, im Forced-Colors-Modus Rahmen in <code>CanvasText</code> und der aufgenommene Eintrag mit <code>Highlight</code>-Umriss.</p>
+    <h4>Ohne JS</h4>
+    <p>Normale, geordnete Liste ohne Griffe - nichts wirkt bedienbar, was es nicht ist.</p>
+  </div>
+</section>
+
+<!--MERGE: all-components#listen-->

@@ -1,26 +1,175 @@
 {
+  "start": {
+    "slug": "start",
+    "de": "Start",
+    "en": "Home",
+    "layout": "start",
+    "title": {
+      "de": "NativeCSS - Natives CSS Design System ohne Build-Schritt",
+      "en": "NativeCSS - Native CSS design system without a build step"
+    }
+  },
+  "examplesPage": {
+    "slug": "examples",
+    "de": "Beispiele",
+    "en": "Examples",
+    "layout": "wide"
+  },
   "groups": [
     {
       "id": "start",
       "de": "Erste Schritte",
       "en": "Getting Started",
       "pages": [
-        { "slug": "index", "de": "Überblick", "en": "Overview" },
-        { "slug": "architecture", "de": "Architektur", "en": "Architecture" },
-        { "slug": "theming", "de": "Theme anpassen", "en": "Theming" },
-        { "slug": "custom-theme", "de": "Eigenes Theme erstellen", "en": "Build Your Own Theme" }
+        {
+          "slug": "index",
+          "de": "Überblick",
+          "en": "Overview"
+        },
+        {
+          "slug": "architecture",
+          "de": "Architektur",
+          "en": "Architecture"
+        },
+        {
+          "slug": "guides",
+          "de": "Anleitungen",
+          "en": "Guides"
+        },
+        {
+          "slug": "theming",
+          "de": "Theme anpassen",
+          "en": "Theming"
+        },
+        {
+          "slug": "custom-theme",
+          "de": "Eigenes Theme erstellen",
+          "en": "Build Your Own Theme"
+        },
+        {
+          "slug": "custom-components",
+          "de": "Eigene Komponenten erstellen",
+          "en": "Build Your Own Components"
+        },
+        {
+          "slug": "inspector",
+          "de": "Code-Inspektor",
+          "en": "Code Inspector",
+          "new": true
+        }
       ]
+    },
+    {
+      "id": "a11y",
+      "de": "Barrierefreiheit",
+      "en": "Accessibility",
+      "pages": [
+        {
+          "slug": "accessibility",
+          "de": "Grundsätze",
+          "en": "Principles"
+        },
+        {
+          "slug": "a11y-keyboard",
+          "de": "Tastatur",
+          "en": "Keyboard"
+        },
+        {
+          "slug": "a11y-screenreader",
+          "de": "Screenreader & ARIA",
+          "en": "Screen Readers & ARIA"
+        },
+        {
+          "slug": "a11y-preferences",
+          "de": "Nutzer-Einstellungen",
+          "en": "User Preferences"
+        },
+        {
+          "slug": "a11y-zoom",
+          "de": "Zoom, Reflow & Textabstände",
+          "en": "Zoom, Reflow & Text Spacing"
+        },
+        {
+          "slug": "a11y-forms",
+          "de": "Formulare & Fehlermeldungen",
+          "en": "Forms & Error Messages"
+        },
+        {
+          "slug": "a11y-media",
+          "de": "Medien",
+          "en": "Media"
+        },
+        {
+          "slug": "a11y-testing",
+          "de": "Testen",
+          "en": "Testing"
+        },
+        {
+          "slug": "a11y-checklist",
+          "de": "Checkliste WCAG 2.2 AA",
+          "en": "WCAG 2.2 AA Checklist"
+        },
+        {
+          "slug": "a11y-statement-guide",
+          "de": "Barrierefreiheitserklärung",
+          "en": "Accessibility Statement"
+        }
+      ],
+      "icon": "accessibility"
     },
     {
       "id": "foundations",
       "de": "Grundlagen",
       "en": "Foundations",
       "pages": [
-        { "slug": "tokens", "de": "Design Tokens", "en": "Design Tokens" },
-        { "slug": "colors", "de": "Farben & Flächen", "en": "Colors & Surfaces" },
-        { "slug": "layout", "de": "Layout", "en": "Layout" },
-        { "slug": "typography", "de": "Typografie", "en": "Typography" },
-        { "slug": "icons", "de": "Icons", "en": "Icons" }
+        {
+          "slug": "tokens",
+          "de": "Design Tokens",
+          "en": "Design Tokens"
+        },
+        {
+          "slug": "colors",
+          "de": "Farben & Flächen",
+          "en": "Colors & Surfaces"
+        },
+        {
+          "slug": "typography",
+          "de": "Typografie",
+          "en": "Typography"
+        },
+        {
+          "slug": "icons",
+          "de": "Icons",
+          "en": "Icons",
+          "new": true
+        },
+        {
+          "slug": "touch-mobile",
+          "de": "Touch & mobile Viewports",
+          "en": "Touch & Mobile Viewports"
+        }
+      ]
+    },
+    {
+      "id": "layout",
+      "de": "Layout",
+      "en": "Layout",
+      "pages": [
+        {
+          "slug": "layout",
+          "de": "Layout & Grid",
+          "en": "Layout & Grid"
+        },
+        {
+          "slug": "layouts",
+          "de": "Landingpage-Bausteine",
+          "en": "Landing Page Blocks"
+        },
+        {
+          "slug": "float",
+          "de": "Textumfluss",
+          "en": "Float & Text Wrap"
+        }
       ]
     },
     {
@@ -28,37 +177,210 @@
       "de": "Inhalt",
       "en": "Content",
       "pages": [
-        { "slug": "forms", "de": "Formulare", "en": "Forms" },
-        { "slug": "tables", "de": "Tabellen", "en": "Tables" },
-        { "slug": "media", "de": "Medien", "en": "Media" },
-        { "slug": "float", "de": "Textumfluss", "en": "Float & Text Wrap" }
+        {
+          "slug": "base-components",
+          "de": "Basis-Komponenten",
+          "en": "Base Components",
+          "new": true
+        },
+        {
+          "slug": "app-ui",
+          "de": "App-Bausteine",
+          "en": "App Building Blocks",
+          "new": true
+        },
+        {
+          "slug": "cards",
+          "de": "Karten",
+          "en": "Cards",
+          "new": true
+        },
+        {
+          "slug": "lists",
+          "de": "Listen",
+          "en": "Lists",
+          "new": true
+        },
+        {
+          "slug": "timeline",
+          "de": "Zeitleiste & Schritte",
+          "en": "Timeline & Steps",
+          "new": true
+        },
+        {
+          "slug": "tables",
+          "de": "Tabellen",
+          "en": "Tables",
+          "new": true
+        },
+        {
+          "slug": "forms",
+          "de": "Formulare",
+          "en": "Forms"
+        },
+        {
+          "slug": "widgets",
+          "de": "Termine & Downloads",
+          "en": "Events & Downloads",
+          "new": true
+        }
       ]
     },
     {
-      "id": "behavior",
-      "de": "Verhalten",
-      "en": "Behavior",
+      "id": "navigation",
+      "de": "Navigation",
+      "en": "Navigation",
       "pages": [
-        { "slug": "scroll", "de": "Scroll & Sichtbarkeit", "en": "Scroll & Visibility" },
-        { "slug": "animations", "de": "Animationen", "en": "Animations" },
-        { "slug": "touch-mobile", "de": "Touch & mobile Viewports", "en": "Touch & Mobile Viewports" },
-        { "slug": "accessibility", "de": "Barrierefreiheit", "en": "Accessibility" }
+        {
+          "slug": "navigation",
+          "de": "Navigation",
+          "en": "Navigation"
+        },
+        {
+          "slug": "subnav",
+          "de": "Abschnitts-Navigation",
+          "en": "Section Navigation",
+          "new": true
+        }
       ]
     },
     {
-      "id": "components",
-      "de": "Komponenten",
-      "en": "Components",
+      "id": "overlays",
+      "de": "Overlays",
+      "en": "Overlays",
       "pages": [
-        { "slug": "components", "de": "Komponenten-Referenz", "en": "Component Reference" },
-        { "slug": "custom-components", "de": "Eigene Komponenten erstellen", "en": "Build Your Own Components" },
-        { "slug": "lists", "de": "Listen", "en": "Lists" },
-        { "slug": "cards", "de": "Karten", "en": "Cards" },
-        { "slug": "layouts", "de": "Landingpage-Bausteine", "en": "Landing Page Blocks" },
-        { "slug": "webawesome-bridge", "de": "Web Awesome Bridge", "en": "Web Awesome Bridge" },
-        { "slug": "widgets", "de": "Termine & Downloads", "en": "Events & Downloads" },
-        { "slug": "ncss-container", "de": "&lt;ncss-container&gt;", "en": "&lt;ncss-container&gt;" },
-        { "slug": "uikit-migration", "de": "Von UIkit3 nach ncss", "en": "From UIkit3 to ncss" }
+        {
+          "slug": "overlays",
+          "de": "Modal, Off-Canvas & Lightbox",
+          "en": "Modal, Off-Canvas & Lightbox",
+          "new": true
+        }
+      ]
+    },
+    {
+      "id": "media",
+      "de": "Medien",
+      "en": "Media",
+      "pages": [
+        {
+          "slug": "media",
+          "de": "Medien",
+          "en": "Media",
+          "new": true
+        },
+        {
+          "slug": "maps",
+          "de": "Karten",
+          "en": "Maps",
+          "new": true
+        }
+      ]
+    },
+    {
+      "id": "scroll",
+      "de": "Scroll-Effekte",
+      "en": "Scroll Effects",
+      "new": true,
+      "pages": [
+        {
+          "slug": "scroll",
+          "de": "Scroll & Sichtbarkeit",
+          "en": "Scroll & Visibility",
+          "new": true
+        },
+        {
+          "slug": "animations",
+          "de": "Animationen & Effekte",
+          "en": "Animations & Effects"
+        },
+        {
+          "slug": "scroll-effects",
+          "de": "Scroll-Effekte",
+          "en": "Scroll Effects",
+          "new": true
+        }
+      ]
+    },
+    {
+      "id": "modern",
+      "de": "Moderne UI",
+      "en": "Modern UI",
+      "new": true,
+      "pages": [
+        {
+          "slug": "modern-ui",
+          "de": "Moderne UI",
+          "en": "Modern UI",
+          "new": true
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "de": "Video & Audio",
+      "en": "Video & Audio",
+      "new": true,
+      "pages": [
+        {
+          "slug": "video-audio",
+          "de": "Video & Audio",
+          "en": "Video & Audio",
+          "new": true
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "de": "Integration",
+      "en": "Integration",
+      "new": true,
+      "pages": [
+        {
+          "slug": "integration-cms",
+          "de": "CMS",
+          "en": "CMS",
+          "new": true
+        },
+        {
+          "slug": "integration-frameworks",
+          "de": "Frameworks",
+          "en": "Frameworks",
+          "new": true
+        },
+        {
+          "slug": "dynamic-content",
+          "de": "Dynamische Inhalte",
+          "en": "Dynamic Content",
+          "new": true
+        },
+        {
+          "slug": "webawesome-bridge",
+          "de": "Web Awesome",
+          "en": "Web Awesome"
+        },
+        {
+          "slug": "uikit-migration",
+          "de": "Von UIkit3 nach ncss",
+          "en": "From UIkit3 to ncss"
+        },
+        {
+          "slug": "ncss-container",
+          "de": "&lt;ncss-container&gt;",
+          "en": "&lt;ncss-container&gt;"
+        }
+      ]
+    },
+    {
+      "id": "integrations",
+      "de": "Werkzeuge",
+      "en": "Tools",
+      "pages": [
+        {
+          "slug": "tools",
+          "de": "Werkzeuge",
+          "en": "Tools",
+          "new": true
+        }
       ]
     },
     {
@@ -66,8 +388,174 @@
       "de": "Referenz",
       "en": "Reference",
       "pages": [
-        { "slug": "known-limitations", "de": "Bekannte Grenzen", "en": "Known Limitations" }
+        {
+          "slug": "components",
+          "de": "Komponenten-Referenz",
+          "en": "Component Reference"
+        },
+        {
+          "slug": "all-components",
+          "de": "Alle Bausteine live",
+          "en": "All Building Blocks Live"
+        },
+        {
+          "slug": "known-limitations",
+          "de": "Bekannte Grenzen",
+          "en": "Known Limitations"
+        }
       ]
+    }
+  ],
+  "examples": [
+    {
+      "id": "showcase",
+      "href": "showcase/index.html",
+      "hrefEn": "showcase/index-en.html",
+      "new": true,
+      "accent": "var(--ncss-color-brand)",
+      "de": "NativeCSS-Rundgang",
+      "en": "NativeCSS Tour",
+      "desc": {
+        "de": "Alle Funktionen live in elf Kapiteln: Layout bis Barrierefreiheit, jeweils kurz erklärt, mit Klassen und Code-Inspektor.",
+        "en": "Every feature live in eleven chapters, from layout to accessibility, each briefly explained, with classes and code inspector."
+      }
+    },
+    {
+      "id": "example-gemeinde",
+      "href": "example-gemeinde.html",
+      "new": true,
+      "accent": "var(--ncss-color-success)",
+      "de": "Gemeinde Seeburg",
+      "en": "Seeburg Municipality",
+      "desc": {
+        "de": "Komplette Gemeinde-Website: Rathaus-Service, Termine, Bekanntmachungen.",
+        "en": "Complete municipality website: town hall services, events, announcements."
+      }
+    },
+    {
+      "id": "example-hotel",
+      "href": "example-hotel.html",
+      "new": true,
+      "accent": "var(--ncss-color-warning)",
+      "de": "Hotel Seeblick",
+      "en": "Hotel Seeblick",
+      "desc": {
+        "de": "Hotel-Website als One-Pager mit Zimmern, Angeboten und Buchungsanfrage.",
+        "en": "Hotel one-pager with rooms, offers and a booking request."
+      }
+    },
+    {
+      "id": "example-immo",
+      "href": "example-immo/index.html",
+      "new": true,
+      "app": true,
+      "de": "ImmoDesk (App)",
+      "en": "ImmoDesk (App)",
+      "desc": {
+        "de": "Backend-App für Hausverwaltung: Dashboard, Objekte, Tabellen, Formulare - mehrseitig.",
+        "en": "Property-management back-end app: dashboard, properties, tables, forms - multi-page."
+      }
+    },
+    {
+      "id": "landing",
+      "href": "landing.html",
+      "de": "Landingpage",
+      "en": "Landing Page",
+      "desc": {
+        "de": "Produkt-Landingpage mit Web Awesome, Glass-Topbar, Preistabelle und Stimmen.",
+        "en": "Product landing page with Web Awesome, glass top bar, pricing and testimonials."
+      }
+    },
+    {
+      "id": "magazine",
+      "href": "magazine.html",
+      "accent": "var(--ncss-color-neutral)",
+      "de": "Magazin",
+      "en": "Magazine",
+      "desc": {
+        "de": "Editoriales Layout mit Randnotizen, Textumfluss und Lesefortschritt.",
+        "en": "Editorial layout with margin notes, text wrap and reading progress."
+      }
+    },
+    {
+      "id": "scroll-sections",
+      "href": "scroll-sections.html",
+      "accent": "var(--ncss-color-brand)",
+      "de": "Vollbild-Sektionen",
+      "en": "Fullscreen Sections",
+      "desc": {
+        "de": "Seitenweise einrastende Vollbild-Sektionen per Scroll-Snap.",
+        "en": "Full-screen sections that snap page by page."
+      }
+    },
+    {
+      "id": "stacked-cards",
+      "href": "stacked-cards.html",
+      "de": "Stacked Cards",
+      "en": "Stacked Cards",
+      "desc": {
+        "de": "Karten stapeln sich beim Scrollen, ganz ohne JavaScript.",
+        "en": "Cards stack up while scrolling, no JavaScript."
+      }
+    },
+    {
+      "id": "roadmap",
+      "href": "roadmap.html",
+      "accent": "var(--ncss-color-brand)",
+      "de": "Roadmap",
+      "en": "Roadmap",
+      "desc": {
+        "de": "Zeitleiste, deren Linie sich beim Scrollen selbst zeichnet.",
+        "en": "Timeline whose line draws itself while scrolling."
+      }
+    },
+    {
+      "id": "uikit-integration",
+      "href": "uikit-integration.html",
+      "accent": "var(--ncss-color-neutral)",
+      "de": "UIkit-Integration",
+      "en": "UIkit Integration",
+      "desc": {
+        "de": "UIkit-3-Seite mit isoliertem NativeCSS-Inhalt per &lt;ncss-container&gt;.",
+        "en": "UIkit 3 page with isolated NativeCSS content via &lt;ncss-container&gt;."
+      }
+    }
+  ],
+  "redirects": {
+    "index.html": "index",
+    "product.html": "start",
+    "navigation.html": "navigation",
+    "forms.html": "forms",
+    "media.html": "media",
+    "layout.html": "layout",
+    "colors.html": "colors",
+    "effects.html": "animations",
+    "theming.html": "theming",
+    "webawesome.html": "webawesome-bridge",
+    "widgets.html": "widgets",
+    "scroll-effects.html": "scroll-effects",
+    "modern-ui.html": "modern-ui",
+    "video-audio.html": "video-audio",
+    "guides.html": "guides"
+  },
+  "legal": [
+    {
+      "slug": "accessibility-statement",
+      "de": "Erklärung zur Barrierefreiheit",
+      "en": "Accessibility statement",
+      "layout": "wide"
+    },
+    {
+      "slug": "impressum",
+      "de": "Impressum",
+      "en": "Legal notice",
+      "layout": "wide"
+    },
+    {
+      "slug": "datenschutz",
+      "de": "Datenschutz",
+      "en": "Privacy",
+      "layout": "wide"
     }
   ]
 }

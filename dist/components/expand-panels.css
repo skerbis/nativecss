@@ -1,0 +1,220 @@
+/**
+ * ncss - Aufklapp-Panels (Layer "components"): eine Reihe Bild-Panels, das überfahrene/
+ * fokussierte (sonst das aktive) Panel wächst in die Breite und zeigt Zusatztext. Reines
+ * CSS (flex-grow-Transition + :has()), kein JS. In schmalen Containern stapeln sich die
+ * Panels untereinander und wachsen stattdessen in der Höhe (Container Query, kein
+ * Viewport-Breakpoint).
+ *
+ * Markup:
+ * <div class="ncss-expand-panels">
+ *   <a class="ncss-expand-panel ncss-expand-panel--active" href="/alpen">
+ *     <span class="ncss-expand-panel-media"><img src="alpen.jpg" alt=""></span>
+ *     <span class="ncss-expand-panel-title">Alpen</span>
+ *     <span class="ncss-expand-panel-body">Sechs Touren über 3000 m.</span>
+ *   </a>
+ *   ...
+ * </div>
+ * Panels sind <a> oder <button> (oder ein Element mit fokussierbarem Kind) - so erreicht
+ * die Tastatur jedes Panel und :focus-visible/:focus-within klappt es auf. Aktiv (wenn
+ * nichts überfahren/fokussiert ist): .ncss-expand-panel--active oder aria-current.
+ *
+ * Touch: kein :hover - ein Tap fokussiert/aktiviert den Link ohnehin; für eine reine
+ * Galerie ohne Ziel-URL <button>-Panels nehmen, :focus-within klappt sie dann per Tap auf.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base).
+ *
+ * Tokens: --ncss-expand-height (Zeilenhöhe, Default 24rem), --ncss-expand-grow (Faktor des
+ * offenen Panels, Default 4), --ncss-expand-collapsed / --ncss-expand-expanded (Höhen im
+ * gestapelten Zustand, Default 4.5rem / 16rem). Stapelt unter 36rem Containerbreite.
+ */
+.ncss-expand-panels {
+  --ncss-expand-height: 24rem;
+  --ncss-expand-grow: 4;
+  --ncss-expand-collapsed: 4.5rem;
+  --ncss-expand-expanded: 16rem;
+  container: ncss-expand / inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ncss-expand-panel {
+  --ncss-expand-panel-grow: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--ncss-space-3xs);
+  flex: var(--ncss-expand-panel-grow) 1 0;
+  min-width: 0;
+  height: var(--ncss-expand-height);
+  margin: 0;
+  padding: var(--ncss-space-sm);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--ncss-radius-lg);
+  /* Text liegt immer auf dem dunklen Verlauf unten (::after) - deshalb fest helle Schrift,
+     unabhängig vom Seiten-Farbschema. */
+  color: #fff;
+  background-color: var(--ncss-color-neutral-900);
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    flex-grow var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized),
+    height var(--ncss-motion-duration-slow) var(--ncss-motion-easing-emphasized);
+
+  /* Verlauf: lesbarer Text auf jedem Bild */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 78%), rgb(0 0 0 / 15%) 55%, transparent 80%);
+    pointer-events: none;
+  }
+
+  & > :not(.ncss-expand-panel-media) {
+    position: relative;
+    z-index: 1;
+  }
+
+  &:focus-visible,
+  &:has(:focus-visible) {
+    outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    scale: 0.99;
+  }
+}
+
+.ncss-expand-panel-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  & > img,
+  & > picture > img,
+  & > video,
+  & > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    scale: 1.08;
+    transition: scale var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+}
+
+.ncss-expand-panel-title {
+  font-size: var(--ncss-font-size-md);
+  font-weight: var(--ncss-font-weight-bold);
+  line-height: var(--ncss-line-height-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Feste Zeilenlänge: der Text bricht während des Wachsens NICHT ständig neu um (sah beim
+   Testen unruhig aus), er ist zugeklappt nur auf Höhe 0 gesetzt und abgeschnitten. */
+.ncss-expand-panel-body {
+  width: min(28ch, 100cqi - 2 * var(--ncss-space-sm));
+  max-height: 0;
+  overflow: hidden;
+  font-size: var(--ncss-font-size-sm);
+  line-height: 1.45;
+  opacity: 0;
+  translate: 0 0.5rem;
+  transition:
+    opacity var(--ncss-motion-duration) var(--ncss-motion-easing),
+    translate var(--ncss-motion-duration) var(--ncss-motion-easing),
+    max-height var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+}
+
+/* Offen: fokussiertes Panel - oder, solange nichts fokussiert/überfahren ist, das aktive.
+   Die :hover-Variante steht separat im Hover-Gate unten. */
+.ncss-expand-panel:is(:focus-visible, :focus-within),
+.ncss-expand-panels:not(:has(.ncss-expand-panel:is(:focus-visible, :focus-within))) .ncss-expand-panel:is(.ncss-expand-panel--active, [aria-current]:not([aria-current="false"])) {
+  --ncss-expand-panel-grow: var(--ncss-expand-grow);
+
+  & .ncss-expand-panel-body {
+    max-height: 6lh;
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: calc(var(--ncss-motion-duration) * 0.6);
+  }
+  & .ncss-expand-panel-media > * {
+    scale: 1;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ncss-expand-panel:hover {
+    --ncss-expand-panel-grow: var(--ncss-expand-grow);
+
+    & .ncss-expand-panel-body {
+      max-height: 6lh;
+      opacity: 1;
+      translate: 0 0;
+      transition-delay: calc(var(--ncss-motion-duration) * 0.6);
+    }
+    & .ncss-expand-panel-media > * {
+      scale: 1;
+    }
+  }
+  /* Wird ein anderes Panel überfahren, klappt das aktive zu */
+  .ncss-expand-panels:has(.ncss-expand-panel:hover) .ncss-expand-panel:not(:hover):not(:focus-within) {
+    --ncss-expand-panel-grow: 1;
+
+    & .ncss-expand-panel-body {
+      max-height: 0;
+      opacity: 0;
+      translate: 0 0.5rem;
+      transition-delay: 0s;
+    }
+    & .ncss-expand-panel-media > * {
+      scale: 1.08;
+    }
+  }
+}
+
+/* -- ncss container-query: expand-panels gestapelt (36rem) -- */
+@container ncss-expand (width < 36rem) {
+  .ncss-expand-panel {
+    flex: 1 1 100%;
+    height: var(--ncss-expand-collapsed);
+  }
+  .ncss-expand-panel:is(:focus-visible, :focus-within),
+  .ncss-expand-panels:not(:has(.ncss-expand-panel:is(:focus-visible, :focus-within))) .ncss-expand-panel:is(.ncss-expand-panel--active, [aria-current]:not([aria-current="false"])) {
+    height: var(--ncss-expand-expanded);
+  }
+}
+@container ncss-expand (width < 36rem) {
+  @media (hover: hover) and (pointer: fine) {
+    .ncss-expand-panel:hover {
+      height: var(--ncss-expand-expanded);
+    }
+    .ncss-expand-panels:has(.ncss-expand-panel:hover) .ncss-expand-panel:not(:hover):not(:focus-within) {
+      height: var(--ncss-expand-collapsed);
+    }
+  }
+}
+@media (forced-colors: active) {
+  .ncss-expand-panel {
+    border: 1px solid CanvasText;
+  }
+  .ncss-expand-panel::after {
+    display: none;
+  }
+  .ncss-expand-panel > :not(.ncss-expand-panel-media) {
+    padding-inline: 0.25em;
+    color: CanvasText;
+    background-color: Canvas;
+  }
+}

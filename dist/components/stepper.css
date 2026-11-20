@@ -1,0 +1,217 @@
+/**
+ * ncss - Fortschritts-Schritte / Stepper (Layer "components"): Bestellstatus, Formular-
+ * Assistent, Onboarding. Horizontal, sobald der CONTAINER breit genug ist, sonst
+ * automatisch vertikal (Container Query, kein Viewport-Breakpoint). Reines CSS, kein JS.
+ *
+ * Abgrenzung: components/lists.css .ncss-list--steps ist eine nummerierte ANLEITUNG
+ * (alle Schritte gleichwertig, kein Zustand). Der Stepper zeigt dagegen einen FORTSCHRITT
+ * mit drei Zuständen: erledigt / aktuell / ausstehend.
+ *
+ * Braucht colors.css + tokens.css (+ reset/base). Für den Zustandstext "(erledigt)"
+ * zusätzlich helpers/a11y.css (.ncss-visually-hidden) - oder eine eigene versteckte
+ * Textklasse.
+ *
+ * Markup:
+ *   <ol class="ncss-stepper" role="list" aria-label="Bestellstatus">
+ *     <li class="ncss-stepper-step ncss-stepper-step--done">
+ *       <span class="ncss-stepper-label">Bestellt <span class="ncss-visually-hidden">(erledigt)</span></span>
+ *       <span class="ncss-stepper-meta">12. Mai</span>
+ *     </li>
+ *     <li class="ncss-stepper-step" aria-current="step">
+ *       <span class="ncss-stepper-label">Versandt</span>
+ *     </li>
+ *     <li class="ncss-stepper-step">
+ *       <span class="ncss-stepper-label">Zugestellt</span>
+ *     </li>
+ *   </ol>
+ * Marker (Kreis mit Nummer bzw. Haken) kommt per CSS (::before, Alternativtext "") -
+ * kein eigenes Element nötig. Im Assistenten darf .ncss-stepper-label ein <a> zu einem
+ * erledigten Schritt sein.
+ *
+ * Zustände unterscheiden sich in der FORM, nicht nur in der Farbe:
+ *   erledigt   gefüllter Kreis mit Haken, durchgezogene Linie zum nächsten Schritt
+ *   aktuell    dicker Ring mit Nummer, fetter Text, aria-current="step"
+ *   ausstehend dünner Ring mit Nummer, gestrichelte Linie, gedämpfter Text
+ *
+ * Umschalten: ab 36rem Container-Breite horizontal (bei 6 Schritten also ~6rem je
+ * Schritt, längere Beschriftungen brechen um). .ncss-stepper--vertical erzwingt immer die
+ * senkrechte Darstellung, z.B. für sehr viele Schritte oder lange Beschriftungen.
+ */
+
+.ncss-stepper {
+  --ncss-stepper-marker: 2rem;
+  --ncss-stepper-line-width: 2px;
+  --ncss-stepper-color: var(--ncss-color-brand);
+  container-type: inline-size;
+  container-name: ncss-stepper;
+  counter-reset: ncss-stepper;
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0 0 var(--ncss-space-md);
+  padding: 0;
+}
+
+/* --- Vertikal (Ausgangslage) --------------------------------------------------------- */
+.ncss-stepper-step {
+  counter-increment: ncss-stepper;
+  position: relative;
+  flex: 1 1 100%;
+  display: grid;
+  grid-template-columns: var(--ncss-stepper-marker) minmax(0, 1fr);
+  column-gap: var(--ncss-space-sm);
+  align-content: start;
+  padding-block-end: var(--ncss-space-md);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-stepper-step:last-child {
+  padding-block-end: 0;
+}
+
+.ncss-stepper-step::before {
+  content: counter(ncss-stepper) / "";
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  inline-size: var(--ncss-stepper-marker);
+  block-size: var(--ncss-stepper-marker);
+  border: var(--ncss-stepper-line-width) solid currentColor;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-bg);
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Verbindungslinie zum NÄCHSTEN Schritt (beim letzten entfällt sie). Rahmen statt
+   Fläche: bleibt in Forced Colors sichtbar; ausstehend gestrichelt. */
+.ncss-stepper-step::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--ncss-stepper-marker) / 2 - var(--ncss-stepper-line-width) / 2);
+  inset-block: calc(var(--ncss-stepper-marker) + var(--ncss-space-3xs)) var(--ncss-space-3xs);
+  border-inline-start: var(--ncss-stepper-line-width) dashed var(--ncss-color-text-muted);
+}
+.ncss-stepper-step:last-child::after {
+  content: none;
+}
+
+.ncss-stepper-label {
+  grid-column: 2;
+  align-self: center;
+  min-block-size: var(--ncss-stepper-marker);
+  display: flex;
+  align-items: center;
+  font-weight: var(--ncss-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+.ncss-stepper-meta {
+  grid-column: 2;
+  font-size: var(--ncss-font-size-sm);
+}
+a.ncss-stepper-label,
+.ncss-stepper-label a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* --- Zustände --------------------------------------------------------------------------- */
+.ncss-stepper-step--done {
+  color: var(--ncss-color-text);
+}
+.ncss-stepper-step--done::before {
+  content: "\2713" / "";
+  border-color: var(--ncss-stepper-color);
+  background-color: var(--ncss-stepper-color);
+  color: var(--ncss-color-brand-contrast);
+}
+.ncss-stepper-step--done::after {
+  border-inline-start-style: solid;
+  border-color: var(--ncss-stepper-color);
+}
+
+.ncss-stepper-step[aria-current="step"] {
+  color: var(--ncss-color-text);
+}
+.ncss-stepper-step[aria-current="step"]::before {
+  border-width: calc(var(--ncss-stepper-line-width) * 2);
+  border-color: var(--ncss-stepper-color);
+  color: var(--ncss-color-brand-on-soft);
+  background-color: var(--ncss-color-brand-100);
+}
+.ncss-stepper-step[aria-current="step"] > .ncss-stepper-label {
+  font-weight: var(--ncss-font-weight-bold);
+}
+
+/* Fehler-/Abbruchschritt (z.B. "Zahlung fehlgeschlagen"): Ausrufezeichen statt Nummer. */
+.ncss-stepper-step--error::before {
+  content: "!" / "";
+  border-color: var(--ncss-color-danger);
+  background-color: var(--ncss-color-danger-100);
+  color: var(--ncss-color-danger-on-soft);
+}
+
+/* --- Horizontal, sobald Platz ist ------------------------------------------------------
+   Gleich breite Schritte (flex-basis 0), Marker mittig über dem Text, Linie von der Mitte
+   des eigenen Markers zur Mitte des nächsten (= genau 100 % der Schrittbreite). */
+@container ncss-stepper (min-width: 36rem) {
+  .ncss-stepper:not(.ncss-stepper--vertical) > .ncss-stepper-step {
+    flex: 1 1 0;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    row-gap: var(--ncss-space-3xs);
+    padding-block-end: 0;
+    padding-inline: var(--ncss-space-3xs);
+    text-align: center;
+  }
+  .ncss-stepper:not(.ncss-stepper--vertical) > .ncss-stepper-step::before {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .ncss-stepper:not(.ncss-stepper--vertical) > .ncss-stepper-step::after {
+    inset-block: calc(var(--ncss-stepper-marker) / 2 - var(--ncss-stepper-line-width) / 2) auto;
+    inset-inline-start: calc(50% + var(--ncss-stepper-marker) / 2 + var(--ncss-space-3xs));
+    inline-size: calc(100% - var(--ncss-stepper-marker) - var(--ncss-space-3xs) * 2);
+    border-inline-start: 0;
+    border-block-start: var(--ncss-stepper-line-width) dashed var(--ncss-color-text-muted);
+  }
+  .ncss-stepper:not(.ncss-stepper--vertical) > .ncss-stepper-step--done::after {
+    border-block-start-style: solid;
+    border-color: var(--ncss-stepper-color);
+  }
+  .ncss-stepper:not(.ncss-stepper--vertical) .ncss-stepper-label,
+  .ncss-stepper:not(.ncss-stepper--vertical) .ncss-stepper-meta {
+    grid-column: 1;
+    justify-content: center;
+    min-block-size: 0;
+  }
+}
+/* --- Erzwungene Farben ----------------------------------------------------------------
+   Der gefüllte "erledigt"-Kreis verlöre seine Fläche - Systemfarben halten die drei
+   Zustände unterscheidbar (Haken/Nummer und Ringstärke bleiben ohnehin erhalten). */
+@media (forced-colors: active) {
+  .ncss-stepper-step::before {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+  .ncss-stepper-step--done::before {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+    border-color: CanvasText;
+    color: Canvas;
+  }
+  .ncss-stepper-step[aria-current="step"]::before {
+    border-color: Highlight;
+  }
+  .ncss-stepper-step::after,
+  .ncss-stepper-step--done::after {
+    border-color: CanvasText;
+  }
+}

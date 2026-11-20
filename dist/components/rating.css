@@ -1,0 +1,121 @@
+/**
+ * ncss - Bewertung (Layer "components"): Sterne-Eingabe aus nativen Radio-Buttons.
+ * Pfeiltasten, Pflichtfeld und Formular-Versand kommen vom Browser, kein JS. Braucht
+ * colors.css + tokens.css (+ reset/base), für die Stern-Texte helpers/a11y.css.
+ *
+ * Markup - Inputs in NATÜRLICHER Reihenfolge 1..5 (Pfeiltaste rechts = mehr Sterne, so
+ * wie man es sieht), jeder Input direkt vor seinem Label:
+ *   <fieldset class="ncss-rating">
+ *     <legend>Wie zufrieden waren Sie?</legend>
+ *     <input type="radio" name="r" id="r1" value="1"><label for="r1"><span class="ncss-visually-hidden">1 Stern</span></label>
+ *     <input type="radio" name="r" id="r2" value="2"><label for="r2"><span class="ncss-visually-hidden">2 Sterne</span></label>
+ *     ...
+ *   </fieldset>
+ * Der Stern selbst kommt per CSS (Alternativtext "" = stumm), der Text im Label sagt
+ * den Wert an. Gefüllt/leer unterscheidet sich zusätzlich über die FORM (★ vs ☆), nicht
+ * nur über die Farbe - bleibt auch im Hochkontrastmodus erkennbar.
+ *
+ * Füll-Logik ohne Zählregeln: alle Sterne gefüllt, sobald IRGENDEIN Input gewählt ist
+ * (:has(:checked)), dann jeder Stern NACH dem gewählten wieder leer
+ * (input:checked + label ~ label). Ohne :has() (ältere Browser) ist nur der gewählte
+ * Stern selbst gefüllt - Auswahl bleibt erkennbar, nur weniger hübsch.
+ */
+
+.ncss-rating {
+  --ncss-rating-size: 1.75rem;
+  --ncss-rating-color: var(--ncss-color-warning);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+  border: 0;
+}
+.ncss-rating > legend {
+  inline-size: 100%;
+  margin-block-end: var(--ncss-space-3xs);
+  padding: 0;
+  font-weight: var(--ncss-font-weight-semibold);
+}
+.ncss-rating > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.ncss-rating > label {
+  display: inline-grid;
+  place-items: center;
+  inline-size: calc(var(--ncss-rating-size) + var(--ncss-space-3xs));
+  block-size: calc(var(--ncss-rating-size) + var(--ncss-space-3xs));
+  border-radius: var(--ncss-radius-sm);
+  color: var(--ncss-color-text-muted);
+  font-size: var(--ncss-rating-size);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+              scale var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+.ncss-rating > label::before {
+  content: "\2606" / "";
+}
+/* Gefüllt: alle bis einschließlich des gewählten. */
+.ncss-rating:has(> input:checked) > label,
+.ncss-rating > input:checked + label {
+  color: var(--ncss-rating-color);
+}
+.ncss-rating:has(> input:checked) > label::before,
+.ncss-rating > input:checked + label::before {
+  content: "\2605" / "";
+}
+.ncss-rating > input:checked + label ~ label {
+  color: var(--ncss-color-text-muted);
+}
+.ncss-rating > input:checked + label ~ label::before {
+  content: "\2606" / "";
+}
+.ncss-rating > input:focus-visible + label {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 0;
+}
+.ncss-rating > label:active {
+  scale: 0.9;
+}
+/* Vorschau beim Überfahren: bis zum Mauszeiger füllen, danach leeren - nur mit echtem
+   Zeigegerät (Touch kennt kein :hover). */
+@media (hover: hover) and (pointer: fine) {
+  .ncss-rating:has(> label:hover) > input + label {
+    color: var(--ncss-rating-color);
+  }
+  .ncss-rating:has(> label:hover) > input + label::before {
+    content: "\2605" / "";
+  }
+  .ncss-rating > label:hover ~ input + label {
+    color: var(--ncss-color-text-muted);
+  }
+  .ncss-rating > label:hover ~ input + label::before {
+    content: "\2606" / "";
+  }
+}
+.ncss-rating > input:disabled + label {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.ncss-rating--sm {
+  --ncss-rating-size: 1.1rem;
+}
+
+/* WebKit/Safari: nach einem Pfeiltasten-Wechsel innerhalb der Radio-Gruppe matcht der
+   neu fokussierte Input NICHT :focus-visible (per Playwright-WebKit-Test gefunden - der
+   Ring verschwand nach dem ersten Pfeil). Dort deshalb :focus - Safari fokussiert Radios
+   per Mausklick ohnehin nicht, es entsteht also kein Ring nach einem Klick. Gleiche
+   WebKit-Erkennung wie components/select.css. */
+@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+  .ncss-rating > input:focus + label {
+    outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+    outline-offset: 0;
+  }
+}

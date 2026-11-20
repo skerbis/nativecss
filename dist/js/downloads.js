@@ -6,6 +6,18 @@
  * data-src: JSON-Array, jedes Element {title, url, size?, type?, description?}.
  *   type: Dateiendung ohne Punkt (z.B. "pdf") - fehlt es, wird sie aus der url-Endung
  *   abgeleitet. size: Bytes (Zahl) - fehlt es, wird keine Größenangabe gerendert.
+ *
+ * Sprache: nächster [lang]-Vorfahre des Widgets (sonst <html lang>) - bestimmt Texte UND
+ * Zahlenformat (Intl.NumberFormat: "1,2 MB" auf Deutsch, "1.2 MB" auf Englisch). Jeder
+ * Herunterladen-Link trägt einen eindeutigen zugänglichen Namen mit Typ, Dateiname und
+ * Größe ("PDF herunterladen: Preisliste 2026, 1,2 MB") - mehrere gleichlautende
+ * "Herunterladen"-Links wären in einer Linkliste des Screenreaders sonst nicht
+ * unterscheidbar (WCAG 2.4.4/2.4.9). Der sichtbare Text bleibt kurz, der Name beginnt
+ * aber mit ihm (WCAG 2.5.3 "Label in Name").
+ *
+ * Dynamische Inhalte: neu eingefügte Widgets per
+ *   document.dispatchEvent(new CustomEvent("ncss-content-change", { detail: { root: el } }))
+ * melden (oder js/content-observer.js einbinden) - jedes Widget lädt nur einmal.
  */
 (function () {
   "use strict";
@@ -16,9 +28,14 @@
     jpg: "JPG", jpeg: "JPG", png: "PNG", svg: "SVG", mp3: "MP3", mp4: "MP4"
   };
 
-  function locale() {
-    var lang = document.documentElement.getAttribute("lang") || "de";
-    return lang.slice(0, 2) === "en" ? "en" : "de";
+  // Volle Sprach-Angabe des nächsten [lang]-Vorfahren ("de-CH", "en-GB") - für
+  // Intl.NumberFormat; locale() reduziert sie auf die zwei mitgelieferten Textsprachen.
+  function langOf(el) {
+    var host = el && el.closest ? el.closest("[lang]") : null;
+    return (host && host.getAttribute("lang")) || document.documentElement.getAttribute("lang") || "de";
+  }
+  function locale(el) {
+    return langOf(el).slice(0, 2).toLowerCase() === "en" ? "en" : "de";
   }
 
   function escapeHtml(str) {
@@ -32,7 +49,11 @@
     return match ? match[1].toLowerCase() : "";
   }
 
-  function formatSize(bytes) {
+  // Intl.NumberFormat statt toFixed(): toFixed() liefert immer einen Dezimal-PUNKT
+  // ("1.2 MB" auch auf einer deutschen Seite). Einheit bleibt bewusst das gängige
+  // KB/MB-Kürzel (Basis 1024) statt Intls "unit"-Stil (wäre "1,2 MB" vs. "1.2 MB" je nach
+  // Engine mit schmalem oder normalem Leerzeichen - hier stabil ein geschütztes Leerzeichen).
+  function formatSize(bytes, lang) {
     if (typeof bytes !== "number" || isNaN(bytes)) return null;
     var units = ["B", "KB", "MB", "GB"];
     var value = bytes;
@@ -42,11 +63,18 @@
       unitIndex++;
     }
     var precision = unitIndex === 0 ? 0 : 1;
-    return value.toFixed(precision) + " " + units[unitIndex];
+    var number;
+    try {
+      number = new Intl.NumberFormat(lang, { minimumFractionDigits: precision, maximumFractionDigits: precision }).format(value);
+    } catch (e) {
+      number = value.toFixed(precision);
+    }
+    return number + "\u00a0" + units[unitIndex];
   }
 
   function render(el, files) {
-    var lang = locale();
+    var lang = locale(el);
+    var fullLang = langOf(el);
     if (!files.length) {
       el.innerHTML = '<p class="ncss-events-empty">' + (lang === "de" ? "Keine Dateien verfügbar." : "No files available.") + "</p>";
       return;
@@ -56,7 +84,12 @@
     files.forEach(function (file) {
       var type = (file.type || typeFromUrl(file.url)).toLowerCase();
       var label = TYPE_LABELS[type] || type.toUpperCase();
-      var size = formatSize(file.size);
+      var size = formatSize(file.size, fullLang);
+      var title = file.title || file.url;
+      var action = lang === "de" ? "Herunterladen" : "Download";
+      // "PDF herunterladen: Preisliste 2026, 1,2 MB" - beginnt mit dem sichtbaren Text.
+      var name = (lang === "de" ? (label || "Datei") + " herunterladen: " : "Download " + (label || "file") + ": ") +
+        title + (size ? ", " + size : "");
 
       html +=
         '<li class="ncss-downloads-item">' +
@@ -65,7 +98,7 @@
         "</span>" +
         '<div class="ncss-downloads-body">' +
         '<p class="ncss-downloads-title">' +
-        escapeHtml(file.title || file.url) +
+        escapeHtml(title) +
         "</p>";
       if (file.description) {
         html += '<p class="ncss-text-sm ncss-text-muted">' + escapeHtml(file.description) + "</p>";
@@ -77,8 +110,10 @@
         "</div>" +
         '<a class="ncss-btn ncss-btn--secondary ncss-downloads-action" href="' +
         escapeHtml(file.url) +
-        '" download>' +
-        (lang === "de" ? "Herunterladen" : "Download") +
+        '" download aria-label="' +
+        escapeHtml(name) +
+        '">' +
+        action +
         "</a></li>";
     });
     html += "</ul>";
@@ -86,7 +121,7 @@
   }
 
   function renderError(el, err) {
-    el.innerHTML = '<p class="ncss-events-empty">' + (locale() === "de" ? "Dateiliste konnte nicht geladen werden." : "Could not load file list.") + "</p>";
+    el.innerHTML = '<p class="ncss-events-empty">' + (locale(el) === "de" ? "Dateiliste konnte nicht geladen werden." : "Could not load file list.") + "</p>";
     if (window.console) {
       window.console.error("[ncss-downloads]", err);
     }
@@ -124,8 +159,23 @@
   // deepQueryAll() statt document.querySelectorAll(): ein .ncss-downloads-Widget
   // INNERHALB eines <ncss-container> (siehe ncss-container.js) liegt in dessen Shadow
   // Root - querySelectorAll() durchquert Shadow-Grenzen nicht.
-  var widgets = deepQueryAll(".ncss-downloads");
-  for (var i = 0; i < widgets.length; i++) {
-    init(widgets[i]);
+  //
+  // Dynamische Inhalte (htmx, fetch+innerHTML, REDAXO-Frontend-Editing): scan() ist
+  // idempotent - bereits verarbeitete Widgets merkt sich ein WeakSet, bewusst KEIN
+  // data-Attribut (per innerHTML kopiertes Markup trüge sonst eine veraltete Markierung mit).
+  var seen = new WeakSet();
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    var list = deepQueryAll(".ncss-downloads", root);
+    if (root.matches && root.matches(".ncss-downloads")) list.unshift(root);
+    list.forEach(function (el) {
+      if (seen.has(el)) return;
+      seen.add(el);
+      init(el);
+    });
   }
+  scan(document);
+  document.addEventListener("ncss-content-change", function (event) {
+    scan((event.detail && event.detail.root) || document);
+  });
 })();

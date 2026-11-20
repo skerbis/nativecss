@@ -1,0 +1,137 @@
+<!--DESC: Karten mit MapLibre GL als Web Component <ncss-map>: Proxy-Adressen für Datenschutz ohne Drittanbieter-Kontakt, Zwei-Klick-Modus, Lazy Loading, Dunkelmodus, Tastatur und Ersatzinhalt ohne JS.-->
+<!--FOOT: <script src="~/dist/js/map.js"></script>-->
+<section class="ncss-stack">
+  <h1>Karten</h1>
+  <p class="ncss-text-lg ncss-text-muted"><code>&lt;ncss-map&gt;</code> zeigt eine interaktive Vektorkarte mit <a href="https://maplibre.org/">MapLibre GL</a> (selbst gehostet unter <code>vendor/maplibre/</code>, BSD-3-Clause). Wichtigstes Ziel ist Datenschutz: Über das Attribut <code>proxy</code> laufen <strong>alle</strong> Anfragen der Karte über deinen eigenen Server - Besucher verbinden sich nie direkt mit einem Kartenanbieter. Dateien: <code>components/map.css</code> + <code>js/map.js</code>, einzeln einsetzbar (nur <code>colors.css</code>/<code>tokens.css</code>/<code>reset.css</code>/<code>base.css</code> nötig).</p>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Live-Beispiel</h2>
+  <p class="ncss-text-muted ncss-text-sm">Diese Doku ist eine statische Seite (GitHub Pages) ohne Server-Proxy. Die Karte unten lädt deshalb direkt von <a href="https://openfreemap.org/">OpenFreeMap</a> (<code>tiles.openfreemap.org</code>) - aber <strong>erst nach deinem Klick</strong> auf „Karte anzeigen“ (Zwei-Klick-Modus). Vorher wird nichts von Dritten geladen. Auf deiner eigenen Website setzt du stattdessen <code>proxy</code>, dann ist auch der Klick nicht mehr nötig.</p>
+  <ncss-map lat="53.50" lng="13.20" zoom="11" label="Tollensesee" consent>
+    <p><strong>Tollensesee</strong> bei Neubrandenburg, Mecklenburg-Vorpommern</p>
+    <p><a href="https://www.openstreetmap.org/?mlat=53.50&amp;mlon=13.20#map=11/53.50/13.20">Tollensesee in OpenStreetMap öffnen</a></p>
+  </ncss-map>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;link rel="stylesheet" href="ncss/components/map.css"&gt;   &lt;!-- in ncss.css schon enthalten --&gt;
+&lt;script src="ncss/js/map.js"&gt;&lt;/script&gt;
+
+&lt;ncss-map lat="53.50" lng="13.20" zoom="11" label="Tollensesee"
+          proxy="/proxy/ofm/"&gt;
+  &lt;p&gt;&lt;strong&gt;Tollensesee&lt;/strong&gt; bei Neubrandenburg&lt;/p&gt;
+  &lt;p&gt;&lt;a href="https://www.openstreetmap.org/?mlat=53.50&amp;amp;mlon=13.20#map=11/53.50/13.20"&gt;
+    In OpenStreetMap öffnen&lt;/a&gt;&lt;/p&gt;
+&lt;/ncss-map&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Bedienung: <kbd>Tab</kbd> auf die Karte, <kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> verschieben, <kbd>+</kbd>/<kbd>−</kbd> zoomen, bei <code>view3d</code> <kbd>Umschalt</kbd> + Pfeile drehen und neigen. Das Mausrad zoomt nur mit <kbd>Strg</kbd>/<kbd>⌘</kbd>, auf Touch verschieben zwei Finger (<code>cooperativeGestures</code>) - die Seite scrollt also ungestört weiter.</p>
+</section>
+
+<section class="ncss-stack" id="datenschutz">
+  <h2 class="demo-section-title">Datenschutz: Proxy statt Drittanbieter</h2>
+  <p>Eine Webkarte lädt Stil (JSON), Kacheln, Schriften (Glyphen) und Symbole (Sprites) - normalerweise direkt vom Kartenanbieter. Dabei überträgt der Browser jedes Mal die IP-Adresse des Besuchers. Mit <code>proxy</code> schreibt <code>&lt;ncss-map&gt;</code> jede dieser Anfragen per MapLibre-<code>transformRequest</code> auf deinen Server um; der holt die Daten (und kann sie cachen). Ergebnis: <strong>kein Kontakt zu Dritten</strong>, keine Einwilligung nötig, keine Cookies.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Form</th><th scope="col">Beispiel</th><th scope="col">Aus <code>https://tiles.openfreemap.org/planet/…/1/0/0.pbf</code> wird</th></tr></thead>
+      <tbody>
+        <tr><td>Präfix (Origin wird ersetzt)</td><td><code>proxy="/proxy/ofm/"</code></td><td><code>/proxy/ofm/planet/…/1/0/0.pbf</code></td></tr>
+        <tr><td>Vorlage mit <code>{url}</code> (URL-kodiert)</td><td><code>proxy="/proxy?url={url}"</code></td><td><code>/proxy?url=https%3A%2F%2Ftiles.openfreemap.org%2Fplanet%2F…</code></td></tr>
+        <tr><td>Vorlage mit <code>{host}</code>/<code>{path}</code></td><td><code>proxy="/proxy/{host}/{path}"</code></td><td><code>/proxy/tiles.openfreemap.org/planet/…/1/0/0.pbf</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-muted ncss-text-sm">Umgeschrieben wird standardmäßig jede fremde Origin (alles außer der eigenen Seite und dem Proxy selbst); <code>proxy-origins="tiles.openfreemap.org"</code> beschränkt das auf bestimmte Server. Die Präfix-Form passt, wenn alle Daten von einem Server kommen (OpenFreeMap: Stil, TileJSON, Kacheln, Glyphen und Sprites liegen alle auf <code>tiles.openfreemap.org</code>). Verweist dein Stil auf mehrere Server, nimm die <code>{url}</code>-Vorlage.</p>
+
+  <h3>nginx</h3>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-nginx"># /proxy/ofm/… -> https://tiles.openfreemap.org/… (mit Cache)
+proxy_cache_path /var/cache/nginx/ofm levels=1:2 keys_zone=ofm:10m max_size=2g inactive=30d;
+
+server {
+  # …
+  location /proxy/ofm/ {
+    proxy_pass https://tiles.openfreemap.org/;
+    proxy_ssl_server_name on;
+    proxy_set_header Host tiles.openfreemap.org;
+    proxy_set_header Cookie "";
+    proxy_set_header X-Forwarded-For "";      # IP des Besuchers NICHT weitergeben
+    proxy_hide_header Set-Cookie;
+    proxy_cache ofm;
+    proxy_cache_valid 200 1d;
+    add_header X-Cache $upstream_cache_status;
+  }
+}</code></pre>
+
+  <h3>PHP (eine Datei, mit Allowlist)</h3>
+  <pre class="ncss-radius-lg ncss-border"><code class="language-php">&lt;?php
+// proxy.php - Aufruf: /proxy.php?url={url}  →  &lt;ncss-map proxy="/proxy.php?url={url}"&gt;
+// Skizze: vor dem Produktiveinsatz Cache, Größenlimit und Rate-Limit ergänzen.
+$allow = ['tiles.openfreemap.org'];               // NUR diese Hosts - sonst offenes Relay
+$url   = (string) ($_GET['url'] ?? '');
+$parts = parse_url($url);
+if (($parts['scheme'] ?? '') !== 'https' || !in_array($parts['host'] ?? '', $allow, true)) {
+    http_response_code(403);
+    exit;
+}
+$ch = curl_init($url);
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER =&gt; true,
+    CURLOPT_FOLLOWLOCATION =&gt; false,
+    CURLOPT_TIMEOUT        =&gt; 15,
+    CURLOPT_USERAGENT      =&gt; 'site-map-proxy',     // keine Daten des Besuchers weiterreichen
+]);
+$body = curl_exec($ch);
+$code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE) ?: 502;
+$type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE) ?: 'application/octet-stream';
+http_response_code($code);
+header('Content-Type: ' . $type);
+header('Cache-Control: public, max-age=86400');
+echo $body;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Wichtig ist die <strong>Allowlist</strong>: Ein Proxy, der beliebige URLs abruft, wäre ein offenes Relay. Liefert der Proxy Stil-JSON mit bereits umgeschriebenen Adressen aus, ist das ebenfalls in Ordnung - Adressen auf der eigenen Seite bzw. dem Proxy werden nicht noch einmal umgeschrieben.</p>
+  <div class="ncss-alert ncss-alert--info">
+    <p><strong>Fertig eingebaut:</strong> Das REDAXO-AddOn <em>fluid</em> bringt einen Karten-Proxy für OpenFreeMap schon mit (<code>/proxy/ofm/…</code>, mit Cache und Gebietsbegrenzung) - dort genügt <code>proxy="/proxy/ofm/"</code>.</p>
+  </div>
+</section>
+
+<section class="ncss-stack" id="ersatzinhalt">
+  <h2 class="demo-section-title">Ersatzinhalt und Zwei-Klick-Modus</h2>
+  <p>Was du in <code>&lt;ncss-map&gt;</code> schreibst - Adresse, Wegbeschreibung, ein Link zu OpenStreetMap - ist der <strong>Ersatzinhalt</strong>. Er ist sichtbar ohne JavaScript, solange die Karte noch nicht geladen ist und falls das Laden scheitert (dann mit dem Hinweis „Die Karte konnte nicht geladen werden.“). Das Element ist also nie leer. Erst wenn die Karte fertig gezeichnet ist, liegt sie darüber; der Ersatzinhalt bleibt für Screenreader im Baum und erscheint bei Tastatur-Fokus auf einem Link darin unten über der Karte. Mit <code>fallback="below"</code> bleibt er dauerhaft sichtbar unter der Karte.</p>
+  <p><strong>Lazy Loading:</strong> MapLibre (rund 1,1 MB) wird erst geladen, wenn die Karte in die Nähe des sichtbaren Bereichs scrollt. Bis dahin reserviert ein ruhiges Raster die Fläche, nichts springt.</p>
+  <p><strong>Zwei-Klick-Modus</strong> (<code>consent</code>): Statt automatisch zu laden, zeigt die Karte einen kurzen Datenschutz-Hinweis und den Button „Karte anzeigen“. Ohne <code>proxy</code> nennt der Hinweis den Kartenserver und dass die IP-Adresse übertragen wird; mit <code>proxy</code> sagt er, dass dein Server die Daten holt. <code>privacy-url</code> ergänzt einen Link zur Datenschutzerklärung. Meldet das Gerät „Datensparen“ (Save-Data), ist der Modus automatisch an - so lädt niemand ungefragt ein Megabyte Karte.</p>
+</section>
+
+<section class="ncss-stack" id="attribute">
+  <h2 class="demo-section-title">Attribute</h2>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Attribut / API</th><th scope="col">Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><code>lat</code>, <code>lng</code></td><td>Mittelpunkt und Position der Markierung (Dezimalgrad)</td></tr>
+        <tr><td><code>zoom="14"</code></td><td>Zoomstufe (0-22)</td></tr>
+        <tr><td><code>label</code></td><td>Name des Orts - Beschriftung der Markierung und der Karte („Karte: …“)</td></tr>
+        <tr><td><code>marker="off"</code></td><td>keine Markierung</td></tr>
+        <tr><td><code>style-url</code></td><td>MapLibre-Stil (JSON-URL). Default: OpenFreeMap „liberty“</td></tr>
+        <tr><td><code>style-url-dark</code></td><td>Stil im Dunkelmodus. Default: OpenFreeMap „dark“ (nur wenn auch <code>style-url</code> fehlt)</td></tr>
+        <tr><td><code>proxy</code></td><td>Präfix (<code>/proxy/ofm/</code>) oder Vorlage mit <code>{url}</code>, <code>{host}</code>, <code>{path}</code> - siehe <a href="#datenschutz">Datenschutz</a></td></tr>
+        <tr><td><code>proxy-origins</code></td><td>nur diese Origins umschreiben (Leerzeichen/Komma getrennt). Default: alle fremden</td></tr>
+        <tr><td><code>consent</code></td><td>Zwei-Klick-Modus; automatisch bei Save-Data, <code>consent="off"</code> schaltet beides ab</td></tr>
+        <tr><td><code>privacy-url</code></td><td>Link „Datenschutz“ im Zwei-Klick-Hinweis</td></tr>
+        <tr><td><code>view3d</code></td><td>Gebäude in 3D, geneigte Kamera, Kompass/Neigung (Stile mit OpenMapTiles-Schema)</td></tr>
+        <tr><td><code>fallback="below"</code></td><td>Ersatzinhalt nach dem Laden sichtbar unter der Karte</td></tr>
+        <tr><td><code>vendor</code></td><td>Ordner mit <code>maplibre-gl.mjs</code>/<code>.css</code>. Default: <code>../../vendor/maplibre/</code> relativ zu <code>js/map.js</code> (wie bei <code>&lt;ncss-icon&gt;</code>); als ES-Modul geladen setzen</td></tr>
+        <tr><td><code>data-label-show</code>, <code>-note</code>, <code>-noteproxy</code>, <code>-privacy</code>, <code>-error</code>, <code>-map</code>, <code>-canvas</code>, <code>-marker</code>, <code>-zoomin</code>, <code>-zoomout</code>, <code>-compass</code>, <code>-attribution</code>, <code>-winhelp</code>, <code>-machelp</code>, <code>-mobilehelp</code></td><td>Texte überschreiben (Deutsch/Englisch nach <code>&lt;html lang&gt;</code>); <code>{host}</code> in <code>note</code> = Kartenserver</td></tr>
+        <tr><td><code>el.map</code>, <code>el.show()</code></td><td>MapLibre-Instanz (nach dem Laden), sofort laden</td></tr>
+        <tr><td><code>ncss-map-consent</code>, <code>ncss-map-load</code>, <code>ncss-map-error</code>, <code>ncss-map-theme</code></td><td>Events (bubbeln); <code>load</code>: <code>detail.map</code>, <code>theme</code>: <code>detail.dark</code>, <code>detail.style</code></td></tr>
+        <tr><td><code>--ncss-map-height</code>, <code>-radius</code>, <code>-accent</code>, <code>-bg</code>, <code>-line</code></td><td>Custom Properties (Höhe, Ecken, Markierung/Button, Platzhalter-Raster)</td></tr>
+        <tr><td><code>data-state</code></td><td>vom Script gesetzt: <code>idle</code>, <code>consent</code>, <code>loading</code>, <code>ready</code>, <code>error</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="barrierefreiheit">
+  <h2 class="demo-section-title">Barrierefreiheit, Dunkelmodus, Bewegung</h2>
+  <ul>
+    <li>Die Karte ist eine benannte Region („Karte: Tollensesee“); die Kartenfläche selbst ist fokussierbar und erklärt ihre Tastenbelegung, die Markierung hat ein <code>aria-label</code>. Fokus ist an Karte, Buttons und Links deutlich sichtbar.</li>
+    <li>Eine Karte ist für Screenreader kaum nutzbar - deshalb ist der Ersatzinhalt die eigentliche Text-Alternative: Adresse und Link gehören immer hinein.</li>
+    <li><strong>Dunkelmodus:</strong> Ist <code>&lt;html data-theme-resolved="dark"&gt;</code> (bzw. <code>data-theme="dark"</code> oder das System dunkel), lädt die Karte <code>style-url-dark</code> - live beim Umschalten, auch über <a href="a11y-preferences.html"><code>&lt;ncss-preferences&gt;</code></a>.</li>
+    <li><strong>Bewegung reduzieren</strong> (<code>prefers-reduced-motion</code> oder <code>&lt;html data-motion="reduce"&gt;</code>): keine Kamerafahrten, keine Überblendung, <code>view3d</code> startet direkt geneigt.</li>
+    <li><strong>Forced Colors:</strong> Systemfarben für Rahmen, Hinweis und Button, die Markierung bleibt sichtbar.</li>
+  </ul>
+</section>

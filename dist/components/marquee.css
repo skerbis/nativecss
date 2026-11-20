@@ -1,0 +1,119 @@
+/**
+ * ncss - Marquee / Laufband (Layer "components"): endlos laufende Reihe für Logos oder
+ * kurze Texte. Reines CSS: der Inhalt steht ZWEIMAL im Markup, die Kopie ist für
+ * Hilfstechnik versteckt (aria-hidden + inert), beide Gruppen wandern um exakt eine
+ * Gruppenbreite - dadurch nahtlos.
+ *
+ * Markup:
+ *   <div class="ncss-marquee">
+ *     <ul class="ncss-marquee-group" role="list"> <li>...</li> ... </ul>
+ *     <ul class="ncss-marquee-group" role="list" aria-hidden="true" inert> (dieselben) </ul>
+ *   </div>
+ * Nur EINE Gruppe geschrieben? data-ncss-marquee (js/marquee.js) erzeugt die Kopie.
+ *
+ * Modifier: --reverse (andere Richtung), --slow/--fast (Dauer x2 / x0,5), --fade (weiche
+ * Ränder per mask), --paused (angehalten, z.B. per Pause-Button - js/marquee.js
+ * verdrahtet <button data-ncss-marquee-toggle aria-controls="id">).
+ * Parameter: --ncss-marquee-duration (30s, eine Runde), --ncss-marquee-gap.
+ *
+ * Hält an bei Hover (nur echte Zeigegeräte) und solange etwas darin Fokus hat.
+ * WCAG 2.2.2 (Pause, Stop, Hide): Bewegung > 5 s braucht einen Stopp-Mechanismus -
+ * Hover/Fokus allein reicht nicht für Touch, deshalb für Inhalte mit Aussage den
+ * Pause-Button setzen.
+ * prefers-reduced-motion und Druck: keine Bewegung, Kopie ausgeblendet, die Reihe ist
+ * stattdessen ganz normal horizontal scrollbar.
+ *
+ * Benötigt: tokens.css. Optional js/marquee.js.
+ */
+
+.ncss-marquee {
+  display: flex;
+  gap: var(--ncss-marquee-gap, var(--ncss-space-lg));
+  overflow: clip;
+  /* Fokus-Ring der Elemente am Rand nicht abschneiden. */
+  overflow-clip-margin: calc(var(--ncss-focus-ring-width) * 3);
+}
+
+.ncss-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--ncss-marquee-gap, var(--ncss-space-lg));
+  min-inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & > * {
+    flex-shrink: 0;
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ncss-marquee-group {
+    animation: ncss-marquee var(--ncss-marquee-duration, 30s) linear infinite;
+  }
+  .ncss-marquee--slow > .ncss-marquee-group {
+    animation-duration: calc(var(--ncss-marquee-duration, 30s) * 2);
+  }
+  .ncss-marquee--fast > .ncss-marquee-group {
+    animation-duration: calc(var(--ncss-marquee-duration, 30s) / 2);
+  }
+  .ncss-marquee--reverse > .ncss-marquee-group {
+    animation-direction: reverse;
+  }
+  .ncss-marquee:dir(rtl) > .ncss-marquee-group {
+    animation-name: ncss-marquee-rtl;
+  }
+  .ncss-marquee:is(:focus-within, .ncss-marquee--paused) > .ncss-marquee-group {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .ncss-marquee:hover > .ncss-marquee-group {
+    animation-play-state: paused;
+  }
+}
+
+.ncss-marquee--fade {
+  mask-image: linear-gradient(to right, transparent, #000 var(--ncss-space-2xl), #000 calc(100% - var(--ncss-space-2xl)), transparent);
+}
+
+/* Eine Gruppe + der Abstand zwischen beiden Gruppen = exakt eine Periode. */
+@keyframes ncss-marquee {
+  to { translate: calc(-100% - var(--ncss-marquee-gap, var(--ncss-space-lg))) 0; }
+}
+@keyframes ncss-marquee-rtl {
+  to { translate: calc(100% + var(--ncss-marquee-gap, var(--ncss-space-lg))) 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ncss-marquee {
+    overflow-x: auto;
+    mask-image: none;
+  }
+  .ncss-marquee-group {
+    min-inline-size: 0;
+  }
+  .ncss-marquee-group[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+@media print {
+  .ncss-marquee {
+    flex-wrap: wrap;
+    overflow: visible;
+    mask-image: none;
+  }
+  .ncss-marquee-group {
+    animation: none;
+    flex-wrap: wrap;
+    min-inline-size: 0;
+  }
+  .ncss-marquee-group[aria-hidden="true"] {
+    display: none;
+  }
+}

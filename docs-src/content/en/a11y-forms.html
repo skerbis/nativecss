@@ -1,0 +1,265 @@
+<!--DESC: Visible labels, required fields, linked hints and errors, :user-invalid, fieldset/legend, autocomplete and an error summary - accessible forms with ncss.-->
+<!--HEAD:
+<style>
+  /* Serverseitig gemeldeter Fehler: ncss färbt nur :user-invalid, aria-invalid ergänzt die Seite selbst */
+  .ncss-input[aria-invalid="true"],
+  .ncss-select[aria-invalid="true"],
+  .ncss-textarea[aria-invalid="true"] {
+    border-color: var(--ncss-color-danger);
+  }
+  /* Fehlerübersicht oberhalb des Formulars */
+  .demo-error-summary {
+    padding: var(--ncss-space-sm);
+    border: 2px solid var(--ncss-color-danger);
+    border-radius: var(--ncss-radius-md);
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-error-summary:focus-visible {
+    outline-offset: 4px;
+  }
+  .demo-error-summary a {
+    color: var(--ncss-color-danger);
+    font-weight: 600;
+  }
+  /* Formular im Live-Beispiel nicht beliebig breit */
+  .demo-form {
+    max-width: 32rem;
+  }
+</style>
+-->
+<section class="ncss-stack">
+  <h1>Forms &amp; Error Messages</h1>
+  <p class="ncss-text-lg ncss-text-muted">Forms are where barriers cost the most: if you cannot understand a field or find an error, you are stuck. ncss provides the look (<code>helpers/forms.css</code>) - labels, associations and error messages come from your markup.</p>
+</section>
+
+<section class="ncss-stack" id="labels">
+  <h2 class="demo-section-title">Every field needs a label</h2>
+  <p>Every input needs a visible, persistent name in a <code>&lt;label&gt;</code> that is linked to the field via <code>for</code>/<code>id</code> (or wraps it). Clicking the label then focuses the field, screen readers announce the name, and voice control users can target the field by its visible text (WCAG 2.5.3 "Label in Name").</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><strong><code>placeholder</code> is not a label.</strong> It disappears as soon as you type, often has too little contrast and is not announced as the field name by every tool. At most it is good for an example format ("e.g. 12345").</li>
+    <li>If a visible label really does not fit the design (a search field with a magnifier button), hide it with <code>.ncss-visually-hidden</code> - do not leave it out.</li>
+    <li>Label buttons with what they do: "Send registration" rather than "OK". An icon button needs <code>aria-label</code> or hidden text.</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label" for="city"&gt;City&lt;/label&gt;
+  &lt;input class="ncss-input" id="city" name="city" autocomplete="address-level2"&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="pflichtfelder">
+  <h2 class="demo-section-title">Marking required fields</h2>
+  <p><code>.ncss-label--required</code> adds a red <code>*</code> to the label via <code>::after</code>. That is only the visual part - you need to add two things yourself:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>The <code>required</code> attribute on the field. Only then do screen readers announce "required" and the browser check the field on submit.</li>
+    <li>An explanation of the asterisk before the form ("Fields marked * are required"). The symbol alone is not self-explanatory for everyone, and some screen readers read it out as "star".</li>
+  </ul>
+  <pre><code class="language-html">&lt;p&gt;Fields marked * are required.&lt;/p&gt;
+&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="email"&gt;Email&lt;/label&gt;
+  &lt;input class="ncss-input" id="email" name="email" type="email" required autocomplete="email"&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="hinweise">
+  <h2 class="demo-section-title">Linking hints and errors with aria-describedby</h2>
+  <p>Hint text (<code>.ncss-field-hint</code>) and error text (<code>.ncss-field-error</code>) are shown below the field. So they are also read out when the field receives focus, link them with <code>aria-describedby</code> - several IDs separated by spaces. The order of the IDs is the reading order.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Hints that matter before typing (format, length) belong <strong>above</strong> or directly below the field - not only in the error message (WCAG 3.3.2).</li>
+    <li>Error messages name the problem and, where possible, the fix: "Enter an email address that includes an @" rather than "Invalid input" (WCAG 3.3.1, 3.3.3).</li>
+    <li>Do not signal errors by colour alone: the red border from <code>:user-invalid</code> is an addition, the meaning is carried by the text (WCAG 1.4.1).</li>
+  </ul>
+  <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="zip"&gt;ZIP code&lt;/label&gt;
+  &lt;input class="ncss-input" id="zip" name="zip" required
+         inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code"
+         aria-describedby="zip-hint"&gt;
+  &lt;p class="ncss-field-hint" id="zip-hint"&gt;5 digits, e.g. 90210&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="validierung">
+  <h2 class="demo-section-title">Error state: :user-invalid and aria-invalid</h2>
+  <p><code>.ncss-input</code>, <code>.ncss-select</code> and <code>.ncss-textarea</code> get a red border on <code>:user-invalid</code>. <code>:user-invalid</code> only applies after someone has interacted with the field or tried to submit the form - so an empty required field is not already "wrong" when the page loads. It works without JavaScript and is driven by the native attributes (<code>required</code>, <code>type="email"</code>, <code>pattern</code>, <code>min</code>/<code>max</code>, <code>minlength</code>).</p>
+  <p>On submit, the browser shows its own error bubble at the first invalid field and moves focus there. For many forms that is enough. If your server validates as well (and it always should), it re-renders the page with errors. Then:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Set <code>aria-invalid="true"</code> on the invalid field - screen readers announce "invalid".</li>
+    <li>Put the error text in a <code>.ncss-field-error</code> with its own ID below the field and add it to <code>aria-describedby</code>.</li>
+    <li>Keep what the person has already typed - nobody should have to enter everything again (WCAG 3.3.7 "Redundant Entry").</li>
+  </ul>
+  <p><strong>Important</strong>: ncss only colours <code>:user-invalid</code>, not <code>[aria-invalid="true"]</code>. For server-side errors, add the rule yourself (this page does that for the example below):</p>
+  <pre><code class="language-css">.ncss-input[aria-invalid="true"],
+.ncss-select[aria-invalid="true"],
+.ncss-textarea[aria-invalid="true"] {
+  border-color: var(--ncss-color-danger);
+}</code></pre>
+  <pre><code class="language-html">&lt;div class="ncss-field"&gt;
+  &lt;label class="ncss-label ncss-label--required" for="email"&gt;Email&lt;/label&gt;
+  &lt;input class="ncss-input" id="email" name="email" type="email" required
+         autocomplete="email" value="anna.example.com"
+         aria-invalid="true" aria-describedby="email-error"&gt;
+  &lt;p class="ncss-field-error" id="email-error"&gt;Enter an email address that includes an @, e.g. anna@example.com&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="gruppen">
+  <h2 class="demo-section-title">Groups: fieldset and legend</h2>
+  <p>Related fields - especially radio buttons and checkbox groups - go into a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code>. The legend is the question, the labels are the answers. Screen readers announce the legend when entering the group. ncss styles <code>fieldset</code>/<code>legend</code> without a class.</p>
+  <pre><code class="language-html">&lt;fieldset&gt;
+  &lt;legend&gt;How would you like us to contact you?&lt;/legend&gt;
+  &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="contact" value="email" checked&gt; Email&lt;/label&gt;
+  &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="contact" value="phone"&gt; Phone&lt;/label&gt;
+&lt;/fieldset&gt;</code></pre>
+  <p>For a toggle (<code>.ncss-switch</code>) add <code>role="switch"</code> - it is then announced as a switch instead of a checkbox.</p>
+</section>
+
+<section class="ncss-stack" id="input-group">
+  <h2 class="demo-section-title">Input group: label before it, not inside</h2>
+  <p>With <code>.ncss-input-group</code> (field and button merged) the label is a sibling <strong>before</strong> the group, never a child inside it - otherwise it would count as <code>:first-child</code> and receive the corner rounding. For several merged fields without room for their own label (first name/last name) give each field an <code>aria-label</code>. Details: <a href="forms.html#input-group">Forms - Input group</a>.</p>
+  <pre><code class="language-html">&lt;label class="ncss-label" for="search"&gt;Search term&lt;/label&gt;
+&lt;div class="ncss-input-group"&gt;
+  &lt;input class="ncss-input" type="search" id="search" name="q"&gt;
+  &lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Search&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="autocomplete">
+  <h2 class="demo-section-title">autocomplete: state the purpose of a field</h2>
+  <p>Fields that ask for information about the person filling in the form need the matching <code>autocomplete</code> value (WCAG 1.3.5). The browser can then fill them in - a big help for people with motor or cognitive disabilities, and fewer typos for everyone.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Field</th><th scope="col"><code>autocomplete</code></th></tr></thead>
+      <tbody>
+        <tr><td>Full name / first name / last name</td><td><code>name</code> / <code>given-name</code> / <code>family-name</code></td></tr>
+        <tr><td>Email</td><td><code>email</code></td></tr>
+        <tr><td>Phone</td><td><code>tel</code></td></tr>
+        <tr><td>Street address</td><td><code>street-address</code></td></tr>
+        <tr><td>Postcode / city / country</td><td><code>postal-code</code> / <code>address-level2</code> / <code>country-name</code></td></tr>
+        <tr><td>Company</td><td><code>organization</code></td></tr>
+        <tr><td>Username / current password / new password</td><td><code>username</code> / <code>current-password</code> / <code>new-password</code></td></tr>
+        <tr><td>One-time code (SMS)</td><td><code>one-time-code</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Never block pasting into password fields and allow password managers - otherwise logging in becomes an unnecessary memory test (WCAG 3.3.8 "Accessible Authentication").</p>
+</section>
+
+<section class="ncss-stack" id="fehleruebersicht">
+  <h2 class="demo-section-title">Error summary after submitting</h2>
+  <p>For longer forms, a summary of all errors above the form helps. The pattern:</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>A heading that names the problem ("There are 2 problems with your answers"), followed by a list with one link per error. Each link points to its field via <code>href="#field-id"</code>.</li>
+    <li>After the reload, move focus to the summary (<code>tabindex="-1"</code> plus <code>autofocus</code> or a small script) - keyboard and screen reader users land right there.</li>
+    <li>Prefix the page title: <code>&lt;title&gt;Error: Registration - Example&lt;/title&gt;</code>. The title is the first thing announced on load.</li>
+    <li>A link to <code>#field-id</code> scrolls to the field and moves the tab starting point there, but does not focus the field in every browser. If you want that, focus it with a script.</li>
+  </ul>
+  <p>The example shows the state "after submitting"; focus is deliberately not moved automatically so this handbook page does not jump on load.</p>
+  <div class="docs-live" role="group" aria-label="Live example">
+    <div class="demo-error-summary ncss-stack ncss-stack--tight" tabindex="-1" aria-labelledby="demo-fs-title">
+      <h3 id="demo-fs-title">There are 2 problems with your answers</h3>
+      <ul role="list" class="ncss-stack ncss-stack--tight">
+        <li><a href="#demo-fs-name">Enter your name</a></li>
+        <li><a href="#demo-fs-email">Enter an email address that includes an @</a></li>
+      </ul>
+    </div>
+    <div class="demo-form ncss-stack">
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-fs-name">Name</label>
+        <input class="ncss-input" id="demo-fs-name" name="name" required autocomplete="name" aria-invalid="true" aria-describedby="demo-fs-name-error">
+        <p class="ncss-field-error" id="demo-fs-name-error">Enter your name</p>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-fs-email">Email</label>
+        <input class="ncss-input" id="demo-fs-email" name="email" type="email" required autocomplete="email" value="anna.example.com" aria-invalid="true" aria-describedby="demo-fs-email-error">
+        <p class="ncss-field-error" id="demo-fs-email-error">Enter an email address that includes an @, e.g. anna@example.com</p>
+      </div>
+    </div>
+  </div>
+  <pre><code class="language-html">&lt;div class="demo-error-summary" tabindex="-1" autofocus aria-labelledby="error-title"&gt;
+  &lt;h2 id="error-title"&gt;There are 2 problems with your answers&lt;/h2&gt;
+  &lt;ul role="list"&gt;
+    &lt;li&gt;&lt;a href="#name"&gt;Enter your name&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#email"&gt;Enter an email address that includes an @&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;form ...&gt;
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label ncss-label--required" for="name"&gt;Name&lt;/label&gt;
+    &lt;input class="ncss-input" id="name" name="name" required autocomplete="name"
+           aria-invalid="true" aria-describedby="name-error"&gt;
+    &lt;p class="ncss-field-error" id="name-error"&gt;Enter your name&lt;/p&gt;
+  &lt;/div&gt;
+  ...
+&lt;/form&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="beispiel">
+  <h2 class="demo-section-title">Complete example form</h2>
+  <p>Everything together, without JavaScript: visible labels, an explained asterisk, <code>required</code>, linked hints, <code>autocomplete</code>, a radio group in a <code>fieldset</code>. Click "Send request" without filling anything in: the browser reports the first missing field and the fields get their red border via <code>:user-invalid</code>. The example uses <code>method="dialog"</code> so submitting sends nothing and does not reload the page - in your project you would use <code>method="post"</code> and an <code>action</code>.</p>
+  <div class="docs-live" role="group" aria-label="Live example">
+    <form class="demo-form ncss-stack" method="dialog" aria-labelledby="demo-f-title">
+      <h3 id="demo-f-title">Request a call back</h3>
+      <p class="ncss-text-sm ncss-text-muted" id="demo-f-required">Fields marked * are required.</p>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-f-name">Name</label>
+        <input class="ncss-input" id="demo-f-name" name="name" required autocomplete="name">
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label ncss-label--required" for="demo-f-tel">Phone</label>
+        <input class="ncss-input" id="demo-f-tel" name="tel" type="tel" required autocomplete="tel" aria-describedby="demo-f-tel-hint">
+        <p class="ncss-field-hint" id="demo-f-tel-hint">Including area code, e.g. 020 7946 0000</p>
+      </div>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demo-f-email">Email (optional)</label>
+        <input class="ncss-input" id="demo-f-email" name="email" type="email" autocomplete="email">
+      </div>
+      <fieldset>
+        <legend>When suits you?</legend>
+        <label class="ncss-choice"><input type="radio" name="time" value="morning" checked> Mornings</label>
+        <label class="ncss-choice"><input type="radio" name="time" value="afternoon"> Afternoons</label>
+      </fieldset>
+      <div class="ncss-field">
+        <label class="ncss-label" for="demo-f-msg">What is it about?</label>
+        <textarea class="ncss-textarea" id="demo-f-msg" name="message" maxlength="500" aria-describedby="demo-f-msg-hint"></textarea>
+        <p class="ncss-field-hint" id="demo-f-msg-hint">500 characters at most</p>
+      </div>
+      <p><button type="submit" class="ncss-btn ncss-btn--primary">Send request</button></p>
+    </form>
+  </div>
+  <pre><code class="language-html">&lt;form class="ncss-stack" method="post" action="/callback" aria-labelledby="f-title"&gt;
+  &lt;h2 id="f-title"&gt;Request a call back&lt;/h2&gt;
+  &lt;p&gt;Fields marked * are required.&lt;/p&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label ncss-label--required" for="name"&gt;Name&lt;/label&gt;
+    &lt;input class="ncss-input" id="name" name="name" required autocomplete="name"&gt;
+  &lt;/div&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label ncss-label--required" for="tel"&gt;Phone&lt;/label&gt;
+    &lt;input class="ncss-input" id="tel" name="tel" type="tel" required
+           autocomplete="tel" aria-describedby="tel-hint"&gt;
+    &lt;p class="ncss-field-hint" id="tel-hint"&gt;Including area code, e.g. 020 7946 0000&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label" for="email"&gt;Email (optional)&lt;/label&gt;
+    &lt;input class="ncss-input" id="email" name="email" type="email" autocomplete="email"&gt;
+  &lt;/div&gt;
+
+  &lt;fieldset&gt;
+    &lt;legend&gt;When suits you?&lt;/legend&gt;
+    &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="time" value="morning" checked&gt; Mornings&lt;/label&gt;
+    &lt;label class="ncss-choice"&gt;&lt;input type="radio" name="time" value="afternoon"&gt; Afternoons&lt;/label&gt;
+  &lt;/fieldset&gt;
+
+  &lt;div class="ncss-field"&gt;
+    &lt;label class="ncss-label" for="msg"&gt;What is it about?&lt;/label&gt;
+    &lt;textarea class="ncss-textarea" id="msg" name="message" maxlength="500"
+              aria-describedby="msg-hint"&gt;&lt;/textarea&gt;
+    &lt;p class="ncss-field-hint" id="msg-hint"&gt;500 characters at most&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;p&gt;&lt;button type="submit" class="ncss-btn ncss-btn--primary"&gt;Send request&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;</code></pre>
+</section>

@@ -442,3 +442,62 @@ output {
     background-color: color-mix(in srgb, var(--ncss-color-danger) 85%, black);
   }
 }
+
+/* --- Größen & Icon-Button ---------------------------------------------------------------
+   --sm für dichte Oberflächen (Tabellenzeilen, Toolbars, Karten-Fußzeilen), --lg für
+   prominente Einzelaktionen (Hero, CTA). Kombinierbar mit jeder Farbvariante.
+   --icon: quadratischer Button NUR mit Icon - braucht IMMER ein aria-label (oder einen
+   .ncss-visually-hidden-Text), ein Icon allein hat keinen zugänglichen Namen:
+     <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Bearbeiten">
+       <svg aria-hidden="true">...</svg>
+     </button>
+   Die Kantenlänge ergibt sich aus Zeilenhöhe + Block-Padding + Rahmen (1lh), damit ein
+   Icon-Button exakt so hoch ist wie ein Text-Button derselben Größe daneben - Breite UND
+   Höhe explizit, weil ein Icon allein keine Textzeile erzeugt (sonst wäre er flacher). */
+.ncss-btn--sm {
+  /* Mindestens 24px Trefferfläche (WCAG 2.5.8 Zielgröße) - auch bei kleiner Schrift. */
+  min-block-size: 1.5rem;
+  padding: var(--ncss-space-3xs) var(--ncss-space-xs);
+  font-size: var(--ncss-font-size-sm);
+}
+.ncss-btn--lg {
+  padding: var(--ncss-space-xs) var(--ncss-space-md);
+  font-size: var(--ncss-font-size-md);
+}
+/* Pillen-Form und Ghost (ohne Rahmen/Fläche) - z.B. für Toolbars (components/toolbar.css).
+   --pill + --icon ergibt einen runden Icon-Button. */
+.ncss-btn--pill {
+  border-radius: var(--ncss-radius-full, 999px);
+}
+.ncss-btn--ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: currentColor;
+}
+.ncss-btn--ghost:active:not(:disabled) {
+  background-color: color-mix(in oklch, currentColor 14%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-btn--ghost:hover:not(:disabled, :active) {
+    background-color: color-mix(in oklch, currentColor 9%, transparent);
+  }
+}
+.ncss-btn--icon {
+  flex: none;
+  inline-size: calc(1lh + var(--ncss-space-2xs) * 2 + var(--ncss-border-width) * 2);
+  block-size: calc(1lh + var(--ncss-space-2xs) * 2 + var(--ncss-border-width) * 2);
+  padding-inline: 0;
+}
+.ncss-btn--icon.ncss-btn--sm {
+  inline-size: max(1.5rem, calc(1lh + var(--ncss-space-3xs) * 2 + var(--ncss-border-width) * 2));
+  block-size: max(1.5rem, calc(1lh + var(--ncss-space-3xs) * 2 + var(--ncss-border-width) * 2));
+}
+.ncss-btn--icon.ncss-btn--lg {
+  inline-size: calc(1lh + var(--ncss-space-xs) * 2 + var(--ncss-border-width) * 2);
+  block-size: calc(1lh + var(--ncss-space-xs) * 2 + var(--ncss-border-width) * 2);
+}
+.ncss-btn--icon > svg,
+.ncss-btn--icon > img {
+  inline-size: 1.15em;
+  block-size: 1.15em;
+}

@@ -1,0 +1,190 @@
+/**
+ * ncss - <ncss-scrolly> Scrollytelling (Layer "components"): eine Spalte mit Text-
+ * Schritten neben einer sticky Medien-Spalte. Der Schritt, der gerade die Viewport-Mitte
+ * kreuzt, ist aktiv und schaltet das zugehörige Medium um. Light-DOM-Custom-Element
+ * (js/scrolly.js), wie <ncss-nav-priority> - ganz normal von ncss.css getroffen.
+ *
+ * Markup (ein .ncss-scrolly-figure pro Schritt, gleiche Reihenfolge):
+ *   <ncss-scrolly>
+ *     <div class="ncss-scrolly-steps">
+ *       <div class="ncss-scrolly-step" data-ncss-time="0"><div>...</div></div>
+ *       <div class="ncss-scrolly-step" data-ncss-time="4.5"><div>...</div></div>
+ *     </div>
+ *     <div class="ncss-scrolly-media">
+ *       <figure class="ncss-scrolly-figure">...</figure>
+ *       <figure class="ncss-scrolly-figure">...</figure>
+ *     </div>
+ *   </ncss-scrolly>
+ *
+ * Optionen als Attribute: line="50" (Lage der Auslöse-Linie in % von oben, Default 50),
+ * media-start (Medien-Spalte auf der Start-Seite statt rechts).
+ *
+ * Zustand: aktiver Schritt + aktives Medium tragen .is-active (Konvention wie Slideshow/
+ * Lightbox). Event "ncss-scrolly-step" auf dem Element: detail = { index, time, step, figure } -
+ * time ist der Zahlenwert aus data-ncss-time des Schritts (Sekunden) oder null. Damit
+ * kann z.B. ein scroll-gesteuertes Video an die Stelle des Schritts springen, ohne dass
+ * diese Komponente etwas über Video wissen muss.
+ *
+ * Fallback (kein JS / Element nicht definiert): alle Schritte und alle Medien ganz
+ * normal untereinander im Fluss, nichts sticky, nichts versteckt. Das sticky
+ * Stapel-Layout greift erst, wenn das Element definiert ist UND ein Schritt aktiv ist
+ * (:defined:has(.is-active)) - ein abgestürztes Script lässt also keine leere Bühne
+ * zurück. prefers-reduced-motion: Medien schalten weiter um, nur ohne Überblendung
+ * (globale Transition-Kappung in reset.css).
+ *
+ * Benötigt: tokens.css/colors.css + js/scrolly.js (ohne Script: lesbarer Fluss).
+ */
+
+ncss-scrolly {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--ncss-space-lg);
+}
+
+.ncss-scrolly-steps {
+  display: grid;
+  gap: var(--ncss-space-md);
+  align-content: start;
+}
+
+.ncss-scrolly-step > * {
+  padding: var(--ncss-space-md);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-lg);
+  background-color: var(--ncss-color-surface);
+}
+.ncss-scrolly-step > * > :first-child { margin-block-start: 0; }
+.ncss-scrolly-step > * > :last-child { margin-block-end: 0; }
+
+.ncss-scrolly-media {
+  display: grid;
+  gap: var(--ncss-space-sm);
+  align-content: start;
+}
+
+.ncss-scrolly-figure {
+  margin: 0;
+
+  & :is(img, video, svg, canvas) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    border-radius: var(--ncss-radius-lg);
+  }
+}
+
+/* --- Aktiv (Element definiert + ein Schritt aktiv) ------------------------------------ */
+ncss-scrolly:defined:has(.ncss-scrolly-step.is-active) {
+  & .ncss-scrolly-steps {
+    gap: 0;
+    /* Erster/letzter Schritt sollen die Mitte überhaupt erreichen können. */
+    padding-block: calc(var(--ncss-scrolly-step-height, 75svh) / 3);
+  }
+
+  & .ncss-scrolly-step {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-block-size: var(--ncss-scrolly-step-height, 75svh);
+  }
+
+  /* Inaktive Schritte nur leicht gedimmt: 0.65 hält auch Markenfarben-Text über
+     WCAG 1.4.3 (4.5:1) - sie bleiben lesbarer Inhalt, kein deaktiviertes Element. */
+  & .ncss-scrolly-step > * {
+    opacity: 0.65;
+    transition:
+      opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      border-color var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      box-shadow var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+
+  & .ncss-scrolly-step.is-active > * {
+    opacity: 1;
+    border-color: var(--ncss-color-brand);
+    box-shadow: var(--ncss-shadow-lg);
+  }
+
+  & .ncss-scrolly-media {
+    position: sticky;
+    inset-block-start: var(--ncss-scrolly-top, 0px);
+    align-self: start;
+    grid-template-areas: "stack";
+    align-content: center;
+    block-size: calc(100svh - var(--ncss-scrolly-top, 0px));
+  }
+
+  & .ncss-scrolly-figure {
+    grid-area: stack;
+    opacity: 0;
+    scale: 0.94;
+    visibility: hidden;
+    transition:
+      opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      scale var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      visibility 0s var(--ncss-motion-duration-slow);
+  }
+
+  & .ncss-scrolly-figure.is-active {
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+}
+
+/* -- ncss container-query: scrolly-wide (37rem) -- breit: Medien optional links */
+@container (width >= 37rem) {
+  ncss-scrolly[media-start] > .ncss-scrolly-media {
+    order: -1;
+  }
+}
+
+/* -- ncss container-query: scrolly-wide (37rem) -- schmal: EINE Spalte, das Medium
+   sitzt oben und bleibt dort kleben, während die Schritte darunter durchlaufen. */
+@container (width < 37rem) {
+  ncss-scrolly:defined:has(.ncss-scrolly-step.is-active) {
+    & .ncss-scrolly-media {
+      order: -1;
+      z-index: 1;
+      block-size: auto;
+      max-block-size: 45svh;
+      padding-block: var(--ncss-space-2xs);
+      background-color: var(--ncss-color-bg);
+    }
+    & .ncss-scrolly-figure :is(img, video, svg, canvas) {
+      max-block-size: calc(45svh - 4rem);
+      inline-size: auto;
+      max-inline-size: 100%;
+      margin-inline: auto;
+    }
+    & .ncss-scrolly-steps {
+      padding-block-start: 0;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  ncss-scrolly .ncss-scrolly-step > * {
+    opacity: 1;
+  }
+  ncss-scrolly .ncss-scrolly-step.is-active > * {
+    border: 2px solid Highlight;
+  }
+}
+
+@media print {
+  ncss-scrolly .ncss-scrolly-media {
+    position: static;
+    block-size: auto;
+  }
+  ncss-scrolly .ncss-scrolly-figure {
+    grid-area: auto;
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+  }
+  ncss-scrolly .ncss-scrolly-step {
+    min-block-size: 0;
+  }
+}

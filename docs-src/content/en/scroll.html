@@ -37,3 +37,57 @@
   <h2 class="demo-section-title">Visibility</h2>
   <p class="ncss-text-muted ncss-text-sm"><code>helpers/visibility.css</code>: <code>.ncss-hidden</code>, <code>.ncss-invisible</code>, <code>.ncss-print-only</code>, <code>.ncss-screen-only</code>, <code>.ncss-reveal-on-hover</code>, <code>.ncss-hide-below-md</code>/<code>-from-md</code> (a fixed viewport breakpoint) plus their container-based counterparts <code>.ncss-hide-below-container-*</code>/<code>-from-container-*</code> (react to the width of the parent <code>.ncss-container</code>, not the viewport - details under <a href="layout.html#container-sichtbarkeit">Layout</a>).</p>
 </section>
+
+
+<!--MERGE: all-components#sticky-->
+
+<section class="ncss-stack" id="scroll-schatten" data-subnav-label="Scroll shadows">
+  <h2 class="demo-section-title">Scroll shadows <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p><code>helpers/scroll-shadow.css</code> shows a soft shadow at the edge of a scrollable area - only as long as there is more to see in that direction. At the start there is none in front, at the end none behind, and if everything fits there is none at all. Pure CSS: a scroll-driven animation (<code>animation-timeline: scroll(self)</code>) controls the opacity; browsers without it and reduced motion use the classic <code>background-attachment: local</code> trick. The shadow sits BEHIND the content and is faint (12&nbsp;% of the text color) - nothing is covered, and even muted text keeps more than 4.5:1 contrast at the darkest point. Opt-in: existing tables do not change. For photos in the slideshow there is <a href="media.html#slideshow-steuerung"><code>.ncss-slideshow--shadow</code></a>.</p>
+  <div class="docs-live" role="group" aria-label="Live example: Scroll shadows" style="--ncss-scroll-shadow-cover: var(--ncss-color-bg-subtle);">
+    <div class="ncss-table-scroll ncss-scroll-shadow" role="region" aria-label="Room rates per night, scrolls horizontally" tabindex="0">
+      <table>
+        <caption class="ncss-visually-hidden">Room rates per night</caption>
+        <thead><tr><th scope="col">Room</th><th scope="col">Jan</th><th scope="col">Feb</th><th scope="col">Mar</th><th scope="col">Apr</th><th scope="col">May</th><th scope="col">Jun</th><th scope="col">Jul</th><th scope="col">Aug</th><th scope="col">Sep</th><th scope="col">Oct</th><th scope="col">Nov</th><th scope="col">Dec</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Classic</th><td>€119</td><td>€119</td><td>€129</td><td>€139</td><td>€149</td><td>€169</td><td>€189</td><td>€189</td><td>€159</td><td>€139</td><td>€119</td><td>€149</td></tr>
+          <tr><th scope="row">Lake view</th><td>€149</td><td>€149</td><td>€159</td><td>€169</td><td>€189</td><td>€209</td><td>€239</td><td>€239</td><td>€199</td><td>€169</td><td>€149</td><td>€179</td></tr>
+          <tr><th scope="row">Attic suite</th><td>€219</td><td>€219</td><td>€229</td><td>€249</td><td>€269</td><td>€299</td><td>€339</td><td>€339</td><td>€289</td><td>€249</td><td>€219</td><td>€259</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="ncss-scroll-shadow ncss-scroll-shadow--block ncss-stack ncss-stack--tight" role="list" aria-label="House rules, scrolls vertically" tabindex="0" style="--ncss-scroll-shadow-max-height: 9rem;">
+        <li>Check-in from 3 pm, check-out until 11 am.</li>
+        <li>Breakfast daily from 7 to 11 am in the conservatory.</li>
+        <li>Sauna and indoor pool from 8 am to 9 pm, bathrobes are in the room.</li>
+        <li>Rowing boats against a deposit at reception.</li>
+        <li>Dogs on request, €15 per night.</li>
+        <li>Quiet time in the house from 10 pm.</li>
+        <li>Parking right at the house, charging point for electric cars.</li>
+        <li>Bicycles can be left in the shed.</li>
+    </ul>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-table-scroll ncss-scroll-shadow" role="region" aria-label="Room rates per night, scrolls horizontally" tabindex="0"&gt;
+  &lt;table&gt;...&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;ul class="ncss-scroll-shadow ncss-scroll-shadow--block" role="list" aria-label="House rules, scrolls vertically"
+    tabindex="0" style="--ncss-scroll-shadow-max-height: 9rem;"&gt;...&lt;/ul&gt;
+
+&lt;!-- On a card: surface color for the fallback path --&gt;
+&lt;div class="ncss-scroll-shadow" style="--ncss-scroll-shadow-cover: var(--ncss-color-surface);"&gt;...&lt;/div&gt;</code></pre>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Class / variable</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.ncss-scroll-shadow</code></td><td>Shadows left/right (horizontal) - e.g. added to <code>.ncss-table-scroll</code></td></tr>
+        <tr><td><code>.ncss-scroll-shadow--block</code></td><td>Additionally: top/bottom (vertical), sets <code>overflow-y: auto</code></td></tr>
+        <tr><td><code>--ncss-scroll-shadow-size</code></td><td>Width or height of the shadow (default 1rem)</td></tr>
+        <tr><td><code>--ncss-scroll-shadow-color</code></td><td>Shadow color (default 12&nbsp;% of the text color, light/dark aware)</td></tr>
+        <tr><td><code>--ncss-scroll-shadow-cover</code></td><td>Fallback path only: color of the surface below (default page background) - set it on cards or colored areas</td></tr>
+        <tr><td><code>--ncss-scroll-shadow-max-height</code></td><td><code>--block</code> only: maximum height of the area</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Accessibility:</strong> The shadow is purely additional information ("there is more here") and changes neither content nor operation. As always, the scroll area itself needs <code>role="region"</code>, <code>aria-label</code> and <code>tabindex="0"</code> so it can be scrolled by keyboard (WCAG 2.1.1). In forced-colors mode the shadow is dropped, with reduced motion the non-animated fallback applies.</p>
+</section>

@@ -1,0 +1,186 @@
+/**
+ * ncss - Sortierbare Liste (Layer "components"): Einträge per Ziehen am Griff, per Tastatur
+ * oder per Hoch/Runter-Schaltflächen umsortieren - z. B. Prioritäten, Reihenfolge von
+ * Menüpunkten, Wunschliste. Light-DOM-Custom-Element <ncss-sortable> + js/sortable.js.
+ *
+ * Markup - eine ganz normale Liste. Griff und Schaltflächen erzeugt erst das Script, ohne
+ * JavaScript bleibt also keine funktionslose Bedienung zurück:
+ * <ncss-sortable>
+ *   <ol class="ncss-sortable-list">
+ *     <li data-id="kaffee">Kaffee</li>
+ *     <li data-id="tee">Tee</li>
+ *     <li data-id="saft" data-label="Orangensaft">Orangensaft <small>frisch gepresst</small></li>
+ *   </ol>
+ * </ncss-sortable>
+ * <script src="js/sortable.js" defer></script>
+ *
+ * Bedienung (Details in js/sortable.js):
+ *   Zeiger/Touch: am Griff ziehen. Tastatur: Griff fokussieren, Leertaste/Enter aufnehmen,
+ *   Pfeiltasten verschieben, Leertaste/Enter ablegen, Esc bricht ab.
+ *   Hoch/Runter-Schaltflächen: Alternative mit EINEM Klick, ohne Ziehbewegung - WCAG 2.5.7
+ *   (Dragging Movements) verlangt sie, Tastaturbedienung allein genügt dafür nicht.
+ *
+ * Klassen: .ncss-sortable-list (Liste), vom Script erzeugt: .ncss-sortable-item,
+ *   .ncss-sortable-handle, .ncss-sortable-content, .ncss-sortable-actions,
+ *   .ncss-sortable-move (Hoch/Runter), .ncss-sortable-status (Live-Region).
+ *   Zustände: [data-grabbed] (per Tastatur aufgenommen), [data-dragging] (wird gezogen),
+ *   am Element [data-sorting] während eines Vorgangs.
+ *
+ * Bewegung: Nachbar-Einträge gleiten beim Umsortieren an ihren neuen Platz - nur, wenn
+ * Bewegung erlaubt ist (prefers-reduced-motion bzw. data-motion="reduce"|"full" an <html>,
+ * das Script prüft beides). Der gezogene Eintrag folgt dem Zeiger immer direkt.
+ *
+ * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base) + js/sortable.js.
+ *
+ * Tokens: --ncss-sortable-gap (Abstand der Einträge, Default --ncss-space-2xs).
+ */
+ncss-sortable {
+  display: block;
+}
+
+.ncss-sortable-list {
+  --ncss-sortable-gap: var(--ncss-space-2xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ncss-sortable-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ncss-sortable .ncss-sortable-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ncss-space-xs);
+  min-block-size: 2.75rem;
+  padding: var(--ncss-space-3xs) var(--ncss-space-3xs) var(--ncss-space-3xs) var(--ncss-space-3xs);
+  color: var(--ncss-color-text);
+  background-color: var(--ncss-color-surface);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+}
+.ncss-sortable-content {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Griff: sechs Punkte, Zeiger "grab". touch-action:none, damit Ziehen auf Touch-Geräten
+   die Seite nicht scrollt - gilt NUR für den Griff, der Rest des Eintrags scrollt normal. */
+.ncss-sortable-handle,
+.ncss-sortable-move {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ncss-radius-sm);
+  background: none;
+  color: var(--ncss-color-text-muted);
+}
+.ncss-sortable-handle {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ncss-sortable-handle::before,
+.ncss-sortable-move::before {
+  content: "";
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  background-color: currentColor;
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+.ncss-sortable-handle::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Ccircle cx='9' cy='6' r='1.75'/%3E%3Ccircle cx='15' cy='6' r='1.75'/%3E%3Ccircle cx='9' cy='12' r='1.75'/%3E%3Ccircle cx='15' cy='12' r='1.75'/%3E%3Ccircle cx='9' cy='18' r='1.75'/%3E%3Ccircle cx='15' cy='18' r='1.75'/%3E%3C/svg%3E");
+}
+.ncss-sortable-move[data-direction="up"]::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 15l6-6 6 6'/%3E%3C/svg%3E");
+}
+.ncss-sortable-move[data-direction="down"]::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+.ncss-sortable-actions {
+  flex: none;
+  display: inline-flex;
+}
+@media (hover: hover) {
+  .ncss-sortable-handle:hover,
+  .ncss-sortable-move:not([aria-disabled="true"]):hover {
+    background-color: var(--ncss-color-bg-subtle);
+    color: var(--ncss-color-text);
+  }
+}
+.ncss-sortable-handle:focus-visible,
+.ncss-sortable-move:focus-visible {
+  outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
+  outline-offset: calc(-1 * var(--ncss-focus-ring-width));
+}
+.ncss-sortable-move[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.35;
+}
+
+/* Aufgenommen (Tastatur) / gezogen (Zeiger): angehoben, mit Rahmen in der Fokusfarbe. */
+.ncss-sortable-item:is([data-grabbed], [data-dragging]) {
+  position: relative;
+  z-index: 1;
+  border-color: var(--ncss-color-focus-ring);
+  box-shadow: var(--ncss-shadow-lg);
+}
+.ncss-sortable-item[data-grabbed] .ncss-sortable-handle {
+  color: var(--ncss-color-focus-ring);
+  background-color: var(--ncss-color-bg-subtle);
+}
+.ncss-sortable-item[data-dragging] {
+  cursor: grabbing;
+  opacity: 0.95;
+}
+.ncss-sortable-item[data-dragging] .ncss-sortable-handle {
+  cursor: grabbing;
+}
+ncss-sortable[data-sorting] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Ablegen ohne Zeiger-Sprung: der gezogene Eintrag gleitet zurück in seine Zeile. Die
+   globale reduce-motion-Regel in reset.css setzt diese Dauer auf ~0. */
+.ncss-sortable-item[data-settling] {
+  transition: translate var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+
+.ncss-sortable-status,
+.ncss-sortable-instructions {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (forced-colors: active) {
+  ncss-sortable .ncss-sortable-item {
+    border-color: CanvasText;
+  }
+  .ncss-sortable-item:is([data-grabbed], [data-dragging]) {
+    outline: 3px solid Highlight;
+    outline-offset: 1px;
+  }
+  .ncss-sortable-handle::before,
+  .ncss-sortable-move::before {
+    background-color: ButtonText;
+  }
+  .ncss-sortable-move[aria-disabled="true"]::before {
+    background-color: GrayText;
+  }
+}

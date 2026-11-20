@@ -1,0 +1,141 @@
+/**
+ * ncss - Horizontal-Scroll-Sektion (Layer "components"): eine hohe Sektion mit einer
+ * sticky, viewport-hohen Bühne - vertikales Scrollen schiebt die Reihe darin seitlich
+ * durch (klassisches "horizontal scroll section"-Muster, früher GSAP-Pinning).
+ *
+ * Markup:
+ *   <section class="ncss-scroll-horizontal" data-ncss-scroll-horizontal aria-label="Projekte">
+ *     <div class="ncss-scroll-horizontal-viewport">
+ *       <div class="ncss-scroll-horizontal-track">
+ *         <article>...</article> <article>...</article> ...
+ *       </div>
+ *     </div>
+ *   </section>
+ *
+ * Drei Ebenen:
+ * .ncss-scroll-horizontal           hohe Sektion = vertikale Scroll-Distanz, zugleich
+ *                                   Subjekt der benannten view-timeline.
+ * .ncss-scroll-horizontal-viewport  sticky, eine Viewport-Höhe, schneidet die Reihe ab.
+ * .ncss-scroll-horizontal-track     die bewegte Reihe, jedes Kind ist ein Element.
+ *
+ * Die Verschiebung kommt NICHT direkt aus den Keyframes, sondern aus einer per @property
+ * typisierten Fortschrittszahl (--_ncss-scroll-horizontal-p, 0..1), die in translate
+ * mit der Reihenbreite verrechnet wird: -100% (= eigene Breite der Reihe) + 100cqi
+ * (= Breite der Bühne, container-type:inline-size). cqi innerhalb von @keyframes rechnet
+ * WebKit falsch auf - deshalb die Rechnung in der normalen Regel, Keyframes animieren nur
+ * die Zahl.
+ *
+ * Höhe: CSS-Default --ncss-scroll-horizontal-length (300vh), unabhängig von der
+ * tatsächlichen Reihenbreite. js/scroll-horizontal.js (opt-in, data-ncss-scroll-horizontal)
+ * rechnet die Höhe passend aus (1px runter = 1px seitwärts) UND hält Tastatur-Fokus
+ * sichtbar: ein per Tab fokussiertes, gerade aus dem Bild verschobenes Element ist für
+ * den Browser NICHT erreichbar (er scrollt nur echte Scroll-Container, die Verschiebung
+ * ist ein transform) - das Script scrollt die Seite an genau die Stelle, an der das
+ * Element mittig steht (WCAG 2.4.11 Focus Not Obscured). Für Reihen mit Links/Buttons
+ * deshalb dringend empfohlen.
+ *
+ * Fallback (kein animation-timeline, prefers-reduced-motion, Druck): eine ganz normale,
+ * per Wischen/Shift-Scroll horizontal scrollbare Reihe mit Scroll Snap - kein Pinning.
+ *
+ * Benötigt: tokens.css (Abstände, --ncss-focus-ring-width), Fokus-Ring aus reset.css.
+ * Optional js/scroll-horizontal.js.
+ */
+
+@property --_ncss-scroll-horizontal-p {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+.ncss-scroll-horizontal {
+  view-timeline: --ncss-scroll-horizontal block;
+  /* scroll-padding der Seite (z.B. für eine sticky Topbar) würde sonst in die Timeline
+     einfließen - der Fortschritt muss exakt der Sticky-Phase entsprechen. */
+  view-timeline-inset: 0px;
+}
+
+/* --- Basis = Fallback: wischbare Snap-Reihe ------------------------------------------ */
+.ncss-scroll-horizontal-viewport {
+  container-type: inline-size;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--ncss-scroll-horizontal-padding, var(--ncss-space-md));
+
+  &:focus-visible {
+    outline-offset: calc(-1 * var(--ncss-focus-ring-width));
+  }
+}
+
+.ncss-scroll-horizontal-track {
+  display: flex;
+  gap: var(--ncss-scroll-horizontal-gap, var(--ncss-space-md));
+  inline-size: max-content;
+  padding: var(--ncss-space-sm) var(--ncss-scroll-horizontal-padding, var(--ncss-space-md));
+
+  & > * {
+    /* inline-size statt flex-basis: WebKit ignoriert eine cqi-basierte flex-basis bei
+       der max-content-Breite der Reihe (Reihe wird dann zu schmal berechnet). */
+    flex: none;
+    inline-size: var(--ncss-scroll-horizontal-item, min(80cqi, 26rem));
+    scroll-snap-align: start;
+  }
+}
+
+/* --- Scroll-getrieben (Progressive Enhancement) -------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ncss-scroll-horizontal {
+      block-size: var(--ncss-scroll-horizontal-length, 300vh);
+    }
+
+    .ncss-scroll-horizontal-viewport {
+      position: sticky;
+      inset-block-start: 0;
+      display: flex;
+      align-items: center;
+      block-size: 100vh;
+      block-size: 100svh;
+      overflow: clip;
+      scroll-snap-type: none;
+    }
+
+    .ncss-scroll-horizontal-track {
+      /* min(0px, ...) - eine Reihe, die schmaler als die Bühne ist, bleibt stehen statt
+         nach rechts zu wandern. */
+      translate: calc(var(--_ncss-scroll-horizontal-p) * min(0px, -100% + 100cqi)) 0;
+      animation: ncss-scroll-horizontal linear both;
+      animation-timeline: --ncss-scroll-horizontal;
+      /* contain = solange die Bühne klebt: Sektions-Oberkante an Viewport-Oberkante bis
+         Sektions-Unterkante an Viewport-Unterkante. */
+      animation-range: contain 0% contain 100%;
+    }
+
+    .ncss-scroll-horizontal-track:dir(rtl) {
+      translate: calc(var(--_ncss-scroll-horizontal-p) * max(0px, 100% - 100cqi)) 0;
+    }
+  }
+}
+
+@keyframes ncss-scroll-horizontal {
+  from { --_ncss-scroll-horizontal-p: 0; }
+  to { --_ncss-scroll-horizontal-p: 1; }
+}
+
+@media print {
+  .ncss-scroll-horizontal {
+    block-size: auto;
+  }
+  .ncss-scroll-horizontal-viewport {
+    position: static;
+    display: block;
+    block-size: auto;
+    overflow: visible;
+  }
+  .ncss-scroll-horizontal-track {
+    animation: none;
+    translate: none;
+    inline-size: auto;
+    flex-wrap: wrap;
+  }
+}

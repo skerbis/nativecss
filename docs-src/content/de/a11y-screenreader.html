@@ -1,0 +1,169 @@
+<!--DESC: Zugängliche Namen, Landmarks, Überschriften, Live-Regionen und die ARIA-Zustände, die ncss-Komponenten tatsächlich setzen.-->
+<section class="ncss-stack">
+  <h1>Screenreader &amp; ARIA</h1>
+  <p class="ncss-text-lg ncss-text-muted">Ein Screenreader liest nicht die Optik, sondern den Barrierefreiheitsbaum: Rolle, Name und Zustand jedes Elements. Sauberes HTML liefert das meiste davon - ARIA ergänzt nur, wo HTML keine Antwort hat.</p>
+</section>
+
+<section class="ncss-stack" id="namen">
+  <h2 class="demo-section-title">Zugängliche Namen</h2>
+  <p>Jedes Bedienelement braucht einen Namen, der sagt, was es tut (WCAG 4.1.2). Reihenfolge der Wahl:</p>
+  <ol class="ncss-stack ncss-stack--tight">
+    <li><strong>Sichtbarer Text</strong> - Button-Beschriftung, Linktext, <code>&lt;label for&gt;</code>. Am besten für alle, auch für Spracheingabe ("Klick auf Speichern"). Ist sichtbarer Text vorhanden, muss der zugängliche Name ihn enthalten (WCAG 2.5.3).</li>
+    <li><strong><code>.ncss-visually-hidden</code></strong> - zusätzlicher Text nur für Screenreader, z.B. in Icon-Buttons oder um "Mehr lesen" zu "Mehr lesen über Preise" zu ergänzen. Wird auch von Übersetzungs-Tools erfasst.</li>
+    <li><strong><code>aria-label</code></strong> - wenn kein Text ins Markup passt, z.B. am Schließen-Button <code>.ncss-dialog-close</code> mit <code>&amp;times;</code>.</li>
+    <li><strong><code>aria-labelledby</code></strong> - verweist auf vorhandenen Text, z.B. einen Dialog auf seine Überschrift.</li>
+  </ol>
+  <p>Das Icon selbst (<code>.ncss-icon</code>, <code>&lt;svg&gt;</code>) bekommt <code>aria-hidden="true"</code> - sonst liest der Screenreader im schlimmsten Fall einen Dateinamen oder gar nichts Sinnvolles vor. <code>.ncss-btn--icon</code> braucht immer einen Namen.</p>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel">
+    <p class="ncss-cluster">
+      <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon">
+        <span class="ncss-icon ncss-icon-search" aria-hidden="true"></span>
+        <span class="ncss-visually-hidden">Suche öffnen</span>
+      </button>
+      <button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Link kopieren">
+        <span class="ncss-icon ncss-icon-copy" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="ncss-btn ncss-btn--secondary">
+        <span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span>
+        Menü
+      </button>
+    </p>
+    <p class="ncss-text-sm ncss-text-muted">Ein Screenreader liest: "Suche öffnen, Taste" · "Link kopieren, Taste" · "Menü, Taste".</p>
+  </div>
+  <pre><code class="language-html">&lt;!-- 1. Versteckter Text --&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon"&gt;
+  &lt;span class="ncss-icon ncss-icon-search" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;span class="ncss-visually-hidden"&gt;Suche öffnen&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- 2. aria-label --&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--icon" aria-label="Link kopieren"&gt;
+  &lt;span class="ncss-icon ncss-icon-copy" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- 3. Am besten: sichtbarer Text --&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--secondary"&gt;
+  &lt;span class="ncss-icon ncss-icon-menu" aria-hidden="true"&gt;&lt;/span&gt;
+  Menü
+&lt;/button&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Symbol-Tasten wie <kbd class="ncss-kbd">⌘</kbd> in <code>.ncss-kbd</code> per <code>&lt;abbr title="Befehlstaste"&gt;</code> oder <code>aria-label</code> ausschreiben - das Zeichen allein wird oft gar nicht oder falsch vorgelesen.</p>
+</section>
+
+<section class="ncss-stack" id="landmarks">
+  <h2 class="demo-section-title">Landmarks</h2>
+  <p>Landmarks sind die Sprungmarken eines Screenreaders: <code>&lt;header&gt;</code> (banner), <code>&lt;nav&gt;</code> (navigation), <code>&lt;main&gt;</code> (main), <code>&lt;aside&gt;</code> (complementary), <code>&lt;footer&gt;</code> (contentinfo). Die HTML-Elemente bringen die Rolle mit - kein <code>role="navigation"</code> zusätzlich nötig.</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li>Genau ein <code>&lt;main&gt;</code> pro Seite - zugleich das Ziel des Skip-Links.</li>
+    <li><strong>Mehrere <code>&lt;nav&gt;</code> brauchen je ein <code>aria-label</code></strong>, sonst hört man nur dreimal "Navigation". Das Wort "Navigation" nicht ins Label schreiben - der Screenreader sagt die Rolle selbst an.</li>
+    <li><code>&lt;header&gt;</code>/<code>&lt;footer&gt;</code> zählen nur direkt unter <code>&lt;body&gt;</code> als Landmark, nicht innerhalb von <code>&lt;article&gt;</code> oder <code>&lt;section&gt;</code>.</li>
+    <li>Ein <code>&lt;section&gt;</code> wird erst mit zugänglichem Namen (<code>aria-labelledby</code> auf seine Überschrift) zur Region - für normale Abschnitte reicht eine Überschrift.</li>
+  </ul>
+  <pre><code class="language-html">&lt;body&gt;
+  &lt;a href="#main" class="ncss-skip-link"&gt;Zum Inhalt springen&lt;/a&gt;
+  &lt;header class="ncss-topbar"&gt;
+    &lt;nav class="ncss-nav" aria-label="Hauptmenü"&gt;...&lt;/nav&gt;
+  &lt;/header&gt;
+  &lt;nav class="ncss-breadcrumb" aria-label="Brotkrumen"&gt;...&lt;/nav&gt;
+  &lt;main id="main"&gt;
+    &lt;h1&gt;Seitentitel&lt;/h1&gt;
+    ...
+  &lt;/main&gt;
+  &lt;footer&gt;
+    &lt;nav aria-label="Rechtliches"&gt;...&lt;/nav&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="ueberschriften">
+  <h2 class="demo-section-title">Überschriften</h2>
+  <p>Viele Screenreader-Nutzer navigieren zuerst über die Überschriften-Liste. Deshalb:</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li>Eine <code>&lt;h1&gt;</code> pro Seite, darunter <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code> ohne Ebenen zu überspringen.</li>
+    <li>Die Ebene richtet sich nach der Struktur, nicht nach der gewünschten Größe - die Optik regeln die Typografie-Klassen (siehe <a href="typography.html">Typografie</a>).</li>
+    <li>Fett gesetzter Text ist keine Überschrift, und eine Überschrift nicht für dekorative Zeilen missbrauchen. Ein Vorspann wie <code>.ncss-eyebrow</code> bleibt ein <code>&lt;p&gt;</code> neben der eigentlichen Überschrift.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="live-regionen">
+  <h2 class="demo-section-title">Live-Regionen der Komponenten</h2>
+  <p>Ändert sich Inhalt ohne Seitenwechsel, erfährt ein Screenreader davon nur über eine Live-Region (WCAG 4.1.3). Wichtig: die Region muss schon im DOM stehen, <em>bevor</em> Text hineingeschrieben wird - die ncss-Scripts legen sie deshalb gleich beim Start an.</p>
+  <div class="ncss-table-scroll" role="region" aria-label="Live-Regionen" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Komponente</th><th scope="col">Region</th><th scope="col">Was angesagt wird</th></tr></thead>
+      <tbody>
+        <tr><td>Befehlspalette <code>&lt;ncss-command-palette&gt;</code></td><td><code>role="status"</code></td><td>Trefferzahl beim Filtern - Standard "{n} Treffer, mit Pfeiltasten auswählen", anpassbar per <code>status-text</code></td></tr>
+        <tr><td>Live-Suche <code>[data-ncss-livesearch]</code></td><td><code>role="status"</code></td><td>"{n} Treffer, mit Pfeiltasten auswählen" bzw. "Keine Treffer" (anpassbar per <code>data-text-status</code>)</td></tr>
+        <tr><td>Toasts <code>&lt;ncss-toast-region&gt;</code></td><td><code>aria-live="polite"</code>; <code>danger</code>/<code>warning</code> zusätzlich <code>role="alert"</code></td><td>Jede neue Meldung. Fehlermeldungen bleiben per Default stehen (Timeout 0)</td></tr>
+        <tr><td>Video-/Audioplayer</td><td><code>role="status"</code>, <code>aria-atomic="true"</code></td><td>Zustandswechsel per Tastatur, z.B. Wiedergabe/Pause, Lautstärke, Ton aus, Geschwindigkeit</td></tr>
+        <tr><td>Lightbox</td><td><code>aria-live="polite"</code> an der Bildunterschrift</td><td>Unterschrift des neuen Bildes beim Blättern</td></tr>
+        <tr><td>Countdown <code>&lt;ncss-countdown&gt;</code></td><td><code>role="timer"</code> + separate <code>role="status"</code></td><td>Restzeit lesbar, aber nicht ungefragt; Ende immer, minütlich nur mit <code>data-ncss-announce="minute"</code></td></tr>
+        <tr><td>Dropzone</td><td><code>role="status"</code></td><td>"{n} Datei(en) ausgewählt"</td></tr>
+        <tr><td>AJAX-Modal (<code>js/modal-router.js</code>)</td><td><code>aria-live="polite"</code> + <code>aria-busy</code></td><td>Nachgeladener Inhalt nach dem Laden</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Für eigene Ansagen: eine leere Region ins Markup, dann nur noch den Text tauschen. <code>role="alert"</code> unterbricht sofort - nur für echte Fehler oder Warnungen verwenden.</p>
+  <pre><code class="language-html">&lt;p class="ncss-visually-hidden" role="status"&gt;&lt;/p&gt;
+&lt;!-- Später per Script: element.textContent = "Gespeichert"; --&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="zustaende">
+  <h2 class="demo-section-title">Zustände: aria-current, aria-expanded, aria-pressed</h2>
+  <div class="ncss-table-scroll" role="region" aria-label="ARIA-Zustände" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Attribut</th><th scope="col">Bedeutung</th><th scope="col">Wo in ncss</th></tr></thead>
+      <tbody>
+        <tr><td><code>aria-current="page"</code></td><td>Aktuelle Seite in einer Linkliste</td><td>Nav-Links (<code>.ncss-nav-item</code>, Untermenüs), letzter Punkt der Brotkrumen - im Markup gesetzt, die Komponenten stylen danach</td></tr>
+        <tr><td><code>aria-current="location"</code></td><td>Aktueller Abschnitt auf der Seite</td><td><code>js/subnav.js</code> setzt es am Link des Abschnitts, der gerade im Blick ist</td></tr>
+        <tr><td><code>aria-expanded</code></td><td>Aufgeklappt ja/nein</td><td>Combobox, Live-Suche, Befehlspalette (am Eingabefeld), Menü-Buttons der Mediaplayer. Bei <code>&lt;details&gt;</code> nicht nötig - das sagt der Browser selbst an</td></tr>
+        <tr><td><code>aria-pressed</code></td><td>Umschalter an/aus</td><td>Filter-Chips <code>.ncss-tag</code> (Markup), Laufband-Pause (<code>js/marquee.js</code>), Ton aus in Video-/Audioplayer, Untertitel und Bild-in-Bild im Videoplayer, Hell/Dunkel-Umschalter</td></tr>
+        <tr><td><code>aria-selected</code> + <code>aria-activedescendant</code></td><td>Gewählte Option, während der Fokus im Eingabefeld bleibt</td><td>Combobox, Live-Suche, Befehlspalette</td></tr>
+        <tr><td><code>aria-checked</code> (<code>menuitemradio</code>)</td><td>Gewählter Eintrag in einem Menü</td><td>Geschwindigkeits-/Untertitel-Menü der Mediaplayer</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="docs-live" role="group" aria-label="Live-Beispiel">
+    <nav class="ncss-breadcrumb" aria-label="Brotkrumen">
+      <ol>
+        <li><a href="index.html">Start</a></li>
+        <li><a href="accessibility.html">Barrierefreiheit</a></li>
+        <li aria-current="page">Screenreader &amp; ARIA</li>
+      </ol>
+    </nav>
+    <nav class="ncss-nav ncss-nav--tree" aria-label="Barrierefreiheit">
+      <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="a11y-keyboard.html">Tastatur</a></li>
+        <li class="ncss-nav-item"><a href="a11y-screenreader.html" aria-current="page">Screenreader &amp; ARIA</a></li>
+        <li class="ncss-nav-item"><a href="a11y-preferences.html">Nutzer-Einstellungen</a></li>
+      </ul>
+    </nav>
+  </div>
+  <pre><code class="language-html">&lt;nav class="ncss-breadcrumb" aria-label="Brotkrumen"&gt;
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href="/"&gt;Start&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/barrierefreiheit/"&gt;Barrierefreiheit&lt;/a&gt;&lt;/li&gt;
+    &lt;li aria-current="page"&gt;Screenreader &amp;amp; ARIA&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;
+
+&lt;nav class="ncss-nav ncss-nav--tree" aria-label="Barrierefreiheit"&gt;
+  &lt;ul class="ncss-nav-list"&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/tastatur/"&gt;Tastatur&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="ncss-nav-item"&gt;&lt;a href="/screenreader/" aria-current="page"&gt;Screenreader &amp;amp; ARIA&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+  <p class="ncss-text-muted ncss-text-sm">Ein Screenreader liest den markierten Link als "Screenreader &amp; ARIA, aktuelle Seite, Link". Die Hervorhebung hängt in ncss direkt am Attribut - kein zusätzliches <code>.active</code> nötig, Optik und Semantik können nicht auseinanderlaufen.</p>
+</section>
+
+<section class="ncss-stack" id="weniger-aria">
+  <h2 class="demo-section-title">Kein ARIA ist besser als schlechtes ARIA</h2>
+  <p>ARIA ändert nur, was der Screenreader ansagt - nie das Verhalten. Ein <code>&lt;div role="button"&gt;</code> wird dadurch weder fokussierbar noch per Enter auslösbar. Falsches ARIA ist schlimmer als keines, weil es Dinge verspricht, die nicht funktionieren.</p>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight" role="list">
+    <li>Natives Element statt Rolle: <code>&lt;button&gt;</code> statt <code>role="button"</code>, <code>&lt;dialog&gt;</code> statt <code>role="dialog"</code>, <code>&lt;details&gt;</code> statt eigenem Akkordeon mit <code>aria-expanded</code>.</li>
+    <li>Keine redundanten Rollen (<code>&lt;nav role="navigation"&gt;</code>, <code>&lt;button role="button"&gt;</code>).</li>
+    <li><code>aria-hidden="true"</code> nie auf fokussierbare Elemente - für ganze inaktive Bereiche <code>inert</code> verwenden (wie das Laufband für seine Kopie oder der Drilldown für die Wurzelliste).</li>
+    <li>Ein Zustand im ARIA muss immer zum sichtbaren Zustand passen - wer <code>aria-expanded</code> setzt, muss es beim Schließen auch zurücksetzen.</li>
+    <li>Eine Liste mit <code>list-style: none</code> verliert in VoiceOver/Safari ihre Listen-Semantik - ncss setzt eigene Marker deshalb nur zusammen mit <code>role="list"</code> im Markup.</li>
+    <li>Reine Grafiken wie <code>.ncss-sparkline</code> bleiben <code>aria-hidden</code>; die echten Werte stehen daneben in einer <code>.ncss-visually-hidden</code>-Tabelle.</li>
+  </ul>
+</section>

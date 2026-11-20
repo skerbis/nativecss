@@ -1,0 +1,155 @@
+<!--DESC: Alt text, captions via track, transcripts, audio description, pausing motion and keyboard control of the players - using media accessibly.-->
+<section class="ncss-stack">
+  <h1>Media</h1>
+  <p class="ncss-text-lg ncss-text-muted">Images, video and audio only reach everyone if there is a text alternative and motion can be stopped. The ncss players and components provide the technology - alt text, captions and transcripts are content you have to create yourself.</p>
+</section>
+
+<section class="ncss-stack" id="alternativtext">
+  <h2 class="demo-section-title">Alt text for images (WCAG 1.1.1)</h2>
+  <p>Every <code>&lt;img&gt;</code> needs an <code>alt</code> attribute. What goes into it depends on the image's job, not on what it shows:</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Image</th><th scope="col"><code>alt</code></th></tr></thead>
+      <tbody>
+        <tr><td>Photo that matters for the content</td><td>What you need to see to understand the text - short, without "image of"</td></tr>
+        <tr><td>Image as the only content of a link or button</td><td>The destination or action ("Home", "Basket"), not its appearance</td></tr>
+        <tr><td>Image of text (graphic, banner)</td><td>The text in the image</td></tr>
+        <tr><td>Purely decorative image, image next to text that says the same</td><td><code>alt=""</code> (empty) - screen readers skip it</td></tr>
+        <tr><td>Chart, infographic</td><td>A short statement in <code>alt</code>, plus the data as text or a table next to it</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="ncss-list--dot" role="list">
+    <li><code>alt=""</code> and a missing <code>alt</code> are not the same: without the attribute, some screen readers read out the file name.</li>
+    <li>Thumbnails in playlists and cards whose title sits right next to them get <code>alt=""</code> - that is what the ncss player examples do too.</li>
+    <li>Hide inline SVG icons next to text with <code>aria-hidden="true"</code>. An SVG that carries meaning on its own gets <code>role="img"</code> and <code>aria-label</code>.</li>
+    <li>The lightbox (<code>js/lightbox.js</code>) uses <code>data-caption</code> or the thumbnail's <code>alt</code> text as caption and alt text of the large image. So an empty <code>alt</code> on the thumbnail only makes sense there if <code>data-caption</code> is set.</li>
+  </ul>
+  <pre><code class="language-html">&lt;!-- Matters for the content --&gt;
+&lt;img src="team.jpg" alt="The five-person team in front of the workshop"&gt;
+
+&lt;!-- Decorative --&gt;
+&lt;img src="wave.svg" alt=""&gt;
+
+&lt;!-- Icon next to text --&gt;
+&lt;a href="/contact/"&gt;&lt;svg aria-hidden="true"&gt;...&lt;/svg&gt; Contact&lt;/a&gt;
+
+&lt;!-- With a visible caption --&gt;
+&lt;figure class="ncss-figure"&gt;
+  &lt;img src="map.png" alt="Site plan: entrance on the north side, car park opposite"&gt;
+  &lt;figcaption&gt;Getting to the main building&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="untertitel">
+  <h2 class="demo-section-title">Captions with &lt;track&gt; (WCAG 1.2.2)</h2>
+  <p>Pre-recorded video with sound needs captions - <strong>captions for deaf and hard-of-hearing viewers</strong> (<code>kind="captions"</code>) that also include sounds and speaker changes ("[phone rings]", "ANNA:"). Plain translations of the speech are <code>kind="subtitles"</code>. Captions live in a WebVTT file (<code>.vtt</code>) referenced by a <code>&lt;track&gt;</code> element.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li><code>&lt;ncss-video-player&gt;</code> reads every track with <code>kind="captions"</code> and <code>kind="subtitles"</code>, shows a CC toggle (key <kbd class="ncss-kbd">C</kbd>) and offers the languages in the settings menu. <code>&lt;track default&gt;</code> or the <code>captions="en"</code> attribute sets the starting language. Switching is announced via a live region.</li>
+    <li>The player draws captions itself (so they sit above its own control bar and work in fullscreen). Their size grows with the player width (<code>--ncss-video-player-cue-size</code>, default <code>clamp(0.875rem, 3.2cqi, 2rem)</code>). Caption styles from the operating system settings usually do not apply - if your audience relies on them, test with real users or offer the native player.</li>
+    <li>Without JavaScript the native <code>&lt;video controls&gt;</code> remains, with the browser's own captions - the tracks work there too.</li>
+    <li>You write the caption file yourself (or have it made and check it). Auto-generated captions are a start, but rarely accurate enough.</li>
+  </ul>
+  <pre><code class="language-html">&lt;ncss-video-player&gt;
+  &lt;video controls playsinline preload="metadata" poster="poster.jpg"&gt;
+    &lt;source src="film.mp4" type="video/mp4"&gt;
+    &lt;track kind="captions" src="film.en.vtt" srclang="en" label="English" default&gt;
+    &lt;track kind="subtitles" src="film.de.vtt" srclang="de" label="Deutsch"&gt;
+  &lt;/video&gt;
+&lt;/ncss-video-player&gt;</code></pre>
+  <pre><code class="language-none">WEBVTT
+
+00:00:01.000 --&gt; 00:00:04.000
+ANNA: Welcome to the workshop.
+
+00:00:04.500 --&gt; 00:00:06.000
+[hammering]</code></pre>
+</section>
+
+<section class="ncss-stack" id="transkript">
+  <h2 class="demo-section-title">Transcripts (WCAG 1.2.1)</h2>
+  <p>Audio-only content (podcast, interview) needs a text version. For video, a transcript in addition to captions is useful too: it can be searched, read at your own pace and used with a braille display. A transcript is ordinary page content - for example directly below the player or inside a <code>&lt;details&gt;</code>.</p>
+  <p><code>&lt;ncss-audio-player&gt;</code> and <code>&lt;ncss-video-player&gt;</code> have no built-in transcript feature; the chapter list (<code>kind="chapters"</code>) helps with navigation but does not replace a transcript.</p>
+  <pre><code class="language-html">&lt;ncss-audio-player&gt;
+  &lt;audio controls preload="metadata" src="episode-12.m4a"&gt;&lt;/audio&gt;
+&lt;/ncss-audio-player&gt;
+
+&lt;details class="ncss-disclosure"&gt;
+  &lt;summary&gt;Transcript of episode 12&lt;/summary&gt;
+  &lt;p&gt;&lt;strong&gt;Anna:&lt;/strong&gt; Welcome to episode 12 ...&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="audiodeskription">
+  <h2 class="demo-section-title">Audio description (WCAG 1.2.3, 1.2.5)</h2>
+  <p>If a video shows important information only visually (on-screen text, action without commentary), blind people need audio description - a narrator describing what is visible during pauses in the dialogue. At level AA it is required for pre-recorded video.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Easiest: plan the video so that the narration already says everything important. Then no separate description is needed.</li>
+    <li>Otherwise, provide a second version with a recorded description. In <code>&lt;ncss-video-player&gt;</code> you can offer it as a second playlist entry ("Version with audio description").</li>
+    <li><code>&lt;track kind="descriptions"&gt;</code> exists in the specification but is barely supported by browsers - do not rely on it.</li>
+    <li>A full transcript that also describes the visual content meets the requirement as an alternative at level A (1.2.3).</li>
+  </ul>
+  <pre><code class="language-html">&lt;ncss-video-player layout="card"&gt;
+  &lt;video controls playsinline preload="metadata" poster="film.jpg"&gt;...&lt;/video&gt;
+  &lt;p class="ncss-video-player-title"&gt;Workshop visit&lt;/p&gt;
+  &lt;ol class="ncss-video-player-playlist"&gt;
+    &lt;li&gt;&lt;a href="film.mp4" data-captions="en=film.en.vtt"&gt;Workshop visit&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="film-ad.mp4" data-captions="en=film.en.vtt"&gt;Workshop visit - with audio description&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/ncss-video-player&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="bewegung">
+  <h2 class="demo-section-title">Stopping motion (WCAG 2.2.2)</h2>
+  <p>Anything that moves, blinks or scrolls automatically, lasts longer than five seconds and is shown alongside other content needs a way to pause it. That covers marquees, background videos and auto-rotating content.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Component</th><th scope="col">What ncss provides</th><th scope="col">What you add</th></tr></thead>
+      <tbody>
+        <tr><td>Marquee <code>.ncss-marquee</code></td><td>Pauses while focus is inside it (and on hover with a mouse). No motion with <code>prefers-reduced-motion: reduce</code>. <code>js/marquee.js</code> toggles <code>.ncss-marquee--paused</code> and <code>aria-pressed</code> via a <code>[data-ncss-marquee-toggle]</code> button; the duplicated group is <code>aria-hidden</code> and <code>inert</code></td><td>The visible pause button with your own text ("Pause ticker") - pausing on hover/focus alone is not enough</td></tr>
+        <tr><td>Background video <code>.ncss-video-bg</code> (<code>js/video-bg.js</code>)</td><td>Adds a visible pause/play toggle with text, only plays while visible, pauses in background tabs. With reduced motion, data saver and forced colors nothing is loaded - just the poster</td><td>A meaningful poster, <code>muted</code> and <code>aria-hidden="true"</code> on the video (as in the pattern), readable text over the tint</td></tr>
+        <tr><td>Hero video <code>.ncss-hero-media &gt; video[autoplay]</code> with <code>js/hero-video-motion.js</code></td><td>Removes <code>autoplay</code> and pauses the video with <code>prefers-reduced-motion: reduce</code>. Nothing more - there is no pause toggle</td><td>A pause button for everyone else - or simply put <code>data-ncss-video-bg</code> on the hero: <code>js/video-bg.js</code> replaces <code>hero-video-motion.js</code> and includes the toggle</td></tr>
+        <tr><td>CSS animations and transitions</td><td>With <code>prefers-reduced-motion: reduce</code>, <code>reset.css</code> sets all animation and transition durations to almost zero globally</td><td>Check your own JavaScript animations with <code>matchMedia('(prefers-reduced-motion: reduce)')</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code class="language-html">&lt;div class="ncss-marquee" id="logos" data-ncss-marquee&gt;
+  &lt;ul class="ncss-marquee-group" role="list"&gt;&lt;li&gt;...&lt;/li&gt;&lt;/ul&gt;
+&lt;/div&gt;
+&lt;button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm"
+        data-ncss-marquee-toggle aria-controls="logos" aria-pressed="false"&gt;Pause ticker&lt;/button&gt;
+&lt;script src="js/marquee.js" defer&gt;&lt;/script&gt;</code></pre>
+  <p>More on motion and system settings: <a href="a11y-preferences.html">User Preferences</a>.</p>
+</section>
+
+<section class="ncss-stack" id="autoplay">
+  <h2 class="demo-section-title">No autoplay with sound (WCAG 1.4.2)</h2>
+  <p>Sound that starts by itself drowns out screen reader speech. If audio plays automatically for more than three seconds, it must be possible to stop it or turn it down straight away - better still, do not start it automatically at all.</p>
+  <ul class="ncss-list--dot" role="list">
+    <li>Videos with <code>autoplay</code> are always <code>muted</code> (background videos in ncss are muted in the pattern anyway, and browsers usually block autoplay with sound).</li>
+    <li>The ncss players never start by themselves. When an <code>&lt;ncss-video-player&gt;</code> or <code>&lt;ncss-audio-player&gt;</code> starts, all other players on the page pause (can be turned off with <code>exclusive="false"</code>) - so two soundtracks never play at once.</li>
+    <li>After a playlist entry ends, the next one starts automatically. That follows a deliberate play action - it is not autoplay on page load.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="player-tastatur">
+  <h2 class="demo-section-title">Keyboard control of the players</h2>
+  <p>Both players can be operated fully with the keyboard. Every control is a real <code>&lt;button&gt;</code>; the timeline and volume are <code>&lt;input type="range"&gt;</code> with spoken values (<code>aria-valuetext</code>, e.g. "1:05 of 3:20"). Menus are a <code>popover</code> with <code>role="menu"</code>. In the video player, the control bar hides after a while without pointer movement - any key press and any focus inside the player brings it back.</p>
+  <div class="ncss-table-scroll">
+    <table>
+      <thead><tr><th scope="col">Key (focus in player)</th><th scope="col">Video player</th><th scope="col">Audio player</th></tr></thead>
+      <tbody>
+        <tr><td><kbd class="ncss-kbd">Space</kbd> / <kbd class="ncss-kbd">K</kbd></td><td>Play/pause</td><td>Play/pause</td></tr>
+        <tr><td><kbd class="ncss-kbd">J</kbd> / <kbd class="ncss-kbd">L</kbd></td><td>Back/forward 10 s</td><td>Back/forward by skip interval (default 15/30 s)</td></tr>
+        <tr><td><kbd class="ncss-kbd">←</kbd> / <kbd class="ncss-kbd">→</kbd></td><td>Back/forward 5 s</td><td>Back/forward 5 s</td></tr>
+        <tr><td><kbd class="ncss-kbd">↑</kbd> / <kbd class="ncss-kbd">↓</kbd></td><td>Volume</td><td>-</td></tr>
+        <tr><td><kbd class="ncss-kbd">M</kbd></td><td>Mute/unmute</td><td>Mute/unmute</td></tr>
+        <tr><td><kbd class="ncss-kbd">0</kbd>-<kbd class="ncss-kbd">9</kbd>, <kbd class="ncss-kbd">Home</kbd> / <kbd class="ncss-kbd">End</kbd></td><td>Jump to 0-90%, start/end</td><td>Jump to 0-90%, start/end</td></tr>
+        <tr><td><kbd class="ncss-kbd">F</kbd> / <kbd class="ncss-kbd">C</kbd></td><td>Fullscreen / captions</td><td>-</td></tr>
+        <tr><td><kbd class="ncss-kbd">&lt;</kbd> / <kbd class="ncss-kbd">&gt;</kbd></td><td>Playback speed</td><td>-</td></tr>
+        <tr><td><kbd class="ncss-kbd">N</kbd> / <kbd class="ncss-kbd">P</kbd></td><td>Next/previous video</td><td>-</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>All keys at a glance, including the other components: <a href="a11y-keyboard.html">Keyboard</a>.</p>
+</section>

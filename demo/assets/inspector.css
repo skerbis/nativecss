@@ -1,0 +1,359 @@
+/**
+ * NativeCSS-Website - Styles für den Code-Inspektor (demo/assets/js/inspector.js).
+ * Nur Doku/Demo, NICHT Teil von dist/. Bewusst unlayered: das Panel muss über jeder
+ * Seiten-/Komponentenregel liegen, unabhängig davon, welche Layer eine Seite nutzt.
+ */
+
+.demo-inspect-hover {
+  outline: 2px solid var(--ncss-color-brand, #2563eb);
+  outline-offset: 2px;
+  cursor: crosshair;
+}
+
+.demo-inspect-panel {
+  position: fixed;
+  inset: auto 1rem 1rem auto;
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  inline-size: min(44rem, calc(100vw - 2rem));
+  max-block-size: min(75vh, 44rem);
+  overflow: hidden;
+  color: var(--ncss-color-text, #1a1a1a);
+  background: var(--ncss-color-bg, #fff);
+  border: 1px solid var(--ncss-color-border, #ccc);
+  border-radius: var(--ncss-radius-lg, 0.75rem);
+  box-shadow: 0 1.25rem 3.75rem color-mix(in oklch, #000 25%, transparent);
+  font: 400 0.8125rem/1.5 var(--ncss-font-family-base, system-ui, sans-serif);
+}
+
+.demo-inspect-panel[hidden] { display: none; }
+
+.demo-inspect-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border-block-end: 1px solid var(--ncss-color-border, #ddd);
+}
+
+.demo-inspect-head strong { margin-inline-end: auto; font-size: 0.875rem; }
+
+.demo-inspect-btn {
+  font: inherit;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--ncss-radius-sm, 0.25rem);
+  border: 1px solid var(--ncss-color-border, #bbb);
+  background: var(--ncss-color-bg, #fff);
+  color: inherit;
+  cursor: pointer;
+}
+
+.demo-inspect-btn:focus-visible,
+.demo-inspect-crumbs button:focus-visible {
+  outline: 2px solid var(--ncss-color-brand, #2563eb);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .demo-inspect-btn:hover:not(:active) { background: color-mix(in oklch, currentColor 8%, transparent); }
+}
+
+.demo-inspect-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem 0.875rem;
+  border-block-end: 1px solid var(--ncss-color-border, #ddd);
+  font: 0.75rem/1.4 var(--ncss-font-family-mono, ui-monospace, monospace);
+}
+
+.demo-inspect-crumbs button {
+  font: inherit;
+  border: 0;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  max-inline-size: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+  background: color-mix(in oklch, currentColor 8%, transparent);
+  cursor: pointer;
+}
+
+.demo-inspect-crumbs button[aria-current] {
+  background: var(--ncss-color-brand, #2563eb);
+  color: var(--ncss-color-brand-contrast, #fff);
+}
+
+.demo-inspect-body {
+  display: grid;
+  gap: 0.75rem;
+  overflow: auto;
+  padding: 0.75rem 0.875rem;
+}
+
+.demo-inspect-body h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.demo-inspect-hint { margin: 0; opacity: 0.75; }
+
+.demo-inspect-code {
+  margin: 0;
+  max-block-size: 22rem;
+  overflow: auto;
+  padding: 0.75rem;
+  white-space: pre;
+  tab-size: 2;
+  font: 0.75rem/1.55 var(--ncss-font-family-mono, ui-monospace, monospace);
+  background: color-mix(in oklch, currentColor 5%, transparent);
+  border: 1px solid var(--ncss-color-border, #ddd);
+  border-radius: var(--ncss-radius-md, 0.5rem);
+}
+
+.demo-inspect-list {
+  display: grid;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 0.75rem/1.5 var(--ncss-font-family-mono, ui-monospace, monospace);
+}
+
+.demo-inspect-list li { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+.demo-inspect-list span { opacity: 0.75; }
+
+@media (forced-colors: active) {
+  .demo-inspect-hover { outline-color: Highlight; }
+  .demo-inspect-panel { border-color: CanvasText; }
+  .demo-inspect-crumbs button[aria-current] { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
+
+@media print {
+  .demo-inspect-panel { display: none; }
+}
+
+/* --- Topbar-Bedienelemente der Website ------------------------------------------------
+ * Inspektor-Schalter (<button data-demo-inspect aria-pressed>) und Sprachwechsel-Link,
+ * beide von docs-src/site-nav.mjs in jede Demo-/Doku-Topbar geschrieben. Farben aus
+ * currentColor abgeleitet, damit dieselben Regeln auf heller Topbar UND auf der dunklen
+ * Glass-Topbar der Startseite lesbar bleiben. */
+.demo-inspect-toggle,
+.demo-topbar-lang {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid color-mix(in oklch, currentColor 30%, transparent);
+  border-radius: var(--ncss-radius-sm, 0.25rem);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--ncss-font-size-sm, 0.875rem);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.demo-inspect-toggle[aria-pressed="true"] {
+  border-color: var(--ncss-color-brand, #2563eb);
+  background: var(--ncss-color-brand, #2563eb);
+  color: var(--ncss-color-brand-contrast, #fff);
+}
+.demo-inspect-toggle:focus-visible,
+.demo-topbar-lang:focus-visible {
+  outline: 2px solid var(--ncss-color-brand, #2563eb);
+  outline-offset: 2px;
+}
+.demo-inspect-toggle:active,
+.demo-topbar-lang:active {
+  background: color-mix(in oklch, currentColor 16%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-inspect-toggle:hover:not(:active, [aria-pressed="true"]),
+  .demo-topbar-lang:hover:not(:active) {
+    background: color-mix(in oklch, currentColor 8%, transparent);
+  }
+}
+@media (forced-colors: active) {
+  .demo-inspect-toggle,
+  .demo-topbar-lang { border-color: ButtonText; }
+  .demo-inspect-toggle[aria-pressed="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight; }
+}
+@media print {
+  .demo-inspect-toggle,
+  .demo-topbar-lang { display: none; }
+}
+
+/* --- Schwebender Inspect-Schalter (jede Seite, unten rechts) ---------------------------
+ * Klein und dezent, sitzt über allem außer dem Inspektor-Panel. Abstand berücksichtigt
+ * die Safe-Area (Notch/Home-Indikator); liegt unten rechts bereits eine Toast-Region mit
+ * Inhalt, rückt der Schalter nach oben. Das Panel öffnet sich direkt darüber. */
+.demo-inspect-fab {
+  position: fixed;
+  inset-block-end: max(1rem, env(safe-area-inset-bottom));
+  inset-inline-end: max(1rem, env(safe-area-inset-right));
+  z-index: 2147482000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid color-mix(in oklch, var(--ncss-color-text, #1a1a1a) 18%, transparent);
+  border-radius: 999px;
+  background: var(--ncss-color-surface, #fff);
+  color: var(--ncss-color-text, #1a1a1a);
+  box-shadow: 0 0.5rem 1.5rem color-mix(in oklch, #000 18%, transparent);
+  font: 600 0.8125rem/1.2 var(--ncss-font-family-base, system-ui, sans-serif);
+  cursor: pointer;
+  transition: translate 0.2s ease, background-color 0.2s ease;
+}
+.demo-inspect-fab-icon {
+  font-family: var(--ncss-font-family-mono, ui-monospace, monospace);
+  color: var(--ncss-color-brand, #2563eb);
+}
+.demo-inspect-fab-key {
+  padding: 0.05rem 0.35rem;
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in oklch, currentColor 25%, transparent);
+  font: 0.6875rem/1.4 var(--ncss-font-family-mono, ui-monospace, monospace);
+  opacity: 0.75;
+}
+.demo-inspect-fab[aria-pressed="true"] {
+  background: var(--ncss-color-brand, #2563eb);
+  border-color: var(--ncss-color-brand, #2563eb);
+  color: var(--ncss-color-brand-contrast, #fff);
+}
+.demo-inspect-fab[aria-pressed="true"] .demo-inspect-fab-icon {
+  color: inherit;
+}
+.demo-inspect-fab:focus-visible {
+  outline: 2px solid var(--ncss-color-brand, #2563eb);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-inspect-fab:hover:not(:active, [aria-pressed="true"]) {
+    background: color-mix(in oklch, var(--ncss-color-surface, #fff) 90%, var(--ncss-color-brand, #2563eb));
+  }
+}
+.demo-inspect-fab:active {
+  translate: 0 1px;
+}
+/* Schmale Bildschirme: nur Symbol + Wort, kein Tastenkürzel (gibt es dort nicht). */
+@media (max-width: 40rem) {
+  .demo-inspect-fab-key { display: none; }
+}
+/* Toast-Region unten rechts mit Inhalt: Schalter weicht nach oben aus. */
+:root:has(ncss-toast-region > *, .ncss-toast-region > *) .demo-inspect-fab {
+  translate: 0 -5rem;
+}
+/* Panel öffnet über dem Schalter statt ihn zu verdecken. */
+:root:has(.demo-inspect-fab) .demo-inspect-panel {
+  inset-block-end: calc(max(1rem, env(safe-area-inset-bottom)) + 3.25rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-inspect-fab { transition: none; }
+}
+@media (forced-colors: active) {
+  .demo-inspect-fab { border-color: ButtonText; box-shadow: none; }
+  .demo-inspect-fab[aria-pressed="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight; }
+}
+@media print {
+  .demo-inspect-fab { display: none; }
+}
+
+/* Erklärung je Klasse/Attribut/Element (aus docs/class-index.*.json): eigene Zeile unter
+   dem Klassennamen, normale Schrift statt Monospace. */
+.demo-inspect-explain {
+  flex-basis: 100%;
+  margin-block-end: 0.375rem;
+  font: 0.75rem/1.45 var(--ncss-font-family-base, system-ui, sans-serif);
+  opacity: 1;
+}
+.demo-inspect-list .demo-inspect-explain { opacity: 0.9; }
+.demo-inspect-explain a { color: var(--ncss-color-link, var(--ncss-color-brand, #2563eb)); }
+
+/* --- Beispiel-Leiste (oben auf jeder Beispiel-Website) ---------------------------------
+ * Erzeugt von docs-src/sync-demo.mjs. Bewusst neutral (eigene Fallback-Werte, keine
+ * Abhängigkeit vom Design der Beispielseite - funktioniert auch auf der UIkit-Seite) und
+ * schmal: Marke, "Beispiel: Name", zurück zur Übersicht und zum Handbuch. Scrollt mit
+ * weg (nicht sticky), damit die eigene Kopfleiste der Beispielseite oben kleben kann. */
+.demo-example-bar {
+  position: relative;
+  z-index: 2147481000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.4rem max(1rem, env(safe-area-inset-left));
+  background: #14161b;
+  color: #e9ebef;
+  font: 500 0.8125rem/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.demo-example-bar a {
+  color: inherit;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+.demo-example-bar-brand {
+  font-weight: 700;
+}
+.demo-example-bar-label {
+  color: #b9bec8;
+}
+.demo-example-bar-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-inline-start: auto;
+}
+.demo-example-bar a:focus-visible {
+  outline: 2px solid #8ab4ff;
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .demo-example-bar a:hover {
+    text-decoration: underline;
+  }
+}
+.demo-example-bar a:active {
+  opacity: 0.8;
+}
+@media (forced-colors: active) {
+  .demo-example-bar { background: Canvas; color: CanvasText; border-block-end: 1px solid CanvasText; }
+  .demo-example-bar a { color: LinkText; }
+}
+@media print {
+  .demo-example-bar { display: none; }
+}
+
+/* Sprachwechsel: unter 24rem nur das Kürzel (DE/EN), damit die Kopfleiste einzeilig bleibt. */
+.demo-topbar-lang-short { display: none; }
+@media (max-width: 23.99rem) {
+  /* Langform nur optisch weg - bleibt Name des Links (WCAG 2.5.3 Label in Name) */
+  .demo-topbar-lang-long { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .demo-topbar-lang-short { display: inline; }
+}
+
+/* Grid-Spalte darf nicht auf die Breite langer Code-Zeilen wachsen (die scrollen selbst). */
+.demo-inspect-body > * { min-width: 0; }
+
+/* Schriftzug in der Beispiel-Leiste (immer dunkle Leiste: "Native" hellblau). */
+.demo-example-bar .demo-wordmark {
+  display: block;
+  block-size: 1.45em;
+  inline-size: auto;
+}
+.demo-example-bar .demo-wordmark-native { fill: #8ab4ff; }
+.demo-example-bar .demo-wordmark-css { fill: currentColor; }
+.demo-example-bar-brand { display: inline-flex; align-items: center; }
+@media (forced-colors: active) {
+  .demo-example-bar .demo-wordmark-native { fill: LinkText; }
+  .demo-example-bar .demo-wordmark-css { fill: CanvasText; }
+}

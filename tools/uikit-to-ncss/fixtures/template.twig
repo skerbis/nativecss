@@ -1,0 +1,14 @@
+{# Teaser-Liste #}
+<div class="uk-child-width-1-2@m {{ extra_class }}" uk-grid>
+  {% for item in items %}
+  <div>
+    <article class="uk-card uk-card-default {% if item.featured %}uk-card-primary{% endif %}">
+      <div class="uk-card-body">
+        <h3 class="uk-card-title">{{ item.title|e }}</h3>
+        <p class="uk-text-meta">{{ item.date|date("d.m.Y") }}</p>
+        <a href="{{ path('item', {id: item.id}) }}" class="uk-button uk-button-text uk-button-{{ item.style }}">Weiter</a>
+      </div>
+    </article>
+  </div>
+  {% endfor %}
+</div>

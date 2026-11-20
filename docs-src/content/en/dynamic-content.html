@@ -1,0 +1,113 @@
+<!--DESC: Initialise markup inserted after load (htmx, fetch + innerHTML, REDAXO frontend editing) - one event, idempotent scripts, optional MutationObserver.-->
+<!--FOOT: <script src="~/dist/js/count-up.js"></script><script src="~/dist/js/sparkline.js"></script><script src="~/dist/js/marquee.js"></script><script src="~/demo/assets/js/dynamic-content-demo.js"></script>-->
+<section class="ncss-stack">
+  <h1>Dynamic content</h1>
+  <p class="ncss-text-lg ncss-text-muted">The attribute-based scripts in <code>dist/js/</code> (count-up, sparkline, marquee, downloads, code block, …) look for their elements when the page loads. Markup added later by htmx, <code>fetch()</code> + <code>innerHTML</code> or REDAXO's frontend editing is announced by the host code with ONE event - every script then initialises exactly the new elements, never twice.</p>
+</section>
+
+<section class="ncss-stack" id="try-it">
+  <h2 class="demo-section-title">Try it</h2>
+  <p>Both buttons insert the same card via <code>innerHTML</code> (count-up, sparkline, marquee, code block). Only the first announces it afterwards - the second stays raw until “Announce afterwards” fires the event for the whole area. Announcing repeatedly is harmless.</p>
+  <div class="ncss-cluster">
+    <button type="button" class="ncss-btn ncss-btn--primary" data-demo-insert="event">Insert + event</button>
+    <button type="button" class="ncss-btn ncss-btn--secondary" data-demo-insert="silent">Insert without event</button>
+    <button type="button" class="ncss-btn ncss-btn--secondary" data-demo-announce>Announce afterwards</button>
+    <button type="button" class="ncss-btn ncss-btn--secondary" data-demo-clear>Clear</button>
+  </div>
+  <p id="dyn-demo-status" class="ncss-visually-hidden" role="status"></p>
+  <div id="dyn-demo-stage" class="ncss-grid" style="--ncss-grid-min: 16rem;"></div>
+  <p class="ncss-text-sm ncss-text-muted">Demo source: <code>demo/assets/js/dynamic-content-demo.js</code> (external file, no inline scripts).</p>
+</section>
+
+<section class="ncss-stack" id="contract">
+  <h2 class="demo-section-title">The contract</h2>
+  <p>After inserting, fire a <code>CustomEvent</code> named <code>ncss-content-change</code> on <code>document</code>, with <code>detail.root</code> = the newly inserted element (without <code>detail</code>, the whole document is scanned again).</p>
+  <pre><code class="language-javascript">document.dispatchEvent(new CustomEvent("ncss-content-change", {
+  detail: { root: newElement }
+}));</code></pre>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li><strong>Idempotent</strong>: each script remembers processed elements in its own <code>WeakSet</code>. Announce twice, announce the whole document, use the event AND the observer - nothing is initialised twice.</li>
+    <li><strong>Deliberately no marker attribute</strong>: copied <code>innerHTML</code> (htmx swap, REDAXO slice, template) would otherwise carry a <code>data-…-ready</code> along and the new element would wrongly be skipped as “already done”.</li>
+    <li><strong>Cherry-pickable</strong>: every file ships its own tiny <code>scan()</code> helper, no shared dependency. Include only <code>count-up.js</code> and that is exactly what you get.</li>
+    <li><code>detail.root</code> itself is checked too - an inserted <code>&lt;span data-ncss-count-up&gt;</code> counts even when it is the root. Shadow roots (<code>&lt;ncss-container&gt;</code>) are searched just like on load.</li>
+  </ul>
+</section>
+
+<section class="ncss-stack" id="htmx">
+  <h2 class="demo-section-title">htmx</h2>
+  <p><code>htmx:load</code> fires for EVERY newly added element (<code>detail.elt</code>), also with <code>hx-swap="outerHTML"</code>, where the old target is already gone from the DOM - hence this event rather than <code>htmx:afterSwap</code>. It fires once with <code>&lt;body&gt;</code> on start-up - harmless, the scripts are idempotent.</p>
+  <pre><code class="language-javascript">// own file, e.g. assets/js/htmx-ncss.js
+document.addEventListener("htmx:load", function (event) {
+  document.dispatchEvent(new CustomEvent("ncss-content-change", {
+    detail: { root: event.detail.elt }
+  }));
+});</code></pre>
+</section>
+
+<section class="ncss-stack" id="fetch">
+  <h2 class="demo-section-title">Your own fetch() + innerHTML</h2>
+  <pre><code class="language-javascript">fetch("/teasers/page-2/")
+  .then(function (response) { return response.text(); })
+  .then(function (html) {
+    var list = document.querySelector("#teaser-list");
+    list.insertAdjacentHTML("beforeend", html);
+    document.dispatchEvent(new CustomEvent("ncss-content-change", {
+      detail: { root: list }
+    }));
+  });</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Announcing the whole list is fine: existing teasers are already processed and get skipped. <code>js/modal-router.js</code> does this itself - content loaded into the modal is announced automatically.</p>
+</section>
+
+<section class="ncss-stack" id="redaxo">
+  <h2 class="demo-section-title">REDAXO frontend editing</h2>
+  <p>Fluid frontend editing replaces slices in the live document. If you can adapt the editor code: fire the same event with the slice element as <code>root</code> after inserting it. If not: include <code>content-observer.js</code> (below) - then the editor doesn't need to know anything.</p>
+</section>
+
+<section class="ncss-stack" id="observer">
+  <h2 class="demo-section-title">Optional: content-observer.js</h2>
+  <p>For environments whose insertion code you cannot touch. ONE <code>MutationObserver</code> on the document collects inserted elements per animation frame and fires one <code>ncss-content-change</code> per topmost new node (<code>detail.source = "observer"</code>). The explicit path above remains the recommended one - cheaper and more precise.</p>
+  <pre><code class="language-html">&lt;script src="ncss/js/content-observer.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- exclude areas that re-render often --&gt;
+&lt;div data-ncss-observe="off"&gt;…&lt;/div&gt;</code></pre>
+</section>
+
+<section class="ncss-stack" id="overview">
+  <h2 class="demo-section-title">Which scripts react how</h2>
+  <div class="ncss-table-scroll" tabindex="0" role="region" aria-label="Scripts by mechanism">
+    <table>
+      <thead><tr><th scope="col">Mechanism</th><th scope="col">Scripts</th></tr></thead>
+      <tbody>
+        <tr><td><code>scan()</code> + event</td><td><code>count-up</code>, <code>reveal</code>, <code>text-reveal</code>, <code>marquee</code>, <code>scroll-horizontal</code>, <code>sparkline</code>, <code>downloads</code>, <code>events</code>, <code>code-block</code>, <code>combobox</code>, <code>livesearch</code>, <code>backdrop</code>, <code>spotlight</code>, <code>video-bg</code>, <code>hero-video-motion</code>, <code>view-transitions</code>, <code>hide-on-scroll-fallback</code>, <code>scroll-stack-fallback</code>, <code>modal-router</code> (path mapping, dialogs)</td></tr>
+        <tr><td>Delegation on <code>document</code> (works without the event)</td><td><code>lightbox</code>, <code>command-fallback</code>, <code>nav</code>, <code>notification</code>, <code>video-card</code>, <code>theme-toggle</code> (click; labels of new toggles via event), <code>marquee</code> (pause button), <code>modal-router</code> (trigger click)</td></tr>
+        <tr><td>Custom elements - <code>connectedCallback()</code> (works without the event)</td><td><code>&lt;ncss-nav-priority&gt;</code>, <code>&lt;ncss-hovercard&gt;</code>, <code>&lt;ncss-compare&gt;</code>, <code>&lt;ncss-scrolly&gt;</code>, <code>&lt;ncss-nav-drilldown&gt;</code>, <code>&lt;ncss-scroll-video&gt;</code>, <code>&lt;ncss-scroll-frames&gt;</code>, players, <code>&lt;ncss-container&gt;</code>, <code>&lt;ncss-command-palette&gt;</code> (shortcut labels via event)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ncss-stack" id="accessibility">
+  <h2 class="demo-section-title">Accessibility</h2>
+  <div class="docs-a11y-notes">
+    <h3><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>What the host code has to take care of</h3>
+    <dl class="ncss-stack ncss-stack--tight">
+      <dt>Keyboard</dt>
+      <dd>The ncss scripts NEVER move focus while initialising - inserted markup does not steal it. Focus management after a swap is the host code's job: if the user triggered the load themselves (“Load more”, filters, page 2), move focus to the heading of the new region (<code>tabindex="-1"</code>, not in the tab order) - like the demo above. If a swap replaces the focused element, focus is otherwise lost to <code>&lt;body&gt;</code>. Automatic updates (polling, live data) must never move focus.</dd>
+      <dt>Screen readers</dt>
+      <dd>Announce new content briefly instead of reading all of it: a short message in a <code>role="status"</code> element (“12 more results loaded”) or an <code>ncss-notify</code> toast (<a href="modern-ui.html#benachrichtigungen">notifications</a>). Put <code>aria-live</code> directly on the swap container only for small, text-like areas - with cards containing a marquee, numbers and code it becomes a long, confusing announcement. Count-up and sparkline stay correct: the real number text and the hidden value table are in the DOM from the start.</dd>
+      <dt>Settings</dt>
+      <dd>Animations initialised later follow the same rules as on load: with <code>prefers-reduced-motion: reduce</code> count-up does not count, reveals and word reveals stay static, marquee and backdrop stand still; forced colors shows the final text. The preference is read when the script loads - a change mid-session applies from the next page view.</dd>
+      <dt>Without JS</dt>
+      <dd>Every component stays usable without the script or without the event: the number is plain text, the sparkline data a table (once the script runs), the marquee a static list, downloads are normal links. The event only adds behaviour, never content.</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="ncss-stack" id="limits">
+  <h2 class="demo-section-title">Limits</h2>
+  <ul class="ncss-list--dot ncss-stack ncss-stack--tight">
+    <li>Removed elements are not “torn down”: listeners on the element go with it, a few <code>document</code> listeners (e.g. click-outside of the live search, <code>visibilitychange</code> of the backdrop) stay until the next page load. Backdrop timers, hide-on-scroll and the stack fallback drop removed elements themselves.</li>
+    <li>An element a script has already rebuilt (marquee copy, sparkline table, copy button, word spans) may be inserted again as a copy - the scripts detect it and don't build twice. A combobox enhancement is not rewired when its replacement markup was copied along (<code>data-ncss-combobox</code> stays an attribute on purpose) - deliver the native element from before the enhancement.</li>
+    <li>Moving instead of re-inserting (reordering slices, <code>hx-preserve</code>): custom elements re-attach their <code>document</code> listeners when reconnected (<code>&lt;ncss-command-palette&gt;</code>, <code>&lt;ncss-hovercard&gt;</code> verified). Attribute scripts keep their state on the element, a moved element needs no event.</li>
+  </ul>
+</section>

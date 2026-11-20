@@ -1,0 +1,74 @@
+/**
+ * ncss - Countdown <ncss-countdown> (Layer "components"), JS: js/countdown.js.
+ * Braucht colors.css + tokens.css (+ reset/base).
+ *
+ * Markup (der Inhalt ist zugleich der Fallback ohne JS - ein normales Datum):
+ *   <ncss-countdown class="ncss-countdown" datetime="2026-12-24T18:00:00+01:00">
+ *     <time datetime="2026-12-24T18:00:00+01:00">24. Dezember 2026, 18:00 Uhr</time>
+ *   </ncss-countdown>
+ * Optional: data-ncss-units="days hours minutes", data-ncss-done-text="Jetzt live!",
+ * data-ncss-announce="minute" - siehe js/countdown.js.
+ * --compact: Ziffern und Einheit in einer Zeile ("3 Tage 04 Stunden ...") statt Kacheln.
+ */
+
+ncss-countdown {
+  /* Bezugsrahmen für die nur optisch versteckten Zeilen unten (kein Überlauf). */
+  position: relative;
+  display: inline-block;
+}
+.ncss-countdown-units {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-countdown-unit {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-inline-size: 4.5em;
+  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: var(--ncss-radius-md);
+  background-color: var(--ncss-color-surface);
+}
+.ncss-countdown-value {
+  font-size: var(--ncss-font-size-xl);
+  font-weight: var(--ncss-font-weight-bold);
+  line-height: var(--ncss-line-height-tight);
+  font-variant-numeric: tabular-nums;
+}
+.ncss-countdown-label {
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-countdown-done {
+  font-size: var(--ncss-font-size-lg);
+  font-weight: var(--ncss-font-weight-bold);
+}
+/* Absolutes Datum + Screenreader-Zeile nur optisch verstecken, sobald das Script läuft
+   (gleiche Technik wie .ncss-visually-hidden, lokal - ohne helpers/a11y.css nutzbar). */
+.ncss-countdown-fallback,
+.ncss-countdown-sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.ncss-countdown--compact .ncss-countdown-units {
+  gap: var(--ncss-space-xs);
+}
+.ncss-countdown--compact .ncss-countdown-unit {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.25em;
+  min-inline-size: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.ncss-countdown--compact .ncss-countdown-value {
+  font-size: inherit;
+}

@@ -1,0 +1,124 @@
+<!--HEAD:
+<style>
+  /* Einstellungs-Simulator (Startseite + Handbuch "Nutzer-Einstellungen"): Kontrollkästchen
+     schalten per :has() eine Simulation der jeweiligen System-Einstellung auf der
+     Beispiel-Fläche ein - reines CSS, keine Skripte. Bewusst UNLAYERED (Seiten-Style):
+     schlägt damit die Komponenten-Layer ohne !important, genau wie eine echte Nutzer-
+     Einstellung die Darstellung übersteuert. */
+  .demo-prefs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: var(--ncss-space-lg);
+    align-items: start;
+  }
+  .demo-prefs > * {
+    min-inline-size: 0;
+  }
+  .demo-prefs fieldset {
+    display: grid;
+    gap: var(--ncss-space-2xs);
+    margin: 0;
+    padding: var(--ncss-space-sm) var(--ncss-space-md) var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-surface);
+    min-inline-size: 0;
+  }
+  .demo-prefs legend {
+    padding-inline: var(--ncss-space-2xs);
+    font-weight: 700;
+  }
+  .demo-prefs-hint {
+    margin: 0;
+    font-size: var(--ncss-font-size-sm);
+    color: var(--ncss-color-text-muted);
+  }
+  .demo-prefs-sample {
+    display: grid;
+    gap: var(--ncss-space-sm);
+    padding: var(--ncss-space-md);
+    border: 1px solid var(--ncss-color-border);
+    border-radius: var(--ncss-radius-lg);
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  .demo-prefs-sample .ncss-card {
+    background-color: var(--ncss-color-surface);
+  }
+  .demo-prefs-glass {
+    padding: var(--ncss-space-sm);
+    border-radius: var(--ncss-radius-md);
+    background-color: color-mix(in oklch, var(--ncss-color-surface) 55%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  /* Simulationen */
+  .demo-prefs:has([data-sim="motion"]:checked) .demo-prefs-sample * {
+    animation: none;
+    transition: none;
+  }
+  .demo-prefs:has([data-sim="contrast"]:checked) .demo-prefs-sample {
+    --ncss-color-text-muted: var(--ncss-color-text);
+    --ncss-color-border: var(--ncss-color-text);
+  }
+  .demo-prefs:has([data-sim="contrast"]:checked) .demo-prefs-sample :is(.ncss-card, .ncss-badge, .ncss-btn) {
+    border: 2px solid currentColor;
+  }
+  .demo-prefs:has([data-sim="transparency"]:checked) .demo-prefs-glass {
+    background-color: var(--ncss-color-surface);
+    backdrop-filter: none;
+  }
+  .demo-prefs:has([data-sim="forced"]:checked) .demo-prefs-sample,
+  .demo-prefs:has([data-sim="forced"]:checked) .demo-prefs-sample * {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+    box-shadow: none;
+    text-shadow: none;
+  }
+  .demo-prefs:has([data-sim="forced"]:checked) .demo-prefs-sample :is(a, .ncss-btn) {
+    color: LinkText;
+    border: 1px solid ButtonText;
+  }
+  .demo-prefs:has([data-sim="text"]:checked) .demo-prefs-sample {
+    font-size: 150%;
+  }
+  .demo-prefs:has([data-sim="spacing"]:checked) .demo-prefs-sample {
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    word-spacing: 0.16em;
+  }
+  .demo-prefs:has([data-sim="spacing"]:checked) .demo-prefs-sample p {
+    margin-block-end: 2em;
+  }
+  /* Tastatur-Vorführung */
+  .demo-keys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ncss-space-sm);
+    align-items: start;
+  }
+</style>
+-->
+<div class="demo-prefs">
+  <fieldset>
+    <legend><span class="ncss-icon ncss-icon-accessibility demo-a11y-icon" aria-hidden="true"></span>Einstellung simulieren</legend>
+    <label class="ncss-choice"><input type="checkbox" data-sim="motion"> Reduzierte Bewegung</label>
+    <label class="ncss-choice"><input type="checkbox" data-sim="contrast"> Mehr Kontrast</label>
+    <label class="ncss-choice"><input type="checkbox" data-sim="transparency"> Weniger Transparenz</label>
+    <label class="ncss-choice"><input type="checkbox" data-sim="forced"> Systemfarben (wie Forced Colors)</label>
+    <label class="ncss-choice"><input type="checkbox" data-sim="text"> Größere Schrift (150 %)</label>
+    <label class="ncss-choice"><input type="checkbox" data-sim="spacing"> Textabstände (WCAG 1.4.12)</label>
+    <p class="demo-prefs-hint">Echte System-Einstellungen wirken auf der ganzen Seite automatisch - hier nur zur Vorführung auf der Beispiel-Fläche.</p>
+  </fieldset>
+  <div class="demo-prefs-sample" role="group" aria-label="Beispiel-Fläche">
+    <article class="ncss-card ncss-border ncss-radius-md">
+      <div class="ncss-card-body">
+        <p class="ncss-eyebrow">Beispiel</p>
+        <strong>Karte mit Text</strong>
+        <p class="ncss-text-muted ncss-text-sm">Gedämpfter Hilfetext, der bei mehr Kontrast kräftiger wird.</p>
+        <p class="ncss-cluster"><span class="ncss-badge ncss-badge--success">Aktiv</span><a href="#main">Ein Link</a></p>
+      </div>
+    </article>
+    <div class="demo-prefs-glass">Glas-Fläche über dem Hintergrund</div>
+    <p><button type="button" class="ncss-btn ncss-btn--primary ncss-glow-pulse">Animierter Button</button></p>
+  </div>
+</div>
