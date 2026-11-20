@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NativeCSS - Landingpage (Web Awesome + Font Awesome Bridge)</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<!-- Gespeicherte Darstellungs-Einstellungen (<ncss-preferences>) VOR allen Stylesheets
+     setzen - ersetzt theme-toggle-early.js (liest denselben Schlüssel "ncss-theme"). -->
+<script src="../dist/js/preferences-early.js"></script>
 
 <!-- Font Awesome Free, selbst gehostet unter vendor/fontawesome (kein CDN/Kit-Account
      nötig) - liefert sowohl die <i class="fa-solid ..."> Webfont-Icons hier direkt im
@@ -32,8 +35,8 @@
      Reset-System würde nur konkurrieren statt ergänzen. -->
 <link rel="stylesheet" href="../vendor/webawesome/dist-cdn/styles/themes/default.css">
 
-<script src="../dist/js/theme-toggle-early.js"></script>
 <link rel="stylesheet" href="../dist/ncss.css">
+<link rel="stylesheet" href="../dist/components/preferences-fonts.css">
 <link rel="stylesheet" href="../dist/integrations/webawesome-bridge.css">
 <link rel="stylesheet" href="../dist/page-transitions.css">
 <script src="../dist/js/page-transitions-quiet.js" defer></script>
@@ -42,6 +45,10 @@
      "types" allein). -->
 <link rel="stylesheet" href="assets/inspector.css">
 <script src="../dist/js/theme-toggle.js" defer></script>
+<script src="../dist/js/preferences.js" defer></script>
+<script src="../dist/js/notification.js" defer></script>
+<script src="../dist/js/icon.js" defer></script>
+<script src="../dist/js/spotlight.js" defer></script>
 <script src="assets/js/inspector.js" defer></script>
 <style>
   @media (prefers-reduced-motion: no-preference) {
@@ -84,6 +91,10 @@
 <body class="ncss-page-shell">
 
 <a href="#main" class="ncss-skip-link">Zum Inhalt springen</a>
+<!-- Eigener Landmark um die (generierte) Beispiel-Leiste - sonst steht ihr Text
+     außerhalb jeder Region (axe region). Bleibt außerhalb der Marker, sync-demo.mjs
+     ersetzt nur den Inhalt dazwischen. -->
+<aside aria-label="Beispiel-Leiste">
 <!-- example-bar:start -->
 <div class="demo-example-bar" data-demo-inspect-ignore>
   <a class="demo-example-bar-brand" href="../docs/de/start.html"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
@@ -95,6 +106,7 @@
 </div>
 <button type="button" class="demo-inspect-fab" data-demo-inspect aria-pressed="false" title="Code-Inspektor: Element anklicken, um HTML, Erklärung und Quelldateien zu sehen (Alt+I)"><span class="demo-inspect-fab-icon" aria-hidden="true">&lt;/&gt;</span> Inspect <kbd class="demo-inspect-fab-key" aria-hidden="true">Alt I</kbd></button>
 <!-- example-bar:end -->
+</aside>
 
 <!-- .ncss-glass (components/effects.css) macht aus der sticky Topbar einen Frosted-Glass-
      Header - NICHT direkt auf <header> (das <wa-dropdown> weiter unten wäre dann ein
@@ -109,64 +121,78 @@
      Repositionierungsverhalten kombiniert mit einem iOS-Safari-Rendering-Bug (siehe
      SKILL.md Punkt 21), jetzt behoben über js/wa-close-on-scroll.js - Glass
      war nie die Ursache, kann also wieder bedenkenlos genutzt werden. -->
-<header class="ncss-topbar">
+<header class="ncss-topbar landing-topbar">
   <div class="ncss-glass landing-topbar-backdrop" aria-hidden="true"></div>
+  <!-- EINE Zeile bei jeder Breite (landing.css: nowrap). Bewusst wenige Hauptpunkte -
+       alle Demo-Seiten, Beispiel-Websites und das Handbuch stecken im "Mehr"-Menü. Unter
+       64rem klappt die Nav ins Off-Canvas, "Darstellung" zeigt dann nur das Symbol und
+       "Demo anfragen" weicht ganz schmal dem Hero-Button gleichen Namens. -->
   <div class="ncss-topbar-inner">
-    <a class="ncss-topbar-brand" href="product.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> NativeCSS</a>
-    <nav class="ncss-nav">
+    <a class="ncss-topbar-brand landing-brand" href="landing.html"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
+    <nav class="ncss-nav" aria-label="Hauptnavigation">
       <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
       <dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Menü">
         <button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
         <ul class="ncss-nav-list">
-          <li class="ncss-nav-item"><a href="../docs/de/index.html">Handbuch</a></li>
-          <li class="ncss-nav-item"><a href="index.html">Demo</a></li>
-          <li class="ncss-nav-item" aria-hidden="true"><hr class="ncss-divider--vertical" aria-orientation="vertical"></li>
+          <li class="ncss-nav-item"><a href="#neu">Neu in 1.1</a></li>
+          <li class="ncss-nav-item"><a href="#barrierefreiheit">Barrierefreiheit</a></li>
           <li class="ncss-nav-item"><a href="#features">Funktionen</a></li>
-          <li class="ncss-nav-item"><a href="#komponenten">Komponenten</a></li>
           <li class="ncss-nav-item"><a href="#pricing">Preise</a></li>
-          <li class="ncss-nav-item"><a href="#stimmen">Stimmen</a></li>
           <li class="ncss-nav-item">
             <!-- Web-Awesome-Menü statt natives <details> - <wa-dropdown-item> hat bewusst
                  KEIN href (siehe vendor/webawesome/dist-cdn/skills/webawesome/references/
                  components/dropdown-item.md), Navigation läuft über den wa-select-Handler
-                 unten im <script>. -->
+                 in assets/js/landing-interactions.js. Gruppen per Überschrift + <wa-divider>. -->
             <wa-dropdown id="moreNavDropdown">
-              <wa-button slot="trigger" appearance="plain" size="s" with-caret>Mehr</wa-button>
-              <wa-dropdown-item value="index.html">Komponenten-Demo</wa-dropdown-item>
-              <wa-dropdown-item value="navigation.html">Navigation</wa-dropdown-item>
-              <wa-dropdown-item value="forms.html">Formulare</wa-dropdown-item>
-              <wa-dropdown-item value="media.html">Medien</wa-dropdown-item>
-              <wa-dropdown-item value="layout.html">Layout</wa-dropdown-item>
-              <wa-dropdown-item value="webawesome.html">Web Awesome</wa-dropdown-item>
+              <wa-button slot="trigger" class="landing-more-trigger" appearance="plain" size="s" with-caret>Mehr</wa-button>
+              <h3>Neu in 1.1</h3>
+              <wa-dropdown-item value="../docs/de/scroll-effects.html">Scroll-Effekte</wa-dropdown-item>
+              <wa-dropdown-item value="../docs/de/modern-ui.html">Moderne UI</wa-dropdown-item>
+              <wa-dropdown-item value="../docs/de/video-audio.html">Video &amp; Audio</wa-dropdown-item>
+              <wa-divider></wa-divider>
+              <h3>Beispiel-Websites</h3>
+              <wa-dropdown-item value="example-gemeinde.html">Gemeinde Seeburg</wa-dropdown-item>
+              <wa-dropdown-item value="example-hotel.html">Hotel am See</wa-dropdown-item>
+              <wa-dropdown-item value="example-immo/index.html">ImmoDesk (Backend)</wa-dropdown-item>
+              <wa-dropdown-item value="../docs/de/examples.html">Alle Beispiele</wa-dropdown-item>
+              <wa-divider></wa-divider>
+              <h3>Weitere Demos</h3>
               <wa-dropdown-item value="magazine.html">Magazin</wa-dropdown-item>
-              <wa-dropdown-item value="effects.html">Effekte</wa-dropdown-item>
-              <wa-dropdown-item value="theming.html">Theme anpassen</wa-dropdown-item>
-              <wa-dropdown-item value="widgets.html">Termine &amp; Downloads</wa-dropdown-item>
-              <wa-dropdown-item value="uikit-integration.html">UIkit-Integration</wa-dropdown-item>
               <wa-dropdown-item value="scroll-sections.html">Vollbild-Sektionen</wa-dropdown-item>
               <wa-dropdown-item value="stacked-cards.html">Stacked Cards</wa-dropdown-item>
+              <wa-dropdown-item value="uikit-integration.html">UIkit-Integration</wa-dropdown-item>
               <wa-dropdown-item value="roadmap.html">Roadmap</wa-dropdown-item>
-              <wa-dropdown-item value="colors.html">Farben</wa-dropdown-item>
-              <wa-dropdown-item value="guides.html">Anleitungen</wa-dropdown-item>
-              <wa-dropdown-item value="../docs/de/index.html">Handbuch</wa-dropdown-item>
+              <wa-divider></wa-divider>
+              <h3>Handbuch</h3>
+              <wa-dropdown-item value="../docs/de/index.html">Übersicht</wa-dropdown-item>
+              <wa-dropdown-item value="../docs/de/webawesome-bridge.html">Web-Awesome-Bridge</wa-dropdown-item>
+              <wa-dropdown-item value="../docs/de/theming.html">Theme anpassen</wa-dropdown-item>
+              <wa-dropdown-item value="../docs/de/guides.html">Anleitungen</wa-dropdown-item>
             </wa-dropdown>
           </li>
         </ul>
       </dialog>
     </nav>
     <div class="ncss-topbar-actions">
-      <wa-button id="changelogTrigger" variant="neutral" appearance="plain" size="s" aria-label="Changelog anzeigen">
-        <i class="fa-solid fa-bell" aria-hidden="true"></i>
+      <!-- Name als visuell versteckter Text statt aria-label am Host: Web Awesome reicht ein
+           aria-label nicht an seinen inneren <button> im Shadow DOM weiter (axe button-name). -->
+      <wa-button id="changelogTrigger" variant="neutral" appearance="plain" size="s">
+        <i class="fa-solid fa-bell" aria-hidden="true"></i><span class="ncss-visually-hidden">Neu in Version 1.1</span>
       </wa-button>
       <wa-popover for="changelogTrigger" placement="bottom" class="landing-popover">
-        <h4 class="landing-popover-title">Zuletzt aktualisiert</h4>
+        <p class="landing-popover-title"><strong>Neu in 1.1.0</strong></p>
         <ul class="landing-popover-list">
-          <li><i class="fa-solid fa-plus" aria-hidden="true"></i> <code>.ncss-placeholder</code> Komponente ergänzt</li>
-          <li><i class="fa-solid fa-plus" aria-hidden="true"></i> Web-Awesome-/Font-Awesome-Bridge</li>
-          <li><i class="fa-solid fa-bug" aria-hidden="true"></i> Dark-Mode-Kontrast bei -100/-300 Farbstufen behoben</li>
+          <li><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Scroll-Effekte: Reveal, Text-Reveal, Curtain, Horizontal-Scroll, Count-up</li>
+          <li><i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i> Morphing beim Scrollen</li>
+          <li><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Video- und Audio-Player aus einem Guss</li>
+          <li><i class="fa-solid fa-universal-access" aria-hidden="true"></i> <code>&lt;ncss-preferences&gt;</code>: Darstellung inkl. Lese-Schriften</li>
+          <li><i class="fa-solid fa-icons" aria-hidden="true"></i> Icons per <code>&lt;ncss-icon&gt;</code></li>
+          <li><i class="fa-solid fa-terminal" aria-hidden="true"></i> Befehlspalette und Benachrichtigungen</li>
+          <li><i class="fa-solid fa-code" aria-hidden="true"></i> Neue Website mit Code-Inspektor</li>
         </ul>
       </wa-popover>
-      <wa-button class="ncss-glow-border" style="--ncss-glow-radius: 999px;" variant="brand" appearance="accent" size="s" data-dialog="open contactDialog">
+      <ncss-preferences class="landing-prefs"></ncss-preferences>
+      <wa-button class="ncss-glow-border landing-topbar-cta" style="--ncss-glow-radius: 999px;" variant="brand" appearance="accent" size="s" data-dialog="open contactDialog">
         Demo anfragen
       </wa-button>
     </div>
@@ -178,7 +204,7 @@
   <!-- Hero -->
   <section class="landing-hero">
     <div class="ncss-container ncss-container--narrow ncss-stack landing-hero-inner">
-      <wa-badge variant="brand" appearance="outlined" pill>v1.0 · Reines CSS, kein Build-Schritt</wa-badge>
+      <wa-badge variant="brand" appearance="outlined" pill>v1.1 · Reines CSS, kein Build-Schritt</wa-badge>
       <h1>Ein Design System, das nicht im Weg steht.</h1>
       <p class="ncss-text-lg landing-hero-lead">
         NativeCSS verbindet natives CSS (Cascade Layers, Container Queries, <code>light-dark()</code>)
@@ -193,6 +219,88 @@
         <wa-button variant="neutral" appearance="outlined" size="l" data-dialog="open contactDialog">
           Demo anfragen
         </wa-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Neu in 1.1: Text-Reveal (reines CSS, view()-Timeline) + Bento-Raster mit Spotlight.
+       Alles echte ncss-Komponenten - ohne animation-timeline oder bei reduzierter Bewegung
+       steht der Text einfach voll lesbar da. -->
+  <section id="neu" class="ncss-container ncss-stack ncss-py-xl" aria-labelledby="neu-title">
+    <div class="ncss-stack ncss-stack--tight landing-section-head">
+      <p class="ncss-eyebrow">Neu in 1.1</p>
+      <h2 id="neu-title">Mehr Bewegung, mehr Medien - weiterhin ohne Build</h2>
+      <p class="ncss-text-lg ncss-text-reveal ncss-text-reveal--flow"><span>Scroll-Effekte, Video- und Audio-Player, Befehlspalette und Benachrichtigungen kommen als einzeln einbindbare Bausteine. Dieser Absatz wird beim Scrollen Wort für Wort hell - per CSS-Scroll-Timeline, ohne ein einziges Span pro Wort.</span></p>
+    </div>
+    <div class="ncss-bento landing-bento" data-ncss-spotlight>
+      <article class="ncss-card ncss-spotlight ncss-col-span-2 ncss-row-span-2 landing-bento-feature">
+        <figure class="ncss-reveal ncss-reveal--zoom landing-bento-media">
+          <img src="assets/examples/hotel/see-panorama.webp" alt="Walchensee zwischen bewaldeten Bergen" width="1600" height="1068" loading="lazy" decoding="async">
+        </figure>
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <h3><a class="landing-tile-link" href="../docs/de/scroll-effects.html">Scroll-Effekte</a></h3>
+          <p class="ncss-text-sm ncss-text-muted">Reveal-Formen wie dieser Zoom, Text-Reveal, Curtain, Horizontal-Scroll, Scrollytelling, Count-up und Morphing beim Scrollen - nativ über <code>view()</code>-Timelines.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-spotlight">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-feature-icon"><i class="fa-solid fa-circle-play" aria-hidden="true"></i></span>
+          <h3><a class="landing-tile-link" href="../docs/de/video-audio.html">Video &amp; Audio</a></h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>&lt;ncss-video-player&gt;</code> und <code>&lt;ncss-audio-player&gt;</code> mit Kapiteln, Untertiteln und voller Tastaturbedienung.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-spotlight">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-feature-icon"><i class="fa-solid fa-bell" aria-hidden="true"></i></span>
+          <h3><a class="landing-tile-link" href="../docs/de/modern-ui.html">Moderne UI</a></h3>
+          <p class="ncss-text-sm ncss-text-muted">Bento, Spotlight, Befehlspalette, Hovercards und Benachrichtigungen per <code>ncss.notify()</code>.</p>
+          <p><button type="button" class="ncss-btn ncss-btn--secondary ncss-btn--sm" data-ncss-notify="Live aus dem Markup: data-ncss-notify, ganz ohne eigenes Script." data-title="Benachrichtigung" data-status="success">Benachrichtigung zeigen</button></p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-spotlight">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-icon-row" aria-hidden="true"><ncss-icon name="leaf"></ncss-icon><ncss-icon name="sun" weight="duotone"></ncss-icon><ncss-icon name="heart" weight="fill"></ncss-icon></span>
+          <h3><a class="landing-tile-link" href="../docs/de/icons.html">Icons per Element</a></h3>
+          <p class="ncss-text-sm ncss-text-muted"><code>&lt;ncss-icon name="leaf"&gt;</code> lädt Phosphor-Icons in sechs Strichstärken, selbst gehostet.</p>
+        </div>
+      </article>
+      <article class="ncss-card ncss-spotlight">
+        <div class="ncss-card-body ncss-stack ncss-stack--tight">
+          <span class="landing-feature-icon"><i class="fa-solid fa-code" aria-hidden="true"></i></span>
+          <h3><a class="landing-tile-link" href="../docs/de/inspector.html">Website mit Code-Inspektor</a></h3>
+          <p class="ncss-text-sm ncss-text-muted">Handbuch mit Live-Beispielen, Suche per <kbd>Ctrl</kbd> <kbd>K</kbd> und ein Inspektor, der zu jedem Element HTML, Erklärung und Quelldateien zeigt - probieren Sie oben rechts „Inspect“. Dazu drei neue Beispiel-Websites: <a href="example-gemeinde.html">Gemeinde</a>, <a href="example-hotel.html">Hotel</a> und <a href="example-immo/index.html">ImmoDesk</a>.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Säule Barrierefreiheit: echtes <ncss-preferences inline> - jede Änderung wirkt sofort
+       auf DIESE Seite (und wird gespeichert, dieselben Werte wie der Button oben). -->
+  <section id="barrierefreiheit" class="ncss-full-bleed landing-a11y ncss-py-xl" aria-labelledby="a11y-title">
+    <div class="ncss-container">
+      <div class="ncss-split-container">
+        <div class="ncss-split">
+          <div class="ncss-split-content ncss-stack">
+            <span class="landing-a11y-icon"><span class="ncss-icon ncss-icon-accessibility" aria-hidden="true"></span></span>
+            <p class="ncss-eyebrow">Barrierefreiheit</p>
+            <h2 id="a11y-title">Barrierefrei ist das Fundament, kein Zusatzmodul</h2>
+            <ul class="ncss-list--icon" role="list">
+              <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> <span>Native <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code> und Formular-Elemente: Tastatur, Fokus und Screenreader funktionieren ab Werk.</span></li>
+              <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> <span>Jeder Scroll-Effekt respektiert reduzierte Bewegung, Forced Colors und Druck - der Inhalt bleibt immer voll lesbar.</span></li>
+              <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> <span>Hintergrundvideos mit Pause-Knopf (WCAG 2.2.2), Player mit Untertiteln und Tastatur.</span></li>
+              <li><span class="ncss-icon ncss-icon-check" aria-hidden="true"></span> <span><code>&lt;ncss-preferences&gt;</code>: Besucher wählen Schriftgröße, Kontrast, Bewegung und Lese-Schriften (Atkinson Hyperlegible, Lexend, OpenDyslexic). Kein Overlay - Systemeinstellungen bleiben der Default.</span></li>
+            </ul>
+            <p class="ncss-cluster">
+              <a href="../docs/de/accessibility.html" class="ncss-btn ncss-btn--primary">Barrierefreiheit im Handbuch</a>
+              <a href="../docs/de/a11y-preferences.html" class="ncss-btn ncss-btn--secondary">Darstellungs-Einstellungen</a>
+            </p>
+          </div>
+          <div class="ncss-split-media">
+            <div class="landing-prefs-card ncss-radius-lg ncss-shadow-md">
+              <ncss-preferences inline settings="text font contrast links"></ncss-preferences>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -233,9 +341,9 @@
       </article>
       <article class="ncss-card ncss-animate-on-scroll ncss-radius-lg ncss-border ncss-shadow-sm ncss-shadow-hover-md">
         <div class="ncss-card-body ncss-stack ncss-stack--tight">
-          <span class="landing-feature-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+          <span class="landing-feature-icon"><span class="ncss-icon ncss-icon-accessibility" aria-hidden="true"></span></span>
           <h3>Barrierefrei per Default</h3>
-          <p class="ncss-text-sm ncss-text-muted">Native <code>&lt;dialog&gt;</code>/<code>&lt;details&gt;</code>, Fokus-Trap, <code>:focus-visible</code> - Tastatur und Screenreader ab Werk statt nachgerüstet.</p>
+          <p class="ncss-text-sm ncss-text-muted">Native <code>&lt;dialog&gt;</code>/<code>&lt;details&gt;</code>, <code>:focus-visible</code>, reduzierte Bewegung - Tastatur und Screenreader ab Werk statt nachgerüstet. <a href="#barrierefreiheit">Mehr dazu</a></p>
           <div class="ncss-cluster">
             <wa-tag size="s" pill>a11y</wa-tag>
             <wa-tag size="s" pill>native HTML</wa-tag>
@@ -260,7 +368,7 @@
   <section id="container-queries" class="ncss-container ncss-py-xl">
     <div class="ncss-split-container">
       <div class="ncss-split">
-        <div class="ncss-split-media"><div class="ncss-placeholder" style="aspect-ratio: 4/3;"></div></div>
+        <div class="ncss-split-media"><div class="ncss-placeholder landing-placeholder-4x3"></div></div>
         <div class="ncss-split-content ncss-stack ncss-stack--tight">
           <p class="ncss-eyebrow">Im Detail</p>
           <h2>Container Queries statt Viewport-Breakpoints</h2>
@@ -290,6 +398,19 @@
         <wa-tree-item>Card, Placeholder, Badge, Sparkline</wa-tree-item>
         <wa-tree-item>Modal, Off-Canvas, Nav (native &lt;dialog&gt;)</wa-tree-item>
         <wa-tree-item>Slideshow, Disclosure, Select</wa-tree-item>
+        <wa-tree-item>Befehlspalette, Hovercard, Benachrichtigungen</wa-tree-item>
+        <wa-tree-item>Darstellungs-Einstellungen (&lt;ncss-preferences&gt;)</wa-tree-item>
+      </wa-tree-item>
+      <wa-tree-item>
+        Scroll-Effekte (neu in 1.1)
+        <wa-tree-item>Reveal-Formen, Text-Reveal, Reveal-Pin</wa-tree-item>
+        <wa-tree-item>Curtain, Horizontal-Scroll, Scrollytelling</wa-tree-item>
+        <wa-tree-item>Count-up, Marquee, Morphing</wa-tree-item>
+      </wa-tree-item>
+      <wa-tree-item>
+        Video &amp; Audio (neu in 1.1)
+        <wa-tree-item>Video- und Audio-Player, Playlist, Kapitel</wa-tree-item>
+        <wa-tree-item>Scroll-Video, Bildsequenz, Hintergrundvideo</wa-tree-item>
       </wa-tree-item>
       <wa-tree-item>
         Web-Awesome-Bridge
@@ -304,7 +425,7 @@
   <section class="ncss-tile ncss-tile--muted ncss-full-bleed ncss-text-center">
     <p class="ncss-eyebrow">Ehrlich bleiben</p>
     <h2>Kein Framework-Lock-in - jederzeit aussteigbar</h2>
-    <p class="ncss-text-muted" style="max-width: 34rem; margin-inline: auto;">Reines CSS, kein proprietäres Klassensystem, das sich nur mit einem Build-Schritt wieder entfernen lässt. <code>ncss.css</code> weglassen genügt.</p>
+    <p class="ncss-text-muted landing-tile-lead">Reines CSS, kein proprietäres Klassensystem, das sich nur mit einem Build-Schritt wieder entfernen lässt. <code>ncss.css</code> weglassen genügt.</p>
   </section>
 
   <!-- Beispiel-Dashboard (native SVG-Sparklines, keine Chart-Bibliothek) -->
@@ -495,14 +616,16 @@
 <footer class="ncss-footer">
   <div class="ncss-footer-inner ncss-grid" style="--ncss-grid-min: 12rem;">
     <div class="ncss-stack ncss-stack--tight">
-      <strong class="landing-footer-brand"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> NativeCSS</strong>
-      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt.</p>
+      <a class="landing-footer-brand" href="../docs/de/start.html"><svg class="demo-wordmark" viewBox="0 0 227 64" role="img" aria-label="NativeCSS"><path class="demo-wordmark-native" d="M5.2 57Q6.1 54.1 7.2 50.7Q8.3 47.2 9.8 42.6Q11.2 37.9 13.1 31.5Q15.1 25 17.5 16.3Q17.6 16.1 17.8 15.4Q18 14.7 18 14Q18 13.5 17.8 13.4Q17.7 13.2 17.2 13.2Q16 13.2 14.8 14.2Q13.7 15.2 12.8 16.6Q11.9 18.1 11.4 19.7Q10.9 21.3 10.9 22.6Q10.9 24 11.5 25.3Q9 25.3 7.9 24.2Q6.9 23.2 6.9 21.5Q6.9 19.6 8.1 17.6Q9.3 15.6 11.2 13.9Q13.1 12.3 15.1 11.3Q17.2 10.2 18.9 10.2Q20.9 10.2 22.2 11.7Q23.5 13.2 24.4 15.8Q25.2 18.3 25.8 21.5Q26.4 24.8 26.9 28.4Q27.6 33 28 35.8Q28.4 38.5 28.7 40.2Q28.9 41.8 29.1 42.9Q29.3 44 29.6 45.4Q30.2 42.6 31 39.5Q31.7 36.4 32.5 33.2Q33.2 30 33.9 27Q34.7 23.9 35.4 21.3Q36.2 18.6 36.9 16.5Q37.6 14.5 38.3 13.3Q38.8 12.3 40 11.3Q41.1 10.2 43 10.2Q42 12.8 40.8 16.6Q39.5 20.5 38.2 25Q37 29.5 35.8 34.2Q34.6 38.8 33.7 43.2Q32.7 47.6 32.2 51.2Q31.6 54.8 31.6 57Q29.5 57 28.1 56Q26.8 55 26.1 52.1Q25.8 51.1 25.4 48.8Q24.9 46.4 24.3 43.3Q23.8 40.1 23.1 36.6Q22.5 33.1 21.9 29.8Q21.3 26.5 20.9 23.8Q20.4 21.2 20.1 19.8Q17.5 29.3 15.6 35.9Q13.8 42.5 12.4 46.6Q11 50.8 9.9 53Q8.8 55.3 7.7 56.2Q6.6 57 5.2 57Z M43.3 54.7Q41.4 54.7 40 53.5Q38.6 52.2 38.6 49.6Q38.6 47.6 39.5 45.2Q40.4 42.8 42.1 40.5Q43.7 38.2 45.8 36.3Q47.9 34.4 50.2 33.3Q52.6 32.1 55 32.1Q57.5 32.1 59.2 33.4Q61 34.7 61 36.7Q61 38.3 59.9 39Q58.8 39.7 57.3 39.4Q57.4 38.9 57.5 38.4Q57.5 37.8 57.5 37.3Q57.5 36.1 57.1 35.2Q56.6 34.3 55.1 34.3Q53.5 34.3 51.8 35.4Q50.1 36.5 48.6 38.2Q47.1 40 45.8 42.1Q44.6 44.2 43.9 46.3Q43.2 48.3 43.2 49.9Q43.2 51.8 44.6 51.8Q45.9 51.8 47.5 50.5Q49.1 49.2 50.8 47.2Q52.4 45.2 54 43.2Q55.5 41.1 56.6 39.6Q56.7 39.4 57 39.4Q57.3 39.4 57.9 39.6Q58.6 39.8 59.2 40.2Q59.8 40.6 59.8 41.3Q59.8 41.9 59.3 42.7Q58.8 43.6 58.1 44.7Q57.4 45.8 56.9 46.9Q56.4 47.9 56.4 48.9Q56.4 49.7 56.9 50.3Q57.3 51 58.2 51Q59.6 51 62.1 49Q64.6 46.9 67.2 42L68.3 43.1Q66.9 46.2 65 48.6Q63.1 51 60.9 52.4Q58.8 53.7 56.6 53.7Q54.2 53.7 53 52.2Q51.9 50.7 51.8 49Q51.8 48.9 51.8 48.8Q51.8 48.8 51.8 48.7Q49.4 51.5 47.5 53.1Q45.5 54.7 43.3 54.7Z M70.1 54.7Q67.6 54.7 66 53.2Q64.4 51.7 64.4 48.6Q64.4 46.2 65.3 42.7Q66.2 39.1 67.6 35.4Q67.2 35.2 66.7 35.2Q66.1 35.1 65.6 34.8V33Q66.5 33.1 67.1 33.2Q67.7 33.3 68.4 33.3Q69.6 30.2 71 27.4Q72.4 24.5 73.9 22.2Q75.3 20 76.6 18.7Q77.8 17.4 78.8 17.4Q79.4 17.4 79.9 17.8Q80.4 18.2 80.4 19.1Q80.4 20.2 79.3 22.4Q78.1 24.5 76.3 27.4Q74.6 30.2 73 33.5Q73.4 33.5 73.9 33.5Q74.4 33.5 74.8 33.5Q77.3 33.5 79.4 33.4Q81.4 33.3 83.6 33.1V35Q80.4 35.3 77.7 35.5Q75.1 35.6 72.6 35.7Q72.4 35.7 72.3 35.7Q72.1 35.7 71.9 35.7Q70.7 38.5 69.8 41.5Q68.9 44.5 68.9 47.4Q68.9 49.7 69.7 50.7Q70.4 51.7 72 51.7Q74.9 51.7 78 49.1Q81 46.4 83.3 41.9L84.1 42.5Q82.6 45.9 80.4 48.7Q78.1 51.5 75.5 53.1Q72.9 54.7 70.1 54.7Z M85.2 53.7Q82.6 53.7 81.4 52.2Q80.1 50.7 80.1 48.6Q80.1 47.2 80.5 45.2Q81 43.2 81.9 41Q82.7 38.7 83.8 36.7Q84.9 34.8 86.2 33.5Q87.5 32.3 88.7 32.3Q89.4 32.3 90 32.7Q90.5 33.1 90.5 34Q90.5 34.7 89.6 36.2Q88.7 37.7 87.5 39.7Q86.3 41.7 85.4 43.8Q84.5 45.9 84.5 47.8Q84.5 49.7 85.2 50.3Q85.8 50.9 87.1 50.9Q89.1 50.9 91.4 48.9Q93.7 47 96.2 42L97.1 43Q95 48.1 91.9 50.9Q88.8 53.7 85.2 53.7ZM92 27.6Q90.9 27.6 90 27Q89.1 26.5 89.1 25.3Q89.1 23.9 90.6 22.9Q92.1 22 93.8 22Q94.8 22 95.5 22.4Q96.3 22.9 96.3 24.1Q96.3 25.3 94.9 26.5Q93.6 27.6 92 27.6Z M98 54.3Q95.8 54.3 95 52.3Q94.2 50.4 94.2 47.3Q94.2 46.7 94.2 45Q94.3 43.4 94.4 40.4Q94.5 38.7 94.8 38Q95.1 37.4 96.6 37.4Q98 37.4 98.3 37.9Q98.5 38.5 98.5 40.2Q98.5 41.9 98.4 43.9Q98.2 45.9 98.2 47.7Q98.2 49.5 98.4 50.3Q98.6 51.2 99.3 51.2Q100.3 51.2 101.5 50.1Q102.7 48.9 104 47.2Q105.2 45.4 106.4 43.3Q107.5 41.3 108.4 39.4Q108.5 35.4 109.3 34.1Q110.1 32.7 111.4 32.7Q112.8 32.7 113.4 33.7Q113.9 34.6 113.9 35.3Q113.9 36.2 113.4 36.9Q113 37.6 112.5 38.8Q112 40 112 42.5Q112 43.3 112.2 44.3Q112.3 45.2 112.9 45.9Q113.4 46.5 114.5 46.5Q115.7 46.5 116.8 45.6Q117.8 44.6 119 42.3L119.7 42.8Q118.4 46 116.7 47.2Q115 48.5 113.5 48.5Q111.6 48.5 110.4 47Q109.2 45.4 108.6 43.1Q107.2 45.7 105.4 48.3Q103.7 50.8 101.8 52.6Q99.8 54.3 98 54.3Z M123.2 54.6Q119.5 54.6 117.5 52.6Q115.5 50.5 115.5 47.5Q115.5 45 116.8 42.1Q118.1 39.2 120.3 36.7Q122.5 34.2 125.2 32.6Q127.8 31.1 130.5 31.1Q132 31.1 133.4 31.8Q134.8 32.6 134.8 34.9Q134.8 37.2 133.5 39.1Q132.2 41 130.1 42.5Q127.9 44 125.3 45Q122.7 45.9 120.1 46.2Q120.1 46.4 120 46.7Q120 47 120 47.5Q120 47.8 120.1 48.5Q120.2 49.3 120.6 50.1Q121 50.9 121.9 51.5Q122.9 52.1 124.5 52.1Q126.9 52.1 129.4 50.7Q131.8 49.3 134 47.1Q136.2 44.8 137.7 42L138.8 43Q137.2 46.4 134.8 49Q132.3 51.7 129.3 53.1Q126.3 54.6 123.2 54.6ZM120.8 44.1Q122.3 43.9 124.1 43Q126 42.1 127.7 40.8Q129.4 39.5 130.5 37.9Q131.6 36.3 131.6 34.7Q131.6 34 131.4 33.8Q131.2 33.6 130.6 33.6Q129.3 33.6 127.8 34.5Q126.4 35.5 125 37Q123.6 38.5 122.5 40.4Q121.4 42.3 120.8 44.1Z"/><path class="demo-wordmark-css" d="M155.3 52.5Q151.3 52.5 148.1 50.7Q145 48.9 143.2 45.5Q141.4 42.1 141.4 37.5Q141.4 32.8 143.2 29.4Q145 26 148.1 24.2Q151.3 22.4 155.3 22.4Q157.9 22.4 160.1 23.2Q162.3 24 164.1 25.4Q165.8 26.8 166.8 28.8Q167.9 30.9 168.3 33.3H161.7Q161.5 32.1 160.9 31.1Q160.3 30.2 159.5 29.5Q158.7 28.8 157.7 28.5Q156.6 28.1 155.4 28.1Q153 28.1 151.4 29.3Q149.7 30.4 148.8 32.5Q147.9 34.6 147.9 37.5Q147.9 40.3 148.8 42.4Q149.7 44.5 151.4 45.6Q153 46.7 155.4 46.7Q156.6 46.7 157.7 46.4Q158.7 46.1 159.5 45.4Q160.3 44.7 160.9 43.8Q161.4 42.8 161.7 41.6H168.3Q167.9 44.1 166.8 46.1Q165.8 48.1 164 49.5Q162.3 50.9 160.1 51.7Q157.9 52.5 155.3 52.5Z M183.2 52.5Q179.4 52.5 176.7 51.3Q174 50.1 172.6 47.9Q171.2 45.6 171.2 42.4H177.4Q177.5 43.9 178.2 45Q178.9 46 180.2 46.6Q181.5 47.2 183.2 47.2Q184.8 47.2 186 46.8Q187.1 46.3 187.8 45.5Q188.5 44.8 188.5 43.7Q188.5 42.8 187.9 42.2Q187.4 41.5 186.3 41Q185.1 40.6 183.3 40.2L180.3 39.5Q176 38.6 173.9 36.6Q171.7 34.5 171.7 31.4Q171.7 28.7 173.2 26.7Q174.6 24.7 177.1 23.6Q179.6 22.4 183 22.4Q186.4 22.4 188.9 23.6Q191.4 24.7 192.8 26.8Q194.1 28.9 194.2 31.9H188.2Q188 30 186.6 28.8Q185.3 27.7 183.1 27.7Q181.7 27.7 180.6 28.1Q179.5 28.6 178.9 29.3Q178.3 30.1 178.3 31.1Q178.3 31.9 178.8 32.5Q179.3 33.1 180.3 33.6Q181.4 34.1 183.1 34.4L185.8 35Q188.2 35.5 189.9 36.2Q191.6 36.9 192.7 38Q193.8 39 194.4 40.3Q194.9 41.6 194.9 43.3Q194.9 46.1 193.5 48.2Q192.1 50.3 189.5 51.4Q186.8 52.5 183.2 52.5Z M210.1 52.5Q206.3 52.5 203.6 51.3Q200.9 50.1 199.5 47.9Q198.1 45.6 198.1 42.4H204.3Q204.4 43.9 205.1 45Q205.8 46 207.1 46.6Q208.4 47.2 210.1 47.2Q211.7 47.2 212.9 46.8Q214 46.3 214.7 45.5Q215.4 44.8 215.4 43.7Q215.4 42.8 214.8 42.2Q214.3 41.5 213.2 41Q212.1 40.6 210.2 40.2L207.2 39.5Q202.9 38.6 200.8 36.6Q198.7 34.5 198.7 31.4Q198.7 28.7 200.1 26.7Q201.5 24.7 204 23.6Q206.5 22.4 209.9 22.4Q213.3 22.4 215.8 23.6Q218.3 24.7 219.7 26.8Q221 28.9 221.1 31.9H215.1Q214.9 30 213.5 28.8Q212.2 27.7 210 27.7Q208.6 27.7 207.5 28.1Q206.4 28.6 205.8 29.3Q205.2 30.1 205.2 31.1Q205.2 31.9 205.7 32.5Q206.2 33.1 207.2 33.6Q208.3 34.1 210 34.4L212.7 35Q215.1 35.5 216.8 36.2Q218.5 36.9 219.6 38Q220.7 39 221.3 40.3Q221.8 41.6 221.8 43.3Q221.8 46.1 220.4 48.2Q219 50.3 216.4 51.4Q213.7 52.5 210.1 52.5Z"/></svg></a>
+      <p class="ncss-text-sm">Reine CSS Custom Properties, kein LESS, kein Compile-Schritt. Version 1.1.0.</p>
     </div>
-    <nav class="ncss-nav ncss-nav--tree">
+    <nav class="ncss-nav ncss-nav--tree" aria-label="Fußzeile">
       <ul class="ncss-nav-list">
+        <li class="ncss-nav-item"><a href="#neu">Neu in 1.1</a></li>
+        <li class="ncss-nav-item"><a href="#barrierefreiheit">Barrierefreiheit</a></li>
         <li class="ncss-nav-item"><a href="#features">Funktionen</a></li>
-        <li class="ncss-nav-item"><a href="#pricing">Preise</a></li>
-        <li class="ncss-nav-item"><a href="index.html">Komponenten-Demo</a></li>
+        <li class="ncss-nav-item"><a href="#stimmen">Stimmen</a></li>
+        <li class="ncss-nav-item"><a href="../docs/de/examples.html">Alle Beispiele</a></li>
         <li class="ncss-nav-item"><a href="../docs/de/index.html">Handbuch</a></li>
       </ul>
     </nav>

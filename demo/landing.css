@@ -20,6 +20,93 @@
   transform: translateZ(0);
 }
 
+/* --- Topbar: immer EINE Zeile ------------------------------------------------------------
+   topbar.css erlaubt flex-wrap (für Seiten mit vielen Nav-Punkten) - hier ausdrücklich
+   nicht: Nav-Umbruch ist ausgeschlossen. Die Nav bekommt Basis 0 und nimmt nur den
+   Restplatz; die Punkte sind so knapp gewählt, dass sie ab 64rem (nav-collapse) in eine
+   Zeile passen, darunter klappt die Nav ohnehin ins Off-Canvas. */
+.landing-topbar .ncss-topbar-inner {
+  flex-wrap: nowrap;
+}
+.landing-topbar .ncss-topbar-inner > .ncss-nav {
+  flex-basis: 0;
+}
+.landing-topbar .ncss-nav-list {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.landing-topbar .ncss-topbar-actions {
+  gap: var(--ncss-space-3xs);
+}
+/* Inline-Nav nicht höher als die Aktions-Buttons - sonst springt die Kopfleiste beim
+   Umschalten auf das Off-Canvas (64rem) um einige Pixel in der Höhe. */
+@media (min-width: 64rem) {
+  .landing-topbar .ncss-nav-item > a:not(.ncss-btn) {
+    padding-block: var(--ncss-space-3xs);
+  }
+}
+/* "Mehr"-Trigger (wa-button size s) in Schrift und Farbe wie die übrigen Nav-Links. */
+.landing-more-trigger::part(base) {
+  block-size: auto;
+  padding-block: var(--ncss-space-3xs);
+  font-size: var(--ncss-font-size-base);
+  font-weight: inherit;
+  color: var(--ncss-color-text);
+}
+/* Darstellung: unter 80rem nur das Symbol - der Text bleibt als Name des Buttons für
+   Screenreader erhalten (gleiches Muster wie die Website-Kopfleiste). */
+.landing-prefs .ncss-preferences-toggle {
+  min-block-size: 2.5rem;
+}
+@media (max-width: 79.99rem) {
+  .landing-prefs .ncss-preferences-toggle {
+    padding-inline: 0.55rem;
+  }
+  .landing-prefs .ncss-preferences-toggle > span:not(.ncss-preferences-icon) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+/* Ganz schmal: "Demo anfragen" steht direkt darunter im Hero - in der Kopfleiste
+   weglassen, statt sie umbrechen zu lassen. */
+@media (max-width: 29.99rem) {
+  .landing-topbar .ncss-topbar-inner {
+    gap: var(--ncss-space-xs);
+  }
+  .landing-topbar-cta {
+    display: none;
+  }
+}
+
+/* --- Schriftzug (demo/assets/brand/wordmark-inline.html) ------------------------------
+   Gleiche Regeln wie die Website-Shell (docs-src/template.html): "Native" in der
+   Markenfarbe, "CSS" in Textfarbe - folgt Hell/Dunkel und dem Theme-Umschalter. */
+.demo-wordmark {
+  display: block;
+  block-size: 1.6em;
+  inline-size: auto;
+}
+.demo-wordmark-native {
+  fill: var(--ncss-color-brand);
+}
+.demo-wordmark-css {
+  fill: currentColor;
+}
+.landing-brand {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--ncss-font-size-md);
+  color: var(--ncss-color-text);
+}
+@media (forced-colors: active) {
+  .demo-wordmark-native { fill: LinkText; }
+  .demo-wordmark-css { fill: CanvasText; }
+}
+
 /* --- Hero -------------------------------------------------------------------------- */
 .landing-hero {
   /* brand-100/-300 sind bewusst NICHT light-dark()-gewrappt (siehe colors.css) - als
@@ -62,6 +149,15 @@
   background-color: var(--ncss-color-brand-100);
   color: var(--ncss-color-brand-on-soft);
   font-size: var(--ncss-font-size-md);
+}
+
+/* --- Spotlight-Bild / Sektions-Trenner (früher Inline-Styles) --------------------------- */
+.landing-placeholder-4x3 {
+  aspect-ratio: 4 / 3;
+}
+.landing-tile-lead {
+  max-width: 34rem;
+  margin-inline: auto;
 }
 
 /* --- Komponenten-Übersicht (wa-tree) ---------------------------------------------------- */
@@ -215,7 +311,83 @@
   color: inherit;
 }
 
+/* --- Neu in 1.1: Bento ------------------------------------------------------------------- */
+/* 16rem statt 12rem: bei Containerbreite genau 4 Spalten - große Kachel (2x2) plus vier
+   normale füllt das Raster lückenlos. */
+.landing-bento {
+  --ncss-bento-min: 16rem;
+  --ncss-bento-row-height: 11rem;
+}
+.landing-bento-feature {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.landing-bento-media {
+  flex: 1 1 12rem;
+  min-block-size: 12rem;
+  margin: 0;
+}
+.landing-bento-media img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* Ganze Kachel klickbar über den Überschriften-Link (::after deckt die Karte ab), echte
+   Links/Buttons im Text liegen darüber und bleiben einzeln bedienbar. */
+.landing-bento > .ncss-card {
+  position: relative;
+}
+.landing-tile-link {
+  color: inherit;
+  text-decoration: none;
+}
+.landing-tile-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.landing-tile-link:hover,
+.landing-tile-link:focus-visible {
+  text-decoration: underline;
+}
+.landing-bento .ncss-card-body :is(a:not(.landing-tile-link), button) {
+  position: relative;
+  z-index: 1;
+}
+.landing-icon-row {
+  display: inline-flex;
+  gap: var(--ncss-space-2xs);
+  color: var(--ncss-color-brand);
+  font-size: var(--ncss-font-size-xl);
+}
+
+/* --- Säule Barrierefreiheit --------------------------------------------------------------- */
+.landing-a11y {
+  /* Dunkel nicht brand-900: darauf erreicht die Eyebrow (Markenfarbe) keinen AA-Kontrast. */
+  background-color: light-dark(var(--ncss-color-brand-100), var(--ncss-color-bg-subtle));
+}
+.landing-a11y-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+  font-size: var(--ncss-font-size-xl);
+}
+/* Das Inline-Bedienfeld bringt Rahmen und Innenabstand selbst mit - hier nur Fläche und
+   Schatten, damit es auf der getönten Sektion als Karte steht (kein doppelter Rahmen). */
+.landing-prefs-card {
+  background-color: var(--ncss-color-surface);
+}
+
 /* --- Footer ------------------------------------------------------------------------------ */
 .landing-footer-brand {
+  display: inline-block;
   color: var(--ncss-color-text);
+  font-size: var(--ncss-font-size-lg);
 }
