@@ -58,7 +58,7 @@ const allPages = [
   { ...nav.examplesPage, kind: "examples" },
   // Rechtliches/Website-Seiten (z.B. Erklärung zur Barrierefreiheit): breites Layout ohne
   // Seitenleiste, über die Fußzeile erreichbar.
-  ...(nav.legal || []).map((p) => ({ ...p, kind: "examples" })),
+  ...(nav.legal || []).map((p) => ({ ...p, kind: "legal" })),
   ...flatPages.map((p) => ({ ...p, kind: "docs" })),
 ];
 
@@ -539,7 +539,7 @@ function buildMain(lang, page, body) {
   if (page.kind === "start") {
     return `<main id="main" class="ncss-stretch site-main site-main--start">\n${body}\n</main>`;
   }
-  if (page.kind === "examples") {
+  if (page.kind === "examples" || page.kind === "legal") {
     return `<main id="main" class="ncss-stretch ncss-container ncss-stack ncss-stack--loose ncss-py-xl site-main">\n${body}\n</main>`;
   }
   return `<main id="main" class="ncss-stretch ncss-container ncss-py-xl site-main">
@@ -568,7 +568,7 @@ function render(lang, page, classIndex) {
     .replace("<!--HUB-->", () => buildHub(lang))
     .replace("<!--EXAMPLES-->", () => buildExamples(lang));
   body = rewritePaths(body, page.slug);
-  if (page.kind !== "examples") collectSearch(lang, page, body.replace(/<!--HUB-->/, ""), content.description, classIndex);
+  if (page.kind !== "examples" && page.kind !== "legal") collectSearch(lang, page, body.replace(/<!--HUB-->/, ""), content.description, classIndex);
   const s = strings[lang];
   const title = page.title ? page.title[lang] : `${stripTags(decode(page[lang]))} - NativeCSS`;
   const replacements = {
@@ -584,6 +584,7 @@ function render(lang, page, classIndex) {
     __BRAND_LABEL__: s.brandLabel,
     __SPONSOR_LABEL__: s.sponsorLabel,
     __SPONSOR_NOTE__: s.sponsorNote,
+    __IMPRINT_LABEL__: s.imprintLabel,
     __VERSION__: VERSION,
     __VERSION_LABEL__: s.versionLabel,
     __CHANGELOG_LABEL__: s.changelogLabel,

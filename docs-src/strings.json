@@ -50,7 +50,8 @@
     "a11yPrefs": "Einstellungen",
     "a11yNoJs": "Ohne JavaScript",
     "a11yMore": "Mehr zur Barrierefreiheit",
-    "statementLabel": "Erklärung zur Barrierefreiheit"
+    "statementLabel": "Erklärung zur Barrierefreiheit",
+    "imprintLabel": "Impressum"
   },
   "en": {
     "skipLink": "Skip to content",
@@ -103,6 +104,7 @@
     "a11yPrefs": "User preferences",
     "a11yNoJs": "Without JavaScript",
     "a11yMore": "More on accessibility",
-    "statementLabel": "Accessibility statement"
+    "statementLabel": "Accessibility statement",
+    "imprintLabel": "Legal notice"
   }
 }

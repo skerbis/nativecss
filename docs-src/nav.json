@@ -512,6 +512,12 @@
       "de": "Erklärung zur Barrierefreiheit",
       "en": "Accessibility statement",
       "layout": "wide"
+    },
+    {
+      "slug": "impressum",
+      "de": "Impressum",
+      "en": "Legal notice",
+      "layout": "wide"
     }
   ]
 }
