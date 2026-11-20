@@ -128,6 +128,7 @@
 @import url("components/back-to-top.css") layer(components);
 @import url("components/app-shell.css") layer(components);
 @import url("components/preferences.css") layer(components);
+@import url("components/map.css") layer(components);
 /* Weitere Komponenten folgen hier, je eine Datei.
    JS liegt gesammelt unter js/, nicht neben dem jeweiligen Komponenten-CSS - separat
    einbinden (<script src="ncss/js/command-fallback.js">) - generischer Fallback für

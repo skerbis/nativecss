@@ -256,6 +256,12 @@
           "slug": "media",
           "de": "Medien",
           "en": "Media"
+        },
+        {
+          "slug": "maps",
+          "de": "Karten",
+          "en": "Maps",
+          "new": true
         }
       ]
     },
