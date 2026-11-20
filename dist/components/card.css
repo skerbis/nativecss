@@ -14,6 +14,22 @@
  * nicht oben/unten) für eine Karte, deren Inhalt bis an den eigenen Rand reicht - z.B. für
  * ein Bild, das den ganzen Body ausfüllt, oder eine Liste ohne Card-typischen Abstand.
  *
+ * Ausbau 1.1.0 (alles opt-in, siehe unten im Detail):
+ *   Media      .ncss-card-media--square/-portrait/-wide/-auto, --ncss-card-media-ratio,
+ *              .ncss-card--zoom (Bild-Zoom bei Hover/Fokus), .ncss-card--overlay (Text
+ *              auf dem Bild mit kontrastsicherem Verlauf)
+ *   Zustände   .ncss-card--interactive (Anheben), --accent/--accent-start (Farbstreifen,
+ *              --ncss-card-accent), --featured + .ncss-card-badge, --disabled bzw.
+ *              aria-disabled="true", --selectable + .ncss-card-check (Radio/Checkbox)
+ *   Abschnitte .ncss-card-title, .ncss-card-actions, .ncss-card-meta, .ncss-card-divider,
+ *              .ncss-card-list, .ncss-card-footer--end/--between/--plain
+ *   Raster     .ncss-card-grid (Subgrid: Header/Body/Footer einer Reihe auf gleicher Höhe,
+ *              --ncss-card-grid-min/-rows/-gap)
+ *   Laden      .ncss-card-skeleton (+ --title), mit aria-busy="true" an der Karte
+ *   Abstand    --ncss-card-padding überschreibt den Innenabstand von Header/Body/Footer/Liste
+ *   .ncss-card--linked: weitere Links/Buttons in der Karte bleiben klickbar (z-index), der
+ *   Fokusring umrahmt die ganze Karte.
+ *
  * Für die Container-Query-Variante (.ncss-card--horizontal) die Karte zusätzlich in
  * .ncss-card-container wrappen: <div class="ncss-card-container"><article class="ncss-card
  * ncss-card--horizontal">...</article></div>. Ein Element kann per Spec NICHT seinen
@@ -49,7 +65,9 @@
    anpasst (auch künftige Varianten/Breakpoints), sind keine weiteren, layoutspezifischen
    Ecken-Regeln nötig. */
 .ncss-card-media {
-  aspect-ratio: var(--ncss-aspect-video);
+  /* --ncss-card-media-ratio: Seitenverhältnis pro Karte/Media überschreibbar (siehe
+     .ncss-card-media--square/-portrait/-wide/-auto unten), Default wie bisher 16:9. */
+  aspect-ratio: var(--ncss-card-media-ratio, var(--ncss-aspect-video));
   overflow: hidden;
   border-radius: 0;
 }
@@ -74,7 +92,7 @@
 .ncss-card-header,
 .ncss-card-body,
 .ncss-card-footer {
-  padding: clamp(var(--ncss-space-xs), 4cqi + var(--ncss-space-3xs), var(--ncss-space-lg));
+  padding: var(--ncss-card-padding, clamp(var(--ncss-space-xs), 4cqi + var(--ncss-space-3xs), var(--ncss-space-lg)));
 }
 
 .ncss-card-header {
@@ -150,8 +168,23 @@
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
 }
-
+/* Weitere Links/Buttons IN einer verlinkten Karte bleiben eigenständig klickbar: sie
+   liegen per z-index über der aufgespannten Fläche (eigene Tab-Stopps, eigene Ziele). */
+.ncss-card--linked :is(a[href], button, input, select, textarea, summary, label, [tabindex]):not(.ncss-card-link) {
+  position: relative;
+  z-index: 2;
+}
+/* Fokus: der Ring umrahmt die GANZE Karte statt nur den Titeltext - so ist sichtbar, was
+   Enter öffnet. Der Ring des Links selbst entfällt dafür (nicht doppelt). */
+.ncss-card--linked:has(.ncss-card-link:focus-visible) {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+.ncss-card--linked .ncss-card-link:focus-visible {
+  outline: none;
+}
 /* "Status"-Karte - dieselbe dezente 100-Fläche + -on-soft-Text, die auch .ncss-badge nutzt
    (siehe colors.css), zusätzlich ein farbiger Rand als Akzent. Für Hinweis-/Status-Inhalte,
    nicht als generelle "bunte Karte"-Deko gedacht. */
@@ -206,5 +239,419 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+}
+
+/* =====================================================================================
+   Ausbau 1.1.0 - alles opt-in über eigene Klassen, die bisherigen Klassen bleiben
+   unverändert. Benötigt weiterhin nur colors.css, tokens.css, reset.css und base.css.
+   ===================================================================================== */
+
+/* --- Media: Seitenverhältnis, Zoom, Overlay ---------------------------------------------
+   Seitenverhältnis über Modifier an .ncss-card-media oder frei per
+   style="--ncss-card-media-ratio: 4 / 3" (an der Karte oder an der Media).
+   --auto: das Bild bestimmt die Höhe selbst (kein Zuschnitt). */
+.ncss-card-media--square { --ncss-card-media-ratio: var(--ncss-aspect-square); }
+.ncss-card-media--portrait { --ncss-card-media-ratio: var(--ncss-aspect-portrait); }
+.ncss-card-media--wide { --ncss-card-media-ratio: 21 / 9; }
+.ncss-card-media--auto { --ncss-card-media-ratio: auto; }
+.ncss-card-media--auto img { height: auto; }
+
+/* Bild-Zoom beim Hover/Fokus (.ncss-card--zoom): nur das Bild wächst, der Ausschnitt
+   bleibt (overflow:hidden der Media). Nur wenn Bewegung erlaubt ist - Systemeinstellung
+   ohne data-motion="reduce" ODER ausdrücklich data-motion="full" (js/preferences.js),
+   sonst bleibt das Bild ruhig. Hover nur mit echtem Zeigegerät; Tastaturfokus in der Karte
+   zoomt immer mit (gleiche Rückmeldung wie mit der Maus). */
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]) .ncss-card--zoom .ncss-card-media img {
+    transition: scale var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+  }
+  :root:not([data-motion="reduce"]) .ncss-card--zoom:focus-within .ncss-card-media img {
+    scale: 1.06;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  :root:not([data-motion="reduce"]) .ncss-card--zoom:hover .ncss-card-media img {
+    scale: 1.06;
+  }
+}
+:root[data-motion="full"] .ncss-card--zoom .ncss-card-media img {
+  transition: scale var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
+}
+:root[data-motion="full"] .ncss-card--zoom:focus-within .ncss-card-media img {
+  scale: 1.06;
+}
+@media (hover: hover) and (pointer: fine) {
+  :root[data-motion="full"] .ncss-card--zoom:hover .ncss-card-media img {
+    scale: 1.06;
+  }
+}
+
+/* Overlay-/Cover-Karte (.ncss-card--overlay): Text liegt unten auf dem Bild. Media und
+   Body teilen sich dieselbe Grid-Zelle; ist der Text länger als das Bild hoch, wächst die
+   Karte mit und das Bild füllt sie weiter aus (object-fit:cover). Kontrast: der Body trägt
+   einen Verlauf, der genau unter dem Text mindestens ~63 % Schwarz erreicht (oben im
+   Einlauf transparent) - heller Text bleibt damit auch auf weißen Bildstellen AA-lesbar,
+   unabhängig vom Seiten-Theme. color-scheme:dark lässt die light-dark()-Tokens im Body
+   (Text, Links, Muted) automatisch ihre hellen Werte wählen. */
+.ncss-card--overlay {
+  display: grid;
+  grid-template: "ncss-card-stack" auto / 100%;
+}
+.ncss-card--overlay > * {
+  grid-area: ncss-card-stack;
+}
+.ncss-card--overlay > .ncss-card-media {
+  align-self: stretch;
+  justify-self: stretch;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+.ncss-card--overlay > .ncss-card-body {
+  align-self: end;
+  color-scheme: dark;
+  color: var(--ncss-color-text);
+  padding-block-start: calc(var(--ncss-space-xl) + var(--ncss-space-xs));
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--ncss-color-overlay-strong) 70%, transparent) var(--ncss-space-xl),
+    var(--ncss-color-overlay-strong)
+  );
+}
+.ncss-card--overlay > .ncss-card-body :is(a, .ncss-text-muted) {
+  color: inherit;
+}
+
+/* --- Gestaltung: interaktiv, Akzent, hervorgehoben, deaktiviert ------------------------
+   Rahmen/Schatten/Ecken bleiben Sache der Utilities (.ncss-border, .ncss-shadow-*,
+   .ncss-radius-*) - die Klassen hier ergänzen nur Zustände und Akzente. */
+
+/* Hebt sich bei Hover/Tastaturfokus leicht an und bekommt mehr Schatten - für Karten, die
+   selbst eine Aktion sind (meist mit .ncss-card--linked). Bewegung nur, wenn erlaubt; der
+   Schatten wechselt immer (keine Bewegung). */
+.ncss-card--interactive {
+  transition:
+    box-shadow var(--ncss-motion-duration) var(--ncss-motion-easing),
+    translate var(--ncss-motion-duration) var(--ncss-motion-easing),
+    border-color var(--ncss-motion-duration) var(--ncss-motion-easing);
+}
+.ncss-card--interactive:focus-within {
+  box-shadow: var(--ncss-shadow-md);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-card--interactive:hover {
+    box-shadow: var(--ncss-shadow-md);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  :root:not([data-motion="reduce"]) .ncss-card--interactive:hover {
+    translate: 0 -2px;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  :root[data-motion="full"] .ncss-card--interactive:hover {
+    translate: 0 -2px;
+  }
+}
+.ncss-card--interactive:active {
+  translate: 0 0;
+}
+
+/* Farbstreifen ohne Tonfläche (anders als die Status-Varianten oben): oben bzw. an der
+   Startseite. Farbe per --ncss-card-accent, Default Markenfarbe. Kombinierbar mit
+   .ncss-border (der Streifen ersetzt dann nur die eine Kante). */
+.ncss-card--accent,
+.ncss-card--accent-start {
+  --ncss-card-accent: var(--ncss-color-brand);
+}
+.ncss-card--accent {
+  border-block-start: calc(var(--ncss-border-width) * 4) solid var(--ncss-card-accent);
+}
+.ncss-card--accent-start {
+  border-inline-start: calc(var(--ncss-border-width) * 4) solid var(--ncss-card-accent);
+}
+
+/* Hervorgehobene Karte ("Empfohlen", Preis-Tabellen): kräftiger Rahmen in Markenfarbe,
+   optional mit Badge (.ncss-card-badge) an der oberen Endecke. Der Badge-Text ist echter
+   Text - die Hervorhebung hängt nicht allein an der Farbe. */
+.ncss-card--featured {
+  position: relative;
+  border: calc(var(--ncss-border-width) * 2) solid var(--ncss-color-brand);
+}
+.ncss-card-badge {
+  position: absolute;
+  inset-block-start: var(--ncss-space-2xs);
+  inset-inline-end: var(--ncss-space-2xs);
+  z-index: 2;
+  padding: 0.15em 0.65em;
+  border-radius: var(--ncss-radius-full);
+  background-color: var(--ncss-color-brand);
+  color: var(--ncss-color-brand-contrast);
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1.4;
+}
+/* Für das Badge braucht jede Karte einen Positionierungsrahmen, nicht nur --featured. */
+.ncss-card:has(> .ncss-card-badge) {
+  position: relative;
+}
+
+/* Deaktiviert (.ncss-card--disabled oder aria-disabled="true"): gedämpfte Fläche,
+   gestrichelter Rahmen, keine Zeiger-Interaktion. Bewusst KEINE Deckkraft-Absenkung - der
+   Text behält ausreichenden Kontrast. Links in der Karte zusätzlich ohne href ausgeben
+   bzw. Buttons mit disabled, sonst bleiben sie per Tastatur erreichbar. */
+.ncss-card--disabled,
+.ncss-card[aria-disabled="true"] {
+  background-color: var(--ncss-color-bg-subtle);
+  color: var(--ncss-color-text-muted);
+  border-style: dashed;
+  box-shadow: none;
+  pointer-events: none;
+  translate: none;
+}
+.ncss-card--disabled .ncss-card-media img,
+.ncss-card[aria-disabled="true"] .ncss-card-media img {
+  filter: grayscale(1);
+}
+
+/* --- Auswahlkarte (Radio/Checkbox) ------------------------------------------------------
+   <label class="ncss-card ncss-card--selectable"> um ein natives Eingabefeld: Klick auf die
+   ganze Karte wählt aus, Pfeiltasten wechseln innerhalb einer Radio-Gruppe, Leertaste
+   schaltet - alles nativ, kein JS. Das Steuerelement bleibt sichtbar (.ncss-card-check,
+   obere Endecke), der Zustand hängt so nicht allein an Rahmenfarbe/Fläche. Mehrere Karten
+   in einem <fieldset> mit <legend> gruppieren. */
+.ncss-card--selectable {
+  position: relative;
+  cursor: pointer;
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  transition:
+    border-color var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+    box-shadow var(--ncss-motion-duration-fast) var(--ncss-motion-easing),
+    background-color var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+}
+.ncss-card-check {
+  position: absolute;
+  inset-block-start: var(--ncss-space-xs);
+  inset-inline-end: var(--ncss-space-xs);
+  z-index: 2;
+  margin: 0;
+  width: var(--ncss-choice-size, 1.1em);
+  height: var(--ncss-choice-size, 1.1em);
+  accent-color: var(--ncss-color-brand);
+}
+/* Platz für das Steuerelement, damit lange Titel nicht darunter laufen. */
+.ncss-card--selectable > :is(.ncss-card-header, .ncss-card-body):first-of-type {
+  padding-inline-end: calc(var(--ncss-space-xs) * 2 + var(--ncss-choice-size, 1.1em));
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-card--selectable:hover {
+    border-color: var(--ncss-color-text-muted);
+  }
+}
+.ncss-card--selectable:has(.ncss-card-check:checked) {
+  border-color: var(--ncss-color-brand);
+  box-shadow: 0 0 0 var(--ncss-border-width) var(--ncss-color-brand);
+  background-color: color-mix(in oklch, var(--ncss-color-brand-100) 55%, var(--ncss-color-surface));
+}
+.ncss-card--selectable:has(.ncss-card-check:focus-visible) {
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring);
+  outline-offset: 2px;
+}
+.ncss-card--selectable .ncss-card-check:focus-visible {
+  outline: none;
+}
+.ncss-card--selectable:has(.ncss-card-check:disabled) {
+  cursor: not-allowed;
+  background-color: var(--ncss-color-bg-subtle);
+  color: var(--ncss-color-text-muted);
+  border-style: dashed;
+}
+.ncss-card--selectable:has(.ncss-card-check:user-invalid) {
+  border-color: var(--ncss-color-danger);
+}
+
+/* --- Abschnitte: Titel, Aktionen, Meta, Footer-Ausrichtung, Trenner, Liste -------------- */
+
+/* Titel + Aktionen in einer Zeile: sobald der Header .ncss-card-actions enthält, wird er
+   zur Flex-Zeile (bestehende Header ohne Aktionen bleiben unverändert). */
+.ncss-card-header:has(> .ncss-card-actions) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ncss-space-2xs);
+}
+.ncss-card-title {
+  margin: 0;
+  font-size: var(--ncss-font-size-md);
+  font-weight: var(--ncss-font-weight-heading, var(--ncss-font-weight-bold));
+  line-height: 1.3;
+}
+.ncss-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-3xs);
+  margin-inline-start: auto;
+}
+
+/* Meta-Zeile (Autor-Avatar, Datum, Schlagworte): kleine, gedämpfte Zeile, bricht um. */
+.ncss-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ncss-space-3xs) var(--ncss-space-2xs);
+  font-size: var(--ncss-font-size-sm);
+  color: var(--ncss-color-text-muted);
+}
+.ncss-card-meta > img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--ncss-radius-full);
+  object-fit: cover;
+}
+
+/* Footer-Ausrichtung: Default Start; --end rechtsbündig (Leserichtung beachtet),
+   --between verteilt (z.B. Preis links, Button rechts), --plain ohne Trennlinie. */
+.ncss-card-footer--end { justify-content: flex-end; }
+.ncss-card-footer--between { justify-content: space-between; flex-wrap: wrap; }
+.ncss-card-footer--plain { border-block-start: 0; }
+
+/* Trenner zwischen zwei Abschnitten, randlos über die volle Kartenbreite:
+   <hr class="ncss-card-divider"> als direktes Kind der Karte. */
+.ncss-card-divider {
+  margin-block: 0;
+  border: 0;
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+  block-size: 0;
+}
+
+/* Liste als eigener Kartenabschnitt (<ul class="ncss-card-list"> direkt in der Karte):
+   Zeilen randlos bis an den Kartenrand getrennt, Innenabstand wie Header/Body. */
+.ncss-card-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ncss-card-list > li {
+  padding: var(--ncss-space-2xs) var(--ncss-card-padding, clamp(var(--ncss-space-xs), 4cqi + var(--ncss-space-3xs), var(--ncss-space-lg)));
+  border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
+}
+.ncss-card-list:first-child > li:first-child,
+.ncss-card-divider + .ncss-card-list > li:first-child {
+  border-block-start: 0;
+}
+
+/* --- Kartenraster mit ausgerichteten Zeilen (Subgrid) ----------------------------------
+   .ncss-card-grid: Raster gleich hoher Karten. Mit Subgrid-Unterstützung teilen sich alle
+   Karten EINER Reihe dieselben Zeilen - Header, Body und Footer liegen über die Reihe auf
+   gleicher Höhe, auch wenn ein Titel zweizeilig ist. Jede Karte braucht dafür GENAU so
+   viele direkte Kinder wie --ncss-card-grid-rows (Default 3, z.B. Media/Body/Footer); bei
+   abweichender Zahl die Property passend setzen. Ohne Subgrid: gleich hohe Karten,
+   Footer unten (Flex-Column-Verhalten der Karte). */
+.ncss-card-grid {
+  --ncss-card-grid-min: 16rem;
+  --ncss-card-grid-rows: 3;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--ncss-card-grid-min), 100%), 1fr));
+  gap: var(--ncss-card-grid-gap, var(--ncss-space-md));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@supports (grid-template-rows: subgrid) {
+  .ncss-card-grid > .ncss-card {
+    grid-row: span var(--ncss-card-grid-rows);
+  }
+  /* Overlay-Karten stapeln Media und Text in EINER Zelle - sie überspannen die Zeilen,
+     nehmen aber nicht am Subgrid teil. */
+  .ncss-card-grid > .ncss-card:not(.ncss-card--overlay) {
+    display: grid;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+}
+
+/* --- Ladezustand (Skeleton) -------------------------------------------------------------
+   Platzhalter-Balken, solange Inhalt nachlädt: <article class="ncss-card" aria-busy="true">
+   mit .ncss-card-skeleton-Elementen (Breite per --ncss-card-skeleton-width) und einem
+   versteckten "Lädt ..."-Text. Auch auf .ncss-card-media setzbar. Schimmer nur, wenn
+   Bewegung erlaubt ist; sonst eine ruhige Fläche. */
+.ncss-card-skeleton {
+  display: block;
+  block-size: 1em;
+  inline-size: var(--ncss-card-skeleton-width, 100%);
+  max-inline-size: 100%;
+  border-radius: var(--ncss-radius-sm);
+  background-color: var(--ncss-color-border);
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ncss-color-surface) 70%, transparent),
+    transparent
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-position: 150% 0;
+}
+.ncss-card-media.ncss-card-skeleton {
+  block-size: auto;
+  border-radius: 0;
+}
+.ncss-card-skeleton--title {
+  block-size: 1.4em;
+  --ncss-card-skeleton-width: 60%;
+}
+@keyframes ncss-card-shimmer {
+  to { background-position: -50% 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]) .ncss-card-skeleton {
+    animation: ncss-card-shimmer 1.4s linear infinite;
+  }
+}
+:root[data-motion="full"] .ncss-card-skeleton {
+  animation: ncss-card-shimmer 1.4s linear infinite;
+}
+
+/* --- Erzwungene Farben (Windows-Kontrastmodus) ------------------------------------------
+   Hintergründe/Schatten entfallen dort - Rahmen, Akzente und Zustände bleiben über
+   Systemfarben sichtbar. */
+@media (forced-colors: active) {
+  .ncss-card--selectable,
+  .ncss-card--featured,
+  .ncss-card--interactive,
+  .ncss-card--overlay {
+    border: 1px solid CanvasText;
+  }
+  .ncss-card--accent { border-block-start-color: CanvasText; }
+  .ncss-card--accent-start { border-inline-start-color: CanvasText; }
+  .ncss-card--featured { border-width: 3px; }
+  .ncss-card--selectable:has(.ncss-card-check:checked) {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: -3px;
+  }
+  .ncss-card--linked:has(.ncss-card-link:focus-visible),
+  .ncss-card--selectable:has(.ncss-card-check:focus-visible) {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+  .ncss-card--disabled,
+  .ncss-card[aria-disabled="true"],
+  .ncss-card--selectable:has(.ncss-card-check:disabled) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+  .ncss-card-badge {
+    border: 1px solid CanvasText;
+  }
+  .ncss-card--overlay > .ncss-card-body {
+    background: Canvas;
+    color: CanvasText;
+  }
+  .ncss-card-skeleton {
+    border: 1px solid GrayText;
+    background-image: none;
   }
 }
