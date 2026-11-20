@@ -338,7 +338,8 @@
 
    Vorlagen ohne Klassen an den Kacheln (Spannweiten nach Position):
    .ncss-bento--hero    1. Kachel groß (2×2), 4. hoch, jede 6. ab der 5. breit
-   .ncss-bento--mosaic  wiederholt sich alle 5 Kacheln (hoch, breit, normal, breit, normal) */
+   .ncss-bento--mosaic  wiederholt sich alle 5 Kacheln (hoch, breit, normal, breit, normal)
+   (je nach Spaltenzahl leicht angepasst, damit keine Löcher bleiben - siehe unten) */
 .ncss-bento {
   container: ncss-bento / inline-size;
   display: grid;
@@ -377,13 +378,48 @@
 }
 /* -- ncss container-query: bento 1 Spalte (26rem) -- */
 @container ncss-bento (width < 26rem) {
-  .ncss-bento > :is(.ncss-col-span-2, .ncss-col-span-3),
-  .ncss-bento:is(.ncss-bento--hero, .ncss-bento--mosaic) > * {
+  .ncss-bento > :is(.ncss-col-span-2, .ncss-col-span-3) {
     grid-column: auto;
   }
+}
+
+/* --- Vorlagen ohne Lücken: Spannweiten je Spaltenzahl ------------------------------------
+   Das Muster ging nicht bei jeder Spaltenzahl auf - am Ende blieben Löcher (Mosaik bei 3
+   und 5 Spalten, Hero bei 2 und 4). Deshalb je Spaltenzahl eigene Spannweiten, mit denen
+   das Muster volle Zeilen ergibt: Mosaik bei 5, 10, 15 … Kacheln, Hero bei 10 Kacheln
+   (1 groß + 9). Andere Anzahlen können in der letzten Zeile eine Lücke lassen.
+   Höchstens 5 Spalten (breitere Raster bekommen breitere Kacheln statt einer 6. Spalte).
+   Die Schwellen sind genau die auto-fit-Umbruchpunkte: n × 12rem (--ncss-bento-min) +
+   (n-1) × Gap (--ncss-space-md, hier als Formel ausgeschrieben - Container Queries können
+   keine var() auswerten). Bei eigenem --ncss-bento-min/--ncss-grid-gap die Schwellen mit
+   anpassen. */
+.ncss-bento:is(.ncss-bento--hero, .ncss-bento--mosaic) {
+  grid-template-columns: repeat(auto-fit, minmax(max(min(var(--ncss-bento-min), 100%), (100% - 4 * var(--ncss-grid-gap, var(--ncss-space-md))) / 5), var(--ncss-bento-max, 1fr)));
+}
+/* -- ncss container-query: bento-Vorlagen 1 Spalte -- */
+@container ncss-bento (width < calc(2 * 12rem + 1 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem))) {
   .ncss-bento:is(.ncss-bento--hero, .ncss-bento--mosaic) > * {
+    grid-column: auto;
     grid-row: auto;
   }
+}
+/* -- ncss container-query: bento-Vorlagen 2 Spalten -- */
+@container ncss-bento (calc(2 * 12rem + 1 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem)) <= width < calc(3 * 12rem + 2 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem))) {
+  .ncss-bento--hero > :nth-child(4) { grid-row: auto; }
+}
+/* -- ncss container-query: bento-Vorlagen 3 Spalten -- */
+@container ncss-bento (calc(3 * 12rem + 2 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem)) <= width < calc(4 * 12rem + 3 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem))) {
+  .ncss-bento--mosaic > :nth-child(5n + 3) { grid-column: span 2; }
+}
+/* -- ncss container-query: bento-Vorlagen 4 Spalten -- */
+@container ncss-bento (calc(4 * 12rem + 3 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem)) <= width < calc(5 * 12rem + 4 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem))) {
+  .ncss-bento--hero > :nth-child(4) { grid-row: auto; }
+  .ncss-bento--hero > :nth-child(6n + 5) { grid-column: auto; }
+  .ncss-bento--hero > :nth-child(3n + 2) { grid-column: span 2; }
+}
+/* -- ncss container-query: bento-Vorlagen 5 Spalten -- */
+@container ncss-bento (width >= calc(5 * 12rem + 4 * clamp(1.5rem, 1.4rem + 0.5vw, 1.88rem))) {
+  .ncss-bento--mosaic > :is(:nth-child(5n + 3), :nth-child(5n + 5)) { grid-column: span 2; }
 }
 
 /* --- Masonry ----------------------------------------------------------------------------

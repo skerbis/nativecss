@@ -100,7 +100,6 @@
 
   /* Segmente: pure-CSS-Ansichtswechsel (nur Optik dieser Demo) */
   .demo-seg-views { margin-block-start: var(--ncss-space-sm); }
-  .demo-seg-host > .ncss-cluster > * { align-self: center; } /* segmented.css setzt align-self: start */
   .demo-seg-view > .ncss-table-scroll,
   .demo-seg-view table { margin-block-end: 0; }
   .demo-seg-view { display: none; }
@@ -137,14 +136,6 @@
   .demo-live .demo-frame:not(.demo-spin-row) > h3.demo-sub-h + p { margin-block-start: var(--ncss-space-3xs); }
   .demo-feature-text code { white-space: nowrap; }
 
-  /* Countdown-Kacheln: in schmalen Rahmen 2×2 statt 3+1 */
-  .demo-countdown-frame { container-type: inline-size; }
-  @container (width < 24rem) {
-    .demo-countdown-frame .ncss-countdown-units {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
   .demo-spin-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ncss-space-sm); }
 </style>
 </head>
@@ -1039,7 +1030,7 @@
       </div>
       <div class="demo-live">
         <div class="ncss-grid" style="--ncss-grid-min: 18rem">
-          <div class="demo-frame demo-countdown-frame">
+          <div class="demo-frame">
             <h3 class="demo-sub-h">Owners’ meeting, Lindenallee 12</h3>
             <ncss-countdown datetime="2026-12-03T18:00:00+01:00">
               <time datetime="2026-12-03T18:00:00+01:00">3 December 2026, 6 pm</time>

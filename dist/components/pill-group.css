@@ -33,6 +33,13 @@
 .ncss-pill-group {
   --_ncss-pg-h: var(--ncss-pill-group-height, 2.25rem);
   display: inline-flex;
+  /* Passt die Gruppe nicht in die Breite (z.B. drei beschriftete Teile bei 320px), scrollt
+     sie in sich, statt die Seite seitlich zu verbreitern - die Pillenform bleibt. Fokus-
+     Rahmen liegen innen (outline-offset negativ, unten), werden also nicht abgeschnitten;
+     Popover (z.B. <ncss-preferences>) liegen im Top Layer und sind nicht betroffen. */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
   align-items: center;
   max-inline-size: 100%;
   padding: var(--ncss-pill-group-gap, 2px);
