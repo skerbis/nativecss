@@ -122,6 +122,21 @@
 <section class="ncss-stack" id="bleed">
   <h2 class="demo-section-title">Ausbrechen (Bleed)</h2>
   <p>Varianten, um gezielt aus einem Container auszubrechen: <code>.ncss-bleed-start</code>/<code>-end</code> (einseitig), <code>.ncss-bleed-half-start</code>/<code>-half-end</code> (ab der Mitte), <code>.ncss-bleed-center</code> (symmetrisch um einen festen Betrag, <code>--ncss-bleed-amount</code>).</p>
+  <p class="ncss-text-sm ncss-text-muted">Live in einem eingebetteten Mini-Fenster mit eigener Bildschirmbreite (auf dieser Seite selbst steht der Inhalt neben der Seitenleiste, dort würde <code>100vw</code> schief ausbrechen). Regler ziehen, um die Fensterbreite zu ändern:</p>
+  <div class="docs-live demo-bleed-live" role="group" aria-label="Ausbrechen, live testbar">
+    <label class="ncss-text-sm ncss-text-muted" for="bleedWidth">Fensterbreite: <output id="bleedWidthOut" for="bleedWidth">100 %</output></label>
+    <input type="range" id="bleedWidth" min="320" max="1200" value="1200" step="10" data-bleed-frame="bleedFrame" data-bleed-out="bleedWidthOut">
+    <div class="demo-bleed-frame-wrap"><iframe id="bleedFrame" src="../../demo/embed-bleed.html" title="Ausbrechen, live testbar" loading="lazy"></iframe></div>
+    <p class="ncss-text-sm"><a href="../../demo/embed-bleed.html" target="_blank" rel="noopener">Im neuen Tab öffnen</a></p>
+  </div>
+  <pre><code class="language-html">&lt;main class="ncss-container ncss-container--narrow"&gt;
+  &lt;div class="ncss-full-bleed"&gt;…&lt;/div&gt;
+  &lt;blockquote class="ncss-bleed-start"&gt;…&lt;/blockquote&gt;
+  &lt;div class="ncss-bleed-end"&gt;&lt;img src="…" alt="…"&gt;&lt;/div&gt;
+  &lt;div class="ncss-bleed-half-end"&gt;&lt;img src="…" alt="…"&gt;&lt;/div&gt;
+  &lt;div class="ncss-bleed-center" style="--ncss-bleed-amount: 2rem"&gt;&lt;img src="…" alt="…"&gt;&lt;/div&gt;
+&lt;/main&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Voraussetzung: der Container ist auf dem Bildschirm zentriert (z. B. <code>.ncss-container</code>). <code>.ncss-bleed-center</code> braucht das nicht - es wächst relativ zum eigenen Elternelement.</p>
 </section>
 
 <section class="ncss-stack" id="siehe-auch">

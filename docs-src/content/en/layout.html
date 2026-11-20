@@ -122,6 +122,21 @@
 <section class="ncss-stack" id="bleed">
   <h2 class="demo-section-title">Bleed</h2>
   <p>Variants for deliberately breaking out of a container: <code>.ncss-bleed-start</code>/<code>-end</code> (one side), <code>.ncss-bleed-half-start</code>/<code>-half-end</code> (from the middle), <code>.ncss-bleed-center</code> (symmetric by a fixed amount, <code>--ncss-bleed-amount</code>).</p>
+  <p class="ncss-text-sm ncss-text-muted">Live in an embedded mini window with its own screen width (on this page the content sits next to the sidebar, where <code>100vw</code> would break out lopsidedly). Drag the slider to change the window width:</p>
+  <div class="docs-live demo-bleed-live" role="group" aria-label="Bleed, live demo">
+    <label class="ncss-text-sm ncss-text-muted" for="bleedWidth">Window width: <output id="bleedWidthOut" for="bleedWidth">100 %</output></label>
+    <input type="range" id="bleedWidth" min="320" max="1200" value="1200" step="10" data-bleed-frame="bleedFrame" data-bleed-out="bleedWidthOut">
+    <div class="demo-bleed-frame-wrap"><iframe id="bleedFrame" src="../../demo/embed-bleed-en.html" title="Bleed, live demo" loading="lazy"></iframe></div>
+    <p class="ncss-text-sm"><a href="../../demo/embed-bleed-en.html" target="_blank" rel="noopener">Open in a new tab</a></p>
+  </div>
+  <pre><code class="language-html">&lt;main class="ncss-container ncss-container--narrow"&gt;
+  &lt;div class="ncss-full-bleed"&gt;…&lt;/div&gt;
+  &lt;blockquote class="ncss-bleed-start"&gt;…&lt;/blockquote&gt;
+  &lt;div class="ncss-bleed-end"&gt;&lt;img src="…" alt="…"&gt;&lt;/div&gt;
+  &lt;div class="ncss-bleed-half-end"&gt;&lt;img src="…" alt="…"&gt;&lt;/div&gt;
+  &lt;div class="ncss-bleed-center" style="--ncss-bleed-amount: 2rem"&gt;&lt;img src="…" alt="…"&gt;&lt;/div&gt;
+&lt;/main&gt;</code></pre>
+  <p class="ncss-text-sm ncss-text-muted">Requirement: the container is centred on the screen (e.g. <code>.ncss-container</code>). <code>.ncss-bleed-center</code> does not need this - it grows relative to its own parent.</p>
 </section>
 
 <section class="ncss-stack" id="siehe-auch">

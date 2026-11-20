@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NativeCSS - Bleed (Embed)</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../dist/js/preferences-early.js"></script>
+<link rel="stylesheet" href="../dist/ncss.css">
+<style>
+  /* Mini-Dokument zum Einbetten per <iframe> in docs/*/layout.html#bleed: das iframe hat
+     seinen EIGENEN Viewport - .ncss-full-bleed/-bleed-* rechnen mit 100vw und brechen
+     hier deshalb korrekt bis zum Rand dieses Rahmens aus (auf der Handbuchseite selbst
+     nicht möglich: die Inhaltsspalte steht neben der Sidebar, nicht viewport-zentriert). */
+  body { margin: 0; padding-block: 1.25rem; }
+  .demo-bleed-label { display: block; font: 600 0.8rem/1.3 var(--ncss-font-family-mono, monospace); color: var(--ncss-color-text-muted); margin-block-end: 0.35rem; }
+  .demo-bleed-band { padding: var(--ncss-space-md); background: var(--ncss-color-brand-100, var(--ncss-color-bg-subtle)); color: var(--ncss-color-text); }
+  .demo-bleed-img { display: block; inline-size: 100%; block-size: 9rem; object-fit: cover; }
+  /* Bilder ganz bis zum Rand: das Innen-Padding von .ncss-bleed-start/-end ist für Text gedacht */
+  .demo-bleed-flush { padding-inline: 0; }
+  .demo-bleed-quote { margin-block: 0; padding-block: var(--ncss-space-sm); border-inline-start: 4px solid var(--ncss-color-brand); background: var(--ncss-color-bg-subtle); font-size: var(--ncss-font-size-lg); }
+</style>
+</head>
+<body>
+  <main class="ncss-container ncss-container--narrow ncss-stack">
+    <p>Regular text stays in the narrow column. The marked blocks deliberately break out of it.</p>
+    <div><span class="demo-bleed-label">.ncss-full-bleed – full screen width</span>
+      <div class="ncss-full-bleed demo-bleed-band"><div class="ncss-container ncss-container--narrow">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div></div></div>
+    <div><span class="demo-bleed-label">.ncss-bleed-start – to the left edge</span>
+      <blockquote class="ncss-bleed-start demo-bleed-quote">“A quote may stick out of the text flow.”</blockquote></div>
+    <div><span class="demo-bleed-label">.ncss-bleed-end – to the right edge</span>
+      <div class="ncss-bleed-end demo-bleed-flush"><img class="demo-bleed-img" src="assets/examples/hotel/haus-am-see.webp" alt="Lake house at dusk"></div></div>
+    <div><span class="demo-bleed-label">.ncss-bleed-half-end – from the middle to the edge</span>
+      <div class="ncss-bleed-half-end"><img class="demo-bleed-img" src="assets/examples/hotel/boot-detail.webp" alt="Jetty detail"></div></div>
+    <div><span class="demo-bleed-label">.ncss-bleed-center – both sides by --ncss-bleed-amount</span>
+      <div class="ncss-bleed-center" style="--ncss-bleed-amount: 2rem"><img class="demo-bleed-img" src="assets/examples/hotel/fruehstueck.webp" alt="Breakfast table"></div></div>
+    <p>Running text continues in the column – the bleeds do not affect their surroundings.</p>
+  </main>
+</body>
+</html>

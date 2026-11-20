@@ -28,6 +28,7 @@
 <script src="../../dist/js/command-palette.js" defer></script>
 <script src="../../dist/js/dialog-light-dismiss.js" defer></script>
 <script src="../../demo/assets/js/inspector.js" defer></script>
+<script src="../../demo/assets/js/bleed-slider.js" defer></script>
 <style>
   /* --- Website-Hülle (Start, Handbuch, Beispiele) - nur diese Website, nicht dist/ ------
      Eine Kopfleiste für alle Seiten: Marke, Start · Handbuch · Beispiele, rechts Sprache,
@@ -162,6 +163,23 @@
     .site-panel-prefs {
       display: none;
     }
+  }
+  /* Bleed-Demo (Layout): iframe mit eigenem Viewport, Breite per Regler */
+  .demo-bleed-frame-wrap {
+    overflow: hidden;
+    border: 1px dashed var(--ncss-color-border);
+    border-radius: var(--ncss-radius-md);
+    background: var(--ncss-color-bg);
+  }
+  .demo-bleed-frame-wrap iframe {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: 44rem;
+    border: 0;
+  }
+  .demo-bleed-live input[type="range"] {
+    inline-size: min(100%, 30rem);
   }
   .docs-layout {
     display: grid;
