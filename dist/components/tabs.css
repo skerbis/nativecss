@@ -24,6 +24,18 @@
  *                                          aktiviert (für Panels mit teurem Inhalt)
  *   hash                                   aktiver Tab spiegelt sich in der Adresse (#id),
  *                                          ein Link auf #id öffnet direkt diesen Tab
+ *
+ * Animationen (opt-in, alle aus bei reduzierter Bewegung bzw. data-motion="reduce"):
+ *   class="ncss-tabs--slide"   Unterstrich gleitet zum neuen Tab (statt zu springen)
+ *   class="ncss-tabs--pills"   Pillen-Tabs, die Hintergrund-Pille gleitet mit
+ *   animate="fade"             Panel blendet weich ein
+ *   animate="slide"            Panel schiebt sich aus der Richtung des neuen Tabs herein
+ *                              (vorwärts von der Endseite, rückwärts von der Startseite)
+ *   animate="scale"            Panel wächst leicht auf
+ *   animate="height"           Höhe des Inhaltsbereichs gleitet mit (nur wo
+ *                              interpolate-size unterstützt wird, sonst sofort)
+ *   Mehrere kombinierbar: animate="fade slide".
+ *   --ncss-tabs-duration       Dauer (Standard: --ncss-motion-duration-slow)
  * .ncss-tabs-heading ist optional: die Überschrift je Abschnitt hilft OHNE JS (dort ist es
  * eine normale Seite mit Abschnitten), MIT JS doppelt sie den Tab-Namen - sie wird dann
  * nur noch optisch ausgeblendet, bleibt für Screenreader im Panel erhalten.
@@ -142,8 +154,149 @@ ncss-tabs:defined .ncss-tabs-heading {
   min-inline-size: 0;
 }
 
+/* --- Animationen --------------------------------------------------------------------------
+   Gleitende Markierung: js/tabs.js schreibt Position/Größe des aktiven Tabs als
+   --ncss-tabs-x/-y/-w/-h an die Liste; ein ::after der Liste folgt per transition.
+   data-ncss-indicator setzt das Script erst nach der ersten Positionierung - beim Laden
+   steht die Markierung sofort richtig, statt von links hereinzugleiten. */
+.ncss-tabs--slide:defined > .ncss-tabs-list,
+.ncss-tabs--pills:defined > .ncss-tabs-list {
+  position: relative;
+  isolation: isolate;
+}
+.ncss-tabs--slide:defined > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
+  box-shadow: inset 0 calc(var(--ncss-border-width) * -3) 0 transparent;
+}
+.ncss-tabs--slide:defined > .ncss-tabs-list::after,
+.ncss-tabs--pills:defined > .ncss-tabs-list::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  z-index: -1;
+  inline-size: var(--ncss-tabs-w, 0);
+  translate: var(--ncss-tabs-x, 0) var(--ncss-tabs-y, 0);
+  pointer-events: none;
+}
+/* RTL: offsetLeft zählt von links - Markierung dort von links positionieren */
+.ncss-tabs--slide:defined > .ncss-tabs-list:dir(rtl)::after,
+.ncss-tabs--pills:defined > .ncss-tabs-list:dir(rtl)::after {
+  inset-inline-start: auto;
+  left: 0;
+}
+.ncss-tabs--slide:defined > .ncss-tabs-list::after {
+  block-size: calc(var(--ncss-border-width) * 3);
+  inset-block-start: calc(var(--ncss-tabs-h, 0px) - var(--ncss-border-width) * 3);
+  background: var(--ncss-color-brand);
+  border-radius: 999px;
+}
+/* Vertikale Liste: Strich an der Startkante, gleitet nach oben/unten */
+.ncss-tabs--slide.ncss-tabs--vertical:defined > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
+  box-shadow: none;
+}
+.ncss-tabs--slide.ncss-tabs--vertical:defined > .ncss-tabs-list::after {
+  inline-size: calc(var(--ncss-border-width) * 3);
+  block-size: var(--ncss-tabs-h, 0);
+  inset-block-start: 0;
+  translate: 0 var(--ncss-tabs-y, 0);
+}
+
+/* Pillen: Liste als Segment-Leiste, die aktive Pille gleitet hinter dem Text */
+.ncss-tabs--pills:defined > .ncss-tabs-list {
+  gap: var(--ncss-space-3xs);
+  padding: var(--ncss-space-3xs);
+  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  border-radius: 999px;
+  /* Leiste leicht abgesetzt - auch auf getönten Flächen erkennbar */
+  background: color-mix(in oklch, var(--ncss-color-text) 6%, transparent);
+  inline-size: fit-content;
+  max-inline-size: 100%;
+}
+.ncss-tabs--pills:defined > .ncss-tabs-list > [role="tab"] {
+  border-radius: 999px;
+  box-shadow: none;
+}
+.ncss-tabs--pills:defined > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
+  box-shadow: none;
+  color: var(--ncss-color-text);
+}
+.ncss-tabs--pills:defined > .ncss-tabs-list::after {
+  block-size: var(--ncss-tabs-h, 0);
+  border-radius: 999px;
+  background: var(--ncss-color-bg);
+  box-shadow: var(--ncss-shadow-sm);
+}
+/* Ohne Markierungs-Position (Script lädt noch): aktive Pille trotzdem erkennbar */
+.ncss-tabs--pills:defined:not([data-ncss-indicator]) > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
+  background: var(--ncss-color-bg);
+}
+
+/* Panel-Animationen: @starting-style - beim Wechsel von hidden auf sichtbar startet das
+   Panel im Ausgangszustand und läuft per transition in den Endzustand. */
+ncss-tabs[animate]:defined > .ncss-tabs-panel {
+  --_ncss-tabs-dx: 0px;
+  --_ncss-tabs-scale: 1;
+}
+ncss-tabs[animate~="slide"][data-ncss-direction="next"]:defined > .ncss-tabs-panel { --_ncss-tabs-dx: 1.5rem; }
+ncss-tabs[animate~="slide"][data-ncss-direction="prev"]:defined > .ncss-tabs-panel { --_ncss-tabs-dx: -1.5rem; }
+ncss-tabs[animate~="slide"]:defined > .ncss-tabs-panel:dir(rtl) { --_ncss-tabs-dx-sign: -1; }
+ncss-tabs[animate~="scale"]:defined > .ncss-tabs-panel { --_ncss-tabs-scale: 0.97; }
+
+/* Höhe: Inhaltsbereich gleitet auf die Höhe des neuen Panels */
+ncss-tabs[animate~="height"]:defined {
+  interpolate-size: allow-keywords;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]) .ncss-tabs--slide[data-ncss-indicator] > .ncss-tabs-list::after,
+  :root:not([data-motion="reduce"]) .ncss-tabs--pills[data-ncss-indicator] > .ncss-tabs-list::after {
+    transition:
+      translate var(--ncss-tabs-duration, var(--ncss-motion-duration-slow, 0.3s)) var(--ncss-motion-easing, ease),
+      inline-size var(--ncss-tabs-duration, var(--ncss-motion-duration-slow, 0.3s)) var(--ncss-motion-easing, ease),
+      block-size var(--ncss-tabs-duration, var(--ncss-motion-duration-slow, 0.3s)) var(--ncss-motion-easing, ease);
+  }
+  :root:not([data-motion="reduce"]) ncss-tabs[animate]:defined > .ncss-tabs-panel {
+    transition:
+      opacity var(--ncss-tabs-duration, var(--ncss-motion-duration-slow, 0.3s)) var(--ncss-motion-easing, ease),
+      translate var(--ncss-tabs-duration, var(--ncss-motion-duration-slow, 0.3s)) var(--ncss-motion-easing, ease),
+      scale var(--ncss-tabs-duration, var(--ncss-motion-duration-slow, 0.3s)) var(--ncss-motion-easing, ease);
+  }
+  @starting-style {
+    :root:not([data-motion="reduce"]) ncss-tabs[animate~="fade"]:defined > .ncss-tabs-panel,
+    :root:not([data-motion="reduce"]) ncss-tabs[animate~="slide"]:defined > .ncss-tabs-panel,
+    :root:not([data-motion="reduce"]) ncss-tabs[animate~="scale"]:defined > .ncss-tabs-panel {
+      opacity: 0;
+      translate: calc(var(--_ncss-tabs-dx) * var(--_ncss-tabs-dx-sign, 1)) 0;
+      scale: var(--_ncss-tabs-scale);
+    }
+  }
+}
+/* data-motion="full" hebt eine System-Einstellung "reduzieren" ausdrücklich auf */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-motion="full"] .ncss-tabs--slide[data-ncss-indicator] > .ncss-tabs-list::after,
+  :root[data-motion="full"] .ncss-tabs--pills[data-ncss-indicator] > .ncss-tabs-list::after {
+    transition: translate var(--ncss-tabs-duration, 0.3s) ease, inline-size var(--ncss-tabs-duration, 0.3s) ease, block-size var(--ncss-tabs-duration, 0.3s) ease;
+  }
+  :root[data-motion="full"] ncss-tabs[animate]:defined > .ncss-tabs-panel {
+    transition: opacity var(--ncss-tabs-duration, 0.3s) ease, translate var(--ncss-tabs-duration, 0.3s) ease, scale var(--ncss-tabs-duration, 0.3s) ease;
+  }
+  @starting-style {
+    :root[data-motion="full"] ncss-tabs[animate~="fade"]:defined > .ncss-tabs-panel,
+    :root[data-motion="full"] ncss-tabs[animate~="slide"]:defined > .ncss-tabs-panel,
+    :root[data-motion="full"] ncss-tabs[animate~="scale"]:defined > .ncss-tabs-panel {
+      opacity: 0;
+      translate: calc(var(--_ncss-tabs-dx) * var(--_ncss-tabs-dx-sign, 1)) 0;
+      scale: var(--_ncss-tabs-scale);
+    }
+  }
+}
+
 /* Erzwungene Farben: box-shadow wird entfernt - aktiver Tab braucht eine echte Kontur. */
 @media (forced-colors: active) {
+  .ncss-tabs--slide:defined > .ncss-tabs-list::after,
+  .ncss-tabs--pills:defined > .ncss-tabs-list::after {
+    display: none;
+  }
   ncss-tabs:defined > .ncss-tabs-list > [role="tab"][aria-selected="true"] {
     outline: calc(var(--ncss-border-width) * 2) solid Highlight;
     outline-offset: calc(var(--ncss-border-width) * -2);

@@ -174,10 +174,28 @@
         this._tabs[i].focus();
       }
 
+      // Gleitende Markierung (.ncss-tabs--slide/--pills): Position und Größe des aktiven
+      // Tabs als Custom Properties an der Liste - die Animation selbst macht das CSS.
+      _indicator() {
+        var tab = this._tabs[this._current];
+        if (!tab) {
+          return;
+        }
+        var list = tab.parentElement;
+        list.style.setProperty("--ncss-tabs-x", tab.offsetLeft + "px");
+        list.style.setProperty("--ncss-tabs-y", tab.offsetTop + "px");
+        list.style.setProperty("--ncss-tabs-w", tab.offsetWidth + "px");
+        list.style.setProperty("--ncss-tabs-h", tab.offsetHeight + "px");
+      }
+
       _activate(i, focus, notify) {
         var tabs = this._tabs;
         var panels = this._panels;
         var changed = this._current !== i;
+        // Richtung für Panel-Animationen (--animate="slide"): vorwärts = von der Endseite
+        if (typeof this._current === "number" && changed) {
+          this.setAttribute("data-ncss-direction", i > this._current ? "next" : "prev");
+        }
         this._current = i;
         tabs.forEach(function (tab, k) {
           var on = k === i;
@@ -185,6 +203,18 @@
           tab.setAttribute("tabindex", on ? "0" : "-1");
           panels[k].hidden = !on;
         });
+        this._indicator();
+        if (!this._indicatorReady) {
+          // erst NACH der ersten Positionierung animieren (kein Hineingleiten beim Laden)
+          this._indicatorReady = true;
+          var self = this;
+          requestAnimationFrame(function () {
+            self.setAttribute("data-ncss-indicator", "");
+          });
+          if (window.ResizeObserver) {
+            new ResizeObserver(function () { self._indicator(); }).observe(tabs[0].parentElement);
+          }
+        }
         if (focus) {
           tabs[i].focus();
         }

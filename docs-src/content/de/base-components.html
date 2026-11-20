@@ -131,6 +131,78 @@
   </div>
 </section>
 
+<section class="ncss-stack" id="tabs-animation" data-subnav-label="Tabs mit Animation">
+  <h2 class="demo-section-title">Tabs mit Animation <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
+  <p>Alle Animationen sind optional und schalten sich bei reduzierter Bewegung (System oder „Darstellung“) automatisch ab - dann wechseln die Tabs sofort.</p>
+  <div class="docs-live" role="group" aria-label="Tabs mit Animation">
+    <p class="ncss-text-sm ncss-text-muted">Gleitender Unterstrich + Panel schiebt aus der Richtung des Tabs herein</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--slide" animate="fade slide">
+  <div class="ncss-tabs-list" aria-label="Gleitender Unterstrich + Panel schiebt aus der Richtung des Tabs herein">
+    <a href="#ta-de-a-0">Übersicht</a>
+    <a href="#ta-de-a-1">Ausstattung</a>
+    <a href="#ta-de-a-2">Preise</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-de-a-0">
+    <h3 class="ncss-tabs-heading">Übersicht</h3>
+    <p>Ein Haus am See mit 24 Zimmern.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-a-1">
+    <h3 class="ncss-tabs-heading">Ausstattung</h3>
+    <p>Sauna, Bootssteg, E-Bike-Verleih.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-a-2">
+    <h3 class="ncss-tabs-heading">Preise</h3>
+    <p>Ab 89 € pro Nacht inklusive Frühstück.</p>
+  </section>
+</ncss-tabs>
+    <p class="ncss-text-sm ncss-text-muted">Pillen mit gleitendem Hintergrund + Einblenden</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--pills" animate="fade">
+  <div class="ncss-tabs-list" aria-label="Pillen mit gleitendem Hintergrund + Einblenden">
+    <a href="#ta-de-b-0">Monatlich</a>
+    <a href="#ta-de-b-1">Jährlich</a>
+    <a href="#ta-de-b-2">Team</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-de-b-0">
+    <h3 class="ncss-tabs-heading">Monatlich</h3>
+    <p>9 € im Monat, jederzeit kündbar.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-b-1">
+    <h3 class="ncss-tabs-heading">Jährlich</h3>
+    <p>90 € im Jahr - zwei Monate geschenkt.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-b-2">
+    <h3 class="ncss-tabs-heading">Team</h3>
+    <p>Ab 5 Personen: 7 € pro Person und Monat.</p>
+  </section>
+</ncss-tabs>
+    <p class="ncss-text-sm ncss-text-muted">Vertikal: Strich gleitet, Panel wächst auf, Höhe gleitet mit</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--vertical ncss-tabs--slide" animate="fade scale height">
+  <div class="ncss-tabs-list" aria-label="Vertikal: Strich gleitet, Panel wächst auf, Höhe gleitet mit">
+    <a href="#ta-de-c-0">Profil</a>
+    <a href="#ta-de-c-1">Konto</a>
+    <a href="#ta-de-c-2">Benachrichtigungen</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-de-c-0">
+    <h3 class="ncss-tabs-heading">Profil</h3>
+    <p>Name, Foto und Kurzbeschreibung.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-c-1">
+    <h3 class="ncss-tabs-heading">Konto</h3>
+    <p>E-Mail-Adresse, Passwort und Zwei-Faktor-Anmeldung - dieser Abschnitt ist bewusst länger, damit man sieht, wie die Höhe mitgleitet, wenn das neue Panel mehr Inhalt hat als das alte.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-de-c-2">
+    <h3 class="ncss-tabs-heading">Benachrichtigungen</h3>
+    <p>Welche E-Mails du bekommst.</p>
+  </section>
+</ncss-tabs>
+  </div>
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs ncss-tabs--slide" animate="fade slide"&gt; … &lt;/ncss-tabs&gt;
+&lt;ncss-tabs class="ncss-tabs ncss-tabs--pills" animate="fade"&gt; … &lt;/ncss-tabs&gt;
+&lt;ncss-tabs class="ncss-tabs ncss-tabs--vertical ncss-tabs--slide" animate="fade scale height"&gt; … &lt;/ncss-tabs&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Klasse / Attribut</th><th scope="col">Wirkung</th></tr></thead><tbody><tr><td><code>.ncss-tabs--slide</code></td><td>Unterstrich (vertikal: Strich an der Seite) gleitet zum neuen Tab</td></tr><tr><td><code>.ncss-tabs--pills</code></td><td>Pillen-Leiste, die aktive Pille gleitet hinter dem Text</td></tr><tr><td><code>animate="fade"</code></td><td>Panel blendet weich ein</td></tr><tr><td><code>animate="slide"</code></td><td>Panel kommt aus der Richtung des neuen Tabs (vorwärts von der Endseite, rückwärts von der Startseite; RTL gespiegelt)</td></tr><tr><td><code>animate="scale"</code></td><td>Panel wächst leicht auf</td></tr><tr><td><code>animate="height"</code></td><td>Höhe des Bereichs gleitet mit (wo <code>interpolate-size</code> unterstützt wird)</td></tr><tr><td><code>--ncss-tabs-duration</code></td><td>Dauer, Standard <code>--ncss-motion-duration-slow</code></td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Barrierefreiheit: Die Animation ändert nichts an Rollen, Tastatur und Fokus. Bei reduzierter Bewegung und <code>data-motion="reduce"</code> ist alles aus, <code>data-motion="full"</code> schaltet sie trotz System-Einstellung wieder ein. In Windows-Kontrastmodus ersetzt eine echte Kontur die gleitende Markierung.</p>
+</section>
+
 <section class="ncss-stack" id="tooltip">
   <h2 class="demo-section-title">Tooltip</h2>
   <p>Kurzer <strong>Text</strong>-Hinweis zu einem Bedienelement (WAI-ARIA-APG "Tooltip"), als natives <code>popover="hint"</code> mit <code>interestfor</code>: in Chromium erledigt der Browser Hover, Fokus, Verzögerung und Esc ganz ohne JS; <code>js/tooltip.js</code> liefert dasselbe Verhalten in anderen Browsern. Positionierung per CSS Anchor Positioning, sonst rechnet das Script. Für Links, Bilder oder Profile im Overlay stattdessen die <a href="modern-ui.html">Hovercard</a> - ein Tooltip enthält nie etwas Anklickbares.</p>

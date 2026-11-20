@@ -131,6 +131,78 @@
   </div>
 </section>
 
+<section class="ncss-stack" id="tabs-animation" data-subnav-label="Tabs with animation">
+  <h2 class="demo-section-title">Tabs with animation <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
+  <p>All animations are optional and switch off automatically with reduced motion (system or “Display”) - tabs then switch instantly.</p>
+  <div class="docs-live" role="group" aria-label="Tabs with animation">
+    <p class="ncss-text-sm ncss-text-muted">Sliding underline + panel slides in from the tab direction</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--slide" animate="fade slide">
+  <div class="ncss-tabs-list" aria-label="Sliding underline + panel slides in from the tab direction">
+    <a href="#ta-en-a-0">Overview</a>
+    <a href="#ta-en-a-1">Amenities</a>
+    <a href="#ta-en-a-2">Prices</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-en-a-0">
+    <h3 class="ncss-tabs-heading">Overview</h3>
+    <p>A lake house with 24 rooms.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-en-a-1">
+    <h3 class="ncss-tabs-heading">Amenities</h3>
+    <p>Sauna, jetty, e-bike rental.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-en-a-2">
+    <h3 class="ncss-tabs-heading">Prices</h3>
+    <p>From €89 per night including breakfast.</p>
+  </section>
+</ncss-tabs>
+    <p class="ncss-text-sm ncss-text-muted">Pills with sliding background + fade</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--pills" animate="fade">
+  <div class="ncss-tabs-list" aria-label="Pills with sliding background + fade">
+    <a href="#ta-en-b-0">Monthly</a>
+    <a href="#ta-en-b-1">Yearly</a>
+    <a href="#ta-en-b-2">Team</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-en-b-0">
+    <h3 class="ncss-tabs-heading">Monthly</h3>
+    <p>€9 per month, cancel anytime.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-en-b-1">
+    <h3 class="ncss-tabs-heading">Yearly</h3>
+    <p>€90 per year - two months free.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-en-b-2">
+    <h3 class="ncss-tabs-heading">Team</h3>
+    <p>From 5 people: €7 per person and month.</p>
+  </section>
+</ncss-tabs>
+    <p class="ncss-text-sm ncss-text-muted">Vertical: line slides, panel scales up, height glides</p>
+<ncss-tabs class="ncss-tabs ncss-tabs--vertical ncss-tabs--slide" animate="fade scale height">
+  <div class="ncss-tabs-list" aria-label="Vertical: line slides, panel scales up, height glides">
+    <a href="#ta-en-c-0">Profile</a>
+    <a href="#ta-en-c-1">Account</a>
+    <a href="#ta-en-c-2">Notifications</a>
+  </div>
+  <section class="ncss-tabs-panel" id="ta-en-c-0">
+    <h3 class="ncss-tabs-heading">Profile</h3>
+    <p>Name, photo and short bio.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-en-c-1">
+    <h3 class="ncss-tabs-heading">Account</h3>
+    <p>Email address, password and two-factor sign-in - this section is deliberately longer so you can see the height glide when the new panel has more content than the old one.</p>
+  </section>
+  <section class="ncss-tabs-panel" id="ta-en-c-2">
+    <h3 class="ncss-tabs-heading">Notifications</h3>
+    <p>Which emails you receive.</p>
+  </section>
+</ncss-tabs>
+  </div>
+  <pre><code class="language-html">&lt;ncss-tabs class="ncss-tabs ncss-tabs--slide" animate="fade slide"&gt; … &lt;/ncss-tabs&gt;
+&lt;ncss-tabs class="ncss-tabs ncss-tabs--pills" animate="fade"&gt; … &lt;/ncss-tabs&gt;
+&lt;ncss-tabs class="ncss-tabs ncss-tabs--vertical ncss-tabs--slide" animate="fade scale height"&gt; … &lt;/ncss-tabs&gt;</code></pre>
+  <div class="ncss-table-scroll"><table><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.ncss-tabs--slide</code></td><td>Underline (vertical: side line) slides to the new tab</td></tr><tr><td><code>.ncss-tabs--pills</code></td><td>Pill bar, the active pill slides behind the text</td></tr><tr><td><code>animate="fade"</code></td><td>Panel fades in</td></tr><tr><td><code>animate="slide"</code></td><td>Panel comes from the direction of the new tab (forward from the end side, backward from the start side; mirrored in RTL)</td></tr><tr><td><code>animate="scale"</code></td><td>Panel scales up slightly</td></tr><tr><td><code>animate="height"</code></td><td>Height of the area glides (where <code>interpolate-size</code> is supported)</td></tr><tr><td><code>--ncss-tabs-duration</code></td><td>Duration, default <code>--ncss-motion-duration-slow</code></td></tr></tbody></table></div>
+  <p class="ncss-text-sm ncss-text-muted">Accessibility: the animation changes nothing about roles, keyboard and focus. With reduced motion and <code>data-motion="reduce"</code> everything is off; <code>data-motion="full"</code> turns it back on despite the system setting. In Windows contrast mode a real outline replaces the sliding marker.</p>
+</section>
+
 <section class="ncss-stack" id="tooltip">
   <h2 class="demo-section-title">Tooltip</h2>
   <p>Short <strong>text</strong> hint for a control (WAI-ARIA APG "Tooltip"), as native <code>popover="hint"</code> with <code>interestfor</code>: in Chromium the browser handles hover, focus, delay and Esc without any JS; <code>js/tooltip.js</code> provides the same behaviour elsewhere. Positioned with CSS anchor positioning, otherwise the script calculates. For links, images or profiles in an overlay use the <a href="modern-ui.html">hovercard</a> instead - a tooltip never contains anything clickable.</p>

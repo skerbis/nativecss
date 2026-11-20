@@ -15,6 +15,9 @@
  *     <label for="a-karte">Karte</label>
  *   </fieldset>
  * --sm für dichte Toolbars, --block für volle Breite (Segmente teilen sich den Platz).
+ * --slide: die Auswahl-Fläche GLEITET zum neuen Segment (reines CSS per Anchor
+ * Positioning + anchor-scope; ohne Unterstützung bzw. bei reduzierter Bewegung springt
+ * sie wie gewohnt). Nur für einzeilige Leisten gedacht.
  */
 
 .ncss-segmented {
@@ -93,6 +96,62 @@
 }
 .ncss-segmented--block > label {
   flex: 1 1 0;
+}
+
+/* --- Gleitende Auswahl (--slide) ------------------------------------------------------
+   Das gewählte Label wird zum Anker, ein ::before der Leiste liegt per anchor() genau
+   darunter - wechselt die Wahl, ändern sich die Anker-Koordinaten und die transition
+   lässt die Fläche hinübergleiten. anchor-scope begrenzt den Ankernamen auf DIESE Leiste
+   (sonst würden mehrere Leisten auf einer Seite sich gegenseitig den Anker wegnehmen) -
+   ohne anchor-scope-Unterstützung deshalb gar nicht aktiv. */
+@supports (anchor-name: --a) and (anchor-scope: all) {
+  .ncss-segmented--slide {
+    position: relative;
+    isolation: isolate;
+    anchor-scope: --ncss-seg;
+  }
+  .ncss-segmented--slide > input:checked + label {
+    anchor-name: --ncss-seg;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .ncss-segmented--slide::before {
+    content: "";
+    position: absolute;
+    position-anchor: --ncss-seg;
+    inset-block-start: anchor(top);
+    inset-block-end: anchor(bottom);
+    inset-inline-start: anchor(start);
+    inset-inline-end: anchor(end);
+    z-index: -1;
+    border-radius: calc(var(--ncss-radius-md) - var(--ncss-space-3xs));
+    background-color: var(--ncss-color-surface);
+    box-shadow: var(--ncss-shadow-sm);
+    pointer-events: none;
+  }
+  /* Ohne gewähltes Segment keine Fläche */
+  .ncss-segmented--slide:not(:has(> input:checked))::before {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="reduce"]) .ncss-segmented--slide::before {
+      transition:
+        inset var(--ncss-motion-duration-slow, 0.3s) var(--ncss-motion-easing, ease);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root[data-motion="full"] .ncss-segmented--slide::before {
+      transition: inset var(--ncss-motion-duration-slow, 0.3s) ease;
+    }
+  }
+  @media (forced-colors: active) {
+    .ncss-segmented--slide::before {
+      display: none;
+    }
+    .ncss-segmented--slide > input:checked + label {
+      border-color: Highlight;
+    }
+  }
 }
 
 /* Hochkontrast: Fläche/Schatten verschwinden - der gewählte Eintrag braucht einen
