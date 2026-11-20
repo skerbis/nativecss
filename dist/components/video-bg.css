@@ -1,0 +1,176 @@
+/**
+ * ncss - Hintergrund-Video (Layer "components"): ein stummes Loop-Video füllt eine
+ * beliebige Fläche (Sektion, Karte, Banner) HINTER ihrem Inhalt, mit Tönung für lesbaren
+ * Text und sichtbarem Pause-Schalter (js/video-bg.js).
+ *
+ *   <section class="ncss-video-bg ncss-video-bg--dark" data-ncss-video-bg>
+ *     <video class="ncss-video-bg-media" muted loop playsinline preload="none"
+ *            poster="poster.jpg" aria-hidden="true">
+ *       <source data-src="loop.webm" type="video/webm">
+ *       <source data-src="loop.mp4" type="video/mp4">
+ *     </video>
+ *     <div>... Inhalt ...</div>
+ *   </section>
+ *
+ * data-src statt src: nichts wird geladen, bevor die Fläche in die Nähe des Viewports
+ * kommt und Bewegungs-/Daten-Einstellungen es erlauben. Soll das Video auch OHNE JS
+ * laufen: src + autoplay (das Script übernimmt dann trotzdem Pause/Präferenzen).
+ * Art Direction (anderes Video je Breakpoint) bewusst NICHT per <source media> - das
+ * ist bei <video> keine browserübergreifende Funktion (siehe components/video.css);
+ * stattdessen --ncss-video-bg-position für den Bildausschnitt.
+ *
+ * Tönungen (setzen zusätzlich color-scheme, damit Tokens innerhalb lesbar auflösen -
+ * Buttons/Karten in der Fläche bekommen automatisch die passende Hälfte ihrer
+ * light-dark()-Farben):
+ *   .ncss-video-bg--dark      dunkle Tönung, heller Text (Default-Wahl für Fotos/Video)
+ *   .ncss-video-bg--light     helle Tönung, dunkler Text
+ *   .ncss-video-bg--brand     dunkle Markenfarben-Tönung, heller Text
+ *   .ncss-video-bg--gradient  Verlauf von unten (Text unten, Bild oben frei sichtbar)
+ * Anpassbar (auf der Fläche): --ncss-video-bg-strength (Deckkraft der Tönung, Default
+ * 55%), --ncss-video-bg-position (object-position, Default --ncss-focus-point).
+ *
+ * Ohne JS: ein autoplay-Video läuft (stumm, Schleife), der Schalter fehlt; ein
+ * data-src-Video zeigt nur sein Poster. forced-colors: Video + Tönung ausgeblendet,
+ * der Text steht auf Systemfarben.
+ *
+ * Benötigt: tokens.css + colors.css. Keine anderen ncss-Dateien.
+ */
+
+.ncss-video-bg {
+  --ncss-video-bg-strength: 55%;
+  --ncss-video-bg-position: var(--ncss-focus-point, center);
+  --ncss-video-bg-tint: transparent;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background-color: var(--ncss-color-bg-subtle);
+
+  /* Tönung zwischen Video und Inhalt */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ncss-video-bg-tint);
+    pointer-events: none;
+  }
+}
+
+.ncss-video-bg-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: var(--ncss-video-bg-position);
+  pointer-events: none;
+}
+
+.ncss-video-bg--dark {
+  --ncss-video-bg-tint: color-mix(in oklch, var(--ncss-color-bg) var(--ncss-video-bg-strength), transparent);
+  color-scheme: dark;
+  color: var(--ncss-color-text);
+}
+.ncss-video-bg--light {
+  --ncss-video-bg-tint: color-mix(in oklch, var(--ncss-color-bg) calc(var(--ncss-video-bg-strength) + 15%), transparent);
+  color-scheme: light;
+  color: var(--ncss-color-text);
+}
+.ncss-video-bg--brand {
+  --ncss-video-bg-tint: color-mix(in oklch, color-mix(in oklch, var(--ncss-color-brand) 40%, var(--ncss-color-bg)) calc(var(--ncss-video-bg-strength) + 15%), transparent);
+  color-scheme: dark;
+  color: var(--ncss-color-text);
+}
+.ncss-video-bg--gradient {
+  --ncss-video-bg-tint: linear-gradient(to top,
+    color-mix(in oklch, var(--ncss-color-bg) calc(var(--ncss-video-bg-strength) + 30%), transparent) 0%,
+    color-mix(in oklch, var(--ncss-color-bg) var(--ncss-video-bg-strength), transparent) 45%,
+    transparent 100%);
+  color-scheme: dark;
+  color: var(--ncss-color-text);
+}
+
+/* --- Pause/Abspielen-Schalter (Text + Symbol) ---------------------------------------- */
+.ncss-video-bg-toggle {
+  position: absolute;
+  z-index: 2;
+  bottom: var(--ncss-space-sm);
+  inset-inline-end: var(--ncss-space-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: 2.75rem;
+  padding: 0.35em 1em 0.35em 0.85em;
+  font: inherit;
+  font-size: var(--ncss-font-size-sm);
+  font-weight: var(--ncss-font-weight-semibold);
+  line-height: 1;
+  color: #fff;
+  background-color: rgb(0 0 0 / 62%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: var(--ncss-border-width) solid rgb(255 255 255 / 45%);
+  border-radius: var(--ncss-radius-full);
+  cursor: pointer;
+  transition: background-color var(--ncss-motion-duration-fast) var(--ncss-motion-easing);
+
+  /* Symbol: Pause-Balken, im pausierten Zustand ein Play-Dreieck */
+  &::before {
+    content: "";
+    width: 0.9em;
+    height: 0.9em;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='3' y='2' width='3.5' height='12' rx='1'/%3E%3Crect x='9.5' y='2' width='3.5' height='12' rx='1'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='3' y='2' width='3.5' height='12' rx='1'/%3E%3Crect x='9.5' y='2' width='3.5' height='12' rx='1'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  &.is-paused::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 2.5v11a1 1 0 0 0 1.5.86l9-5.5a1 1 0 0 0 0-1.72l-9-5.5A1 1 0 0 0 4 2.5z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 2.5v11a1 1 0 0 0 1.5.86l9-5.5a1 1 0 0 0 0-1.72l-9-5.5A1 1 0 0 0 4 2.5z'/%3E%3C/svg%3E");
+  }
+  &:active {
+    background-color: rgb(0 0 0 / 85%);
+  }
+  /* Doppelter Ring (hell + dunkel): sichtbar auf jedem Videobild */
+  &:focus-visible {
+    outline: var(--ncss-focus-ring-width) solid #fff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 calc(var(--ncss-focus-ring-width) + 4px) #000;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ncss-video-bg-toggle:hover:not(:active) {
+    background-color: rgb(0 0 0 / 80%);
+  }
+}
+.ncss-video-bg-toggle--top-end {
+  top: var(--ncss-space-sm);
+  bottom: auto;
+}
+.ncss-video-bg-toggle--top-start {
+  top: var(--ncss-space-sm);
+  bottom: auto;
+  inset-inline: var(--ncss-space-sm) auto;
+}
+.ncss-video-bg-toggle--bottom-start {
+  inset-inline: var(--ncss-space-sm) auto;
+}
+/* Ohne JS gibt es nichts zu steuern - ein vorab ins Markup geschriebener Schalter
+   bleibt bis zur Übernahme durch das Script verborgen. */
+:not(.is-ready) > .ncss-video-bg-toggle {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .ncss-video-bg-media,
+  .ncss-video-bg::after,
+  .ncss-video-bg-toggle {
+    display: none;
+  }
+}
+@media print {
+  .ncss-video-bg-toggle {
+    display: none;
+  }
+}

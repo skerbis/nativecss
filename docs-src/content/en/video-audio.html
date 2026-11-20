@@ -251,9 +251,5 @@ ffmpeg -i source.wav -c:a aac -b:a 96k -movflags +faststart episode.m4a</code></
   <p class="ncss-text-muted ncss-text-sm"><strong>Checklist:</strong> <code>muted playsinline</code> on every scroll and background video (iOS); <code>-movflags +faststart</code> so playback can begin before the whole file has loaded; the server must answer byte-range requests (<code>206 Partial Content</code>) - otherwise Safari refuses to play or seek (note: PHP's built-in dev server <code>php -S</code> does not answer range requests); a poster for the first paint and for reduced motion/Save-Data; seamless loops (first frame = the frame after the last).</p>
 </section>
 
-<section class="ncss-stack" id="live-demo">
-  <h2 class="demo-section-title">Live examples</h2>
-  <p class="ncss-text-muted">Every building block of this page, live - turn on <strong>Inspect</strong> (bottom right) and click any element to see its HTML and an explanation.</p>
-</section>
 
-<!--INCLUDE: video-audio-->
+<!--MERGE: video-audio-->

@@ -251,9 +251,5 @@ ffmpeg -i quelle.wav -c:a aac -b:a 96k -movflags +faststart folge.m4a</code></pr
   <p class="ncss-text-muted ncss-text-sm"><strong>Checkliste:</strong> <code>muted playsinline</code> an jedem Scroll- und Hintergrund-Video (iOS); <code>-movflags +faststart</code>, damit die Wiedergabe vor dem vollständigen Download beginnt; der Server muss Byte-Range-Anfragen beantworten (<code>206 Partial Content</code>) - Safari spielt bzw. springt sonst nicht (Achtung: der eingebaute PHP-Entwicklungsserver <code>php -S</code> beantwortet Range-Anfragen nicht); ein Poster für den ersten Eindruck und für reduzierte Bewegung/Save-Data; nahtlose Schleifen (erstes Bild = Folgebild des letzten).</p>
 </section>
 
-<section class="ncss-stack" id="live-demo">
-  <h2 class="demo-section-title">Live-Beispiele</h2>
-  <p class="ncss-text-muted">Alle Bausteine dieser Seite live zum Ausprobieren - mit <strong>Inspect</strong> unten rechts lässt sich jedes Element anklicken, um sein HTML und die passende Erklärung zu sehen.</p>
-</section>
 
-<!--INCLUDE: video-audio-->
+<!--MERGE: video-audio-->

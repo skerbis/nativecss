@@ -1,0 +1,97 @@
+/**
+ * ncss - <ncss-scroll-frames> (Layer "components"): Bildsequenz, die beim Scrollen vor-
+ * und zurückspult (Canvas, js/scroll-frames.js - Markup/Attribute dort).
+ *
+ *   <ncss-scroll-frames src="frames/f-%03d.webp" count="72">
+ *     <div class="ncss-scroll-frames-stage">
+ *       <img class="ncss-scroll-frames-poster" src="frames/f-001.webp" alt="..." width="800" height="450">
+ *     </div>
+ *   </ncss-scroll-frames>
+ *
+ * Zustände:
+ *   - Inaktiv (kein JS, reduzierte Bewegung, Save-Data): nur das Standbild (<img>) im
+ *     normalen Fluss.
+ *   - .is-active: das <img> weicht dem Canvas, das Element wird so hoch wie die Scroll-
+ *     Strecke, die Bühne klebt randlos im Viewport (Bild per cover gefüllt). Weitere
+ *     Kinder der Bühne (Überschrift, Text) liegen als Overlay über dem Bild.
+ *   - .is-inline: nicht angepinnt, Canvas im Seitenverhältnis des Posters.
+ *
+ * Anpassbar: --ncss-scroll-frames-length (Default 300lvh, Attribut length setzt es),
+ * --ncss-scroll-frames-top (Abstand der Bühne von oben).
+ *
+ * Benötigt: tokens.css + colors.css. Keine anderen ncss-Dateien.
+ */
+
+ncss-scroll-frames {
+  --ncss-scroll-frames-length: 300lvh;
+  --ncss-scroll-frames-top: 0px;
+  position: relative;
+  display: block;
+}
+
+.ncss-scroll-frames-stage {
+  position: relative;
+  display: grid;
+  grid-template-areas: "stack";
+
+  & > * {
+    grid-area: stack;
+  }
+}
+.ncss-scroll-frames-poster {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Canvas existiert nur mit JS - ohne .is-active (reduzierte Bewegung) bleibt das
+   Standbild sichtbar und der Canvas verschwindet. */
+.ncss-scroll-frames-canvas {
+  display: none;
+  width: 100%;
+  aspect-ratio: var(--ncss-scroll-frames-ratio, 16 / 9);
+}
+
+ncss-scroll-frames.is-active {
+  & .ncss-scroll-frames-poster {
+    display: none;
+  }
+  & .ncss-scroll-frames-canvas {
+    display: block;
+  }
+  & .ncss-scroll-frames-stage > :not(canvas, img) {
+    z-index: 1;
+  }
+}
+ncss-scroll-frames.is-active:not(.is-inline) {
+  height: var(--ncss-scroll-frames-length);
+
+  & > .ncss-scroll-frames-stage {
+    position: sticky;
+    top: var(--ncss-scroll-frames-top);
+    height: calc(100vh - var(--ncss-scroll-frames-top));
+    height: calc(100svh - var(--ncss-scroll-frames-top));
+    overflow: clip;
+    background-color: var(--ncss-color-bg-subtle);
+  }
+  & .ncss-scroll-frames-canvas {
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+}
+
+@media print {
+  ncss-scroll-frames.is-active:not(.is-inline) {
+    height: auto;
+  }
+  ncss-scroll-frames.is-active .ncss-scroll-frames-poster {
+    display: block;
+  }
+  ncss-scroll-frames.is-active .ncss-scroll-frames-canvas {
+    display: none;
+  }
+  ncss-scroll-frames.is-active > .ncss-scroll-frames-stage {
+    position: static;
+    height: auto;
+  }
+}
