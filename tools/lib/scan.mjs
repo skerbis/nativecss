@@ -228,7 +228,7 @@ export async function scanLibrary(root) {
 
     for (const m of src.matchAll(/data-ncss-[a-z0-9]+(?:-[a-z0-9]+)*(?![\w-])/g)) addData(m[0], f);
 
-    const defined = [...code.matchAll(/customElements\.define\(\s*["']([a-z0-9-]+)["']/g)].map((m) => m[1]);
+    const defined = [...code.matchAll(/(?:customElements|M)\.define\(\s*["']([a-z0-9-]+)["']/g)].map((m) => m[1]);
     const dispatched = [...code.matchAll(/new CustomEvent\(\s*["'](ncss-[a-z0-9-]+)["']/g)].map((m) => m[1]);
     // Events aus dem Header ("Events ...:" bzw. Zeilen mit "Event")
     const headerEvents = [];

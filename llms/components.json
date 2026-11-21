@@ -1243,6 +1243,7 @@
   "data-ncss-player-media": {
    "files": [
     "js/audio-player.js",
+    "js/media-core.js",
     "js/video-player.js"
    ],
    "description": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)"
@@ -1793,6 +1794,15 @@
     "data-ncss-marquee",
     "data-ncss-marquee-tabindex",
     "data-ncss-marquee-toggle"
+   ],
+   "events": [],
+   "api": []
+  },
+  "js/media-core.js": {
+   "description": "gemeinsamer Kern von <ncss-video-player> und <ncss-audio-player> (js/video-player.js, js/audio-player.js)",
+   "elements": [],
+   "dataAttributes": [
+    "data-ncss-player-media"
    ],
    "events": [],
    "api": []

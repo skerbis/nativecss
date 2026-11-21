@@ -22,7 +22,7 @@
 
 <section class="ncss-stack" id="tabelle-sortieren" data-subnav-label="Sortierbare Tabelle">
   <h2 class="demo-section-title">Sortierbare Tabelle <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(neu)</span></span></h2>
-  <p><code>&lt;ncss-table-sort&gt;</code> um eine Tabelle - oder <code>data-ncss-sort</code> direkt an der <code>&lt;table&gt;</code> - macht die Spaltenköpfe zu Schaltflächen (Muster WAI-ARIA APG „Sortable Table“). Ein Klick sortiert aufsteigend, der nächste absteigend. Zahlen („1.250 €“, „4,8“), Datumsangaben (<code>2026-11-20</code>, <code>20.11.2026</code>, <code>&lt;time datetime&gt;</code>) und Text werden je Spalte automatisch erkannt, <code>data-sort-value</code> an einer Zelle legt den Wert fest. Die Sortierung ist stabil: gleiche Werte behalten ihre bisherige Reihenfolge. <code>components/table-sort.css</code> + <code>js/table-sort.js</code>, passt zu <code>.ncss-table-scroll</code> und <code>.ncss-table--compact</code>. Ohne JavaScript bleibt es eine normale Tabelle.</p>
+  <p><code>&lt;ncss-table-sort&gt;</code> um eine Tabelle - oder <code>data-ncss-sort</code> direkt an der <code>&lt;table&gt;</code> - macht die Spaltenköpfe zu Schaltflächen (Muster WAI-ARIA APG „Sortable Table“). Ein Klick sortiert aufsteigend, der nächste absteigend. Zahlen („1.250 €“, „4,8“), Datumsangaben (<code>2026-11-20</code>, auch mit Uhrzeit und Zeitzone, <code>20.11.2026</code>, <code>&lt;time datetime&gt;</code>) und Text werden je Spalte automatisch erkannt, <code>data-sort-value</code> an einer Zelle legt den Wert fest. Die Sortierung ist stabil: gleiche Werte behalten ihre bisherige Reihenfolge. <code>components/table-sort.css</code> + <code>js/table-sort.js</code>, passt zu <code>.ncss-table-scroll</code> und <code>.ncss-table--compact</code>. Ohne JavaScript bleibt es eine normale Tabelle. Das Stylesheet hat für alle Tokens neutrale Rückfallwerte und liegt im Layer <code>components</code> - es lässt sich auch ohne den Rest von NativeCSS einsetzen und von jedem eigenen CSS überschreiben.</p>
   <div class="docs-live" role="group" aria-label="Live-Beispiel: Sortierbare Tabelle">
     <ncss-table-sort>
       <div class="ncss-table-scroll" role="region" aria-labelledby="ts-caption" tabindex="0">
@@ -104,10 +104,13 @@
         <tr><td><code>th[data-sort="false"]</code></td><td>Spalte nicht sortierbar (z. B. Aktionen).</td></tr>
         <tr><td><code>th[data-sort-type]</code></td><td><code>number</code>, <code>date</code> oder <code>text</code> erzwingen statt automatisch erkennen.</td></tr>
         <tr><td><code>th[data-sort-default="descending"]</code></td><td>Erster Klick sortiert absteigend (z. B. „Neueste zuerst“).</td></tr>
+        <tr><td><code>th[data-sort-align="end"]</code></td><td>Schaltfläche rechtsbündig (Zahlenspalten); ebenso <code>th[align="right"]</code> und <code>th.ncss-text-end</code>.</td></tr>
         <tr><td><code>th[aria-sort]</code> im Markup</td><td>Tabelle ist bereits so sortiert - nur der Zustand wird übernommen.</td></tr>
         <tr><td><code>td[data-sort-value]</code></td><td>Sortierwert der Zelle (z. B. „ab 189 €“ → <code>189</code>).</td></tr>
         <tr><td><code>data-label-sorted</code>, <code>-ascending</code>, <code>-descending</code>, <code>-hint</code></td><td>Texte der Ansage („Sortiert nach {column}, {direction}“) und des Hinweises in der <code>&lt;caption&gt;</code> (leer = kein Hinweis).</td></tr>
         <tr><td>Event / Methode</td><td><code>ncss-table-sort-change</code> <code>{ column, index, direction, type }</code>; <code>el.sort(index, "descending")</code>.</td></tr>
+        <tr><td><code>table.is-sortable</code></td><td>Setzt das Script an jede aufbereitete Tabelle (Ansatzpunkt für eigenes CSS).</td></tr>
+        <tr><td><code>--ncss-table-sort-pad-block</code>, <code>--ncss-table-sort-pad-inline</code></td><td>Zellen-Padding, um das die Schaltfläche die ganze Zelle füllt. Standard: das Padding von NativeCSS; ohne <code>tokens.css</code> 0 (Schaltfläche so breit wie der Zelleninhalt).</td></tr>
       </tbody>
     </table>
   </div>

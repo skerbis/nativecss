@@ -2,6 +2,31 @@
 
 Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.4.0] - 2026-11-21
+
+### Geändert (Verhalten)
+
+- **Video- und Audioplayer teilen sich einen Kern: `js/media-core.js`.** Zeitleiste, Lautstärke, Menü, Kapitel, Playlist, Media Session, Tastatur, Texte und „ein Player gleichzeitig“ stehen nur noch einmal darin; `js/video-player.js` und `js/audio-player.js` enthalten nur ihre Besonderheiten. Minifiziert: Videoplayer 23,8 → 10,0 KB, Audioplayer 17,8 → 5,2 KB, dazu einmal der Kern mit 13,6 KB. Beide Player auf einer Seite: 41,8 → 28,8 KB (−31 %, gzip 12,8 → 10,9 KB); ein einzelner Player samt Kern bleibt etwa gleich groß (Video 23,6 KB, Audio 18,8 KB - der Audioplayer kann jetzt mehr, siehe unten). Markup, Attribute, Klassen, Events und Methoden bleiben gleich.
+- **Neue Datei mitkopieren:** `js/media-core.js` muss im selben Ordner wie die Player liegen. Jeder Player lädt sie bei Bedarf selbst nach (gleicher Ordner, gleiche Abfrage wie das eigene `src`, `nonce` wird übernommen); einbinden vor den Playern spart die zusätzliche Anfrage: `<script src="js/media-core.js" defer></script>`. Wer die Player bündelt (esbuild & Co.), importiert `js/media-core.js` davor - sonst sucht der Player die Datei neben dem Bündel.
+- Audioplayer: dieselben Tasten wie beim Video - neu Pfeil hoch/runter (Lautstärke), N/P (nächster/voriger Titel), `<`/`>` (Geschwindigkeit); Leertaste/K und M werden jetzt auch angesagt. Tooltips der Vor/Zurück-Buttons nennen die Taste („(N)“/„(P)“).
+- Audioplayer: `el.previous()` ohne Playlist tut nichts mehr (vorher Sprung auf 0) - wie beim Videoplayer.
+- Videoplayer: meldet die Position an die System-Mediensteuerung (`setPositionState`, wie der Audioplayer); Playlist-Links verstehen auch `data-src` (weitere Formate).
+- Entfernt (Altlasten): Safari-Präfixe für Element-Vollbild (`webkitRequestFullscreen`, vor Safari 16.4) und `webkitOfflineAudioContext`/Callback-`decodeAudioData` (vor Safari 14.1). iPhone-Vollbild über `webkitEnterFullscreen` bleibt. Ungenutzter Textschlüssel `playlist` des Videoplayers entfällt.
+- **Sortierbare Tabelle** kompakter (minifiziert 5,8 → 5,0 KB) und ohne Pflicht-Tokens: `components/table-sort.css` hat für alle Tokens neutrale Rückfallwerte (currentColor, kein Zellen-Ausgleich) und lässt sich so auch in fremden Designs einsetzen - KLXM Studio verwendet sie als einzige Umsetzung.
+
+### Neu
+
+- Sortierbare Tabelle: `th[data-sort-align="end"]` (Schaltfläche rechtsbündig), Klasse `is-sortable` an jeder aufbereiteten Tabelle, `--ncss-table-sort-pad-block`/`--ncss-table-sort-pad-inline` (Zellen-Padding, um das die Schaltfläche die Zelle füllt), ISO-Datum mit Uhrzeit und Zeitzone (`2026-11-20T10:00+02:00`) wird nach dem echten Zeitpunkt sortiert. Texte der Schaltfläche erben `letter-spacing` und `text-transform` des Kopfs.
+
+### Behoben
+
+- Videoplayer: Nach einem Playlist-Wechsel erkannte die Fehleranzeige den Ausfall des letzten `<source>` nicht mehr (Liste beim Start gemerkt).
+- Kapitel einer schon geladenen (zwischengespeicherten) Spur erscheinen beim Videoplayer jetzt auch in der Kapitelliste der Karte.
+
+### Hinweis zum Umstieg
+
+- Kopier- und Update-Skripte, die einzelne Dateien übernehmen: `js/media-core.js` zur Liste hinzufügen (neben `js/video-player.js`/`js/audio-player.js`).
+
 ## [1.3.0] - 2026-11-21
 
 ### Geändert (Verhalten)

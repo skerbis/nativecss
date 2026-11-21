@@ -2721,16 +2721,13 @@
   "helpers/tables.css"
  ],
  "ncss-table-sort-button": [
-  "components/table-sort.css",
-  "js/table-sort.js"
+  "components/table-sort.css"
  ],
  "ncss-table-sort-icon": [
-  "components/table-sort.css",
-  "js/table-sort.js"
+  "components/table-sort.css"
  ],
  "ncss-table-sort-status": [
-  "components/table-sort.css",
-  "js/table-sort.js"
+  "components/table-sort.css"
  ],
  "ncss-table-stacked": [
   "helpers/tables.css"

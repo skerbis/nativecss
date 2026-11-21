@@ -868,7 +868,7 @@
    "name": "data-ncss-player-media",
    "description": {
     "kind": "markdown",
-    "value": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)\n\nQuelle: `js/audio-player.js`, `js/video-player.js`"
+    "value": "<ncss-audio-player>: eigener Audioplayer als Light-DOM-Custom-Element (kein Shadow Root)\n\nQuelle: `js/audio-player.js`, `js/media-core.js`, `js/video-player.js`"
    }
   },
   {

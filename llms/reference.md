@@ -55,7 +55,7 @@ die Layer-ORDER ist seitenweit global, ein Projekt, das integrations/
 webawesome-bridge.css später selbst einbindet, landet automatisch an genau dieser
 Prioritätsposition, unabhängig von der eigenen <link>-Reihenfolge.
 
-helpers/*.css und components/*.css legen ihren Layer selbst fest (@layer helpers { … }
+Die Dateien in helpers/ und components/ legen ihren Layer selbst fest (@layer helpers { … }
 bzw. @layer components { … }) und werden hier deshalb OHNE layer() importiert - so landen
 sie auch einzeln per <link> geladen im richtigen Layer.
 
@@ -3322,7 +3322,14 @@ Klassen (vom Script erzeugt): .ncss-table-sort-button (Schaltfläche im <th>),
   .ncss-table-sort-icon (Pfeil, aria-hidden), .ncss-table-sort-status (Live-Region,
   nur für Screenreader sichtbar).
 
-Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base) + js/table-sort.js.
+Anpassen: --ncss-table-sort-pad-block / --ncss-table-sort-pad-inline = Zellen-Padding, um das
+  die Schaltfläche die ganze Zelle füllt (Standard: Zellen-Padding von NativeCSS bzw. 0).
+  .ncss-table--compact setzt die kleineren Werte selbst.
+
+Abhängigkeiten (Cherry-Picking): js/table-sort.js; tokens.css/colors.css empfohlen - ohne
+sie greifen neutrale Rückfallwerte (currentColor, kein Zellen-Ausgleich), damit die Datei
+auch in fremden Designs funktioniert. Im Layer "components": jedes Layer-freie CSS der
+Seite gewinnt, eigene Regeln brauchen keine höhere Spezifität.
 ```
 
 ### `components/tabs.css`
@@ -4041,18 +4048,18 @@ Events (bubbeln): ncss-media-play, ncss-media-pause, ncss-media-ended
 Öffentlich: el.play(), el.pause(), el.toggle(), el.seek(s), el.skip(+/-s), el.next(),
   el.previous(), el.load(index), el.media.
 Tasten (Fokus im Player): Leertaste/K, J/L (-/+ Sprungweite), Pfeil links/rechts
-  -/+5 s, M, 0-9, Pos1/Ende.
+  -/+5 s, Pfeil hoch/runter Lautstärke, M, N/P nächster/voriger Titel, < und >
+  Geschwindigkeit, 0-9, Pos1/Ende.
 
 Texte: Deutsch/Englisch nach dem nächsten [lang], jeder Text überschreibbar per
-data-label-<schlüssel> am Element (Schlüssel siehe TEXTS, camelCase als kebab-case:
-volumeTo -> data-label-volume-to, z.B. data-label-play="Start").
+data-label-<schlüssel> am Element (Schlüssel siehe TEXTS hier und in media-core.js,
+camelCase als kebab-case: volumeTo -> data-label-volume-to, z.B. data-label-play="Start").
 
-Ein Player gleichzeitig: dieselbe Attribut-Konvention wie video-player.js
-(data-ncss-player-media) - die Logik ist bewusst in beiden Dateien dupliziert.
+Ein Player gleichzeitig: Attribut data-ncss-player-media, siehe media-core.js.
 
-Benötigt: components/audio-player.css (+ tokens.css/colors.css). Keine anderen
-ncss-Scripts. Ohne customElements wird nichts definiert (SKILL-Regel) - natives
-<audio controls> bleibt.
+Benötigt: components/audio-player.css (+ tokens.css/colors.css) und js/media-core.js im
+selben Ordner - wird automatisch nachgeladen, falls nicht schon eingebunden. Ohne
+customElements wird nichts definiert (SKILL-Regel) - natives <audio controls> bleibt.
 ```
 
 ### `js/backdrop.js`
@@ -4854,6 +4861,27 @@ Benötigt: components/marquee.css.
 Einbindung: <script src="ncss/js/marquee.js" defer></script>
 ```
 
+### `js/media-core.js`
+
+data-Attribute: `data-ncss-player-media`
+
+```text
+ncss - gemeinsamer Kern von <ncss-video-player> und <ncss-audio-player> (js/video-player.js,
+js/audio-player.js). Kein eigenes Element - nur die Logik, die beide Player teilen:
+Texte (data-label-*), Live-Region, Zeitleiste, Lautstärke, Geschwindigkeits-/Einstellungs-
+Menü, Kapitel, Playlist, Media Session, Tastatur, "ein Player gleichzeitig".
+
+Einbinden ist optional: jeder Player lädt diese Datei bei Bedarf selbst aus seinem eigenen
+Ordner nach (gleicher Dateiname media-core.js neben video-player.js/audio-player.js). Wer
+die Anfrage sparen will, bindet sie VOR den Playern ein:
+  <script src="js/media-core.js" defer></script>
+  <script src="js/video-player.js" defer></script>
+
+Schnittstelle (intern, für die beiden Player): window.ncss.media = { define, init, menu,
+rateEntries, make, on, fmt, formatTime, duration, clamp, isRtl, $$ }. Wartende Player stehen in
+window.ncss.mediaQueue und werden beim Laden dieser Datei gestartet.
+```
+
 ### `js/modal-router.js`
 
 Events: `ncss-content-change`
@@ -5641,13 +5669,15 @@ um), jeder weitere Klick wechselt die Richtung.
 Wert einer Zelle: data-sort-value="…" > <time datetime> in der Zelle > sichtbarer Text.
 Typ je Spalte: data-sort-type="number|date|text" am <th>, sonst automatisch erkannt -
 "number", wenn ALLE nicht leeren Zellen Zahlen sind (auch "1.234,50 €", "12 %", "-3";
-Dezimaltrenner nach <html lang>: de "," / en "."), "date", wenn alle Datumsangaben sind
-(ISO 2026-11-20, 20.11.2026, <time datetime>), sonst "text" (Intl.Collator in der
-Seitensprache, "Zimmer 2" vor "Zimmer 10"). Leere Zellen landen immer am Ende.
+Dezimaltrenner nach dem nächsten [lang]: de "," / en "."), "date", wenn alle
+Datumsangaben sind (ISO 2026-11-20, auch mit Uhrzeit und Zeitzone, 20.11.2026, 9:30,
+<time datetime>), sonst "text" (Intl.Collator in der Seitensprache, "Zimmer 2" vor
+"Zimmer 10"). Leere Zellen landen immer am Ende.
 
 Attribute am <th>: data-sort="false" (Spalte nicht sortierbar), data-sort-type,
-  data-sort-default="descending", aria-sort="ascending|descending" im Markup = Tabelle
-  ist bereits so sortiert (nur Zustand übernehmen, nichts umstellen).
+  data-sort-default="descending", data-sort-align="end" (Schaltfläche rechtsbündig),
+  aria-sort="ascending|descending" im Markup = Tabelle ist bereits so sortiert (nur
+  Zustand übernehmen, nichts umstellen).
 Attribute am Element bzw. an der <table>: data-label-sorted="Sortiert nach {column},
   {direction}", data-label-ascending, data-label-descending, data-label-hint (Zusatz für
   die <caption>, nur für Screenreader; leer = keiner).
@@ -5657,10 +5687,11 @@ Events (bubbeln, am Element bzw. an der <table>): ncss-table-sort-change
 
 Dynamische Inhalte: <ncss-table-sort> initialisiert sich selbst; neu eingefügte
 <table data-ncss-sort> werden bei "ncss-content-change" (detail.root) erkannt. Jede
-Tabelle wird nur einmal aufbereitet (WeakSet).
+Tabelle wird nur einmal aufbereitet. Aufbereitete Tabellen tragen die Klasse is-sortable.
 
-Abhängigkeiten: keine anderen ncss-Scripts. Ohne customElements funktioniert
-data-ncss-sort trotzdem; ohne JavaScript bleibt die Tabelle eine normale Tabelle.
+Abhängigkeiten: keine anderen ncss-Scripts, kein CSS-Token zwingend (components/
+table-sort.css hat Rückfallwerte). Ohne customElements funktioniert data-ncss-sort
+trotzdem; ohne JavaScript bleibt die Tabelle eine normale Tabelle.
 ```
 
 ### `js/tabs.js`
@@ -5943,8 +5974,8 @@ automatisch ausblendende Leiste, Lade-Spinner, Fehlerzustand mit "Erneut versuch
 Karte (layout="card", gleiche Formensprache wie <ncss-audio-player layout="card">):
 Titel/Untertitel aus .ncss-video-player-title/-meta, klickbare Kapitelliste aus der
 chapters-Spur und eine Playlist (<ol class="ncss-video-player-playlist"> mit Links auf
-die Videos; data-poster, data-title, data-meta, data-chapters,
-data-captions="de=de.vtt en=en.vtt") in einer Spalte neben bzw. unter dem Bild.
+die Videos; data-poster, data-title, data-meta, data-chapters, data-src (weitere
+Formate), data-captions="de=de.vtt en=en.vtt") in einer Spalte neben bzw. unter dem Bild.
 Vor/Zurück-Buttons, automatisch nächstes Video, Media Session (Titel/Poster in der
 System-Mediensteuerung). Die Playlist funktioniert auch ohne layout="card".
 
@@ -5963,18 +5994,17 @@ Events (bubbeln): ncss-media-play, ncss-media-pause, ncss-media-ended,
 Öffentlich: el.play(), el.pause(), el.toggle(), el.seek(s), el.skip(+/-s),
   el.fullscreen(), el.next(), el.previous(), el.load(index), el.media (das <video>).
 
-Immer nur EIN Player spielt gleichzeitig: startet ein <video>/<audio> mit
-data-ncss-player-media (setzt dieses Script und audio-player.js), pausieren alle anderen
-- ohne gemeinsames Script, nur über diese Attribut-Konvention. Hintergrund-/Scroll-
-Videos tragen das Attribut nicht und laufen unabhängig weiter.
+Immer nur EIN Player spielt gleichzeitig (Attribut data-ncss-player-media, siehe
+media-core.js). Hintergrund-/Scroll-Videos laufen unabhängig weiter.
 
-Benötigt: components/video-player.css (+ tokens.css/colors.css). Keine anderen
-ncss-Scripts. Ohne customElements/textTracks wird das Element gar nicht erst definiert
-(SKILL-Regel) - es bleibt beim nativen <video controls>.
+Benötigt: components/video-player.css (+ tokens.css/colors.css) und js/media-core.js im
+selben Ordner - wird automatisch nachgeladen, falls nicht schon eingebunden. Ohne
+customElements/textTracks wird das Element gar nicht erst definiert (SKILL-Regel) - es
+bleibt beim nativen <video controls>.
 
 Texte: Deutsch/Englisch nach dem nächsten [lang], jeder Text überschreibbar per
-data-label-<schlüssel> am Element (Schlüssel siehe TEXTS, camelCase als kebab-case:
-timeOf -> data-label-time-of, z.B. data-label-play="Start").
+data-label-<schlüssel> am Element (Schlüssel siehe TEXTS hier und in media-core.js,
+camelCase als kebab-case: timeOf -> data-label-time-of, z.B. data-label-play="Start").
 ```
 
 ### `js/view-transitions.js`

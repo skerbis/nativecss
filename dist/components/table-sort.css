@@ -24,7 +24,14 @@
  *   .ncss-table-sort-icon (Pfeil, aria-hidden), .ncss-table-sort-status (Live-Region,
  *   nur für Screenreader sichtbar).
  *
- * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base) + js/table-sort.js.
+ * Anpassen: --ncss-table-sort-pad-block / --ncss-table-sort-pad-inline = Zellen-Padding, um das
+ *   die Schaltfläche die ganze Zelle füllt (Standard: Zellen-Padding von NativeCSS bzw. 0).
+ *   .ncss-table--compact setzt die kleineren Werte selbst.
+ *
+ * Abhängigkeiten (Cherry-Picking): js/table-sort.js; tokens.css/colors.css empfohlen - ohne
+ * sie greifen neutrale Rückfallwerte (currentColor, kein Zellen-Ausgleich), damit die Datei
+ * auch in fremden Designs funktioniert. Im Layer "components": jedes Layer-freie CSS der
+ * Seite gewinnt, eigene Regeln brauchen keine höhere Spezifität.
  */
 
 @layer components {
@@ -35,27 +42,30 @@ ncss-table-sort {
 }
 
 .ncss-table-sort-button {
+  --_pb: var(--ncss-table-sort-pad-block, var(--ncss-space-2xs, 0px));
+  --_pi: var(--ncss-table-sort-pad-inline, var(--ncss-space-xs, 0px));
   display: inline-flex;
   align-items: center;
-  gap: var(--ncss-space-2xs);
+  gap: var(--ncss-space-2xs, 0.4em);
   /* Klickfläche über die ganze Zelle ziehen, ohne das Zellen-Padding zu verändern. */
-  inline-size: calc(100% + 2 * var(--ncss-space-xs));
-  margin: calc(-1 * var(--ncss-space-2xs)) calc(-1 * var(--ncss-space-xs));
-  padding: var(--ncss-space-2xs) var(--ncss-space-xs);
+  inline-size: calc(100% + 2 * var(--_pi));
+  margin: calc(-1 * var(--_pb)) calc(-1 * var(--_pi));
+  padding: var(--_pb) var(--_pi);
   border: 0;
-  border-radius: var(--ncss-radius-sm);
+  border-radius: var(--ncss-radius-sm, 2px);
   background: none;
   color: inherit;
   font: inherit;
   font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   text-align: inherit;
   cursor: pointer;
 }
 /* Kompakte Tabellen (helpers/tables.css) haben kleineres Zellen-Padding. */
 .ncss-table--compact .ncss-table-sort-button {
-  inline-size: calc(100% + 2 * var(--ncss-space-2xs));
-  margin: calc(-1 * var(--ncss-space-3xs)) calc(-1 * var(--ncss-space-2xs));
-  padding: var(--ncss-space-3xs) var(--ncss-space-2xs);
+  --_pb: var(--ncss-table-sort-pad-block, var(--ncss-space-3xs, 0px));
+  --_pi: var(--ncss-table-sort-pad-inline, var(--ncss-space-2xs, 0px));
 }
 th[data-sort-align="end"] .ncss-table-sort-button,
 th:is([align="right"], .ncss-text-end) .ncss-table-sort-button {
@@ -63,12 +73,12 @@ th:is([align="right"], .ncss-text-end) .ncss-table-sort-button {
 }
 @media (hover: hover) {
   .ncss-table-sort-button:hover {
-    background-color: var(--ncss-color-bg-subtle);
+    background-color: var(--ncss-color-bg-subtle, color-mix(in srgb, currentColor 8%, transparent));
   }
 }
 .ncss-table-sort-button:focus-visible {
-  outline: var(--ncss-focus-ring-width) solid var(--ncss-color-focus-ring);
-  outline-offset: calc(-1 * var(--ncss-focus-ring-width));
+  outline: var(--ncss-focus-ring-width, 2px) solid var(--ncss-color-focus-ring, currentColor);
+  outline-offset: calc(-1 * var(--ncss-focus-ring-width, 2px));
 }
 
 /* Pfeil: unsortiert ein blasser Doppelpfeil, sortiert ein deutlicher Pfeil nach oben bzw.
@@ -84,7 +94,7 @@ th:is([align="right"], .ncss-text-end) .ncss-table-sort-button {
 th[aria-sort="ascending"] .ncss-table-sort-icon,
 th[aria-sort="descending"] .ncss-table-sort-icon {
   opacity: 1;
-  color: var(--ncss-color-brand-on-soft);
+  color: var(--ncss-color-brand-on-soft, currentColor);
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 19V5M6 11l6-6 6 6'/%3E%3C/svg%3E");
 }
 th[aria-sort="descending"] .ncss-table-sort-icon {

@@ -22,7 +22,7 @@
 
 <section class="ncss-stack" id="table-sort" data-subnav-label="Sortable table">
   <h2 class="demo-section-title">Sortable table <span class="ncss-badge-dot"><span class="ncss-visually-hidden">(new)</span></span></h2>
-  <p><code>&lt;ncss-table-sort&gt;</code> around a table - or <code>data-ncss-sort</code> directly on the <code>&lt;table&gt;</code> - turns the column headers into buttons (WAI-ARIA APG “Sortable Table” pattern). One click sorts ascending, the next descending. Numbers (“€1,250”, “4.8”), dates (<code>2026-11-20</code>, <code>20.11.2026</code>, <code>&lt;time datetime&gt;</code>) and text are detected per column, <code>data-sort-value</code> on a cell sets the value explicitly. Sorting is stable: equal values keep their previous order. <code>components/table-sort.css</code> + <code>js/table-sort.js</code>, works with <code>.ncss-table-scroll</code> and <code>.ncss-table--compact</code>. Without JavaScript it stays a normal table.</p>
+  <p><code>&lt;ncss-table-sort&gt;</code> around a table - or <code>data-ncss-sort</code> directly on the <code>&lt;table&gt;</code> - turns the column headers into buttons (WAI-ARIA APG “Sortable Table” pattern). One click sorts ascending, the next descending. Numbers (“€1,250”, “4.8”), dates (<code>2026-11-20</code>, also with time and time zone, <code>20.11.2026</code>, <code>&lt;time datetime&gt;</code>) and text are detected per column, <code>data-sort-value</code> on a cell sets the value explicitly. Sorting is stable: equal values keep their previous order. <code>components/table-sort.css</code> + <code>js/table-sort.js</code>, works with <code>.ncss-table-scroll</code> and <code>.ncss-table--compact</code>. Without JavaScript it stays a normal table. The stylesheet has neutral fallbacks for every token and sits in the <code>components</code> layer - it works without the rest of NativeCSS and any of your own CSS overrides it.</p>
   <div class="docs-live" role="group" aria-label="Live example: Sortable table">
     <ncss-table-sort>
       <div class="ncss-table-scroll" role="region" aria-labelledby="ts-caption" tabindex="0">
@@ -104,10 +104,13 @@
         <tr><td><code>th[data-sort="false"]</code></td><td>Column not sortable (e.g. actions).</td></tr>
         <tr><td><code>th[data-sort-type]</code></td><td>Force <code>number</code>, <code>date</code> or <code>text</code> instead of detecting it.</td></tr>
         <tr><td><code>th[data-sort-default="descending"]</code></td><td>First click sorts descending (e.g. “newest first”).</td></tr>
+        <tr><td><code>th[data-sort-align="end"]</code></td><td>Button aligned to the end (number columns); also <code>th[align="right"]</code> and <code>th.ncss-text-end</code>.</td></tr>
         <tr><td><code>th[aria-sort]</code> in the markup</td><td>The table is already sorted that way - only the state is taken over.</td></tr>
         <tr><td><code>td[data-sort-value]</code></td><td>Sort value of the cell (e.g. “from €189” → <code>189</code>).</td></tr>
         <tr><td><code>data-label-sorted</code>, <code>-ascending</code>, <code>-descending</code>, <code>-hint</code></td><td>Texts of the announcement (“Sorted by {column}, {direction}”) and of the hint in the <code>&lt;caption&gt;</code> (empty = no hint).</td></tr>
         <tr><td>Event / method</td><td><code>ncss-table-sort-change</code> <code>{ column, index, direction, type }</code>; <code>el.sort(index, "descending")</code>.</td></tr>
+        <tr><td><code>table.is-sortable</code></td><td>Added by the script to every enhanced table (hook for your own CSS).</td></tr>
+        <tr><td><code>--ncss-table-sort-pad-block</code>, <code>--ncss-table-sort-pad-inline</code></td><td>Cell padding the button compensates so it fills the whole cell. Default: NativeCSS padding; without <code>tokens.css</code> 0 (button as wide as the cell content).</td></tr>
       </tbody>
     </table>
   </div>
