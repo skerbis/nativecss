@@ -15,7 +15,8 @@
  *   inline                     Bedienfeld direkt anzeigen statt Button + Popover
  *   settings="theme contrast motion text font spacing links focus"   Auswahl/Reihenfolge
  *                              ("font" nur mit components/preferences-fonts.css)
- *   data-label-<schlüssel>="…"  jeden Text überschreiben (Schlüssel siehe TEXTS unten)
+ *   data-label-<schlüssel>="…"  jeden Text überschreiben (Schlüssel siehe TEXTS unten,
+ *                              camelCase als kebab-case: motionHint -> data-label-motion-hint)
  * Event (am document): ncss-preferences-change, detail { key, value, prefs }
  *
  * Bedienung: native Radiogruppen (fieldset/legend, Pfeiltasten) und Checkboxen (Leertaste),
@@ -40,16 +41,16 @@
   var TEXTS = {
     de: {
       button: "Darstellung", title: "Darstellung anpassen",
-      intro: "Passe die Darstellung an deine Bedürfnisse an. Solange du nichts änderst, gelten die Einstellungen deines Geräts.",
+      intro: "Die Darstellung lässt sich hier anpassen. Ohne Änderung gelten die Einstellungen des Geräts.",
       system: "System",
       theme: "Farbschema", light: "Hell", dark: "Dunkel",
       contrast: "Kontrast", normal: "Normal", more: "Erhöht",
       motion: "Bewegung", reduce: "Reduziert", full: "Voll",
-      motionHint: "Dein Gerät wünscht reduzierte Bewegung - „Voll“ hebt das nur für diese Website auf.",
+      motionHint: "Das Gerät wünscht reduzierte Bewegung - „Voll“ hebt das nur für diese Website auf.",
       text: "Schriftgröße",
       font: "Schrift", fontDefault: "Standard", hyperlegible: "Atkinson Hyperlegible", lexend: "Lexend", opendyslexic: "OpenDyslexic",
       spacing: "Größere Text- und Zeilenabstände", links: "Links immer unterstreichen", focus: "Fokus-Rahmen verstärken",
-      reset: "Zurücksetzen", resetDone: "Alle Einstellungen zurückgesetzt, es gilt dein Gerät.",
+      reset: "Zurücksetzen", resetDone: "Alle Einstellungen zurückgesetzt, es gelten die Einstellungen des Geräts.",
       on: "an", off: "aus", close: "Schließen"
     },
     en: {
@@ -157,7 +158,7 @@
         var n = ++counter;
         var lang = ((this.closest("[lang]") || root).getAttribute("lang") || "de").slice(0, 2) === "en" ? "en" : "de";
         var t = function (key) {
-          return self.getAttribute("data-label-" + key.toLowerCase()) || TEXTS[lang][key];
+          return self.getAttribute("data-label-" + key.replace(/[A-Z]/g, function (m) { return "-" + m.toLowerCase(); })) || TEXTS[lang][key];
         };
         var wanted = (this.getAttribute("settings") || ALL.join(" ")).split(/\s+/).filter(function (k) {
           return ALL.indexOf(k) > -1;

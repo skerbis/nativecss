@@ -14,6 +14,10 @@
  *     <audio src="clip.mp3" controls class="ncss-audio"></audio>
  *   </figure>
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-audio {
   display: block;
   width: 100%;
@@ -33,3 +37,5 @@
   color: var(--ncss-color-text);
   margin: 0;
 }
+
+} /* @layer components */

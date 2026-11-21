@@ -12,6 +12,10 @@
  * Sonne im dunklen Zustand) - gesteuert über [data-theme-resolved], das beide Scripts
  * setzen. Ohne JS (kein data-theme-resolved) bleibt der Mond sichtbar.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -60,3 +64,5 @@
       border-color var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
   }
 }
+
+} /* @layer components */

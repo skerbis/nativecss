@@ -5,6 +5,10 @@
  * ncss-Prinzip). Fokus-Handling erbt von reset.css (:focus-visible), hier nur Look.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-field {
   display: flex;
   flex-direction: column;
@@ -501,3 +505,5 @@ output {
   inline-size: 1.15em;
   block-size: 1.15em;
 }
+
+} /* @layer helpers */

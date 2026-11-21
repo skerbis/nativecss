@@ -6,6 +6,10 @@
  * konzeptionell eine Animation, keine Scroll-Mechanik.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* --- Sticky --------------------------------------------------------------------------
    position:sticky ist relativ zum NÄCHSTEN scrollenden Vorfahren (Viewport oder ein
    Element mit overflow:auto/scroll) - funktioniert "out of the box", solange kein
@@ -161,3 +165,5 @@
 .ncss-snap-section--scrollable {
   overflow-y: auto;
 }
+
+} /* @layer helpers */

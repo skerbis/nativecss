@@ -64,6 +64,7 @@
         <tr><td><code>el.play()</code>, <code>pause()</code>, <code>toggle()</code>, <code>seek(s)</code>, <code>skip(±s)</code>, <code>fullscreen()</code>, <code>next()</code>, <code>previous()</code>, <code>load(i)</code>, <code>el.media</code></td><td>Public methods</td></tr>
         <tr><td><code>ncss-media-play</code>, <code>-pause</code>, <code>-ended</code>, <code>ncss-video-trackchange</code></td><td>Events (bubbling)</td></tr>
         <tr><td><code>--ncss-video-player-accent</code>, <code>-radius</code>, <code>-cue-size</code></td><td>Custom properties for theming</td></tr>
+        <tr><td><code>data-label-&lt;key&gt;</code></td><td>Override any text, e.g. <code>data-label-play="Start"</code>, <code>data-label-captions="Subtitles"</code> (keys as <code>TEXTS</code> in <code>js/video-player.js</code>, camelCase as kebab-case). Default: German/English by the nearest <code>lang</code>.</td></tr>
       </tbody>
     </table>
   </div>
@@ -101,6 +102,7 @@
         <tr><td><code>data-title</code>, <code>data-artist</code>, <code>data-cover</code>, <code>data-chapters</code>, <code>data-src</code></td><td>On a playlist link: metadata, chapters VTT, alternative formats</td></tr>
         <tr><td><code>el.next()</code>, <code>previous()</code>, <code>load(i)</code> + the video methods</td><td>Public methods</td></tr>
         <tr><td><code>ncss-audio-trackchange</code></td><td>Event on track change, <code>detail = { index, item }</code></td></tr>
+        <tr><td><code>data-label-&lt;key&gt;</code></td><td>Override any text, e.g. <code>data-label-play="Start"</code>, <code>data-label-volume-to="Volume %s %"</code> (keys as <code>TEXTS</code> in <code>js/audio-player.js</code>, camelCase as kebab-case). Default: German/English by the nearest <code>lang</code>.</td></tr>
       </tbody>
     </table>
   </div>
@@ -177,6 +179,7 @@
         <tr><td><code>--ncss-video-bg-position</code></td><td>Visible part of the frame (<code>object-position</code>)</td></tr>
         <tr><td><code>data-ncss-video-bg="top-end"</code></td><td>Corner of the pause toggle (<code>top-start</code>, <code>bottom-start</code>, default bottom end)</td></tr>
         <tr><td>Event <code>ncss-video-bg-change</code></td><td><code>detail = { paused, user }</code></td></tr>
+        <tr><td><code>data-label-play</code>, <code>data-label-pause</code>, <code>data-label-video</code></td><td>Override the toggle texts on the area (default: German/English by the nearest <code>lang</code>, e.g. "Pause: background video")</td></tr>
       </tbody>
     </table>
   </div>

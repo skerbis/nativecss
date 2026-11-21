@@ -485,6 +485,7 @@
 <ncss-preferences inline settings="text spacing links focus"></ncss-preferences>
   </div>
   <p class="ncss-text-sm ncss-text-muted"><strong>Motion "Full"</strong> is only possible as an explicit choice: it lifts the global damping NativeCSS applies for system "reduced motion", and the panel points this out. Effects a component explicitly offers only under <code>prefers-reduced-motion: no-preference</code> stay off - CSS cannot reinterpret a system setting. "Reduced" works everywhere: transitions, animations, scroll-driven effects and all scripts (they check <code>data-motion</code> too). Increased contrast uses the same values as <code>prefers-contrast: more</code>.</p>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Texts:</strong> German/English by the nearest <code>lang</code>, worded neutrally (no informal/formal address). Every text can be overridden with <code>data-label-&lt;key&gt;</code>, camelCase as kebab-case - e.g. <code>data-label-intro="Adjust the display here."</code>, <code>data-label-motion-hint</code>, <code>data-label-reset-done</code>, <code>data-label-button</code>. Keys: <code>TEXTS</code> in <code>js/preferences.js</code>.</p>
   <div class="ncss-a11y-notes">
     <h3>Accessibility</h3>
     <h4>Keyboard</h4>

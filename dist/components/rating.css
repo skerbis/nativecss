@@ -21,6 +21,10 @@
  * Stern selbst gefüllt - Auswahl bleibt erkennbar, nur weniger hübsch.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-rating {
   --ncss-rating-size: 1.75rem;
   --ncss-rating-color: var(--ncss-color-warning);
@@ -119,3 +123,5 @@
     outline-offset: 0;
   }
 }
+
+} /* @layer components */

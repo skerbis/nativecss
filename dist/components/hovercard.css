@@ -35,6 +35,10 @@
  * Tokens: --ncss-hovercard-width (Default 20rem), --ncss-hovercard-offset (Abstand zum
  * Link, Default --ncss-space-2xs).
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 ncss-hovercard {
   display: inline;
 }
@@ -144,3 +148,5 @@ ncss-hovercard:has(> .ncss-hovercard:popover-open) > :first-child {
     border-color: CanvasText;
   }
 }
+
+} /* @layer components */

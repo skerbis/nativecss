@@ -43,6 +43,10 @@
  * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base). js/tabs.js
  * eigenständig.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 ncss-tabs {
   display: block;
 }
@@ -302,3 +306,5 @@ ncss-tabs[animate~="height"]:defined {
     outline-offset: calc(var(--ncss-border-width) * -2);
   }
 }
+
+} /* @layer components */

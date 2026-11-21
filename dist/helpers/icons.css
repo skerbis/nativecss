@@ -26,6 +26,10 @@
  * Farbe der Maske ist egal, nur ihre Deckkraft zählt; '#' als %23 kodieren).
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-icon,
 ncss-icon,
 .ncss-icon-sprite {
@@ -128,3 +132,5 @@ ncss-icon > svg {
     background-color: CanvasText;
   }
 }
+
+} /* @layer helpers */

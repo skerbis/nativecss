@@ -30,6 +30,10 @@
  * helpers/forms.css.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-toolbar,
 ncss-toolbar {
   display: flex;
@@ -137,3 +141,5 @@ ncss-toolbar:focus-within [data-ncss-toolbar-item]:focus-visible {
     border-color: CanvasText;
   }
 }
+
+} /* @layer components */

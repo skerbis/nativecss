@@ -24,6 +24,10 @@
  * (runder Icon-Button), im Fluss-Modus ganz normal sichtbar.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-back-to-top {
   display: inline-flex;
   align-items: center;
@@ -118,3 +122,5 @@
     display: none;
   }
 }
+
+} /* @layer components */

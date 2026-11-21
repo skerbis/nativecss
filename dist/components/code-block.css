@@ -25,6 +25,10 @@
  * <code>-Blöcke mehr vor.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 pre:has(> code[class*="language-"]) {
   position: relative;
 }
@@ -232,3 +236,5 @@ pre:has(> code[class*="language-"]) {
 .token.italic {
   font-style: italic;
 }
+
+} /* @layer components */

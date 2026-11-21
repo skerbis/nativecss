@@ -64,6 +64,7 @@
         <tr><td><code>el.play()</code>, <code>pause()</code>, <code>toggle()</code>, <code>seek(s)</code>, <code>skip(±s)</code>, <code>fullscreen()</code>, <code>next()</code>, <code>previous()</code>, <code>load(i)</code>, <code>el.media</code></td><td>Öffentliche Methoden</td></tr>
         <tr><td><code>ncss-media-play</code>, <code>-pause</code>, <code>-ended</code>, <code>ncss-video-trackchange</code></td><td>Events (bubbeln)</td></tr>
         <tr><td><code>--ncss-video-player-accent</code>, <code>-radius</code>, <code>-cue-size</code></td><td>Custom Properties zum Anpassen</td></tr>
+        <tr><td><code>data-label-&lt;schlüssel&gt;</code></td><td>Jeden Text überschreiben, z.B. <code>data-label-play="Start"</code>, <code>data-label-captions="Untertitel"</code> (Schlüssel wie <code>TEXTS</code> in <code>js/video-player.js</code>, camelCase als kebab-case). Standard: Deutsch/Englisch nach dem nächsten <code>lang</code>.</td></tr>
       </tbody>
     </table>
   </div>
@@ -101,6 +102,7 @@
         <tr><td><code>data-title</code>, <code>data-artist</code>, <code>data-cover</code>, <code>data-chapters</code>, <code>data-src</code></td><td>Am Playlist-Link: Metadaten, Kapitel-VTT, weitere Formate</td></tr>
         <tr><td><code>el.next()</code>, <code>previous()</code>, <code>load(i)</code> + Methoden wie beim Video</td><td>Öffentliche Methoden</td></tr>
         <tr><td><code>ncss-audio-trackchange</code></td><td>Event beim Titelwechsel, <code>detail = { index, item }</code></td></tr>
+        <tr><td><code>data-label-&lt;schlüssel&gt;</code></td><td>Jeden Text überschreiben, z.B. <code>data-label-play="Start"</code>, <code>data-label-volume-to="Lautstärke %s %"</code> (Schlüssel wie <code>TEXTS</code> in <code>js/audio-player.js</code>, camelCase als kebab-case). Standard: Deutsch/Englisch nach dem nächsten <code>lang</code>.</td></tr>
       </tbody>
     </table>
   </div>
@@ -177,6 +179,7 @@
         <tr><td><code>--ncss-video-bg-position</code></td><td>Bildausschnitt (<code>object-position</code>)</td></tr>
         <tr><td><code>data-ncss-video-bg="top-end"</code></td><td>Ecke des Pause-Schalters (<code>top-start</code>, <code>bottom-start</code>, Default unten am Ende)</td></tr>
         <tr><td>Event <code>ncss-video-bg-change</code></td><td><code>detail = { paused, user }</code></td></tr>
+        <tr><td><code>data-label-play</code>, <code>data-label-pause</code>, <code>data-label-video</code></td><td>Texte des Schalters an der Fläche überschreiben (Standard: Deutsch/Englisch nach dem nächsten <code>lang</code>, z.B. "Pause: Hintergrundvideo")</td></tr>
       </tbody>
     </table>
   </div>

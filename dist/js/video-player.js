@@ -52,7 +52,9 @@
  * ncss-Scripts. Ohne customElements/textTracks wird das Element gar nicht erst definiert
  * (SKILL-Regel) - es bleibt beim nativen <video controls>.
  *
- * Texte: Deutsch/Englisch nach <html lang> (wie lightbox.js).
+ * Texte: Deutsch/Englisch nach dem nächsten [lang], jeder Text überschreibbar per
+ * data-label-<schlüssel> am Element (Schlüssel siehe TEXTS, camelCase als kebab-case:
+ * timeOf -> data-label-time-of, z.B. data-label-play="Start").
  */
 (function () {
   "use strict";
@@ -97,8 +99,15 @@
   })();
   var uid = 0;
 
-  function t(key) {
-    return TEXTS[lang][key];
+  /* Text für key: data-label-<key> am Element (camelCase als kebab-case, z.B. timeOf ->
+     data-label-time-of), sonst Deutsch/Englisch nach dem nächsten [lang]. */
+  function label(el, key) {
+    var own = el.getAttribute("data-label-" + key.replace(/[A-Z]/g, function (m) { return "-" + m.toLowerCase(); }));
+    if (own) {
+      return own;
+    }
+    var host = el.closest("[lang]") || root;
+    return TEXTS[(host.getAttribute("lang") || "de").slice(0, 2) === "en" ? "en" : "de"][key];
   }
   function fmt(str) {
     var args = arguments;
@@ -241,6 +250,10 @@
       }
 
       _setup(media) {
+        var host = this;
+        var t = function (key) {
+          return label(host, key);
+        };
         var box = this;
         media.setAttribute("data-ncss-player-media", box.getAttribute("exclusive") === "false" ? "solo" : "");
         media.controls = false;

@@ -16,6 +16,10 @@
  * innerhalb der Seite, damit es nicht zu Überlagerungen kommt (kein automatischer Schutz
  * davor möglich - z-index-Koordination bleibt Aufgabe der jeweiligen Seite).
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 @supports (animation-timeline: scroll()) {
   .ncss-scroll-progress {
     position: fixed;
@@ -61,3 +65,5 @@
     }
   }
 }
+
+} /* @layer components */

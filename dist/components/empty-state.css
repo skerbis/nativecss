@@ -19,6 +19,10 @@
  * Optik. Rahmen (z.B. gestrichelt) bewusst nicht eingebaut, siehe helpers/elevation.css.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-empty {
   display: flex;
   flex-direction: column;
@@ -72,3 +76,5 @@
 .ncss-empty--compact .ncss-empty-title {
   font-size: var(--ncss-font-size-md);
 }
+
+} /* @layer components */

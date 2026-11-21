@@ -17,6 +17,10 @@
  * Zustands). Ein Ersatz-Pulsieren wäre selbst wieder Bewegung, daher bewusst keines.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-spinner {
   --ncss-spinner-size: 1.5em;
   --ncss-spinner-width: max(2px, calc(var(--ncss-spinner-size) / 8));
@@ -48,3 +52,5 @@
     border-inline-end-color: CanvasText;
   }
 }
+
+} /* @layer components */

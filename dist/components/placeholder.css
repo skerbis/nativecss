@@ -9,6 +9,10 @@
  * und mit .ncss-card-media, wenn eine Card noch kein echtes Bild hat:
  *   <div class="ncss-card-media ncss-placeholder"></div>
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-placeholder {
   display: flex;
   align-items: center;
@@ -26,3 +30,5 @@
 .ncss-placeholder--surface {
   background-color: var(--ncss-color-surface);
 }
+
+} /* @layer components */

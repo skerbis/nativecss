@@ -13,6 +13,10 @@
  * aria-label ausschreiben - das Glyph allein wird oft gar nicht oder falsch vorgelesen.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-kbd {
   display: inline-block;
   min-inline-size: 1.7em;
@@ -42,3 +46,5 @@
   font-size: inherit;
   white-space: nowrap;
 }
+
+} /* @layer components */

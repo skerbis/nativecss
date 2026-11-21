@@ -19,6 +19,10 @@
  * <dialog>, hier wird nur das Innenleben angeordnet.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* Raster statt des Flex-Zentrierens aus .ncss-modal--fullscreen:modal: Bildfläche oben,
    Leiste (Bildunterschrift + Zähler) unten. Gleiche Spezifität wie die Fullscreen-Regel,
    gewinnt per Quelltext-Reihenfolge (lightbox.css wird nach modal.css importiert). */
@@ -163,3 +167,5 @@
     opacity: 0.88;
   }
 }
+
+} /* @layer components */

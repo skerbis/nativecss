@@ -7,6 +7,10 @@
  * (.ncss-event-date), den .ncss-badge (einzeilige Pille) nicht abdeckt.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-events-empty {
   color: var(--ncss-color-text-muted);
 }
@@ -163,3 +167,5 @@
   font-size: var(--ncss-font-size-sm);
   color: var(--ncss-color-text-muted);
 }
+
+} /* @layer components */

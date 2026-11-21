@@ -20,6 +20,10 @@
  * </footer>
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-footer {
   background-color: var(--ncss-color-bg-subtle);
   border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
@@ -54,3 +58,5 @@
     color: var(--ncss-color-text);
   }
 }
+
+} /* @layer components */

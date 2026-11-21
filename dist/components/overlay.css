@@ -32,6 +32,10 @@
  *     </div>
  *   </div>
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-overlay-container {
   position: relative;
   overflow: hidden;
@@ -120,3 +124,5 @@
     scale: var(--ncss-overlay-zoom-scale, 1.05);
   }
 }
+
+} /* @layer components */

@@ -28,6 +28,10 @@
  * --ncss-aurora-opacity (Default 0.7), --ncss-aurora-speed (Grunddauer, Default 14s),
  * --ncss-mesh-speed (Default 28s).
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-aurora,
 .ncss-mesh {
   --ncss-aurora-1: color-mix(in oklch, var(--ncss-color-brand) 60%, var(--ncss-color-bg));
@@ -130,3 +134,5 @@
     display: none;
   }
 }
+
+} /* @layer components */

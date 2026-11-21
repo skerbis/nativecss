@@ -4,6 +4,10 @@
  * Text zu tun haben.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* Nur für Screenreader sichtbar - Standard-a11y-Pattern für versteckte, aber vorlesbare
    Beschriftungen (z.B. Icon-Only-Buttons). display:none wäre für Screenreader ebenfalls
    unsichtbar, das hier bleibt im Accessibility Tree. */
@@ -69,3 +73,5 @@ table.ncss-visually-hidden {
 .ncss-skip-link:focus-visible {
   translate: 0 var(--ncss-space-sm);
 }
+
+} /* @layer helpers */

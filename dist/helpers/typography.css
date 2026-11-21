@@ -4,6 +4,10 @@
  * soll, ohne semantisch eine Überschrift zu sein).
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-text-sm { font-size: var(--ncss-font-size-sm); }
 .ncss-text-base { font-size: var(--ncss-font-size-base); }
 .ncss-text-md { font-size: var(--ncss-font-size-md); }
@@ -345,3 +349,5 @@
 /* Listen-Varianten (Punkt/Gedankenstrich/Icon/geteilt/Schritte/Definitionslisten) sind eine
    eigene Komponente, nicht Teil dieser Typografie-Helper-Datei - siehe
    components/lists.css. */
+
+} /* @layer helpers */

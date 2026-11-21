@@ -7,6 +7,10 @@
  * auf einem Bild, einem eigenen Panel oder einer Media-Query-freien Sektion.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* --- Ecken --------------------------------------------------------------------------- */
 .ncss-radius-sm { border-radius: var(--ncss-radius-sm); }
 .ncss-radius-md { border-radius: var(--ncss-radius-md); }
@@ -85,3 +89,5 @@
 .ncss-blend-saturation { mix-blend-mode: saturation; }
 .ncss-blend-color { mix-blend-mode: color; }
 .ncss-blend-luminosity { mix-blend-mode: luminosity; }
+
+} /* @layer helpers */

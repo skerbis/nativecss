@@ -17,6 +17,10 @@
  * Basisversion bestehen (progressive enhancement, kein Funktionsverlust ohne JS).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-combobox {
   position: relative;
   display: block;
@@ -101,3 +105,5 @@
   padding: var(--ncss-space-2xs) var(--ncss-space-xs);
   color: var(--ncss-color-text-muted);
 }
+
+} /* @layer components */

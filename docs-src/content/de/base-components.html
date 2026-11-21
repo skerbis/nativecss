@@ -485,6 +485,7 @@
 <ncss-preferences inline settings="text spacing links focus"></ncss-preferences>
   </div>
   <p class="ncss-text-sm ncss-text-muted"><strong>Bewegung "Voll"</strong> ist nur als ausdrückliche Wahl möglich: sie hebt die globale Dämpfung auf, die NativeCSS bei System-"reduzierte Bewegung" setzt, und das Panel weist dann darauf hin. Effekte, die eine Komponente ausdrücklich nur bei <code>prefers-reduced-motion: no-preference</code> anbietet, bleiben trotzdem aus - CSS kann eine Systemeinstellung nicht umdeuten. "Reduziert" wirkt dagegen überall: Übergänge, Animationen, scroll-getriebene Effekte und alle Scripts (sie fragen <code>data-motion</code> mit ab). Erhöhter Kontrast nutzt dieselben Werte wie <code>prefers-contrast: more</code>.</p>
+  <p class="ncss-text-sm ncss-text-muted"><strong>Texte:</strong> Deutsch/Englisch nach dem nächsten <code>lang</code>, neutral formuliert (ohne du/Sie). Jeder Text lässt sich per <code>data-label-&lt;schlüssel&gt;</code> überschreiben, camelCase als kebab-case - z.B. <code>data-label-intro="Passen Sie die Darstellung an."</code>, <code>data-label-motion-hint</code>, <code>data-label-reset-done</code>, <code>data-label-button</code>. Schlüssel: <code>TEXTS</code> in <code>js/preferences.js</code>.</p>
   <div class="ncss-a11y-notes">
     <h3>Barrierefreiheit</h3>
     <h4>Tastatur</h4>

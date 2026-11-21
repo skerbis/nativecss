@@ -89,6 +89,10 @@
  * Name wird durch die modernere, absichtliche Variante ersetzt.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-stack-section {
   position: relative;
   height: calc(var(--ncss-stack-count, 4) * var(--ncss-stack-stage-height, 100lvh));
@@ -361,3 +365,5 @@
   position: absolute;
   transform-style: preserve-3d;
 }
+
+} /* @layer components */

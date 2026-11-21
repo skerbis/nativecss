@@ -164,12 +164,16 @@
   <!-- Off-Canvas + automatischer Kompakt-Modus -->
   <section id="offcanvas" class="ncss-stack">
     <h2 class="demo-section-title">Off-Canvas und automatischer Kompakt-Modus</h2>
-    <p class="ncss-text-muted ncss-text-sm">Eine Nav-Struktur, zwei Darstellungen: in der Zeile oder hinter der Menü-Schaltfläche als Off-Canvas-Panel (<code>&lt;dialog&gt;</code>). Mit <code>js/nav.js</code> entscheidet keine feste Breite, sondern der Platz: das Skript misst per <code>ResizeObserver</code>, ob die Liste in <strong>eine</strong> Zeile neben Marke und Aktionen passt. Die Liste bricht dabei nie in eine zweite Zeile um - eine kurze Nav bleibt auch am Handy in der Zeile, eine lange klappt auch am Desktop zusammen.</p>
-    <pre><code class="language-html">&lt;script src="js/nav.js" defer&gt;&lt;/script&gt;  &lt;!-- im &lt;head&gt;: Zustand steht vor dem ersten Zeichnen --&gt;
+    <p class="ncss-text-muted ncss-text-sm">Eine Nav-Struktur, zwei Darstellungen: in der Zeile oder hinter der Menü-Schaltfläche als Off-Canvas-Panel (<code>&lt;dialog&gt;</code>). Es entscheidet der Platz, nicht eine feste Breite - in zwei Stufen:</p>
+    <ol class="ncss-text-sm ncss-text-muted">
+      <li><strong>Ohne JavaScript: Container Query.</strong> <code>.ncss-topbar-inner</code> (bzw. <code>.ncss-nav-container</code> für eigene Leisten) ist ein Container. Die Seite nennt mit <code>data-ncss-nav-fit="52"</code>, wie breit die Zeile in <code>rem</code> sein muss (das CMS schätzt das aus dem Menü, Formel unten); ist sie schmaler, erscheint die Menü-Schaltfläche. Ohne Angabe gilt 64rem. Weil <code>rem</code> mit Schriftgröße und Zoom wächst, stimmt der Zustand schon beim ersten Zeichnen.</li>
+      <li><strong>Mit <code>js/nav.js</code>: Nachmessen.</strong> Das Skript prüft per <code>ResizeObserver</code>, ob die Liste wirklich in <strong>eine</strong> Zeile neben Marke und Aktionen passt (Textabstände, Ersatzschriften, Übersetzungen), und setzt <code>data-ncss-nav-auto="inline"</code> bzw. <code>"compact"</code>. Dieser Zustand hat Vorrang vor der Container Query - die beiden kämpfen nicht gegeneinander.</li>
+    </ol>
+    <pre><code class="language-html">&lt;script src="js/nav.js" defer&gt;&lt;/script&gt;  &lt;!-- optional, im &lt;head&gt; --&gt;
 
 &lt;header class="ncss-topbar"&gt;&lt;div class="ncss-topbar-inner"&gt;
   &lt;a class="ncss-topbar-brand" href="/"&gt;Marke&lt;/a&gt;
-  &lt;nav class="ncss-nav" aria-label="Hauptnavigation"&gt;
+  &lt;nav class="ncss-nav" aria-label="Hauptnavigation" data-ncss-nav-fit="52"&gt;
     &lt;button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Menü öffnen"&gt;☰&lt;/button&gt;
     &lt;dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Menü"&gt;
       &lt;button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Menü schließen"&gt;&amp;times;&lt;/button&gt;
@@ -178,26 +182,55 @@
   &lt;/nav&gt;
   &lt;div class="ncss-topbar-actions"&gt; Suche, Button ... &lt;/div&gt;
 &lt;/div&gt;&lt;/header&gt;</code></pre>
-    <p class="ncss-text-sm ncss-text-muted">Live - Regler ziehen (der Rahmen ist ein eigener Viewport). Die Menü-Schaltfläche erscheint genau dann, wenn die Punkte nicht mehr neben Suche und Button passen:</p>
+    <p class="ncss-text-sm ncss-text-muted">Live - Regler ziehen (jeder Rahmen ist ein eigener Viewport). Oben mit <code>js/nav.js</code>, unten dasselbe Markup ohne JavaScript: nur die Container Query mit <code>data-ncss-nav-fit="52"</code>.</p>
     <div class="ncss-stack ncss-stack--tight">
       <label for="navAutoWidthSlider" class="ncss-text-sm ncss-text-muted">Rahmen-Breite: <output id="navAutoWidthOutput">1100px</output></label>
       <input type="range" id="navAutoWidthSlider" min="320" max="1100" value="1100" step="10" style="width: min(100%, 40rem);">
     </div>
+    <p class="ncss-text-sm"><strong>Mit JavaScript</strong></p>
     <div style="overflow: hidden; width: min(100%, 68rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
-      <iframe id="navAutoFrame" src="~/demo/assets/nav-auto-demo.html" style="display: block; width: 1100px; max-width: 100%; height: 22rem; border: 0;" title="Automatischer Kompakt-Modus, live testbar"></iframe>
+      <iframe id="navAutoFrame" src="~/demo/assets/nav-auto-demo.html" style="display: block; width: 1100px; max-width: 100%; height: 15rem; border: 0;" title="Kompakt-Modus mit JavaScript, live testbar"></iframe>
+    </div>
+    <p class="ncss-text-sm"><strong>Ohne JavaScript</strong> (Container Query)</p>
+    <div style="overflow: hidden; width: min(100%, 68rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe id="navAutoFrameNoJs" src="~/demo/assets/nav-fit-demo.html" style="display: block; width: 1100px; max-width: 100%; height: 15rem; border: 0;" title="Kompakt-Modus ohne JavaScript, live testbar"></iframe>
     </div>
     <div class="ncss-table-scroll">
       <table class="ncss-table--compact">
         <thead><tr><th>Markup</th><th>Wirkung</th></tr></thead>
         <tbody>
-          <tr><td>(Standard) mit <code>js/nav.js</code></td><td>Automatisch: Zeile, solange sie passt, sonst Menü-Schaltfläche. Das Skript setzt <code>data-ncss-nav-auto="inline"</code> bzw. <code>"compact"</code> und meldet jeden Wechsel als Event <code>ncss-nav-change</code> (<code>event.detail.compact</code>).</td></tr>
-          <tr><td><code>.ncss-nav--compact</code></td><td>Immer Menü-Schaltfläche, bei jeder Breite.</td></tr>
-          <tr><td><code>data-ncss-nav-auto="off"</code></td><td>Keine Messung - feste Umschaltung bei 64rem (z.B. wenn anderes Seiten-CSS an derselben Schwelle hängt, wie die Kopfleiste dieser Website).</td></tr>
-          <tr><td>ohne JavaScript</td><td>Rückfall auf die Media Query bei 64rem (darüber Zeile, die bei Platzmangel umbricht).</td></tr>
+          <tr><td><code>data-ncss-nav-fit="N"</code></td><td>Breite der Zeile in <code>rem</code>, ab der die Liste hineinpasst: 24 bis 120 in Vierer-Schritten (aufrunden). Darunter Menü-Schaltfläche - per Container Query, ohne JavaScript. Ohne Angabe: 64.</td></tr>
+          <tr><td><code>.ncss-topbar-inner</code>, <code>.ncss-nav-container</code></td><td>Der Container, dessen Inhaltsbreite zählt (<code>container: ncss-nav / inline-size</code>). <code>.ncss-topbar-inner</code> ist es automatisch; eigene Leisten bekommen <code>.ncss-nav-container</code> (Element mit fester Breite, z.B. volle Zeile - nie ein Element, das sich nach seinem Inhalt richtet).</td></tr>
+          <tr><td>mit <code>js/nav.js</code></td><td>Misst nach und setzt <code>data-ncss-nav-auto="inline"</code> bzw. <code>"compact"</code> (Vorrang vor der Container Query), Event <code>ncss-nav-change</code> (<code>event.detail.compact</code>). In der Zeile bricht die Liste dann nie um.</td></tr>
+          <tr><td><code>.ncss-nav--compact</code></td><td>Immer Menü-Schaltfläche, bei jeder Breite (z.B. wenn die Schätzung über 120 liegt).</td></tr>
+          <tr><td><code>data-ncss-nav-auto="off"</code></td><td>Keine Messung, kein Container - feste Viewport-Schwelle 64rem (wenn anderes Seiten-CSS an derselben Schwelle hängt, wie die Kopfleiste dieser Website). Ebenso für Navs mit <code>&lt;ncss-nav-drilldown&gt;</code> und Navs außerhalb eines Containers.</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="ncss-text-sm ncss-text-muted">Eigenes CSS für den Kompakt-Zustand (z.B. Elemente ins Panel verlegen): <code>.ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])</code> - plus dieselben Regeln in <code>@media (max-width: 63.99rem)</code> für Seiten ohne JavaScript. <code>&lt;ncss-nav-priority&gt;</code> und <code>&lt;ncss-nav-drilldown&gt;</code> haben eigene Logik und werden nicht gemessen.</p>
+    <h3>Schwelle schätzen (CMS, Server)</h3>
+    <p class="ncss-text-sm ncss-text-muted">Benötigte Breite in <code>rem</code> = Marke + Summe der Punkte + Aktionen + Abstände. Werte für die Standard-Tokens: je Punkt <code>Zeichen × 0,55 + 2,4</code> (mit Untermenü <code>+ 1,2</code>), Marke als Text <code>Zeichen × 0,65</code> (Logo: seine Breite), Button <code>Zeichen × 0,55 + 2,5</code>, Symbol-Button <code>2,75</code>, Suchfeld seine Breite, dazu <code>1,75</code> je Lücke zwischen den Teilen der Zeile. Ergebnis auf ein Vielfaches von 4 aufrunden. Lieber etwas zu groß als zu klein: zu groß heißt nur, dass die Menü-Schaltfläche etwas früher erscheint; mit <code>js/nav.js</code> wird ohnehin genau nachgemessen. Eigene Schrift, Abstände oder Versalien: Faktoren anpassen (einmal im Browser die Breite messen, bei der <code>js/nav.js</code> umschaltet).</p>
+    <pre><code class="language-php">/** Schwelle für data-ncss-nav-fit (rem), z.B. aus dem Menü-Baum des CMS */
+function ncss_nav_fit(array $items, float $brand, float $actions, int $parts = 3): int
+{
+    $rem = $brand + $actions + 1.75 * ($parts - 1);   // Marke, Aktionen, Lücken der Zeile
+    foreach ($items as $item) {
+        $rem += mb_strlen($item['label']) * 0.55 + 2.4 + (empty($item['children']) ? 0 : 1.2);
+    }
+    return (int) ceil($rem / 4) * 4;
+}
+
+$fit = ncss_nav_fit($menu, mb_strlen($siteName) * 0.65, 16);   // Suche 8rem + Button
+echo $fit &gt; 120
+    ? '&lt;nav class="ncss-nav ncss-nav--compact" …&gt;'
+    : '&lt;nav class="ncss-nav" data-ncss-nav-fit="' . max(24, $fit) . '" …&gt;';</code></pre>
+    <h3>Eigenes CSS für den Kompakt-Zustand</h3>
+    <p class="ncss-text-sm ncss-text-muted">Alle Wege setzen denselben Schalter <code>--ncss-nav-compact</code> (eine leere Custom Property, "Space Toggle") - an der Nav und an ihren Geschwistern in der Zeile. Eigene Regeln stehen damit nur einmal da und stimmen mit und ohne JavaScript:</p>
+    <pre><code class="language-css">/* Button nur in der Zeile, im Kompakt-Zustand ausblenden */
+.mein-cta {
+  --_d: var(--ncss-nav-compact) none;   /* Wert für "kompakt" */
+  display: var(--_d, inline-flex);      /* Wert für "Zeile" */
+}</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">Ist der Schalter gesetzt, gilt der Wert hinter <code>var(--ncss-nav-compact)</code>, sonst der Rückfallwert. Für Elemente außerhalb der Zeile (z.B. eine Seitenleiste) bleibt der Zustand von <code>js/nav.js</code> (<code>.ncss-nav[data-ncss-nav-auto="compact"]</code>) bzw. eine eigene Media Query. <code>&lt;ncss-nav-priority&gt;</code> hat eigene Logik und wird nicht gemessen.</p>
     <p class="ncss-text-sm ncss-text-muted"><strong>Barrierefreiheit:</strong> Die Menü-Schaltfläche braucht einen Namen (<code>aria-label</code>); <code>js/nav.js</code> ergänzt <code>aria-controls</code> und hält <code>aria-expanded</code> passend zum Panel. Liegt der Tastaturfokus in der Liste, wenn sie zusammenklappt, wandert er auf die Menü-Schaltfläche; wird es wieder breit, schließt ein offenes Panel und der Fokus bleibt auf dem Link. Fokusfalle nur im offenen modalen Panel, Escape schließt es und gibt den Fokus an die Schaltfläche zurück. Die Messung reagiert auch auf größere Schrift, Zoom und Textabstände (WCAG 1.4.4, 1.4.10, 1.4.12) - sie beobachtet den Inhalt, nicht nur die Fensterbreite. Ein-/Ausblenden folgt <code>prefers-reduced-motion</code>.</p>
   </section>
 

@@ -6,7 +6,7 @@ Anleitung für Coding-Agents: `llms/GUIDE.md`.
 
 *English: generated header documentation of every file in `dist/` (comments are German).*
 
-Stand: 1008 Klassen, 25 Custom Elements, 59 data-ncss-Attribute, 230 Tokens.
+Stand: 1009 Klassen, 25 Custom Elements, 60 data-ncss-Attribute, 231 Tokens.
 
 ## Kern (dist/*.css)
 
@@ -54,6 +54,10 @@ Datei selbst nichts mehr hineinlädt (siehe unten, Web Awesome ist komplett opt-
 die Layer-ORDER ist seitenweit global, ein Projekt, das integrations/
 webawesome-bridge.css später selbst einbindet, landet automatisch an genau dieser
 Prioritätsposition, unabhängig von der eigenen <link>-Reihenfolge.
+
+helpers/*.css und components/*.css legen ihren Layer selbst fest (@layer helpers { … }
+bzw. @layer components { … }) und werden hier deshalb OHNE layer() importiert - so landen
+sie auch einzeln per <link> geladen im richtigen Layer.
 
 @layer regelt die Priorität EXPLIZIT statt über Selektor-Spezifität/!important zu
 kämpfen (siehe uikit_theme_builder diese Session: genau das war die Ursache mehrerer
@@ -2126,14 +2130,14 @@ Elements.
 
 ### `components/nav.css`
 
-Klassen (18): `.ncss-btn` `.ncss-dialog-close` `.ncss-divider--vertical` `.ncss-nav` `.ncss-nav--compact` `.ncss-nav--scroll` `.ncss-nav--tree` `.ncss-nav-dropdown` `.ncss-nav-dropdown--nested` `.ncss-nav-item` `.ncss-nav-list` `.ncss-nav-mega-col` `.ncss-nav-mega-heading` `.ncss-nav-panel` `.ncss-nav-submenu` `.ncss-nav-submenu--mega` `.ncss-nav-toggle` `.ncss-offcanvas`
+Klassen (20): `.ncss-btn` `.ncss-dialog-close` `.ncss-divider--vertical` `.ncss-nav` `.ncss-nav--compact` `.ncss-nav--scroll` `.ncss-nav--tree` `.ncss-nav-container` `.ncss-nav-dropdown` `.ncss-nav-dropdown--nested` `.ncss-nav-item` `.ncss-nav-list` `.ncss-nav-mega-col` `.ncss-nav-mega-heading` `.ncss-nav-panel` `.ncss-nav-submenu` `.ncss-nav-submenu--mega` `.ncss-nav-toggle` `.ncss-offcanvas` `.ncss-topbar-inner`
 
 ```text
 ncss - Navigation-Komponente (Layer "components"). Zwei Varianten:
 
 1. .ncss-nav (horizontal) - kollabiert zu einem Hamburger-Button, sobald die Liste nicht
-   mehr in EINE Zeile passt (automatisch per js/nav.js, siehe "Kompakt-Modus" unten;
-   ohne JS fest unterhalb der Konvention "nav-collapse", 64rem, siehe tokens.css), der DASSELBE
+   mehr in EINE Zeile passt (ohne JS per Container Query mit der Schwelle aus
+   data-ncss-nav-fit, js/nav.js misst nach - siehe "Kompakt-Modus" unten), der DASSELBE
    Markup als Off-Canvas-Sidebar öffnet (components/off-canvas.css wird direkt
    mitgenutzt, nicht dupliziert - .ncss-nav-panel trägt zusätzlich die off-canvas-
    Klassen). "display: contents" lässt den Dialog-Wrapper auf Desktop optisch
@@ -4039,6 +4043,10 @@ Events (bubbeln): ncss-media-play, ncss-media-pause, ncss-media-ended
 Tasten (Fokus im Player): Leertaste/K, J/L (-/+ Sprungweite), Pfeil links/rechts
   -/+5 s, M, 0-9, Pos1/Ende.
 
+Texte: Deutsch/Englisch nach dem nächsten [lang], jeder Text überschreibbar per
+data-label-<schlüssel> am Element (Schlüssel siehe TEXTS, camelCase als kebab-case:
+volumeTo -> data-label-volume-to, z.B. data-label-play="Start").
+
 Ein Player gleichzeitig: dieselbe Attribut-Konvention wie video-player.js
 (data-ncss-player-media) - die Logik ist bewusst in beiden Dateien dupliziert.
 
@@ -4182,7 +4190,7 @@ bleiben normale Links/Buttons).
 
 Elemente: `<ncss-compare>`
 
-Attribute: `value-text="{n} % vorher"`
+Attribute: `value-text`
 
 Events: `ncss-compare-change`
 
@@ -4192,10 +4200,13 @@ Events: `ncss-compare-change`
 ncss - <ncss-compare>: Vorher/Nachher-Vergleich (siehe components/compare.css für
 Markup). Light-DOM-Custom-Element ohne Shadow Root - der native
 <input type="range"> darin erledigt Maus, Touch, Tastatur und Screenreader, dieses
-Script kopiert nur den Wert nach --ncss-compare-position und setzt aria-valuetext.
+Script setzt nur --ncss-compare-position (auf die Daumen-Strecke umgerechnet) und
+aria-valuetext.
 
 Attribute:
-  value-text="{n} % vorher"   gesprochener Wert ({n} = Prozent), Default nach <html lang>
+  data-label-value="{n} % vorher"   gesprochener Wert ({n} = Prozent), Default Deutsch/
+                                   Englisch nach dem nächsten [lang] (früher value-text,
+                                   wird weiter gelesen)
 
 Events (bubbeln): ncss-compare-change { value } - bei jeder Bewegung des Reglers.
 Öffentlich: el.value (lesen/setzen, 0-100 bzw. min-max des Reglers).
@@ -4959,29 +4970,30 @@ dafür unconditional selbst.
 
 ### `js/nav.js`
 
-data-Attribute: `data-ncss-nav-auto`
+data-Attribute: `data-ncss-nav-auto`, `data-ncss-nav-fit`
 
 Events: `ncss-nav-change`
 
 ```text
-ncss - Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü
-öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/
-commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem).
+ncss - Nav: kleines Enhancement, kein Ersatz für die native Funktionalität. Ohne dieses
+Script funktioniert alles: Menü öffnen/schließen über command/commandfor bzw. <details>,
+Zeile oder Menü-Schaltfläche per Container Query (Schwelle aus data-ncss-nav-fit, sonst
+64rem - siehe components/nav.css). Der Zustand steht damit schon vor dem ersten Zeichnen.
 
-1. Automatischer Kompakt-Modus (Standard für jede .ncss-nav mit Menü-Button und
-   Panel): misst per ResizeObserver, ob die Liste in EINE Zeile neben Marke/Aktionen
-   passt, und setzt data-ncss-nav-auto="inline" bzw. "compact" (Regeln siehe
-   components/nav.css). Kein fester Breakpoint. Hysterese: nach dem Zusammenklappen
-   wird erst wieder probiert, wenn der Platz um mehr als 24px gewachsen ist - der
-   Test selbst läuft synchron vor dem nächsten Bild, es flackert nichts.
-   Ausnahmen: data-ncss-nav-auto="off" (bleibt bei der Media Query), .ncss-nav--compact
+1. Nachmessen (Standard für jede .ncss-nav mit Menü-Button und Panel): die Schwelle ist
+   eine Schätzung. Das Skript misst per ResizeObserver, ob die Liste wirklich in EINE
+   Zeile neben Marke/Aktionen passt - auch bei Textabständen (WCAG 1.4.12),
+   Ersatzschriften oder Übersetzungen -, und setzt data-ncss-nav-auto="inline" bzw.
+   "compact". Dieser Zustand hat Vorrang vor der Container Query. Hysterese: nach dem
+   Zusammenklappen wird erst wieder probiert, wenn der Platz um mehr als 24px gewachsen
+   ist - der Test selbst läuft synchron vor dem nächsten Bild, es flackert nichts.
+   Ausnahmen: data-ncss-nav-auto="off" (feste Viewport-Schwelle 64rem), .ncss-nav--compact
    (immer kompakt), Navs mit <ncss-nav-priority>/<ncss-nav-drilldown> (eigene Logik).
    Event bei jedem Wechsel: "ncss-nav-change" mit detail.compact (true/false).
    Barrierefreiheit: aria-controls/aria-expanded an der Menü-Schaltfläche; beim
    Wechsel in den Kompakt-Modus wandert ein Fokus aus der Liste auf die Schaltfläche,
    beim Zurückwechseln schließt ein offenes Panel und der Fokus bleibt in der Liste.
-   Reagiert auch auf Schriftgröße/Textabstände (beobachtet den Inhalt, nicht nur die
-   Fensterbreite). Für einen Anfangszustand ohne Springen im <head> mit defer laden.
+   Am besten im <head> mit defer laden.
 2. Schließt das offene Dropdown nach Klick auf einen Untermenü-Link (natives <details>
    bleibt sonst offen stehen) und das Off-Canvas-Panel nach Klick auf IRGENDEINen
    Nav-Link (sonst bleibt das Menü nach der Navigation sichtbar offen).
@@ -5192,7 +5204,8 @@ Attribute am Element:
   inline                     Bedienfeld direkt anzeigen statt Button + Popover
   settings="theme contrast motion text font spacing links focus"   Auswahl/Reihenfolge
                              ("font" nur mit components/preferences-fonts.css)
-  data-label-<schlüssel>="…"  jeden Text überschreiben (Schlüssel siehe TEXTS unten)
+  data-label-<schlüssel>="…"  jeden Text überschreiben (Schlüssel siehe TEXTS unten,
+                             camelCase als kebab-case: motionHint -> data-label-motion-hint)
 Event (am document): ncss-preferences-change, detail { key, value, prefs }
 
 Bedienung: native Radiogruppen (fieldset/legend, Pfeiltasten) und Checkboxen (Leertaste),
@@ -5221,6 +5234,9 @@ Die scroll-gescrubbten Reveals brauchen KEIN JS - dieses Script ist nur für:
     zum Einmal-Reveal (statt einfach statisch sichtbar zu bleiben).
 Ablauf: Klasse .ncss-reveal--js hält den Startzustand (pausiert), .is-revealed spielt
 ab. Event "ncss-reveal" (bubbelt) beim Start.
+Hook für andere Scripts auf JEDEM Weg: auch wenn das CSS den Einmal-Reveal selbst
+auslöst (timeline-trigger), setzt das Script beim Start der Animation (animationstart)
+.is-revealed und feuert "ncss-reveal" - ohne eigenes Abspielen.
 Unter prefers-reduced-motion: nichts (das CSS zeigt alles ungeclippt).
 
 Benötigt: helpers/reveal.css.
@@ -5847,7 +5863,8 @@ Verhalten:
 Events (bubbeln): ncss-video-bg-change { paused, user } auf der Fläche.
 
 Benötigt: components/video-bg.css (+ tokens.css/colors.css). Keine anderen
-ncss-Scripts. Texte Deutsch/Englisch nach <html lang>.
+ncss-Scripts. Texte Deutsch/Englisch nach dem nächsten [lang], überschreibbar an der
+Fläche: data-label-play, data-label-pause, data-label-video ("Hintergrundvideo").
 ```
 
 ### `js/video-card.js`
@@ -5955,7 +5972,9 @@ Benötigt: components/video-player.css (+ tokens.css/colors.css). Keine anderen
 ncss-Scripts. Ohne customElements/textTracks wird das Element gar nicht erst definiert
 (SKILL-Regel) - es bleibt beim nativen <video controls>.
 
-Texte: Deutsch/Englisch nach <html lang> (wie lightbox.js).
+Texte: Deutsch/Englisch nach dem nächsten [lang], jeder Text überschreibbar per
+data-label-<schlüssel> am Element (Schlüssel siehe TEXTS, camelCase als kebab-case:
+timeOf -> data-label-time-of, z.B. data-label-play="Start").
 ```
 
 ### `js/view-transitions.js`

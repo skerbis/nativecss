@@ -157,7 +157,7 @@
         <ol>
           <li>Neue Datei unter <code>components/</code>, z.B. <code>components/meine-komponente.css</code>.</li>
           <li>Ausschließlich <code>var(--ncss-*)</code> verwenden - kein hartcodierter Wert. Fehlt ein Token, erst in <code>tokens.css</code>/<code>colors.css</code> ergänzen.</li>
-          <li>In <code>ncss.css</code> importieren, im Layer <code>components</code>: <code>@import url("components/meine-komponente.css") layer(components);</code></li>
+          <li>Den Inhalt der Datei in <code>@layer components { … }</code> setzen (wie jede Datei unter <code>components/</code>) und in <code>ncss.css</code> importieren: <code>@import url("components/meine-komponente.css");</code> - der Layer gilt dann auch beim einzelnen Laden per <code>&lt;link&gt;</code>.</li>
           <li>Mit Playwright im echten Browser verifizieren - insbesondere Dark Mode (Kontrast!).</li>
         </ol>
         <p class="ncss-text-sm ncss-text-muted">Reales Beispiel zum Nachlesen: <code>components/sparkline.css</code> (klein, in sich abgeschlossen, gute Vorlage für den Umfang, den eine einzelne Komponente haben sollte).</p>

@@ -8,6 +8,10 @@
  * benannter Escape Hatch ganz unten - sparsam einsetzen.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-container {
   width: 100%;
   max-width: var(--ncss-container-max);
@@ -547,3 +551,5 @@
    .ncss-hide-from-md) und deren container-basierte Pendants (.ncss-hide-below-container-,
    .ncss-hide-from-container-) sind reine "zeig/verstecke"-Klassen, kein Seiten-LAYOUT -
    leben deshalb bewusst in helpers/visibility.css, nicht hier (siehe dort). */
+
+} /* @layer helpers */

@@ -64,6 +64,10 @@
  * components/video-bg.css + js/video-bg.js.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 @property --_ncss-morph-p {
   syntax: "<number>";
   inherits: true;
@@ -315,3 +319,5 @@
     outline: var(--ncss-border-width) solid CanvasText;
   }
 }
+
+} /* @layer components */

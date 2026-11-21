@@ -4,6 +4,10 @@
  * Screens", mit klarem a11y-Hinweis zur Wahl.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* --- Strategie 1 (Standard-Empfehlung): horizontales Scrollen -------------------------
    Bewahrt die volle native Tabellen-Semantik (Screenreader können Zeilen/Spalten weiter
    korrekt ansagen) - keine Umbaumaßnahme am DOM/CSS-Display-Typ der Tabelle nötig.
@@ -83,3 +87,5 @@
   padding: var(--ncss-space-3xs) var(--ncss-space-2xs);
   font-size: var(--ncss-font-size-sm);
 }
+
+} /* @layer helpers */

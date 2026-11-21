@@ -40,11 +40,11 @@
   gap: var(--ncss-space-3xs);
 }
 /* Inline-Nav nicht höher als die Aktions-Buttons - sonst springt die Kopfleiste beim
-   Umschalten auf das Off-Canvas (64rem) um einige Pixel in der Höhe. */
-@media (min-width: 64rem) {
-  .landing-topbar .ncss-nav-item > a:not(.ncss-btn) {
-    padding-block: var(--ncss-space-3xs);
-  }
+   Umschalten auf das Off-Canvas um einige Pixel in der Höhe. Nur in der Zeile (Schalter
+   --ncss-nav-compact aus nav.css, mit und ohne JavaScript). */
+.landing-topbar .ncss-nav-item > a:not(.ncss-btn) {
+  --_pb: var(--ncss-nav-compact) var(--ncss-space-2xs);
+  padding-block: var(--_pb, var(--ncss-space-3xs));
 }
 /* "Mehr"-Trigger (wa-button size s) in Schrift und Farbe wie die übrigen Nav-Links. */
 .landing-more-trigger::part(base) {

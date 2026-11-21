@@ -39,6 +39,10 @@
  * Properties: --ncss-timeline-gap, --ncss-timeline-line-color, --ncss-timeline-marker-color
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-timeline {
   --ncss-timeline-rail: 2rem;
   --ncss-timeline-dot: 0.875rem;
@@ -209,3 +213,5 @@
     border-inline-start-color: GrayText;
   }
 }
+
+} /* @layer components */

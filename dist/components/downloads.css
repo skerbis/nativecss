@@ -5,6 +5,10 @@
  * (events.css) wird für den Leerzustand mitgenutzt statt dupliziert.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-downloads-list {
   list-style: none;
   padding-inline-start: 0;
@@ -45,3 +49,5 @@
 .ncss-downloads-action {
   flex: 0 0 auto;
 }
+
+} /* @layer components */

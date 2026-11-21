@@ -28,6 +28,10 @@
  * js/hero-video-motion.js o.ä. (CSS kann Video-Wiedergabe nicht pausieren).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-reveal-pin {
   position: relative;
   view-timeline: --ncss-reveal-pin block;
@@ -163,3 +167,5 @@
     animation: none;
   }
 }
+
+} /* @layer components */

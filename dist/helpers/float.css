@@ -17,6 +17,10 @@
  * Markup: <img class="ncss-float-start" src="..." alt="...">Text fließt drumherum...
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-float-start,
 .ncss-float-end {
   max-width: var(--ncss-float-max-width);
@@ -133,3 +137,5 @@
     max-width: none;
   }
 }
+
+} /* @layer helpers */

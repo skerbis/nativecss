@@ -16,6 +16,10 @@
  * lesbar, die gewählte Schrift tauscht nach dem Laden ein). !important aus demselben Grund
  * wie beim Kontrast (colors.css): theme.css setzt die Schrift-Tokens unlayered.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 @font-face {
   font-family: "Atkinson Hyperlegible Next";
   src: url("../fonts/atkinson-hyperlegible-next/atkinson-hyperlegible-next.woff2") format("woff2");
@@ -63,3 +67,5 @@
 .ncss-preferences-options [data-font-preview="hyperlegible"] { font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif; }
 .ncss-preferences-options [data-font-preview="lexend"] { font-family: "Lexend", system-ui, sans-serif; }
 .ncss-preferences-options [data-font-preview="opendyslexic"] { font-family: "OpenDyslexic", system-ui, sans-serif; }
+
+} /* @layer components */

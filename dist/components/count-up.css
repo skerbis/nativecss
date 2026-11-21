@@ -26,6 +26,10 @@
  * Benötigt: tokens.css (--ncss-motion-easing-emphasized). Optional js/count-up.js.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* Fortschritt 0..1 wird animiert, die ganze Zahl daraus abgeleitet (ein registriertes
    <integer> rundet calc() automatisch) - so brauchen die Keyframes kein var(). */
 @property --_ncss-count-t {
@@ -138,3 +142,5 @@
     --_ncss-count-fade: 0;
   }
 }
+
+} /* @layer components */

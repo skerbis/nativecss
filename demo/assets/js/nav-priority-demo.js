@@ -9,9 +9,12 @@
     var slider = document.getElementById(prefix + "WidthSlider");
     var output = document.getElementById(prefix + "WidthOutput");
     var frame = document.getElementById(prefix + "Frame");
+    /* Zweiter Rahmen ohne JavaScript (sandbox) am selben Regler, z.B. navAutoFrameNoJs. */
+    var frameNoJs = document.getElementById(prefix + "FrameNoJs");
     if (!slider || !output || !frame) return;
     slider.addEventListener("input", function () {
       frame.style.width = slider.value + "px";
+      if (frameNoJs) frameNoJs.style.width = slider.value + "px";
       output.textContent = slider.value + "px";
     });
   });

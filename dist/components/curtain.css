@@ -41,6 +41,10 @@
  * .ncss-snap-sections optional (helpers/scroll.css), nicht nötig.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-curtain {
   display: flow-root;
 }
@@ -114,3 +118,5 @@
     min-block-size: 0;
   }
 }
+
+} /* @layer components */

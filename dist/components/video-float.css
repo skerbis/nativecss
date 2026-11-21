@@ -23,6 +23,10 @@
  * Benötigt: tokens.css + colors.css.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-video-float {
   --ncss-video-float-gap: var(--ncss-space-sm);
   --ncss-video-float-width: min(22rem, calc(100vw - 2 * var(--ncss-video-float-gap)));
@@ -140,3 +144,5 @@ ncss-video-float[position="top-end"].is-docked > .ncss-video-float-frame {
     visibility: hidden;
   }
 }
+
+} /* @layer components */

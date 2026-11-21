@@ -32,6 +32,10 @@
  * Benötigt: tokens.css + colors.css. Keine anderen ncss-Dateien.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-scroll-video {
   --ncss-scroll-video-length: 300lvh;
   --ncss-scroll-video-top: 0px;
@@ -170,3 +174,5 @@ ncss-scroll-video.is-inline > .ncss-scroll-video-stage > .ncss-scroll-video-capt
     border-inline-start: 4px solid CanvasText;
   }
 }
+
+} /* @layer components */

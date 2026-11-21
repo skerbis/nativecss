@@ -342,16 +342,21 @@ Wildcard-Klassennamen: `grep -rn '\-\*/' *.css helpers/*.css components/*.css`.
 - Ein FESTER Viewport-Breakpoint (statt Container Query) bleibt als dokumentierter
   Escape Hatch verfügbar (z.B. Nav-Umschaltung bei 64rem ohne JS) - Standardweg ist trotzdem
   immer zuerst Container Queries/intrinsisches Grid.
-- `.ncss-nav` schaltet seit 1.2 per `js/nav.js` nach PLATZ um (`data-ncss-nav-auto=
-  "inline|compact"`), 64rem ist nur noch der Rückfall ohne JS bzw. mit `="off"`. Seiten-CSS,
-  das sich an den Nav-Zustand hängt, braucht beide Wege: Zustands-Selektor
-  `.ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])` UND dieselben Regeln in
-  der Media Query (mit `:not([data-ncss-nav-auto="inline"])`), sonst stimmt es nur mit
-  ODER nur ohne JS. Bereichs-Selektoren in `:where()`, damit die Spezifität der Regeln
-  gleich bleibt (`.ncss-nav--scroll`/`<ncss-nav-priority>` überschreiben sie sonst nicht
-  mehr). Ein offenes modales Panel liegt im Top Layer - die Liste darin lässt sich nicht
-  als Zeile messen (display:contents greift dort nicht), deshalb schätzt nav.js dann aus
-  der zuletzt gemessenen Listenbreite.
+- `.ncss-nav` (seit 1.3): ohne JS Container Query auf `.ncss-topbar-inner`/`.ncss-nav-container`
+  (Container `ncss-nav`) mit der Schwelle aus `data-ncss-nav-fit` (rem, 24-120 in 4er-
+  Schritten, sonst 64); `js/nav.js` misst nach, sein `data-ncss-nav-auto="inline|compact"` hat
+  Vorrang. Alle Wege setzen EINEN Schalter `--ncss-nav-compact` (Space Toggle: Leerzeichen =
+  kompakt, `initial` = Zeile) an Nav + Zeilen-Geschwistern; jede abweichende Eigenschaft liest
+  ihn als `--_x: var(--ncss-nav-compact) WERT; eig: var(--_x, ZEILENWERT)` - nie Regeln pro
+  Weg duplizieren. Eine Container-Query-Regel kann den Container selbst nicht stylen, deshalb
+  setzt sie den Schalter an `:has(> nav) > *`. Reihenfolge der Trigger-Regeln (alle `:where()`,
+  spätere gewinnt): CQ < Viewport-Modus (off/drilldown) < fest/JS-kompakt < JS-inline.
+  `revert-layer` als var()-Rückfall geht (Chromium/WebKit getestet), aber nur, wenn im eigenen
+  Layer keine andere Regel dieselbe Eigenschaft setzt. Ein offenes modales Panel liegt im Top
+  Layer - die Liste darin lässt sich nicht als Zeile messen, nav.js schätzt dann aus der
+  zuletzt gemessenen Listenbreite.
+- Jede Datei unter `components/`/`helpers/` steckt komplett in `@layer components { … }` bzw.
+  `@layer helpers { … }`; `ncss.css` importiert sie ohne `layer()`. Neue Datei genauso anlegen.
 - `flex-wrap:wrap` auf einem Flex-Container garantiert NICHT, dass er nie mit dem
   nächsten fixen Breakpoint kollidiert - ob eine Zeile vor Erreichen eines
   JS-freien Mobile-Switches umbricht, hängt allein davon ab, ob Summe aller

@@ -11,6 +11,10 @@
  * --compact: Ziffern und Einheit in einer Zeile ("3 Tage 04 Stunden ...") statt Kacheln.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-countdown {
   /* Bezugsrahmen für die nur optisch versteckten Zeilen unten (kein Überlauf). */
   position: relative;
@@ -72,3 +76,5 @@ ncss-countdown {
 .ncss-countdown--compact .ncss-countdown-value {
   font-size: inherit;
 }
+
+} /* @layer components */

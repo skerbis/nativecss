@@ -15,6 +15,10 @@
  * statt eines Links auf die eigene Seite. aria-label="Breadcrumb" auf <nav>, da mehrere
  * <nav>-Elemente pro Seite sonst nicht unterscheidbar sind (a11y-Pflicht, nicht optional).
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-breadcrumb ol {
   display: flex;
   flex-wrap: wrap;
@@ -56,3 +60,5 @@
   color: var(--ncss-color-text);
   font-weight: var(--ncss-font-weight-semibold);
 }
+
+} /* @layer components */

@@ -52,6 +52,10 @@
  * js/reveal.js.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* Welche Keyframes jede Form nutzt. */
 .ncss-reveal--circle { --_ncss-reveal: ncss-reveal-circle; }
 .ncss-reveal--wipe-right { --_ncss-reveal: ncss-reveal-wipe-right; }
@@ -170,3 +174,5 @@
     animation: none;
   }
 }
+
+} /* @layer helpers */

@@ -157,7 +157,7 @@
         <ol>
           <li>New file under <code>components/</code>, e.g. <code>components/my-component.css</code>.</li>
           <li>Use only <code>var(--ncss-*)</code> - no hard-coded values. If a token is missing, add it to <code>tokens.css</code>/<code>colors.css</code> first.</li>
-          <li>Import it in <code>ncss.css</code>, in the <code>components</code> layer: <code>@import url("components/my-component.css") layer(components);</code></li>
+          <li>Wrap the file content in <code>@layer components { … }</code> (like every file under <code>components/</code>) and import it in <code>ncss.css</code>: <code>@import url("components/my-component.css");</code> - the layer then also applies when the file is loaded on its own via <code>&lt;link&gt;</code>.</li>
           <li>Verify with Playwright in a real browser - especially dark mode (contrast!).</li>
         </ol>
         <p class="ncss-text-sm ncss-text-muted">A real example to study: <code>components/sparkline.css</code> (small, self-contained, a good template for the scope a single component should have).</p>

@@ -48,6 +48,10 @@
  * versteckte Text. "Empfohlen" ist echter Text, nicht nur der farbige Rahmen.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-pricing {
   display: grid;
   gap: var(--ncss-space-md);
@@ -218,3 +222,5 @@
     color: CanvasText;
   }
 }
+
+} /* @layer components */

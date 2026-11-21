@@ -2,8 +2,8 @@
  * ncss - Navigation-Komponente (Layer "components"). Zwei Varianten:
  *
  * 1. .ncss-nav (horizontal) - kollabiert zu einem Hamburger-Button, sobald die Liste nicht
- *    mehr in EINE Zeile passt (automatisch per js/nav.js, siehe "Kompakt-Modus" unten;
- *    ohne JS fest unterhalb der Konvention "nav-collapse", 64rem, siehe tokens.css), der DASSELBE
+ *    mehr in EINE Zeile passt (ohne JS per Container Query mit der Schwelle aus
+ *    data-ncss-nav-fit, js/nav.js misst nach - siehe "Kompakt-Modus" unten), der DASSELBE
  *    Markup als Off-Canvas-Sidebar öffnet (components/off-canvas.css wird direkt
  *    mitgenutzt, nicht dupliziert - .ncss-nav-panel trägt zusätzlich die off-canvas-
  *    Klassen). "display: contents" lässt den Dialog-Wrapper auf Desktop optisch
@@ -41,13 +41,24 @@
  * </nav>
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-nav {
   display: flex;
   align-items: center;
 }
 
+/* Zeile oder Menü-Schaltfläche: jede Regel, die sich zwischen beiden Darstellungen
+   unterscheidet, liest den Schalter --ncss-nav-compact (siehe "Kompakt-Modus" unten):
+   `--_x: var(--ncss-nav-compact) WERT-KOMPAKT; eigenschaft: var(--_x, WERT-ZEILE)`.
+   Ist der Schalter gesetzt (Leerzeichen), gilt der Kompakt-Wert, sonst der Rückfallwert.
+   So stehen die Regeln nur EINMAL da - egal ob Container Query, Media Query, Klasse
+   oder js/nav.js den Zustand bestimmt. */
 .ncss-nav-toggle {
-  display: none;
+  --_ncss-nav-d: var(--ncss-nav-compact) inline-flex;
+  display: var(--_ncss-nav-d, none);
   align-items: center;
   justify-content: center;
   width: var(--ncss-space-lg);
@@ -59,39 +70,37 @@
   font-size: var(--ncss-font-size-md);
 }
 
-/* Desktop: der Dialog-Wrapper erzeugt gar keine eigene Box mehr - seine Kinder (die
-   Nav-Liste) rendern direkt an seiner Stelle, als wäre der Dialog nicht da. Kein
-   Backdrop, kein Modal-Zustand relevant (display:contents deaktiviert jede eigene
-   Darstellung, unabhängig vom [open]-Attribut). */
+/* Zeile: der Dialog-Wrapper erzeugt gar keine eigene Box - seine Kinder (die Nav-Liste)
+   rendern direkt an seiner Stelle, als wäre der Dialog nicht da (kein Backdrop, kein
+   Modal-Zustand, unabhängig vom [open]-Attribut). Kompakt: display:none bzw. block, dann
+   greift die native <dialog>-Logik (position:fixed, Einschieben, Backdrop aus
+   components/off-canvas.css). */
 .ncss-nav-panel {
-  display: contents;
-  /* Etwas breiter als der generische Off-Canvas-Default (20rem, siehe off-canvas.css) -
-     eine Nav mit mehreren Punkten (ggf. inkl. gestapeltem Mega-Menü) braucht mehr Raum als
-     eine kurze Aktions-Sidebar. Weiterhin bei 85vw gedeckelt (siehe off-canvas.css), bricht
-     also auch auf sehr schmalen Geräten nicht über den Viewport hinaus. */
+  --_ncss-nav-d: var(--ncss-nav-compact) none;
+  display: var(--_ncss-nav-d, contents);
+  /* Etwas breiter als der generische Off-Canvas-Default (20rem) - eine Nav mit mehreren
+     Punkten (ggf. inkl. gestapeltem Mega-Menü) braucht mehr Raum. Weiterhin bei 85vw
+     gedeckelt (off-canvas.css). */
   --ncss-offcanvas-width: 24rem;
-  /* .ncss-offcanvas (off-canvas.css, dieselbe Klasse trägt .ncss-nav-panel zusätzlich)
-     deklariert "transition: ... display ... allow-discrete" für die Öffnen/Schließen-
-     Animation. In Kombination mit display:contents (Desktop, hier) per echtem,
-     wiederholtem Playwright-Test isoliert bestätigt: SOBALD ein Element jemals
-     display:contents WAR, bleibt eine spätere allow-discrete-Transition auf "display" für
-     dasselbe Element beim Wechsel in einen anderen Wert dauerhaft hängen -
-     getComputedStyle meldet unbegrenzt weiter "contents", obwohl die Media Query korrekt
-     auf "matches" steht und andere Deklarationen im selben Media-Query-Block (z.B.
-     .ncss-nav-list' flex-direction) ganz normal greifen. Reproduziert unabhängig davon,
-     ob die Transition VOR oder GLEICHZEITIG mit dem display-Wechsel aktiviert wird -
-     kein Timing-/Reihenfolge-Problem, sondern eine grundsätzliche Unverträglichkeit
-     zwischen display:contents und allow-discrete-Transitions auf genau dieser
-     Eigenschaft. Deckt sich mit dem User-Report ("Nav blitzt beim Wechsel Desktop→Mobil
-     kurz untereinander auf", bestätigt in Chrome UND Safari). Fix: "display"/"overlay"
-     hier komplett von der Transition ausschließen (siehe Mobile-Block unten) - translate/
-     opacity bleiben animiert (Öffnen bleibt ein sanftes Einschieben), das Schließen
-     verschwindet dafür sofort statt auszublenden. Kein reiner CSS-Weg gefunden, der BEIDE
-     Richtungen animiert UND das Hängenbleiben vermeidet - ein sofortiges statt
-     ausblendendes Schließen ist der sichere Kompromiss. */
+}
+.ncss-nav-panel[open] {
+  --_ncss-nav-d: var(--ncss-nav-compact) block;
+}
+/* OHNE "display"/"overlay" in der Transition: ein Element, das jemals display:contents
+   war, verträgt keine spätere allow-discrete-Transition auf display - das Panel bliebe
+   beim Wechsel Zeile -> kompakt sichtbar in der Zeile hängen (Chrome und Safari, siehe
+   SKILL.md). Öffnen bleibt ein sanftes Einschieben, Schließen verschwindet sofort.
+   .ncss-offcanvas im Selektor: gewinnt unabhängig von der Import-Reihenfolge gegen die
+   Transition aus off-canvas.css. */
+.ncss-nav-panel.ncss-offcanvas,
+.ncss-nav-panel {
+  transition:
+    translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+    opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
 }
 .ncss-nav-panel .ncss-dialog-close {
-  display: none;
+  --_ncss-nav-d: var(--ncss-nav-compact) block;
+  display: var(--_ncss-nav-d, none);
 }
 
 /* Ohne JavaScript (Rückfall): passt die Liste oberhalb von 64rem nicht in eine Zeile,
@@ -150,6 +159,20 @@
      dortige <style>) auf dieses <li> mit ausweiten, sonst greift currentColor auf den
      ncss-Standardtext zurück statt auf die lokal gewünschte Farbe. */
   border-inline-start-color: color-mix(in oklch, currentColor 30%, transparent);
+}
+/* Kompakt: in der gestapelten Liste eine HORIZONTALE Linie (revert-layer = Grundform aus
+   helpers/layout.css in der Zeile). */
+.ncss-nav-panel .ncss-nav-item > .ncss-divider--vertical {
+  --_ncss-nav-h: var(--ncss-nav-compact) 0;
+  --_ncss-nav-bis: var(--ncss-nav-compact) none;
+  --_ncss-nav-bbs: var(--ncss-nav-compact) var(--ncss-border-width) solid color-mix(in oklch, currentColor 30%, transparent);
+  --_ncss-nav-mi: var(--ncss-nav-compact) 0;
+  --_ncss-nav-mb: var(--ncss-nav-compact) var(--ncss-space-3xs);
+  height: var(--_ncss-nav-h, 1.2em);
+  border-inline-start: var(--_ncss-nav-bis, var(--ncss-border-width) solid color-mix(in oklch, currentColor 30%, transparent));
+  border-block-start: var(--_ncss-nav-bbs, revert-layer);
+  margin-inline: var(--_ncss-nav-mi, revert-layer);
+  margin-block: var(--_ncss-nav-mb, revert-layer);
 }
 
 /* base.css's generischer Block-Rhythmus (jedes <details> bekommt margin-block-end, wie
@@ -311,15 +334,23 @@
 .ncss-nav-dropdown {
   position: relative;
 }
+/* Kompakt (im Panel): eingerückt im Fluss, ohne Fläche/Rahmen/Schatten. */
 .ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
-  position: absolute;
+  --_ncss-nav-pos: var(--ncss-nav-compact) static;
+  --_ncss-nav-none: var(--ncss-nav-compact) none;
+  --_ncss-nav-bg: var(--ncss-nav-compact) transparent;
+  --_ncss-nav-pis: var(--ncss-nav-compact) var(--ncss-space-md);
+  position: var(--_ncss-nav-pos, absolute);
   inset-inline-start: 0;
   min-width: 12rem;
-  background-color: var(--ncss-color-surface);
-  border: var(--ncss-border-width) solid var(--ncss-color-border);
+  background-color: var(--_ncss-nav-bg, var(--ncss-color-surface));
+  border: var(--_ncss-nav-none, var(--ncss-border-width) solid var(--ncss-color-border));
   border-radius: var(--ncss-radius-md);
-  box-shadow: var(--ncss-shadow-md);
+  box-shadow: var(--_ncss-nav-none, var(--ncss-shadow-md));
   z-index: 20;
+}
+.ncss-nav > .ncss-nav-panel .ncss-nav-submenu {
+  padding-inline-start: var(--_ncss-nav-pis, var(--ncss-space-2xs));
 }
 
 /* Verschachteltes Dropdown (Untermenü-in-Untermenü): schwebt zur SEITE statt darunter,
@@ -351,18 +382,27 @@
        <div class="ncss-nav-mega-col"> ... </div>
      </div>
    </details> */
+/* Kompakt: gestapelt statt mehrspaltig (Werte nach dem Komma = Zeile). */
 .ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
-  display: grid;
+  --_ncss-nav-d: var(--ncss-nav-compact) flex;
+  --_ncss-nav-gap: var(--ncss-nav-compact) var(--ncss-space-sm);
+  --_ncss-nav-w: var(--ncss-nav-compact) auto;
+  --_ncss-nav-minw: var(--ncss-nav-compact) 0;
+  --_ncss-nav-maxw: var(--ncss-nav-compact) none;
+  --_ncss-nav-pad: var(--ncss-nav-compact) 0;
+  display: var(--_ncss-nav-d, grid);
+  flex-direction: column;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  gap: var(--ncss-space-md);
-  width: max-content;
-  min-width: 28rem;
+  gap: var(--_ncss-nav-gap, var(--ncss-space-md));
+  width: var(--_ncss-nav-w, max-content);
+  min-width: var(--_ncss-nav-minw, 28rem);
   /* Bekannter Kompromiss: kein automatisches "an den Viewport-Rand andocken" ohne JS/CSS-
      Anchor-Positioning (Stand jetzt noch nicht breit genug Baseline für einen verlässlichen
      Default) - max-width verhindert wenigstens Überlaufen über den Viewport hinaus, an sehr
      schmalen Fenstern kann der Trigger dann nicht mehr zentriert unter dem Menü liegen. */
-  max-width: min(48rem, calc(100vw - 2 * var(--ncss-space-md)));
-  padding: var(--ncss-space-sm);
+  max-width: var(--_ncss-nav-maxw, min(48rem, calc(100vw - 2 * var(--ncss-space-md))));
+  padding: var(--_ncss-nav-pad, var(--ncss-space-sm));
+  padding-inline-start: var(--_ncss-nav-pis, var(--ncss-space-sm));
 }
 .ncss-nav-mega-col ul {
   list-style: none;
@@ -377,157 +417,116 @@
   margin-block-end: var(--ncss-space-2xs);
 }
 /* --- Kompakt-Modus: Menü-Button + Off-Canvas statt Zeile --------------------------------
-   Drei Wege in denselben Zustand, die Regeln stehen deshalb zweimal (identisch halten):
+   Schalter: --ncss-nav-compact (Custom Property, "Space Toggle"). Gesetzt = ein
+   Leerzeichen (kompakt), nicht gesetzt bzw. `initial` = Zeile. Er steht an der Nav UND an
+   den Geschwistern in der Zeile (.ncss-topbar-inner / .ncss-nav-container), eigenes CSS
+   kann ihn genauso lesen, z.B. einen Button nur in der Zeile zeigen:
+     .mein-cta { --_d: var(--ncss-nav-compact) none; display: var(--_d, inline-flex); }
 
-   1. Automatisch (Standard, js/nav.js): das Skript misst per ResizeObserver, ob die
-      Liste wirklich in EINE Zeile neben Marke/Aktionen passt, und setzt
-      data-ncss-nav-auto="inline" bzw. "compact" an .ncss-nav - unabhängig von der
-      Viewport-Breite (eine kurze Nav bleibt auch am Handy in der Zeile, eine lange
-      klappt auch am Desktop zusammen). Die Liste bricht dabei nie in eine zweite Zeile um.
-   2. Fest: .ncss-nav--compact - immer Menü-Button, bei jeder Breite.
-   3. Ohne JavaScript bzw. mit data-ncss-nav-auto="off": die feste Media Query
-      nav-collapse (64rem, siehe tokens.css) wie bisher.
-
-   .ncss-nav--tree ist ausgenommen (immer vertikal, kein Panel - früher bekam ihre Liste
-   unter 64rem fälschlich den Panel-Abstand oben).
-   Alle Bereichs-Selektoren in :where() - die Spezifität der einzelnen Regeln bleibt
-   dadurch dieselbe wie ohne Bereich, Varianten wie .ncss-nav--scroll oder
-   <ncss-nav-priority> setzen sich weiterhin per eigener Regel durch. */
-:where(.ncss-nav--compact, .ncss-nav[data-ncss-nav-auto="compact"]) {
-  & .ncss-nav-toggle {
-    display: inline-flex;
-  }
-  /* display:contents zurücknehmen - jetzt greift die native <dialog>-Logik normal
-     (position:fixed, Slide-in-Animation, Backdrop aus components/off-canvas.css).
-     EXPLIZITE [open]/:not([open])-Werte statt `revert`/`revert-layer`: robuster/direkter,
-     keine Kaskaden-Auflösung über Layer-Grenzen und das UA-Stylesheet zur Laufzeit nötig. */
-  & .ncss-nav-panel:not([open]) {
-    display: none;
-  }
-  & .ncss-nav-panel[open] {
-    display: block;
-  }
-  /* OHNE "display"/"overlay" in der Transition - siehe Kommentar an .ncss-nav-panel oben
-     (display:contents verträgt keine spätere allow-discrete-Transition auf display: das Panel
-     bliebe sichtbar in der Zeile hängen). Mit .ncss-offcanvas im Selektor, damit diese Regel
-     unabhängig von der Import-Reihenfolge gegen die Transition aus off-canvas.css gewinnt. */
-  & .ncss-nav-panel.ncss-offcanvas,
-  & .ncss-nav-panel {
-    transition:
-      translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
-      opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
-  }
-  & .ncss-nav-panel .ncss-dialog-close {
-    display: block;
-  }
-  & .ncss-nav-list {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--ncss-space-2xs);
-    margin-block-start: var(--ncss-space-lg);
-  }
-  &.ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
-    position: static;
-    box-shadow: none;
-    border: none;
-    background: none;
-    padding-inline-start: var(--ncss-space-md);
-  }
-  /* Trenner (<li><hr class="ncss-divider--vertical"></li>) in der gestapelten Liste als
-     HORIZONTALE Linie - die vertikale Grundform ist für eine Flex-Zeile gedacht.
-     currentColor-Begründung wie bei `.ncss-nav-item > .ncss-divider--vertical` oben. */
-  & .ncss-nav-list .ncss-divider--vertical {
-    align-self: stretch;
-    width: auto;
-    height: 0;
-    border-inline-start: none;
-    border-block-start: var(--ncss-border-width) solid
-      color-mix(in oklch, currentColor 30%, transparent);
-    margin-inline: 0;
-    margin-block: var(--ncss-space-3xs);
-  }
-  /* Mega-Menü gestapelt statt mehrspaltig. */
-  &.ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
-    display: flex;
-    flex-direction: column;
-    gap: var(--ncss-space-sm);
-    width: auto;
-    min-width: 0;
-    max-width: none;
-    padding: 0;
-  }
+   Wer den Schalter setzt (spätere Regel gewinnt, alle Selektoren in :where()):
+   1. Container Query (ohne JavaScript, Standard): .ncss-topbar-inner und
+      .ncss-nav-container sind Container "ncss-nav". Ist die Zeile schmaler als
+      data-ncss-nav-fit="N" (rem, 24 bis 120 in 4er-Schritten - schätzt z.B. das CMS aus
+      Marke, Punkten und Aktionen), wird es kompakt; ohne Angabe bei 64rem. rem: wächst
+      mit Schriftgröße und Zoom mit, der Zustand steht vor dem ersten Zeichnen fest.
+   2. Feste Viewport-Schwelle 64rem (Konvention nav-collapse, tokens.css):
+      data-ncss-nav-auto="off", Navs mit <ncss-nav-drilldown> und Navs außerhalb eines
+      Containers.
+   3. Fest: .ncss-nav--compact - immer Menü-Button.
+   4. js/nav.js misst nach (Textabstände, Ersatzschriften, Übersetzungen) und setzt
+      data-ncss-nav-auto="inline" bzw. "compact" - wenn vorhanden, gilt dieser Zustand.
+   .ncss-nav--tree, .ncss-nav--scroll und eine laufende <ncss-nav-priority> (eigene
+   "Mehr"-Logik) klappen nie zusammen. */
+.ncss-topbar-inner,
+.ncss-nav-container {
+  container: ncss-nav / inline-size;
 }
 
-/* -- ncss breakpoint: nav-collapse (64rem) - nur ohne JS-Messung (siehe oben) -- */
-@media (max-width: 63.99rem) {
-  :where(.ncss-nav:not(.ncss-nav--tree, [data-ncss-nav-auto="inline"])) {
-    & .ncss-nav-toggle {
-      display: inline-flex;
-    }
-    /* display:contents zurücknehmen - jetzt greift die native <dialog>-Logik normal
-       (position:fixed, Slide-in-Animation, Backdrop aus components/off-canvas.css).
-       EXPLIZITE [open]/:not([open])-Werte statt `revert`/`revert-layer`: robuster/direkter,
-       keine Kaskaden-Auflösung über Layer-Grenzen und das UA-Stylesheet zur Laufzeit nötig. */
-    & .ncss-nav-panel:not([open]) {
-      display: none;
-    }
-    & .ncss-nav-panel[open] {
-      display: block;
-    }
-    /* OHNE "display"/"overlay" in der Transition - siehe Kommentar an .ncss-nav-panel oben
-       (display:contents verträgt keine spätere allow-discrete-Transition auf display: das Panel
-       bliebe sichtbar in der Zeile hängen). Mit .ncss-offcanvas im Selektor, damit diese Regel
-       unabhängig von der Import-Reihenfolge gegen die Transition aus off-canvas.css gewinnt. */
-    & .ncss-nav-panel.ncss-offcanvas,
-    & .ncss-nav-panel {
-      transition:
-        translate var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
-        opacity var(--ncss-motion-duration) var(--ncss-motion-easing);
-    }
-    & .ncss-nav-panel .ncss-dialog-close {
-      display: block;
-    }
-    & .ncss-nav-list {
-      flex-direction: column;
-      align-items: stretch;
-      gap: var(--ncss-space-2xs);
-      margin-block-start: var(--ncss-space-lg);
-    }
-    &.ncss-nav > .ncss-nav-panel .ncss-nav-dropdown > .ncss-nav-submenu {
-      position: static;
-      box-shadow: none;
-      border: none;
-      background: none;
-      padding-inline-start: var(--ncss-space-md);
-    }
-    /* Trenner (<li><hr class="ncss-divider--vertical"></li>) in der gestapelten Liste als
-       HORIZONTALE Linie - die vertikale Grundform ist für eine Flex-Zeile gedacht.
-       currentColor-Begründung wie bei `.ncss-nav-item > .ncss-divider--vertical` oben. */
-    & .ncss-nav-list .ncss-divider--vertical {
-      align-self: stretch;
-      width: auto;
-      height: 0;
-      border-inline-start: none;
-      border-block-start: var(--ncss-border-width) solid
-        color-mix(in oklch, currentColor 30%, transparent);
-      margin-inline: 0;
-      margin-block: var(--ncss-space-3xs);
-    }
-    /* Mega-Menü gestapelt statt mehrspaltig. */
-    &.ncss-nav > .ncss-nav-panel .ncss-nav-submenu--mega {
-      display: flex;
-      flex-direction: column;
-      gap: var(--ncss-space-sm);
-      width: auto;
-      min-width: 0;
-      max-width: none;
-      padding: 0;
-    }
+/* 1. Container Query: ohne Angabe 64rem ... */
+@container ncss-nav (width < 64rem) {
+  :where(
+    .ncss-nav:not(.ncss-nav--tree, .ncss-nav--scroll, [data-ncss-nav-fit], :has(ncss-nav-priority:defined)),
+    :has(> .ncss-nav:not(.ncss-nav--tree, .ncss-nav--scroll, [data-ncss-nav-fit], :has(ncss-nav-priority:defined))) > *
+  ) {
+    --ncss-nav-compact: ;
   }
 }
+/* ... sonst die Schwelle aus data-ncss-nav-fit (aufrunden auf ein Vielfaches von 4;
+   größer als 120: .ncss-nav--compact). */
+@container ncss-nav (width < 24rem) { :where([data-ncss-nav-fit="24"], :has(> [data-ncss-nav-fit="24"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 28rem) { :where([data-ncss-nav-fit="28"], :has(> [data-ncss-nav-fit="28"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 32rem) { :where([data-ncss-nav-fit="32"], :has(> [data-ncss-nav-fit="32"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 36rem) { :where([data-ncss-nav-fit="36"], :has(> [data-ncss-nav-fit="36"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 40rem) { :where([data-ncss-nav-fit="40"], :has(> [data-ncss-nav-fit="40"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 44rem) { :where([data-ncss-nav-fit="44"], :has(> [data-ncss-nav-fit="44"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 48rem) { :where([data-ncss-nav-fit="48"], :has(> [data-ncss-nav-fit="48"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 52rem) { :where([data-ncss-nav-fit="52"], :has(> [data-ncss-nav-fit="52"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 56rem) { :where([data-ncss-nav-fit="56"], :has(> [data-ncss-nav-fit="56"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 60rem) { :where([data-ncss-nav-fit="60"], :has(> [data-ncss-nav-fit="60"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 64rem) { :where([data-ncss-nav-fit="64"], :has(> [data-ncss-nav-fit="64"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 68rem) { :where([data-ncss-nav-fit="68"], :has(> [data-ncss-nav-fit="68"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 72rem) { :where([data-ncss-nav-fit="72"], :has(> [data-ncss-nav-fit="72"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 76rem) { :where([data-ncss-nav-fit="76"], :has(> [data-ncss-nav-fit="76"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 80rem) { :where([data-ncss-nav-fit="80"], :has(> [data-ncss-nav-fit="80"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 84rem) { :where([data-ncss-nav-fit="84"], :has(> [data-ncss-nav-fit="84"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 88rem) { :where([data-ncss-nav-fit="88"], :has(> [data-ncss-nav-fit="88"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 92rem) { :where([data-ncss-nav-fit="92"], :has(> [data-ncss-nav-fit="92"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 96rem) { :where([data-ncss-nav-fit="96"], :has(> [data-ncss-nav-fit="96"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 100rem) { :where([data-ncss-nav-fit="100"], :has(> [data-ncss-nav-fit="100"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 104rem) { :where([data-ncss-nav-fit="104"], :has(> [data-ncss-nav-fit="104"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 108rem) { :where([data-ncss-nav-fit="108"], :has(> [data-ncss-nav-fit="108"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 112rem) { :where([data-ncss-nav-fit="112"], :has(> [data-ncss-nav-fit="112"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 116rem) { :where([data-ncss-nav-fit="116"], :has(> [data-ncss-nav-fit="116"]) > *) { --ncss-nav-compact: ; } }
+@container ncss-nav (width < 120rem) { :where([data-ncss-nav-fit="120"], :has(> [data-ncss-nav-fit="120"]) > *) { --ncss-nav-compact: ; } }
+/* 2. Viewport-Schwelle: Container-Ergebnis zurücknehmen, dann Media Query. */
+:where(
+  .ncss-nav:is([data-ncss-nav-auto="off"], :has(ncss-nav-drilldown)),
+  :has(> .ncss-nav:is([data-ncss-nav-auto="off"], :has(ncss-nav-drilldown))) > *
+) {
+  --ncss-nav-compact: initial;
+}
+/* -- ncss breakpoint: nav-collapse (64rem) -- */
+@media (width < 64rem) {
+  :where(
+    .ncss-nav:not(.ncss-nav--tree, .ncss-nav--scroll):is([data-ncss-nav-auto="off"], :has(ncss-nav-drilldown)),
+    :has(> .ncss-nav:not(.ncss-nav--tree, .ncss-nav--scroll):is([data-ncss-nav-auto="off"], :has(ncss-nav-drilldown))) > *,
+    .ncss-nav:not(.ncss-nav--tree, .ncss-nav--scroll, .ncss-topbar-inner *, .ncss-nav-container *)
+  ) {
+    --ncss-nav-compact: ;
+  }
+}
+/* 3./4. Fest kompakt bzw. Zustand von js/nav.js. */
+:where(
+  .ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"]),
+  :has(> .ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])),
+  :has(> .ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])) > *
+) {
+  --ncss-nav-compact: ;
+}
+:where(
+  .ncss-nav[data-ncss-nav-auto="inline"]:not(.ncss-nav--compact),
+  :has(> .ncss-nav[data-ncss-nav-auto="inline"]:not(.ncss-nav--compact)) > *
+) {
+  --ncss-nav-compact: initial;
+}
 
-/* Automatik aktiv und Liste passt: nie umbrechen - weder die Liste noch ein Punkt in
-   sich ("Über" / "uns"). Passt sie nicht mehr, schaltet js/nav.js auf "compact". */
+/* Kompakt: Liste gestapelt im Panel. Nur Listen IM Panel - .ncss-nav--tree/--scroll
+   haben keins (früher bekam die Tree-Liste fälschlich den Panel-Abstand oben). */
+.ncss-nav-panel .ncss-nav-list {
+  --_ncss-nav-fd: var(--ncss-nav-compact) column;
+  --_ncss-nav-ai: var(--ncss-nav-compact) stretch;
+  --_ncss-nav-gap: var(--ncss-nav-compact) var(--ncss-space-2xs);
+  --_ncss-nav-mt: var(--ncss-nav-compact) var(--ncss-space-lg);
+  flex-direction: var(--_ncss-nav-fd, row);
+  align-items: var(--_ncss-nav-ai, center);
+  gap: var(--_ncss-nav-gap, var(--ncss-space-xs));
+  margin-block-start: var(--_ncss-nav-mt, 0);
+}
+
+/* js/nav.js aktiv und Liste passt: nie umbrechen - weder die Liste noch ein Punkt in
+   sich ("Über" / "uns"). Passt sie nicht mehr, schaltet js/nav.js auf "compact". Ohne JS
+   darf die Zeile umbrechen, falls die Schätzung (data-ncss-nav-fit) zu knapp war - dann
+   bleibt nichts unerreichbar. */
 :where(.ncss-nav[data-ncss-nav-auto="inline"]) > .ncss-nav-panel > .ncss-nav-list {
   flex-wrap: nowrap;
 }
@@ -567,14 +566,9 @@
    Markup: <nav class="ncss-nav ncss-nav--scroll"><ul class="ncss-nav-list">...</ul></nav>
    (ohne Toggle-Button/Dialog-Panel - immer direkt sichtbar, kein Mobile-Kollabieren). */
 .ncss-nav--scroll .ncss-nav-list {
-  /* Die generelle Mobile-Regel oben (@media max-width:63.99rem) trifft JEDE
-     .ncss-nav-list unconditional (flex-direction:column, gap, margin-block-start)
-     - für die normale Off-Canvas-Nav richtig, für diese IMMER horizontale/scrollbare
-     Variante nicht gewollt (per echtem Test gefunden: Punkte stapelten sich
-     untereinander statt zu scrollen, sobald der Viewport unter 1024px fiel).
-     .ncss-nav--scroll hat höhere Spezifität (zwei Klassen) und gewinnt automatisch,
-     MUSS aber jede der vier betroffenen Eigenschaften selbst zurücksetzen -
-     Spezifität entscheidet nur pro EIGENSCHAFT, keine über Eigenschaften hinweg. */
+  /* Immer horizontal/scrollbar - kein Panel, klappt nie zusammen (die Kompakt-Regeln
+     gelten nur für Listen IM Panel). Werte trotzdem explizit, falls die Liste doch in
+     einem Panel steht. */
   flex-direction: row;
   align-items: center;
   gap: var(--ncss-space-xs);
@@ -604,3 +598,5 @@
   scroll-snap-align: start;
   flex-shrink: 0;
 }
+
+} /* @layer components */

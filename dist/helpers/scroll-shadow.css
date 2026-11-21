@@ -38,6 +38,10 @@
  * am dunkelsten Punkt über 4.5:1, hell wie dunkel.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-scroll-shadow {
   --_ncss-ss-size: var(--ncss-scroll-shadow-size, 1rem);
   --_ncss-ss-color: var(--ncss-scroll-shadow-color, color-mix(in oklch, var(--ncss-color-text) 12%, transparent));
@@ -127,3 +131,5 @@
     background: Canvas;
   }
 }
+
+} /* @layer helpers */

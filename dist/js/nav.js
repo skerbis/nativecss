@@ -1,22 +1,23 @@
 /**
- * ncss - Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü
- * öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/
- * commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem).
+ * ncss - Nav: kleines Enhancement, kein Ersatz für die native Funktionalität. Ohne dieses
+ * Script funktioniert alles: Menü öffnen/schließen über command/commandfor bzw. <details>,
+ * Zeile oder Menü-Schaltfläche per Container Query (Schwelle aus data-ncss-nav-fit, sonst
+ * 64rem - siehe components/nav.css). Der Zustand steht damit schon vor dem ersten Zeichnen.
  *
- * 1. Automatischer Kompakt-Modus (Standard für jede .ncss-nav mit Menü-Button und
- *    Panel): misst per ResizeObserver, ob die Liste in EINE Zeile neben Marke/Aktionen
- *    passt, und setzt data-ncss-nav-auto="inline" bzw. "compact" (Regeln siehe
- *    components/nav.css). Kein fester Breakpoint. Hysterese: nach dem Zusammenklappen
- *    wird erst wieder probiert, wenn der Platz um mehr als 24px gewachsen ist - der
- *    Test selbst läuft synchron vor dem nächsten Bild, es flackert nichts.
- *    Ausnahmen: data-ncss-nav-auto="off" (bleibt bei der Media Query), .ncss-nav--compact
+ * 1. Nachmessen (Standard für jede .ncss-nav mit Menü-Button und Panel): die Schwelle ist
+ *    eine Schätzung. Das Skript misst per ResizeObserver, ob die Liste wirklich in EINE
+ *    Zeile neben Marke/Aktionen passt - auch bei Textabständen (WCAG 1.4.12),
+ *    Ersatzschriften oder Übersetzungen -, und setzt data-ncss-nav-auto="inline" bzw.
+ *    "compact". Dieser Zustand hat Vorrang vor der Container Query. Hysterese: nach dem
+ *    Zusammenklappen wird erst wieder probiert, wenn der Platz um mehr als 24px gewachsen
+ *    ist - der Test selbst läuft synchron vor dem nächsten Bild, es flackert nichts.
+ *    Ausnahmen: data-ncss-nav-auto="off" (feste Viewport-Schwelle 64rem), .ncss-nav--compact
  *    (immer kompakt), Navs mit <ncss-nav-priority>/<ncss-nav-drilldown> (eigene Logik).
  *    Event bei jedem Wechsel: "ncss-nav-change" mit detail.compact (true/false).
  *    Barrierefreiheit: aria-controls/aria-expanded an der Menü-Schaltfläche; beim
  *    Wechsel in den Kompakt-Modus wandert ein Fokus aus der Liste auf die Schaltfläche,
  *    beim Zurückwechseln schließt ein offenes Panel und der Fokus bleibt in der Liste.
- *    Reagiert auch auf Schriftgröße/Textabstände (beobachtet den Inhalt, nicht nur die
- *    Fensterbreite). Für einen Anfangszustand ohne Springen im <head> mit defer laden.
+ *    Am besten im <head> mit defer laden.
  * 2. Schließt das offene Dropdown nach Klick auf einen Untermenü-Link (natives <details>
  *    bleibt sonst offen stehen) und das Off-Canvas-Panel nach Klick auf IRGENDEINen
  *    Nav-Link (sonst bleibt das Menü nach der Navigation sichtbar offen).
