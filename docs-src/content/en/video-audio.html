@@ -10,8 +10,8 @@
     <table>
       <thead><tr><th scope="col">Component</th><th scope="col">Files</th><th scope="col">Kind</th></tr></thead>
       <tbody>
-        <tr><td><a href="#player"><code>&lt;ncss-video-player&gt;</code></a></td><td><code>components/video-player.css</code>, <code>js/video-player.js</code></td><td>Web component</td></tr>
-        <tr><td><a href="#audio"><code>&lt;ncss-audio-player&gt;</code></a></td><td><code>components/audio-player.css</code>, <code>js/audio-player.js</code></td><td>Web component</td></tr>
+        <tr><td><a href="#player"><code>&lt;ncss-video-player&gt;</code></a></td><td><code>components/video-player.css</code>, <code>js/video-player.js</code> (+ <code>js/media-core.js</code>)</td><td>Web component</td></tr>
+        <tr><td><a href="#audio"><code>&lt;ncss-audio-player&gt;</code></a></td><td><code>components/audio-player.css</code>, <code>js/audio-player.js</code> (+ <code>js/media-core.js</code>)</td><td>Web component</td></tr>
         <tr><td><a href="#scroll-video"><code>&lt;ncss-scroll-video&gt;</code></a></td><td><code>components/scroll-video.css</code>, <code>js/scroll-video.js</code></td><td>Web component</td></tr>
         <tr><td><a href="#scroll-frames"><code>&lt;ncss-scroll-frames&gt;</code></a></td><td><code>components/scroll-frames.css</code>, <code>js/scroll-frames.js</code></td><td>Web component</td></tr>
         <tr><td><a href="#video-bg"><code>.ncss-video-bg</code></a></td><td><code>components/video-bg.css</code>, <code>js/video-bg.js</code></td><td>Class + <code>data-ncss-video-bg</code> attribute</td></tr>
@@ -26,6 +26,7 @@
 
 <section class="ncss-stack" id="player">
   <h2 class="demo-section-title">Video player</h2>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Shared core:</strong> both players share <code>js/media-core.js</code> (seek bar, volume, menu, chapters, playlist, Media Session, keyboard, texts). Keep it in the same folder as <code>video-player.js</code>/<code>audio-player.js</code> - each player loads it on demand. To save the extra request, include it first: <code>&lt;script src="js/media-core.js" defer&gt;&lt;/script&gt;</code>, then the players. With both players on one page the core loads only once.</p>
   <p class="ncss-text-muted ncss-text-sm">The video and audio players are one family: the same icons, a round play button in the accent colour (<code>--ncss-color-brand</code>), the same 0.3rem seek bar with chapter gaps, the same chapter and playlist lists and menus. On video the controls float frameless on a soft gradient over the picture (fixed white there so they read on any frame); card, lists and menu follow the page theme.</p>
   <pre class="ncss-radius-lg ncss-border"><code class="language-html">&lt;!-- Stage only --&gt;
 &lt;ncss-video-player&gt;
@@ -64,7 +65,7 @@
         <tr><td><code>el.play()</code>, <code>pause()</code>, <code>toggle()</code>, <code>seek(s)</code>, <code>skip(±s)</code>, <code>fullscreen()</code>, <code>next()</code>, <code>previous()</code>, <code>load(i)</code>, <code>el.media</code></td><td>Public methods</td></tr>
         <tr><td><code>ncss-media-play</code>, <code>-pause</code>, <code>-ended</code>, <code>ncss-video-trackchange</code></td><td>Events (bubbling)</td></tr>
         <tr><td><code>--ncss-video-player-accent</code>, <code>-radius</code>, <code>-cue-size</code></td><td>Custom properties for theming</td></tr>
-        <tr><td><code>data-label-&lt;key&gt;</code></td><td>Override any text, e.g. <code>data-label-play="Start"</code>, <code>data-label-captions="Subtitles"</code> (keys as <code>TEXTS</code> in <code>js/video-player.js</code>, camelCase as kebab-case). Default: German/English by the nearest <code>lang</code>.</td></tr>
+        <tr><td><code>data-label-&lt;key&gt;</code></td><td>Override any text, e.g. <code>data-label-play="Start"</code>, <code>data-label-captions="Subtitles"</code> (keys as <code>TEXTS</code> in <code>js/video-player.js</code> and <code>js/media-core.js</code>, camelCase as kebab-case). Default: German/English by the nearest <code>lang</code>.</td></tr>
       </tbody>
     </table>
   </div>
@@ -100,12 +101,13 @@
         <tr><td><code>layout="card"</code>, <code>waveform</code></td><td>Card layout, waveform</td></tr>
         <tr><td><code>skip-back="15"</code>, <code>skip-forward="30"</code>, <code>speeds</code>, <code>exclusive</code></td><td>Skip distances, speeds, parallel playback</td></tr>
         <tr><td><code>data-title</code>, <code>data-artist</code>, <code>data-cover</code>, <code>data-chapters</code>, <code>data-src</code></td><td>On a playlist link: metadata, chapters VTT, alternative formats</td></tr>
-        <tr><td><code>el.next()</code>, <code>previous()</code>, <code>load(i)</code> + the video methods</td><td>Public methods</td></tr>
+        <tr><td><code>el.next()</code>, <code>previous()</code>, <code>load(i)</code> + the video methods</td><td>Public methods (<code>previous()</code> does nothing without a playlist)</td></tr>
         <tr><td><code>ncss-audio-trackchange</code></td><td>Event on track change, <code>detail = { index, item }</code></td></tr>
-        <tr><td><code>data-label-&lt;key&gt;</code></td><td>Override any text, e.g. <code>data-label-play="Start"</code>, <code>data-label-volume-to="Volume %s %"</code> (keys as <code>TEXTS</code> in <code>js/audio-player.js</code>, camelCase as kebab-case). Default: German/English by the nearest <code>lang</code>.</td></tr>
+        <tr><td><code>data-label-&lt;key&gt;</code></td><td>Override any text, e.g. <code>data-label-play="Start"</code>, <code>data-label-volume-to="Volume %s %"</code> (keys as <code>TEXTS</code> in <code>js/audio-player.js</code> and <code>js/media-core.js</code>, camelCase as kebab-case). Default: German/English by the nearest <code>lang</code>.</td></tr>
       </tbody>
     </table>
   </div>
+  <p class="ncss-text-muted ncss-text-sm"><strong>Keyboard</strong> (focus in the player): Space/K play-pause, J/L back/forward by the skip distance, arrow left/right -/+5 s, arrow up/down volume, M mute, N/P next/previous track, 0-9 jump to 0-90 %, Home/End, &lt; and &gt; speed - same as the video player, announced via a polite live region.</p>
   <p class="ncss-text-muted ncss-text-sm">Not to be confused with <code>.ncss-audio</code>/<code>.ncss-audio-card</code> from <code>components/audio.css</code>, which only style the native element (width, framed card with title) without any JS - both are independent.</p>
 </section>
 
