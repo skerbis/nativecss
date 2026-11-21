@@ -38,6 +38,10 @@
  * eigenen Breite umschalten soll.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-card-container {
   container-type: inline-size;
   container-name: ncss-card;
@@ -719,3 +723,5 @@
     background-image: none;
   }
 }
+
+} /* @layer components */

@@ -9,6 +9,9 @@
  *     zum Einmal-Reveal (statt einfach statisch sichtbar zu bleiben).
  * Ablauf: Klasse .ncss-reveal--js hält den Startzustand (pausiert), .is-revealed spielt
  * ab. Event "ncss-reveal" (bubbelt) beim Start.
+ * Hook für andere Scripts auf JEDEM Weg: auch wenn das CSS den Einmal-Reveal selbst
+ * auslöst (timeline-trigger), setzt das Script beim Start der Animation (animationstart)
+ * .is-revealed und feuert "ncss-reveal" - ohne eigenes Abspielen.
  * Unter prefers-reduced-motion: nichts (das CSS zeigt alles ungeclippt).
  *
  * Benötigt: helpers/reveal.css.
@@ -36,13 +39,17 @@
   var hasTimeline = CSS.supports("animation-timeline", "view()");
   var hasTrigger = CSS.supports("timeline-trigger", "--a view()");
 
+  function revealed(el) {
+    el.classList.add("is-revealed");
+    el.dispatchEvent(new CustomEvent("ncss-reveal", { bubbles: true }));
+  }
+
   var io = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         io.unobserve(entry.target);
-        entry.target.classList.add("is-revealed");
-        entry.target.dispatchEvent(new CustomEvent("ncss-reveal", { bubbles: true }));
+        revealed(entry.target);
       });
     },
     { rootMargin: "0px 0px -15% 0px" }
@@ -50,6 +57,15 @@
 
   function init(el) {
     var once = el.classList.contains("ncss-reveal--once");
+    if (once && hasTrigger && hasTimeline) {
+      /* CSS spielt selbst ab - nur melden (Animation am Element oder an einem Kind). */
+      el.addEventListener("animationstart", function start(event) {
+        if (event.animationName.indexOf("ncss-reveal") !== 0) return;
+        el.removeEventListener("animationstart", start);
+        revealed(el);
+      });
+      return;
+    }
     if (!((once && !hasTrigger) || !hasTimeline)) return;
     el.classList.add("ncss-reveal--js");
     io.observe(el);

@@ -21,7 +21,9 @@
   <header class="ncss-topbar">
     <div class="ncss-topbar-inner">
       <a class="ncss-topbar-brand" href="#top">Agentur</a>
-      <nav class="ncss-nav" aria-label="Hauptnavigation">
+      <!-- data-ncss-nav-fit="52": geschätzte Breite der Zeile in rem (Marke + Punkte + Suche + Button,
+           Formel im Handbuch) - ohne JavaScript schaltet die Container Query genau dort um. -->
+      <nav class="ncss-nav" aria-label="Hauptnavigation" data-ncss-nav-fit="52">
         <button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navAutoPanel" aria-label="Menü öffnen"><span class="ncss-icon ncss-icon-menu" aria-hidden="true"></span></button>
         <dialog id="navAutoPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Menü">
           <button type="button" class="ncss-dialog-close" command="close" commandfor="navAutoPanel" aria-label="Menü schließen"><span class="ncss-icon ncss-icon-close" aria-hidden="true"></span></button>
@@ -45,8 +47,8 @@
     </div>
   </header>
   <main class="ncss-container ncss-stack" id="top">
-    <p class="ncss-text-sm ncss-text-muted">Die Liste bricht nie um: passt sie nicht mehr neben Marke, Suche und Button, erscheint die Menü-Schaltfläche - bei jeder Breite, ohne festen Breakpoint.</p>
-    <p class="ncss-text-sm">Zustand: <strong id="navAutoState">-</strong></p>
+    <p class="ncss-text-sm ncss-text-muted">Passt die Liste nicht mehr neben Marke, Suche und Button, erscheint die Menü-Schaltfläche - bei jeder Breite, ohne festen Breakpoint.</p>
+    <p class="ncss-text-sm demo-auto-js">Mit JavaScript (js/nav.js misst nach): <strong id="navAutoState">-</strong></p>
   </main>
   <script src="../assets/js/nav-auto-demo.js" defer></script>
 </body>

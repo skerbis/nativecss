@@ -44,6 +44,10 @@
  * Funktionseinbuße - die verschachtelten <details>/<summary> klappen normal INLINE
  * auf, wie es components/nav.css ohnehin schon vorsieht.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 ncss-nav-drilldown {
   display: contents;
 }
@@ -188,3 +192,5 @@ ncss-nav-drilldown {
     rotate: -45deg;
   }
 }
+
+} /* @layer components */

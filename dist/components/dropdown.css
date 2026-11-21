@@ -51,6 +51,10 @@
  * Tokens: --ncss-dropdown-min-width (Default 12rem), --ncss-dropdown-offset (Abstand zum
  * Auslöser, Default --ncss-space-3xs).
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-dropdown,
 ncss-dropdown {
   display: inline-block;
@@ -258,3 +262,5 @@ ncss-dropdown {
     background-color: CanvasText;
   }
 }
+
+} /* @layer components */

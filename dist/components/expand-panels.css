@@ -27,6 +27,10 @@
  * offenen Panels, Default 4), --ncss-expand-collapsed / --ncss-expand-expanded (Höhen im
  * gestapelten Zustand, Default 4.5rem / 16rem). Stapelt unter 36rem Containerbreite.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-expand-panels {
   --ncss-expand-height: 24rem;
   --ncss-expand-grow: 4;
@@ -218,3 +222,5 @@
     background-color: Canvas;
   }
 }
+
+} /* @layer components */

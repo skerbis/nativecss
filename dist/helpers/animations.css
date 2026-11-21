@@ -5,6 +5,10 @@
  * gekappt) - hier keine Einzelfall-Behandlung nötig, jede Animation unten erbt das.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 @keyframes ncss-fade-in {
   from { opacity: 0; }
 }
@@ -204,3 +208,5 @@
     animation-range: entry 0% cover 30%;
   }
 }
+
+} /* @layer helpers */

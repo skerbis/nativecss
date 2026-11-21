@@ -42,6 +42,10 @@
  * data-label-next überschreibbar (gilt für native UND Script-Buttons).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-slideshow {
   position: relative;
 }
@@ -439,3 +443,5 @@ ncss-slideshow {
     display: none;
   }
 }
+
+} /* @layer components */

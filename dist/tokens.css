@@ -226,7 +226,7 @@
  *   card-horizontal: 24rem  - .ncss-card--horizontal (components/card.css)
  *   card-row:        32rem  - .ncss-grid--card-row (helpers/layout.css)
  *   table-stacked:   36rem  - .ncss-table-stacked (helpers/tables.css)
- *   nav-collapse:    64rem  - .ncss-nav ohne JS bzw. mit data-ncss-nav-auto="off" (components/nav.css)
+ *   nav-collapse:    64rem  - .ncss-nav: Container-Schwelle ohne data-ncss-nav-fit, Viewport bei data-ncss-nav-auto="off" (components/nav.css)
  *   float-wrap:      28rem  - .ncss-float-start/-end (helpers/float.css)
  *   drop-cap-large:  40rem  - .ncss-drop-cap (helpers/typography.css)
  *   grid-cols-2:     24rem  - .ncss-grid--cols-2 (helpers/layout.css)

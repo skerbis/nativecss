@@ -33,7 +33,8 @@
  * Events (bubbeln): ncss-video-bg-change { paused, user } auf der Fläche.
  *
  * Benötigt: components/video-bg.css (+ tokens.css/colors.css). Keine anderen
- * ncss-Scripts. Texte Deutsch/Englisch nach <html lang>.
+ * ncss-Scripts. Texte Deutsch/Englisch nach dem nächsten [lang], überschreibbar an der
+ * Fläche: data-label-play, data-label-pause, data-label-video ("Hintergrundvideo").
  */
 (function () {
   "use strict";
@@ -52,10 +53,16 @@
   }
 
   var TEXTS = {
-    de: { play: "Abspielen", pause: "Pause", label: "Hintergrundvideo" },
-    en: { play: "Play", pause: "Pause", label: "background video" }
+    de: { play: "Abspielen", pause: "Pause", video: "Hintergrundvideo" },
+    en: { play: "Play", pause: "Pause", video: "background video" }
   };
-  var lang = (document.documentElement.getAttribute("lang") || "de").slice(0, 2) === "en" ? "en" : "de";
+  /* data-label-play, data-label-pause, data-label-video an der Fläche, sonst Deutsch/
+     Englisch nach dem nächsten [lang]. */
+  function label(el, key) {
+    var host = el.closest("[lang]") || document.documentElement;
+    return el.getAttribute("data-label-" + key) ||
+      TEXTS[(host.getAttribute("lang") || "de").slice(0, 2) === "en" ? "en" : "de"][key];
+  }
   var motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   var forcedQuery = window.matchMedia("(forced-colors: active)");
   function blocked() {
@@ -95,9 +102,9 @@
     }
 
     function render() {
-      var word = paused ? TEXTS[lang].play : TEXTS[lang].pause;
+      var word = label(box, paused ? "play" : "pause");
       button.textContent = word;
-      button.setAttribute("aria-label", word + ": " + TEXTS[lang].label);
+      button.setAttribute("aria-label", word + ": " + label(box, "video"));
       button.classList.toggle("is-paused", paused);
     }
     function load() {

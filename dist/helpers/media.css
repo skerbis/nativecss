@@ -4,6 +4,10 @@
  * gezielt einsetzbare Klassen.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* aspect-ratio statt alter "Padding-Hack"-Technik (padding-top: 56.25% etc.) - natives
    CSS, kein Wrapper-Element nötig. */
 .ncss-ratio-video { aspect-ratio: var(--ncss-aspect-video); }
@@ -75,3 +79,5 @@
   margin-inline: auto;
   margin-block-end: var(--ncss-space-sm);
 }
+
+} /* @layer helpers */

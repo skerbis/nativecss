@@ -26,6 +26,10 @@
  * .ncss-cover-container eine eigene, von außen kommende Höhe, weil das eingebettete
  * Element seinerseits beschnitten wird, nicht das Seitenverhältnis vorgibt.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-cover-container {
   position: relative;
   overflow: hidden;
@@ -43,3 +47,5 @@
   transform: translate(-50%, -50%);
   border: none;
 }
+
+} /* @layer components */

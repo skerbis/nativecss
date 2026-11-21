@@ -26,6 +26,10 @@
  * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base). Optional
  * js/tooltip.js.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 /* Nur Auslöser, deren direkt folgendes Geschwister ein Tooltip ist - andere interestfor-
    Nutzer (z.B. <ncss-hovercard>) behalten ihre eigene Verzögerung. */
 [interestfor]:has(+ .ncss-tooltip) {
@@ -87,3 +91,5 @@
     border: var(--ncss-border-width) solid CanvasText;
   }
 }
+
+} /* @layer components */

@@ -22,6 +22,10 @@
  * ohne Spezifitäts-Kampf gewinnen.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-map {
   --ncss-map-height: clamp(16rem, 55vh, 28rem);
   --ncss-map-radius: var(--ncss-radius-lg, 0.75rem);
@@ -243,3 +247,5 @@ ncss-map[data-dark] .maplibregl-ctrl-group button + button {
   .ncss-map-pin { forced-color-adjust: none; background: Highlight; border-color: Canvas; }
   .ncss-map-pin::after { background: Canvas; }
 }
+
+} /* @layer components */

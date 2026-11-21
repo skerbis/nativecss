@@ -34,6 +34,10 @@
  * --ncss-leaders-gap (Abstand zwischen den Einträgen).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-leaders {
   --ncss-leaders-style: dotted;
   display: grid;
@@ -97,3 +101,5 @@
     border-block-end-color: CanvasText;
   }
 }
+
+} /* @layer components */

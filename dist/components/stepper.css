@@ -38,6 +38,10 @@
  * senkrechte Darstellung, z.B. für sehr viele Schritte oder lange Beschriftungen.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-stepper {
   --ncss-stepper-marker: 2rem;
   --ncss-stepper-line-width: 2px;
@@ -215,3 +219,5 @@ a.ncss-stepper-label,
     border-color: CanvasText;
   }
 }
+
+} /* @layer components */

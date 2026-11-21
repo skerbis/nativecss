@@ -26,6 +26,10 @@
  *
  * Abhängigkeiten (Cherry-Picking): nur tokens.css/colors.css (+ reset/base) + js/table-sort.js.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 ncss-table-sort {
   display: block;
 }
@@ -109,3 +113,5 @@ th[aria-sort="descending"] .ncss-table-sort-icon {
     background-color: Highlight;
   }
 }
+
+} /* @layer components */

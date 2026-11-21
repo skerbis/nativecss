@@ -19,6 +19,10 @@
  * (Default neutral), --sm für dichte Listen.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-tag {
   --ncss-tag-accent: var(--ncss-color-neutral);
   display: inline-flex;
@@ -128,3 +132,5 @@ button.ncss-tag:active {
     border-width: calc(var(--ncss-border-width) * 2);
   }
 }
+
+} /* @layer components */

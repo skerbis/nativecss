@@ -32,6 +32,10 @@
  * "Vorher" liegt immer links (direction:ltr auf dem Rahmen) - auch in RTL-Sprachen ist der
  * Regler dadurch nicht gespiegelt, Bildreihenfolge und Wert passen immer zusammen.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 ncss-compare {
   --ncss-compare-position: 50%;
   --ncss-compare-handle: 2.75rem;
@@ -126,9 +130,12 @@ ncss-compare {
   position: absolute;
   z-index: 2;
   inset-block: 0;
-  left: calc(var(--ncss-compare-handle) / -2);
-  right: calc(var(--ncss-compare-handle) / -2);
-  width: auto;
+  /* Regler genau so breit wie der Rahmen - früher ragte er um den halben Griff links und
+     rechts hinaus (bei 390px über den Seitenrand). Der Daumen läuft deshalb von h/2 bis
+     Breite - h/2; js/compare.js rechnet Linie und Bildschnitt auf genau diese Strecke um,
+     Griff und Linie bleiben deckungsgleich und immer vollständig sichtbar. */
+  inset-inline: 0;
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -216,3 +223,5 @@ ncss-compare:defined > .ncss-compare-range {
     border: 1px solid CanvasText;
   }
 }
+
+} /* @layer components */

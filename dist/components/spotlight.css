@@ -35,6 +35,10 @@
  * :hover ist wie überall in ncss auf (hover:hover) and (pointer:fine) begrenzt.
  * Forced Colors: Effekt aus (rein dekorativ, keine Information).
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-spotlight {
   --ncss-spotlight-color: color-mix(in oklch, var(--ncss-color-brand) 22%, transparent);
   --ncss-spotlight-border: var(--ncss-color-brand);
@@ -109,3 +113,5 @@
     display: none;
   }
 }
+
+} /* @layer components */

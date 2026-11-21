@@ -9,6 +9,10 @@
  * jeweiliges Beispiel in den Kommentaren unten).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* --- ul: Punkt-Liste -----------------------------------------------------------------
  * Dezenter, eingefärbter Punkt statt des nackten Browser-Markers.
  * Markup: <ul class="ncss-list--dot" role="list"><li>Punkt eins</li>...</ul>
@@ -219,3 +223,5 @@
   font-weight: 700;
   color: var(--ncss-color-brand-on-soft);
 }
+
+} /* @layer components */

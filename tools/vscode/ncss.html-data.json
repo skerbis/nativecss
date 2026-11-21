@@ -85,8 +85,7 @@
    },
    "attributes": [
     {
-     "name": "value-text",
-     "description": "gesprochener Wert ({n} = Prozent), Default nach <html lang> - Default/Beispiel: `{n} % vorher`"
+     "name": "value-text"
     }
    ],
    "references": [
@@ -305,7 +304,7 @@
    "name": "ncss-nav-drilldown",
    "description": {
     "kind": "markdown",
-    "value": "<ncss-nav-drilldown>: verschachtelte mobile Menüs als Slide-Screens statt Inline-Aufklappen (siehe components/nav-drilldown.css für Markup/Einbindung/Optik)\n\nScript: `js/nav-drilldown.js` · CSS: `components/nav-drilldown.css`"
+    "value": "<ncss-nav-drilldown>: verschachtelte mobile Menüs als Slide-Screens statt Inline-Aufklappen (siehe components/nav-drilldown.css für Markup/Einbindung/Optik)\n\nScript: `js/nav-drilldown.js` · CSS: `components/nav-drilldown.css`, `components/nav.css`"
    },
    "attributes": [
     {
@@ -323,7 +322,7 @@
    "name": "ncss-nav-priority",
    "description": {
     "kind": "markdown",
-    "value": "<ncss-nav-priority>: verschiebt Navigationspunkte, die nicht mehr in eine Zeile passen, automatisch in ein \"Mehr\"-Dropdown (siehe components/nav-priority.css für Markup/Einbindung)\n\nScript: `js/nav-priority.js` · CSS: `components/nav-priority.css`"
+    "value": "<ncss-nav-priority>: verschiebt Navigationspunkte, die nicht mehr in eine Zeile passen, automatisch in ein \"Mehr\"-Dropdown (siehe components/nav-priority.css für Markup/Einbindung)\n\nScript: `js/nav-priority.js` · CSS: `components/nav-priority.css`, `components/nav.css`"
    },
    "attributes": [
     {
@@ -354,7 +353,7 @@
     },
     {
      "name": "settings",
-     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten) - Default/Beispiel: `theme contrast motion text font spacing links focus`"
+     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten, camelCase als kebab-case: motionHint -> data-label-motion-hint) - Default/Beispiel: `theme contrast motion text font spacing links focus`"
     }
    ],
    "references": [
@@ -827,7 +826,14 @@
    "name": "data-ncss-nav-auto",
    "description": {
     "kind": "markdown",
-    "value": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem)\n\nQuelle: `components/nav.css`, `js/nav.js`"
+    "value": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität\n\nQuelle: `components/nav.css`, `js/nav.js`"
+   }
+  },
+  {
+   "name": "data-ncss-nav-fit",
+   "description": {
+    "kind": "markdown",
+    "value": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität\n\nQuelle: `components/nav.css`, `js/nav.js`"
    }
   },
   {

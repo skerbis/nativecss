@@ -52,6 +52,10 @@
  *   </div>
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-marginnote-container {
   container-type: inline-size;
   container-name: ncss-marginnote;
@@ -107,3 +111,5 @@
     grid-column: 1;
   }
 }
+
+} /* @layer components */

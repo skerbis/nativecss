@@ -20,6 +20,10 @@
  * Sinne von :placeholder-shown - dort bleibt das Label immer oben.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-field--floating {
   position: relative;
   /* .ncss-field ist ein Flex-Column mit gap - hier liegt das Label ÜBER dem Feld statt
@@ -67,3 +71,5 @@
 .ncss-field--floating:has(> :user-invalid) > .ncss-label {
   color: var(--ncss-color-danger);
 }
+
+} /* @layer components */

@@ -42,6 +42,10 @@
  * Tasten (Fokus im Player): Leertaste/K, J/L (-/+ Sprungweite), Pfeil links/rechts
  *   -/+5 s, M, 0-9, Pos1/Ende.
  *
+ * Texte: Deutsch/Englisch nach dem nächsten [lang], jeder Text überschreibbar per
+ * data-label-<schlüssel> am Element (Schlüssel siehe TEXTS, camelCase als kebab-case:
+ * volumeTo -> data-label-volume-to, z.B. data-label-play="Start").
+ *
  * Ein Player gleichzeitig: dieselbe Attribut-Konvention wie video-player.js
  * (data-ncss-player-media) - die Logik ist bewusst in beiden Dateien dupliziert.
  *
@@ -87,8 +91,15 @@
   var TYPES = { mp3: "audio/mpeg", m4a: "audio/mp4", aac: "audio/aac", ogg: "audio/ogg", opus: "audio/ogg; codecs=opus", oga: "audio/ogg", webm: "audio/webm", wav: "audio/wav", flac: "audio/flac" };
   var uid = 0;
 
-  function t(key) {
-    return TEXTS[lang][key];
+  /* Text für key: data-label-<key> am Element (camelCase als kebab-case, z.B. timeOf ->
+     data-label-time-of), sonst Deutsch/Englisch nach dem nächsten [lang]. */
+  function label(el, key) {
+    var own = el.getAttribute("data-label-" + key.replace(/[A-Z]/g, function (m) { return "-" + m.toLowerCase(); }));
+    if (own) {
+      return own;
+    }
+    var host = el.closest("[lang]") || root;
+    return TEXTS[(host.getAttribute("lang") || "de").slice(0, 2) === "en" ? "en" : "de"][key];
   }
   function fmt(str) {
     var args = arguments;
@@ -268,6 +279,10 @@
       }
 
       _setup(media) {
+        var host = this;
+        var t = function (key) {
+          return label(host, key);
+        };
         var box = this;
         var card = box.getAttribute("layout") === "card";
         var skipBack = Number(box.getAttribute("skip-back")) || 15;

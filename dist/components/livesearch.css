@@ -19,6 +19,10 @@
  * Kombinierbar mit dem wachsenden Suchfeld aus search.css (.ncss-search) - die
  * Trefferliste ist mindestens so breit wie dessen ausgeklappter Zustand.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-livesearch {
   position: relative;
 }
@@ -104,3 +108,5 @@
   margin-block-start: var(--ncss-space-3xs);
   border-block-start: var(--ncss-border-width) solid var(--ncss-color-border);
 }
+
+} /* @layer components */

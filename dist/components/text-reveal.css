@@ -30,6 +30,10 @@
  * js/text-reveal.js (Wort-Variante).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 @property --_ncss-text-reveal-p {
   syntax: "<length-percentage>";
   inherits: false;
@@ -139,3 +143,5 @@
     filter: none;
   }
 }
+
+} /* @layer components */

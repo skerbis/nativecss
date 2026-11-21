@@ -17,6 +17,10 @@
  * und eine Live-Region für die Ansage an.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-dropzone {
   /* Bezugsrahmen für die nur optisch versteckte Status-Zeile (kein Überlauf). */
   position: relative;
@@ -179,3 +183,5 @@ ncss-dropzone[data-ncss-dragover] .ncss-dropzone-area {
     border-style: solid;
   }
 }
+
+} /* @layer components */

@@ -18,6 +18,10 @@
  * .ncss-reveal-on-hover (opacity/visibility, kein Konflikt mit Komponenten-display).
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-hidden {
   display: none !important;
 }
@@ -132,3 +136,5 @@
 @container ncss-container (min-width: 56rem) {
   .ncss-hide-from-container-xl { display: none !important; }
 }
+
+} /* @layer helpers */

@@ -2,6 +2,36 @@
 
 Alle nennenswerten Änderungen an NativeCSS. Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.3.0] - 2026-11-21
+
+### Geändert (Verhalten)
+
+- **Navigation: Container Query zuerst, JavaScript misst nur nach.** Ohne JavaScript schaltet `.ncss-nav` nicht mehr fest bei 64rem Fensterbreite, sondern per Container Query an der Breite der Kopfzeile: `.ncss-topbar-inner` (bzw. das neue `.ncss-nav-container` für eigene Leisten) ist Container `ncss-nav`, die Seite nennt mit **`data-ncss-nav-fit="N"`** die nötige Zeilenbreite in rem (24 bis 120 in Vierer-Schritten, z.B. vom CMS aus Marke, Menüpunkten und Aktionen geschätzt - Formel und PHP-Beispiel im Handbuch). Ohne Angabe gilt 64rem Zeilenbreite. Der Zustand steht damit vor dem ersten Zeichnen fest und wächst mit Schriftgröße und Zoom mit. `js/nav.js` misst wie bisher nach (Textabstände, Ersatzschriften, Übersetzungen); sein Zustand `data-ncss-nav-auto="inline|compact"` hat Vorrang.
+- **Ein Schalter statt doppelter Regeln:** Alle Wege (Container Query, Viewport-Schwelle, `.ncss-nav--compact`, `js/nav.js`) setzen die Custom Property **`--ncss-nav-compact`** (Space Toggle) an der Nav und an ihren Geschwistern in der Zeile. Die Kompakt-Regeln stehen in `nav.css` nur noch einmal; eigenes CSS liest denselben Schalter (`--_d: var(--ncss-nav-compact) none; display: var(--_d, inline-flex);`) und stimmt mit und ohne JavaScript. Der bisherige Doppelblock `@media (max-width: 63.99rem)` entfällt.
+- `data-ncss-nav-auto="off"`, Navs mit `<ncss-nav-drilldown>` und Navs außerhalb eines Containers behalten die feste Viewport-Schwelle 64rem. Eine laufende `<ncss-nav-priority>` klappt nie zusammen.
+- **Jede Datei unter `components/` und `helpers/` legt ihren Cascade Layer selbst fest** (`@layer components { … }` bzw. `@layer helpers { … }`). Einzeln per `<link>` geladene Komponenten (z.B. `components/preferences.css`) schlagen damit nicht mehr als Layer-freies CSS alle übrigen Regeln. `ncss.css` importiert sie ohne `layer()`; ein Import mit `layer(components)` funktioniert weiter (Unter-Layer).
+- Scrollytelling: inaktive Schritte werden nicht mehr per `opacity: 0.65` gedimmt (Kontrast nur 3,1:1 bzw. 4,2:1 im Dunkelmodus), sondern mit gedämpfter Textfarbe und Graustufen - voll lesbar nach WCAG 1.4.3.
+- Vorher/Nachher `<ncss-compare>`: Der Regler ist so breit wie der Rahmen und ragt nicht mehr um den halben Griff über den Rand (bei 390px über den Seitenrand). Linie und Griff laufen von halber Griffbreite bis Breite minus halbe Griffbreite.
+
+### Neu
+
+- `data-ncss-nav-fit`, `.ncss-nav-container`, Schalter `--ncss-nav-compact` (siehe oben).
+- Texte überschreibbar per `data-label-<schlüssel>` (camelCase als kebab-case): `<ncss-audio-player>`, `<ncss-video-player>` (alle Texte), Hintergrundvideo (`data-label-play`, `data-label-pause`, `data-label-video`), `<ncss-compare>` (`data-label-value`). Sprache jeweils nach dem nächsten `[lang]`-Vorfahren statt nur `<html lang>`.
+- `js/reveal.js` meldet auch Einmal-Reveals, die das CSS selbst per `timeline-trigger` abspielt: `.is-revealed` und Event `ncss-reveal` beim Start der Animation.
+- Handbuch: Live-Beispiel der Navigation mit und ohne JavaScript nebeneinander am selben Regler; Schätzformel für `data-ncss-nav-fit`.
+
+### Umbenannt
+
+- `<ncss-compare value-text>` heißt jetzt `data-label-value` (`value-text` wird weiter gelesen).
+- Hintergrundvideo: Textschlüssel `label` heißt `video` (`data-label-video`).
+- `<ncss-preferences>`: mehrteilige Schlüssel als kebab-case - `data-label-motion-hint`, `data-label-reset-done`, `data-label-font-default` (vorher `motionhint`, `resetdone`, `fontdefault`).
+- `<ncss-preferences>`: deutsche Standardtexte neutral formuliert (ohne du/Sie), z.B. „Die Darstellung lässt sich hier anpassen. Ohne Änderung gelten die Einstellungen des Geräts."
+
+### Hinweis zum Umstieg
+
+- Eigenes CSS, das an `@media (max-width: 63.99rem)` und `[data-ncss-nav-auto="compact"]` doppelt hing, durch den Schalter `--ncss-nav-compact` ersetzen - oder für Elemente außerhalb der Zeile beim Zustand von `js/nav.js` bleiben.
+- Kopfleisten ohne `.ncss-topbar-inner`: dem Element, das die Nav als Kind trägt, `.ncss-nav-container` geben (nur Elemente mit eigener Breite, nicht nach Inhalt bemessen).
+
 ## [1.2.2] - 2026-11-20
 
 ### Behoben

@@ -56,6 +56,10 @@
  * dafür an :defined hängt, nicht am bloßen Vorhandensein des (noch unverbundenen)
  * Elements.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 ncss-nav-priority {
   display: contents;
 }
@@ -72,12 +76,10 @@ ncss-nav-priority:defined {
 /* Sobald das JS übernimmt, übernimmt es auch die volle Verantwortung für "was
    passiert bei Platzmangel" - natives flex-wrap würde sonst VOR der JS-Berechnung
    schon in eine zweite Zeile umbrechen (kurzes Doppelzeilen-Aufblitzen, bevor das
-   Skript den Punkt stattdessen ins Mehr-Menü verschiebt). Die generelle Mobile-Regel
-   in nav.css (`@media max-width:63.99rem { .ncss-nav-list { flex-direction:column;
-   ...} }`) trifft JEDE .ncss-nav-list unconditional, auch diese - alle vier
-   betroffenen Eigenschaften hier selbst zurücksetzen (Spezifität allein reicht nicht,
-   entscheidet nur pro Eigenschaft, nicht über eine ganze Regel hinweg - dieselbe
-   Falle wie bei .ncss-nav--scroll, siehe dortiger Kommentar in nav.css). */
+   Skript den Punkt stattdessen ins Mehr-Menü verschiebt). Die Kompakt-Regeln
+   in nav.css (Schalter --ncss-nav-compact: flex-direction:column ...) gelten für eine
+   laufende Priority-Nav nicht mehr (nav.css nimmt sie aus) - die Werte stehen hier
+   trotzdem explizit, falls eine eigene Seite den Schalter selbst setzt. */
 ncss-nav-priority:defined > .ncss-nav-list {
   flex-direction: row;
   align-items: center;
@@ -121,8 +123,8 @@ ncss-nav-priority:defined > .ncss-nav-list > .ncss-nav-item > .ncss-nav-dropdown
   white-space: nowrap;
 }
 
-/* --- Unter 64rem: kein Off-Canvas, also auch keine Off-Canvas-Optik --------------------
-   nav.css schaltet unter 64rem für JEDE .ncss-nav auf die Off-Canvas-Darstellung:
+/* --- Kein Off-Canvas, also auch keine Off-Canvas-Optik ----------------------------------
+   Ohne laufendes Skript schaltet nav.css auch diese Nav kompakt - Off-Canvas-Darstellung:
    Schließen-Button sichtbar, Untermenüs position:static ohne Fläche/Schatten (für eine
    gestapelte Liste im Panel richtig). Mit Priority-Nav bleibt das Panel aber per
    display:contents in der Zeile (siehe oben) - der Schließen-X stand dann neben den
@@ -155,3 +157,5 @@ ncss-nav-priority:defined > .ncss-nav-list > .ncss-nav-item > .ncss-nav-dropdown
   inset-inline: auto 100%;
   inset-block-start: 0;
 }
+
+} /* @layer components */

@@ -164,12 +164,16 @@
   <!-- Off-canvas + automatic compact mode -->
   <section id="offcanvas" class="ncss-stack">
     <h2 class="demo-section-title">Off-canvas and automatic compact mode</h2>
-    <p class="ncss-text-muted ncss-text-sm">One nav structure, two presentations: in the row, or behind the menu button as an off-canvas panel (<code>&lt;dialog&gt;</code>). With <code>js/nav.js</code> no fixed width decides, the available space does: the script measures with <code>ResizeObserver</code> whether the list fits into <strong>one</strong> row next to brand and actions. The list never wraps into a second row - a short nav stays in the row even on a phone, a long one collapses even on desktop.</p>
-    <pre><code class="language-html">&lt;script src="js/nav.js" defer&gt;&lt;/script&gt;  &lt;!-- in &lt;head&gt;: state is known before the first paint --&gt;
+    <p class="ncss-text-muted ncss-text-sm">One nav structure, two presentations: in the row, or behind the menu button as an off-canvas panel (<code>&lt;dialog&gt;</code>). The available space decides, not a fixed width - in two stages:</p>
+    <ol class="ncss-text-sm ncss-text-muted">
+      <li><strong>Without JavaScript: container query.</strong> <code>.ncss-topbar-inner</code> (or <code>.ncss-nav-container</code> for your own bars) is a container. The page states with <code>data-ncss-nav-fit="52"</code> how wide the row has to be in <code>rem</code> (the CMS estimates it from the menu, formula below); when it is narrower, the menu button appears. Without a value: 64rem. Because <code>rem</code> grows with font size and zoom, the state is right from the first paint.</li>
+      <li><strong>With <code>js/nav.js</code>: measuring.</strong> The script checks with <code>ResizeObserver</code> whether the list really fits into <strong>one</strong> row next to brand and actions (text spacing, fallback fonts, translations) and sets <code>data-ncss-nav-auto="inline"</code> or <code>"compact"</code>. This state takes precedence over the container query - the two never fight.</li>
+    </ol>
+    <pre><code class="language-html">&lt;script src="js/nav.js" defer&gt;&lt;/script&gt;  &lt;!-- optional, in &lt;head&gt; --&gt;
 
 &lt;header class="ncss-topbar"&gt;&lt;div class="ncss-topbar-inner"&gt;
   &lt;a class="ncss-topbar-brand" href="/"&gt;Brand&lt;/a&gt;
-  &lt;nav class="ncss-nav" aria-label="Main navigation"&gt;
+  &lt;nav class="ncss-nav" aria-label="Main navigation" data-ncss-nav-fit="52"&gt;
     &lt;button type="button" class="ncss-nav-toggle" command="show-modal" commandfor="navPanel" aria-label="Open menu"&gt;☰&lt;/button&gt;
     &lt;dialog id="navPanel" class="ncss-nav-panel ncss-offcanvas ncss-offcanvas--start" aria-label="Menu"&gt;
       &lt;button type="button" class="ncss-dialog-close" command="close" commandfor="navPanel" aria-label="Close menu"&gt;&amp;times;&lt;/button&gt;
@@ -178,26 +182,55 @@
   &lt;/nav&gt;
   &lt;div class="ncss-topbar-actions"&gt; search, button ... &lt;/div&gt;
 &lt;/div&gt;&lt;/header&gt;</code></pre>
-    <p class="ncss-text-sm ncss-text-muted">Live - drag the slider (the frame is its own viewport). The menu button appears exactly when the items no longer fit next to search and button:</p>
+    <p class="ncss-text-sm ncss-text-muted">Live - drag the slider (each frame is its own viewport). Top: with <code>js/nav.js</code>; bottom: the same markup without JavaScript, only the container query with <code>data-ncss-nav-fit="52"</code>.</p>
     <div class="ncss-stack ncss-stack--tight">
       <label for="navAutoWidthSlider" class="ncss-text-sm ncss-text-muted">Frame width: <output id="navAutoWidthOutput">1100px</output></label>
       <input type="range" id="navAutoWidthSlider" min="320" max="1100" value="1100" step="10" style="width: min(100%, 40rem);">
     </div>
+    <p class="ncss-text-sm"><strong>With JavaScript</strong></p>
     <div style="overflow: hidden; width: min(100%, 68rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
-      <iframe id="navAutoFrame" src="~/demo/assets/nav-auto-demo-en.html" style="display: block; width: 1100px; max-width: 100%; height: 22rem; border: 0;" title="Automatic compact mode, live"></iframe>
+      <iframe id="navAutoFrame" src="~/demo/assets/nav-auto-demo-en.html" style="display: block; width: 1100px; max-width: 100%; height: 15rem; border: 0;" title="Compact mode with JavaScript, live"></iframe>
+    </div>
+    <p class="ncss-text-sm"><strong>Without JavaScript</strong> (container query)</p>
+    <div style="overflow: hidden; width: min(100%, 68rem); border: 1px dashed var(--ncss-color-border); border-radius: var(--ncss-radius-md);">
+      <iframe id="navAutoFrameNoJs" src="~/demo/assets/nav-fit-demo-en.html" style="display: block; width: 1100px; max-width: 100%; height: 15rem; border: 0;" title="Compact mode without JavaScript, live"></iframe>
     </div>
     <div class="ncss-table-scroll">
       <table class="ncss-table--compact">
         <thead><tr><th>Markup</th><th>Effect</th></tr></thead>
         <tbody>
-          <tr><td>(default) with <code>js/nav.js</code></td><td>Automatic: row while it fits, otherwise menu button. The script sets <code>data-ncss-nav-auto="inline"</code> or <code>"compact"</code> and reports every switch as the event <code>ncss-nav-change</code> (<code>event.detail.compact</code>).</td></tr>
-          <tr><td><code>.ncss-nav--compact</code></td><td>Always the menu button, at any width.</td></tr>
-          <tr><td><code>data-ncss-nav-auto="off"</code></td><td>No measuring - fixed switch at 64rem (e.g. when other page CSS depends on the same threshold, like this website's top bar).</td></tr>
-          <tr><td>without JavaScript</td><td>Falls back to the media query at 64rem (above it a row that wraps when space runs out).</td></tr>
+          <tr><td><code>data-ncss-nav-fit="N"</code></td><td>Row width in <code>rem</code> from which the list fits: 24 to 120 in steps of four (round up). Below it the menu button - via container query, without JavaScript. Without a value: 64.</td></tr>
+          <tr><td><code>.ncss-topbar-inner</code>, <code>.ncss-nav-container</code></td><td>The container whose content width counts (<code>container: ncss-nav / inline-size</code>). <code>.ncss-topbar-inner</code> is one automatically; your own bars get <code>.ncss-nav-container</code> (an element with a definite width, e.g. the full row - never one sized by its content).</td></tr>
+          <tr><td>with <code>js/nav.js</code></td><td>Measures and sets <code>data-ncss-nav-auto="inline"</code> or <code>"compact"</code> (takes precedence over the container query), event <code>ncss-nav-change</code> (<code>event.detail.compact</code>). In the row the list then never wraps.</td></tr>
+          <tr><td><code>.ncss-nav--compact</code></td><td>Always the menu button, at any width (e.g. when the estimate is above 120).</td></tr>
+          <tr><td><code>data-ncss-nav-auto="off"</code></td><td>No measuring, no container - fixed viewport threshold of 64rem (when other page CSS depends on the same threshold, like this website's top bar). The same applies to navs with <code>&lt;ncss-nav-drilldown&gt;</code> and navs outside a container.</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="ncss-text-sm ncss-text-muted">Your own CSS for the compact state (e.g. moving elements into the panel): <code>.ncss-nav:is(.ncss-nav--compact, [data-ncss-nav-auto="compact"])</code> - plus the same rules in <code>@media (max-width: 63.99rem)</code> for pages without JavaScript. <code>&lt;ncss-nav-priority&gt;</code> and <code>&lt;ncss-nav-drilldown&gt;</code> have their own logic and are not measured.</p>
+    <h3>Estimating the threshold (CMS, server)</h3>
+    <p class="ncss-text-sm ncss-text-muted">Required width in <code>rem</code> = brand + sum of the items + actions + gaps. Values for the default tokens: per item <code>characters × 0.55 + 2.4</code> (with submenu <code>+ 1.2</code>), text brand <code>characters × 0.65</code> (logo: its width), button <code>characters × 0.55 + 2.5</code>, icon button <code>2.75</code>, search field its width, plus <code>1.75</code> per gap between the parts of the row. Round up to a multiple of 4. Rather too large than too small: too large only means the menu button appears a little earlier; with <code>js/nav.js</code> it is measured exactly anyway. Own font, spacing or capitals: adjust the factors (measure once in the browser at which width <code>js/nav.js</code> switches).</p>
+    <pre><code class="language-php">/** Threshold for data-ncss-nav-fit (rem), e.g. from the CMS menu tree */
+function ncss_nav_fit(array $items, float $brand, float $actions, int $parts = 3): int
+{
+    $rem = $brand + $actions + 1.75 * ($parts - 1);   // brand, actions, gaps of the row
+    foreach ($items as $item) {
+        $rem += mb_strlen($item['label']) * 0.55 + 2.4 + (empty($item['children']) ? 0 : 1.2);
+    }
+    return (int) ceil($rem / 4) * 4;
+}
+
+$fit = ncss_nav_fit($menu, mb_strlen($siteName) * 0.65, 16);   // search 8rem + button
+echo $fit &gt; 120
+    ? '&lt;nav class="ncss-nav ncss-nav--compact" …&gt;'
+    : '&lt;nav class="ncss-nav" data-ncss-nav-fit="' . max(24, $fit) . '" …&gt;';</code></pre>
+    <h3>Your own CSS for the compact state</h3>
+    <p class="ncss-text-sm ncss-text-muted">Every path sets the same switch <code>--ncss-nav-compact</code> (an empty custom property, "space toggle") - on the nav and on its siblings in the row. Your own rules are written once and are right with and without JavaScript:</p>
+    <pre><code class="language-css">/* Button only in the row, hidden in the compact state */
+.my-cta {
+  --_d: var(--ncss-nav-compact) none;   /* value for "compact" */
+  display: var(--_d, inline-flex);      /* value for "row" */
+}</code></pre>
+    <p class="ncss-text-sm ncss-text-muted">When the switch is set, the value after <code>var(--ncss-nav-compact)</code> applies, otherwise the fallback. For elements outside the row (e.g. a sidebar) use the state of <code>js/nav.js</code> (<code>.ncss-nav[data-ncss-nav-auto="compact"]</code>) or your own media query. <code>&lt;ncss-nav-priority&gt;</code> has its own logic and is not measured.</p>
     <p class="ncss-text-sm ncss-text-muted"><strong>Accessibility:</strong> the menu button needs a name (<code>aria-label</code>); <code>js/nav.js</code> adds <code>aria-controls</code> and keeps <code>aria-expanded</code> in sync with the panel. If keyboard focus is in the list when it collapses, it moves to the menu button; when there is room again an open panel closes and focus stays on the link. Focus is trapped only in the open modal panel, Escape closes it and returns focus to the button. Measuring also reacts to larger text, zoom and text spacing (WCAG 1.4.4, 1.4.10, 1.4.12) - it observes the content, not only the window width. Showing/hiding follows <code>prefers-reduced-motion</code>.</p>
   </section>
 

@@ -35,6 +35,10 @@
  *   --ncss-backdrop-tint   Schleier über dem Bild
  * Die Zoom-Dauer setzt js/backdrop.js passend zum Wechselintervall.
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 .ncss-backdrop {
   position: fixed;
   inset: 0 0 auto 0;
@@ -92,3 +96,5 @@
     scale: 1;
   }
 }
+
+} /* @layer components */

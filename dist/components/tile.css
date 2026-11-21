@@ -21,6 +21,10 @@
  * Property statt fest codiert - siehe demo/index.html für ein Override-Beispiel.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-tile {
   padding-block: var(--ncss-tile-padding-block, var(--ncss-space-2xl));
   padding-inline: var(--ncss-tile-padding-inline, var(--ncss-space-lg));
@@ -51,3 +55,5 @@
 .ncss-tile--brand-2 pre {
   color: var(--ncss-color-text);
 }
+
+} /* @layer components */

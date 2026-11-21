@@ -26,6 +26,10 @@
  * visually-hidden-Klasse (.ncss-audio-player-sr).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-audio-player {
   --ncss-audio-player-accent: var(--ncss-color-brand);
   --ncss-audio-player-radius: var(--ncss-radius-lg);
@@ -695,3 +699,5 @@ ncss-audio-player[layout="card"] {
     color: inherit;
   }
 }
+
+} /* @layer components */

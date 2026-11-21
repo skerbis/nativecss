@@ -42,6 +42,10 @@
  * Benötigt: tokens.css/colors.css. Optional js/subnav.js.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 :root:has(.ncss-subnav) {
   scroll-padding-block-start: calc(var(--ncss-scroll-offset, calc(var(--ncss-subnav-top, var(--ncss-topbar-height)) + var(--ncss-subnav-height, 2.75rem))) + var(--ncss-space-sm));
 }
@@ -149,3 +153,5 @@
     display: none;
   }
 }
+
+} /* @layer components */

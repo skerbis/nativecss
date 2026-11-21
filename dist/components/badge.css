@@ -6,6 +6,10 @@
  * würde im Dark Mode auf der dort ebenfalls dunklen -100-Fläche zu dunkel/kaum lesbar).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-badge {
   display: inline-flex;
   align-items: center;
@@ -93,3 +97,5 @@
     box-shadow: 0 0 0 0.12em Canvas;
   }
 }
+
+} /* @layer components */

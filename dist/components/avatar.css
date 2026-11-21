@@ -23,6 +23,10 @@
  *   </ul>
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-avatar {
   --ncss-avatar-size: 2.5rem;
   flex: none;
@@ -100,3 +104,5 @@ img.ncss-avatar {
     border: var(--ncss-border-width) solid CanvasText;
   }
 }
+
+} /* @layer components */

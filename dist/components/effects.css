@@ -21,6 +21,10 @@
  * läuft dann nur noch 1 Frame) - keine eigene Media Query hier nötig.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* @property registriert --ncss-glow-angle als typisierten <angle>-Wert - erst DADURCH
    kann die Browser-Engine zwischen "from 0deg" und "from 360deg" sauber interpolieren
    (ein unregistrierter Custom Property-Wert ist für Animationen nur diskret, kein
@@ -234,3 +238,5 @@
     mix-blend-mode: var(--ncss-grain-blend, overlay);
   }
 }
+
+} /* @layer components */

@@ -32,6 +32,10 @@
  * Leiste ist dann wirkungslos, aber nichts geht verloren).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-filter {
   display: block;
 }
@@ -177,3 +181,5 @@ html:active-view-transition-type(ncss-filter)::view-transition-new(root) {
     border-width: calc(var(--ncss-border-width) * 3);
   }
 }
+
+} /* @layer components */

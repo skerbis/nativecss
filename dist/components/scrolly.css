@@ -35,6 +35,10 @@
  * Benötigt: tokens.css/colors.css + js/scrolly.js (ohne Script: lesbarer Fluss).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-scrolly {
   container-type: inline-size;
   display: grid;
@@ -89,18 +93,25 @@ ncss-scrolly:defined:has(.ncss-scrolly-step.is-active) {
     min-block-size: var(--ncss-scrolly-step-height, 75svh);
   }
 
-  /* Inaktive Schritte nur leicht gedimmt: 0.65 hält auch Markenfarben-Text über
-     WCAG 1.4.3 (4.5:1) - sie bleiben lesbarer Inhalt, kein deaktiviertes Element. */
+  /* Inaktive Schritte zurückgenommen, aber voll lesbar (WCAG 1.4.3, 4.5:1): KEINE
+     Deckkraft - opacity mischt den Text mit dem Hintergrund (0.65 ergab nur 3.1:1 bzw.
+     4.2:1 im Dunkelmodus). Stattdessen gedämpfte Textfarbe (--ncss-color-text-muted ist
+     auf 4.5:1 kalibriert) und Graustufen: grayscale ändert die Helligkeit nicht, der
+     Kontrast farbiger Texte (Eyebrow, Links) bleibt also erhalten. Aktiv: Farbe zurück,
+     Markenrahmen, Schatten. */
   & .ncss-scrolly-step > * {
-    opacity: 0.65;
+    color: var(--ncss-color-text-muted);
+    filter: grayscale(1);
     transition:
-      opacity var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      color var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
+      filter var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
       border-color var(--ncss-motion-duration-slow) var(--ncss-motion-easing),
       box-shadow var(--ncss-motion-duration-slow) var(--ncss-motion-easing);
   }
 
   & .ncss-scrolly-step.is-active > * {
-    opacity: 1;
+    color: var(--ncss-color-text);
+    filter: none;
     border-color: var(--ncss-color-brand);
     box-shadow: var(--ncss-shadow-lg);
   }
@@ -166,7 +177,7 @@ ncss-scrolly:defined:has(.ncss-scrolly-step.is-active) {
 
 @media (forced-colors: active) {
   ncss-scrolly .ncss-scrolly-step > * {
-    opacity: 1;
+    filter: none;
   }
   ncss-scrolly .ncss-scrolly-step.is-active > * {
     border: 2px solid Highlight;
@@ -188,3 +199,5 @@ ncss-scrolly:defined:has(.ncss-scrolly-step.is-active) {
     min-block-size: 0;
   }
 }
+
+} /* @layer components */

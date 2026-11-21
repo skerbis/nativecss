@@ -24,6 +24,10 @@
  * .ncss-stat--inverse auf .ncss-stat tauscht nur die Farben, der Pfeil bleibt ehrlich.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-stat {
   /* Eigener Container: der Wert skaliert mit der Kartenbreite (cqi), nicht mit dem
      Viewport - dieselbe Kennzahl passt in eine schmale Sidebar und ein breites Raster. */
@@ -80,3 +84,5 @@
   font-weight: var(--ncss-font-weight-normal);
   color: var(--ncss-color-text-muted);
 }
+
+} /* @layer components */

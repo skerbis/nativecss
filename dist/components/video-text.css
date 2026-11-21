@@ -34,6 +34,10 @@
  * Benötigt: tokens.css + colors.css.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-video-text {
   --ncss-video-text-size: calc(var(--ncss-font-size-2xl) * 2);
   --ncss-video-text-weight: 900;
@@ -89,3 +93,5 @@
     color: currentColor;
   }
 }
+
+} /* @layer components */

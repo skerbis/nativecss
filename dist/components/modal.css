@@ -39,6 +39,10 @@
  * ist Backdrop.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-modal {
   /* position/inset/margin bewusst EXPLIZIT gesetzt, nicht dem UA-Stylesheet überlassen:
      das native "dialog:modal { position:fixed; inset:0; margin:auto; }" ist an die
@@ -383,3 +387,5 @@
     }
   }
 }
+
+} /* @layer components */

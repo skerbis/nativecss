@@ -174,9 +174,9 @@
    "attributes": [
     {
      "name": "value-text",
-     "default": "{n} % vorher",
+     "default": null,
      "boolean": false,
-     "description": "gesprochener Wert ({n} = Prozent), Default nach <html lang>"
+     "description": ""
     }
    ],
    "events": [
@@ -480,7 +480,8 @@
   "ncss-nav-drilldown": {
    "script": "js/nav-drilldown.js",
    "css": [
-    "components/nav-drilldown.css"
+    "components/nav-drilldown.css",
+    "components/nav.css"
    ],
    "description": "<ncss-nav-drilldown>: verschachtelte mobile Menüs als Slide-Screens statt Inline-Aufklappen (siehe components/nav-drilldown.css für Markup/Einbindung/Optik)",
    "attributes": [
@@ -497,7 +498,8 @@
   "ncss-nav-priority": {
    "script": "js/nav-priority.js",
    "css": [
-    "components/nav-priority.css"
+    "components/nav-priority.css",
+    "components/nav.css"
    ],
    "description": "<ncss-nav-priority>: verschiebt Navigationspunkte, die nicht mehr in eine Zeile passen, automatisch in ein \"Mehr\"-Dropdown (siehe components/nav-priority.css für Markup/Einbindung)",
    "attributes": [
@@ -534,7 +536,7 @@
      "name": "settings",
      "default": "theme contrast motion text font spacing links focus",
      "boolean": false,
-     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten)"
+     "description": "Auswahl/Reihenfolge (\"font\" nur mit components/preferences-fonts.css) data-label-<schlüssel>=\"…\"  jeden Text überschreiben (Schlüssel siehe TEXTS unten, camelCase als kebab-case: motionHint -> data-label-motion-hint)"
     }
    ],
    "events": [
@@ -1202,7 +1204,14 @@
     "components/nav.css",
     "js/nav.js"
    ],
-   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem)"
+   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität"
+  },
+  "data-ncss-nav-fit": {
+   "files": [
+    "components/nav.css",
+    "js/nav.js"
+   ],
+   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität"
   },
   "data-ncss-notify": {
    "files": [
@@ -1816,10 +1825,11 @@
    "api": []
   },
   "js/nav.js": {
-   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität (Menü öffnen/schließen funktioniert auch ohne dieses Script vollständig über command/ commandfor bzw. <details>, die Umschaltung dann per Media Query bei 64rem)",
+   "description": "Nav: kleines Enhancement, kein Ersatz für die native Funktionalität",
    "elements": [],
    "dataAttributes": [
-    "data-ncss-nav-auto"
+    "data-ncss-nav-auto",
+    "data-ncss-nav-fit"
    ],
    "events": [
     "ncss-nav-change"

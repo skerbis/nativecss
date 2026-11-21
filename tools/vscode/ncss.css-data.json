@@ -1562,6 +1562,14 @@
    "syntax": "*"
   },
   {
+   "name": "--ncss-nav-compact",
+   "description": {
+    "kind": "markdown",
+    "value": "NativeCSS-Token / Parameter.\n\n```css\n--ncss-nav-compact: ;\n```\nQuelle: `components/nav.css`"
+   },
+   "syntax": "*"
+  },
+  {
    "name": "--ncss-nav-priority-min",
    "description": {
     "kind": "markdown",

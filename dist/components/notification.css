@@ -34,6 +34,10 @@
  * zum Rand, Default --ncss-space-sm), --ncss-notification-gap (Default --ncss-space-2xs),
  * --ncss-toast-peek (sichtbare Kante gestapelter Meldungen, Default 0.75rem).
  */
+
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
 ncss-toast-region {
   --ncss-notification-width: 24rem;
   --ncss-notification-offset: var(--ncss-space-sm);
@@ -288,3 +292,5 @@ ncss-toast-region[stack]:defined > .ncss-notification.ncss-notification--leaving
     background-color: ButtonText;
   }
 }
+
+} /* @layer components */

@@ -40,6 +40,10 @@
  * nächsten ESC/Klick daneben im Top Layer - das Schließen kann CSS nicht auslösen.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-app-shell {
   container: ncss-app-shell / inline-size;
   display: flex;
@@ -264,3 +268,5 @@
     outline: var(--ncss-border-width) solid Highlight;
   }
 }
+
+} /* @layer components */

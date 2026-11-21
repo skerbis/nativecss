@@ -12,6 +12,10 @@
  * nicht mitkippender Kontrastwert.
  */
 
+@layer helpers {
+/* Ganze Datei im Layer "helpers" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 /* Web Awesome auf diesen Flächen (z.B. ein <wa-input> in einer .ncss-surface--brand-Sektion)
    braucht eine EIGENE Bridge-Ergänzung - siehe webawesome-bridge.css, Abschnitt "Formular-
    Text auf farbigen Flächen" - reines color:#fff hier erreicht Web Awesomes Shadow DOM
@@ -85,3 +89,5 @@
   color-scheme: light;
   color: var(--ncss-color-text);
 }
+
+} /* @layer helpers */

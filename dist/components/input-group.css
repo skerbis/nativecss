@@ -26,6 +26,10 @@
  * Notwendigkeit dafür, bei Bedarf ergänzen statt vorsorglich mitbauen.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-input-group {
   display: flex;
   align-items: stretch;
@@ -65,3 +69,5 @@
   position: relative;
   z-index: 1;
 }
+
+} /* @layer components */

@@ -43,6 +43,10 @@
  * visually-hidden-Klasse (.ncss-video-player-sr).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 ncss-video-player {
   --ncss-video-player-accent: var(--ncss-color-brand);
   --ncss-video-player-radius: var(--ncss-radius-lg);
@@ -1114,3 +1118,5 @@ ncss-video-player[layout="card"] {
     color: inherit;
   }
 }
+
+} /* @layer components */

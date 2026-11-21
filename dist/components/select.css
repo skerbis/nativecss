@@ -49,6 +49,10 @@
  * zufällig eine der ersten beiden ebenfalls unterstützen könnten.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-select-wrapper {
   position: relative;
   display: block;
@@ -184,3 +188,5 @@
     flex: 0 0 auto;
   }
 }
+
+} /* @layer components */

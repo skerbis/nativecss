@@ -46,8 +46,11 @@ Alle drei `llms/`-Dateien erzeugt `node tools/index.mjs` aus `dist/` - nie von H
 - `dist/` unverändert ins Projekt kopieren (hier als `ncss/`). `ncss.css` lädt alles in der
   richtigen Cascade-Layer-Reihenfolge: `tokens < reset < base < helpers < components`.
 - **Cherry-Picking:** `ncss.css` als eigenes Manifest kopieren und nicht benötigte
-  `@import url("components/…") layer(components);`-Zeilen löschen. Die `@layer`-Zeile oben
-  und `colors.css`/`tokens.css`/`reset.css`/`base.css` immer behalten.
+  `@import url("components/…");`-Zeilen löschen. Die `@layer`-Zeile oben
+  und `colors.css`/`tokens.css`/`reset.css`/`base.css` immer behalten. Jede Datei unter
+  `components/` und `helpers/` legt ihren Layer selbst fest (`@layer components { … }`) -
+  auch einzeln per `<link>` geladen landet sie im richtigen Layer, solange die
+  Layer-Reihenfolge vorher deklariert ist (`ncss.css` oder eine eigene `@layer`-Zeile).
 - **JavaScript ist je Komponente opt-in**: eine `<script src="ncss/js/<datei>.js" defer>` pro
   genutzter Komponente (welche, steht in `llms/components.json` unter `script` bzw.
   `scripts`). Ohne Script funktioniert das Markup weiter (progressive enhancement).

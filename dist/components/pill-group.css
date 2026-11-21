@@ -30,6 +30,10 @@
  * Abhängigkeiten (Cherry-Picking): colors.css/tokens.css (+ reset/base).
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-pill-group {
   --_ncss-pg-h: var(--ncss-pill-group-height, 2.25rem);
   display: inline-flex;
@@ -141,3 +145,5 @@
     outline-offset: -2px;
   }
 }
+
+} /* @layer components */

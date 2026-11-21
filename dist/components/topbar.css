@@ -13,6 +13,10 @@
  * </header>
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-topbar {
   position: sticky;
   inset-block-start: 0;
@@ -90,3 +94,5 @@
   flex: 0 0 auto;
   margin-inline-start: auto;
 }
+
+} /* @layer components */

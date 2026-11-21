@@ -14,6 +14,10 @@
  * Farbvarianten wie bei Badge/Tag über Modifier-Klassen auf dem <svg> selbst.
  */
 
+@layer components {
+/* Ganze Datei im Layer "components" - gilt auch, wenn sie einzeln per <link> oder @import
+   ohne layer() geladen wird (schließende Klammer am Dateiende). */
+
 .ncss-sparkline {
   display: block;
   width: 100%;
@@ -48,3 +52,5 @@
 .ncss-sparkline--danger polyline { stroke: var(--ncss-color-danger); }
 .ncss-sparkline--danger .ncss-sparkline-dot { fill: var(--ncss-color-danger); }
 .ncss-sparkline--danger .ncss-sparkline-area { fill: var(--ncss-color-danger); }
+
+} /* @layer components */
